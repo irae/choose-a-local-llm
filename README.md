@@ -115,10 +115,15 @@ sub-agent (thinking-off) use is planned.
 
 # This machine — M1 Max, 32 GB
 
-- `sudo sysctl iogpu.wired_limit_mb=24000` (resets on reboot) — required for the
+- `sudo sysctl iogpu.wired_limit_mb=25000` (resets on reboot) — required for the
   big-context configs. On 32 GB, 27000 was too much: the machine became too slow
-  for normal use. 24000 leaves ~8 GB for macOS + a local DB. Context maxima
-  measured under the old 27000 limit need a re-probe at 24000.
+  for normal use. 24000 gave too little context (Qwen3.6-35B capped at 40K).
+  25000 is the current compromise. Context maxima measured under 27000 need a
+  re-probe at 25000; only Qwen3.6-35B is re-probed so far.
+- Decode speed drops at deep fill (~17 tok/s measured at 31K used tokens, vs
+  62-68 near-empty). Accepted: the initial session is where speed matters most.
+  A filled-context check belongs in every context probe; allocation alone
+  overstates what is usable.
 - Servers always on port 8081 (8080 is the DB admin UI). Harness: pi
   (`~/.pi/agent/models.json`).
 
@@ -164,10 +169,12 @@ retries failed blocks, and keeps a 20-minute `ScheduleWakeup` heartbeat.
 Speed and context axes fully measured for all five models, q8-KV maxima included —
 see `comparison.html`. Headlines: Gemma-26B 256K @ 68 tok/s; Gemma-12B 4×256K
 slots; Qwen3.8 160K @ ~15; Qwen3.6-35B 68/74 peak.
-The wired limit dropped from 27000 to 24000 (too slow for normal use). Qwen3.6-35B
-is re-probed at 24000: max context fell from 208K to 40K, and no multi-slot config
-fits. The other models' context maxima still assume 27000 and need a re-probe.
-Open: the re-probes at 24000; the EvalPlus nights; ternary Bonsai GGUF when
+The wired limit moved from 27000 (machine too slow) to 24000 (too little context)
+to 25000 (current). Qwen3.6-35B re-probed at 25000: max context 96K at 62-68
+tok/s near-empty, ~17 tok/s at deep fill (accepted). At 24000 it was 40K with no
+multi-slot config. Multi-slot at 25000 is untested. The other models' context
+maxima still assume 27000 and need a re-probe.
+Open: the re-probes at 25000; the EvalPlus nights; ternary Bonsai GGUF when
 llama.cpp ships Q2_0 support; optionally Gemma-on-MLX and unsloth's Qwen3.8 GGUF
 (more popular than bartowski's; verify it embeds the `nextn` MTP tensors before
 switching).

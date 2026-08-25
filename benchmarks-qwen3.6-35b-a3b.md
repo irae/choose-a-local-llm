@@ -4,37 +4,54 @@ MoE: 35B total parameters, ~3B active per token. Trained context 262144 (GGUF me
 Model: `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` (~20 GB).
 Build: llama-server 0.3.0 (build 10621). Temperature 0, `n_predict` 256, warmup before every measurement. Same prompts as the other models (py = ISO dates, js = deep clone).
 
-## Recommended configuration (at `iogpu.wired_limit_mb=24000`)
+## Recommended configuration (at `iogpu.wired_limit_mb=25000`)
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --alias qwen3.6-35b-a3b --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
-  -ngl 999 -fa on -c 40960 \
+  -ngl 999 -fa on -c 98304 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
 
-No viable two-agent config at this limit: `--parallel 2 -c 40960` OOMs (the second
-slot adds compute buffers). The old `qwen3.6-35b-a3b-2x` (2×96K) needed the 27000
-limit and is retired.
+Multi-slot at 25000 is untested. At 24000, `--parallel 2 -c 40960` OOMed (the
+second slot adds compute buffers). The old `qwen3.6-35b-a3b-2x` (2×96K) needed
+the 27000 limit and is retired.
 
-## Context — q8_0 KV at `iogpu.wired_limit_mb=24000` (current, 2026-08-25)
+## Context — q8_0 KV at `iogpu.wired_limit_mb=25000` (current, 2026-08-25)
 
-The 27000 limit made the machine too slow for normal use; the limit is now 24000.
-The ~20 GB weights leave almost no room for KV under it — the ceiling collapses
-from 208K to 40K.
+Limit history on this 32 GB machine: 27000 made the machine too slow for normal
+use; 24000 capped this model at 40K; 25000 is the compromise.
+
+| `-c` | slots | result | rss |
+|---|---|---|---|
+| **98304** | 1 | **OK, 62.0/67.7 tok/s (256-tok verify) — max (96K)** | 22.9 GB |
+| 106496 | 1 | Metal OOM | – |
+| 114688 | 1 | Metal OOM | – |
+| 131072 | 1 | Metal OOM | – |
+
+MTP acceptance unchanged at the max (py 154/192 = 80%, js 84/93 = 90%).
+
+**Deep-fill behavior**: decode collapses to ~17 tok/s once the used context is
+large — measured 16.7 tok/s at 31,365 used tokens (in a 40K window; prompt
+processing stayed healthy at 556 tok/s). The user also saw ~17 tok/s at ~40K
+used in the old 208K config at 27000. So the collapse tracks used tokens, not
+the allocation or the limit. Accepted for this setup: the initial session is
+where speed matters most. A deep-fill check at 96K is pending. Lesson for the
+flow: probe with a filled context too — allocation-only probes overstate what
+is usable.
+
+## Context — q8_0 KV at `iogpu.wired_limit_mb=24000` (historical)
 
 | `-c` | slots | result | rss |
 |---|---|---|---|
 | 32768 | 1 | OK, 68.4/72.3 tok/s (py/js) | 22.1 GB |
-| **40960** | 1 | **OK, 65.6/72.1 tok/s (256-tok verify) — max (40K)** | 22.2 GB |
-| 49152 | 1 | loads, decode collapses to ~17 tok/s — failed (degraded) | 22.2 GB |
+| 40960 | 1 | OK, 65.6/72.1 tok/s (256-tok verify) — max (40K) | 22.2 GB |
+| 49152 | 1 | loads, decode collapses to ~17 tok/s | 22.2 GB |
 | 65536 | 1 | Metal OOM (reproduced twice) | – |
 | 98304–196608 | 1 | Metal OOM | – |
 | 40960 | 2×20K | Metal OOM — no viable multi-slot config | – |
-
-MTP acceptance unchanged at the max (py 154/192 = 80%, js 84/93 = 90%).
 
 ## MTP sweep — 32K context, f16 KV
 
