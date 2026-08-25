@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ternary Bonsai-27B on M1 Max — tuning report</title>
+<style>
+  :root {
+    --ink: #1c2733;
+    --muted: #5b6b7b;
+    --line: #dde4ea;
+    --bg: #f6f8fa;
+    --card: #ffffff;
+    --accent: #7a4fb0;
+    --accent-soft: #f0eaf8;
+    --bad: #a33;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem; background: var(--bg); color: var(--ink);
+    font: 15px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 .25rem; }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; }
+  h2 { font-size: 1.05rem; margin: 2rem 0 .5rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+  }
+  .summary { border-left: 4px solid var(--accent); }
+  .kpis { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }
+  .kpi {
+    flex: 1 1 140px; background: var(--accent-soft); border-radius: 8px;
+    padding: .75rem 1rem;
+  }
+  .kpi b { display: block; font-size: 1.35rem; color: var(--accent); }
+  .kpi span { font-size: .8rem; color: var(--muted); }
+  pre {
+    background: #10161d; color: #d9e2ec; border-radius: 8px;
+    padding: 1rem; overflow-x: auto; font-size: .82rem; line-height: 1.5;
+  }
+  table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; }
+  th, td { text-align: left; padding: .4rem .7rem; border-bottom: 1px solid var(--line); }
+  th { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.win td { background: var(--accent-soft); font-weight: 600; }
+  .oom { color: var(--bad); font-weight: 600; }
+  .note { color: var(--muted); font-size: .85rem; }
+  footer { color: var(--muted); font-size: .8rem; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Ternary Bonsai-27B on M1 Max 32 GB</h1>
+  <p class="sub">mlx-lm 0.31.3 (llama-server pending a release) &middot; prism-ml ternary 2-bit &middot; benchmarked 2026-08-25</p>
+
+  <div class="card summary">
+    <h2 style="margin-top:0">Summary</h2>
+    <p>Ternary (2-bit) Bonsai — PrismML's quality-oriented compression of Qwen3.6-27B, claiming
+    95% of full-precision performance — decodes at <b>28.6 tok/s</b> on mlx-lm with only ~8 GB
+    of weights, and holds <b>96K context</b> (26.4 GB peak; the model window is 262K but memory
+    caps below it). Same context reach as Qwen3.8-GGUF, 70% faster decode. The GGUF variant is
+    on disk but needs a llama.cpp newer than the current brew release — parked until then.
+    Code quality is unverified until the overnight EvalPlus run.</p>
+    <div class="kpis">
+      <div class="kpi"><b>28.6 tok/s</b><span>decode, both prompts</span></div>
+      <div class="kpi"><b>96K</b><span>max context (26.4 GB)</span></div>
+      <div class="kpi"><b>7.9 GB</b><span>peak at short prompts</span></div>
+      <div class="kpi"><b>no MTP</b><span>head removed from checkpoint</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Which to pick for a coding task</h2>
+    <table>
+      <tr><th>need</th><th>config</th><th class="num">tok/s</th><th class="num">context</th></tr>
+      <tr><td><b>Max context</b></td><td>mlx_lm.server (only runtime today)</td><td class="num">28.6</td><td class="num">96K verified</td></tr>
+      <tr><td><b>Max speed</b></td><td>same config</td><td class="num">28.6</td><td class="num">same</td></tr>
+      <tr><td><b>Multi-agent</b></td><td>ruled out on MLX — wait for the GGUF (llama-server slots)</td><td class="num">–</td><td class="num">–</td></tr>
+    </table>
+    <p class="note">One runtime, so one command — requests queue (no slots):</p>
+<pre>mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit --port 8081</pre>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Decode speed (mlx-lm, warmup first, 256 tokens, temp 0)</h2>
+    <table>
+      <tr><th>prompt</th><th class="num">decode tok/s</th><th class="num">peak memory</th></tr>
+      <tr><td>Python (ISO dates)</td><td class="num">28.59</td><td class="num">7.9 GB</td></tr>
+      <tr><td>JavaScript (deep clone)</td><td class="num">28.59</td><td class="num">7.9 GB</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Context probe (MLX, dynamic KV — no slot preallocation)</h2>
+    <table>
+      <tr><th>prompt depth</th><th class="num">pp tok/s</th><th class="num">peak memory</th></tr>
+      <tr><td>16K</td><td class="num">144</td><td class="num">13.0 GB</td></tr>
+      <tr><td>32K</td><td class="num">137</td><td class="num">15.5 GB</td></tr>
+      <tr><td>64K</td><td class="num">117</td><td class="num">20.8 GB</td></tr>
+      <tr class="win"><td>96K</td><td class="num">96</td><td class="num">26.4 GB</td></tr>
+      <tr><td>128K</td><td colspan="2" class="oom">out of reach (~31 GB projected)</td></tr>
+    </table>
+    <p class="note">64K passes where Qwen3.8-on-MLX OOMs, and prompt processing (117–144 tok/s)
+    is the second-best measured after Gemma. Trained window is 262K, but memory caps well below it.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Blocked / parked</h2>
+    <p>GGUF Q2_0 (6.7 GB, on disk, byte-verified): the current brew llama.cpp (build 10621)
+    predates the final Q2_0 tensor layout and refuses to load it. Parked until the next stable
+    release — that unlocks llama-server slots, preallocated context, and a possible multi-slot
+    story. When starting it, pin the file: <code>--hf-file Ternary-Bonsai-27B-Q2_0.gguf</code>
+    (the <code>:Q2_0</code> tag wrongly matches the PQ2_0 variant).</p>
+  </div>
+
+  <footer>Method: warmup before every measurement; identical prompts across models; temp 0.
+  Full raw numbers in <code>benchmarks-bonsai-27b.md</code>. 1-bit variants were dropped from
+  scope and deleted.</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qwen3.6-35B-A3B on M1 Max — tuning report</title>
+<style>
+  :root {
+    --ink: #1c2733;
+    --muted: #5b6b7b;
+    --line: #dde4ea;
+    --bg: #f6f8fa;
+    --card: #ffffff;
+    --accent: #a03656;
+    --accent-soft: #f9e9ee;
+    --bad: #a33;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem; background: var(--bg); color: var(--ink);
+    font: 15px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 .25rem; }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; }
+  h2 { font-size: 1.05rem; margin: 2rem 0 .5rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+  }
+  .summary { border-left: 4px solid var(--accent); }
+  .kpis { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }
+  .kpi {
+    flex: 1 1 140px; background: var(--accent-soft); border-radius: 8px;
+    padding: .75rem 1rem;
+  }
+  .kpi b { display: block; font-size: 1.35rem; color: var(--accent); }
+  .kpi span { font-size: .8rem; color: var(--muted); }
+  pre {
+    background: #10161d; color: #d9e2ec; border-radius: 8px;
+    padding: 1rem; overflow-x: auto; font-size: .82rem; line-height: 1.5;
+  }
+  table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; }
+  th, td { text-align: left; padding: .4rem .7rem; border-bottom: 1px solid var(--line); }
+  th { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.win td { background: var(--accent-soft); font-weight: 600; }
+  .oom { color: var(--bad); font-weight: 600; }
+  .note { color: var(--muted); font-size: .85rem; }
+  a { color: var(--accent); }
+  footer { color: var(--muted); font-size: .8rem; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Qwen3.6-35B-A3B (MoE) on M1 Max 32 GB</h1>
+  <p class="sub">llama-server (build 10621) &middot; unsloth UD-Q4_K_XL + embedded MTP &middot; benchmarked 2026-08-25</p>
+
+  <div class="card summary">
+    <h2 style="margin-top:0">Summary</h2>
+    <p>MoE (35B total, ~3B active) + MTP is the new speed king: <b>68 py / 74 js tok/s</b> at
+    draft depth 3 — 1.5&times; Gemma-12B, 4&times; dense Qwen3.8 — with the strongest base-model
+    coding pedigree tested (73.4 SWE-bench Verified). Single-session context reaches
+    <b>136K</b> at ~65 tok/s (24.5 GB RSS); the ceiling is the 20 GB of weights, not KV
+    (~19 KB/token — decode speed is flat across the whole range). Quality gate (EvalPlus)
+    pending.</p>
+    <div class="kpis">
+      <div class="kpi"><b>68 / 74</b><span>tok/s (py/js), MTP n-max 3</span></div>
+      <div class="kpi"><b>208K</b><span>max context, q8_0 KV @ 64 tok/s</span></div>
+      <div class="kpi"><b>2&times;96K</b><span>two slots, q8_0 KV @ 67 tok/s</span></div>
+      <div class="kpi"><b>24.1 GB</b><span>RSS at max context</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Which to pick for a coding task</h2>
+    <table>
+      <tr><th>need</th><th>config</th><th class="num">tok/s (py/js)</th><th class="num">context</th></tr>
+      <tr><td><b>Max context</b></td><td>llama-server + MTP n=3, q8_0 KV, 1 slot</td><td class="num">63.6</td><td class="num">208K</td></tr>
+      <tr><td><b>Max speed</b></td><td>same config (speed is flat in context)</td><td class="num">68 / 74</td><td class="num">same</td></tr>
+      <tr><td><b>Multi-agent</b></td><td><code>--parallel 2 -c 196608</code>, q8_0 KV</td><td class="num">66.5 single-stream</td><td class="num">2&times;96K</td></tr>
+    </table>
+    <p class="note">Single agent — one 208K slot, q8_0 KV (pi id <code>qwen3.6-35b-a3b</code>;
+    f16 alternative caps at 136K):</p>
+<pre>llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
+  --alias qwen3.6-35b-a3b --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
+  -ngl 999 -fa on -c 212992 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081</pre>
+    <p class="note">Two concurrent agents — 2&times;96K slots, q8_0 KV (pi id <code>qwen3.6-35b-a3b-2x</code>):</p>
+<pre>llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
+  --alias qwen3.6-35b-a3b-2x --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 2 \
+  -ngl 999 -fa on -c 196608 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081</pre>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">MTP draft depth sweep (32K, f16 KV)</h2>
+    <table>
+      <tr><th>--spec-draft-n-max</th><th class="num">py tok/s</th><th class="num">py accept</th><th class="num">js tok/s</th><th class="num">js accept</th></tr>
+      <tr><td>2</td><td class="num">67.75</td><td class="num">88%</td><td class="num">70.67</td><td class="num">94%</td></tr>
+      <tr class="win"><td>3</td><td class="num">68.21</td><td class="num">82%</td><td class="num">73.53</td><td class="num">90%</td></tr>
+      <tr><td>4</td><td class="num">63.53</td><td class="num">73%</td><td class="num">69.42</td><td class="num">81%</td></tr>
+    </table>
+    <p class="note">No-MTP baseline measurement in progress. Prompt processing is healthy on
+    this architecture (62–93 tok/s even on tiny prompts, vs ~22 for dense Qwen3.8).</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Context ramp (n-max 3, f16 KV)</h2>
+    <table>
+      <tr><th>-c</th><th>result</th><th class="num">tok/s</th><th class="num">RSS</th></tr>
+      <tr><td>49,152</td><td>OK</td><td class="num">66.3</td><td class="num">22.8 GB</td></tr>
+      <tr><td>98,304</td><td>OK</td><td class="num">67.2</td><td class="num">23.7 GB</td></tr>
+      <tr><td>131,072</td><td>OK</td><td class="num">67.8</td><td class="num">24.3 GB</td></tr>
+      <tr class="win"><td>139,264</td><td>OK — maximum</td><td class="num">65.5</td><td class="num">24.5 GB</td></tr>
+      <tr><td>147,456</td><td class="oom">Metal OOM</td><td class="num">–</td><td class="num">–</td></tr>
+      <tr><td>196,608</td><td class="oom">Metal OOM</td><td class="num">–</td><td class="num">–</td></tr>
+    </table>
+    <p class="note">Trained window is 262K but the 20 GB weights cap us at 136K. KV is only
+    ~19 KB/token, so decode speed does not degrade with allocated context.</p>
+  </div>
+
+  <footer>Method: warmup before every measurement; identical prompts across models; temp 0.
+  Raw numbers in <code>benchmarks-qwen3.6-35b-a3b.md</code>. Cross-model picks in
+  <a href="comparison.html">comparison.html</a>.</footer>
+</main>
+</body>
+</html>

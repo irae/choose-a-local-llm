@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qwen3.8-27B on M1 Max — llama-server tuning report</title>
+<style>
+  :root {
+    --ink: #1c2733;
+    --muted: #5b6b7b;
+    --line: #dde4ea;
+    --bg: #f6f8fa;
+    --card: #ffffff;
+    --accent: #0b6e4f;
+    --accent-soft: #e6f4ee;
+    --bad: #a33;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem; background: var(--bg); color: var(--ink);
+    font: 15px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 .25rem; }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; }
+  h2 { font-size: 1.05rem; margin: 2rem 0 .5rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+  }
+  .summary { border-left: 4px solid var(--accent); }
+  .kpis { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }
+  .kpi {
+    flex: 1 1 140px; background: var(--accent-soft); border-radius: 8px;
+    padding: .75rem 1rem;
+  }
+  .kpi b { display: block; font-size: 1.35rem; color: var(--accent); }
+  .kpi span { font-size: .8rem; color: var(--muted); }
+  pre {
+    background: #10161d; color: #d9e2ec; border-radius: 8px;
+    padding: 1rem; overflow-x: auto; font-size: .82rem; line-height: 1.5;
+  }
+  table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; }
+  th, td { text-align: left; padding: .4rem .7rem; border-bottom: 1px solid var(--line); }
+  th { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.win td { background: var(--accent-soft); font-weight: 600; }
+  .oom { color: var(--bad); font-weight: 600; }
+  .note { color: var(--muted); font-size: .85rem; }
+  footer { color: var(--muted); font-size: .8rem; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Qwen3.8-27B on M1 Max 32 GB</h1>
+  <p class="sub">llama-server (Metal, build 10621) + mlx-lm 0.31.3 &middot; benchmarked 2026-08-25</p>
+
+  <div class="card summary">
+    <h2 style="margin-top:0">Summary</h2>
+    <p><b>Fastest usable decode: mlx_lm.server at 19.7 tok/s</b> — plain MLX beats
+    llama-server's best MTP configuration (16.9 tok/s, draft depth 3; 12.4 without MTP).
+    But MLX tops out at <b>48K context</b> and serves one request at a time, so llama-server
+    with q8_0 KV is the choice for <b>big context</b> (one 160K slot) and <b>concurrent
+    sub-agents</b> (two 72K slots). q8_0 outputs verified byte-identical to f16 at temp 0
+    (f16: ~1% faster, capped at 96K / 2&times;44K).</p>
+    <div class="kpis">
+      <div class="kpi"><b>19.7 tok/s</b><span>mlx_lm.server, ≤48K</span></div>
+      <div class="kpi"><b>16.9 tok/s</b><span>llama-server + MTP n-max 3</span></div>
+      <div class="kpi"><b>160K</b><span>max context, q8_0 KV</span></div>
+      <div class="kpi"><b>2&times;72K</b><span>llama-server 2 slots, q8_0 KV</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Which to pick for a coding task</h2>
+    <table>
+      <tr><th>need</th><th>config</th><th class="num">tok/s (py/js)</th><th class="num">context</th></tr>
+      <tr><td><b>Max context</b></td><td>llama-server + MTP n=3, q8_0 KV, 1 slot</td><td class="num">~14.7</td><td class="num">160K</td></tr>
+      <tr><td><b>Max context, lossless KV</b></td><td>llama-server + MTP n=3, f16 KV, 1 slot</td><td class="num">16.9 / 15.7</td><td class="num">96K</td></tr>
+      <tr><td><b>Max speed</b> (server)</td><td>mlx_lm.server, plain</td><td class="num">19.7 / 19.6</td><td class="num">≤48K</td></tr>
+      <tr><td><b>Two agents</b></td><td>llama-server + MTP, 2 slots, q8_0 KV</td><td class="num">~14.6 single-stream</td><td class="num">2&times;72K</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">How to start each variant</h2>
+    <p class="note">Fastest single agent — mlx-lm (OpenAI-compatible API, one request at a time):</p>
+<pre>mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit --port 8081</pre>
+    <p class="note">Biggest context — one 160K slot, q8_0 KV (near-lossless; pi id <code>qwen3.8-27b-160k</code>):</p>
+<pre>llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
+  --alias qwen3.8-27b-160k --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
+  -ngl 999 -fa on -c 163840 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081</pre>
+    <p class="note">Lossless-KV alternative — one 96K slot, f16 KV, MTP:</p>
+<pre>llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
+  --alias qwen3.8-27b --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
+  -ngl 999 -fa on -c 98304 \
+  --jinja --port 8081</pre>
+    <p class="note">Two concurrent agents — two 72K slots, q8_0 KV (pi id <code>qwen3.8-27b-2x</code>;
+    2&times;76K loads but decode degrades, 2&times;80K OOMs; f16 alternative: 2&times;44K):</p>
+<pre>llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
+  --alias qwen3.8-27b-2x --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 2 \
+  -ngl 999 -fa on -c 147456 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081</pre>
+    <p class="note">The slot layout is fixed at startup — restart to switch modes.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">MTP draft depth sweep</h2>
+    <p class="note">256 tokens, temperature 0, q8_0 KV, 32K context. Prompts:
+    py = &ldquo;Write a Python function that parses ISO dates.&rdquo;,
+    js = &ldquo;Write a JavaScript function that deep clones an object.&rdquo;</p>
+    <table>
+      <tr><th>--spec-draft-n-max</th><th class="num">py tok/s</th><th class="num">py accept</th><th class="num">js tok/s</th><th class="num">js accept</th></tr>
+      <tr><td>off (baseline)</td><td class="num">12.44</td><td class="num">–</td><td class="num">12.44</td><td class="num">–</td></tr>
+      <tr><td>1</td><td class="num">12.39</td><td class="num">91%</td><td class="num">12.02</td><td class="num">85%</td></tr>
+      <tr><td>2</td><td class="num">11.98</td><td class="num">87%</td><td class="num">10.68</td><td class="num">72%</td></tr>
+      <tr class="win"><td>3</td><td class="num">16.79</td><td class="num">77%</td><td class="num">15.58</td><td class="num">69%</td></tr>
+      <tr><td>4</td><td class="num">16.33</td><td class="num">75%</td><td class="num">13.03</td><td class="num">55%</td></tr>
+      <tr><td>6</td><td class="num">13.12</td><td class="num">61%</td><td class="num">10.21</td><td class="num">44%</td></tr>
+      <tr><td>7</td><td class="num">12.73</td><td class="num">53%</td><td class="num">10.16</td><td class="num">40%</td></tr>
+    </table>
+    <p class="note">The n-max 3 result repeated exactly on a second run (16.77). A second JS prompt
+    (debounce, run twice) matched deep clone within 0.3 tok/s — the JS penalty comes from the
+    language, not the task, so the settings choice is the same for both languages.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">KV cache: q8_0 vs f16 (at n-max 3)</h2>
+    <table>
+      <tr><th>KV type</th><th class="num">py tok/s</th><th class="num">js tok/s</th><th>quality</th></tr>
+      <tr><td>q8_0</td><td class="num">16.79</td><td class="num">15.58</td><td>near-lossless</td></tr>
+      <tr class="win"><td>f16</td><td class="num">16.93</td><td class="num">15.73</td><td>lossless</td></tr>
+    </table>
+    <p class="note">q8_0 is the default: halves KV memory, unlocks <b>160K</b> context
+    (176K OOMs), and produced <b>byte-identical outputs to f16</b> in the deterministic
+    temp-0 comparison (512 tokens, both prompts). f16 is the secondary option: ~1% faster,
+    capped at 96K.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Context ramp (n-max 3, f16 KV)</h2>
+    <table>
+      <tr><th>-c</th><th>result</th><th class="num">RSS</th></tr>
+      <tr><td>49,152</td><td>OK</td><td class="num">21.2 GB</td></tr>
+      <tr><td>65,536</td><td>OK</td><td class="num">22.0 GB</td></tr>
+      <tr class="win"><td>98,304</td><td>OK — validated with a 4K-token prompt, no errors</td><td class="num">24.1 GB</td></tr>
+      <tr><td>106,496</td><td class="oom">Metal OOM</td><td class="num">–</td></tr>
+      <tr><td>114,688</td><td class="oom">Metal OOM</td><td class="num">–</td></tr>
+      <tr><td>131,072</td><td class="oom">Metal OOM</td><td class="num">–</td></tr>
+    </table>
+    <p class="note">KV grows only ~0.8 GB per 16K tokens — the hybrid DeltaNet layers keep no KV,
+    only the full-attention layers do.</p>
+    <h2>Serving variants (chosen at startup)</h2>
+    <table>
+      <tr><th>agents</th><th>flags</th><th class="num">context per agent</th><th class="num">RSS</th></tr>
+      <tr><td>1</td><td><code>--parallel 1 -c 98304</code></td><td class="num">96K</td><td class="num">24.1 GB</td></tr>
+      <tr><td>2</td><td><code>--parallel 2 -c 90112</code></td><td class="num">44K</td><td class="num">24.2 GB</td></tr>
+    </table>
+    <p class="note">MTP stays active in both variants. The next 8K step OOMs in both:
+    <code>-c 106496</code> with one slot, <code>-c 98304</code> with two.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Reasoning effort (chat endpoint, 1024-token replies)</h2>
+    <table>
+      <tr><th>effort</th><th class="num">py tok/s</th><th class="num">js tok/s</th><th class="num">acceptance</th></tr>
+      <tr><td>xhigh (default)</td><td class="num">14.44</td><td class="num">13.96</td><td class="num">58–61%</td></tr>
+      <tr class="win"><td>medium</td><td class="num">17.50</td><td class="num">16.30</td><td class="num">73–81%</td></tr>
+    </table>
+    <p class="note">Medium is ~21% faster per token: the MTP head predicts medium-effort text better.
+    Add <code>--reasoning-effort medium</code> when top quality is not needed.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Backend comparison: llama-server (GGUF) vs mlx-lm (MLX)</h2>
+    <table>
+      <tr><th>variant</th><th class="num">py tok/s</th><th class="num">js tok/s</th><th class="num">memory</th></tr>
+      <tr><td>llama-server Q4_K_M, no MTP</td><td class="num">12.44</td><td class="num">12.44</td><td class="num">~21 GB RSS</td></tr>
+      <tr><td>llama-server Q4_K_M + MTP n=3, f16 KV</td><td class="num">16.93</td><td class="num">15.73</td><td class="num">~21 GB RSS</td></tr>
+      <tr class="win"><td>mlx-lm MLX 4-bit, no MTP</td><td class="num">19.69</td><td class="num">19.58</td><td class="num">15.5 GB peak</td></tr>
+    </table>
+    <p class="note">MLX beats GGUF+MTP on decode — its Metal kernels handle this hybrid
+    architecture better than llama.cpp's. But MLX loses everywhere else: max context measured
+    <b>48K</b> (64K prompts OOM; llama-server reaches 96K), prompt processing ~105 tok/s (no
+    faster than llama.cpp's 123), one request at a time (no sub-agent slots), and
+    multi-instance is impossible (two 15.5 GB weight copies exceed the wired limit).
+    MTP-on-MLX exists only as a CLI (no API) — disqualified for harness use; raw numbers
+    remain in the markdown.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Max llama-server speed at medium effort</h2>
+    <p class="note">Chat endpoint, 1024-token replies, warmup first. Depth sweep at
+    <code>--reasoning-effort medium</code> — the peak stays at n-max 3.</p>
+    <table>
+      <tr><th>--spec-draft-n-max</th><th class="num">py tok/s</th><th class="num">py accept</th><th class="num">js tok/s</th><th class="num">js accept</th></tr>
+      <tr class="win"><td>3</td><td class="num">17.52</td><td class="num">81%</td><td class="num">16.31</td><td class="num">73%</td></tr>
+      <tr><td>4</td><td class="num">16.57</td><td class="num">75%</td><td class="num">14.86</td><td class="num">65%</td></tr>
+      <tr><td>6</td><td class="num">13.44</td><td class="num">61%</td><td class="num">11.60</td><td class="num">51%</td></tr>
+    </table>
+    <p class="note">Best llama-server can do at medium: <b>17.5 / 16.3 tok/s</b> (n-max 3,
+    f16 KV) — ~4% over its xhigh chat-endpoint numbers via better MTP acceptance.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Open issue</h2>
+    <p>Prompt processing on short prompts is ~20 tok/s, but reaches only ~123–127 tok/s on 1.5K–4K
+    prompts — still low for this hardware class. This is independent of MTP (the no-MTP baseline shows
+    the same numbers), so it looks like a Metal kernel limitation of the new hybrid DeltaNet
+    architecture in the current build. Worth re-testing on future llama.cpp releases.</p>
+  </div>
+
+  <footer>Method: fresh server start per configuration; identical curl per run; temperature 0.
+  Full raw numbers in <code>benchmarks-qwen3.8-27b.md</code>. Cross-model picks in <a href="comparison.html">comparison.html</a>.</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemma-4-26B-A4B on M1 Max — tuning report</title>
+<style>
+  :root {
+    --ink: #1c2733;
+    --muted: #5b6b7b;
+    --line: #dde4ea;
+    --bg: #f6f8fa;
+    --card: #ffffff;
+    --accent: #2762a8;
+    --accent-soft: #e8f0fa;
+    --bad: #a33;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem; background: var(--bg); color: var(--ink);
+    font: 15px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 .25rem; }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; }
+  h2 { font-size: 1.05rem; margin: 2rem 0 .5rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+  }
+  .summary { border-left: 4px solid var(--accent); }
+  .kpis { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }
+  .kpi {
+    flex: 1 1 140px; background: var(--accent-soft); border-radius: 8px;
+    padding: .75rem 1rem;
+  }
+  .kpi b { display: block; font-size: 1.35rem; color: var(--accent); }
+  .kpi span { font-size: .8rem; color: var(--muted); }
+  pre {
+    background: #10161d; color: #d9e2ec; border-radius: 8px;
+    padding: 1rem; overflow-x: auto; font-size: .82rem; line-height: 1.5;
+  }
+  table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; }
+  th, td { text-align: left; padding: .4rem .7rem; border-bottom: 1px solid var(--line); }
+  th { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.win td { background: var(--accent-soft); font-weight: 600; }
+  .oom { color: var(--bad); font-weight: 600; }
+  .note { color: var(--muted); font-size: .85rem; }
+  a { color: var(--accent); }
+  footer { color: var(--muted); font-size: .8rem; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Gemma-4-26B-A4B (MoE) on M1 Max 32 GB</h1>
+  <p class="sub">llama-server (build 10621) &middot; unsloth UD-Q4_K_XL + MTP draft &middot; benchmarked 2026-08-25</p>
+
+  <div class="card summary">
+    <h2 style="margin-top:0">Summary</h2>
+    <p>The MoE big sibling of Gemma-12B does everything its family does, faster:
+    <b>71.9 py / 69.3 js tok/s with thinking on</b> (74.8 / 71.6 with thinking off) at MTP
+    depth 2, the <b>full 256K trained window on one slot</b> (21.6 GB RSS), and <b>two 192K
+    slots</b> (q8_0 KV) for concurrent agents. Thinking (binary, default off) costs only ~3 tok/s.
+    Quality gate (EvalPlus) pending.</p>
+    <div class="kpis">
+      <div class="kpi"><b>71.9 / 69.3</b><span>tok/s thinking on (74.8 / 71.6 off)</span></div>
+      <div class="kpi"><b>256K</b><span>full model window, 1 slot</span></div>
+      <div class="kpi"><b>2&times;192K</b><span>two slots, q8_0 KV</span></div>
+      <div class="kpi"><b>21.6 GB</b><span>RSS at 256K</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Which to pick for a coding task</h2>
+    <table>
+      <tr><th>need</th><th>config</th><th class="num">tok/s</th><th class="num">context</th></tr>
+      <tr><td><b>Max context</b></td><td>llama-server + MTP n=2, 1 slot</td><td class="num">67.8</td><td class="num">256K</td></tr>
+      <tr><td><b>Max speed</b></td><td>same config at 32K</td><td class="num">71.9 / 69.3</td><td class="num">32K</td></tr>
+      <tr><td><b>Two agents</b></td><td><code>--parallel 2 -c 393216</code>, q8_0 KV</td><td class="num">63.3 single-stream</td><td class="num">2&times;192K</td></tr>
+    </table>
+    <p class="note">Single agent — one 256K slot (pi id <code>gemma-4-26b-a4b</code>):</p>
+<pre>llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
+  --alias gemma-4-26b-a4b --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \
+  -ngl 999 -fa on -c 262144 \
+  --jinja --port 8081</pre>
+    <p class="note">Two concurrent agents — 2&times;192K slots, q8_0 KV (pi id <code>gemma-4-26b-a4b-2x</code>;
+    2&times;256K produced Metal errors — not usable):</p>
+<pre>llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
+  --alias gemma-4-26b-a4b-2x --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \
+  -ngl 999 -fa on -c 393216 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081</pre>
+    <p class="note">Speed is nearly flat in context (74.8 at 32K → 67.8 at 256K), so the
+    256K single-slot config is the sensible default. Thinking: binary
+    <code>enable_thinking</code> (trained-in <code>&lt;|think|&gt;</code>, default off, no
+    effort levels); all speed numbers here were measured with thinking off.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">MTP draft depth sweep (32K, f16 KV)</h2>
+    <p class="note">Thinking ON (chat endpoint, <code>enable_thinking: true</code>, 1024 tokens):</p>
+    <table>
+      <tr><th>--spec-draft-n-max</th><th class="num">py tok/s</th><th class="num">py accept</th><th class="num">js tok/s</th><th class="num">js accept</th></tr>
+      <tr class="win"><td>2</td><td class="num">71.88</td><td class="num">84%</td><td class="num">69.25</td><td class="num">78%</td></tr>
+      <tr><td>3</td><td class="num">67.94</td><td class="num">74%</td><td class="num">64.90</td><td class="num">69%</td></tr>
+      <tr><td>4</td><td class="num">63.97</td><td class="num">69%</td><td class="num">61.00</td><td class="num">65%</td></tr>
+    </table>
+    <p class="note">Thinking OFF (sub-agent / fast mode): peak 74.8 py / 71.6 js, also at
+    n-max 2 — thinking costs only ~3 tok/s. Full thinking-off tables in the markdown.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Context (n-max 2, f16 KV)</h2>
+    <table>
+      <tr><th>-c</th><th>slots</th><th>result</th><th class="num">RSS</th></tr>
+      <tr><td>131,072</td><td>1</td><td>OK, 68.0 tok/s</td><td class="num">19.3 GB</td></tr>
+      <tr class="win"><td>262,144</td><td>1</td><td>OK, 67.8 tok/s — trained maximum</td><td class="num">21.6 GB</td></tr>
+      <tr class="win"><td>262,144</td><td>2&times;128K</td><td>OK, 68.2 tok/s — two-slot max</td><td class="num">21.9 GB</td></tr>
+      <tr><td>327,680</td><td>2&times;160K</td><td class="oom">Metal OOM</td><td class="num">–</td></tr>
+      <tr><td>524,288</td><td>2&times;256K</td><td class="oom">Metal OOM</td><td class="num">–</td></tr>
+    </table>
+  </div>
+
+  <footer>Method: warmup before every measurement; identical prompts across models; temp 0.
+  Raw numbers in <code>benchmarks-gemma-4-26b-a4b.md</code>. Cross-model picks in
+  <a href="comparison.html">comparison.html</a>.</footer>
+</main>
+</body>
+</html>
