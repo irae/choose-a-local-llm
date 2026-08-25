@@ -4,18 +4,37 @@ MoE: 35B total parameters, ~3B active per token. Trained context 262144 (GGUF me
 Model: `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` (~20 GB).
 Build: llama-server 0.3.0 (build 10621). Temperature 0, `n_predict` 256, warmup before every measurement. Same prompts as the other models (py = ISO dates, js = deep clone).
 
-## Recommended configuration
+## Recommended configuration (at `iogpu.wired_limit_mb=24000`)
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --alias qwen3.6-35b-a3b --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
-  -ngl 999 -fa on -c 212992 \
+  -ngl 999 -fa on -c 40960 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
 
-Two agents: same command with `--parallel 2 -c 196608` and alias `qwen3.6-35b-a3b-2x` (2×96K).
+No viable two-agent config at this limit: `--parallel 2 -c 40960` OOMs (the second
+slot adds compute buffers). The old `qwen3.6-35b-a3b-2x` (2×96K) needed the 27000
+limit and is retired.
+
+## Context — q8_0 KV at `iogpu.wired_limit_mb=24000` (current, 2026-08-25)
+
+The 27000 limit made the machine too slow for normal use; the limit is now 24000.
+The ~20 GB weights leave almost no room for KV under it — the ceiling collapses
+from 208K to 40K.
+
+| `-c` | slots | result | rss |
+|---|---|---|---|
+| 32768 | 1 | OK, 68.4/72.3 tok/s (py/js) | 22.1 GB |
+| **40960** | 1 | **OK, 65.6/72.1 tok/s (256-tok verify) — max (40K)** | 22.2 GB |
+| 49152 | 1 | loads, decode collapses to ~17 tok/s — failed (degraded) | 22.2 GB |
+| 65536 | 1 | Metal OOM (reproduced twice) | – |
+| 98304–196608 | 1 | Metal OOM | – |
+| 40960 | 2×20K | Metal OOM — no viable multi-slot config | – |
+
+MTP acceptance unchanged at the max (py 154/192 = 80%, js 84/93 = 90%).
 
 ## MTP sweep — 32K context, f16 KV
 
@@ -28,7 +47,7 @@ Two agents: same command with `--parallel 2 -c 196608` and alias `qwen3.6-35b-a3
 
 Peak at n-max 3. Short-prompt pp 62–93 tok/s (vs ~22 for dense Qwen3.8 — the MoE + newer kernels are far healthier).
 
-## Context ramp — n-max 3, f16 KV, short probe (`n_predict` 64), warmup first
+## Context ramp — n-max 3, f16 KV, short probe (`n_predict` 64), warmup first (historical: `iogpu.wired_limit_mb=27000`)
 
 | `-c` | result | rss |
 |---|---|---|
@@ -44,7 +63,7 @@ Peak at n-max 3. Short-prompt pp 62–93 tok/s (vs ~22 for dense Qwen3.8 — the
 
 f16 max single-session context: 136K at ~65 tok/s, 24.5 GB RSS. KV is very light (~19 KB/token); the ceiling comes from the ~20 GB weights. Decode speed is flat across the whole context range.
 
-## Context — q8_0 KV (the default per KV policy)
+## Context — q8_0 KV (historical: `iogpu.wired_limit_mb=27000`)
 
 | `-c` | slots | result | rss |
 |---|---|---|---|
@@ -54,9 +73,9 @@ f16 max single-session context: 136K at ~65 tok/s, 24.5 GB RSS. KV is very light
 | 262144 | 1 | Metal OOM | – |
 | **196608** | 2×96K | **OK, 66.5 tok/s — two-slot config** | 24.2 GB |
 
-**Max single-session: 208K (q8_0 KV)**; two slots: **2×96K** (higher untested). f16 alternatives: 136K / 2×64K.
+Max single-session at 27000: 208K (q8_0 KV); two slots: 2×96K. f16 alternatives: 136K / 2×64K. All of these need the 27000 limit, which is retired (too slow for normal use).
 
-## Multi-slot
+## Multi-slot (historical: `iogpu.wired_limit_mb=27000`)
 
 | `-c` | slots | result | rss |
 |---|---|---|---|

@@ -48,11 +48,15 @@
     <h2 style="margin-top:0">Per-model reports</h2>
     <ul>
       <li><a href="report-gemma-4-26b-a4b.html">Gemma-4-26B-A4B</a> — MoE+MTP: fastest Python, full 256K window, 2&times;128K slots</li>
-      <li><a href="report-qwen3.6-35b-a3b.html">Qwen3.6-35B-A3B</a> — MoE+MTP: fastest JS, 136K context, strongest base benchmarks</li>
+      <li><a href="report-qwen3.6-35b-a3b.html">Qwen3.6-35B-A3B</a> — MoE+MTP: fastest JS, strongest base benchmarks; 40K context at the current wired limit</li>
       <li><a href="report-gemma-4-12b-it.html">Gemma-4-12B-it</a> — biggest context, best concurrency</li>
       <li><a href="report-bonsai-27b.html">Ternary Bonsai-27B</a> — 27B-class at 28.6 tok/s, 96K context on MLX</li>
       <li><a href="report-qwen3.8-27b.html">Qwen3.8-27B</a> — strongest base model, slowest on this hardware</li>
     </ul>
+    <p class="note"><b>Wired limit changed 2026-08-25:</b> <code>iogpu.wired_limit_mb</code> is
+    now 24000 — 27000 made the machine too slow for normal use on 32 GB. Only Qwen3.6-35B is
+    re-probed so far; the context and multi-session maxima of the other models were measured
+    at 27000 and need a re-probe.</p>
   </div>
 
   <div class="card">
@@ -77,7 +81,7 @@
       <tr><th>model</th><th>config</th><th class="num">max context</th><th class="num">tok/s at it</th></tr>
       <tr class="win"><td>Gemma-4-26B-A4B (MoE)</td><td>llama-server, 1 slot</td><td class="num">256K (model limit)</td><td class="num">67.8</td></tr>
       <tr><td>Gemma-4-12B</td><td>llama-server, 1 slot</td><td class="num">256K (model limit)</td><td class="num">45.2</td></tr>
-      <tr><td>Qwen3.6-35B-A3B (MoE)</td><td>llama-server, 1 slot, q8_0 KV</td><td class="num">208K (memory)</td><td class="num">63.6</td></tr>
+      <tr><td>Qwen3.6-35B-A3B (MoE)</td><td>llama-server, 1 slot, q8_0 KV</td><td class="num">40K (memory, limit 24000)</td><td class="num">65.6</td></tr>
       <tr><td>Ternary Bonsai-27B</td><td>mlx_lm.server (dynamic KV)</td><td class="num">96K (memory)</td><td class="num">28.6</td></tr>
       <tr><td>Qwen3.8-27B</td><td>llama-server, 1 slot, q8_0 KV</td><td class="num">160K (memory)</td><td class="num">~14.7</td></tr>
       <tr><td>Qwen3.8-27B</td><td>mlx_lm.server</td><td class="num">48K (memory)</td><td class="num">19.7</td></tr>
@@ -92,7 +96,7 @@
       <tr><th>model</th><th>config</th><th class="num">sessions</th><th class="num">context each</th></tr>
       <tr class="win"><td>Gemma-4-12B</td><td>llama-server <code>--parallel 4 -c 1048576</code>, q8_0 KV</td><td class="num">4</td><td class="num">256K</td></tr>
       <tr><td>Gemma-4-26B-A4B (MoE)</td><td>llama-server <code>--parallel 2 -c 393216</code>, q8_0 KV</td><td class="num">2</td><td class="num">192K</td></tr>
-      <tr><td>Qwen3.6-35B-A3B (MoE)</td><td>llama-server <code>--parallel 2 -c 196608</code>, q8_0 KV</td><td class="num">2</td><td class="num">96K</td></tr>
+      <tr><td>Qwen3.6-35B-A3B (MoE)</td><td>not viable at limit 24000 (OOM at 2&times;20K)</td><td class="num">–</td><td class="num">–</td></tr>
       <tr><td>Qwen3.8-27B</td><td>llama-server <code>--parallel 2 -c 147456</code>, q8_0 KV</td><td class="num">2</td><td class="num">72K</td></tr>
       <tr><td>Ternary Bonsai-27B</td><td>none until its GGUF unblocks</td><td class="num">–</td><td class="num">–</td></tr>
     </table>

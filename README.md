@@ -115,8 +115,10 @@ sub-agent (thinking-off) use is planned.
 
 # This machine — M1 Max, 32 GB
 
-- `sudo sysctl iogpu.wired_limit_mb=27000` (resets on reboot) — required for the
-  big-context configs. Headroom rule: leave ≥5 GB for macOS + a local DB.
+- `sudo sysctl iogpu.wired_limit_mb=24000` (resets on reboot) — required for the
+  big-context configs. On 32 GB, 27000 was too much: the machine became too slow
+  for normal use. 24000 leaves ~8 GB for macOS + a local DB. Context maxima
+  measured under the old 27000 limit need a re-probe at 24000.
 - Servers always on port 8081 (8080 is the DB admin UI). Harness: pi
   (`~/.pi/agent/models.json`).
 
@@ -160,8 +162,12 @@ retries failed blocks, and keeps a 20-minute `ScheduleWakeup` heartbeat.
 ## Current state (2026-08-25, end of day)
 
 Speed and context axes fully measured for all five models, q8-KV maxima included —
-see `comparison.html`. Headlines: Gemma-26B 256K @ 68 tok/s; Qwen3.6-35B 208K @ 64
-and 68/74 peak; Gemma-12B 4×256K slots; Qwen3.8 160K @ ~15.
-Open: the EvalPlus nights; ternary Bonsai GGUF when llama.cpp ships Q2_0 support;
-optionally Gemma-on-MLX and unsloth's Qwen3.8 GGUF (more popular than bartowski's;
-verify it embeds the `nextn` MTP tensors before switching).
+see `comparison.html`. Headlines: Gemma-26B 256K @ 68 tok/s; Gemma-12B 4×256K
+slots; Qwen3.8 160K @ ~15; Qwen3.6-35B 68/74 peak.
+The wired limit dropped from 27000 to 24000 (too slow for normal use). Qwen3.6-35B
+is re-probed at 24000: max context fell from 208K to 40K, and no multi-slot config
+fits. The other models' context maxima still assume 27000 and need a re-probe.
+Open: the re-probes at 24000; the EvalPlus nights; ternary Bonsai GGUF when
+llama.cpp ships Q2_0 support; optionally Gemma-on-MLX and unsloth's Qwen3.8 GGUF
+(more popular than bartowski's; verify it embeds the `nextn` MTP tensors before
+switching).
