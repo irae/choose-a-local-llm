@@ -174,7 +174,11 @@ to 25000 (current). Qwen3.6-35B re-probed at 25000: max context 96K at 62-68
 tok/s near-empty, ~17 tok/s at deep fill (accepted). At 24000 it was 40K with no
 multi-slot config. Multi-slot at 25000 is untested. The other models' context
 maxima still assume 27000 and need a re-probe.
-Open: the re-probes at 25000; the EvalPlus nights; ternary Bonsai GGUF when
+**Pending (not today): re-test all other model/config combinations under the new
+`iogpu.wired_limit_mb` regime** — every context and multi-slot maximum for
+Gemma-26B, Gemma-12B, Qwen3.8, and Bonsai was measured at 27000 and must be
+re-probed (and deep-fill checked) at 25000, or at whatever limit wins.
+Open: the EvalPlus nights; ternary Bonsai GGUF when
 llama.cpp ships Q2_0 support; optionally Gemma-on-MLX and unsloth's Qwen3.8 GGUF
 (more popular than bartowski's; verify it embeds the `nextn` MTP tensors before
 switching).
