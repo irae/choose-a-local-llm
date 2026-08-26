@@ -176,9 +176,16 @@ hard tasks — but its 256K window keeps it in play):
 5. Gemma-4-12B (llama+MTP, thinking on, ~1.2 h).
 Total ~8.5 h; overflow slips to night 2.
 
-**Night 2**: Qwen3.8 GGUF on llama-server, xhigh, production single-slot config
-(160K, q8 KV), first. Remaining order decided after night-1 results. A
-thinking-off pass for sub-agent configs is a night-2+ candidate.
+**Night 2** (kit: `night2/NIGHT-AGENT.md`): fix the token-budget flaw and get
+fair scores. Phase A calibrates a per-model `max_tokens` (10-problem sample at
+a 30K cap, budget = observed max × 1.5). Phase B corrects the three night-1
+scores cheaply — at temperature 0 only the empty completions need
+regenerating. Phase C scores the two Gemma configs fresh. The executor may
+invent fixes for unforeseen problems; fairness rules and limits are in the
+runbook.
+
+**Night 3 candidates**: Qwen3.8 GGUF on llama-server, xhigh, production
+single-slot config; a thinking-off pass for sub-agent configs.
 
 Night kit: `night1/` — small single-purpose scripts (env check, EvalPlus install,
 one server script per block, `run-humaneval.sh`, `progress.sh`, cleanup) plus

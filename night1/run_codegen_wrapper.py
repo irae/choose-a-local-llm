@@ -4,11 +4,11 @@
 # mid-thought and falsely tanks scores (see README's "Gate mechanics"). This wrapper
 # patches the decoder's max_new_tokens after construction, then runs the normal Fire CLI.
 #
-# 3072 was found too low for all three models tonight (blocks 1, 2, and 3 all show
-# empty completions from reasoning exhausting the token budget: 2%, 38%, and ~30-40%
-# respectively). Deliberately kept at 3072 rather than raised: the user wants tonight's
-# three blocks to stay apples-to-apples under the same (known-flawed) budget, and will
-# have a separate effort design the corrected methodology (see night1/state.md).
+# 3072 was found too low on night 1 (blocks 1, 2, and 3 all show empty completions
+# from reasoning exhausting the token budget: 2%, 38%, and ~30-40%). Night 1 kept
+# 3072 on purpose so its three blocks stayed apples-to-apples (see night1/state.md).
+# Night 2 sets a calibrated per-model budget via the EVALPLUS_MAX_NEW_TOKENS env
+# var (see night2/NIGHT-AGENT.md); without it the flawed 3072 default still applies.
 #
 # It also has no way to send extra JSON body fields (e.g. mlx_lm.server's
 # chat_template_kwargs for reasoning_effort). Set EVALPLUS_EXTRA_BODY to a JSON
@@ -35,7 +35,7 @@ def _safe_openai_codegen(self, prompt, do_sample=True, num_samples=200):
 
 OpenAIChatDecoder.codegen = _safe_openai_codegen
 
-MAX_NEW_TOKENS = 3072
+MAX_NEW_TOKENS = int(os.environ.get("EVALPLUS_MAX_NEW_TOKENS", "3072"))
 _orig_make_model = codegen_mod.make_model
 
 _extra_body_raw = os.environ.get("EVALPLUS_EXTRA_BODY")
