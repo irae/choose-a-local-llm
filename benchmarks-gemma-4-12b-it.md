@@ -12,11 +12,14 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --alias gemma-4-12b-it --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \
   -ngl 999 -fa on -c 262144 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
 
 - `--spec-draft-n-max 4` is the peak (45.0 py / 31.3 js tok/s vs 22.3 without MTP, +102% / +41%).
-- f16 KV (no `--cache-type-*` flags) is lossless and much faster than q8_0 for Python (+5.5 tok/s).
+- q8_0 KV per the KV policy — every config uses it now. Note: f16 measured +5.5
+  py tok/s on this model, and the speed numbers below come from f16 runs. A
+  re-probe with q8 under the current wired limit is pending.
 - Context is **model-limited, not memory-limited**: 256K (the trained maximum) fits in ~14 GB RSS.
 - Sub-agent variant: `--parallel 2 -c 524288` gives 2×256K slots at 16.9 GB RSS — both slots at the model maximum.
 - Reasoning effort: not applicable — the chat template reports `supports_reasoning_effort: false`.

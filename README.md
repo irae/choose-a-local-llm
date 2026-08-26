@@ -48,8 +48,12 @@ This is the methodology. Every test cycle follows all of these; do not skip step
    machines — near-lossless (we verified byte-identical outputs vs f16 at
    temperature 0), and the context it unlocks overrules f16's ~1% speed edge.
    Mention f16 only as a secondary option. Deeper KV quantization (q4_0) is
-   banned for quality. Configs limited by the model's trained window rather than
-   memory gain nothing from KV quantization.
+   banned for quality. **Every published config uses q8 — no exceptions**, even
+   configs limited by the model's trained window: under the current wired limits
+   those also need the KV savings (Gemma-26B's 256K window fits only with q8).
+   Caveat to measure per model: q8 can lower MTP draft acceptance and with it
+   decode speed (Gemma-26B js: 81% → 68%, ~72 → ~53 tok/s; Gemma-12B py:
+   f16 was +5.5 tok/s).
 9. **API-or-nothing.** A config qualifies only if it serves an HTTP API a
    harness/agent can use. CLI-only paths are disqualified — benchmark them only
    as a rare, explicitly-approved curiosity; their numbers stay in markdowns,

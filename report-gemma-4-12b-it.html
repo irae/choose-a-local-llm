@@ -73,12 +73,16 @@
     variant tested (llama-server already saturates this model's speed). Four 256K slots hit
     Metal OOM — 3 is the maximum at full window. pi model ids:
     <code>gemma-4-12b</code> / <code>gemma-4-12b-3x</code>.</p>
-    <p class="note">Single agent — one 256K slot:</p>
+    <p class="note">Single agent — one 256K slot, q8_0 KV:</p>
 <pre>llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --alias gemma-4-12b --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \
   -ngl 999 -fa on -c 262144 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081</pre>
+    <p class="note">The speed numbers on this page were measured with f16 KV, which was
+    +5.5 py tok/s on this model; q8_0 is now the default on every config per the KV policy.
+    A re-probe under the current wired limit is pending.</p>
     <p class="note">Four concurrent agents — 4&times;256K slots, q8_0 KV (16.9 GB RSS, 33.7 tok/s,
     MTP active; pi id <code>gemma-4-12b-4x</code>; f16 alternative: 3&times;256K):</p>
 <pre>llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
