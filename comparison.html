@@ -111,9 +111,28 @@
   </div>
 
   <div class="card">
+    <h2 style="margin-top:0">Code quality — EvalPlus HumanEval+ (initial, night 1, 2026-08-26)</h2>
+    <table>
+      <tr><th>model</th><th>config scored</th><th class="num">pass@1 base</th><th class="num">pass@1 plus</th><th class="num">empty completions</th></tr>
+      <tr><td>Qwen3.8-27B</td><td>mlx 4-bit, reasoning_effort=medium</td><td class="num">0.970</td><td class="num">0.939</td><td class="num">~2%</td></tr>
+      <tr><td>Ternary Bonsai-27B</td><td>mlx 2-bit, thinking on</td><td class="num">0.640</td><td class="num">0.634</td><td class="num">~30%</td></tr>
+      <tr><td>Qwen3.6-35B-A3B (MoE)</td><td>llama+MTP, thinking on</td><td class="num">0.610</td><td class="num">0.610</td><td class="num">~38%</td></tr>
+      <tr><td>Gemma-4-26B-A4B / 12B</td><td>not yet scored</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
+    </table>
+    <p class="note"><b>Caveat: these are not fair scores yet — lower bounds only, do not rank
+    on them.</b> All three ran under <code>max_tokens=3072</code>, which reasoning output can
+    exhaust before the answer starts; every empty completion scored as a hard failure (the
+    "empty" column shows how often). Qwen3.8's score is close to real (~2% empty); Qwen3.6's
+    and Bonsai's are heavily deflated. A re-run with per-model calibrated token budgets is
+    planned; method and incident history in <code>night1/results.md</code> and
+    <code>night1/state.md</code>.</p>
+  </div>
+
+  <div class="card">
     <h2 style="margin-top:0">Open questions</h2>
     <ul>
-      <li>Code quality per quantization — overnight EvalPlus run (planned).</li>
+      <li>EvalPlus re-run with per-model calibrated <code>max_tokens</code>, plus the two
+      unscored Gemma blocks — after the methodology redesign.</li>
       <li>Ternary Bonsai GGUF — parked until a stable llama.cpp release reads Q2_0.</li>
       <li>Gemma on MLX — unmeasured (llama-server already saturates it).</li>
     </ul>

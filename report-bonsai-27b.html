@@ -62,13 +62,28 @@
     of weights, and holds <b>96K context</b> (26.4 GB peak; the model window is 262K but memory
     caps below it). Same context reach as Qwen3.8-GGUF, 70% faster decode. The GGUF variant is
     on disk but needs a llama.cpp newer than the current brew release — parked until then.
-    Code quality is unverified until the overnight EvalPlus run.</p>
+    Initial EvalPlus score below — deflated by a harness bug, not yet fair.</p>
     <div class="kpis">
       <div class="kpi"><b>28.6 tok/s</b><span>decode, both prompts</span></div>
       <div class="kpi"><b>96K</b><span>max context (26.4 GB)</span></div>
       <div class="kpi"><b>7.9 GB</b><span>peak at short prompts</span></div>
       <div class="kpi"><b>no MTP</b><span>head removed from checkpoint</span></div>
     </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Quality — EvalPlus HumanEval+ (initial, night 1)</h2>
+    <table>
+      <tr><th>config scored</th><th class="num">pass@1 base</th><th class="num">pass@1 plus</th><th class="num">empty completions</th></tr>
+      <tr><td>mlx_lm.server 2-bit, thinking on</td><td class="num">0.640</td><td class="num">0.634</td><td class="num">49/164 (~30%)</td></tr>
+    </table>
+    <p class="note"><b>Caveat: not a fair score yet — treat as a lower bound.</b> The run used
+    <code>max_tokens=3072</code>; this model's reasoning is verbose (one measured problem burned
+    ~4,500 tokens of reasoning before answering), so <b>~30% of completions came back empty</b>
+    and scored as failures. A diagnostic re-run at a 16K budget produced zero empty
+    completions. A full re-run with a calibrated budget is planned. Practical note from the
+    run: Bonsai was the least disruptive model to work alongside (moderate fan noise).
+    Scored 2026-08-26; details in <code>night1/results.md</code>.</p>
   </div>
 
   <div class="card">

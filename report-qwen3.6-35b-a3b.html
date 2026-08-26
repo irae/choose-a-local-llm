@@ -64,13 +64,28 @@
     (27000 made the machine too slow for normal use; 24000 capped context at 40K):
     single-session context reaches <b>96K</b>, down from 208K. Decode collapses to ~17 tok/s
     once ~30K+ tokens are in use — accepted, since the initial session is where speed
-    matters most. Quality gate (EvalPlus) pending.</p>
+    matters most. Initial EvalPlus score below — deflated by a harness bug, not yet fair.</p>
     <div class="kpis">
       <div class="kpi"><b>68 / 74</b><span>tok/s (py/js), MTP n-max 3</span></div>
       <div class="kpi"><b>96K</b><span>max context, q8_0 KV @ 62-68 tok/s</span></div>
       <div class="kpi"><b>~17</b><span>tok/s at deep fill (31K+ used)</span></div>
       <div class="kpi"><b>22.9 GB</b><span>RSS at max context</span></div>
     </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Quality — EvalPlus HumanEval+ (initial, night 1)</h2>
+    <table>
+      <tr><th>config scored</th><th class="num">pass@1 base</th><th class="num">pass@1 plus</th><th class="num">empty completions</th></tr>
+      <tr><td>llama-server + MTP, thinking on</td><td class="num">0.610</td><td class="num">0.610</td><td class="num">62/164 (~38%)</td></tr>
+    </table>
+    <p class="note"><b>Caveat: this score is not fair and heavily deflated — do not rank on
+    it.</b> The run used <code>max_tokens=3072</code>; this model's reasoning exhausted that
+    budget on <b>38% of the problems</b>, and each empty completion scores as a hard failure.
+    The real capability is likely far higher (its base model reports 73.4 SWE-bench
+    Verified). Worst-affected of the three models scored. A re-run with a per-model
+    calibrated token budget is planned. Scored 2026-08-26; details in
+    <code>night1/results.md</code>.</p>
   </div>
 
   <div class="card">
