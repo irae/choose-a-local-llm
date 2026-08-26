@@ -35,6 +35,26 @@ Maintain `state.md` in this folder: current block, start time of the block,
 incidents, and one line per completed block with its pass@1 score. Update it on
 every transition and every incident. It is the handoff document if you die.
 
+## Timing: secondary signal, don't chase precision
+
+pass@1 is the score that matters. Timing is a rough, secondary signal — note
+it if convenient (wall-clock of the final, successful attempt: server start
+to evaluate finish, excluding earlier failed attempts and time spent
+diagnosing/fixing them), but do not spend effort making it exact, and do not
+let timing investigation block or delay work on scoring correctness.
+
+## `max_tokens`: verify it's big enough, per model
+
+Prompt context size does not affect these scores (problems are tiny). Output
+token budget (`max_tokens`) does. Do not assume one number fits every model —
+a compressed/quantized or heavily-reasoning model can burn thousands of
+tokens on reasoning alone before answering, and a tight cap truncates it to
+an empty or partial answer that scores as a hard failure despite the model
+being capable. If a completed task's output is suspiciously short or empty,
+suspect the token cap before suspecting the model — check with a one-off
+higher-`max_tokens` request against the live server before writing off the
+result.
+
 ## Setup (once)
 
 1. `./00-env-check.sh` — if the wired limit is not 27000, note it in state.md and
@@ -86,7 +106,8 @@ at the wrong effort.
 1. `./90-stop-servers.sh` and `pkill -f evalplus`; confirm `./progress.sh` shows
    nothing running.
 2. Finalize `results.md`: one table — block name, model, config, pass@1 (base
-   and plus), samples completed, incidents.
+   and plus), samples completed, clean start/finish/duration (see "Timing"
+   above), incidents.
 3. Final state.md entry: what finished, what failed and why, what you changed.
 4. Do NOT update the HTML reports, comparison.html, or pi config — the morning
    session does that with the user (four-surface rule applies then).

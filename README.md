@@ -107,13 +107,30 @@ long-context or harness behavior. Tier 2, for gate survivors: the **Aider
 polyglot benchmark** (225 Exercism problems, 6 languages, 2 attempts with test
 feedback, docker-run against your servers) — hours per model, so only survivors.
 
-Gate mechanics: temperature 0, pass@1, small context (problems are tiny,
-single-turn, no compaction involved — context size does not affect scores).
-Generous `max_tokens` (~3072) for thinking models — a tight cap truncates
-mid-thought and falsely tanks scores. Serve each config through its fastest
-runtime (MTP never changes outputs, so it is fair). Score thinking-on for fair
-comparison with published numbers; a thinking-off pass is worthwhile where
-sub-agent (thinking-off) use is planned.
+Gate mechanics: temperature 0, pass@1, small **prompt** context (problems are
+tiny, single-turn, no compaction involved — prompt context size does not
+affect scores). Serve each config through its fastest runtime (MTP never
+changes outputs, so it is fair). Score thinking-on for fair comparison with
+published numbers; a thinking-off pass is worthwhile where sub-agent
+(thinking-off) use is planned.
+
+**`max_tokens` (output budget) is a different axis from prompt context, and it
+does affect scores.** An earlier version of this rule said "~3072 is generous"
+and lumped it in with the context-doesn't-matter point above — that was wrong.
+Verified 2026-08-26 on night 1: Ternary Bonsai burned ~4,500+ tokens of
+reasoning on a single HumanEval problem before ever starting its answer; at a
+3072 cap, over 40% of its later completions came back with empty content
+(all-reasoning, no room left to answer) — a harness ceiling masquerading as a
+model failure. Set `max_tokens` high enough that a thinking-heavy config never
+hits it (test this per model, don't assume one number fits all — a compressed
+or heavily-quantized model can need much more room to reach a conclusion, and
+this can worsen over a long run rather than staying constant). A tight cap
+truncates mid-thought and falsely tanks scores.
+
+Record clean-run timing per config if convenient (wall-clock of the final,
+successful attempt, excluding restarts/bugfixing) — it's a secondary,
+approximate signal, not something to chase precision on. pass@1 is the score
+that matters; don't spend effort making timing exact.
 
 ---
 
