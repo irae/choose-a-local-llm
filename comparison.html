@@ -111,21 +111,23 @@
   </div>
 
   <div class="card">
-    <h2 style="margin-top:0">Code quality — EvalPlus HumanEval+ (initial, night 1, 2026-08-26)</h2>
+    <h2 style="margin-top:0">Code quality — EvalPlus HumanEval+ (night 2, 2026-08-27)</h2>
     <table>
-      <tr><th>model</th><th>config scored</th><th class="num">pass@1 base</th><th class="num">pass@1 plus</th><th class="num">empty completions</th></tr>
-      <tr><td>Qwen3.8-27B</td><td>mlx 4-bit, reasoning_effort=medium</td><td class="num">0.970</td><td class="num">0.939</td><td class="num">~2%</td></tr>
-      <tr><td>Ternary Bonsai-27B</td><td>mlx 2-bit, thinking on</td><td class="num">0.640</td><td class="num">0.634</td><td class="num">~30%</td></tr>
-      <tr><td>Qwen3.6-35B-A3B (MoE)</td><td>llama+MTP, thinking on</td><td class="num">0.610</td><td class="num">0.610</td><td class="num">~38%</td></tr>
-      <tr><td>Gemma-4-26B-A4B / 12B</td><td>not yet scored</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
+      <tr><th>model</th><th>config scored</th><th class="num">pass@1 base</th><th class="num">pass@1 plus</th><th>status</th></tr>
+      <tr class="win"><td>Qwen3.8-27B</td><td>mlx 4-bit, reasoning_effort=medium, budget 8192</td><td class="num">0.982</td><td class="num">0.939</td><td>fair — 0 empty</td></tr>
+      <tr class="win"><td>Ternary Bonsai-27B</td><td>mlx 2-bit, thinking on, budget 10240</td><td class="num">0.915</td><td class="num">0.884</td><td>fair — 5/164 empty is a real model ceiling</td></tr>
+      <tr><td>Qwen3.6-35B-A3B (MoE)</td><td>llama+MTP, thinking on</td><td class="num">0.610</td><td class="num">0.610</td><td>still night-1 lower bound — correction parked at 5/62 regenerated</td></tr>
+      <tr><td>Gemma-4-26B-A4B</td><td>calibrated only (budget 30000)</td><td class="num">–</td><td class="num">–</td><td>2/10 sample problems never finished reasoning at the 30K cap</td></tr>
+      <tr><td>Gemma-4-12B</td><td>calibrated only (budget 30000)</td><td class="num">–</td><td class="num">–</td><td>4/10 sample problems hit the cap — worse than the 26B, counterintuitively</td></tr>
     </table>
-    <p class="note"><b>Caveat: these are not fair scores yet — lower bounds only, do not rank
-    on them.</b> All three ran under <code>max_tokens=3072</code>, which reasoning output can
-    exhaust before the answer starts; every empty completion scored as a hard failure (the
-    "empty" column shows how often). Qwen3.8's score is close to real (~2% empty); Qwen3.6's
-    and Bonsai's are heavily deflated. A re-run with per-model calibrated token budgets is
-    planned; method and incident history in <code>night1/results.md</code> and
-    <code>night1/state.md</code>.</p>
+    <p class="note">The night-1 token-budget flaw is fixed: budgets are now calibrated per
+    model from measured reasoning length (<code>night2/calibration.md</code>). Bonsai's
+    correction was the largest (0.640 → 0.915) — the flawed cap was hiding most of its
+    ability. Qwen3.6's score is still the deflated night-1 number; do not rank on it until
+    its correction finishes. The Gemma thinking mode sometimes fails to converge at all
+    (30K tokens of reasoning without an answer) — that is model behavior, not a harness
+    limit, and the 12B does it more than the 26B. Full history:
+    <code>night2/results.md</code>, <code>night2/state.md</code>.</p>
   </div>
 
   <div class="card">

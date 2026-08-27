@@ -51,6 +51,12 @@ Both servers: 14.9 GB RSS combined. ~12 GB left for KV → roughly 2×35K contex
 
 **Decision: ruled out.** Two servers mean two weight copies and per-agent endpoint wiring in the harness — not worth it. Parallel serving is llama-server's job; Bonsai gets a multi-session story when its ternary GGUF loads on a stable brew llama.cpp.
 
-## Quality note
+## Quality — EvalPlus HumanEval+ (night 2, fair budget)
 
-Ternary claims 95% of full-precision performance. Spot output looks clean; the overnight EvalPlus run gives the real verdict.
+**pass@1 0.915 base / 0.884 plus** (mlx, thinking on, output budget 10240,
+temperature 0). Night 1's flawed 3072 cap had scored it 0.640/0.634 — the
+biggest correction of any model. 5/164 completions stay empty even at the full
+budget: a real model ceiling, not a harness artifact. The ternary 95% claim
+holds up in practice. Bonsai is also the least disruptive model to run while
+working (moderate fan noise, ~8 GB weights) — a practical all-day
+background-agent candidate. Details: `night2/results.md`.

@@ -213,3 +213,10 @@ Run twice on the final config. Same speed as the deep-clone prompt (15.59), so t
 | 81920 | 2×40K | OK, MTP active | 23.9 GB |
 | 90112 | 2×44K | OK, MTP active — max for 2 slots | 24.2 GB |
 | 98304 | 2×48K | Metal OOM | – |
+
+## Quality — EvalPlus HumanEval+ (night 2, fair budget)
+
+**pass@1 0.982 base / 0.939 plus** (mlx 4-bit, reasoning_effort=medium, output
+budget 8192, temperature 0). Night 1's flawed 3072 cap had scored it
+0.970/0.939. Zero empty completions. The strongest HumanEval+ result of the
+models scored so far. Details: `night2/results.md`.

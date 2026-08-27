@@ -72,16 +72,16 @@
   </div>
 
   <div class="card">
-    <h2 style="margin-top:0">Quality — EvalPlus HumanEval+ (initial, night 1)</h2>
+    <h2 style="margin-top:0">Quality — EvalPlus HumanEval+ (fair score, night 2)</h2>
     <table>
       <tr><th>config scored</th><th class="num">pass@1 base</th><th class="num">pass@1 plus</th><th class="num">empty completions</th></tr>
-      <tr><td>mlx_lm.server 4-bit, reasoning_effort=medium</td><td class="num">0.970</td><td class="num">0.939</td><td class="num">3/164 (~2%)</td></tr>
+      <tr><td>mlx_lm.server 4-bit, reasoning_effort=medium</td><td class="num">0.982</td><td class="num">0.939</td><td class="num">0/164</td></tr>
     </table>
-    <p class="note"><b>Caveat: not a fair score yet — treat as a lower bound.</b> The run used
-    <code>max_tokens=3072</code>, which reasoning output can exhaust before the answer starts;
-    an empty completion scores as a hard failure. This model was the least affected (~2%
-    empty), so its score is close to real. A re-run with a per-model calibrated token budget
-    is planned. Scored 2026-08-26; details in <code>night1/results.md</code>.</p>
+    <p class="note"><b>Fair score — the token-budget flaw is fixed.</b> Night 2 calibrated
+    this config's output budget (8192; its longest observed reasoning was ~2.6K tokens) and
+    regenerated the three night-1 empty completions. Zero empty completions remain. The
+    strongest HumanEval+ result of the models scored so far. Details in
+    <code>night2/results.md</code>.</p>
   </div>
 
   <div class="card">

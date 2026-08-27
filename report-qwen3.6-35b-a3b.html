@@ -83,9 +83,10 @@
     it.</b> The run used <code>max_tokens=3072</code>; this model's reasoning exhausted that
     budget on <b>38% of the problems</b>, and each empty completion scores as a hard failure.
     The real capability is likely far higher (its base model reports 73.4 SWE-bench
-    Verified). Worst-affected of the three models scored. A re-run with a per-model
-    calibrated token budget is planned. Scored 2026-08-26; details in
-    <code>night1/results.md</code>.</p>
+    Verified). Worst-affected of the three models scored. The night-2 correction is parked
+    mid-run (5 of 62 empty completions regenerated, calibrated budget 26624) and resumes on
+    a future night. Details in <code>night1/results.md</code> and
+    <code>night2/state.md</code>.</p>
   </div>
 
   <div class="card">
