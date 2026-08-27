@@ -15,6 +15,9 @@
 # object to merge it into every chat completion request (openai backend only).
 import json
 import os
+import signal
+
+import openai
 
 import evalplus.codegen as codegen_mod
 
@@ -22,6 +25,43 @@ import evalplus.codegen as codegen_mod
 # empty-answer turn). EvalPlus's sanitize() calls text.split() on it directly
 # and crashes the whole run instead of scoring that one problem as failed.
 from evalplus.provider.openai import OpenAIChatDecoder
+
+# EvalPlus's own request helper (evalplus/gen/util/openai_request.py)
+# hardcodes signal.alarm(100) around every request, and the OpenAI client
+# it builds uses the SDK's ~600s default HTTP timeout. Whichever fires
+# first cancels the request and retries with an identical (temperature=0)
+# prompt, so a completion that genuinely needs longer than ~600s to finish
+# retries forever and never completes. Found night 2 (2026-08-27) after a
+# qwen36-think regeneration sat at 0 progress for 52 minutes; the server
+# log showed the same task being launched and cancelled on a ~100s/~600s
+# cycle. Fix: replace the alarm-based retry with a plain retry loop (no
+# artificial deadline) and give the client a timeout long enough for any
+# calibrated budget used tonight.
+import evalplus.gen.util.openai_request as oreq
+
+
+def _patient_make_auto_request(*args, **kwargs):
+    ret = None
+    while ret is None:
+        try:
+            ret = oreq.make_request(*args, **kwargs)
+        except openai.RateLimitError:
+            print("Rate limit exceeded. Waiting...")
+            import time
+
+            time.sleep(5)
+        except openai.APIConnectionError:
+            print("API connection error. Waiting...")
+            import time
+
+            time.sleep(5)
+        except openai.APIError as e:
+            print(e)
+    return ret
+
+
+oreq.make_auto_request = _patient_make_auto_request
+signal.alarm(0)
 
 _orig_openai_codegen = OpenAIChatDecoder.codegen
 
@@ -45,6 +85,15 @@ _extra_body = json.loads(_extra_body_raw) if _extra_body_raw else None
 def _patched_make_model(*args, **kwargs):
     decoder = _orig_make_model(*args, **kwargs)
     decoder.max_new_tokens = MAX_NEW_TOKENS
+    if kwargs.get("backend") == "openai":
+        # Rebuild the client with a timeout long enough for any calibrated
+        # budget tonight (up to 30000 tokens); the SDK's ~600s default cuts
+        # off legitimate long completions, not just hung ones.
+        decoder.client = openai.OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY", "none"),
+            base_url=str(decoder.client.base_url),
+            timeout=7200.0,
+        )
     if _extra_body and kwargs.get("backend") == "openai":
         from evalplus.gen.util import openai_request as oreq
 

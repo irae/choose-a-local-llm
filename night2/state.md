@@ -104,6 +104,68 @@ running. Machine left idle.
 4. Finalize `night2/results.md` and do the Phase A/B/C shutdown checklist
    in NIGHT-AGENT.md once all blocks are done.
 
+## Session 2 (resumed ~10:58, user gave ~1h)
+
+- **Major incident, applies to every remaining block (bonsai-think and both
+  Gemma Phase C runs), not just qwen36-think.** Resumed qwen36-think's
+  correction; after 52 minutes it had made 0 progress on HumanEval/4. The
+  server log showed the exact cause: `evalplus/gen/util/openai_request.py`
+  hardcodes `signal.alarm(100)` around every request, and separately the
+  OpenAI client EvalPlus builds uses the SDK's ~600s default HTTP timeout.
+  Whichever fires first cancels the request; EvalPlus's own retry loop then
+  immediately resends the identical (temperature=0) prompt. A completion
+  that genuinely needs longer than ~600s to finish is therefore retried
+  forever and never completes — this is not model slowness, it is
+  EvalPlus's own request code, unrelated to my night2/calibrate.py's
+  timeout fix from earlier (that only covered my calibration script, not
+  `run_codegen_wrapper.py`'s real codegen path).
+  Confirmed via the server log's `launch_slot_`/`cancel task` pairs:
+  task 0 ran ~100s then cancelled, task 1526 ran ~600s then cancelled,
+  task 7265 ~600s, task 12997 ~100s, alternating, all for the same
+  HumanEval/4 problem, no progress ever saved.
+  Fix (in `night1/run_codegen_wrapper.py`, shared by every block):
+  replaced `evalplus.gen.util.openai_request.make_auto_request` with a
+  plain retry loop (no alarm, no artificial deadline) and rebuilt the
+  OpenAI client with `timeout=7200.0` instead of the SDK default. Smoke
+  tested (`--help` still works, no import errors). This fix is essential
+  for bonsai-think and both Gemma Phase C runs too — do not run any of
+  them against the pre-fix wrapper, they would have hit the same wall on
+  their first genuinely-long completion.
+- Restarted the qwen36-think server and resumed with the patched wrapper.
+- qwen36-think stopped by user request at 12:29 (5/62 regenerated, banked
+  in night2/results/qwen36-think/). User: bonsai-think is fine to run
+  during the day (quieter/less disruptive per night 1's note), the other
+  configs are not — do not start qwen36-think, gemma26-think, or
+  gemma12-think without explicit instruction, even if bonsai-think
+  finishes on its own.
+- bonsai-think Phase B started. Copying night1/results/bonsai-think found
+  a discrepancy the runbook didn't anticipate: the sanitized jsonl had 55
+  empty entries but the raw jsonl only had 49 empty (night 1's reported
+  count). The other 6 (HumanEval/40, 67, 83, 88, 105, 128) had a few
+  tokens of real but truncated raw text (e.g. `\n\n\`\`\`python\ndef
+  triples_sum_to_zero` then nothing) — same root cause (budget exhausted
+  mid-answer), just with a token or two written before the cutoff instead
+  of zero. Sanitize() can't extract code from an unclosed markdown block,
+  so these score identically to the fully-empty ones. Treated all 55 as
+  needing regeneration (same treatment would apply to any block showing
+  this pattern, not bonsai-specific bias). Stripped both jsonl and
+  raw.jsonl down to the same 109 surviving task_ids, deleted stale
+  eval_results.json and .tmp leftovers. Started server, resumed at budget
+  10240 with the patched wrapper (no alarm/timeout bug).
+- bonsai-think: night 2 corrected, DONE. Regenerated all 55 previously-empty
+  completions (109 baseline + 55 = 164) cleanly, verified with the 20-min
+  heartbeat throughout — zero cancel-task events, zero mlx crashes, steady
+  progress every check. 5 completions came back genuinely empty even at
+  the 10240 budget (HumanEval/39, 99, 107, 122, 129 — confirmed empty in
+  the raw file too, not a sanitizer parsing issue this time): a real model
+  limitation at this budget, not a bug. Sanitized (not raw) file graded.
+  pass@1 base 0.915 / plus 0.884 (night 1: 0.640 / 0.634 under the flawed
+  3072 cap — the biggest correction of the three regenerated blocks).
+  Server and mem-watch.sh stopped, GPU idle.
+- Per user instruction: do not start qwen36-think (5/62 regenerated,
+  parked), gemma26-think, or gemma12-think without explicit go-ahead, even
+  though bonsai-think finished cleanly.
+
 ## Phase B — in progress
 
 - Incident, qwen38-mlx-medium resume: `mlx_lm.server` crashed one request
