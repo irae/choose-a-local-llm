@@ -1,0 +1,102 @@
+[
+  {
+    "task_id": "HumanEval/0",
+    "completion_tokens": 1296,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 678,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 54.4
+  },
+  {
+    "task_id": "HumanEval/10",
+    "completion_tokens": 2537,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 731,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 102.0
+  },
+  {
+    "task_id": "HumanEval/26",
+    "completion_tokens": 2444,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1324,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 97.6
+  },
+  {
+    "task_id": "HumanEval/32",
+    "completion_tokens": 6567,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 2339,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 267.7
+  },
+  {
+    "task_id": "HumanEval/38",
+    "completion_tokens": 2261,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1525,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 91.5
+  },
+  {
+    "task_id": "HumanEval/53",
+    "completion_tokens": 673,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 214,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 27.3
+  },
+  {
+    "task_id": "HumanEval/76",
+    "completion_tokens": 4353,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 2222,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 175.8
+  },
+  {
+    "task_id": "HumanEval/99",
+    "completion_tokens": 3875,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 737,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 894.4
+  },
+  {
+    "task_id": "HumanEval/124",
+    "completion_tokens": 4402,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1802,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 345.8
+  },
+  {
+    "task_id": "HumanEval/145",
+    "completion_tokens": 4549,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1350,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 371.2
+  }
+]
