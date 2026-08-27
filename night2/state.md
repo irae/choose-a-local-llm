@@ -50,6 +50,59 @@ Status: in progress.
   ~5-13 tok/s), matching night 1's thermal-throttling finding on this
   machine under sustained load. Flag when reading any timing data from
   tonight; pass@1 remains the trustworthy signal.
+- **Correction/addition (05:57, user-reported), re: the slowdown pattern
+  above.** The user had Brave and other apps open in the background all
+  night (left running when they went to sleep); memory pressure was
+  visibly "orange/yellow" in Activity Monitor before they closed those
+  apps just now. `vm_stat` before/after showed free pages jump once they
+  closed things, and qwen36-think's decode speed on a fresh shallow task
+  immediately after was back to near-baseline (~58-60 tok/s, matching the
+  README's documented ~62-68 tok/s near-empty). This means background-app
+  memory pressure competing with the 25GB wired GPU allocation is a
+  plausible **additional or alternative** explanation for tonight's (and
+  possibly night 1's) slowdowns, not confirmed to be thermal alone — no
+  temperature telemetry was ever available to distinguish the two. Actionable
+  lesson for future nights: close background apps before a long unattended
+  run, not just assume heat. Left as an open question, not resolved either
+  way; do not overwrite the "thermal" language elsewhere without more
+  evidence, just add this as a competing hypothesis.
+- Wrote `night2/mem-watch.sh` (5-min-interval free-RAM + swap/compression
+  delta logger, output in `night2/mem-watch.log`) to help settle the
+  thermal-vs-memory-pressure question on a future run. Started it at
+  06:02. It caught a real event: at 06:27:25 the 5-min window showed
+  `d_swapout=29104 d_compress=1435367` — genuine active swapping and heavy
+  compression, not just steady-state low free RAM. This is real evidence
+  for the memory-pressure hypothesis, at least for this session; still not
+  proof it, rather than heat, explains every slowdown seen tonight (the
+  two can co-occur). Keep `mem-watch.log` for whoever picks this up next.
+
+## Stopped by user request (06:2x) — machine needed
+qwen36-think's Phase B correction was mid-flight (regenerating
+HumanEval/4 when killed) and made **no additional progress** this
+session: still 102/164 lines in the sanitized file (the 62 empties removed
+earlier, 0 regenerated and saved before the kill — the in-flight
+generation for HumanEval/4 was not saved). `night2/results.md` was not
+updated for qwen36-think; it still only reflects the finished
+qwen38-mlx-medium correction.
+All processes killed cleanly: `night2/mem-watch.sh`,
+`night2/run-humaneval.sh`/`run_codegen_wrapper.py`/`evalplus.evaluate`,
+and the llama-server. `night1/90-stop-servers.sh` confirms nothing
+running. Machine left idle.
+
+**Remaining work for the next session, in order:**
+1. qwen36-think: resume `night2/run-humaneval.sh qwen36-think
+   qwen3.6-35b-a3b` (with `EVALPLUS_MAX_NEW_TOKENS=26624` and the qwen36
+   server up) — still needs all 62 previously-empty problems regenerated,
+   none banked yet.
+2. bonsai-think: not started. Copy `night1/results/bonsai-think/` to
+   `night2/results/bonsai-think/`, strip the 49 empty entries from both
+   jsonl files, resume at budget 10240.
+3. Phase C: gemma26-think and gemma12-think, full fresh 164-problem runs
+   at budget 30000 each. Expect long, possibly multi-hour runs per config
+   given calibration behavior (repeated cap hits, slow decode) — see
+   night2/calibration.md.
+4. Finalize `night2/results.md` and do the Phase A/B/C shutdown checklist
+   in NIGHT-AGENT.md once all blocks are done.
 
 ## Phase B — in progress
 
