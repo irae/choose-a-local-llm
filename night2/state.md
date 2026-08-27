@@ -51,6 +51,32 @@ Status: in progress.
   machine under sustained load. Flag when reading any timing data from
   tonight; pass@1 remains the trustworthy signal.
 
+## Phase B — in progress
+
+- Incident, qwen38-mlx-medium resume: `mlx_lm.server` crashed one request
+  thread mid-generation with `RuntimeError: [metal::malloc] Resource limit
+  (499000) exceeded` (Metal buffer-count limit, not an OOM). The server
+  process stayed alive and `/health` kept returning 200, but that specific
+  request never got a response. EvalPlus's own request loop
+  (`evalplus/gen/util/openai_request.py`) retries forever on any exception
+  with a 100s SIGALRM timeout per attempt, so the codegen process looked
+  "stuck" on HumanEval/132 for 40+ minutes — actually silently retrying the
+  same doomed request against a half-dead server. Confirmed via the server
+  log traceback, not by guessing.
+  Fix: killed the codegen process, restarted the server fresh
+  (`night1/10-server-qwen38-mlx-medium.sh`), reran
+  `night2/run-humaneval.sh` — resume logic picked up cleanly (HumanEval/39
+  had already regenerated successfully before the crash; only 132 and 145
+  remained missing). Lesson for later blocks: if a codegen run stalls on
+  one task_id for far longer than its calibrated budget should allow,
+  check the *server's* log for a crash traceback before assuming the model
+  itself is just slow — `/health` returning 200 does not mean every
+  request path is alive.
+- qwen38-mlx-medium: night 2 corrected. Regenerated 3 empty completions
+  (HumanEval/39, 132, 145) at budget 8192. 0 empty in final sanitized file,
+  sanitized (not raw) file graded. pass@1 base 0.982 / plus 0.939 (night 1:
+  0.970 / 0.939 under the flawed 3072 cap). Server stopped.
+
 ## Phase A — complete
 All five configs calibrated. Budgets: qwen38-mlx-medium 8192,
 qwen36-think 26624, bonsai-think 10240, gemma26-think 30000,
