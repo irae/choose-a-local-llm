@@ -166,6 +166,16 @@ Qwen3.6 family (incl. Bonsai) = binary, default ON. Qwen3.8 = graded effort
 
 ## EvalPlus night plan
 
+**Standing rule: every unattended night run must include a heartbeat.**
+Right after starting any long-running block, schedule a wakeup no more than
+20 minutes out. On each wakeup, confirm real progress happened since the
+last check (for example: the sample count grew), not just that the process
+is still alive — a stuck process can stay alive while making zero progress.
+If progress did not happen, treat the block as dead: stop it, restart it,
+and record the incident. Verified necessary on night 2 (2026-08-27): a
+run with no heartbeat check sat silently retrying one request for 52
+minutes with zero progress before anyone noticed.
+
 **Night 1** — user-decided order (rationale: Bonsai reportedly stacks well with
 Qwen3.6-35B MoE; Gemma is regarded as grunt-agent tier — good executor, weaker on
 hard tasks — but its 256K window keeps it in play):

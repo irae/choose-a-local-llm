@@ -32,6 +32,17 @@ words. Pass this rule to any sub-agent you dispatch.
 - Do NOT update the HTML reports, comparison.html, or the pi config. The
   morning session does that with the user (four-surface rule).
 - Commit to git when a phase completes (night2 files only; message in STE).
+- **Heartbeat, mandatory (same rule as night 1).** Right after you start any
+  long-running block, call `ScheduleWakeup` with `delaySeconds: 1200` (20
+  minutes). On each wakeup, check that real progress happened since the last
+  check (for example: the sample count grew, a new problem appeared in the
+  results file) — not just that the process is still alive. A process can
+  stay alive while stuck in a silent retry loop; only actual output growth
+  proves the block is working. If progress did not happen, treat the block
+  as dead: stop it, restart it, note the incident in `state.md`, and
+  `ScheduleWakeup` again. Every wakeup ends with either a new
+  `ScheduleWakeup` call or the shutdown checklist — never leave a run
+  without a scheduled next check.
 
 ## Precondition: the GPU must be free
 
