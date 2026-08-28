@@ -89,7 +89,7 @@ regenerated at the calibrated budget of 26624, which is safe because
 temperature 0 is deterministic. The prediction held — its base model reports
 73.4 SWE-bench Verified, and the real capability was far higher than the
 flawed cap suggested. The deflated numbers are on
-[the historical page](/setups/m1-max-32gb/historical.html); do not use them.
+[the historical page](../historical.md); do not use them.
 Details in `night1/results.md`, `night2/state.md`, and `night3/results.md`.
 
 **The wired limit cost this model most of its context.** The limit is now
@@ -97,7 +97,7 @@ Details in `night1/results.md`, `night2/state.md`, and `night3/results.md`.
 capped at 40K. Under the current limit, single-session context reaches 96K.
 The larger single-slot and two-agent configs that the 27000 limit allowed are
 retired; their numbers are on
-[the historical page](/setups/m1-max-32gb/historical.html). Raise the limit
+[the historical page](../historical.md). Raise the limit
 again only for a dedicated session.
 
 **Deep fill is the accepted trade.** Decode collapses to ~17 tok/s once ~30K+

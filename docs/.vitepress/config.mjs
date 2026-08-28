@@ -45,7 +45,7 @@ export default defineConfig({
               { text: 'Qwen3.8-27B', link: '/setups/m1-max-32gb/benchmarks/qwen3.8-27b' },
             ],
           },
-          { text: 'Historical', link: '/setups/m1-max-32gb/historical.html' },
+          { text: 'Historical', link: '/setups/m1-max-32gb/historical' },
         ],
       },
     ],

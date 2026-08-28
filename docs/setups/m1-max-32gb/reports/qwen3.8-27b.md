@@ -145,7 +145,7 @@ choice is the same for both languages.
 **The old context maxima are withdrawn.** Every allocation figure for this
 model was measured at the retired 27000 wired limit and awaits a re-probe at
 25000. Those tables are on
-[the historical page](/setups/m1-max-32gb/historical.html); do not use them.
+[the historical page](../historical.md); do not use them.
 The depth floor at ~19K makes large allocations pointless here anyway.
 [The benchmarks](../benchmarks/qwen3.8-27b.md) keep the labeled archive.
 MTP-on-MLX exists only as a CLI with no API, so it is disqualified for

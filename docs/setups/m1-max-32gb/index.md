@@ -101,4 +101,4 @@ As of 2026-08-28, end of day.
 context — Qwen3.6-35B capped at 40K. 25000 is the compromise. Every published
 number states the limit it was measured under, and only 25000 numbers appear
 on the current site pages. Superseded measurements move to
-[historical.html](/setups/m1-max-32gb/historical.html).
+[the historical page](./historical.md).

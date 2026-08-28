@@ -89,7 +89,7 @@ it far too low, with a token budget that was too small. Run 2 calibrated
 the budget (10240) and regenerated all 55 truncated completions. The score
 jumped to 0.915/0.884, the second-largest correction in the project. The
 flawed cap had been hiding most of its ability. The deflated number is on
-[the historical page](/setups/m1-max-32gb/historical.html).
+[the historical page](../historical.md).
 The 5 empty completions that remain are a real model ceiling — they stay
 empty at the full budget — not a harness artifact. The ternary claim holds
 up: 2-bit compression kept near-27B-class quality. Details in

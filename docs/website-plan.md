@@ -36,8 +36,13 @@ arbitrary non-Markdown files out of the source tree. Only `docs/public/`
 passes through verbatim. So the raw HTML pages live under
 `docs/public/setups/<setup-slug>/` and keep their public URLs; the Markdown
 pages live under `docs/setups/<setup-slug>/`. Each page converted in phase 2
-moves from the first tree to the second. `historical.html` stays in
-`public/` forever.
+moves from the first tree to the second.
+
+The plan first said `historical.html` would stay raw HTML forever, because it
+was frozen. That turned out to be wrong. The page was edited — a warning
+block, and tables moved in from the reports — so it was never frozen, and as
+raw HTML it was the only page with no nav, no sidebar, no search, no dark
+mode, and no footer. It is Markdown now, and `docs/public/` is empty.
 
 ## Target layout
 
@@ -60,7 +65,7 @@ docs/
     setups/
       m1-max-32gb/
         comparison.html         (git mv from repo root; phase 2 converts it)
-        historical.html         (git mv from repo root; stays here forever)
+        historical.html         (git mv from repo root; phase 2 converts it)
         reports/*.html          (git mv from reports/; phase 2 converts them)
 .github/workflows/site.yml      (new, phase 3 only)
 ```
@@ -115,8 +120,7 @@ Convert, one page per commit, verifying rendering in `npm run docs:dev`:
 1. `docs/public/setups/m1-max-32gb/comparison.html` →
    `docs/setups/m1-max-32gb/comparison.md`. The cards become sections;
    tables become Markdown tables; the "capped by" and EvalPlus columns
-   survive as plain columns. Keep `historical.html` in `public/` forever
-   (frozen).
+   survive as plain columns.
 2. Each `docs/public/setups/m1-max-32gb/reports/<model>.html` →
    `docs/setups/m1-max-32gb/reports/<model>.md`. KPI boxes become a short
    bold line; command boxes become fenced `bash` blocks (copy-paste behavior

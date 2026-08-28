@@ -36,9 +36,9 @@ names. Only prose changes.
 
 ## Format
 
-- Markdown only. Do not write new raw HTML pages.
-- `docs/public/setups/<setup>/historical.html` stays HTML. It is the one page
-  that keeps its own styling, including the red warning at the top.
+- Markdown only. There are no raw HTML pages left, and there should be none.
+  Every page gets the nav, the sidebar, search, dark mode, and the footer by
+  being Markdown.
 - Server commands go in fenced `bash` blocks, so they stay copy-paste ready.
   The `--alias` value equals the harness model id.
 - Tables carry the numbers. Bold the winning row.
@@ -51,7 +51,7 @@ prose. This is the owner's rule and methodology rule 7 says the same.
 
 - A current page states the current number and, if the story needs it, says
   a correction happened — without repeating the old figure.
-- The old figure moves to the setup's `historical.html`, with a line saying
+- The old figure moves to the setup's `historical.md`, with a line saying
   what makes it wrong: the retired 27000 wired limit, an uncalibrated output
   budget, or an axis the depth sweeps replaced.
 - Link to the historical page from wherever the old number used to be, and
@@ -59,7 +59,7 @@ prose. This is the owner's rule and methodology rule 7 says the same.
 - The `benchmarks/*.md` pages are the exception. They keep the full archive,
   because that is their job — but every section there states the wired limit
   and the run it came from.
-- The red warning block at the top of `historical.html` must stay. It is the
+- The red warning block at the top of `historical.md` must stay. It is the
   first thing a reader sees on that page.
 
 ## Site chrome
@@ -104,8 +104,7 @@ docs/
     comparison.md              cross-model tables for that setup
     reports/<model>.md         one page per model
     benchmarks/<model>.md      full raw data, current and historical
-  public/setups/<setup>/
-    historical.html            frozen. Superseded measurements.
+    historical.md              superseded measurements, with a danger warning
 ```
 
 Anything outside `docs/` never reaches the site. That is where `night*/`,
@@ -127,7 +126,7 @@ agrees. Change all of these in the same pass.
 5. `~/.pi/agent/models.json` — the harness config. Not in this repo.
 
 If a number is superseded by a new wired limit, move the old one into the
-setup's `historical.html` rather than deleting it.
+setup's `historical.md` rather than deleting it.
 
 ## How to add a model to an existing setup
 
@@ -150,18 +149,17 @@ setup's `historical.html` rather than deleting it.
 
 ## Linking rules
 
-- Link Markdown pages with a relative path and the `.md` extension:
-  `./comparison.md`, `../benchmarks/bonsai-27b.md`. The build resolves them
-  and fails on a broken one.
-- Link the frozen HTML page with a root-absolute path and its extension:
-  `/setups/m1-max-32gb/historical.html`.
-- `cleanUrls` is on, so built Markdown pages have no `.html` suffix.
+- Link pages with a relative path and the `.md` extension: `./comparison.md`,
+  `../benchmarks/bonsai-27b.md`, `../historical.md`. The build resolves them
+  and fails on a broken one, which is why the `.md` form is required.
+- `cleanUrls` is on, so the built pages have no `.html` suffix. Never write a
+  link that ends in `.html`.
 
 ## Before you commit
 
 - `npm run docs:build` — the build fails on a broken internal link.
-- `npm run docs:check` — walks every href in the built output, including the
-  frozen HTML page that the build does not check.
+- `npm run docs:check` — walks every href in the built output, catching
+  anything the build's Markdown link resolution does not cover.
 - Commit before you ask for review.
 - Do not push, deploy, or enable Pages without the owner's explicit go.
   Phase 3 in `docs/website-plan.md` describes the deploy that is not set up

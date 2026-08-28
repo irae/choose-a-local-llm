@@ -129,7 +129,7 @@ been hiding most of both models' ability. Nothing about the models changed,
 only the harness that measured them. Treat any single-pass score with a fixed
 output budget as a lower bound until the budget is calibrated. The deflated
 numbers, shown against their corrections, are on
-[the historical page](/setups/m1-max-32gb/historical.html).
+[the historical page](./historical.md).
 
 **The Gemma models have a real convergence problem.** Their thinking mode
 sometimes fails to converge at all — 30K tokens of reasoning with no answer.
@@ -137,7 +137,7 @@ That is model behavior, not a harness limit, and the 12B does it more often
 than the 26B. Full history: `night2/results.md`, `night2/state.md`.
 
 Superseded measurements live in
-[historical.html](/setups/m1-max-32gb/historical.html). Nothing on this page
+[the historical page](./historical.md). Nothing on this page
 was measured under a retired wired limit. The flow is in the
 [methodology](../../methodology.md).
 

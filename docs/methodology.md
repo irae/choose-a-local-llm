@@ -42,7 +42,7 @@ This is the law for every test cycle. Do not skip steps.
    (`~/.pi/agent/models.json`). Every server config gets a copy-paste command
    block in its report whose alias equals the harness model id. The report
    and comparison pages show only numbers measured under the CURRENT wired
-   limit; superseded measurements move to the setup's `historical.html`
+   limit; superseded measurements move to the setup's `historical.md`
    (markdowns keep the full archive).
 8. **After tests, check for leftovers and clean up**: `pgrep -fl
    "llama-server|mlx_lm"`, kill strays, verify no background task holds the

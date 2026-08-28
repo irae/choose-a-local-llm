@@ -1,0 +1,138 @@
+# Historical data — M1 Max 32 GB
+
+Superseded measurements, moved off the current pages as they were replaced.
+
+::: danger DO NOT USE THESE NUMBERS
+Everything on this page is **superseded, wrong, or both**. It is kept only to
+show what changed and why.
+
+- **Retired memory limit.** Many rows were measured at
+  `iogpu.wired_limit_mb=27000`, which made the machine too slow for normal
+  use. The current limit is 25000, so every context maximum here is too high.
+- **Wrong axis.** Several tables measure *allocated* context, which is
+  storage, not speed. The depth sweeps replaced this with decode speed
+  against *used* context — the number that decides whether a config is
+  usable.
+- **Deflated quality scores.** Early EvalPlus passes used a fixed output
+  budget that was too small, so reasoning ran out of tokens and empty
+  completions scored as failures. Two models were badly understated.
+- **Mixed eras in one table.** Some rows here are current and some are not,
+  and they are not always labeled.
+
+For numbers you can act on, go to [the comparison page](./comparison.md).
+Full raw archives, with their eras labeled, live in the benchmarks pages.
+:::
+
+## Deflated EvalPlus scores (fixed 3072-token budget)
+
+The first quality pass capped output at 3072 tokens. Reasoning exhausted the
+cap, and the empty completions scored as hard failures. These are lower
+bounds, not measurements.
+
+| model / config | deflated base | deflated plus | empty | corrected base/plus |
+|---|--:|--:|--:|--:|
+| Qwen3.6-35B-A3B, llama+MTP, thinking on | 0.610 | 0.610 | 62/164 (~38%) | 0.939 / 0.921 |
+| Ternary Bonsai-27B, mlx 2-bit, thinking on | 0.640 | 0.634 | 49/164 (~30%) | 0.915 / 0.884 |
+| Qwen3.8-27B, mlx 4-bit, effort medium | 0.970 | 0.939 | 3/164 (~2%) | 0.982 / 0.939 |
+
+The lesson generalizes: treat any single-pass score with a fixed output
+budget as a lower bound until the budget is calibrated from measured
+reasoning length.
+
+## Qwen3.6-35B-A3B — context ramp at the retired 27000 limit
+
+Moved off the report page. f16 KV, MTP n-max 3. Under the current 25000
+limit this config reaches 96K with q8_0 KV, not 139K.
+
+| -c | result | tok/s | RSS |
+|---|---|--:|--:|
+| 49,152 | OK | 66.3 | 22.8 GB |
+| 98,304 | OK | 67.2 | 23.7 GB |
+| 131,072 | OK | 67.8 | 24.3 GB |
+| 139,264 | OK — maximum at 27000 | 65.5 | 24.5 GB |
+| 147,456 | Metal OOM | – | – |
+| 196,608 | Metal OOM | – | – |
+
+With q8_0 KV the 27000 limit reached 208K on one slot and 2×96K on two.
+Those configs are retired.
+
+## Qwen3.8-27B — context ramp and slot layouts at the retired 27000 limit
+
+Moved off the report page. f16 KV, MTP n-max 3. The current maxima at 25000
+have not been re-probed, so no replacement table exists yet — the depth floor
+at ~19K makes big allocations pointless for this model anyway.
+
+| -c | result | RSS |
+|---|---|--:|
+| 49,152 | OK | 21.2 GB |
+| 65,536 | OK | 22.0 GB |
+| 98,304 | OK — validated with a 4K-token prompt | 24.1 GB |
+| 106,496 | Metal OOM | – |
+| 114,688 | Metal OOM | – |
+| 131,072 | Metal OOM | – |
+
+| agents | flags | context per agent | RSS |
+|---|---|--:|--:|
+| 1 | `--parallel 1 -c 98304` | 96K | 24.1 GB |
+| 2 | `--parallel 2 -c 90112` | 44K | 24.2 GB |
+
+MTP stayed active in both. The next 8K step OOMed in both: `-c 106496` with
+one slot, `-c 98304` with two. The 160K single and 2×72K configs from this
+era are withdrawn.
+
+## Decode speed (best server-usable config per model)
+
+Cards moved out of the comparison page when it was slimmed to the current
+picture, 2026-08-28.
+
+| model | config | py tok/s | js tok/s |
+|---|---|--:|--:|
+| Gemma-4-26B-A4B (MoE) | llama-server + MTP n=2 | 71.9 | 69.3 |
+| Qwen3.6-35B-A3B (MoE) | llama-server + MTP n=3 | 68.2 | 73.5 |
+| Gemma-4-12B | llama-server + MTP n=3 | 35.0 | 35.6 |
+| Ternary Bonsai-27B | mlx_lm.server (limit 25000: 24.5) | 24.5 | 24.5 |
+| Qwen3.8-27B | mlx_lm.server | 19.7 | 19.6 |
+| Qwen3.8-27B | llama-server + MTP n=3 | 16.9 | 15.7 |
+
+All values are thinking-on where the model supports it. Thinking-off
+(sub-agent mode): Gemma-26B 74.8/71.6 at n=2, Gemma-12B 45.2/31.3 at n=4.
+Qwen's true fastest, MLX + MTP at 20.2/22.5, is CLI-only and cannot back a
+harness. Gemma-26B's numbers are f16 KV at 32K; its 256K config needs q8 KV
+now, which drops js to ~53 tok/s because draft acceptance falls under q8.
+
+## Max context — single session
+
+| model | config | max context | tok/s at it |
+|---|---|--:|--:|
+| Gemma-4-26B-A4B (MoE) | llama-server, 1 slot, q8_0 KV | 256K (model limit) | 62.4 py / 53.3 js |
+| Gemma-4-12B | llama-server, 1 slot | 256K (model limit) | 45.2 |
+| Qwen3.6-35B-A3B (MoE) | llama-server, 1 slot, q8_0 KV | 96K (memory, limit 25000) | 62.0 |
+| Ternary Bonsai-27B | mlx_lm.server, bounded prompt cache | 49K (memory, limit 25000) | 18.8 |
+| Qwen3.8-27B | llama-server, 1 slot, q8_0 KV | re-probe pending at limit 25000 | – |
+| Qwen3.8-27B | mlx_lm.server | 28K OK; ceiling &lt;33K (limit 25000) | 14.2 at 28K |
+
+Context limits are mode-independent, because KV is preallocated. The tok/s
+column here comes from short thinking-off probes; see each report for
+thinking-on speeds.
+
+## Multi-session (concurrent agents)
+
+| model | config | sessions | context each |
+|---|---|--:|--:|
+| Gemma-4-12B | llama-server `--parallel 4 -c 1048576`, q8_0 KV | 4 | 256K |
+| Gemma-4-26B-A4B (MoE) | llama-server `--parallel 2 -c 376832`, q8_0 KV | 2 | 184K |
+| Qwen3.6-35B-A3B (MoE) | untested at limit 25000 (at 24000: OOM at 2×20K) | – | – |
+| Qwen3.8-27B | re-probe pending at limit 25000 | – | – |
+| Ternary Bonsai-27B | prism fork `--parallel 2 -c 98304`, q4_0 KV | 2 | 48K — 9.8 tok/s each concurrent, 10.0 GB RSS |
+
+**Decision: parallel serving runs on llama-server only.** MLX has no slots.
+Its only concurrency is one server process per agent, each with its own full
+weight copy and its own port to wire into the harness. That was measured —
+two Bonsai instances at 14.0 tok/s each, 14.9 GB — but ruled out as not worth
+the operational fiddling. Bonsai regains a multi-session story when a brew
+llama.cpp release loads its ternary GGUF, with a projected ~300K total
+context to split across slots.
+
+---
+
+Raw data, with eras labeled, in the benchmarks pages.

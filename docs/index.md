@@ -64,7 +64,7 @@ Also on this setup: the [comparison page](./setups/m1-max-32gb/comparison.md)
 with the full depth and quality tables, the
 [setup overview](./setups/m1-max-32gb/index.md) with the machine
 configuration, and
-[historical measurements](/setups/m1-max-32gb/historical.html) taken under
+[historical measurements](./setups/m1-max-32gb/historical.md) taken under
 retired memory limits.
 
 ### More setups

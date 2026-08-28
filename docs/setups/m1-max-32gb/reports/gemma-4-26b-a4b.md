@@ -97,7 +97,7 @@ current 25000 wired limit, f16 KV no longer fits the full window at all. q8
 lowers js draft acceptance from 81% to 68%, so js decodes at ~53 tok/s while
 py keeps 62-68. The retired 27000 limit allowed more on both counts; those
 figures are on
-[the historical page](/setups/m1-max-32gb/historical.html).
+[the historical page](../historical.md).
 
 **llama is capped by speed; MLX is capped by memory.** The llama build floors
 at ~24K, which makes its 256K window mostly storage. The MLX build stays fast
