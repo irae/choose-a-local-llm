@@ -48,6 +48,12 @@ need it for content work.
   master.** Git enforces this: a branch lives in one worktree at a time, so
   from any other worktree the merge is refused. If you are not on master,
   commit on your branch and stop.
+- **No one develops or runs benchmarks on master.** Before a benchmark run
+  starts, create and check out a branch for it (for example `run4`). Commit
+  the run's progress there. Merge to master only when the run finishes and
+  its results are ready to publish. This keeps master free for site work and
+  lets a benchmark run and site work proceed at the same time, each in its
+  own worktree.
 - **No superseded number on a current page.** Not in a table, not in prose.
   Old figures move to the setup's `historical.md`, which opens with a red
   warning telling readers not to use them. Only the `benchmarks/*.md` pages
