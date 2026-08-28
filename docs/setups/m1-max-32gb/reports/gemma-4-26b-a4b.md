@@ -95,8 +95,9 @@ Full thinking-off tables in
 **q8_0 KV is now mandatory, and it costs JavaScript speed.** Under the
 current 25000 wired limit, f16 KV no longer fits the full window at all. q8
 lowers js draft acceptance from 81% to 68%, so js decodes at ~53 tok/s while
-py keeps 62-68. At the retired 27000 limit, f16 held the full 256K single
-slot at 21.6 GB RSS, and q8 reached 2×192K.
+py keeps 62-68. The retired 27000 limit allowed more on both counts; those
+figures are on
+[the historical page](/setups/m1-max-32gb/historical.html).
 
 **llama is capped by speed; MLX is capped by memory.** The llama build floors
 at ~24K, which makes its 256K window mostly storage. The MLX build stays fast

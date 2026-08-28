@@ -77,38 +77,28 @@ stay empty at the full budget.
 | **3** | **68.21** | **82%** | **73.53** | **90%** |
 | 4 | 63.53 | 73% | 69.42 | 81% |
 
-## Context ramp (n-max 3, f16 KV, limit 27000 — historical)
-
-| -c | result | tok/s | RSS |
-|---|---|--:|--:|
-| 49,152 | OK | 66.3 | 22.8 GB |
-| 98,304 | OK | 67.2 | 23.7 GB |
-| 131,072 | OK | 67.8 | 24.3 GB |
-| **139,264** | **OK — maximum** | **65.5** | **24.5 GB** |
-| 147,456 | Metal OOM | – | – |
-| 196,608 | Metal OOM | – | – |
-
 ## History and reasoning
 
 **The first quality score was broken, and the correction moved it further
-than any other model's.** Run 1 used `max_tokens=3072`. This model's
+than any other model's.** Run 1 capped output at 3072 tokens. This model's
 reasoning exhausted that budget on 38% of the problems, and each empty
-completion scores as a hard failure, so 0.610 was a floor rather than a
-measurement. It was the worst-affected block of that run. Run 2 parked the
-fix partway through. Run 3 finished it: 56 missing or empty completions
+completion scores as a hard failure, so the first score was a floor rather
+than a measurement. It was the worst-affected block of that run. Run 2 parked
+the fix partway through. Run 3 finished it: 56 missing or empty completions
 regenerated at the calibrated budget of 26624, which is safe because
-temperature 0 is deterministic. The score went from 0.610/0.610 to
-**0.939/0.921** — a gain of 0.329 on base, the largest correction in the
-project. The prediction held: its base model reports 73.4 SWE-bench Verified,
-and the real capability was indeed far higher than the flawed cap suggested.
+temperature 0 is deterministic. The prediction held — its base model reports
+73.4 SWE-bench Verified, and the real capability was far higher than the
+flawed cap suggested. The deflated numbers are on
+[the historical page](/setups/m1-max-32gb/historical.html); do not use them.
 Details in `night1/results.md`, `night2/state.md`, and `night3/results.md`.
 
 **The wired limit cost this model most of its context.** The limit is now
 25000. At 27000 the machine became too slow for normal use; at 24000 context
-capped at 40K. Under the current limit, single-session context reaches 96K,
-down from the 208K that 27000 allowed. The old 208K single and 2×96K
-two-agent configs are retired. Raise the limit again only for a dedicated
-session.
+capped at 40K. Under the current limit, single-session context reaches 96K.
+The larger single-slot and two-agent configs that the 27000 limit allowed are
+retired; their numbers are on
+[the historical page](/setups/m1-max-32gb/historical.html). Raise the limit
+again only for a dedicated session.
 
 **Deep fill is the accepted trade.** Decode collapses to ~17 tok/s once ~30K+
 tokens are in use — measured at 16.7 tok/s with 31,365 used tokens, while

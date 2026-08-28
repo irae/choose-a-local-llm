@@ -85,9 +85,11 @@ fork instead — 9.8 GB flat, floor ~30K:
 **The quality number was wrong at first, and the correction was the biggest
 of any model.** Ternary Bonsai is PrismML's quality-oriented compression of
 Qwen3.6-27B, and they claim 95% of full-precision performance. Run 1 scored
-it at 0.640/0.634 with a token budget that was too small. Run 2 calibrated
+it far too low, with a token budget that was too small. Run 2 calibrated
 the budget (10240) and regenerated all 55 truncated completions. The score
-jumped to 0.915/0.884. The flawed cap had been hiding most of its ability.
+jumped to 0.915/0.884, the second-largest correction in the project. The
+flawed cap had been hiding most of its ability. The deflated number is on
+[the historical page](/setups/m1-max-32gb/historical.html).
 The 5 empty completions that remain are a real model ceiling — they stay
 empty at the full budget — not a harness artifact. The ternary claim holds
 up: 2-bit compression kept near-27B-class quality. Details in

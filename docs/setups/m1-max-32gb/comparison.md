@@ -124,11 +124,12 @@ noted.
 fixed output budget that was too small, so reasoning exhausted the cap and
 empty completions scored as failures. Budgets are now calibrated per model
 from measured reasoning length (`night2/calibration.md`). Every corrected
-score went up, and two went up enormously: Qwen3.6 from 0.610 to **0.939**,
-and Bonsai from 0.640 to **0.915**. The flawed cap had been hiding most of
-both models' ability. Nothing about the models changed — only the harness
-that measured them. Treat any single-pass score with a fixed output budget
-as a lower bound until the budget is calibrated.
+score went up, and Qwen3.6 and Bonsai went up enormously — the flawed cap had
+been hiding most of both models' ability. Nothing about the models changed,
+only the harness that measured them. Treat any single-pass score with a fixed
+output budget as a lower bound until the budget is calibrated. The deflated
+numbers, shown against their corrections, are on
+[the historical page](/setups/m1-max-32gb/historical.html).
 
 **The Gemma models have a real convergence problem.** Their thinking mode
 sometimes fails to converge at all — 30K tokens of reasoning with no answer.

@@ -108,24 +108,6 @@ At medium effort the llama peak stays at n-max 3:
 | q8_0 | 16.79 | 15.58 | near-lossless |
 | **f16** | **16.93** | **15.73** | **lossless** |
 
-## Context ramp (n-max 3, f16 KV)
-
-| -c | result | RSS |
-|---|---|--:|
-| 49,152 | OK | 21.2 GB |
-| 65,536 | OK | 22.0 GB |
-| **98,304** | **OK — validated with a 4K-token prompt, no errors** | **24.1 GB** |
-| 106,496 | Metal OOM | – |
-| 114,688 | Metal OOM | – |
-| 131,072 | Metal OOM | – |
-
-### Serving variants (chosen at startup)
-
-| agents | flags | context per agent | RSS |
-|---|---|--:|--:|
-| 1 | `--parallel 1 -c 98304` | 96K | 24.1 GB |
-| 2 | `--parallel 2 -c 90112` | 44K | 24.2 GB |
-
 ## History and reasoning
 
 **MLX wins this model's equilibrium, and that was not obvious.** MLX beats
@@ -160,11 +142,14 @@ A second JS prompt — debounce, run twice — matched deep clone within 0.3
 tok/s, so the JS penalty comes from the language, not the task. The settings
 choice is the same for both languages.
 
-**The old context maxima are withdrawn.** The 160K single and 2×72K configs
-were measured at the retired 27000 wired limit and await a re-probe.
-[The benchmarks](../benchmarks/qwen3.8-27b.md) keep the archive. MTP-on-MLX
-exists only as a CLI with no API, so it is disqualified for harness use; its
-raw numbers stay in the benchmarks too.
+**The old context maxima are withdrawn.** Every allocation figure for this
+model was measured at the retired 27000 wired limit and awaits a re-probe at
+25000. Those tables are on
+[the historical page](/setups/m1-max-32gb/historical.html); do not use them.
+The depth floor at ~19K makes large allocations pointless here anyway.
+[The benchmarks](../benchmarks/qwen3.8-27b.md) keep the labeled archive.
+MTP-on-MLX exists only as a CLI with no API, so it is disqualified for
+harness use; its raw numbers stay in the benchmarks too.
 
 **Open issue: prompt processing.** It is ~20 tok/s on short prompts and
 reaches only ~123–127 tok/s on 1.5K–4K prompts, which is low for this

@@ -35,6 +35,17 @@
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   tr.win td { background: var(--accent-soft); font-weight: 600; }
   .note { color: var(--muted); font-size: .85rem; }
+  .warning {
+    background: #fdf0ef; border: 1px solid #e6b0ab; border-left: 6px solid #a33;
+    border-radius: 10px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; color: #5c1f1b;
+  }
+  .warning-title {
+    color: #a33; font-weight: 700; font-size: 1.05rem; margin: 0 0 .5rem;
+    text-transform: uppercase; letter-spacing: .03em;
+  }
+  .warning ul { margin: .5rem 0; padding-left: 1.2rem; }
+  .warning li { margin: .35rem 0; }
+  .warning a { color: #a33; }
   a { color: var(--accent); }
   footer { color: var(--muted); font-size: .8rem; margin-top: 2rem; }
 </style>
@@ -45,12 +56,28 @@
   <p class="sub">Cards moved out of <a href="comparison">the comparison page</a> when it was
   slimmed to the current picture (2026-08-28)</p>
 
-  <div class="card summary">
-    <p class="note">These tables mix eras: some rows were measured at the retired wired limit
-    (27000) and some at the current 25000; several measure allocation (storage), which the
-    depth sweeps superseded as the usable-speed axis. Kept verbatim for reference — the
-    markdowns hold the full archives, and the comparison page holds only current
-    numbers.</p>
+  <div class="warning">
+    <p class="warning-title">Do not use these numbers.</p>
+    <p>Everything on this page is <b>superseded, wrong, or both</b>. It is kept only to
+    show what changed and why. Specific reasons the figures here mislead:</p>
+    <ul>
+      <li><b>Retired memory limit.</b> Many rows were measured at
+      <code>iogpu.wired_limit_mb=27000</code>, which made the machine too slow for normal
+      use. The current limit is 25000, and every context maximum here is therefore too
+      high.</li>
+      <li><b>Wrong axis.</b> Several tables measure <i>allocated</i> context, which is
+      storage, not speed. The depth sweeps replaced this with decode speed against
+      <i>used</i> context — the number that decides whether a config is usable.</li>
+      <li><b>Deflated quality scores.</b> Early EvalPlus passes used a fixed output budget
+      that was too small, so reasoning ran out of tokens and empty completions scored as
+      failures. Two models were badly understated: Qwen3.6 read 0.610 against a corrected
+      0.939, and Bonsai read 0.640 against a corrected 0.915.</li>
+      <li><b>Mixed eras in one table.</b> Some rows here are current and some are not, and
+      they are not always labeled.</li>
+    </ul>
+    <p>For numbers you can act on, go to
+    <a href="comparison">the comparison page</a>. Full raw archives, with their eras
+    labeled, live in the benchmarks pages.</p>
   </div>
 
 <div class="card">
@@ -104,7 +131,63 @@
     total context to split across slots).</p>
   </div>
 
-  <footer>Raw data in the benchmarks/ markdowns.</footer>
+<div class="card">
+    <h2 style="margin-top:0">Qwen3.6-35B-A3B — context ramp at the retired 27000 limit</h2>
+    <p class="note">Moved off the report page. f16 KV, MTP n-max 3. Under the current 25000
+    limit this config reaches 96K with q8_0 KV, not 139K.</p>
+    <table>
+      <tr><th>-c</th><th>result</th><th class="num">tok/s</th><th class="num">RSS</th></tr>
+      <tr><td>49,152</td><td>OK</td><td class="num">66.3</td><td class="num">22.8 GB</td></tr>
+      <tr><td>98,304</td><td>OK</td><td class="num">67.2</td><td class="num">23.7 GB</td></tr>
+      <tr><td>131,072</td><td>OK</td><td class="num">67.8</td><td class="num">24.3 GB</td></tr>
+      <tr><td>139,264</td><td>OK — maximum at 27000</td><td class="num">65.5</td><td class="num">24.5 GB</td></tr>
+      <tr><td>147,456</td><td class="oom">Metal OOM</td><td class="num">–</td><td class="num">–</td></tr>
+      <tr><td>196,608</td><td class="oom">Metal OOM</td><td class="num">–</td><td class="num">–</td></tr>
+    </table>
+    <p class="note">With q8_0 KV the 27000 limit reached 208K on one slot and 2&times;96K on
+    two. Those configs are retired.</p>
+  </div>
+
+<div class="card">
+    <h2 style="margin-top:0">Qwen3.8-27B — context ramp and slot layouts at the retired 27000 limit</h2>
+    <p class="note">Moved off the report page. f16 KV, MTP n-max 3. The current maxima at
+    25000 have not been re-probed, so no replacement table exists yet — the depth floor
+    (~19K) makes big allocations pointless for this model anyway.</p>
+    <table>
+      <tr><th>-c</th><th>result</th><th class="num">RSS</th></tr>
+      <tr><td>49,152</td><td>OK</td><td class="num">21.2 GB</td></tr>
+      <tr><td>65,536</td><td>OK</td><td class="num">22.0 GB</td></tr>
+      <tr><td>98,304</td><td>OK — validated with a 4K-token prompt</td><td class="num">24.1 GB</td></tr>
+      <tr><td>106,496</td><td class="oom">Metal OOM</td><td class="num">–</td></tr>
+      <tr><td>114,688</td><td class="oom">Metal OOM</td><td class="num">–</td></tr>
+      <tr><td>131,072</td><td class="oom">Metal OOM</td><td class="num">–</td></tr>
+    </table>
+    <table>
+      <tr><th>agents</th><th>flags</th><th class="num">context per agent</th><th class="num">RSS</th></tr>
+      <tr><td>1</td><td><code>--parallel 1 -c 98304</code></td><td class="num">96K</td><td class="num">24.1 GB</td></tr>
+      <tr><td>2</td><td><code>--parallel 2 -c 90112</code></td><td class="num">44K</td><td class="num">24.2 GB</td></tr>
+    </table>
+    <p class="note">MTP stayed active in both. The next 8K step OOMed in both:
+    <code>-c 106496</code> with one slot, <code>-c 98304</code> with two. The 160K single and
+    2&times;72K configs from this era are withdrawn.</p>
+  </div>
+
+<div class="card">
+    <h2 style="margin-top:0">Deflated EvalPlus scores (fixed 3072-token budget)</h2>
+    <p class="note">The first quality pass capped output at 3072 tokens. Reasoning exhausted
+    the cap and the empty completions scored as hard failures. These are lower bounds, not
+    measurements. Shown against the corrected scores.</p>
+    <table>
+      <tr><th>model / config</th><th class="num">deflated base</th><th class="num">deflated plus</th><th class="num">empty</th><th class="num">corrected base/plus</th></tr>
+      <tr><td>Qwen3.6-35B-A3B, llama+MTP, thinking on</td><td class="num">0.610</td><td class="num">0.610</td><td class="num">62/164 (~38%)</td><td class="num">0.939 / 0.921</td></tr>
+      <tr><td>Ternary Bonsai-27B, mlx 2-bit, thinking on</td><td class="num">0.640</td><td class="num">0.634</td><td class="num">49/164 (~30%)</td><td class="num">0.915 / 0.884</td></tr>
+      <tr><td>Qwen3.8-27B, mlx 4-bit, effort medium</td><td class="num">0.970</td><td class="num">0.939</td><td class="num">3/164 (~2%)</td><td class="num">0.982 / 0.939</td></tr>
+    </table>
+    <p class="note">The lesson generalizes: treat any single-pass score with a fixed output
+    budget as a lower bound until the budget is calibrated from measured reasoning length.</p>
+  </div>
+
+  <footer>Raw data in the benchmarks pages.</footer>
 </main>
 </body>
 </html>

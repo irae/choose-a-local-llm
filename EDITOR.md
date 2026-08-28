@@ -37,7 +37,26 @@ names. Only prose changes.
 ## Format
 
 - Markdown only. Do not write new raw HTML pages.
-- `docs/public/setups/<setup>/historical.html` is frozen. Leave it as HTML.
+- `docs/public/setups/<setup>/historical.html` stays HTML. It is the one page
+  that keeps its own styling, including the red warning at the top.
+
+## Historical figures
+
+**No superseded number appears on a current page.** Not in a table, not in
+prose. This is the owner's rule and methodology rule 7 says the same.
+
+- A current page states the current number and, if the story needs it, says
+  a correction happened — without repeating the old figure.
+- The old figure moves to the setup's `historical.html`, with a line saying
+  what makes it wrong: the retired 27000 wired limit, an uncalibrated output
+  budget, or an axis the depth sweeps replaced.
+- Link to the historical page from wherever the old number used to be, and
+  say plainly that those numbers are not to be used.
+- The `benchmarks/*.md` pages are the exception. They keep the full archive,
+  because that is their job — but every section there states the wired limit
+  and the run it came from.
+- The red warning block at the top of `historical.html` must stay. It is the
+  first thing a reader sees on that page.
 - Server commands go in fenced `bash` blocks, so they stay copy-paste ready.
   The `--alias` value equals the harness model id.
 - Tables carry the numbers. Bold the winning row.

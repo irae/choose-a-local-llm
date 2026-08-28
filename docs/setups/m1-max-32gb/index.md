@@ -91,7 +91,7 @@ As of 2026-08-28, end of day.
   Log: `night2/state.md`.
 - **Run 3** (`night3/`): finished the qwen3.6 correction that run 2 had
   parked — 56 completions regenerated at the calibrated 26624 budget, taking
-  the score from 0.610/0.610 to **0.939/0.921**. Clean run, no incidents.
+  the score to **0.939/0.921**. Clean run, no incidents.
   Remaining blocks wait for a go-ahead, one at a time. Log:
   `night3/state.md`.
 
