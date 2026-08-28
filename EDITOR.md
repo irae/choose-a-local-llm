@@ -39,6 +39,10 @@ names. Only prose changes.
 - Markdown only. Do not write new raw HTML pages.
 - `docs/public/setups/<setup>/historical.html` stays HTML. It is the one page
   that keeps its own styling, including the red warning at the top.
+- Server commands go in fenced `bash` blocks, so they stay copy-paste ready.
+  The `--alias` value equals the harness model id.
+- Tables carry the numbers. Bold the winning row.
+- No code comments unless the owner asks for them.
 
 ## Historical figures
 
@@ -57,10 +61,6 @@ prose. This is the owner's rule and methodology rule 7 says the same.
   and the run it came from.
 - The red warning block at the top of `historical.html` must stay. It is the
   first thing a reader sees on that page.
-- Server commands go in fenced `bash` blocks, so they stay copy-paste ready.
-  The `--alias` value equals the harness model id.
-- Tables carry the numbers. Bold the winning row.
-- No code comments unless the owner asks for them.
 
 ## Site chrome
 

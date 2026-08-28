@@ -36,6 +36,10 @@ set up and needs the owner's explicit go.
 
 - **Do not push, deploy, or enable GitHub Pages** without the owner saying
   so. Local work is committable; publishing is not.
+- **No superseded number on a current page.** Not in a table, not in prose.
+  Old figures move to the setup's `historical.html`, which opens with a red
+  warning telling readers not to use them. Only the `benchmarks/*.md` pages
+  keep the full archive. See EDITOR.md.
 - **Write prose in ASD-STE100 Simplified Technical English.** Short
   sentences, active voice, one idea per sentence.
 - **Do not write code comments** unless the owner asks for them.
