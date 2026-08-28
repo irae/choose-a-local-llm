@@ -7,8 +7,9 @@
 - **Depth sweeps are complete** for every model and every runtime. The
   decode-vs-used-context table on the [comparison page](./comparison.md) is
   this project's main artifact.
-- **Two models have fair quality scores.** Qwen3.8 at 0.982/0.939 and Bonsai
-  at 0.915/0.884. Qwen3.6 still carries a deflated number.
+- **Three models have fair quality scores.** Qwen3.8 at 0.982/0.939,
+  Qwen3.6 at 0.939/0.921, and Bonsai at 0.915/0.884. Only the Gemmas are
+  unscored.
 - **Four runtimes are in play**, not one: llama-server, mlx_lm.server, LM
   Studio's engine, and the PrismML llama.cpp fork.
 - **The law:** MLX barely slows down but OOMs hard; llama slows down faster
@@ -53,10 +54,10 @@ As of 2026-08-28, end of day.
 - Best curves, all quality-unscored: Gemma-12B on LM Studio is flattest at
   30.8 tok/s at 74K in 8.8 GB; Gemma-26B MLX runs 51→22 at 74K in 13.5 GB;
   Qwen3.6 llama never floors inside 96K; Qwen3.6 MLX holds 42 tok/s at 33K.
-- Fair EvalPlus scores: Qwen3.8-mlx-medium **0.982/0.939**, Bonsai-mlx-f16
-  **0.915/0.884**. Qwen3.6 still carries a deflated 0.610, with its
-  correction parked at 5/62. The Gemmas are unscored; their thinking mode
-  sometimes never converges, and the 12B does it more than the 26B.
+- Fair EvalPlus scores: Qwen3.8-mlx-medium **0.982/0.939**,
+  Qwen3.6-llama-think **0.939/0.921**, Bonsai-mlx-f16 **0.915/0.884**. The
+  Gemmas are unscored; their thinking mode sometimes never converges, and the
+  12B does it more than the 26B.
 - Bonsai extras: the PrismML fork is installed at `~/prism-llama/`. Its
   desktop profile holds q4 KV at 9.8 GB flat with a ~30K floor, and serves
   2×48K slots at 9.8 tok/s each concurrently — 3×48K gives 7.6 each. The
@@ -71,9 +72,9 @@ As of 2026-08-28, end of day.
 
 ## Open work
 
-- Run 3 (draft in `night3/NIGHT-AGENT.md`, uncommitted — decide with the
-  owner): the qwen3.6 correction, Gemma scores including the MLX and LM
-  Studio variants, and the bonsai-prism q4 A/B.
+- Run 3, remaining blocks: Gemma scores including the MLX and LM Studio
+  variants, the bonsai-prism q4 A/B, and a Bonsai thinking-off pass. Each
+  block waits for a go-ahead.
 - Ceiling brackets for the MLX configs that never floored. Runs in flight.
 - Aider tier 2, driven from another computer. Docker does not fit here.
 - Watch list and owner context: `HANDOFF.md`, not committed.
@@ -88,7 +89,11 @@ As of 2026-08-28, end of day.
   which is safe because temperature 0 is deterministic. It also found
   EvalPlus's infinite-retry timeout bug and established the heartbeat rule.
   Log: `night2/state.md`.
-- **Run 3**: draft, pending joint sign-off.
+- **Run 3** (`night3/`): finished the qwen3.6 correction that run 2 had
+  parked — 56 completions regenerated at the calibrated 26624 budget, taking
+  the score from 0.610/0.610 to **0.939/0.921**. Clean run, no incidents.
+  Remaining blocks wait for a go-ahead, one at a time. Log:
+  `night3/state.md`.
 
 ## The wired limit, and why it is 25000
 

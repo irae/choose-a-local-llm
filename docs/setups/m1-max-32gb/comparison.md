@@ -10,8 +10,9 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
   tokens, in 8.8 GB. No ceiling found yet.
 - **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, still 22 at
   74K, in 13.5 GB.
-- **Best big window:** Qwen3.6-35B on llama — never crosses the 8 tok/s floor
-  inside its whole 96K window.
+- **Best big window, and the best all-round config:** Qwen3.6-35B on llama —
+  never crosses the 8 tok/s floor inside its whole 96K window, and now scores
+  0.939 / 0.921.
 - **Best all-day agent:** Ternary Bonsai-27B — 27B-class quality from 8 GB of
   weights, and the flattest curve of any model.
 - **Best multi-agent:** Bonsai on the prism fork — 2×48K slots at 9.8 tok/s
@@ -27,7 +28,7 @@ Quality gate pending where noted.
 | seat | config | tok/s (shallow → deep) | memory | EvalPlus |
 |---|---|--:|--:|--:|
 | **Hard problems** | Qwen3.8 MLX, compact ~26K | 17 → 14 at 28K | 14.3 GB | 0.982/0.939 |
-| **Deep sessions** | Qwen3.6 llama+MTP q8, 96K | 44 → 8.1 at 90K | 22.8 GB | correction parked |
+| **Deep sessions** | Qwen3.6 llama+MTP q8, 96K | 44 → 8.1 at 90K | 22.8 GB | 0.939/0.921 |
 | **Fast + deep (contender)** | Gemma-26B MLX | 51 → 22 at 74K | 13.5 GB | run 3 |
 | **Flattest (contender)** | Gemma-12B via LM Studio (lms CLI) | 37 → 31 at 74K | 8.8 GB | run 3 |
 | **All-day background** | Bonsai MLX, 48K, bounded cache | 24.5 → 18.8 at 49K | grows to ~15 GB | 0.915/0.884 |
@@ -59,7 +60,7 @@ Measured 2026-08-28 at wired limit 25000.
 |---|--:|--:|--:|--:|--:|---|--:|
 | **Gemma-26B MLX** | 51.1 | 43.5 | 35.6 | 28.8 | 22.2 (74K) | OOM at 82-98K — 20.6 tok/s at 82K | not scored (run 3) |
 | **Qwen3.6-35B MLX** | 53.3 | 49.6 | 42.2 | | | OOM at 37-41K — 42.0 tok/s at 37K | not scored |
-| **Qwen3.6-35B llama (q8, MTP)** | 44.5 | 30.1 | 18.8 | 13.5 | 8.1 (90K) | its own 96K window — still 8.1 tok/s at 90K | 0.610/0.610 — deflated, correction parked |
+| **Qwen3.6-35B llama (q8, MTP)** | 44.5 | 30.1 | 18.8 | 13.5 | 8.1 (90K) | its own 96K window — still 8.1 tok/s at 90K | 0.939/0.921 |
 | Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 18.2 (57K) | OOM at 57-61K — 18.2 tok/s at 57K | 0.915/0.884 |
 | Qwen3.8 MLX | 17.1* | 16.4 | | | | OOM at 29-33K — still 14.2 tok/s at 28K | 0.982/0.939 |
 | Gemma-26B llama (q8, MTP) | 23.5 | 11.2 | | | | speed — under 8 tok/s at ~24K | not scored (run 3) |
@@ -72,21 +73,23 @@ Cells are blank past a config's cap. *8K value.
 
 ## Code quality — EvalPlus HumanEval+
 
-Measured on run 2, 2026-08-27.
+Qwen3.8 and Bonsai measured on run 2, 2026-08-27. Qwen3.6 corrected on
+run 3, 2026-08-28.
 
 | model | config scored | pass@1 base | pass@1 plus | status |
 |---|---|--:|--:|---|
 | **Qwen3.8-27B** | mlx 4-bit, reasoning_effort=medium, budget 8192 | **0.982** | **0.939** | fair — 0 empty |
 | **Ternary Bonsai-27B** | mlx 2-bit, thinking on, budget 10240 | **0.915** | **0.884** | fair — 5/164 empty is a real model ceiling |
-| Qwen3.6-35B-A3B (MoE) | llama+MTP, thinking on | 0.610 | 0.610 | still a run-1 lower bound — correction parked at 5/62 regenerated |
+| **Qwen3.6-35B-A3B (MoE)** | llama+MTP, thinking on, budget 26624 | **0.939** | **0.921** | fair — corrected in run 3; 5/164 empty is a real model ceiling |
 | Gemma-4-26B-A4B | calibrated only (budget 30000) | – | – | 2/10 sample problems never finished reasoning at the 30K cap |
 | Gemma-4-12B | calibrated only (budget 30000) | – | – | 4/10 sample problems hit the cap — worse than the 26B, counterintuitively |
 
 ## Open questions
 
-- Run 3: finish the Qwen3.6 score correction; EvalPlus for the Gemma configs,
-  now including Gemma-26B MLX and Gemma-12B via LM Studio, the two best
-  unscored depth curves; and the Bonsai prism-fork q4 A/B.
+- Run 3, remaining blocks: EvalPlus for the Gemma configs, now including
+  Gemma-26B MLX and Gemma-12B via LM Studio, the two best unscored depth
+  curves; the Bonsai prism-fork q4 A/B; and a Bonsai thinking-off pass.
+  Blocks run one at a time, each waiting for a go-ahead.
 - Memory ceilings for the MLX configs that never hit the speed floor
   (measurement in flight).
 - Aider polyglot (tier 2) for gate survivors — driven from another computer;
@@ -120,10 +123,12 @@ noted.
 **The quality scores moved a lot once the harness was fixed.** Run 1 used a
 fixed output budget that was too small, so reasoning exhausted the cap and
 empty completions scored as failures. Budgets are now calibrated per model
-from measured reasoning length (`night2/calibration.md`). Bonsai's correction
-was the largest: 0.640 → 0.915. The flawed cap had been hiding most of its
-ability. Qwen3.6 still carries its deflated number; do not rank on it until
-the correction finishes.
+from measured reasoning length (`night2/calibration.md`). Every corrected
+score went up, and two went up enormously: Qwen3.6 from 0.610 to **0.939**,
+and Bonsai from 0.640 to **0.915**. The flawed cap had been hiding most of
+both models' ability. Nothing about the models changed — only the harness
+that measured them. Treat any single-pass score with a fixed output budget
+as a lower bound until the budget is calibrated.
 
 **The Gemma models have a real convergence problem.** Their thinking mode
 sometimes fails to converge at all — 30K tokens of reasoning with no answer.

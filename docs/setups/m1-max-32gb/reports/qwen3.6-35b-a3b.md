@@ -10,10 +10,12 @@ llama-server (build 10621) · unsloth UD-Q4_K_XL + embedded MTP · benchmarked
   whole 96K window — still 8.1 tok/s at 90K.
 - **The strongest base-model coding pedigree tested.** 73.4 SWE-bench
   Verified.
+- **Second-best quality measured here: 0.939 / 0.921 EvalPlus.** Only
+  Qwen3.8 scores higher, and Qwen3.8 is four times slower.
 - **Its MLX build is the second-fastest curve measured here.** 42 tok/s still
   at 33K, but memory-capped at 37-41K.
 - Weak point: decode falls to ~17 tok/s once ~30K tokens are in use.
-- Weak point: its quality score is still deflated and unusable for ranking.
+- Weak point: no thinking-off score yet, so sub-agent use is unmeasured.
 
 ## Best option
 
@@ -37,13 +39,14 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
 | **Max speed** | same config (near-empty context) | 68 / 74 | same |
 | **Multi-agent** | untested at limit 25000 (at 24000: OOM even at 2×20K) | – | – |
 
-## Quality — EvalPlus HumanEval+ (run 1, deflated)
+## Quality — EvalPlus HumanEval+ (run 3)
 
-| config scored | pass@1 base | pass@1 plus | empty completions |
-|---|--:|--:|--:|
-| llama-server + MTP, thinking on | 0.610 | 0.610 | 62/164 (~38%) |
+| config scored | budget | pass@1 base | pass@1 plus | empty completions |
+|---|--:|--:|--:|--:|
+| llama-server + MTP, thinking on | 26624 | **0.939** | **0.921** | 5/164 (~3%) |
 
-**Do not rank on this score.** See the history below.
+The 5 empty completions are a real model limit, not a harness artifact — they
+stay empty at the full budget.
 
 ## Decode speed vs used context (depth sweeps, limit 25000)
 
@@ -87,14 +90,18 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
 
 ## History and reasoning
 
-**The quality score is broken, not the model.** Run 1 used
-`max_tokens=3072`. This model's reasoning exhausted that budget on 38% of the
-problems, and each empty completion scores as a hard failure. That makes
-0.610 a floor, not a measurement. It was the worst-affected of the three
-models scored. Its base model reports 73.4 SWE-bench Verified, so the real
-capability is far higher. The correction is parked mid-run — 5 of 62 empty
-completions regenerated, calibrated budget 26624 — and resumes on a future
-run. Details in `night1/results.md` and `night2/state.md`.
+**The first quality score was broken, and the correction moved it further
+than any other model's.** Run 1 used `max_tokens=3072`. This model's
+reasoning exhausted that budget on 38% of the problems, and each empty
+completion scores as a hard failure, so 0.610 was a floor rather than a
+measurement. It was the worst-affected block of that run. Run 2 parked the
+fix partway through. Run 3 finished it: 56 missing or empty completions
+regenerated at the calibrated budget of 26624, which is safe because
+temperature 0 is deterministic. The score went from 0.610/0.610 to
+**0.939/0.921** — a gain of 0.329 on base, the largest correction in the
+project. The prediction held: its base model reports 73.4 SWE-bench Verified,
+and the real capability was indeed far higher than the flawed cap suggested.
+Details in `night1/results.md`, `night2/state.md`, and `night3/results.md`.
 
 **The wired limit cost this model most of its context.** The limit is now
 25000. At 27000 the machine became too slow for normal use; at 24000 context
