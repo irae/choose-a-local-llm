@@ -15,6 +15,8 @@ npm run docs:dev
 
 Then open http://localhost:5173.
 
+Working on this repo? Start at [AGENTS.md](./AGENTS.md).
+
 ## Map
 
 - `docs/index.md` — project intro, goals, per-setup summaries.
