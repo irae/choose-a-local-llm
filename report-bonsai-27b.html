@@ -95,7 +95,7 @@
       <tr><th>need</th><th>config</th><th class="num">tok/s</th><th class="num">context</th></tr>
       <tr><td><b>Max context</b></td><td>mlx_lm.server, bounded prompt cache</td><td class="num">18.8 at 49K</td><td class="num">49K OK; OOM before 65K (limit 25000)</td></tr>
       <tr><td><b>Max speed</b></td><td>same config, shallow context</td><td class="num">24.5</td><td class="num">≤8K</td></tr>
-      <tr><td><b>Multi-agent</b></td><td>ruled out on MLX — the prism llama fork (night 3) brings slots</td><td class="num">–</td><td class="num">–</td></tr>
+      <tr><td><b>Multi-agent</b></td><td>prism fork <code>--parallel 2 -c 98304</code>, q4 KV — 9.8 tok/s each concurrent, 10.0 GB</td><td class="num">9.8&times;2</td><td class="num">2&times;48K</td></tr>
     </table>
     <p class="note">One command — requests queue (no slots). <b>Keep
     <code>--prompt-cache-size 2</code></b>: by default the server pools several distinct KV
@@ -136,6 +136,7 @@
       <tr><td>q8_0 KV plain (128K)</td><td class="num">13.8</td><td class="num">~21K</td><td class="num">12.8 GB</td></tr>
       <tr><td>q8_0 + DSpark n2 (128K)</td><td class="num">16.5</td><td class="num">~20K</td><td class="num">18.2 GB</td></tr>
       <tr><td>q8_0 KV plain (262K)</td><td class="num">12.8</td><td class="num">~21K</td><td class="num">17.1 GB — full window fits</td></tr>
+      <tr class="win"><td>q4_0, 2 slots (2&times;48K)</td><td class="num">9.8 each, both decoding</td><td class="num">–</td><td class="num">10.0 GB</td></tr>
     </table>
     <p class="note"><b>Two serving profiles.</b> Speed: MLX (above) — fastest at every depth
     it reaches, but memory grows with the session and hard-OOMs by ~49–65K. Desktop: fork

@@ -59,15 +59,15 @@
     <h2 style="margin-top:0">Summary</h2>
     <p><b>Fastest usable decode: mlx_lm.server at 19.7 tok/s</b> — plain MLX beats
     llama-server's best MTP configuration (16.9 tok/s, draft depth 3; 12.4 without MTP).
-    But MLX tops out at <b>48K context</b> and serves one request at a time, so llama-server
-    with q8_0 KV is the choice for <b>big context</b> (one 160K slot) and <b>concurrent
-    sub-agents</b> (two 72K slots). q8_0 outputs verified byte-identical to f16 at temp 0
-    (f16: ~1% faster, capped at 96K / 2&times;44K).</p>
+    At the current wired limit (25000), MLX holds ~14-17 tok/s across its whole usable
+    window (memory ceiling between 28.7K and ~33K), while llama+MTP crosses the 8 tok/s
+    usability floor at ~19K of used context — <b>MLX wins this model's equilibrium</b>.
+    The 27000-era context maxima (160K single, 2&times;72K) are withdrawn pending re-probe.</p>
     <div class="kpis">
       <div class="kpi"><b>19.7 tok/s</b><span>mlx_lm.server, ≤48K</span></div>
       <div class="kpi"><b>16.9 tok/s</b><span>llama-server + MTP n-max 3</span></div>
-      <div class="kpi"><b>160K</b><span>max context, q8_0 KV</span></div>
-      <div class="kpi"><b>2&times;72K</b><span>llama-server 2 slots, q8_0 KV</span></div>
+      <div class="kpi"><b>~26K</b><span>suggested compaction threshold (mlx)</span></div>
+      <div class="kpi"><b>14.2</b><span>tok/s at 28K used (mlx, RSS 14.3 GB)</span></div>
     </div>
   </div>
 
@@ -93,6 +93,21 @@
       <tr><td><b>Max speed</b> (server)</td><td>mlx_lm.server, plain</td><td class="num">19.7 / 19.6</td><td class="num">≤48K</td></tr>
       <tr><td><b>Two agents</b></td><td>llama-server + MTP, 2 slots, q8_0 KV</td><td class="num">~14.6 single-stream</td><td class="num">2&times;72K</td></tr>
     </table>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Decode speed vs used context (limit 25000, 2026-08-28)</h2>
+    <table>
+      <tr><th>depth</th><th class="num">llama+MTP q8</th><th class="num">mlx</th></tr>
+      <tr><td>4-8K</td><td class="num">14.1 / 12.8</td><td class="num">17.1</td></tr>
+      <tr><td>16K</td><td class="num">8.6</td><td class="num">16.4</td></tr>
+      <tr><td>24.5K</td><td class="num oom">7.3 — below the 8 tok/s floor</td><td class="num">15.4</td></tr>
+      <tr><td>28.7K</td><td class="num">–</td><td class="num">14.2 (RSS 14.3 GB)</td></tr>
+      <tr><td>~32K</td><td class="num">–</td><td class="num oom">Metal OOM — server thread dies, /health stays 200</td></tr>
+    </table>
+    <p class="note">llama's floor is speed (~19K); mlx's is memory (ceiling 29-33K) and it
+    never drops below 14 tok/s inside it. pi setup for the mlx config: compaction threshold
+    ~26K, below the verified-good 28.7K.</p>
   </div>
 
   <div class="card">
