@@ -62,7 +62,17 @@ This is the methodology. Every test cycle follows all of these; do not skip step
     with the other.** The target harness setup is mixed: the main agent thinks
     (debugging, decisions), sub-agents run thinking-off (clear instructions, max
     speed). HTML tables show thinking-on; thinking-off goes in note text.
-11. **Downloads: sequential, one at a time** on slow connections, needed-first
+11. **Benchmark scripts must reuse the server's prompt cache perfectly.** Grow
+    prompts append-only: each request's prompt = the previous prompt + the
+    server's own generated reply + the new text. Never insert or change text
+    before an existing prefix mid-run, and never end prompts with a fixed
+    suffix that later steps insert before — that breaks reuse and reprocesses
+    the whole prompt every step. llama-server reuses any longest common
+    prefix; mlx_lm.server only reuses strict extensions of its cache state,
+    so append-only is the one scheme that works everywhere. Verify reuse in
+    llama's `.timings.prompt_n` (must be roughly the delta, not the total).
+    This rule binds every unattended night run.
+12. **Downloads: sequential, one at a time** on slow connections, needed-first
     order, never during meetings. GPU benchmarks may run while a download is in
     flight, but max-context tests need the machine alone. Download only the exact
     files needed (`--hf-file` / `hf_hub_download` — repos often bundle huge F16
