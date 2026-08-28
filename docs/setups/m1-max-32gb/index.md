@@ -19,11 +19,11 @@
 
 | model | files | reports |
 |---|---|---|
-| Qwen3.6-35B-A3B (MoE) | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`; `mlx-community/Qwen3.6-35B-A3B-4bit` | `benchmarks/qwen3.6-35b-a3b.md`, `reports/qwen3.6-35b-a3b.html` |
-| Gemma-4-26B-A4B (MoE) | `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL` + MTP draft; `mlx-community/gemma-4-26b-a4b-it-4bit` | `benchmarks/gemma-4-26b-a4b.md`, `reports/gemma-4-26b-a4b.html` |
-| Qwen3.8-27B | `bartowski/Qwen3.8-27B-GGUF:Q4_K_M`; `mlx-community/Qwen3.8-27B-4bit` | `benchmarks/qwen3.8-27b.md`, `reports/qwen3.8-27b.html` |
-| Ternary Bonsai-27B | `prism-ml/Ternary-Bonsai-27B-mlx-2bit`; GGUF `Q2_g64` + `PQ2_0` + converted dflash drafter (prism fork only) | `benchmarks/bonsai-27b.md`, `reports/bonsai-27b.html` |
-| Gemma-4-12B-it | `unsloth/gemma-4-12b-it-GGUF:Q4_K_XL`; `lmstudio-community/gemma-4-12B-it-MLX-4bit` (LM Studio engine only) | `benchmarks/gemma-4-12b-it.md`, `reports/gemma-4-12b-it.html` |
+| Qwen3.6-35B-A3B (MoE) | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`; `mlx-community/Qwen3.6-35B-A3B-4bit` | [report](/setups/m1-max-32gb/reports/qwen3.6-35b-a3b.html), [benchmarks](./benchmarks/qwen3.6-35b-a3b.md) |
+| Gemma-4-26B-A4B (MoE) | `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL` + MTP draft; `mlx-community/gemma-4-26b-a4b-it-4bit` | [report](/setups/m1-max-32gb/reports/gemma-4-26b-a4b.html), [benchmarks](./benchmarks/gemma-4-26b-a4b.md) |
+| Qwen3.8-27B | `bartowski/Qwen3.8-27B-GGUF:Q4_K_M`; `mlx-community/Qwen3.8-27B-4bit` | [report](/setups/m1-max-32gb/reports/qwen3.8-27b.html), [benchmarks](./benchmarks/qwen3.8-27b.md) |
+| Ternary Bonsai-27B | `prism-ml/Ternary-Bonsai-27B-mlx-2bit`; GGUF `Q2_g64` + `PQ2_0` + converted dflash drafter (prism fork only) | [report](/setups/m1-max-32gb/reports/bonsai-27b.html), [benchmarks](./benchmarks/bonsai-27b.md) |
+| Gemma-4-12B-it | `unsloth/gemma-4-12b-it-GGUF:Q4_K_XL`; `lmstudio-community/gemma-4-12B-it-MLX-4bit` (LM Studio engine only) | [report](/setups/m1-max-32gb/reports/gemma-4-12b-it.html), [benchmarks](./benchmarks/gemma-4-12b-it.md) |
 
 Thinking controls: Gemma 4 = binary `enable_thinking`, default OFF. Qwen3.6
 family (incl. Bonsai) = binary, default ON. Qwen3.8 = graded effort
@@ -32,7 +32,8 @@ family (incl. Bonsai) = binary, default ON. Qwen3.8 = graded effort
 ## Current state (2026-08-28, end of day)
 
 - **Depth sweeps complete for every model and runtime** — the decode-vs-used-
-  context table in `comparison.html` is the project's main artifact. Law:
+  context table in [comparison.html](/setups/m1-max-32gb/comparison.html) is
+  the project's main artifact. Law:
   MLX barely creeps but OOMs hard; llama creeps but never OOMs in-window.
 - Best curves, all quality-unscored: Gemma-12B on LM Studio (flattest,
   30.8 tok/s at 74K, 8.8 GB), Gemma-26B MLX (51→22 at 74K, 13.5 GB),

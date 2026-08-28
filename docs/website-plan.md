@@ -16,40 +16,57 @@ Turn the repo into a small static website:
   methodology on a PC with an NVIDIA GPU: Bonsai and lower quants).
 - Future content updates happen in Markdown, not raw HTML.
 
-## Framework: MkDocs with the Material theme
+## Framework: VitePress
 
-Chosen because it is the most popular Markdown-first docs generator, tables
-are first-class (this project is tables), navigation and search come free,
-`mkdocs serve` gives instant local preview, and non-Markdown files (our
-existing HTML reports) pass through verbatim — so nothing breaks on day one
-and pages convert to Markdown gradually. Alternative considered: Jekyll
-(native GitHub Pages, no CI needed) — rejected for weaker table/nav
-ergonomics and Ruby tooling.
+The toolchain must be Node, not Python (user decision). VitePress is the
+Node equivalent of the MkDocs Material shape this plan first assumed: one
+config file, Markdown-first, first-class tables (this project is tables),
+navigation and local search built in, and instant preview. Alternatives
+considered: Docusaurus (MDX parses plain Markdown differently — a risk for
+the existing benchmark files) and Astro Starlight (also good; VitePress
+wins on fewer moving parts).
 
-Install (local): `pipx install mkdocs-material` (bundles mkdocs).
-Preview: `mkdocs serve` (http://127.0.0.1:8000). Build: `mkdocs build`.
+Install (local): `npm install`.
+Preview: `npm run docs:dev` (http://localhost:5173).
+Build: `npm run docs:build`.
+
+One difference from MkDocs that shapes the layout: VitePress does not copy
+arbitrary non-Markdown files out of the source tree. Only `docs/public/`
+passes through verbatim. So the raw HTML pages live under
+`docs/public/setups/<setup-slug>/` and keep their public URLs; the Markdown
+pages live under `docs/setups/<setup-slug>/`. Each page converted in phase 2
+moves from the first tree to the second. `historical.html` stays in
+`public/` forever.
 
 ## Target layout
 
-The site source is the existing `docs/` directory (MkDocs default
-`docs_dir`). Setup-specific content moves under `docs/setups/<setup-slug>/`.
+The site source is the existing `docs/` directory (VitePress default
+`srcDir`). Setup-specific content moves under `docs/setups/<setup-slug>/`.
 
 ```
-mkdocs.yml                      (new, repo root)
+package.json                    (new, repo root)
 README.md                       (stays: short GitHub-facing intro + link to the site)
 docs/
+  .vitepress/config.mjs         (new: title, nav, sidebar, local search)
   index.md                      (new: README content + per-setup summaries)
   methodology.md                (exists)
-  website-plan.md               (this file; exclude from nav)
+  website-plan.md               (this file; srcExclude)
   setups/
     m1-max-32gb/
       index.md                  (from docs/machine.md, git mv)
-      comparison.html           (git mv from repo root)
-      historical.html           (git mv from repo root)
-      reports/*.html            (git mv from reports/)
       benchmarks/*.md           (git mv from benchmarks/)
+  public/
+    setups/
+      m1-max-32gb/
+        comparison.html         (git mv from repo root; phase 2 converts it)
+        historical.html         (git mv from repo root; stays here forever)
+        reports/*.html          (git mv from reports/; phase 2 converts them)
 .github/workflows/site.yml      (new, phase 3 only)
 ```
+
+The `public/` tree and the Markdown tree share one URL space, so a page keeps
+its URL when it converts — except that `cleanUrls` drops the `.html` suffix
+from converted pages.
 
 Notes:
 
@@ -57,56 +74,54 @@ Notes:
   and off the site.
 - The `benchmarks/*.md` files become real site pages for free.
 - The `reports/*.html` and `comparison.html` files pass through unchanged in
-  phase 1; MkDocs copies non-Markdown files verbatim.
+  phase 1; VitePress copies `docs/public/` verbatim.
 - After the moves, update every cross-reference (the same link classes as
   commit 5b98507: report↔benchmark↔comparison↔historical links, plus
   `docs/methodology.md` rule 7 surface names and `README.md`'s map).
 
 ## Phase 1 — structure + passthrough (no visual change to existing pages)
 
-1. Create `mkdocs.yml`. Guidance skeleton (adjust, do not treat as final):
-
-   ```yaml
-   site_name: Choosing a local coding LLM
-   theme: { name: material }
-   nav:
-     - Home: index.md
-     - Methodology: methodology.md
-     - "M1 Max 32 GB":
-       - Overview: setups/m1-max-32gb/index.md
-       # comparison/reports linked from the pages, not nav (raw HTML)
-   markdown_extensions: [tables, admonition, attr_list, md_in_html, toc]
-   ```
-
+1. Create `package.json` (scripts `docs:dev`, `docs:build`, `docs:preview`)
+   and `docs/.vitepress/config.mjs`. The config sets the site title,
+   `cleanUrls`, `srcExclude` for this file, the local search provider, and
+   nav plus sidebar entries for Home, Methodology, and the M1 Max setup
+   (overview, comparison, each report, each benchmark, historical). Raw HTML
+   pages get sidebar entries with their `.html` suffix; Markdown pages get
+   extensionless links.
 2. `git mv` the files per the target layout; fix cross-references; verify
    with the same grep used in commit 5b98507.
 3. Write `docs/index.md`:
    - Project intro + goals: copy from `README.md` (single source going
      forward: index.md owns the long form; README.md shrinks to a short
-     pointer to the published site + local `mkdocs serve` instructions).
+     pointer to the published site + local `npm run docs:dev` instructions).
    - Section "Setups", one block per setup. For M1 Max: the
      current-picks-by-seat table (condensed from comparison.html), the
      headline law (MLX flat-but-OOMs vs llama creeps-but-survives), links:
      setup overview, comparison.html, each model report, each benchmark page.
      The summary lives ONLY on index.md, not in README.md (user decision).
-4. Acceptance: `mkdocs build --strict` passes; `mkdocs serve` shows index,
-   methodology, setup overview; comparison.html and reports open with their
-   current styling; no dead links (click every link or use a link checker).
+4. Acceptance: `npm run docs:build` passes (VitePress fails the build on a
+   broken internal Markdown link); `npm run docs:check` reports zero dead
+   links — it walks every `href` in the built output, so it also covers the
+   raw HTML pages that VitePress does not check; `npm run docs:dev` shows
+   index, methodology, and the setup overview, and comparison.html and the
+   reports open with their current styling.
 5. Commit. Do not deploy.
 
 ## Phase 2 — Markdown-ify the maintained pages (stop writing raw HTML)
 
-Convert, one page per commit, verifying rendering in `mkdocs serve`:
+Convert, one page per commit, verifying rendering in `npm run docs:dev`:
 
-1. `comparison.html` → `setups/m1-max-32gb/comparison.md`. The four cards
-   become sections; tables become Markdown tables; the "capped by" and
-   EvalPlus columns survive as plain columns. Keep `historical.html` as
-   static HTML forever (frozen).
-2. Each `reports/<model>.html` → `reports/<model>.md`. KPI boxes become a
-   short bold line or a Material grid; command boxes become fenced `bash`
-   blocks (copy-paste behavior preserved); tables become Markdown tables.
-3. After each conversion: delete the HTML file, add a nav entry, fix
-   inbound links.
+1. `docs/public/setups/m1-max-32gb/comparison.html` →
+   `docs/setups/m1-max-32gb/comparison.md`. The cards become sections;
+   tables become Markdown tables; the "capped by" and EvalPlus columns
+   survive as plain columns. Keep `historical.html` in `public/` forever
+   (frozen).
+2. Each `docs/public/setups/m1-max-32gb/reports/<model>.html` →
+   `docs/setups/m1-max-32gb/reports/<model>.md`. KPI boxes become a short
+   bold line; command boxes become fenced `bash` blocks (copy-paste behavior
+   preserved); tables become Markdown tables.
+3. After each conversion: delete the HTML file from `public/`, update the
+   sidebar entry to the extensionless link, and fix inbound links.
 4. Update `docs/methodology.md` rule 7 (the four-surface rule) to name the
    new surfaces: `benchmarks/*.md`, the report page, the comparison page,
    `~/.pi/agent/models.json`.
@@ -115,15 +130,17 @@ Result: all future edits are Markdown edits.
 
 ## Phase 3 — GitHub Pages deploy (only when the user says publish)
 
-1. `.github/workflows/site.yml`: on push to `master`, run
-   `pipx run --spec mkdocs-material mkdocs build` and publish `site/` with
+1. `.github/workflows/site.yml`: on push to `master`, run `npm ci` and
+   `npm run docs:build`, then publish `docs/.vitepress/dist` with
    `actions/upload-pages-artifact` + `actions/deploy-pages` (the modern
    Pages flow; no gh-pages branch to maintain).
 2. Repo settings: Pages → Source: GitHub Actions. The user flips this
    switch; do not assume permissions.
-3. Set `site_url` in `mkdocs.yml` to the final URL
-   (`https://<user>.github.io/<repo>/`) so canonical links resolve.
-4. Acceptance: the published site equals the local `mkdocs serve` output.
+3. Set `base: '/choose-a-local-llm/'` in `docs/.vitepress/config.mjs` so the
+   site resolves under the project path, and `sitemap.hostname` for
+   canonical links. Relative Markdown links survive this; check the raw HTML
+   pages in `public/`, whose links are relative and therefore also survive.
+4. Acceptance: the published site equals the local `npm run docs:dev` output.
 
 ## Phase 4 — second setup (when the PC exists)
 
@@ -144,7 +161,7 @@ Result: all future edits are Markdown edits.
 - Do not publish anything (no push to remotes, no Pages enablement) without
   the user's explicit go — phases 1-2 are local-only and committable.
 - The HTML reports carry per-model accent colors; when converting in phase
-  2, do not try to reproduce them — Material's default styling is fine.
+  2, do not try to reproduce them — the default theme styling is fine.
 - `docs/machine.md` contains user-workflow facts (ports, sysctl, pi). Keep
   them in the setup page; they are content, not site chrome.
 - The four-surface rule means benchmark data lands in these pages the same

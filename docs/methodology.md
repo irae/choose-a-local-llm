@@ -35,13 +35,15 @@ This is the law for every test cycle. Do not skip steps.
    runtimes barely creep but hit hard memory ceilings; llama runtimes creep
    faster but never OOM inside their window.
 7. **Record each result on every surface in the same pass** — a result is not
-   recorded until all agree: the model's `benchmarks/*.md` (full data), its
-   HTML report **including the summary KPI boxes** (they go stale easily),
-   the cross-model `comparison.html`, and the harness config
+   recorded until all agree: the model's
+   `docs/setups/<setup>/benchmarks/*.md` (full data), its report page
+   **including the summary KPI boxes** (they go stale easily), the
+   cross-model comparison page, and the harness config
    (`~/.pi/agent/models.json`). Every server config gets a copy-paste command
-   box in its HTML whose alias equals the harness model id. HTML shows only
-   numbers measured under the CURRENT wired limit; superseded measurements
-   move to `historical.html` (markdowns keep the full archive).
+   block in its report whose alias equals the harness model id. The report
+   and comparison pages show only numbers measured under the CURRENT wired
+   limit; superseded measurements move to the setup's `historical.html`
+   (markdowns keep the full archive).
 8. **After tests, check for leftovers and clean up**: `pgrep -fl
    "llama-server|mlx_lm"`, kill strays, verify no background task holds the
    GPU. End every session with the machine idle. Do not delete model files
