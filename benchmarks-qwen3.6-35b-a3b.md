@@ -107,3 +107,22 @@ The chat template has no `reasoning_effort` (unlike Qwen3.8) — only binary `en
 ## Pending
 
 - EvalPlus quality gate (night runs).
+
+## Depth sweeps (limit 25000, 2026-08-28)
+
+Decode vs used context, synthetic continuation prompts, 8 tok/s early stop:
+
+| depth | llama+MTP q8 (96K alloc) | mlx (no MTP) |
+|---|---|---|
+| 4K | 44.5 | 53.3 |
+| 16K | 30.1 | 49.6 |
+| 32-33K | 18.8 | 42.2 |
+| 49K | 13.5 | Metal OOM (ceiling 33-41K) |
+| 65K | 10.7 | – |
+| 82K | 8.8 | – |
+| 90K | 8.1 | – |
+
+**The 8 tok/s floor is never crossed inside the 96K llama window** — the
+deep-context king confirmed (RSS 22.8 GB). MLX (RSS 18.7) is 2.2× faster at
+32K but memory-capped at 33-41K. mlx model:
+`mlx-community/Qwen3.6-35B-A3B-4bit`.

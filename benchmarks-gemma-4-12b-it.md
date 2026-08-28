@@ -119,3 +119,10 @@ No Metal errors. RSS 14.2 GB after the long prompt — ~17.8 GB left for macOS +
 | max context, 1 slot | 96K (memory limit) | 256K (model limit) |
 | max context, 2 slots | 2×44K (memory limit) | 2×256K (model limit) |
 | RSS at max, 1 slot | 24.1 GB | 12.4 GB |
+
+## Depth sweep (limit 25000, 2026-08-28)
+
+llama+MTP q8, 128K alloc: 14.0 tok/s at 4K, 9.0 at 8K, 6.8 at 16K — **8 tok/s
+floor at ~11K**, the shallowest of all models (dense attention on every
+layer). RSS 9.5 GB. MLX: unsupported — mlx-lm 0.31.3 lacks the
+`gemma4_unified` model type (watch for an mlx-lm release).

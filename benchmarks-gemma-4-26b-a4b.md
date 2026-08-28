@@ -82,3 +82,20 @@ f16 two-slot max was 2×128K. Single-slot stays f16 (model-limited at 256K; q8 b
 ## Pending
 
 - EvalPlus quality gate (night runs).
+
+## Depth sweeps (limit 25000, 2026-08-28)
+
+| depth | llama+MTP q8 (128K alloc) | mlx (`gemma-4-26b-a4b-it-4bit`) |
+|---|---|---|
+| 4K | 23.5 | 51.1 |
+| 16K | 11.2 | 43.5 |
+| 24.5K | 7.97 — below the 8 tok/s floor | 39.6 |
+| 33K | – | 35.6 |
+| 49K | – | 28.8 |
+| 74K | – | 22.2 (sweep end; no OOM, ceiling untested) |
+
+llama floor ~24K (speed). **MLX is the deepest fast curve measured in the
+whole project**: 22+ tok/s at 74K, RSS 13.5 GB, ceiling not yet found.
+Quality on MLX is unscored (the EvalPlus history is llama-side; thinking-mode
+convergence issues noted in night2/calibration.md apply to the model, not the
+runtime).
