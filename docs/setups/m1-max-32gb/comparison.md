@@ -14,7 +14,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 - [Ternary Bonsai-27B](/setups/m1-max-32gb/reports/bonsai-27b) —
   27B-class from 8 GB; two serving profiles (MLX speed / prism-fork
   desktop), 2 concurrent slots on the fork
-- [Qwen3.8-27B](/setups/m1-max-32gb/reports/qwen3.8-27b.html) — strongest
+- [Qwen3.8-27B](/setups/m1-max-32gb/reports/qwen3.8-27b) — strongest
   base model, slowest on this hardware
 
 Everything on this page was measured at the current wired limit

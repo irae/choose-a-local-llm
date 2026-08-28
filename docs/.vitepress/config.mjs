@@ -31,7 +31,7 @@ export default defineConfig({
               { text: 'Gemma-4-26B-A4B', link: '/setups/m1-max-32gb/reports/gemma-4-26b-a4b' },
               { text: 'Gemma-4-12B-it', link: '/setups/m1-max-32gb/reports/gemma-4-12b-it' },
               { text: 'Ternary Bonsai-27B', link: '/setups/m1-max-32gb/reports/bonsai-27b' },
-              { text: 'Qwen3.8-27B', link: '/setups/m1-max-32gb/reports/qwen3.8-27b.html' },
+              { text: 'Qwen3.8-27B', link: '/setups/m1-max-32gb/reports/qwen3.8-27b' },
             ],
           },
           {
