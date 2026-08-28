@@ -129,3 +129,23 @@ must come from elsewhere (kernel path or the global layers) — unexplained,
 worth a look if this model stays in play. RSS 9.5 GB. MLX: unsupported —
 mlx-lm 0.31.3 lacks the `gemma4_unified` model type (watch for an mlx-lm
 release).
+
+## Depth sweep via LM Studio's MLX engine (limit 25000, 2026-08-28)
+
+`lmstudio-community/gemma-4-12B-it-MLX-4bit` served CLI-only: `lms load
+"lmstudio-community/gemma-4-12B-it-MLX-4bit" --context-length 131072
+--gpu max --yes` + `lms server start` (port 1234; API id
+`gemma-4-12b-it-mlx`; model store shared with the app).
+
+| depth | decode tok/s |
+|---|---|
+| 4K | 36.7 |
+| 16K | 36.9 |
+| 33K | 34.8 |
+| 49K | 33.1 |
+| 74K | 30.8 (sweep end; no OOM, ceiling untested) |
+
+**The flattest curve of the whole project** (-16% over 70K) at 8.8 GB RSS —
+LM Studio's gemma4_unified implementation appears to honor the
+sliding-window attention that the llama.cpp path does not (llama floor ~11K
+on the same model). Quality unscored; a night-3 candidate.
