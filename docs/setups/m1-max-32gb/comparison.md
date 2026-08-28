@@ -39,17 +39,17 @@ Compaction thresholds come from the floor table below, not from the window.
 
 ## Per-model reports
 
-- [Gemma-4-26B-A4B](/setups/m1-max-32gb/reports/gemma-4-26b-a4b) —
+- [Gemma-4-26B-A4B](./reports/gemma-4-26b-a4b.md) —
   MoE+MTP: fastest Python, full 256K window (q8 KV), 2×184K slots
-- [Qwen3.6-35B-A3B](/setups/m1-max-32gb/reports/qwen3.6-35b-a3b) —
+- [Qwen3.6-35B-A3B](./reports/qwen3.6-35b-a3b.md) —
   MoE+MTP: fastest JS, strongest base benchmarks; 96K context at the current
   wired limit
-- [Gemma-4-12B-it](/setups/m1-max-32gb/reports/gemma-4-12b-it) —
+- [Gemma-4-12B-it](./reports/gemma-4-12b-it.md) —
   biggest context, best concurrency
-- [Ternary Bonsai-27B](/setups/m1-max-32gb/reports/bonsai-27b) —
+- [Ternary Bonsai-27B](./reports/bonsai-27b.md) —
   27B-class from 8 GB; two serving profiles (MLX speed / prism-fork
   desktop), 2 concurrent slots on the fork
-- [Qwen3.8-27B](/setups/m1-max-32gb/reports/qwen3.8-27b) — strongest
+- [Qwen3.8-27B](./reports/qwen3.8-27b.md) — strongest
   base model, slowest on this hardware
 
 ## Decode speed vs used context — the 8 tok/s usability floor

@@ -54,11 +54,11 @@ sweeps are complete for every model and runtime; quality scores are partial.
 
 | model | report | benchmarks |
 |---|---|---|
-| Qwen3.6-35B-A3B (MoE) | [report](/setups/m1-max-32gb/reports/qwen3.6-35b-a3b) | [data](./setups/m1-max-32gb/benchmarks/qwen3.6-35b-a3b.md) |
-| Gemma-4-26B-A4B (MoE) | [report](/setups/m1-max-32gb/reports/gemma-4-26b-a4b) | [data](./setups/m1-max-32gb/benchmarks/gemma-4-26b-a4b.md) |
-| Gemma-4-12B-it | [report](/setups/m1-max-32gb/reports/gemma-4-12b-it) | [data](./setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md) |
-| Ternary Bonsai-27B | [report](/setups/m1-max-32gb/reports/bonsai-27b) | [data](./setups/m1-max-32gb/benchmarks/bonsai-27b.md) |
-| Qwen3.8-27B | [report](/setups/m1-max-32gb/reports/qwen3.8-27b) | [data](./setups/m1-max-32gb/benchmarks/qwen3.8-27b.md) |
+| Qwen3.6-35B-A3B (MoE) | [report](./setups/m1-max-32gb/reports/qwen3.6-35b-a3b.md) | [data](./setups/m1-max-32gb/benchmarks/qwen3.6-35b-a3b.md) |
+| Gemma-4-26B-A4B (MoE) | [report](./setups/m1-max-32gb/reports/gemma-4-26b-a4b.md) | [data](./setups/m1-max-32gb/benchmarks/gemma-4-26b-a4b.md) |
+| Gemma-4-12B-it | [report](./setups/m1-max-32gb/reports/gemma-4-12b-it.md) | [data](./setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md) |
+| Ternary Bonsai-27B | [report](./setups/m1-max-32gb/reports/bonsai-27b.md) | [data](./setups/m1-max-32gb/benchmarks/bonsai-27b.md) |
+| Qwen3.8-27B | [report](./setups/m1-max-32gb/reports/qwen3.8-27b.md) | [data](./setups/m1-max-32gb/benchmarks/qwen3.8-27b.md) |
 
 Also on this setup: the [comparison page](./setups/m1-max-32gb/comparison.md)
 with the full depth and quality tables, the
