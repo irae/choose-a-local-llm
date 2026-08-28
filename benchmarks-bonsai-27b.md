@@ -130,3 +130,11 @@ mem-watch (20 s interval) showed zero swap during all sweeps: compute-bound.
   --cache-type-k q4_0 --cache-type-v q4_0 -fa on -ngl 999` — 9.8 GB flat,
   floor ~30K, Mac stays usable; add the dflash drafter only for
   shallow-context serving.
+
+## Fork multi-slot (2026-08-28)
+
+`--parallel 2 -c 98304` (2×48K, q4 KV, no drafter): both slots decoding
+concurrently at **9.8 / 9.9 tok/s** (aggregate 19.7, +35% from batching),
+RSS **10.0 GB**. Two agents above the 8 tok/s floor with ~20 GB left for the
+system — the only multi-agent config measured that keeps the machine free.
+3×32K is the projected next probe for grunt-agent swarms.

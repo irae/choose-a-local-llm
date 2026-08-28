@@ -220,3 +220,22 @@ Run twice on the final config. Same speed as the deep-clone prompt (15.59), so t
 budget 8192, temperature 0). Night 1's flawed 3072 cap had scored it
 0.970/0.939. Zero empty completions. The strongest HumanEval+ result of the
 models scored so far. Details: `night2/results.md`.
+
+## Depth sweeps at `iogpu.wired_limit_mb=25000` (2026-08-28)
+
+Decode vs used context, append-only prompts, 8 tok/s early stop:
+
+| depth | llama+MTP q8 (32K alloc) | mlx |
+|---|---|---|
+| 4K | 14.1 | – |
+| 8K | 12.8 | 17.1 |
+| 16K | 8.6 | 16.4 |
+| 24.5K | 7.3 — below floor | 15.4 |
+| 28.7K | – | 14.2, RSS 14.3 GB |
+| ~32K | – | Metal OOM (server thread dies; /health stays 200) |
+
+**llama floor ~19K (speed); mlx never crosses the floor — its limit is a
+memory ceiling between 28.7K and ~33K.** MLX wins this model's equilibrium:
+~14-17 tok/s across its whole usable window. Suggested pi setup: mlx config
+with compaction threshold ~26K (below the known-good 28.7K). The 27000-era
+context maxima (160K single, 2×72K) are withdrawn pending re-probe.
