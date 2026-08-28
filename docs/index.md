@@ -69,7 +69,7 @@ ids) and full raw data:
 
 | model | report | benchmarks |
 |---|---|---|
-| Qwen3.6-35B-A3B (MoE) | [report](/setups/m1-max-32gb/reports/qwen3.6-35b-a3b.html) | [data](./setups/m1-max-32gb/benchmarks/qwen3.6-35b-a3b.md) |
+| Qwen3.6-35B-A3B (MoE) | [report](/setups/m1-max-32gb/reports/qwen3.6-35b-a3b) | [data](./setups/m1-max-32gb/benchmarks/qwen3.6-35b-a3b.md) |
 | Gemma-4-26B-A4B (MoE) | [report](/setups/m1-max-32gb/reports/gemma-4-26b-a4b.html) | [data](./setups/m1-max-32gb/benchmarks/gemma-4-26b-a4b.md) |
 | Gemma-4-12B-it | [report](/setups/m1-max-32gb/reports/gemma-4-12b-it.html) | [data](./setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md) |
 | Ternary Bonsai-27B | [report](/setups/m1-max-32gb/reports/bonsai-27b) | [data](./setups/m1-max-32gb/benchmarks/bonsai-27b.md) |

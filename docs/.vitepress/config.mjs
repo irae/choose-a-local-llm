@@ -27,7 +27,7 @@ export default defineConfig({
             text: 'Reports',
             collapsed: false,
             items: [
-              { text: 'Qwen3.6-35B-A3B', link: '/setups/m1-max-32gb/reports/qwen3.6-35b-a3b.html' },
+              { text: 'Qwen3.6-35B-A3B', link: '/setups/m1-max-32gb/reports/qwen3.6-35b-a3b' },
               { text: 'Gemma-4-26B-A4B', link: '/setups/m1-max-32gb/reports/gemma-4-26b-a4b.html' },
               { text: 'Gemma-4-12B-it', link: '/setups/m1-max-32gb/reports/gemma-4-12b-it.html' },
               { text: 'Ternary Bonsai-27B', link: '/setups/m1-max-32gb/reports/bonsai-27b' },
