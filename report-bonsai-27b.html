@@ -58,17 +58,18 @@
   <div class="card summary">
     <h2 style="margin-top:0">Summary</h2>
     <p>Ternary (2-bit) Bonsai — PrismML's quality-oriented compression of Qwen3.6-27B, claiming
-    95% of full-precision performance — decodes at <b>28.6 tok/s</b> on mlx-lm with only ~8 GB
-    of weights, and holds <b>96K context</b> (26.4 GB peak; the model window is 262K but memory
-    caps below it). Same context reach as Qwen3.8-GGUF, 70% faster decode. The GGUF variant is
-    on disk but needs a llama.cpp newer than the current brew release — parked until then.
+    95% of full-precision performance — decodes at <b>~24 tok/s</b> on mlx-lm with only ~8 GB
+    of weights, and holds <b>49K context at 18.8 tok/s</b> under the current wired limit
+    (25000; OOM before 65K — the 262K trained window is memory-capped). The flattest
+    speed-vs-depth curve of any model tested. The PrismML llama.cpp fork (installed,
+    night-3 candidate) adds q4 KV and speculative decoding for bigger context.
     EvalPlus verified: <b>0.915 / 0.884</b> HumanEval+ (fair budget, night 2) — 27B-class
     quality from 8 GB of weights.</p>
     <div class="kpis">
-      <div class="kpi"><b>28.6 tok/s</b><span>decode, both prompts</span></div>
-      <div class="kpi"><b>96K</b><span>max context (26.4 GB)</span></div>
-      <div class="kpi"><b>7.9 GB</b><span>peak at short prompts</span></div>
-      <div class="kpi"><b>no MTP</b><span>head removed from checkpoint</span></div>
+      <div class="kpi"><b>24.5 tok/s</b><span>decode, shallow context</span></div>
+      <div class="kpi"><b>49K</b><span>max healthy context, limit 25000</span></div>
+      <div class="kpi"><b>18.8</b><span>tok/s at 49K — flattest creep measured</span></div>
+      <div class="kpi"><b>no MTP</b><span>DSpark drafter via prism fork instead</span></div>
     </div>
   </div>
 
@@ -92,35 +93,36 @@
     <h2 style="margin-top:0">Which to pick for a coding task</h2>
     <table>
       <tr><th>need</th><th>config</th><th class="num">tok/s</th><th class="num">context</th></tr>
-      <tr><td><b>Max context</b></td><td>mlx_lm.server (only runtime today)</td><td class="num">28.6</td><td class="num">96K verified</td></tr>
-      <tr><td><b>Max speed</b></td><td>same config</td><td class="num">28.6</td><td class="num">same</td></tr>
-      <tr><td><b>Multi-agent</b></td><td>ruled out on MLX — wait for the GGUF (llama-server slots)</td><td class="num">–</td><td class="num">–</td></tr>
+      <tr><td><b>Max context</b></td><td>mlx_lm.server, bounded prompt cache</td><td class="num">18.8 at 49K</td><td class="num">49K OK; OOM before 65K (limit 25000)</td></tr>
+      <tr><td><b>Max speed</b></td><td>same config, shallow context</td><td class="num">24.5</td><td class="num">≤8K</td></tr>
+      <tr><td><b>Multi-agent</b></td><td>ruled out on MLX — the prism llama fork (night 3) brings slots</td><td class="num">–</td><td class="num">–</td></tr>
     </table>
-    <p class="note">One runtime, so one command — requests queue (no slots):</p>
-<pre>mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit --port 8081</pre>
+    <p class="note">One command — requests queue (no slots). <b>Keep
+    <code>--prompt-cache-size 2</code></b>: by default the server pools several distinct KV
+    caches (multi-gigabyte each at depth) and behaves like a memory leak across
+    differently-shaped requests; bounding the pool removed a false 44K OOM and reduced
+    depth creep:</p>
+<pre>mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
+  --prompt-cache-size 2 --port 8081</pre>
   </div>
 
   <div class="card">
-    <h2 style="margin-top:0">Decode speed (mlx-lm, warmup first, 256 tokens, temp 0)</h2>
+    <h2 style="margin-top:0">Decode speed vs used context (sweep, limit 25000)</h2>
     <table>
-      <tr><th>prompt</th><th class="num">decode tok/s</th><th class="num">peak memory</th></tr>
-      <tr><td>Python (ISO dates)</td><td class="num">28.59</td><td class="num">7.9 GB</td></tr>
-      <tr><td>JavaScript (deep clone)</td><td class="num">28.59</td><td class="num">7.9 GB</td></tr>
+      <tr><th>depth (used tokens)</th><th class="num">decode tok/s</th></tr>
+      <tr><td>4K</td><td class="num">24.5</td></tr>
+      <tr><td>8K</td><td class="num">24.2</td></tr>
+      <tr><td>16K</td><td class="num">22.9</td></tr>
+      <tr><td>24K</td><td class="num">22.0</td></tr>
+      <tr><td>32K</td><td class="num">20.5</td></tr>
+      <tr class="win"><td>49K</td><td class="num">18.8 — deepest healthy point</td></tr>
+      <tr><td>~65K</td><td class="num oom">Metal OOM during prompt processing</td></tr>
     </table>
-  </div>
-
-  <div class="card">
-    <h2 style="margin-top:0">Context probe (MLX, dynamic KV — no slot preallocation)</h2>
-    <table>
-      <tr><th>prompt depth</th><th class="num">pp tok/s</th><th class="num">peak memory</th></tr>
-      <tr><td>16K</td><td class="num">144</td><td class="num">13.0 GB</td></tr>
-      <tr><td>32K</td><td class="num">137</td><td class="num">15.5 GB</td></tr>
-      <tr><td>64K</td><td class="num">117</td><td class="num">20.8 GB</td></tr>
-      <tr class="win"><td>96K</td><td class="num">96</td><td class="num">26.4 GB</td></tr>
-      <tr><td>128K</td><td colspan="2" class="oom">out of reach (~31 GB projected)</td></tr>
-    </table>
-    <p class="note">64K passes where Qwen3.8-on-MLX OOMs, and prompt processing (117–144 tok/s)
-    is the second-best measured after Gemma. Trained window is 262K, but memory caps well below it.</p>
+    <p class="note">The flattest depth curve of all models measured: −23% from 4K to 49K,
+    never approaching the 8 tok/s usability floor — Bonsai's limit is memory, not speed.
+    PrismML's own figures (100K at ~15 GB; 262K with 4-bit KV) need their serving stack:
+    the 4-bit KV path is llama.cpp-only, so the prism-fork run (night 3) is where the
+    bigger context lives.</p>
   </div>
 
   <div class="card">

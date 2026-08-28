@@ -60,3 +60,32 @@ budget: a real model ceiling, not a harness artifact. The ternary 95% claim
 holds up in practice. Bonsai is also the least disruptive model to run while
 working (moderate fan noise, ~8 GB weights) — a practical all-day
 background-agent candidate. Details: `night2/results.md`.
+
+## Corrected serving command + depth sweep (limit 25000, 2026-08-28)
+
+Always start the mlx server with a bounded prompt cache — the default pools
+several distinct KV caches (multi-GB each at depth) and behaves like a memory
+leak across differently-shaped requests; it produced a false 44K OOM:
+
+```bash
+mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
+  --prompt-cache-size 2 --port 8081
+```
+
+Decode vs used context (append-only prompts, streamed timing, 64-tok probes):
+
+| depth | decode tok/s |
+|---|---|
+| 4K | 24.5 |
+| 8K | 24.2 |
+| 16K | 22.9 |
+| 24K | 22.0 |
+| 32K | 20.5 |
+| **49K** | **18.8 — deepest healthy point** |
+| ~65K | Metal OOM during prompt processing |
+
+Flattest depth curve measured (-23% over 45K); the limit is memory, not
+speed. The old 96K/26.4 GB figures were taken at the retired 27000 limit and
+are withdrawn from the HTML. PrismML's bigger-context figures (100K @ ~15 GB,
+262K with 4-bit KV) require their llama.cpp fork path — see night 3's
+bonsai-prism block.
