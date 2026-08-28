@@ -50,7 +50,7 @@
       <li><a href="report-gemma-4-26b-a4b.html">Gemma-4-26B-A4B</a> — MoE+MTP: fastest Python, full 256K window (q8 KV), 2&times;184K slots</li>
       <li><a href="report-qwen3.6-35b-a3b.html">Qwen3.6-35B-A3B</a> — MoE+MTP: fastest JS, strongest base benchmarks; 96K context at the current wired limit</li>
       <li><a href="report-gemma-4-12b-it.html">Gemma-4-12B-it</a> — biggest context, best concurrency</li>
-      <li><a href="report-bonsai-27b.html">Ternary Bonsai-27B</a> — 27B-class at 28.6 tok/s, 96K context on MLX</li>
+      <li><a href="report-bonsai-27b.html">Ternary Bonsai-27B</a> — 27B-class from 8 GB; two serving profiles (MLX speed / prism-fork desktop), 2 concurrent slots on the fork</li>
       <li><a href="report-qwen3.8-27b.html">Qwen3.8-27B</a> — strongest base model, slowest on this hardware</li>
     </ul>
     <p class="note"><b>Wired limit changed 2026-08-25:</b> <code>iogpu.wired_limit_mb</code> is
@@ -66,7 +66,7 @@
       <tr class="win"><td>Gemma-4-26B-A4B (MoE)</td><td>llama-server + MTP n=2</td><td class="num">71.9</td><td class="num">69.3</td></tr>
       <tr class="win"><td>Qwen3.6-35B-A3B (MoE)</td><td>llama-server + MTP n=3</td><td class="num">68.2</td><td class="num">73.5</td></tr>
       <tr><td>Gemma-4-12B</td><td>llama-server + MTP n=3</td><td class="num">35.0</td><td class="num">35.6</td></tr>
-      <tr><td>Ternary Bonsai-27B</td><td>mlx_lm.server</td><td class="num">28.6</td><td class="num">28.6</td></tr>
+      <tr><td>Ternary Bonsai-27B</td><td>mlx_lm.server (limit 25000: 24.5)</td><td class="num">24.5</td><td class="num">24.5</td></tr>
       <tr><td>Qwen3.8-27B</td><td>mlx_lm.server</td><td class="num">19.7</td><td class="num">19.6</td></tr>
       <tr><td>Qwen3.8-27B</td><td>llama-server + MTP n=3</td><td class="num">16.9</td><td class="num">15.7</td></tr>
     </table>
@@ -84,9 +84,9 @@
       <tr class="win"><td>Gemma-4-26B-A4B (MoE)</td><td>llama-server, 1 slot, q8_0 KV</td><td class="num">256K (model limit)</td><td class="num">62.4 py / 53.3 js</td></tr>
       <tr><td>Gemma-4-12B</td><td>llama-server, 1 slot</td><td class="num">256K (model limit)</td><td class="num">45.2</td></tr>
       <tr><td>Qwen3.6-35B-A3B (MoE)</td><td>llama-server, 1 slot, q8_0 KV</td><td class="num">96K (memory, limit 25000)</td><td class="num">62.0</td></tr>
-      <tr><td>Ternary Bonsai-27B</td><td>mlx_lm.server (dynamic KV)</td><td class="num">96K (memory)</td><td class="num">28.6</td></tr>
-      <tr><td>Qwen3.8-27B</td><td>llama-server, 1 slot, q8_0 KV</td><td class="num">160K (memory)</td><td class="num">~14.7</td></tr>
-      <tr><td>Qwen3.8-27B</td><td>mlx_lm.server</td><td class="num">48K (memory)</td><td class="num">19.7</td></tr>
+      <tr><td>Ternary Bonsai-27B</td><td>mlx_lm.server, bounded prompt cache</td><td class="num">49K (memory, limit 25000)</td><td class="num">18.8</td></tr>
+      <tr><td>Qwen3.8-27B</td><td>llama-server, 1 slot, q8_0 KV</td><td class="num">re-probe pending at limit 25000</td><td class="num">–</td></tr>
+      <tr><td>Qwen3.8-27B</td><td>mlx_lm.server</td><td class="num">28K OK; ceiling &lt;33K (limit 25000)</td><td class="num">14.2 at 28K</td></tr>
     </table>
     <p class="note">Context limits are mode-independent (KV is preallocated). The tok/s column
     here comes from short thinking-off probes; see each report for thinking-on speeds.</p>
@@ -99,8 +99,8 @@
       <tr class="win"><td>Gemma-4-12B</td><td>llama-server <code>--parallel 4 -c 1048576</code>, q8_0 KV</td><td class="num">4</td><td class="num">256K</td></tr>
       <tr><td>Gemma-4-26B-A4B (MoE)</td><td>llama-server <code>--parallel 2 -c 376832</code>, q8_0 KV</td><td class="num">2</td><td class="num">184K</td></tr>
       <tr><td>Qwen3.6-35B-A3B (MoE)</td><td>untested at limit 25000 (at 24000: OOM at 2&times;20K)</td><td class="num">–</td><td class="num">–</td></tr>
-      <tr><td>Qwen3.8-27B</td><td>llama-server <code>--parallel 2 -c 147456</code>, q8_0 KV</td><td class="num">2</td><td class="num">72K</td></tr>
-      <tr><td>Ternary Bonsai-27B</td><td>none until its GGUF unblocks</td><td class="num">–</td><td class="num">–</td></tr>
+      <tr><td>Qwen3.8-27B</td><td>re-probe pending at limit 25000</td><td class="num">–</td><td class="num">–</td></tr>
+      <tr><td>Ternary Bonsai-27B</td><td>prism fork <code>--parallel 2 -c 98304</code>, q4_0 KV</td><td class="num">2</td><td class="num">48K — 9.8 tok/s each concurrent, 10.0 GB RSS</td></tr>
     </table>
     <p class="note"><b>Decision: parallel serving runs on llama-server only.</b> MLX has no
     slots; its only concurrency is one server process per agent, each with its own full weight
@@ -128,6 +128,31 @@
     (30K tokens of reasoning without an answer) — that is model behavior, not a harness
     limit, and the 12B does it more than the 26B. Full history:
     <code>night2/results.md</code>, <code>night2/state.md</code>.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Decode speed vs used context — the 8 tok/s usability floor (2026-08-28, limit 25000)</h2>
+    <p class="note">Why this axis exists: decode speed falls as the KV cache <i>fills</i> —
+    a real coding session measured 1.7 tok/s at 135K used tokens on a config whose
+    near-empty benchmark said 62. Context maxima alone are storage, not speed. Each model
+    is swept with an append-only growing prompt (perfect cache reuse) until decode drops
+    under the user's 8 tok/s floor or the server runs out of memory. The floor, not the
+    window, is where pi's compaction threshold belongs — and capping the window also
+    returns wired memory to the system.</p>
+    <table>
+      <tr><th>model / runtime</th><th class="num">4K</th><th class="num">16K</th><th class="num">24-33K</th><th class="num">49K</th><th>8 tok/s floor</th></tr>
+      <tr class="win"><td>Bonsai MLX (f16 KV)</td><td class="num">24.5</td><td class="num">22.9</td><td class="num">20.5</td><td class="num">18.8</td><td>never — memory OOM ~49-65K</td></tr>
+      <tr class="win"><td>Qwen3.8 MLX</td><td class="num">17.1*</td><td class="num">16.4</td><td class="num">14.2 (28K)</td><td class="num oom">OOM &lt;33K</td><td>never — memory ceiling 29-33K</td></tr>
+      <tr><td>Bonsai prism fork (q4 KV)</td><td class="num">14.6</td><td class="num">10.6</td><td class="num">9.0 / 7.8</td><td class="num">–</td><td>~30K (speed)</td></tr>
+      <tr><td>Qwen3.8 llama (q8, MTP)</td><td class="num">14.1</td><td class="num">8.6</td><td class="num">7.3</td><td class="num">–</td><td>~19K (speed)</td></tr>
+      <tr><td>Qwen3.6-35B llama (q8, MTP)</td><td class="num">~68</td><td class="num">–</td><td class="num">16.7 at 31K</td><td class="num">–</td><td>~79K estimated — sweep pending</td></tr>
+      <tr><td>Gemma-26B / Gemma-12B (all runtimes)</td><td colspan="4" class="num">sweeps pending (earlier data invalid: wrong sysctl)</td><td>–</td></tr>
+    </table>
+    <p class="note">*8K value; the 4K step was not sampled in the bracket run. MLX runtimes
+    barely creep but hit hard memory ceilings; llama runtimes creep faster but never OOM
+    inside their window. Bonsai on the fork also serves <b>2×48K slots at 9.8 tok/s each
+    concurrently in 10.0 GB</b> — the only multi-agent config measured that leaves the
+    machine free. Raw sweeps in the benchmarks markdowns.</p>
   </div>
 
   <div class="card">
