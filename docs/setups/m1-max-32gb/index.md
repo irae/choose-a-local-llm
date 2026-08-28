@@ -1,19 +1,35 @@
 # This machine — M1 Max, 32 GB
 
+## Highlights
+
+- **Wired limit 25000 MB.** It resets on reboot. Re-run the sysctl before any
+  model work.
+- **Depth sweeps are complete** for every model and every runtime. The
+  decode-vs-used-context table on the [comparison page](./comparison.md) is
+  this project's main artifact.
+- **Two models have fair quality scores.** Qwen3.8 at 0.982/0.939 and Bonsai
+  at 0.915/0.884. Qwen3.6 still carries a deflated number.
+- **Four runtimes are in play**, not one: llama-server, mlx_lm.server, LM
+  Studio's engine, and the PrismML llama.cpp fork.
+- **The law:** MLX barely slows down but OOMs hard; llama slows down faster
+  but never OOMs inside its window.
+
 ## Setup
 
-- `sudo sysctl iogpu.wired_limit_mb=25000` — **resets on reboot; re-run before
-  any model work.** History: 27000 made the machine too slow for normal use;
-  24000 gave too little context (Qwen3.6-35B capped at 40K); 25000 is the
-  compromise. Every published number states its limit; only 25000 numbers may
-  appear on the site pages.
-- Servers always on port 8081 (8080 is the DB admin UI); LM Studio serves on
-  1234. Harness: pi (`~/.pi/agent/models.json`); the user picks servers by
-  copy-pasting the command blocks on the report pages; aliases equal pi model ids.
-- Swap arithmetic: the server's RSS is wired; kernel wires ~2-3 GB more; all
-  apps share the rest of 32 GB. Whole-machine slowness = swap; slow model on
-  a healthy machine = depth physics. Distinguish before acting
-  (`vm_stat`, `sysctl vm.swapusage`, the mem-watch probe).
+```bash
+sudo sysctl iogpu.wired_limit_mb=25000
+```
+
+**This resets on reboot.** Re-run it before any model work.
+
+- Servers always listen on port 8081. Port 8080 is the DB admin UI. LM Studio
+  serves on 1234.
+- Harness: pi (`~/.pi/agent/models.json`). Pick a server by copy-pasting the
+  command block from its report page. Aliases equal the pi model ids.
+- Swap arithmetic: the server's RSS is wired, the kernel wires ~2-3 GB more,
+  and all apps share the rest of 32 GB. Whole-machine slowness means swap. A
+  slow model on a healthy machine means depth physics. Tell them apart before
+  acting, with `vm_stat`, `sysctl vm.swapusage`, or the memory probe.
 
 ## Models under test
 
@@ -25,50 +41,59 @@
 | Ternary Bonsai-27B | `prism-ml/Ternary-Bonsai-27B-mlx-2bit`; GGUF `Q2_g64` + `PQ2_0` + converted dflash drafter (prism fork only) | [report](/setups/m1-max-32gb/reports/bonsai-27b), [benchmarks](./benchmarks/bonsai-27b.md) |
 | Gemma-4-12B-it | `unsloth/gemma-4-12b-it-GGUF:Q4_K_XL`; `lmstudio-community/gemma-4-12B-it-MLX-4bit` (LM Studio engine only) | [report](/setups/m1-max-32gb/reports/gemma-4-12b-it), [benchmarks](./benchmarks/gemma-4-12b-it.md) |
 
-Thinking controls: Gemma 4 = binary `enable_thinking`, default OFF. Qwen3.6
-family (incl. Bonsai) = binary, default ON. Qwen3.8 = graded effort
-(`low`/`medium`/`xhigh`). 1-bit Bonsai is out of scope.
+Thinking controls differ by family. Gemma 4 uses a binary `enable_thinking`,
+default off. The Qwen3.6 family, including Bonsai, is binary and defaults on.
+Qwen3.8 uses graded effort: `low`, `medium`, `xhigh`. 1-bit Bonsai is out of
+scope.
 
-## Current state (2026-08-28, end of day)
+## Current state
 
-- **Depth sweeps complete for every model and runtime** — the decode-vs-used-
-  context table on the [comparison page](./comparison.md) is
-  the project's main artifact. Law:
-  MLX barely creeps but OOMs hard; llama creeps but never OOMs in-window.
-- Best curves, all quality-unscored: Gemma-12B on LM Studio (flattest,
-  30.8 tok/s at 74K, 8.8 GB), Gemma-26B MLX (51→22 at 74K, 13.5 GB),
-  Qwen3.6 llama (never floors inside 96K), Qwen3.6 MLX (42 tok/s at 33K).
+As of 2026-08-28, end of day.
+
+- Best curves, all quality-unscored: Gemma-12B on LM Studio is flattest at
+  30.8 tok/s at 74K in 8.8 GB; Gemma-26B MLX runs 51→22 at 74K in 13.5 GB;
+  Qwen3.6 llama never floors inside 96K; Qwen3.6 MLX holds 42 tok/s at 33K.
 - Fair EvalPlus scores: Qwen3.8-mlx-medium **0.982/0.939**, Bonsai-mlx-f16
-  **0.915/0.884**. Qwen3.6 still carries a deflated 0.610 (correction parked
-  at 5/62). Gemmas unscored; their thinking mode sometimes never converges
-  (12B worse than 26B).
-- Bonsai extras: PrismML fork installed (`~/prism-llama/`), desktop profile
-  q4-KV 9.8 GB flat with ~30K floor, 2×48K slots at 9.8 tok/s each
-  concurrently (3×48K: 7.6 each), DSpark drafter converted and measured
-  (shallow-only gain; not used for scoring).
-- pi wiring today: qwen3.8-mlx at 26K window; bonsai-mlx at 48K; qwen3.6
-  llama at 96K; gemma-26b llama 256K (q8). Pending decisions: bonsai-prism
-  entry, gemma windows after quality scores.
-- Seat sketch (pending night-3 quality): main/deep = Gemma-26B MLX or
-  Qwen3.6; hard problems = Qwen3.8-MLX at 26K; all-day + swarm = Bonsai.
-  Gemma-12B re-entered play via LM Studio.
+  **0.915/0.884**. Qwen3.6 still carries a deflated 0.610, with its
+  correction parked at 5/62. The Gemmas are unscored; their thinking mode
+  sometimes never converges, and the 12B does it more than the 26B.
+- Bonsai extras: the PrismML fork is installed at `~/prism-llama/`. Its
+  desktop profile holds q4 KV at 9.8 GB flat with a ~30K floor, and serves
+  2×48K slots at 9.8 tok/s each concurrently — 3×48K gives 7.6 each. The
+  DSpark drafter is converted and measured; it helps only at shallow context,
+  so it is not used for scoring.
+- pi wiring today: qwen3.8-mlx at a 26K window, bonsai-mlx at 48K, qwen3.6
+  llama at 96K, gemma-26b llama at 256K with q8. Pending decisions: the
+  bonsai-prism entry, and the Gemma windows once quality scores exist.
+- Seat sketch, pending run-3 quality: main and deep go to Gemma-26B MLX or
+  Qwen3.6; hard problems go to Qwen3.8-MLX at 26K; all-day and swarm go to
+  Bonsai. Gemma-12B re-entered play through LM Studio.
 
 ## Open work
 
-- Night 3 (draft in `night3/NIGHT-AGENT.md`, uncommitted — decide with the
-  user): qwen36 correction, Gemma scores (now including the MLX/LM Studio
-  variants), bonsai-prism q4 A/B.
-- Ceiling brackets for the MLX configs that never floored (runs in flight).
-- Aider tier 2, driven from another computer (docker does not fit here).
-- Watch list and user context: `HANDOFF.md` (not committed).
+- Run 3 (draft in `night3/NIGHT-AGENT.md`, uncommitted — decide with the
+  owner): the qwen3.6 correction, Gemma scores including the MLX and LM
+  Studio variants, and the bonsai-prism q4 A/B.
+- Ceiling brackets for the MLX configs that never floored. Runs in flight.
+- Aider tier 2, driven from another computer. Docker does not fit here.
+- Watch list and owner context: `HANDOFF.md`, not committed.
 
-## Night-run history
+## Benchmark run history
 
-- **Night 1** (`night1/`): first EvalPlus pass; found and patched four
-  EvalPlus 0.3.1 defects; discovered the max_tokens flaw — all scores were
-  deflated lower bounds. Full incident log: `night1/state.md`.
-- **Night 2** (`night2/`): calibrated per-model budgets (Phase A), corrected
-  qwen3.8 and bonsai cheaply by regenerating only empty completions
-  (temperature-0 identity), found EvalPlus's infinite-retry timeout bug,
-  established the heartbeat rule. Log: `night2/state.md`.
-- **Night 3**: draft, pending joint sign-off.
+- **Run 1** (`night1/`): the first EvalPlus pass. It found and patched four
+  EvalPlus 0.3.1 defects, and discovered the `max_tokens` flaw that made
+  every score a deflated lower bound. Full incident log: `night1/state.md`.
+- **Run 2** (`night2/`): calibrated per-model output budgets, then corrected
+  qwen3.8 and bonsai cheaply by regenerating only the empty completions,
+  which is safe because temperature 0 is deterministic. It also found
+  EvalPlus's infinite-retry timeout bug and established the heartbeat rule.
+  Log: `night2/state.md`.
+- **Run 3**: draft, pending joint sign-off.
+
+## The wired limit, and why it is 25000
+
+27000 made the machine too slow for normal use. 24000 gave too little
+context — Qwen3.6-35B capped at 40K. 25000 is the compromise. Every published
+number states the limit it was measured under, and only 25000 numbers appear
+on the current site pages. Superseded measurements move to
+[historical.html](/setups/m1-max-32gb/historical.html).

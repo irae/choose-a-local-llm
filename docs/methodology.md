@@ -68,7 +68,7 @@ This is the law for every test cycle. Do not skip steps.
     prefix, and never use a fixed suffix that later steps insert before.
     llama-server reuses any longest common prefix; mlx_lm.server only reuses
     strict extensions. Verify reuse via llama's `.timings.prompt_n` (must be
-    the delta, not the total). Binds every unattended night run.
+    the delta, not the total). Binds every benchmark run.
 13. **Downloads: sequential, one at a time** on slow connections,
     needed-first order, never during meetings (parallel only when the user
     says so). Download only the exact files needed (`--hf-file` /
@@ -148,7 +148,7 @@ numbers; add thinking-off passes where sub-agent use is planned.
 scores.** Calibrate per model: sample ~10 fixed problems at a 30K cap,
 record real `completion_tokens`, set budget = observed max × 1.5 (floor
 8192). An undersized budget lets reasoning exhaust the cap and empty
-completions score as failures — night 1's flaw (up to 38% of scores lost).
+completions score as failures — run 1's flaw (up to 38% of scores lost).
 For models whose thinking sometimes never converges (finish_reason length at
 any budget), the budget is a waste-limiter: set it just above the longest
 SUCCESSFUL completion. Speculative decoding never changes outputs at
@@ -157,17 +157,17 @@ temperature 0, so score without a drafter and serve with one freely.
 Timing of runs is a secondary signal; never chase precision. pass@1 is what
 matters.
 
-## Unattended night runs
+## Benchmark runs
 
 - **Heartbeat, mandatory**: schedule a wakeup ≤20 minutes after starting any
   block; verify real output growth (not process liveness); restart dead
   blocks; every wakeup ends with a new wakeup or the shutdown checklist.
-  Verified necessary on night 2: a run sat 52 minutes in a silent retry loop.
+  Verified necessary on run 2: a block sat 52 minutes in a silent retry loop.
 - Close background apps before the run; start the memory probe.
 - The prompt-cache rule, the mlx watchdog, and the server-failure lore above
-  all bind night scripts.
+  all bind run scripts.
 - The runbook lives in `night<N>/NIGHT-AGENT.md`; state discipline in
-  `state.md` per night; results in `results.md`. Executors are explicitly
+  `state.md` per run; results in `results.md`. Executors are explicitly
   allowed to invent fixes for unforeseen problems — fairness first, smallest
   fix, document every deviation, suspect the harness before the model.
 - EvalPlus 0.3.1 needs local patches (token budget, extra_body, None-content,

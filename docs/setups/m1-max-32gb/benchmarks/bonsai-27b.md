@@ -51,10 +51,10 @@ Both servers: 14.9 GB RSS combined. ~12 GB left for KV → roughly 2×35K contex
 
 **Decision: ruled out.** Two servers mean two weight copies and per-agent endpoint wiring in the harness — not worth it. Parallel serving is llama-server's job; Bonsai gets a multi-session story when its ternary GGUF loads on a stable brew llama.cpp.
 
-## Quality — EvalPlus HumanEval+ (night 2, fair budget)
+## Quality — EvalPlus HumanEval+ (run 2, fair budget)
 
 **pass@1 0.915 base / 0.884 plus** (mlx, thinking on, output budget 10240,
-temperature 0). Night 1's flawed 3072 cap had scored it 0.640/0.634 — the
+temperature 0). Run 1's flawed 3072 cap had scored it 0.640/0.634 — the
 biggest correction of any model. 5/164 completions stay empty even at the full
 budget: a real model ceiling, not a harness artifact. The ternary 95% claim
 holds up in practice. Bonsai is also the least disruptive model to run while
@@ -89,7 +89,7 @@ Decode vs used context (append-only prompts, streamed timing, 64-tok probes):
 Flattest depth curve measured (-23% over 45K); the limit is memory, not
 speed. The old 96K/26.4 GB figures were taken at the retired 27000 limit and
 are withdrawn from the HTML. PrismML's bigger-context figures (100K @ ~15 GB,
-262K with 4-bit KV) require their llama.cpp fork path — see night 3's
+262K with 4-bit KV) require their llama.cpp fork path — see run 3's
 bonsai-prism block.
 
 ## PrismML llama.cpp fork (prism-b10660), Q2_g64 — measured 2026-08-28
@@ -125,7 +125,7 @@ q4's ~30K) and costs 4-5 GB; q4 KV beats q8 on both
 floor and memory. Full 262K allocates in 17.1 GB — storage, not speed.
 mem-watch (20 s interval) showed zero swap during all sweeps: compute-bound.
 
-**Two serving profiles** (quality of q4+bias pending night 3 EvalPlus):
+**Two serving profiles** (quality of q4+bias pending run 3 EvalPlus):
 - Speed (MLX): 24.5→18.8 tok/s to the ~49K memory ceiling; RSS grows with
   depth. `mlx_lm.server ... --prompt-cache-size 2`.
 - Desktop (fork): `prism-llama -m Ternary-Bonsai-27B-Q2_g64.gguf -c 65536

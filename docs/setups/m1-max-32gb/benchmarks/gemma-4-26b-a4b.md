@@ -81,7 +81,7 @@ f16 two-slot max was 2×128K. Single-slot stays f16 (model-limited at 256K; q8 b
 
 ## Pending
 
-- EvalPlus quality gate (night runs).
+- EvalPlus quality gate (benchmark runs).
 
 ## Depth sweeps (limit 25000, 2026-08-28)
 

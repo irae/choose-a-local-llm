@@ -106,7 +106,7 @@ The chat template has no `reasoning_effort` (unlike Qwen3.8) — only binary `en
 
 ## Pending
 
-- EvalPlus quality gate (night runs).
+- EvalPlus quality gate (benchmark runs).
 
 ## Depth sweeps (limit 25000, 2026-08-28)
 

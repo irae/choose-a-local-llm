@@ -53,5 +53,10 @@ export default defineConfig({
       { icon: 'github', link: 'https://github.com/irae/choose-a-local-llm' },
     ],
     outline: [2, 3],
+    footer: {
+      message:
+        'Measured and written by <a href="https://github.com/irae">Irae Carvalho</a>. Source on <a href="https://github.com/irae/choose-a-local-llm">GitHub</a>.',
+      copyright: 'Copyright © 2026 <a href="https://github.com/irae">Irae Carvalho</a>',
+    },
   },
 })

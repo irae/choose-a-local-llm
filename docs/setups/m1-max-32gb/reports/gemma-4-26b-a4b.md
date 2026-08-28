@@ -3,25 +3,24 @@
 llama-server (build 10621) · unsloth UD-Q4_K_XL + MTP draft · benchmarked
 2026-08-25 · `iogpu.wired_limit_mb=25000`
 
-## Summary
+## Highlights
 
-The MoE big sibling of Gemma-12B does everything its family does, faster.
-Under the current wired limit of **25000** the **full 256K trained window
-still fits on one slot** — but only with q8_0 KV (f16 now OOMs). q8 costs js
-speed: draft acceptance falls from 81% to 68%, so js decodes at ~53 tok/s vs
-py's 62-68. Two slots reach **2×184K**. Thinking (binary, default off) costs
-only ~3 tok/s. Quality gate (EvalPlus) pending.
+- **The full 256K trained window fits on one slot**, in 19.3 GB.
+- **The fastest depth curve measured on this machine**, on MLX: 51 tok/s at
+  4K, still 22 at 74K, in only 13.5 GB.
+- **Fastest Python decode of the llama configs**: 62 tok/s.
+- **Two agents at 184K each** on one weight copy.
+- **Thinking is nearly free**: it costs only ~3 tok/s.
+- Weak point: on llama it crosses the 8 tok/s floor at ~24K. The depth
+  belongs to its MLX build, not its llama build.
+- Weak point: quality is unscored. Its thinking mode sometimes never
+  converges.
 
-**62 / 53 tok/s** (py/js) with q8_0 KV at MTP n=2 · **256K** full model
-window on one slot · **2×184K** on two slots · **19.3 GB** RSS at 256K.
+## Best option
 
-## Which to pick for a coding task
-
-| need | config | tok/s | context |
-|---|---|--:|--:|
-| **Max context** | llama-server + MTP n=2, q8_0 KV, 1 slot | 62.4 / 53.3 | 256K |
-| **Max js speed** | f16 KV at small context (32K) | 74.8 / 71.6 | 32K |
-| **Two agents** | `--parallel 2 -c 376832`, q8_0 KV | 58.4 / 56.5 single-stream | 2×184K |
+**MLX for depth and speed** — the fast-and-deep contender for the main-agent
+seat, quality pending run 3. **llama-server for window size** — the only way
+to get the full 256K, and the only way to get two slots.
 
 Single agent — one 256K slot, q8_0 KV (pi id `gemma-4-26b-a4b`):
 
@@ -45,38 +44,13 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-q8_0 KV is now required for the full window (f16 OOMs at limit 25000) and it
-lowers js draft acceptance (81% → 68%), so js decodes at ~53 tok/s. py keeps
-62-68. Thinking: binary `enable_thinking` (trained-in `<|think|>`, default
-off, no effort levels); speed numbers here were measured with thinking off.
+## Which to pick for a coding task
 
-## MTP draft depth sweep (32K, f16 KV)
-
-Thinking ON (chat endpoint, `enable_thinking: true`, 1024 tokens):
-
-| --spec-draft-n-max | py tok/s | py accept | js tok/s | js accept |
-|---|--:|--:|--:|--:|
-| **2** | **71.88** | **84%** | **69.25** | **78%** |
-| 3 | 67.94 | 74% | 64.90 | 69% |
-| 4 | 63.97 | 69% | 61.00 | 65% |
-
-Thinking OFF (sub-agent / fast mode): peak 74.8 py / 71.6 js, also at n-max 2
-— thinking costs only ~3 tok/s. Full thinking-off tables in
-[the benchmarks](../benchmarks/gemma-4-26b-a4b.md).
-
-## Context (n-max 2, q8_0 KV, limit 25000 — current)
-
-| -c | slots | result | RSS |
-|---|---|---|--:|
-| 262,144 | 1 (f16 KV) | Metal OOM — f16 no longer fits | – |
-| **262,144** | **1** | **OK, 62.4/53.3 tok/s — full window (256-tok verified)** | **19.3 GB** |
-| 327,680 | 2×160K | OK, 67.6/52.7 tok/s | 20.1 GB |
-| **376,832** | **2×184K** | **OK, 58.4/56.5 tok/s — two-slot max (256-tok verified)** | **20.4 GB** |
-| 385,024 | 2×188K | Metal OOM | – |
-| 393,216 | 2×192K | Metal OOM | – |
-
-At the retired 27000 limit, f16 KV held the full 256K single slot (21.6 GB
-RSS) and q8 reached 2×192K. A deep-fill decode check is pending.
+| need | config | tok/s | context |
+|---|---|--:|--:|
+| **Max context** | llama-server + MTP n=2, q8_0 KV, 1 slot | 62.4 / 53.3 | 256K |
+| **Max js speed** | f16 KV at small context (32K) | 74.8 / 71.6 | 32K |
+| **Two agents** | `--parallel 2 -c 376832`, q8_0 KV | 58.4 / 56.5 single-stream | 2×184K |
 
 ## Decode speed vs used context (depth sweeps, limit 25000)
 
@@ -91,9 +65,59 @@ RSS) and q8 reached 2×192K. A deep-fill decode check is pending.
 | 82K | | 20.6 |
 | ~98K | | Metal OOM — ceiling 82-98K |
 
-llama is capped by speed (~24K floor); MLX is capped by memory (82-98K) and
-stays fast the whole way — 13.5 GB RSS at 74K. The MLX config is the
-fast-and-deep contender for the main-agent seat, quality pending (night 3).
+## Context (n-max 2, q8_0 KV, limit 25000 — current)
+
+| -c | slots | result | RSS |
+|---|---|---|--:|
+| 262,144 | 1 (f16 KV) | Metal OOM — f16 no longer fits | – |
+| **262,144** | **1** | **OK, 62.4/53.3 tok/s — full window (256-tok verified)** | **19.3 GB** |
+| 327,680 | 2×160K | OK, 67.6/52.7 tok/s | 20.1 GB |
+| **376,832** | **2×184K** | **OK, 58.4/56.5 tok/s — two-slot max (256-tok verified)** | **20.4 GB** |
+| 385,024 | 2×188K | Metal OOM | – |
+| 393,216 | 2×192K | Metal OOM | – |
+
+## MTP draft depth sweep (32K, f16 KV)
+
+Thinking ON (chat endpoint, `enable_thinking: true`, 1024 tokens):
+
+| --spec-draft-n-max | py tok/s | py accept | js tok/s | js accept |
+|---|--:|--:|--:|--:|
+| **2** | **71.88** | **84%** | **69.25** | **78%** |
+| 3 | 67.94 | 74% | 64.90 | 69% |
+| 4 | 63.97 | 69% | 61.00 | 65% |
+
+Thinking OFF (sub-agent / fast mode): peak 74.8 py / 71.6 js, also at n-max 2.
+Full thinking-off tables in
+[the benchmarks](../benchmarks/gemma-4-26b-a4b.md).
+
+## History and reasoning
+
+**q8_0 KV is now mandatory, and it costs JavaScript speed.** Under the
+current 25000 wired limit, f16 KV no longer fits the full window at all. q8
+lowers js draft acceptance from 81% to 68%, so js decodes at ~53 tok/s while
+py keeps 62-68. At the retired 27000 limit, f16 held the full 256K single
+slot at 21.6 GB RSS, and q8 reached 2×192K.
+
+**llama is capped by speed; MLX is capped by memory.** The llama build floors
+at ~24K, which makes its 256K window mostly storage. The MLX build stays fast
+the whole way to 74K in 13.5 GB and then OOMs between 82K and 98K. For actual
+deep work, MLX is the config that matters; the llama window is what you use
+when you need to *hold* a lot of context rather than decode quickly through
+it.
+
+**Thinking is binary here.** Gemma 4 has trained-in reasoning
+(`<|think|>`) toggled by `enable_thinking` in the chat template. It is
+on/off, default off, with no graded effort levels. The speed numbers on this
+page were measured with thinking off. Thinking costs only ~3 tok/s, so there
+is little reason to avoid it on quality grounds.
+
+**Quality is unscored, and the reason is interesting.** Run 2 only calibrated
+this model. At a 30K output cap, 2 of 10 sample problems never finished
+reasoning at all. That is model behavior, not a harness limit. Its smaller
+sibling, the 12B, does it more often — counterintuitively. The EvalPlus gate
+for this config is scheduled for run 3.
+
+A deep-fill decode check on the llama config is still pending.
 
 ---
 

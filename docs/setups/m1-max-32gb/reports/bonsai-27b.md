@@ -1,39 +1,44 @@
 # Ternary Bonsai-27B on M1 Max 32 GB
 
-mlx-lm 0.31.3 (llama-server pending a release) · prism-ml ternary 2-bit ·
-benchmarked 2026-08-25
+mlx-lm 0.31.3 · prism-ml ternary 2-bit · benchmarked 2026-08-25
 
-## Summary
+## Highlights
 
-Ternary (2-bit) Bonsai — PrismML's quality-oriented compression of
-Qwen3.6-27B, claiming 95% of full-precision performance — decodes at **~24
-tok/s** on mlx-lm with only ~8 GB of weights, and holds **49K context at 18.8
-tok/s** under the current wired limit (25000; OOM before 65K — the 262K
-trained window is memory-capped). The flattest speed-vs-depth curve of any
-model tested. The PrismML llama.cpp fork (installed, night-3 candidate) adds
-q4 KV and speculative decoding for bigger context. EvalPlus verified:
-**0.915 / 0.884** HumanEval+ (fair budget, night 2) — 27B-class quality from
-8 GB of weights.
+- **27B-class quality from 8 GB of weights.** EvalPlus 0.915 / 0.884.
+- **The flattest speed curve of any model here.** Only −23% from 4K to 49K.
+- **Never hits the speed floor.** Its limit is memory, not speed.
+- **The least disruptive model to work beside.** Moderate fan noise, small
+  footprint. The best all-day background agent.
+- **The only multi-agent setup that leaves the machine free.** The prism fork
+  serves 2×48K slots at 9.8 tok/s each, in 10.0 GB flat.
+- Weak point: memory grows with the session on MLX and OOMs by ~57-61K.
 
-**24.5 tok/s** decode at shallow context · **57K** max healthy context at
-limit 25000 · **18.8 tok/s at 49K**, the flattest creep measured · **no MTP**
-— DSpark drafter via the prism fork instead.
+## Best option
 
-## Quality — EvalPlus HumanEval+ (fair score, night 2)
+**mlx_lm.server, 2-bit, bounded prompt cache.** 24.5 tok/s shallow, 18.8
+tok/s at 49K, healthy to 57K.
 
-| config scored | pass@1 base | pass@1 plus | empty completions |
-|---|--:|--:|--:|
-| mlx_lm.server 2-bit, thinking on, budget 10240 | 0.915 | 0.884 | 5/164 (~3%) |
+```bash
+mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
+  --prompt-cache-size 2 --port 8081
+```
 
-**Fair score — the token-budget flaw is fixed.** Night 2 calibrated the
-budget (10240) and regenerated all 55 budget-truncated completions: the score
-jumped from night 1's 0.640/0.634 to **0.915/0.884**, the biggest correction
-of any model. The remaining 5 empty completions are a real model ceiling
-(still empty at the full budget), not a harness artifact. The ternary claim
-holds up: 2-bit compression kept near-27B-class quality. Practical note:
-Bonsai is the least disruptive model to work alongside (moderate fan noise,
-low memory footprint) — a good all-day background agent. Details in
-`night2/results.md`.
+**Keep `--prompt-cache-size 2`.** By default the server pools several
+distinct KV caches, multi-gigabyte each at depth, and behaves like a memory
+leak across differently-shaped requests. Bounding the pool removed a false
+44K OOM and reduced depth creep.
+
+For a desktop that must stay usable, or for multiple agents, use the prism
+fork instead — 9.8 GB flat, floor ~30K:
+
+```bash
+~/prism-llama/llama-server \
+  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \
+  --alias bonsai-prism \
+  -ngl 999 -fa on -c 65536 \
+  --cache-type-k q4_0 --cache-type-v q4_0 \
+  --jinja --port 8081
+```
 
 ## Which to pick for a coding task
 
@@ -41,17 +46,13 @@ low memory footprint) — a good all-day background agent. Details in
 |---|---|--:|--:|
 | **Max context** | mlx_lm.server, bounded prompt cache | 18.8 at 49K | 57K OK; OOM before 61K (limit 25000) |
 | **Max speed** | same config, shallow context | 24.5 | ≤8K |
-| **Multi-agent** | prism fork `--parallel 2 -c 98304`, q4 KV — 9.8 tok/s each concurrent, 10.0 GB | 9.8×2 | 2×48K |
+| **Multi-agent** | prism fork `--parallel 2 -c 98304`, q4 KV | 9.8×2 | 2×48K |
 
-One command — requests queue (no slots). **Keep `--prompt-cache-size 2`**: by
-default the server pools several distinct KV caches (multi-gigabyte each at
-depth) and behaves like a memory leak across differently-shaped requests;
-bounding the pool removed a false 44K OOM and reduced depth creep.
+## Quality — EvalPlus HumanEval+ (run 2)
 
-```bash
-mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
-  --prompt-cache-size 2 --port 8081
-```
+| config scored | pass@1 base | pass@1 plus | empty completions |
+|---|--:|--:|--:|
+| mlx_lm.server 2-bit, thinking on, budget 10240 | 0.915 | 0.884 | 5/164 (~3%) |
 
 ## Decode speed vs used context (sweep, limit 25000)
 
@@ -66,12 +67,6 @@ mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
 | **57K** | **18.2 — deepest healthy point** |
 | ~61K | Metal OOM — ceiling 57-61K |
 
-The flattest depth curve of all models measured: −23% from 4K to 49K, never
-approaching the 8 tok/s usability floor — Bonsai's limit is memory, not
-speed. PrismML's own figures (100K at ~15 GB; 262K with 4-bit KV) need their
-serving stack: the 4-bit KV path is llama.cpp-only, so the prism-fork run
-(night 3) is where the bigger context lives.
-
 ## PrismML llama.cpp fork (measured 2026-08-28)
 
 | config (alloc) | shallow tok/s | 8 tok/s floor | RSS |
@@ -85,42 +80,51 @@ serving stack: the 4-bit KV path is llama.cpp-only, so the prism-fork run
 | q8_0 KV plain (262K) | 12.8 | ~21K | 17.1 GB — full window fits |
 | **q4_0, 2 slots (2×48K)** | **9.8 each, both decoding** | – | **10.0 GB** |
 
-**Two serving profiles.** Speed: MLX (above) — fastest at every depth it
-reaches, but memory grows with the session and hard-OOMs by ~49–65K. Desktop:
-fork q4 plain at 64K alloc — **9.8 GB flat**, floor ~30K, the Mac stays
-usable while the agent runs; q4 quality (with PrismML's calibration bias) is
-pending the night-3 EvalPlus check. The DSpark drafter is output-lossless and
-lifts shallow decode (19.1/21.5 py/js at n-max 2, 69/84% acceptance) but
-lowers the floor at every draft depth tried (n1 least: ~23K vs plain q4's
-~30K) and adds 4-5 GB — use it only for shallow-context serving. Drafter file
-must be converted locally (`gguf-dspark-to-dflash`); the published Q4_1
-sidecar and plain Q2_0 GGUF are legacy layouts that do not load on current
-fork builds.
+## History and reasoning
 
-Desktop-profile command (fork binary, `prism-llama` alias):
+**The quality number was wrong at first, and the correction was the biggest
+of any model.** Ternary Bonsai is PrismML's quality-oriented compression of
+Qwen3.6-27B, and they claim 95% of full-precision performance. Run 1 scored
+it at 0.640/0.634 with a token budget that was too small. Run 2 calibrated
+the budget (10240) and regenerated all 55 truncated completions. The score
+jumped to 0.915/0.884. The flawed cap had been hiding most of its ability.
+The 5 empty completions that remain are a real model ceiling — they stay
+empty at the full budget — not a harness artifact. The ternary claim holds
+up: 2-bit compression kept near-27B-class quality. Details in
+`night2/results.md`.
 
-```bash
-~/prism-llama/llama-server \
-  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \
-  --alias bonsai-prism \
-  -ngl 999 -fa on -c 65536 \
-  --cache-type-k q4_0 --cache-type-v q4_0 \
-  --jinja --port 8081
-```
+**Two serving profiles, and they trade against each other.** MLX is fastest
+at every depth it reaches, but memory grows with the session and hard-OOMs by
+~57-61K. The prism fork q4 at 64K alloc stays at 9.8 GB flat with a ~30K
+floor, so the Mac stays usable while the agent runs. The q4 quality, which
+carries PrismML's own calibration bias, still needs its EvalPlus check
+(run 3).
 
-## Blocked / parked
+**The DSpark drafter is not worth it past shallow context.** It is
+output-lossless and lifts shallow decode to 19.1/21.5 py/js at n-max 2, with
+69/84% acceptance. But it lowers the floor at every draft depth tried — n1 is
+the least harmful at ~23K, against plain q4's ~30K — and it adds 4-5 GB. Use
+it only for shallow-context serving. The drafter file must be converted
+locally with `gguf-dspark-to-dflash`; the published Q4_1 sidecar and the
+plain Q2_0 GGUF are legacy layouts that do not load on current fork builds.
 
-GGUF Q2_0 (6.7 GB, on disk, byte-verified): the current brew llama.cpp
-(build 10621) predates the final Q2_0 tensor layout and refuses to load it.
-Parked until the next stable release — that unlocks llama-server slots,
-preallocated context, and a possible multi-slot story. When starting it, pin
-the file: `--hf-file Ternary-Bonsai-27B-Q2_0.gguf` (the `:Q2_0` tag wrongly
-matches the PQ2_0 variant).
+**PrismML's own published figures need their serving stack.** They report
+100K at ~15 GB, and 262K with 4-bit KV. The 4-bit KV path is llama.cpp-only,
+so the fork is where the bigger context lives.
+
+**Blocked: GGUF Q2_0.** The file is on disk, 6.7 GB, byte-verified. The
+current brew llama.cpp (build 10621) predates the final Q2_0 tensor layout
+and refuses to load it. Parked until the next stable release, which would
+unlock llama-server slots, preallocated context, and a possible multi-slot
+story. When starting it, pin the file: `--hf-file
+Ternary-Bonsai-27B-Q2_0.gguf` — the `:Q2_0` tag wrongly matches the PQ2_0
+variant.
+
+1-bit variants were dropped from scope and deleted.
 
 ---
 
 Method: warmup before every measurement; identical prompts across models;
 temp 0. Full raw numbers in
 [the benchmarks](../benchmarks/bonsai-27b.md). Cross-model picks on
-[the comparison page](../comparison.md). 1-bit variants were dropped from
-scope and deleted.
+[the comparison page](../comparison.md).
