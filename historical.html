@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Historical comparison data — local models on M1 Max</title>
+<style>
+  :root {
+    --ink: #1c2733;
+    --muted: #5b6b7b;
+    --line: #dde4ea;
+    --bg: #f6f8fa;
+    --card: #ffffff;
+    --accent: #b0632f;
+    --accent-soft: #f9efe6;
+    --bad: #a33;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem; background: var(--bg); color: var(--ink);
+    font: 15px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 .25rem; }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; }
+  h2 { font-size: 1.05rem; margin: 2rem 0 .5rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+  }
+  .summary { border-left: 4px solid var(--accent); }
+  table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; }
+  th, td { text-align: left; padding: .4rem .7rem; border-bottom: 1px solid var(--line); }
+  th { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.win td { background: var(--accent-soft); font-weight: 600; }
+  .note { color: var(--muted); font-size: .85rem; }
+  a { color: var(--accent); }
+  footer { color: var(--muted); font-size: .8rem; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Historical comparison data</h1>
+  <p class="sub">Cards moved out of <a href="comparison.html">comparison.html</a> when it was
+  slimmed to the current picture (2026-08-28)</p>
+
+  <div class="card summary">
+    <p class="note">These tables mix eras: some rows were measured at the retired wired limit
+    (27000) and some at the current 25000; several measure allocation (storage), which the
+    depth sweeps superseded as the usable-speed axis. Kept verbatim for reference — the
+    markdowns hold the full archives, and <code>comparison.html</code> holds only current
+    numbers.</p>
+  </div>
+
+<div class="card">
+    <h2 style="margin-top:0">Decode speed (best server-usable config per model)</h2>
+    <table>
+      <tr><th>model</th><th>config</th><th class="num">py tok/s</th><th class="num">js tok/s</th></tr>
+      <tr class="win"><td>Gemma-4-26B-A4B (MoE)</td><td>llama-server + MTP n=2</td><td class="num">71.9</td><td class="num">69.3</td></tr>
+      <tr class="win"><td>Qwen3.6-35B-A3B (MoE)</td><td>llama-server + MTP n=3</td><td class="num">68.2</td><td class="num">73.5</td></tr>
+      <tr><td>Gemma-4-12B</td><td>llama-server + MTP n=3</td><td class="num">35.0</td><td class="num">35.6</td></tr>
+      <tr><td>Ternary Bonsai-27B</td><td>mlx_lm.server (limit 25000: 24.5)</td><td class="num">24.5</td><td class="num">24.5</td></tr>
+      <tr><td>Qwen3.8-27B</td><td>mlx_lm.server</td><td class="num">19.7</td><td class="num">19.6</td></tr>
+      <tr><td>Qwen3.8-27B</td><td>llama-server + MTP n=3</td><td class="num">16.9</td><td class="num">15.7</td></tr>
+    </table>
+    <p class="note">All values are thinking-on where the model supports it. Thinking-off
+    (sub-agent mode): Gemma-26B 74.8/71.6 (n=2), Gemma-12B 45.2/31.3 (n=4). Qwen's true
+    fastest (MLX + MTP, 20.2/22.5) is CLI-only and can't back a harness. Gemma-26B's numbers
+    are f16 KV at 32K; its 256K config needs q8 KV now, which drops js to ~53 tok/s (draft
+    acceptance falls under q8).</p>
+  </div>
+
+<div class="card">
+    <h2 style="margin-top:0">Max context — single session</h2>
+    <table>
+      <tr><th>model</th><th>config</th><th class="num">max context</th><th class="num">tok/s at it</th></tr>
+      <tr class="win"><td>Gemma-4-26B-A4B (MoE)</td><td>llama-server, 1 slot, q8_0 KV</td><td class="num">256K (model limit)</td><td class="num">62.4 py / 53.3 js</td></tr>
+      <tr><td>Gemma-4-12B</td><td>llama-server, 1 slot</td><td class="num">256K (model limit)</td><td class="num">45.2</td></tr>
+      <tr><td>Qwen3.6-35B-A3B (MoE)</td><td>llama-server, 1 slot, q8_0 KV</td><td class="num">96K (memory, limit 25000)</td><td class="num">62.0</td></tr>
+      <tr><td>Ternary Bonsai-27B</td><td>mlx_lm.server, bounded prompt cache</td><td class="num">49K (memory, limit 25000)</td><td class="num">18.8</td></tr>
+      <tr><td>Qwen3.8-27B</td><td>llama-server, 1 slot, q8_0 KV</td><td class="num">re-probe pending at limit 25000</td><td class="num">–</td></tr>
+      <tr><td>Qwen3.8-27B</td><td>mlx_lm.server</td><td class="num">28K OK; ceiling &lt;33K (limit 25000)</td><td class="num">14.2 at 28K</td></tr>
+    </table>
+    <p class="note">Context limits are mode-independent (KV is preallocated). The tok/s column
+    here comes from short thinking-off probes; see each report for thinking-on speeds.</p>
+  </div>
+
+<div class="card">
+    <h2 style="margin-top:0">Multi-session (concurrent agents)</h2>
+    <table>
+      <tr><th>model</th><th>config</th><th class="num">sessions</th><th class="num">context each</th></tr>
+      <tr class="win"><td>Gemma-4-12B</td><td>llama-server <code>--parallel 4 -c 1048576</code>, q8_0 KV</td><td class="num">4</td><td class="num">256K</td></tr>
+      <tr><td>Gemma-4-26B-A4B (MoE)</td><td>llama-server <code>--parallel 2 -c 376832</code>, q8_0 KV</td><td class="num">2</td><td class="num">184K</td></tr>
+      <tr><td>Qwen3.6-35B-A3B (MoE)</td><td>untested at limit 25000 (at 24000: OOM at 2&times;20K)</td><td class="num">–</td><td class="num">–</td></tr>
+      <tr><td>Qwen3.8-27B</td><td>re-probe pending at limit 25000</td><td class="num">–</td><td class="num">–</td></tr>
+      <tr><td>Ternary Bonsai-27B</td><td>prism fork <code>--parallel 2 -c 98304</code>, q4_0 KV</td><td class="num">2</td><td class="num">48K — 9.8 tok/s each concurrent, 10.0 GB RSS</td></tr>
+    </table>
+    <p class="note"><b>Decision: parallel serving runs on llama-server only.</b> MLX has no
+    slots; its only concurrency is one server process per agent, each with its own full weight
+    copy and its own port to wire into the harness. Measured (two Bonsai instances: 14.0 tok/s
+    each, 14.9 GB) but ruled out as not worth the operational fiddling. Bonsai regains a
+    multi-session story when a brew llama.cpp release loads its ternary GGUF (projected ~300K
+    total context to split across slots).</p>
+  </div>
+
+  <footer>Raw data in the benchmarks-*.md files.</footer>
+</main>
+</body>
+</html>
