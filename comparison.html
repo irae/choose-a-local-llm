@@ -140,16 +140,16 @@
     window, is where pi's compaction threshold belongs — and capping the window also
     returns wired memory to the system.</p>
     <table>
-      <tr><th>model / runtime</th><th class="num">4K</th><th class="num">16K</th><th class="num">32-33K</th><th class="num">49K</th><th class="num">74-90K</th><th>8 tok/s floor</th></tr>
-      <tr class="win"><td>Gemma-26B MLX</td><td class="num">51.1</td><td class="num">43.5</td><td class="num">35.6</td><td class="num">28.8</td><td class="num">22.2 (74K)</td><td>not reached — deepest fast curve measured; ceiling &gt;74K untested</td></tr>
-      <tr class="win"><td>Qwen3.6-35B MLX</td><td class="num">53.3</td><td class="num">49.6</td><td class="num">42.2</td><td class="num oom">OOM</td><td class="num">–</td><td>never — memory ceiling 33-41K</td></tr>
-      <tr class="win"><td>Qwen3.6-35B llama (q8, MTP)</td><td class="num">44.5</td><td class="num">30.1</td><td class="num">18.8</td><td class="num">13.5</td><td class="num">8.1 (90K)</td><td>not inside its 96K window</td></tr>
-      <tr><td>Bonsai MLX (f16 KV)</td><td class="num">24.5</td><td class="num">22.9</td><td class="num">20.5</td><td class="num">18.8</td><td class="num">–</td><td>never — memory OOM ~49-65K</td></tr>
-      <tr><td>Qwen3.8 MLX</td><td class="num">17.1*</td><td class="num">16.4</td><td class="num">14.2 (28K)</td><td class="num oom">OOM &lt;33K</td><td class="num">–</td><td>never — memory ceiling 29-33K</td></tr>
-      <tr><td>Gemma-26B llama (q8, MTP)</td><td class="num">23.5</td><td class="num">11.2</td><td class="num oom">7.97 (24.5K)</td><td class="num">–</td><td class="num">–</td><td>~24K (speed)</td></tr>
-      <tr><td>Bonsai prism fork (q4 KV)</td><td class="num">14.6</td><td class="num">10.6</td><td class="num oom">7.8 (33K)</td><td class="num">–</td><td class="num">–</td><td>~30K (speed)</td></tr>
-      <tr><td>Qwen3.8 llama (q8, MTP)</td><td class="num">14.1</td><td class="num">8.6</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td>~19K (speed)</td></tr>
-      <tr><td>Gemma-12B llama (q8, MTP)</td><td class="num">14.0</td><td class="num oom">6.8</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td>~11K (speed)</td></tr>
+      <tr><th>model / runtime</th><th class="num">tok/s @ 4K</th><th class="num">@ 16K</th><th class="num">@ 32-33K</th><th class="num">@ 49K</th><th class="num">@ 74-90K</th><th>capped by</th></tr>
+      <tr class="win"><td>Gemma-26B MLX</td><td class="num">51.1</td><td class="num">43.5</td><td class="num">35.6</td><td class="num">28.8</td><td class="num">22.2 (74K)</td><td>not found yet — still 22 tok/s at 74K; ceiling untested</td></tr>
+      <tr class="win"><td>Qwen3.6-35B MLX</td><td class="num">53.3</td><td class="num">49.6</td><td class="num">42.2</td><td class="num oom">OOM</td><td class="num">–</td><td>OOM at 33-41K</td></tr>
+      <tr class="win"><td>Qwen3.6-35B llama (q8, MTP)</td><td class="num">44.5</td><td class="num">30.1</td><td class="num">18.8</td><td class="num">13.5</td><td class="num">8.1 (90K)</td><td>its own 96K window — still 8.1 tok/s at 90K</td></tr>
+      <tr><td>Bonsai MLX (f16 KV)</td><td class="num">24.5</td><td class="num">22.9</td><td class="num">20.5</td><td class="num">18.8</td><td class="num">–</td><td>OOM at 49-65K</td></tr>
+      <tr><td>Qwen3.8 MLX</td><td class="num">17.1*</td><td class="num">16.4</td><td class="num">14.2 (28K)</td><td class="num oom">OOM &lt;33K</td><td class="num">–</td><td>OOM at 29-33K</td></tr>
+      <tr><td>Gemma-26B llama (q8, MTP)</td><td class="num">23.5</td><td class="num">11.2</td><td class="num oom">7.97 (24.5K)</td><td class="num">–</td><td class="num">–</td><td>speed — under 8 tok/s at ~24K</td></tr>
+      <tr><td>Bonsai prism fork (q4 KV)</td><td class="num">14.6</td><td class="num">10.6</td><td class="num oom">7.8 (33K)</td><td class="num">–</td><td class="num">–</td><td>speed — under 8 tok/s at ~30K</td></tr>
+      <tr><td>Qwen3.8 llama (q8, MTP)</td><td class="num">14.1</td><td class="num">8.6</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td>speed — under 8 tok/s at ~19K</td></tr>
+      <tr><td>Gemma-12B llama (q8, MTP)</td><td class="num">14.0</td><td class="num oom">6.8</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td>speed — under 8 tok/s at ~11K</td></tr>
       <tr><td>Gemma-12B MLX</td><td colspan="5" class="num">unsupported — mlx-lm 0.31.3 lacks the gemma4_unified model type</td><td>–</td></tr>
     </table>
     <p class="note">*8K value. Sweep prompts are synthetic code continuations, so MTP-model
