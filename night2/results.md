@@ -14,7 +14,7 @@ bonsai-think 0.640/0.634.
 
 ## Not yet corrected
 
-qwen36-think: 5 of 62 empty completions regenerated (paused mid-run,
-resumable). gemma26-think, gemma12-think: calibrated only (budget 30000
-each), no problems run yet. Per user instruction, none of these three
-restart without explicit go-ahead.
+qwen36-think: corrected in night 3, see `night3/results.md`.
+gemma26-think, gemma12-think: calibrated only (budget 30000 each), no
+problems run yet. Per user instruction, none of these restart without
+explicit go-ahead.
