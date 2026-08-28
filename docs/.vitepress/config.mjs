@@ -22,7 +22,7 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: 'Setup overview', link: '/setups/m1-max-32gb/' },
-          { text: 'Comparison', link: '/setups/m1-max-32gb/comparison.html' },
+          { text: 'Comparison', link: '/setups/m1-max-32gb/comparison' },
           {
             text: 'Reports',
             collapsed: false,

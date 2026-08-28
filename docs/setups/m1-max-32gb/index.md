@@ -32,7 +32,7 @@ family (incl. Bonsai) = binary, default ON. Qwen3.8 = graded effort
 ## Current state (2026-08-28, end of day)
 
 - **Depth sweeps complete for every model and runtime** — the decode-vs-used-
-  context table in [comparison.html](/setups/m1-max-32gb/comparison.html) is
+  context table on the [comparison page](./comparison.md) is
   the project's main artifact. Law:
   MLX barely creeps but OOMs hard; llama creeps but never OOMs in-window.
 - Best curves, all quality-unscored: Gemma-12B on LM Studio (flattest,

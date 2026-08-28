@@ -58,7 +58,7 @@ Where to look:
 
 - [Setup overview](./setups/m1-max-32gb/index.md) — machine setup, models
   under test, current state, night-run history.
-- [Comparison](/setups/m1-max-32gb/comparison.html) — the cross-model
+- [Comparison](./setups/m1-max-32gb/comparison.md) — the cross-model
   picture: the depth/floor table, quality scores, current configs.
 - [Historical](/setups/m1-max-32gb/historical.html) — superseded
   measurements. Nothing on the current pages was measured under a retired
