@@ -1,0 +1,11 @@
+Greedy decoding ON (--greedy): setting bs=1, n_samples=1, temperature=0
+Initializing a decoder model: gemma-4-12b-it-mlx ...
+Sanitized code outputs will be saved to /Users/irae/code/choose-a-local-llm/night3/results/gemma12-lmstudio-off/humaneval/gemma-4-12b-it-mlx_openai_temp_0.0.jsonl
+Raw outputs will be saved to /Users/irae/code/choose-a-local-llm/night3/results/gemma12-lmstudio-off/humaneval/gemma-4-12b-it-mlx_openai_temp_0.0.raw.jsonl
+Codegen: HumanEval/0 @ gemma-4-12b-it-mlx
+Codegen: HumanEval/1 @ gemma-4-12b-it-mlx
+Codegen: HumanEval/2 @ gemma-4-12b-it-mlx
+Codegen: HumanEval/3 @ gemma-4-12b-it-mlx
+Codegen: HumanEval/4 @ gemma-4-12b-it-mlx
+Codegen: HumanEval/5 @ gemma-4-12b-it-mlx
+Codegen: HumanEval/6 @ gemma-4-12b-it-mlx

@@ -118,3 +118,4 @@
 19:26:40 free_mb=55 d_swapin=4879 d_swapout=24120 d_compress=412465 d_decompress=253802
 19:31:40 free_mb=70 d_swapin=31564 d_swapout=81127 d_compress=235812 d_decompress=174592
 19:36:40 free_mb=59 d_swapin=3494 d_swapout=55424 d_compress=199529 d_decompress=137114
+20:39:45 free_mb=105 d_swapin=0 d_swapout=0 d_compress=0 d_decompress=0
