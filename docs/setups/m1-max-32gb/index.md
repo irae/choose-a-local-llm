@@ -6,10 +6,10 @@
   any model work.** History: 27000 made the machine too slow for normal use;
   24000 gave too little context (Qwen3.6-35B capped at 40K); 25000 is the
   compromise. Every published number states its limit; only 25000 numbers may
-  appear on the HTML pages.
+  appear on the site pages.
 - Servers always on port 8081 (8080 is the DB admin UI); LM Studio serves on
   1234. Harness: pi (`~/.pi/agent/models.json`); the user picks servers by
-  copy-pasting the HTML command boxes; aliases equal pi model ids.
+  copy-pasting the command blocks on the report pages; aliases equal pi model ids.
 - Swap arithmetic: the server's RSS is wired; kernel wires ~2-3 GB more; all
   apps share the rest of 32 GB. Whole-machine slowness = swap; slow model on
   a healthy machine = depth physics. Distinguish before acting

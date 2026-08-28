@@ -1,8 +1,9 @@
 # Plan: publish the project as a website (GitHub Pages)
 
-Status: plan only. Another agent executes it. Everything must work locally
-first; pushing/publishing happens only when the user says so. Write all
-prose in ASD-STE100 Simplified Technical English.
+Status: phases 1 and 2 are done and committed on the `site` branch. Phase 3
+(publish) waits for the user's go. Phase 4 waits for the PC. Everything works
+locally; nothing is pushed. Write all prose in ASD-STE100 Simplified
+Technical English.
 
 ## Goal
 

@@ -36,9 +36,9 @@ This is the law for every test cycle. Do not skip steps.
    faster but never OOM inside their window.
 7. **Record each result on every surface in the same pass** — a result is not
    recorded until all agree: the model's
-   `docs/setups/<setup>/benchmarks/*.md` (full data), its report page
-   **including the summary KPI boxes** (they go stale easily), the
-   cross-model comparison page, and the harness config
+   `docs/setups/<setup>/benchmarks/*.md` (full data), its
+   `docs/setups/<setup>/reports/*.md` page **including the summary line**
+   (it goes stale easily), the setup's `comparison.md`, and the harness config
    (`~/.pi/agent/models.json`). Every server config gets a copy-paste command
    block in its report whose alias equals the harness model id. The report
    and comparison pages show only numbers measured under the CURRENT wired
@@ -60,7 +60,7 @@ This is the law for every test cycle. Do not skip steps.
     harness can use. CLI-only inference paths are disqualified.
 11. **Keep thinking-on AND thinking-off data, both labeled — never replace
     one with the other.** The target setup is mixed: main agent thinks,
-    sub-agents run thinking-off. HTML tables show thinking-on; thinking-off
+    sub-agents run thinking-off. Report tables show thinking-on; thinking-off
     goes in note text.
 12. **Benchmark scripts must reuse the server's prompt cache perfectly.**
     Grow prompts append-only: each request's prompt = the previous prompt +
