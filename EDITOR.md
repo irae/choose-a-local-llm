@@ -76,19 +76,20 @@ prose. This is the owner's rule and methodology rule 7 says the same.
 ## How to run the site
 
 ```bash
-npm install
-npm run docs:dev       # live reload, http://localhost:5173
-npm run docs:build     # writes docs/.vitepress/dist
-npm run docs:preview   # serves the built site, http://localhost:4173
-npm run docs:check     # link checker over the built output
+npm install                      # once
+npm run dev                      # write and preview, http://localhost:5173
+npm run verify                   # build + link check
+npm run deploy -- "what changed" # build, verify, commit. Stops before pushing.
 ```
 
-Add `-- --host 0.0.0.0` to `docs:dev` or `docs:preview` to reach it from
-another machine.
+If another agent already serves on 5173: `npm run dev -- --port 5174`.
 
-`docs:dev` costs much more memory than `docs:preview`. When a model server
-holds the GPU and the machine is swapping, prefer `docs:build` plus
-`docs:preview`.
+`npm run dev` costs much more memory than `npm run preview`. When a model
+server holds the GPU and the machine is swapping, use `npm run verify` then
+`npm run preview`.
+
+You never set the base path, the sitemap, the workflow, or the Pages source.
+They are wired already.
 
 ## Where things live
 
@@ -157,10 +158,10 @@ setup's `historical.md` rather than deleting it.
 
 ## Before you commit
 
-- `npm run docs:build` — the build fails on a broken internal link.
-- `npm run docs:check` — walks every href in the built output, catching
-  anything the build's Markdown link resolution does not cover.
-- Commit before you ask for review.
-- Do not push, deploy, or enable Pages without the owner's explicit go.
-  Phase 3 in `docs/website-plan.md` describes the deploy that is not set up
-  yet.
+- `npm run verify` — builds, then walks every href in the built output. The
+  build fails on a broken Markdown link; the checker catches the rest,
+  including links that are missing the site base path.
+- Commit before you ask for review. Use `npm run deploy -- "what changed"`,
+  which verifies and commits in one step.
+- **Never push.** `npm run deploy` stops before pushing on purpose and prints
+  the command for the owner. Publishing is the owner's step.

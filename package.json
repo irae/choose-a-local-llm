@@ -4,9 +4,14 @@
   "private": true,
   "description": "Finding the best local coding model for your machine",
   "scripts": {
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs",
+    "verify": "npm run build && node tools/check-links.mjs",
+    "deploy": "./scripts/publish.sh",
+    "docs:dev": "npm run dev",
+    "docs:build": "npm run build",
+    "docs:preview": "npm run preview",
     "docs:check": "node tools/check-links.mjs"
   },
   "devDependencies": {

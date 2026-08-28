@@ -1,8 +1,8 @@
 # Plan: publish the project as a website (GitHub Pages)
 
-Status: phases 1 and 2 are done and committed on the `site` branch. Phase 3
-(publish) waits for the user's go. Phase 4 waits for the PC. Everything works
-locally; nothing is pushed. Write all prose in ASD-STE100 Simplified
+Status: phases 1, 2, and 3 are built and committed on the `site` branch.
+Nothing is pushed: the first push is the owner’s. Phase 4 waits for the PC.
+Write all prose in ASD-STE100 Simplified
 Technical English.
 
 ## Goal
@@ -133,20 +133,30 @@ Convert, one page per commit, verifying rendering in `npm run docs:dev`:
 
 Result: all future edits are Markdown edits.
 
-## Phase 3 — GitHub Pages deploy (only when the user says publish)
+## Phase 3 — GitHub Pages deploy
 
-1. `.github/workflows/site.yml`: on push to `master`, run `npm ci` and
-   `npm run docs:build`, then publish `docs/.vitepress/dist` with
-   `actions/upload-pages-artifact` + `actions/deploy-pages` (the modern
-   Pages flow; no gh-pages branch to maintain).
-2. Repo settings: Pages → Source: GitHub Actions. The user flips this
-   switch; do not assume permissions.
-3. Set `base: '/choose-a-local-llm/'` in `docs/.vitepress/config.mjs` so the
-   site resolves under the project path, and `sitemap.hostname` for
-   canonical links. Relative Markdown links survive this; check the raw HTML
-   pages in `public/`, whose links are relative and therefore also survive.
-4. Acceptance: the published site equals the local `npm run docs:dev` output.
+Built. Not yet published: the first push is the owner's.
 
+1. `.github/workflows/site.yml` runs on a push to `master` and on manual
+   dispatch. It checks out with full history (so `lastUpdated` has git
+   timestamps), runs `npm ci`, `npm run build`, and `npm run docs:check`,
+   then publishes `docs/.vitepress/dist` with `actions/upload-pages-artifact`
+   and `actions/deploy-pages`. No gh-pages branch to maintain.
+2. `base: '/choose-a-local-llm/'` and `sitemap.hostname` are set in
+   `docs/.vitepress/config.mjs`. Every internal Markdown link is relative and
+   ends in `.md`, so the base applies automatically; `tools/check-links.mjs`
+   reads the base from the config and fails on any absolute link that is
+   missing it.
+3. `scripts/publish.sh` (`npm run deploy`) builds, verifies, and commits,
+   then **stops**. It reports whether the Pages source is set to GitHub
+   Actions and prints the enable command if not. It never pushes.
+4. Remaining, and owner-only:
+   - Set Pages → Source: GitHub Actions, once:
+     `gh api -X POST repos/irae/choose-a-local-llm/pages -f build_type=workflow`
+   - `git push origin site:master` — or merge `site` into master from the
+     worktree that has master checked out, then push.
+5. Acceptance: the published site equals `npm run preview` output at
+   `/choose-a-local-llm/`.
 ## Phase 4 — second setup (when the PC exists)
 
 1. `docs/setups/<pc-slug>/` (for example `pc-rtx-<gpu>-<ram>gb/`) with the
