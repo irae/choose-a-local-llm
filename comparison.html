@@ -130,10 +130,15 @@
   <div class="card">
     <h2 style="margin-top:0">Open questions</h2>
     <ul>
-      <li>EvalPlus re-run with per-model calibrated <code>max_tokens</code>, plus the two
-      unscored Gemma blocks — after the methodology redesign.</li>
-      <li>Ternary Bonsai GGUF — parked until a stable llama.cpp release reads Q2_0.</li>
-      <li>Gemma on MLX — unmeasured (llama-server already saturates it).</li>
+      <li>Night 3 (draft): finish the Qwen3.6 score correction; EvalPlus for the Gemma
+      configs — now including Gemma-26B MLX and Gemma-12B via LM Studio, the two best
+      unscored depth curves — and the Bonsai prism-fork q4 A/B.</li>
+      <li>Memory ceilings for the MLX configs that never hit the speed floor
+      (measurement in flight).</li>
+      <li>Aider polyglot (tier 2) for gate survivors — driven from another computer;
+      docker does not fit beside a loaded model here.</li>
+      <li>Watch list: brew llama.cpp reading ternary Q2; mlx-lm gaining
+      <code>gemma4_unified</code> and server-side KV quantization.</li>
     </ul>
   </div>
 
