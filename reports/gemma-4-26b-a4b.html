@@ -128,6 +128,25 @@
     (21.6 GB RSS) and q8 reached 2&times;192K. A deep-fill decode check is pending.</p>
   </div>
 
+
+  <div class="card">
+    <h2 style="margin-top:0">Decode speed vs used context (depth sweeps, limit 25000)</h2>
+    <table>
+      <tr><th>depth</th><th class="num">llama+MTP q8</th><th class="num">MLX (gemma-4-26b-a4b-it-4bit)</th></tr>
+      <tr><td>4K</td><td class="num">23.5</td><td class="num">51.1</td></tr>
+      <tr><td>16K</td><td class="num">11.2</td><td class="num">43.5</td></tr>
+      <tr><td>24.5K</td><td class="num oom">7.97 — under the 8 tok/s floor</td><td class="num">39.6</td></tr>
+      <tr><td>33K</td><td class="num"></td><td class="num">35.6</td></tr>
+      <tr><td>49K</td><td class="num"></td><td class="num">28.8</td></tr>
+      <tr><td>74K</td><td class="num"></td><td class="num">22.2</td></tr>
+      <tr><td>82K</td><td class="num"></td><td class="num">20.6</td></tr>
+      <tr><td>~98K</td><td class="num"></td><td class="num oom">Metal OOM — ceiling 82-98K</td></tr>
+    </table>
+    <p class="note">llama is capped by speed (~24K floor); MLX is capped by memory (82-98K)
+    and stays fast the whole way — 13.5 GB RSS at 74K. The MLX config is the
+    fast-and-deep contender for the main-agent seat, quality pending (night 3).</p>
+  </div>
+
   <footer>Method: warmup before every measurement; identical prompts across models; temp 0.
   Raw numbers in <code>../benchmarks/gemma-4-26b-a4b.md</code>. Cross-model picks in
   <a href="../comparison.html">comparison.html</a>.</footer>

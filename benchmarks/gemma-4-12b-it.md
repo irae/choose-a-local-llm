@@ -143,7 +143,12 @@ release).
 | 16K | 36.9 |
 | 33K | 34.8 |
 | 49K | 33.1 |
-| 74K | 30.8 (sweep end; no OOM, ceiling untested) |
+| 74K | 30.8 |
+| 82K | 31.2 |
+| 98K | 28.6 |
+| 115K | 28.0 |
+| 131K | 26.1 |
+| 147.5K | **25.1 — sweep end, no OOM, ceiling still not found** |
 
 **The flattest curve of the whole project** (-16% over 70K) at 8.8 GB RSS —
 LM Studio's gemma4_unified implementation appears to honor the

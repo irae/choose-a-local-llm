@@ -92,7 +92,9 @@ f16 two-slot max was 2×128K. Single-slot stays f16 (model-limited at 256K; q8 b
 | 24.5K | 7.97 — below the 8 tok/s floor | 39.6 |
 | 33K | – | 35.6 |
 | 49K | – | 28.8 |
-| 74K | – | 22.2 (sweep end; no OOM, ceiling untested) |
+| 74K | – | 22.2 |
+| 82K | – | 20.6 |
+| ~98K | – | Metal OOM — **ceiling 82-98K** |
 
 llama floor ~24K (speed). **MLX is the deepest fast curve measured in the
 whole project**: 22+ tok/s at 74K, RSS 13.5 GB, ceiling not yet found.

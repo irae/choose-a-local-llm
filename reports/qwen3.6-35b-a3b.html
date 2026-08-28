@@ -153,6 +153,25 @@
     allocated context.</p>
   </div>
 
+
+  <div class="card">
+    <h2 style="margin-top:0">Decode speed vs used context (depth sweeps, limit 25000)</h2>
+    <table>
+      <tr><th>depth</th><th class="num">llama+MTP q8 (96K alloc)</th><th class="num">MLX (Qwen3.6-35B-A3B-4bit)</th></tr>
+      <tr><td>4K</td><td class="num">44.5</td><td class="num">53.3</td></tr>
+      <tr><td>16K</td><td class="num">30.1</td><td class="num">49.6</td></tr>
+      <tr><td>33K</td><td class="num">18.8</td><td class="num">42.2</td></tr>
+      <tr><td>37K</td><td class="num"></td><td class="num">42.0</td></tr>
+      <tr><td>~41K</td><td class="num"></td><td class="num oom">Metal OOM — ceiling 37-41K</td></tr>
+      <tr><td>49K</td><td class="num">13.5</td><td class="num"></td></tr>
+      <tr><td>65K / 82K / 90K</td><td class="num">10.7 / 8.8 / 8.1</td><td class="num"></td></tr>
+    </table>
+    <p class="note">llama never crosses the 8 tok/s floor inside its 96K window — the
+    deep-context king (RSS 22.8 GB). MLX is 2.2&times; faster at 33K but memory-capped at
+    37-41K (RSS 18.7 GB). Sweep prompts are synthetic continuations; MTP numbers read
+    below the py/js bench.</p>
+  </div>
+
   <footer>Method: warmup before every measurement; identical prompts across models; temp 0.
   Raw numbers in <code>../benchmarks/qwen3.6-35b-a3b.md</code>. Cross-model picks in
   <a href="../comparison.html">comparison.html</a>.</footer>

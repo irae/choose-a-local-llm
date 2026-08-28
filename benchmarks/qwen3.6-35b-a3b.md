@@ -117,7 +117,9 @@ Decode vs used context, synthetic continuation prompts, 8 tok/s early stop:
 | 4K | 44.5 | 53.3 |
 | 16K | 30.1 | 49.6 |
 | 32-33K | 18.8 | 42.2 |
-| 49K | 13.5 | Metal OOM (ceiling 33-41K) |
+| 37K | – | 42.0 |
+| ~41K | – | Metal OOM — **ceiling 37-41K** |
+| 49K | 13.5 | – |
 | 65K | 10.7 | – |
 | 82K | 8.8 | – |
 | 90K | 8.1 | – |

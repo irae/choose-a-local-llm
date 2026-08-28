@@ -137,6 +137,26 @@
     no graded effort levels. All speed numbers here were measured with thinking off.</p>
   </div>
 
+
+  <div class="card">
+    <h2 style="margin-top:0">Decode speed vs used context (depth sweeps, limit 25000)</h2>
+    <table>
+      <tr><th>depth</th><th class="num">llama+MTP q8</th><th class="num">LM Studio MLX engine (lms CLI, port 1234)</th></tr>
+      <tr><td>4K</td><td class="num">14.0</td><td class="num">36.7</td></tr>
+      <tr><td>8K</td><td class="num">9.0</td><td class="num"></td></tr>
+      <tr><td>16K</td><td class="num oom">6.8 — under the 8 tok/s floor</td><td class="num">36.9</td></tr>
+      <tr><td>33K / 49K</td><td class="num"></td><td class="num">34.8 / 33.1</td></tr>
+      <tr><td>74K / 98K</td><td class="num"></td><td class="num">30.8 / 28.6</td></tr>
+      <tr><td>131K / 147K</td><td class="num"></td><td class="num">26.1 / <b>25.1 — ceiling still not found</b></td></tr>
+    </table>
+    <p class="note">llama floors at ~11K; LM Studio's engine (the only working MLX path —
+    mlx-lm lacks the <code>gemma4_unified</code> type) runs the <b>deepest and flattest
+    usable curve of the whole project</b>: 25+ tok/s at 147K, no OOM found, 8.8 GB RSS at
+    74K. Model: <code>lmstudio-community/gemma-4-12B-it-MLX-4bit</code>; serve with
+    <code>lms server start --port 1234</code> + <code>lms load ... --gpu max</code>.
+    Quality unscored (night 3).</p>
+  </div>
+
   <footer>Method: fresh server start per configuration; identical curl per run; temperature 0.
   Full raw numbers in <code>../benchmarks/gemma-4-12b-it.md</code>.</footer>
 </main>
