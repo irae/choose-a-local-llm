@@ -89,3 +89,42 @@ speed. The old 96K/26.4 GB figures were taken at the retired 27000 limit and
 are withdrawn from the HTML. PrismML's bigger-context figures (100K @ ~15 GB,
 262K with 4-bit KV) require their llama.cpp fork path — see night 3's
 bonsai-prism block.
+
+## PrismML llama.cpp fork (prism-b10660), Q2_g64 — measured 2026-08-28
+
+Binary: `~/prism-llama/llama-server` (side-by-side install, `prism-llama`
+alias; rolling channel, user-approved fork exception). Weights:
+`Ternary-Bonsai-27B-Q2_g64.gguf` (group-64; the plain `Q2_0` file is the
+legacy layout and does not load — keep for debugging). Drafter: converted
+locally with the fork's `gguf-dspark-to-dflash` from the bf16 file
+(the published `dspark-Q4_1` is legacy too); output
+`~/prism-llama/models/Ternary-Bonsai-27B-dspark-dflash-Q4_0.gguf` (602 MB,
+shared tensors dropped). DSpark is output-lossless at temperature 0.
+
+Baseline (32K alloc, q8 KV): 16.6/16.6 tok/s py/js, RSS 9.5 GB.
+DSpark sweep (n-max 2/3/4): n2 best — py 19.1 (69% accept), js 21.5 (84%).
+
+Depth sweeps, 8 tok/s early stop (fair frame: same 128K alloc):
+
+| config | 4K | 16K | 24.5K | 33K | floor | RSS |
+|---|---|---|---|---|---|---|
+| q4 plain, 64K alloc | 14.6 | 10.6 | 9.0 | 7.8 | **~30K** | **9.8 GB** |
+| q4 plain, 128K alloc | 14.6 | 10.7 | 9.0 | 7.8 | ~30K | 11.0 GB |
+| q4 + dspark n2, 128K | 16.0 | 11.8 | 6.2 | – | ~20K | 16.2 GB |
+| q8 plain, 128K | 13.8 | 9.2 | 7.4 | – | ~21K | 12.8 GB |
+| q8 + dspark n2, 128K | 16.5 | 10.0 | 4.9 | – | ~20K | 18.2 GB |
+| q8 plain, 262K alloc | 12.8 | 9.1 | 7.4 | – | ~21K | 17.1 GB (window fits) |
+
+Findings: the 8 tok/s floor is depth physics (~30K best); allocation size
+only taxes decode at 262K; the drafter boosts shallow decode but drops the
+floor and costs ~5 GB (buffers scale with alloc); q4 KV beats q8 on both
+floor and memory. Full 262K allocates in 17.1 GB — storage, not speed.
+mem-watch (20 s interval) showed zero swap during all sweeps: compute-bound.
+
+**Two serving profiles** (quality of q4+bias pending night 3 EvalPlus):
+- Speed (MLX): 24.5→18.8 tok/s to the ~49K memory ceiling; RSS grows with
+  depth. `mlx_lm.server ... --prompt-cache-size 2`.
+- Desktop (fork): `prism-llama -m Ternary-Bonsai-27B-Q2_g64.gguf -c 65536
+  --cache-type-k q4_0 --cache-type-v q4_0 -fa on -ngl 999` — 9.8 GB flat,
+  floor ~30K, Mac stays usable; add the dflash drafter only for
+  shallow-context serving.
