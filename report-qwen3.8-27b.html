@@ -88,10 +88,8 @@
     <h2 style="margin-top:0">Which to pick for a coding task</h2>
     <table>
       <tr><th>need</th><th>config</th><th class="num">tok/s (py/js)</th><th class="num">context</th></tr>
-      <tr><td><b>Max context</b></td><td>llama-server + MTP n=3, q8_0 KV, 1 slot</td><td class="num">~14.7</td><td class="num">160K</td></tr>
-      <tr><td><b>Max context, lossless KV</b></td><td>llama-server + MTP n=3, f16 KV, 1 slot</td><td class="num">16.9 / 15.7</td><td class="num">96K</td></tr>
-      <tr><td><b>Max speed</b> (server)</td><td>mlx_lm.server, plain</td><td class="num">19.7 / 19.6</td><td class="num">≤48K</td></tr>
-      <tr><td><b>Two agents</b></td><td>llama-server + MTP, 2 slots, q8_0 KV</td><td class="num">~14.6 single-stream</td><td class="num">2&times;72K</td></tr>
+      <tr class="win"><td><b>Daily driver</b></td><td>mlx_lm.server, compaction at ~26K</td><td class="num">14-17 across the window</td><td class="num">to ~29K ceiling</td></tr>
+      <tr><td><b>llama alternative</b></td><td>llama-server + MTP n=3, q8_0 KV</td><td class="num">14.1 shallow</td><td class="num">floor ~19K; maxima pending re-probe</td></tr>
     </table>
   </div>
 
@@ -114,28 +112,16 @@
     <h2 style="margin-top:0">How to start each variant</h2>
     <p class="note">Fastest single agent — mlx-lm (OpenAI-compatible API, one request at a time):</p>
 <pre>mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit --port 8081</pre>
-    <p class="note">Biggest context — one 160K slot, q8_0 KV (near-lossless; pi id <code>qwen3.8-27b-160k</code>):</p>
-<pre>llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
-  --alias qwen3.8-27b-160k --no-mmproj \
-  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
-  -ngl 999 -fa on -c 163840 \
-  --cache-type-k q8_0 --cache-type-v q8_0 \
-  --jinja --port 8081</pre>
-    <p class="note">Lossless-KV alternative — one 96K slot, f16 KV, MTP:</p>
+    <p class="note">llama variant — the depth floor (~19K) makes big allocations pointless;
+    sized just above the floor, q8_0 KV (pi id <code>qwen3.8-27b</code>):</p>
 <pre>llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
   --alias qwen3.8-27b --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
-  -ngl 999 -fa on -c 98304 \
-  --jinja --port 8081</pre>
-    <p class="note">Two concurrent agents — two 72K slots, q8_0 KV (pi id <code>qwen3.8-27b-2x</code>;
-    2&times;76K loads but decode degrades, 2&times;80K OOMs; f16 alternative: 2&times;44K):</p>
-<pre>llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
-  --alias qwen3.8-27b-2x --no-mmproj \
-  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 2 \
-  -ngl 999 -fa on -c 147456 \
+  -ngl 999 -fa on -c 32768 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081</pre>
-    <p class="note">The slot layout is fixed at startup — restart to switch modes.</p>
+    <p class="note">The old 160K and 2&times;72K configs were measured at the retired 27000
+    limit and are withdrawn pending re-probe (markdown keeps the archive).</p>
   </div>
 
   <div class="card">
