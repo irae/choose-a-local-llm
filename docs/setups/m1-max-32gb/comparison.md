@@ -4,7 +4,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 
 ## Per-model reports
 
-- [Gemma-4-26B-A4B](/setups/m1-max-32gb/reports/gemma-4-26b-a4b.html) —
+- [Gemma-4-26B-A4B](/setups/m1-max-32gb/reports/gemma-4-26b-a4b) —
   MoE+MTP: fastest Python, full 256K window (q8 KV), 2×184K slots
 - [Qwen3.6-35B-A3B](/setups/m1-max-32gb/reports/qwen3.6-35b-a3b) —
   MoE+MTP: fastest JS, strongest base benchmarks; 96K context at the current
