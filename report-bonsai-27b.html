@@ -132,6 +132,7 @@
       <tr class="win"><td>q4_0 KV plain (64K)</td><td class="num">14.6</td><td class="num">~30K</td><td class="num">9.8 GB</td></tr>
       <tr><td>q4_0 KV plain (128K)</td><td class="num">14.6</td><td class="num">~30K</td><td class="num">11.0 GB</td></tr>
       <tr><td>q4_0 + DSpark n2 (128K)</td><td class="num">16–17</td><td class="num">~20K</td><td class="num">16.2 GB</td></tr>
+      <tr><td>q4_0 + DSpark n1 (64K)</td><td class="num">16.4</td><td class="num">~23K</td><td class="num">14.1 GB</td></tr>
       <tr><td>q8_0 KV plain (128K)</td><td class="num">13.8</td><td class="num">~21K</td><td class="num">12.8 GB</td></tr>
       <tr><td>q8_0 + DSpark n2 (128K)</td><td class="num">16.5</td><td class="num">~20K</td><td class="num">18.2 GB</td></tr>
       <tr><td>q8_0 KV plain (262K)</td><td class="num">12.8</td><td class="num">~21K</td><td class="num">17.1 GB — full window fits</td></tr>
@@ -141,8 +142,9 @@
     q4 plain at 64K alloc — <b>9.8 GB flat</b>, floor ~30K, the Mac stays usable while the
     agent runs; q4 quality (with PrismML's calibration bias) is pending the night-3
     EvalPlus check. The DSpark drafter is output-lossless and lifts shallow decode
-    (19.1/21.5 py/js at n-max 2, 69/84% acceptance) but lowers the floor and adds ~5 GB —
-    use it only for shallow-context serving. Drafter file must be converted locally
+    (19.1/21.5 py/js at n-max 2, 69/84% acceptance) but lowers the floor at every draft depth
+    tried (n1 least: ~23K vs plain q4's ~30K) and adds 4-5 GB — use it only for
+    shallow-context serving. Drafter file must be converted locally
     (<code>gguf-dspark-to-dflash</code>); the published Q4_1 sidecar and plain Q2_0 GGUF
     are legacy layouts that do not load on current fork builds.</p>
     <p class="note">Desktop-profile command (fork binary, <code>prism-llama</code> alias):</p>

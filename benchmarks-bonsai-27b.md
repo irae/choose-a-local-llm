@@ -111,13 +111,15 @@ Depth sweeps, 8 tok/s early stop (fair frame: same 128K alloc):
 | q4 plain, 64K alloc | 14.6 | 10.6 | 9.0 | 7.8 | **~30K** | **9.8 GB** |
 | q4 plain, 128K alloc | 14.6 | 10.7 | 9.0 | 7.8 | ~30K | 11.0 GB |
 | q4 + dspark n2, 128K | 16.0 | 11.8 | 6.2 | – | ~20K | 16.2 GB |
+| q4 + dspark n1, 64K | 16.4 | 11.3 | 7.3 | – | ~23K | 14.1 GB |
 | q8 plain, 128K | 13.8 | 9.2 | 7.4 | – | ~21K | 12.8 GB |
 | q8 + dspark n2, 128K | 16.5 | 10.0 | 4.9 | – | ~20K | 18.2 GB |
 | q8 plain, 262K alloc | 12.8 | 9.1 | 7.4 | – | ~21K | 17.1 GB (window fits) |
 
 Findings: the 8 tok/s floor is depth physics (~30K best); allocation size
 only taxes decode at 262K; the drafter boosts shallow decode but drops the
-floor and costs ~5 GB (buffers scale with alloc); q4 KV beats q8 on both
+floor at every draft depth tried (n1 is the least bad: floor ~23K vs plain
+q4's ~30K) and costs 4-5 GB; q4 KV beats q8 on both
 floor and memory. Full 262K allocates in 17.1 GB — storage, not speed.
 mem-watch (20 s interval) showed zero swap during all sweeps: compute-bound.
 
