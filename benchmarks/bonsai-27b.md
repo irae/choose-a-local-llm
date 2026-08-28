@@ -81,8 +81,10 @@ Decode vs used context (append-only prompts, streamed timing, 64-tok probes):
 | 16K | 22.9 |
 | 24K | 22.0 |
 | 32K | 20.5 |
-| **49K** | **18.8 — deepest healthy point** |
-| ~65K | Metal OOM during prompt processing |
+| 49K | 18.8 |
+| 53K | 18.6 |
+| **57K** | **18.2 — deepest healthy point** |
+| ~61K | Metal OOM — **ceiling 57-61K** |
 
 Flattest depth curve measured (-23% over 45K); the limit is memory, not
 speed. The old 96K/26.4 GB figures were taken at the retired 27000 limit and

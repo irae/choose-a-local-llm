@@ -67,7 +67,7 @@
     quality from 8 GB of weights.</p>
     <div class="kpis">
       <div class="kpi"><b>24.5 tok/s</b><span>decode, shallow context</span></div>
-      <div class="kpi"><b>49K</b><span>max healthy context, limit 25000</span></div>
+      <div class="kpi"><b>57K</b><span>max healthy context, limit 25000</span></div>
       <div class="kpi"><b>18.8</b><span>tok/s at 49K — flattest creep measured</span></div>
       <div class="kpi"><b>no MTP</b><span>DSpark drafter via prism fork instead</span></div>
     </div>
@@ -93,7 +93,7 @@
     <h2 style="margin-top:0">Which to pick for a coding task</h2>
     <table>
       <tr><th>need</th><th>config</th><th class="num">tok/s</th><th class="num">context</th></tr>
-      <tr><td><b>Max context</b></td><td>mlx_lm.server, bounded prompt cache</td><td class="num">18.8 at 49K</td><td class="num">49K OK; OOM before 65K (limit 25000)</td></tr>
+      <tr><td><b>Max context</b></td><td>mlx_lm.server, bounded prompt cache</td><td class="num">18.8 at 49K</td><td class="num">57K OK; OOM before 61K (limit 25000)</td></tr>
       <tr><td><b>Max speed</b></td><td>same config, shallow context</td><td class="num">24.5</td><td class="num">≤8K</td></tr>
       <tr><td><b>Multi-agent</b></td><td>prism fork <code>--parallel 2 -c 98304</code>, q4 KV — 9.8 tok/s each concurrent, 10.0 GB</td><td class="num">9.8&times;2</td><td class="num">2&times;48K</td></tr>
     </table>
@@ -115,8 +115,9 @@
       <tr><td>16K</td><td class="num">22.9</td></tr>
       <tr><td>24K</td><td class="num">22.0</td></tr>
       <tr><td>32K</td><td class="num">20.5</td></tr>
-      <tr class="win"><td>49K</td><td class="num">18.8 — deepest healthy point</td></tr>
-      <tr><td>~65K</td><td class="num oom">Metal OOM during prompt processing</td></tr>
+      <tr><td>49K</td><td class="num">18.8</td></tr>
+      <tr class="win"><td>57K</td><td class="num">18.2 — deepest healthy point</td></tr>
+      <tr><td>~61K</td><td class="num oom">Metal OOM — ceiling 57-61K</td></tr>
     </table>
     <p class="note">The flattest depth curve of all models measured: −23% from 4K to 49K,
     never approaching the 8 tok/s usability floor — Bonsai's limit is memory, not speed.
