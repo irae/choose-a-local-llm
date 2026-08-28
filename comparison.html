@@ -47,11 +47,11 @@
   <div class="card summary">
     <h2 style="margin-top:0">Per-model reports</h2>
     <ul>
-      <li><a href="report-gemma-4-26b-a4b.html">Gemma-4-26B-A4B</a> — MoE+MTP: fastest Python, full 256K window (q8 KV), 2&times;184K slots</li>
-      <li><a href="report-qwen3.6-35b-a3b.html">Qwen3.6-35B-A3B</a> — MoE+MTP: fastest JS, strongest base benchmarks; 96K context at the current wired limit</li>
-      <li><a href="report-gemma-4-12b-it.html">Gemma-4-12B-it</a> — biggest context, best concurrency</li>
-      <li><a href="report-bonsai-27b.html">Ternary Bonsai-27B</a> — 27B-class from 8 GB; two serving profiles (MLX speed / prism-fork desktop), 2 concurrent slots on the fork</li>
-      <li><a href="report-qwen3.8-27b.html">Qwen3.8-27B</a> — strongest base model, slowest on this hardware</li>
+      <li><a href="reports/gemma-4-26b-a4b.html">Gemma-4-26B-A4B</a> — MoE+MTP: fastest Python, full 256K window (q8 KV), 2&times;184K slots</li>
+      <li><a href="reports/qwen3.6-35b-a3b.html">Qwen3.6-35B-A3B</a> — MoE+MTP: fastest JS, strongest base benchmarks; 96K context at the current wired limit</li>
+      <li><a href="reports/gemma-4-12b-it.html">Gemma-4-12B-it</a> — biggest context, best concurrency</li>
+      <li><a href="reports/bonsai-27b.html">Ternary Bonsai-27B</a> — 27B-class from 8 GB; two serving profiles (MLX speed / prism-fork desktop), 2 concurrent slots on the fork</li>
+      <li><a href="reports/qwen3.8-27b.html">Qwen3.8-27B</a> — strongest base model, slowest on this hardware</li>
     </ul>
     <p class="note">Everything on this page was measured at the current wired limit
     (<code>iogpu.wired_limit_mb=25000</code>, resets on reboot). Superseded measurements live
@@ -143,7 +143,7 @@
   </div>
 
   <footer>Method: warmup before measurements; identical prompts across models; temperature 0.
-  Per-model raw numbers in the benchmarks-*.md files.</footer>
+  Per-model raw numbers in the benchmarks/ markdowns.</footer>
 </main>
 </body>
 </html>

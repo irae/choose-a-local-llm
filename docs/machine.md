@@ -19,11 +19,11 @@
 
 | model | files | reports |
 |---|---|---|
-| Qwen3.6-35B-A3B (MoE) | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`; `mlx-community/Qwen3.6-35B-A3B-4bit` | `benchmarks-qwen3.6-35b-a3b.md`, `report-qwen3.6-35b-a3b.html` |
-| Gemma-4-26B-A4B (MoE) | `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL` + MTP draft; `mlx-community/gemma-4-26b-a4b-it-4bit` | `benchmarks-gemma-4-26b-a4b.md`, `report-gemma-4-26b-a4b.html` |
-| Qwen3.8-27B | `bartowski/Qwen3.8-27B-GGUF:Q4_K_M`; `mlx-community/Qwen3.8-27B-4bit` | `benchmarks-qwen3.8-27b.md`, `report-qwen3.8-27b.html` |
-| Ternary Bonsai-27B | `prism-ml/Ternary-Bonsai-27B-mlx-2bit`; GGUF `Q2_g64` + `PQ2_0` + converted dflash drafter (prism fork only) | `benchmarks-bonsai-27b.md`, `report-bonsai-27b.html` |
-| Gemma-4-12B-it | `unsloth/gemma-4-12b-it-GGUF:Q4_K_XL`; `lmstudio-community/gemma-4-12B-it-MLX-4bit` (LM Studio engine only) | `benchmarks-gemma-4-12b-it.md`, `report-gemma-4-12b-it.html` |
+| Qwen3.6-35B-A3B (MoE) | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`; `mlx-community/Qwen3.6-35B-A3B-4bit` | `benchmarks/qwen3.6-35b-a3b.md`, `reports/qwen3.6-35b-a3b.html` |
+| Gemma-4-26B-A4B (MoE) | `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL` + MTP draft; `mlx-community/gemma-4-26b-a4b-it-4bit` | `benchmarks/gemma-4-26b-a4b.md`, `reports/gemma-4-26b-a4b.html` |
+| Qwen3.8-27B | `bartowski/Qwen3.8-27B-GGUF:Q4_K_M`; `mlx-community/Qwen3.8-27B-4bit` | `benchmarks/qwen3.8-27b.md`, `reports/qwen3.8-27b.html` |
+| Ternary Bonsai-27B | `prism-ml/Ternary-Bonsai-27B-mlx-2bit`; GGUF `Q2_g64` + `PQ2_0` + converted dflash drafter (prism fork only) | `benchmarks/bonsai-27b.md`, `reports/bonsai-27b.html` |
+| Gemma-4-12B-it | `unsloth/gemma-4-12b-it-GGUF:Q4_K_XL`; `lmstudio-community/gemma-4-12B-it-MLX-4bit` (LM Studio engine only) | `benchmarks/gemma-4-12b-it.md`, `reports/gemma-4-12b-it.html` |
 
 Thinking controls: Gemma 4 = binary `enable_thinking`, default OFF. Qwen3.6
 family (incl. Bonsai) = binary, default ON. Qwen3.8 = graded effort

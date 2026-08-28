@@ -30,12 +30,12 @@ and candidates.
 
 - **`comparison.html`** — the current cross-model picture: the depth/floor
   table, quality scores, current configs. Start here.
-- **`report-<model>.html`** — per-model detail with copy-paste server
+- **`reports/<model>.html`** — per-model detail with copy-paste server
   commands (aliases match the pi model ids).
 - **`historical.html`** — superseded measurements (retired memory limits,
   old configs). Nothing on the current pages was measured under a retired
   limit.
-- **`benchmarks-<model>.md`** — full raw data, current and historical.
+- **`benchmarks/<model>.md`** — full raw data, current and historical.
 - **`docs/methodology.md`** — the flow: measurement rules, runtime policy,
   model-selection reasoning, the quality gate, night-run rules. The flow is
   the law; read it before running anything.

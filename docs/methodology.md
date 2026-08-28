@@ -35,7 +35,7 @@ This is the law for every test cycle. Do not skip steps.
    runtimes barely creep but hit hard memory ceilings; llama runtimes creep
    faster but never OOM inside their window.
 7. **Record each result on every surface in the same pass** — a result is not
-   recorded until all agree: the model's `benchmarks-*.md` (full data), its
+   recorded until all agree: the model's `benchmarks/*.md` (full data), its
    HTML report **including the summary KPI boxes** (they go stale easily),
    the cross-model `comparison.html`, and the harness config
    (`~/.pi/agent/models.json`). Every server config gets a copy-paste command
