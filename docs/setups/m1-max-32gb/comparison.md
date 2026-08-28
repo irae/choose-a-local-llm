@@ -9,7 +9,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 - [Qwen3.6-35B-A3B](/setups/m1-max-32gb/reports/qwen3.6-35b-a3b) —
   MoE+MTP: fastest JS, strongest base benchmarks; 96K context at the current
   wired limit
-- [Gemma-4-12B-it](/setups/m1-max-32gb/reports/gemma-4-12b-it.html) —
+- [Gemma-4-12B-it](/setups/m1-max-32gb/reports/gemma-4-12b-it) —
   biggest context, best concurrency
 - [Ternary Bonsai-27B](/setups/m1-max-32gb/reports/bonsai-27b) —
   27B-class from 8 GB; two serving profiles (MLX speed / prism-fork
