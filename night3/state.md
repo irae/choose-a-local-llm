@@ -76,11 +76,45 @@ Result: pass@1 base 0.909 / plus 0.872, 0/164 empty. Stopped
 `night2/mem-watch.sh`; left the LM Studio server and model loaded, since
 the next sub-step (thinking-on, budget 16384) reuses it.
 
+gemma12-lmstudio thinking-on is blocked: LM Studio's REST API exposes no
+working thinking toggle for this model, and mlx_lm.server cannot load it
+(`gemma4_unified` unsupported, confirmed again 2026-08-29 — mlx-lm is
+still at 0.31.3). Needs the owner's decision. Skipped to the next runbook
+block.
+
+## Block: gemma26-mlx, thinking-on (finished)
+
+Fresh 164-problem run, `mlx-community/gemma-4-26b-a4b-it-4bit` on
+mlx_lm.server, budget 30000, `chat_template_kwargs: {enable_thinking:
+true}`.
+
+Steps:
+1. Started the server with `night3/10-server-gemma26-mlx.sh`
+   (`--prompt-cache-size 2`, per the mlx memory-leak rule).
+2. Ran `night3/run-humaneval.sh gemma26-mlx
+   mlx-community/gemma-4-26b-a4b-it-4bit` with
+   `EVALPLUS_MAX_NEW_TOKENS=30000` and
+   `EVALPLUS_EXTRA_BODY='{"chat_template_kwargs": {"enable_thinking":
+   true}}'`, `night2/mem-watch.sh` alongside.
+3. Ran across two agent sessions: paused at 130/164 (server and process
+   stopped between sessions), resumed with the identical command —
+   evalplus's own codegen resume picked up from the existing jsonl with
+   no gap or duplicate. Heartbeat-checked every ~20 minutes throughout.
+   No crash signatures. Total codegen time 2h16m for the full 164 (most
+   of it before the pause).
+4. Evaluated the finished 164-line file.
+
+Result: pass@1 base 0.713 / plus 0.701, 46/164 (~28%) empty. This is a
+real model limit, not a harness artifact: the calibration for this model
+already showed 2/10 sample problems never finishing reasoning at a 30K
+cap, and the reports page documents Gemma's thinking-convergence problem.
+Stopped `night2/mem-watch.sh` and the server.
+
 ## Next
 
-Per the runbook, the next sub-step is gemma12-lmstudio thinking-on at
-budget 16384, reusing the same loaded model. Waiting for the user's
-go-ahead — blocks run one at a time.
+Per the runbook, the next block is bonsai-prism (the PrismML fork A/B).
+See HANDOFF.md for the exact serving command and the calibration-bias
+step (`make_kv_bias.sh`).
 
 Also per the owner's new rule in `AGENTS.md`: benchmark runs from now on
 live on their own branch, not master. This run stayed on master because
