@@ -142,6 +142,81 @@ This is the law for every test cycle. Do not skip steps.
   the newest build — one version only). Results labeled with the fork build.
 - Default remains: no other forks, no `--HEAD` builds.
 
+## LM Studio server lore (verified 2026-08-29, LM Studio 0.4.23 / mlx-engine 1.10.1)
+
+Use `tools/sweeps/lmstudio_sweep.py` (single context) and
+`lmstudio_sweep_alt.py` (N alternating contexts) for LM Studio depth
+sweeps. Read this first — several things about LM Studio's server differ
+from `mlx_lm.server` and `llama-server` in ways that will silently break
+the usual scripts.
+
+- **`/v1/completions` (raw prompt, no chat) is broken on this build.** It
+  returns garbage text (repeated `"_"`) and streams the whole reply in one
+  sub-5ms burst — not real per-token pacing. Any tok/s computed from its
+  timing is nonsense (one measurement came back as 58,254 tok/s). Use
+  `/v1/chat/completions` instead, growing a single user message
+  append-only. Chat completions stream correctly and reuse the prompt
+  cache on that append-only growth — confirmed via the server log's
+  `cached_tokens`/`uncached_tokens` climbing step to step, not resetting.
+- **Read the server log, not client-side HTTP timing, when you need
+  ground truth.** `~/.cache/lm-studio/server-logs/<YYYY-MM>/<date>.N.log`
+  (always the latest file in that glob) has per-request `Prompt cache
+  restore: cached_tokens=... uncached_tokens=...`, `Prompt processing
+  progress` ticks, and — on load — a `context_fit` line with the full
+  memory-budget math LM Studio itself used (`working_set`, `reserve`,
+  `safe_ceiling`, `full_kv` bytes/token, `estimated_peak`). Both sweep
+  scripts already tail this file for a crash-signature watchdog
+  (`[ERROR]`, `OutOfMemory`, `crashed`, `Traceback` — unverified list,
+  widen it the first time a real crash shows a different string).
+- **LM Studio keeps a disk-backed prompt cache**, separate from GPU
+  memory (`VLM prompt cache disk usage: used_mib=... cap_mib=...
+  lifetime_evicted_mib=...`). If a long sweep fills it, eviction could
+  silently force a recompute mid-run that looks like a tok/s anomaly but
+  isn't really about decode speed. Watch `lifetime_evicted_mib`; treat any
+  step recorded after it goes nonzero as suspect.
+- **Context length and parallel slot count are not saved per model** —
+  LM Studio recomputes both fresh at every load via auto-fit, so the same
+  model can load with a different ceiling next time depending on free
+  memory. Pin them explicitly for anything you want to reproduce:
+  `lms load <model> -c <N> --parallel <N> --gpu max -y`. `lms ps` shows
+  the live loaded values (`CONTEXT`, `PARALLEL`) — check it, don't guess
+  from the GUI or from `settings.json`'s `defaultContextLength` (that's
+  only the starting target auto-fit adjusts from, confirmed: a `configured
+  =8,192` default auto-fit to `fitted=158,464` on this machine — the same
+  auto-fit-ignores-the-configured-value behavior already documented for
+  Gemma-12B's 170K context table).
+- **MLX multi-slot only works through LM Studio, not plain
+  `mlx_lm.server`.** LM Studio's MLX engine (`mlx-engine`) added general
+  continuous batching / parallel requests for text models in **0.4.2**
+  (Feb 2026), extended to vision in 0.4.13 — a platform capability
+  (confirmed to cover Qwen 3.5, Qwen 3.6, and Gemma 4 by name in LM
+  Studio's own docs), not something custom to one model. Plain
+  `mlx_lm.server` has no shared-weight multi-slot mode at all: concurrent
+  MLX decode there needs a second full weight copy, so GGUF-style
+  "split the KV budget across slots" math does not apply to it.
+- **A curated LM Studio Hub identifier is not necessarily a different
+  model.** `google/gemma-4-12b`'s manifest resolves straight to
+  `lmstudio-community/gemma-4-12B-it-MLX-4bit` — the same weights already
+  used for this model's earlier benchmarked runs. Check
+  `hub/models/<id>/manifest.json` before assuming a curated alias means
+  new or different weights.
+- **Thinking now works for `gemma4_unified`, contradicting the earlier
+  block.** A plain chat request with no toggle returns a populated
+  `reasoning_content` field (OpenAI-style, separate from `content`, with
+  `usage.completion_tokens_details.reasoning_tokens` set) — even though
+  `/api/v0/models`' `capabilities` list still only shows `tool_use`.
+  Don't trust that capabilities list for reasoning support; test the
+  actual response instead. The model's `tokenizer_config.json` chat
+  template has an `enable_thinking` Jinja variable (default `false`,
+  also triggers on `tools` present or a `system`/`developer` first
+  message) — the intended control path is `chat_template_kwargs:
+  {enable_thinking: true|false}` in the request body, same convention as
+  the other MLX models in this project. A quick check (2026-08-29) found
+  that neither `chat_template_kwargs.enable_thinking:false` nor a
+  top-level `enable_thinking:false` suppressed it — **open, unresolved**;
+  re-test cleanly (server idle, no concurrent sweep load) before drawing
+  a conclusion either way.
+
 ## How we picked models (reasoning to reuse)
 
 - **Prefer MoE on bandwidth-limited hardware.** Decode scales with *active*
