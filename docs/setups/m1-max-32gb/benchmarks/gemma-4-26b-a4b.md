@@ -97,7 +97,7 @@ f16 two-slot max was 2×128K. Single-slot stays f16 (model-limited at 256K; q8 b
 | ~98K | – | Metal OOM — **ceiling 82-98K** |
 
 llama floor ~24K (speed). **MLX is the deepest fast curve measured in the
-whole project**: 22+ tok/s at 74K, RSS 13.5 GB, ceiling not yet found.
+whole project**: 22+ tok/s at 74K, RSS 13.5 GB, OOM at 82-98K.
 Quality on MLX is unscored (the EvalPlus history is llama-side; thinking-mode
-convergence issues noted in night2/calibration.md apply to the model, not the
-runtime).
+convergence issues noted in `night2/calibration.md` apply to the model, not
+the runtime).

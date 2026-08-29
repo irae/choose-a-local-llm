@@ -4,6 +4,26 @@ Not published. The site build ignores this file: it sits outside `docs/`.
 Read it before you write or change any page. It records the owner's choices
 so they survive across sessions and agents.
 
+## Sharp conclusions, not stories
+
+We are not storytellers. We state conclusions.
+
+- A current page states what is true now, and the pick it implies. It does
+  not narrate how we got there.
+- History earns its place only when it justifies a current decision (for
+  example: why a number moved, why a config was dropped). Cut everything
+  else.
+- Do not number or name benchmark runs in prose (no "run 3", "night 3",
+  "benchmark run 2"). A run number is an internal detail, not a fact the
+  reader needs.
+- State progress as one of two words: **tested** or **pending**. Nothing
+  in between, no run-count language.
+- If a fact needs a source, use a date or a link to the setup's
+  `benchmarks/<model>.md` page, not a run number.
+- This applies everywhere, including `benchmarks/*.md`. Those pages still
+  keep the full archive (see "Historical figures" below), but tell rows
+  apart by date, not by run number.
+
 ## Page shape
 
 Every content page uses this order. Do not reorder it.
@@ -23,10 +43,11 @@ Do not open a page with a prose summary. Open it with bullets.
 
 ## Words
 
-- Say **"benchmark run"**, never "night run", "night agent", or "overnight".
+- Say **"benchmark run"** if a run must be named at all, never "night run",
+  "night agent", or "overnight". Prefer not naming it — see "Sharp
+  conclusions, not stories" above.
 - Do **not** tell apart work run by hand from work run unattended. The reader
   does not care who was awake. A measurement is a measurement.
-- Number the runs: "benchmark run 3" on first use, "run 3" after that.
 - Write all prose in ASD-STE100 Simplified Technical English: short
   sentences, active voice, one idea per sentence, one word for one meaning.
 
@@ -44,6 +65,75 @@ names. Only prose changes.
 - Tables carry the numbers. Bold the winning row.
 - No code comments unless the owner asks for them.
 
+## The "Models evaluated" table
+
+This table (in `docs/index.md` and each setup's `comparison.md`) has its
+own rules, on top of the ones above.
+
+- **Columns, in order**: Config | Max ctx | Gated by¹ |
+  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus². There is no
+  "Suggested for" column — seat suggestions live only in the setup
+  overview and in analysis/decision prose.
+- **One row per config; a model shows every runtime that has sweep
+  data** (MLX and GGUF rows side by side), grouped by model.
+- **Config is a comma list: Model, Runtime, Details.** Model is the
+  HuggingFace repo name: a MoE model carries its active-parameter spec
+  in the name (Qwen3.6-35B-A3B, Gemma-4-26B-A4B); a dense model is a
+  plain size (Qwen3.8-27B) — the missing A-suffix marks it dense.
+  Runtime is the model's download/weight format only — `MLX` or `GGUF`
+  — never a specific server, tool, or fork name (no "LM Studio", "prism
+  fork", "lms CLI", "mlx_lm.server", "llama"). Details is optional
+  (quant, MTP, thinking mode, and similar) and can be dropped if there
+  is nothing to add. A scored row states its thinking mode ("thinking
+  on/off", or "effort medium" for graded-effort models). No invented
+  shorthand — write "compaction ~26k", not "compact". Do not mention
+  slot count here — see multi-agent rows below.
+- **Footnote ² lives on the EvalPlus header**: one score per model and
+  thinking mode; runtimes at standard quants share it; aggressive
+  quants (calibrated q4 KV and similar) gate separately and show
+  "pending" until they pass. Scores never propagate across thinking
+  modes.
+- ***Italic* cells are values pending a re-test** (for example
+  fast-sweep ceilings from before the slow-creep rule). The note below
+  the footnotes says so and links to the methodology's measurement
+  rules.
+- **Footnote ¹ always lives on the "Gated by" header**, not on any cell.
+  It explains what the column measures: whichever limit hits first, the
+  max memory a config fits in or the max context that stays usable
+  (usable meaning at or above the 8 tok/s floor) — and it also covers
+  what "tok/s (shallow → deep)" means, since the two are the same idea.
+  Do not give tok/s its own separate explanation.
+- **A row served by a custom binary or fork gets its own footnote**,
+  attached directly to the Runtime abbreviation in Config (e.g. "MLX³"),
+  not to any other cell. The same fork reuses its number across every row
+  that uses it. Number them ³, ⁴, ... in the order they first appear in
+  the table (¹ and ² are reserved for the header footnotes).
+- **Each footnote is its own paragraph below the table** — a blank line
+  between ¹, ², ³, and so on, not one run-on block.
+- **Multi-agent configs**: show the slot count in **Max ctx** as
+  "Nx\<size\>", e.g. "2x48k" — never in Config.
+- **Max ctx** (the used-context point where a config first breaks): the
+  cell must end with the number and its unit — never a trailing word like
+  "per slot".
+- **"tok/s (shallow → deep)" is two numbers only** — "X → Y" — never a
+  qualifier word like "solo" or "concurrent" in the cell. For a multi-slot
+  config, the number is one slot decoding alone (see methodology); if the
+  method needs explaining, that explanation goes in the methodology, not
+  as a note on this table.
+- **"Memory (at max ctx)" is one number only** — the max figure reached,
+  nothing else. No "flat", no "grows to", no qualifier of any kind.
+- **"tok/s (shallow → deep)"** and **"Memory (at max ctx)"** headers break
+  onto two lines before the parenthesis (`<br>`), so the column stays
+  narrow.
+
+## Stable values only
+
+A ceiling sweep finds a last stable depth and, past it, a death point.
+The site renders the stable value only: the deepest depth that still
+served correctly, with its tok/s. The death point and the unstable
+bracket ("OOM at X-YK") never appear on a page — they stay in the run
+logs. This holds for "Max ctx" cells, "capped by" cells, and prose.
+
 ## Historical figures
 
 **No superseded number appears on a current page.** Not in a table, not in
@@ -58,7 +148,7 @@ prose. This is the owner's rule and methodology rule 7 says the same.
   say plainly that those numbers are not to be used.
 - The `benchmarks/*.md` pages are the exception. They keep the full archive,
   because that is their job — but every section there states the wired limit
-  and the run it came from.
+  and the date it was measured, not a run number.
 - The red warning block at the top of `historical.md` must stay. It is the
   first thing a reader sees on that page.
 

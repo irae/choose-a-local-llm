@@ -19,8 +19,8 @@ llama-server (build 10621) · unsloth UD-Q4_K_XL + MTP draft · benchmarked
 ## Best option
 
 **MLX for depth and speed** — the fast-and-deep contender for the main-agent
-seat, quality pending run 3. **llama-server for window size** — the only way
-to get the full 256K, and the only way to get two slots.
+seat, quality pending. **llama-server for window size** — the only way to
+get the full 256K, and the only way to get two slots.
 
 Single agent — one 256K slot, q8_0 KV (pi id `gemma-4-26b-a4b`):
 
@@ -112,11 +112,11 @@ on/off, default off, with no graded effort levels. The speed numbers on this
 page were measured with thinking off. Thinking costs only ~3 tok/s, so there
 is little reason to avoid it on quality grounds.
 
-**Quality is unscored, and the reason is interesting.** Run 2 only calibrated
-this model. At a 30K output cap, 2 of 10 sample problems never finished
+**Quality is unscored, and the reason is interesting.** Calibration alone
+showed that at a 30K output cap, 2 of 10 sample problems never finished
 reasoning at all. That is model behavior, not a harness limit. Its smaller
 sibling, the 12B, does it more often — counterintuitively. The EvalPlus gate
-for this config is scheduled for run 3.
+for this config is pending.
 
 A deep-fill decode check on the llama config is still pending.
 

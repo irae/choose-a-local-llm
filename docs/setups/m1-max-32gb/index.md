@@ -2,8 +2,8 @@
 
 ## Highlights
 
-- **Wired limit 25000 MB.** It resets on reboot. Re-run the sysctl before any
-  model work.
+- **Wired limit: 24000 MB for unattended runs, 22000 MB when the machine is
+  in use.** It resets on reboot. Re-run the sysctl before any model work.
 - **Depth sweeps are complete** for every model and every runtime. The
   decode-vs-used-context table on the [comparison page](./comparison.md) is
   this project's main artifact.
@@ -18,10 +18,12 @@
 ## Setup
 
 ```bash
-sudo sysctl iogpu.wired_limit_mb=25000
+sudo sysctl iogpu.wired_limit_mb=24000
 ```
 
-**This resets on reboot.** Re-run it before any model work.
+**This resets on reboot.** Re-run it before any model work. Set 22000
+instead when you also use the machine — see
+[the wired limit](#the-wired-limit-24000-unattended-22000-in-use).
 
 - Servers always listen on port 8081. Port 8080 is the DB admin UI. LM Studio
   serves on 1234.
@@ -66,39 +68,48 @@ As of 2026-08-28, end of day.
 - pi wiring today: qwen3.8-mlx at a 26K window, bonsai-mlx at 48K, qwen3.6
   llama at 96K, gemma-26b llama at 256K with q8. Pending decisions: the
   bonsai-prism entry, and the Gemma windows once quality scores exist.
-- Seat sketch, pending run-3 quality: main and deep go to Gemma-26B MLX or
+- Seat sketch, pending Gemma quality: main and deep go to Gemma-26B MLX or
   Qwen3.6; hard problems go to Qwen3.8-MLX at 26K; all-day and swarm go to
   Bonsai. Gemma-12B re-entered play through LM Studio.
 
 ## Open work
 
-- Run 3, remaining blocks: Gemma scores including the MLX and LM Studio
-  variants, the bonsai-prism q4 A/B, and a Bonsai thinking-off pass. Each
-  block waits for a go-ahead.
-- Ceiling brackets for the MLX configs that never floored. Runs in flight.
+- Gemma scores, including the MLX and LM Studio variants, the bonsai-prism
+  q4 A/B, and a Bonsai thinking-off pass. Each block waits for a go-ahead.
+- Ceiling brackets for the MLX configs that never floored.
 - Aider tier 2, driven from another computer. Docker does not fit here.
 - Watch list and owner context: `HANDOFF.md`, not committed.
 
-## Benchmark run history
+## Why quality scores needed a correction
 
-- **Run 1** (`night1/`): the first EvalPlus pass. It found and patched four
-  EvalPlus 0.3.1 defects, and discovered the `max_tokens` flaw that made
-  every score a deflated lower bound. Full incident log: `night1/state.md`.
-- **Run 2** (`night2/`): calibrated per-model output budgets, then corrected
-  qwen3.8 and bonsai cheaply by regenerating only the empty completions,
-  which is safe because temperature 0 is deterministic. It also found
-  EvalPlus's infinite-retry timeout bug and established the heartbeat rule.
-  Log: `night2/state.md`.
-- **Run 3** (`night3/`): finished the qwen3.6 correction that run 2 had
-  parked — 56 completions regenerated at the calibrated 26624 budget, taking
-  the score to **0.939/0.921**. Clean run, no incidents.
-  Remaining blocks wait for a go-ahead, one at a time. Log:
-  `night3/state.md`.
+EvalPlus's default output cap was too small for a reasoning model: it cut
+off mid-thought, and the truncated completion scored as a failure. That
+capped every early score to a deflated lower bound. The fix is a budget
+calibrated per model from measured reasoning length; every corrected score
+went up. Superseded numbers under the old cap live on
+[the historical page](./historical.md), never on a current page.
 
-## The wired limit, and why it is 25000
+## The wired limit: 24000 unattended, 22000 in use
 
-27000 made the machine too slow for normal use. 24000 gave too little
-context — Qwen3.6-35B capped at 40K. 25000 is the compromise. Every published
-number states the limit it was measured under, and only 25000 numbers appear
-on the current site pages. Superseded measurements move to
-[the historical page](./historical.md).
+Measured on this machine (Qwen3.6-35B MLX, per-process `vmmap` tracking):
+
+- **At ~24000 MB and above, the sysctl stops mattering.** Physical RAM
+  binds first: free RAM runs to near zero before the process reaches the
+  sysctl, and the crash point no longer responds to sysctl changes
+  (25000 and 24000 give the same ceiling). This regime reaches the
+  machine's true context maxima, but the near-zero free RAM is what
+  locks up the keyboard and causes visual glitches. Use it only for
+  unattended runs. **24000 is the standing value for those** — anything
+  higher buys nothing.
+- **Below ~24000 MB the sysctl gates cleanly.** The model process hits
+  the limit, gets a Metal OOM, and dies or rejects the request — while
+  macOS keeps gigabytes free and the machine stays responsive. **22000
+  is the standing value when the machine is in use.** The cost is
+  context depth: Qwen3.6-35B MLX caps near 13K instead of ~35K.
+- Max-context numbers matter even though they cost usability: the
+  laptop can run as a bare model server, driven by agents from another
+  machine, with the minimal local system.
+
+Every published number states the limit it was measured under, and only
+24000 numbers appear on the current site pages. Superseded measurements
+move to [the historical page](./historical.md).

@@ -148,9 +148,24 @@ release).
 | 98K | 28.6 |
 | 115K | 28.0 |
 | 131K | 26.1 |
-| 147.5K | **25.1 — sweep end, no OOM, ceiling still not found** |
+| 147.5K | 25.1 |
+| 155.8K | 30.8 |
+| 163.9K | 30.0 |
+| 168.0K | 29.9 |
+| **169.6K** | **29.7 — deepest healthy point; 171K fails clean (server rejects, does not crash or OOM)** |
 
-**The flattest curve of the whole project** (-16% over 70K) at 8.8 GB RSS —
+**The flattest curve of the whole project** (-9% over 169K) at 8.8 GB RSS —
 LM Studio's gemma4_unified implementation appears to honor the
 sliding-window attention that the llama.cpp path does not (llama floor ~11K
-on the same model). Quality unscored; a run-3 candidate.
+on the same model). Decode speed never drops toward the 8 tok/s floor and
+no Metal OOM ever appears; the request past the boundary fails instantly
+with a clean rejection, and the server serves normally again right after.
+The ceiling here is LM Studio's own MLX loader: it auto-fits the loaded
+context to 170240 tokens regardless of what is requested at load time
+(confirmed via
+[lmstudio-bug-tracker#2250](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/2250)
+and [#1902](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1902),
+open, unfixed, no workaround as of 2026-08). This model's own trained
+context is 262144 and the machine has memory to spare at 8.8 GB RSS — the
+170240 figure is an LM Studio limitation, not a measurement of this model
+or this machine. Quality unscored, pending.

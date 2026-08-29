@@ -24,6 +24,23 @@ This is the law for every test cycle. Do not skip steps.
    step. A config that loads but decodes degraded counts as failed.
    Speculative decoding: sweep the draft depth per model AND per mode — the
    optimum shifts with output style (thinking on/off) and with depth.
+   **Ceiling sweeps creep slowly: pause ~25 s between depth steps.** The
+   pause simulates real use — an agent's model waits on the user and on
+   tool runs between requests — and it gives macOS time to compress other
+   memory, which raises the measured ceiling (verified: ~2K extra tokens
+   on Qwen3.6-35B MLX at limit 24000). A no-pause sweep understates the
+   ceiling a real harness reaches.
+   **Know which limit actually gates the OOM.** Below ~24000 MB on a 32 GB
+   machine, `iogpu.wired_limit_mb` gates cleanly: the process's
+   `IOAccelerator (graphics)` resident memory (per-process view: `vmmap
+   --summary <pid>`) hits the sysctl value exactly and the process gets
+   the Metal OOM while the system stays healthy. At ~24000 MB and above,
+   physical RAM binds first: free RAM runs to near zero before the sysctl
+   matters, the crash point stops responding to sysctl changes, and the
+   machine locks up and shows visual glitches. Ceilings measured in that
+   regime are the machine's true maxima but cost system usability.
+   Budget model for MLX (Qwen3.6-35B measured): weights + a ~1-2 GB
+   transient prefill spike + ~115 KiB per token of KV.
 6. **Sweep decode speed against USED context — the depth sweep.** Allocation
    is storage; used tokens are what decode pays for. Grow a prompt in steps
    (4K, 8K, 16K, 24K, 32K, then 16K steps), measure decode at each depth, and
@@ -34,6 +51,19 @@ This is the law for every test cycle. Do not skip steps.
    the harness compaction threshold belongs. Measured law so far: MLX
    runtimes barely creep but hit hard memory ceilings; llama runtimes creep
    faster but never OOM inside their window.
+   **A ceiling sweep must run to the model's trained/max context length, not
+   stop at an arbitrary depth list.** A sweep that stops early without
+   hitting the speed floor or OOM has not found a ceiling — it has just
+   stopped. Record "no ceiling found up to `<the model's max context>`" only
+   after the sweep actually reached that number.
+   **Multi-slot (multi-agent) configs get their reported tok/s from one
+   slot decoding alone, not all slots decoding at once.** Slots are
+   parallel *contexts*, not parallel *use*: a sub-agent's slot holds its
+   place while it is idle, but a main agent and a sub-agent rarely
+   generate at the same instant. All-slots-decoding is a worst case, not
+   the typical one, so it is not the number reported. Depth-sweep the
+   single slot exactly as any other config; the other slots stay loaded
+   but idle during the sweep.
 7. **Record each result on every surface in the same pass** — a result is not
    recorded until all agree: the model's
    `docs/setups/<setup>/benchmarks/*.md` (full data), its
@@ -126,9 +156,12 @@ This is the law for every test cycle. Do not skip steps.
   their 4-bit-KV path and their layout migrations for a while.
 - **Use the most popular mainstream quant repos** (HF download counts);
   verify exact file lists first.
-- **Per-quantization scoring**: what you run is a quant; quality must be
-  measured per quant AND per runtime (mlx vs GGUF weights are different
-  artifacts of the same model).
+- **Score the quant, once per model.** Published full-precision scores do
+  not count: what you run is a quant. But narrow differences between
+  runtimes' standard quants do not count either — score each model once
+  per thinking mode and share that score across runtimes. Aggressive or
+  calibrated quants (for example the prism fork's q4 KV) are not narrow;
+  each passes the gate separately.
 
 ## Code-quality gate (EvalPlus, then Aider)
 
@@ -148,7 +181,8 @@ numbers; add thinking-off passes where sub-agent use is planned.
 scores.** Calibrate per model: sample ~10 fixed problems at a 30K cap,
 record real `completion_tokens`, set budget = observed max × 1.5 (floor
 8192). An undersized budget lets reasoning exhaust the cap and empty
-completions score as failures — run 1's flaw (up to 38% of scores lost).
+completions score as failures — a flaw an early pass here hit (up to 38% of
+scores lost before it was found).
 For models whose thinking sometimes never converges (finish_reason length at
 any budget), the budget is a waste-limiter: set it just above the longest
 SUCCESSFUL completion. Speculative decoding never changes outputs at
@@ -162,7 +196,8 @@ matters.
 - **Heartbeat, mandatory**: schedule a wakeup ≤20 minutes after starting any
   block; verify real output growth (not process liveness); restart dead
   blocks; every wakeup ends with a new wakeup or the shutdown checklist.
-  Verified necessary on run 2: a block sat 52 minutes in a silent retry loop.
+  Verified necessary here: a block once sat 52 minutes in a silent retry
+  loop before this rule existed.
 - Close background apps before the run; start the memory probe.
 - The prompt-cache rule, the mlx watchdog, and the server-failure lore above
   all bind run scripts.

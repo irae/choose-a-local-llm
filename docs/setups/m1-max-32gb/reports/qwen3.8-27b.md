@@ -48,7 +48,7 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
 | **Daily driver** | mlx_lm.server, compaction at ~26K | 14-17 across the window | to ~29K ceiling |
 | **llama alternative** | llama-server + MTP n=3, q8_0 KV | 14.1 shallow | floor ~19K; maxima pending re-probe |
 
-## Quality — EvalPlus HumanEval+ (run 2)
+## Quality — EvalPlus HumanEval+
 
 | config scored | pass@1 base | pass@1 plus | empty completions |
 |---|--:|--:|--:|
@@ -120,10 +120,11 @@ weight copies exceed the wired limit. It still wins, because llama crosses
 the 8 tok/s floor at ~19K while MLX never drops below 14 inside its window.
 Speed you can actually use beats a window you cannot decode through.
 
-**The quality score is fair, and it is the project's best.** Run 2 calibrated
-this config's output budget to 8192 — its longest observed reasoning was only
-~2.6K tokens — and regenerated the three empty completions left from run 1.
-Zero empty completions remain. Details in `night2/results.md`.
+**The quality score is fair, and it is the project's best.** The output
+budget was calibrated to 8192 — its longest observed reasoning was only
+~2.6K tokens — and the three empty completions left from an earlier,
+uncalibrated pass were regenerated. Zero empty completions remain. Full
+data: [the benchmarks](../benchmarks/qwen3.8-27b.md).
 
 **Medium reasoning effort is faster for a mechanical reason.** The MTP head
 predicts medium-effort text better than xhigh-effort text, so acceptance

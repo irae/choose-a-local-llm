@@ -6,8 +6,9 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 
 - **Best quality:** Qwen3.8-27B on MLX — 0.982 / 0.939 EvalPlus. Send hard
   problems here.
-- **Best depth:** Gemma-12B on the LM Studio engine — 25.1 tok/s at 147K used
-  tokens, in 8.8 GB. No ceiling found yet.
+- **Best depth:** Gemma-12B on the LM Studio engine — 29.7 tok/s at 169.6K used
+  tokens, in 8.8 GB. LM Studio's own MLX loader caps it at 170K (a known
+  LM Studio bug, not a memory or speed limit of the model).
 - **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, still 22 at
   74K, in 13.5 GB.
 - **Best big window, and the best all-round config:** Qwen3.6-35B on llama —
@@ -16,23 +17,49 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 - **Best all-day agent:** Ternary Bonsai-27B — 27B-class quality from 8 GB of
   weights, and the flattest curve of any model.
 - **Best multi-agent:** Bonsai on the prism fork — 2×48K slots at 9.8 tok/s
-  each, in 10.0 GB flat. The only setup that leaves the machine free.
+  each, in 10.0 GB. The only setup that leaves the machine free.
 - **The law that decides everything:** MLX runtimes barely slow down but hit
   hard memory ceilings. llama runtimes slow down faster but never OOM inside
   their window.
 
-## Current picks by seat
+## Models evaluated
 
-Quality gate pending where noted.
+| Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |
+|---|--:|:--:|--:|--:|--:|
+| Qwen3.8-27B, MLX, compaction ~26k, effort medium | *28k* | mem | 17 → 14 | *14.3 GB* | 0.982/0.939 |
+| Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | pending | 0.982/0.939 |
+| Qwen3.6-35B-A3B, MLX, thinking on | 34.9k | mem | 53.3 → 41.5 | 22.1 GB | 0.939/0.921 |
+| Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
+| Gemma-4-26B-A4B, MLX | *74k* | mem | 51 → 22 | *13.5 GB* | pending |
+| Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | pending | pending |
+| Gemma-4-12B, MLX³ | 170k | engine | 37 → 31 | 8.8 GB | pending |
+| Gemma-4-12B, MLX³, thinking off | 170k | engine | 37 → 31 | 8.8 GB | 0.909/0.872 |
+| Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | pending | 0.909/0.872 |
+| Ternary-Bonsai-27B, MLX, bounded cache, thinking on | *49k* | mem | 24.5 → 18.8 | *~15 GB* | 0.915/0.884 |
+| Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 2x48k | speed | 14.6 → ? | 10.0 GB | pending |
 
-| seat | config | tok/s (shallow → deep) | memory | EvalPlus |
-|---|---|--:|--:|--:|
-| **Hard problems** | Qwen3.8 MLX, compact ~26K | 17 → 14 at 28K | 14.3 GB | 0.982/0.939 |
-| **Deep sessions** | Qwen3.6 llama+MTP q8, 96K | 44 → 8.1 at 90K | 22.8 GB | 0.939/0.921 |
-| **Fast + deep (contender)** | Gemma-26B MLX | 51 → 22 at 74K | 13.5 GB | run 3 |
-| **Flattest (contender)** | Gemma-12B via LM Studio (lms CLI) | 37 → 31 at 74K | 8.8 GB | run 3 |
-| **All-day background** | Bonsai MLX, 48K, bounded cache | 24.5 → 18.8 at 49K | grows to ~15 GB | 0.915/0.884 |
-| **Desktop + multi-agent** | Bonsai prism fork q4, 2×48K slots | 14.6 solo; 9.8 each concurrent | 10.0 GB flat | run 3 (q4) |
+¹ Whichever limit hits first: the max memory a config fits in, or the max
+context that stays usable — usable meaning at or above the 8 tok/s floor.
+"tok/s (shallow → deep)" is that same decode speed, near an empty context
+then at max ctx.
+
+² Scored once per model and thinking mode; runtimes serving the same
+model at a standard quant share the score. Aggressive quants (for
+example the prism fork's calibrated q4 KV) do not share — they pass the
+gate separately.
+
+³ LM Studio's MLX engine — the only runtime that loads this model's
+`gemma4_unified` architecture. Its context auto-fit cannot be overridden;
+see the floor table below.
+
+⁴ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
+
+*Italic* values are fast-sweep ceilings from before the slow-creep rule;
+a re-test comes soon and their memory figures are suspect. See
+[the measurement rules](../../methodology#measurement-rules) for why the slow creep
+is more realistic.
+
+"Memory (at max ctx)" is the wired GPU memory the config holds at max ctx.
 
 Server commands live in each model's report; aliases equal the pi model ids.
 Compaction thresholds come from the floor table below, not from the window.
@@ -54,44 +81,41 @@ Compaction thresholds come from the floor table below, not from the window.
 
 ## Decode speed vs used context — the 8 tok/s usability floor
 
-Measured 2026-08-28 at wired limit 25000.
+Measured 2026-08-28 at wired limit 24000 (identical ceilings at 24000 and
+25000 — physical RAM binds first above 24000). The Qwen3.6 MLX row is
+re-tested 2026-08-29 with the slow creep; the other MLX rows still carry
+fast-sweep ceilings and a slow-creep re-test is pending.
 
 | model / runtime | tok/s @ 4K | @ 16K | @ 32-33K | @ 49K | @ 74-90K | capped by | EvalPlus (base/plus) |
 |---|--:|--:|--:|--:|--:|---|--:|
-| **Gemma-26B MLX** | 51.1 | 43.5 | 35.6 | 28.8 | 22.2 (74K) | OOM at 82-98K — 20.6 tok/s at 82K | not scored (run 3) |
-| **Qwen3.6-35B MLX** | 53.3 | 49.6 | 42.2 | | | OOM at 37-41K — 42.0 tok/s at 37K | not scored |
-| **Qwen3.6-35B llama (q8, MTP)** | 44.5 | 30.1 | 18.8 | 13.5 | 8.1 (90K) | its own 96K window — still 8.1 tok/s at 90K | 0.939/0.921 |
-| Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 18.2 (57K) | OOM at 57-61K — 18.2 tok/s at 57K | 0.915/0.884 |
-| Qwen3.8 MLX | 17.1* | 16.4 | | | | OOM at 29-33K — still 14.2 tok/s at 28K | 0.982/0.939 |
-| Gemma-26B llama (q8, MTP) | 23.5 | 11.2 | | | | speed — under 8 tok/s at ~24K | not scored (run 3) |
-| Bonsai prism fork (q4 KV) | 14.6 | 10.6 | | | | speed — under 8 tok/s at ~30K | pending (run 3) |
-| Qwen3.8 llama (q8, MTP) | 14.1 | 8.6 | | | | speed — under 8 tok/s at ~19K | not scored |
-| Gemma-12B llama (q8, MTP) | 14.0 | | | | | speed — under 8 tok/s at ~11K | not scored (run 3) |
-| **Gemma-12B MLX (LM Studio engine, CLI)** | 36.7 | 36.9 | 34.8 | 33.1 | 30.8 (74K) | not found — **25.1 tok/s at 147K**, the deepest usable curve measured; served via lms CLI on port 1234, 8.8 GB RSS at 74K | not scored (run 3) |
+| **Gemma-26B MLX** | 51.1 | 43.5 | 35.6 | 28.8 | 22.2 (74K) | mem — *stable to 82K, 20.6 tok/s there* | pending |
+| **Qwen3.6-35B MLX** | 53.3 | 49.6 | 42.2 | | | mem — stable to 34.9K, 41.5 tok/s there | pending |
+| **Qwen3.6-35B llama (q8, MTP)** | 44.5 | 30.1 | 18.8 | 13.5 | 8.1 (90K) | speed — its 96K window ends at 8.1 tok/s | 0.939/0.921 |
+| Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 18.2 (57K) | mem — *stable to 57K, 18.2 tok/s there* | 0.915/0.884 |
+| Qwen3.8 MLX | 17.1* | 16.4 | | | | mem — *stable to 28K, 14.2 tok/s there* | 0.982/0.939 |
+| Gemma-26B llama (q8, MTP) | 23.5 | 11.2 | | | | speed — under 8 tok/s at ~24K | pending |
+| Bonsai prism fork (q4 KV) | 14.6 | 10.6 | | | | speed — under 8 tok/s at ~30K | pending |
+| Qwen3.8 llama (q8, MTP) | 14.1 | 8.6 | | | | speed — under 8 tok/s at ~19K | pending |
+| Gemma-12B llama (q8, MTP) | 14.0 | | | | | speed — under 8 tok/s at ~11K | pending |
+| **Gemma-12B MLX (LM Studio engine, CLI)** | 36.7 | 36.9 | 34.8 | 33.1 | 29.7 (169.6K) | engine — LM Studio auto-fits MLX context to 170K regardless of the requested value (unfixed LM Studio bug); still 29.7 tok/s at 169.6K, the deepest healthy point, 171K fails clean; served via lms CLI, 8.8 GB RSS at 74K | pending |
 
 Cells are blank past a config's cap. *8K value.
 
 ## Code quality — EvalPlus HumanEval+
 
-Qwen3.8 and Bonsai measured on run 2, 2026-08-27. Qwen3.6 corrected on
-run 3, 2026-08-28.
-
 | model | config scored | pass@1 base | pass@1 plus | status |
 |---|---|--:|--:|---|
-| **Qwen3.8-27B** | mlx 4-bit, reasoning_effort=medium, budget 8192 | **0.982** | **0.939** | fair — 0 empty |
-| **Ternary Bonsai-27B** | mlx 2-bit, thinking on, budget 10240 | **0.915** | **0.884** | fair — 5/164 empty is a real model ceiling |
-| **Qwen3.6-35B-A3B (MoE)** | llama+MTP, thinking on, budget 26624 | **0.939** | **0.921** | fair — corrected in run 3; 5/164 empty is a real model ceiling |
-| Gemma-4-26B-A4B | calibrated only (budget 30000) | – | – | 2/10 sample problems never finished reasoning at the 30K cap |
-| Gemma-4-12B | calibrated only (budget 30000) | – | – | 4/10 sample problems hit the cap — worse than the 26B, counterintuitively |
+| **Qwen3.8-27B** | mlx 4-bit, reasoning_effort=medium, budget 8192 | **0.982** | **0.939** | 0 empty |
+| **Ternary Bonsai-27B** | mlx 2-bit, thinking on, budget 10240 | **0.915** | **0.884** | 5/164 empty is a real model ceiling |
+| **Qwen3.6-35B-A3B (MoE)** | llama+MTP, thinking on, budget 26624 | **0.939** | **0.921** | 5/164 empty is a real model ceiling |
+| Gemma-4-26B-A4B | calibrated only (budget 30000) | – | – | pending — 2/10 sample problems never finished reasoning at the 30K cap |
+| Gemma-4-12B | calibrated only (budget 30000) | – | – | pending — 4/10 sample problems hit the cap, worse than the 26B |
 
 ## Open questions
 
-- Run 3, remaining blocks: EvalPlus for the Gemma configs, now including
-  Gemma-26B MLX and Gemma-12B via LM Studio, the two best unscored depth
-  curves; the Bonsai prism-fork q4 A/B; and a Bonsai thinking-off pass.
-  Blocks run one at a time, each waiting for a go-ahead.
-- Memory ceilings for the MLX configs that never hit the speed floor
-  (measurement in flight).
+- EvalPlus for the Gemma configs (MLX and LM Studio), the Bonsai prism-fork
+  q4 pick, and a Bonsai thinking-off pass.
+- Memory ceilings for the MLX configs that never hit the speed floor.
 - Aider polyglot (tier 2) for gate survivors — driven from another computer;
   docker does not fit beside a loaded model here.
 - Watch list: brew llama.cpp reading ternary Q2; mlx-lm gaining
@@ -105,36 +129,25 @@ config whose near-empty benchmark said 62. Context maxima alone are storage,
 not speed. So each model is swept with an append-only growing prompt, which
 gives perfect cache reuse, until decode drops under the 8 tok/s floor or the
 server runs out of memory. The floor, not the window, is where the harness
-compaction threshold belongs — and capping the window also returns wired
-memory to the system.
-
-**The pattern held across every model.** MLX runtimes barely slow down but
-hit hard memory ceilings; llama runtimes slow down faster but never OOM
-inside their windows. MoE models on MLX dominate the speed rankings:
-Gemma-26B MLX at 13.5 GB RSS and Qwen3.6 MLX are the two fastest curves ever
-measured here.
+compaction threshold belongs.
 
 **How to read the numbers.** Sweep prompts are synthetic code continuations,
-so MTP-model numbers there read below the standard py/js bench, because draft
+so MTP-model numbers read below the standard py/js bench, because draft
 acceptance differs. The curves stay comparable across rows. Scores are
-HumanEval+ pass@1, measured on the same weights as the row's runtime where
-noted.
+HumanEval+ pass@1, one score per model and thinking mode (footnote ²
+above).
 
-**The quality scores moved a lot once the harness was fixed.** Run 1 used a
-fixed output budget that was too small, so reasoning exhausted the cap and
-empty completions scored as failures. Budgets are now calibrated per model
-from measured reasoning length (`night2/calibration.md`). Every corrected
-score went up, and Qwen3.6 and Bonsai went up enormously — the flawed cap had
-been hiding most of both models' ability. Nothing about the models changed,
-only the harness that measured them. Treat any single-pass score with a fixed
-output budget as a lower bound until the budget is calibrated. The deflated
-numbers, shown against their corrections, are on
-[the historical page](./historical.md).
+**Quality scores need a calibrated output budget.** A fixed budget that is
+too small lets reasoning exhaust the cap, and empty completions score as
+failures — a harness flaw, not a model flaw. Budgets here are calibrated per
+model from measured reasoning length. Superseded scores from an
+uncalibrated budget live on [the historical page](./historical.md), never
+here.
 
 **The Gemma models have a real convergence problem.** Their thinking mode
 sometimes fails to converge at all — 30K tokens of reasoning with no answer.
 That is model behavior, not a harness limit, and the 12B does it more often
-than the 26B. Full history: `night2/results.md`, `night2/state.md`.
+than the 26B.
 
 Superseded measurements live in
 [the historical page](./historical.md). Nothing on this page

@@ -214,12 +214,13 @@ Run twice on the final config. Same speed as the deep-clone prompt (15.59), so t
 | 90112 | 2×44K | OK, MTP active — max for 2 slots | 24.2 GB |
 | 98304 | 2×48K | Metal OOM | – |
 
-## Quality — EvalPlus HumanEval+ (run 2, fair budget)
+## Quality — EvalPlus HumanEval+ (2026-08-27, fair budget)
 
 **pass@1 0.982 base / 0.939 plus** (mlx 4-bit, reasoning_effort=medium, output
-budget 8192, temperature 0). Run 1's flawed 3072 cap had scored it
-0.970/0.939. Zero empty completions. The strongest HumanEval+ result of the
-models scored so far. Details: `night2/results.md`.
+budget 8192, temperature 0). A 2026-08-26 pass under a flawed 3072-token cap
+had scored it 0.970/0.939 (superseded, see
+[the historical page](../historical.md)). Zero empty completions. The
+strongest HumanEval+ result of the models scored so far.
 
 ## Depth sweeps at `iogpu.wired_limit_mb=25000` (2026-08-28)
 

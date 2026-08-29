@@ -12,8 +12,9 @@ against OpenAI-compatible servers that a coding harness can actually use.
 - **Context that fits the machine while it stays a desktop.** Memory
   footprints are measured so the Mac remains usable during all-day agent
   work.
-- **Quality per quantization and per runtime.** Published scores cover
-  full-precision models. What you run is a quant.
+- **Quality per quantization.** Published scores cover full-precision
+  models. What you run is a quant. One score per model and thinking
+  mode; runtimes at standard quants share it.
 - **Role assignment, not a single winner.** A thinking main agent, fast
   sub-agents, an all-day background agent, and multi-agent slots — each seat
   can go to a different model and runtime.
@@ -29,28 +30,48 @@ the law.
 
 ### M1 Max, 32 GB
 
-Apple Silicon, wired limit 25000 MB. Five models, four runtimes:
-llama-server, mlx_lm.server, LM Studio, and the PrismML llama.cpp fork. Depth
-sweeps are complete for every model and runtime; quality scores are partial.
+Apple Silicon, wired limit 24000 MB. Five models, four runtimes:
+llama-server, mlx_lm.server, LM Studio, and the PrismML llama.cpp fork.
+Depth sweeps are complete; quality scores are partial. The law: MLX
+runtimes barely slow down but hit hard memory ceilings; llama runtimes
+slow down faster but never OOM inside their window.
 
-- **Best quality:** Qwen3.8-27B on MLX — 0.982 / 0.939 EvalPlus. Qwen3.6-35B
-  is close behind at 0.939 / 0.921, and four times faster.
-- **Best depth:** Gemma-12B on the LM Studio engine — 25.1 tok/s still at
-  147K used tokens, in 8.8 GB.
-- **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, 22 at 74K.
-- **Best all-day agent:** Ternary Bonsai-27B — 27B-class quality from 8 GB of
-  weights.
-- **The law:** MLX runtimes barely slow down but hit hard memory ceilings;
-  llama runtimes slow down faster but never OOM inside their window.
+| Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |
+|---|--:|:--:|--:|--:|--:|
+| Qwen3.8-27B, MLX, compaction ~26k, effort medium | *28k* | mem | 17 → 14 | *14.3 GB* | 0.982/0.939 |
+| Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | pending | 0.982/0.939 |
+| Qwen3.6-35B-A3B, MLX, thinking on | 34.9k | mem | 53.3 → 41.5 | 22.1 GB | 0.939/0.921 |
+| Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
+| Gemma-4-26B-A4B, MLX | *74k* | mem | 51 → 22 | *13.5 GB* | pending |
+| Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | pending | pending |
+| Gemma-4-12B, MLX³ | 170k | engine | 37 → 31 | 8.8 GB | pending |
+| Gemma-4-12B, MLX³, thinking off | 170k | engine | 37 → 31 | 8.8 GB | 0.909/0.872 |
+| Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | pending | 0.909/0.872 |
+| Ternary-Bonsai-27B, MLX, bounded cache, thinking on | *49k* | mem | 24.5 → 18.8 | *~15 GB* | 0.915/0.884 |
+| Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 2x48k | speed | 14.6 → ? | 10.0 GB | pending |
 
-| seat | config | tok/s (shallow → deep) | memory | EvalPlus |
-|---|---|--:|--:|--:|
-| **Hard problems** | Qwen3.8 MLX, compact ~26K | 17 → 14 at 28K | 14.3 GB | 0.982/0.939 |
-| **Deep sessions** | Qwen3.6 llama+MTP q8, 96K | 44 → 8.1 at 90K | 22.8 GB | 0.939/0.921 |
-| **Fast + deep (contender)** | Gemma-26B MLX | 51 → 22 at 74K | 13.5 GB | run 3 |
-| **Flattest (contender)** | Gemma-12B via LM Studio (lms CLI) | 37 → 31 at 74K | 8.8 GB | run 3 |
-| **All-day background** | Bonsai MLX, 48K, bounded cache | 24.5 → 18.8 at 49K | grows to ~15 GB | 0.915/0.884 |
-| **Desktop + multi-agent** | Bonsai prism fork q4, 2×48K slots | 14.6 solo; 9.8 each concurrent | 10.0 GB flat | run 3 (q4) |
+¹ Whichever limit hits first: the max memory a config fits in, or the max
+context that stays usable — usable meaning at or above the 8 tok/s floor.
+"tok/s (shallow → deep)" is that same decode speed, near an empty context
+then at max ctx.
+
+² Scored once per model and thinking mode; runtimes serving the same
+model at a standard quant share the score. Aggressive quants (for
+example the prism fork's calibrated q4 KV) do not share — they pass the
+gate separately.
+
+³ LM Studio's MLX engine — the only runtime that loads this model's
+`gemma4_unified` architecture. Its context auto-fit cannot be overridden;
+see the setup's comparison page.
+
+⁴ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
+
+*Italic* values are fast-sweep ceilings from before the slow-creep rule;
+a re-test comes soon and their memory figures are suspect. See
+[the measurement rules](./methodology#measurement-rules) for why the slow creep
+is more realistic.
+
+"Memory (at max ctx)" is the wired GPU memory the config holds at max ctx.
 
 | model | report | benchmarks |
 |---|---|---|
@@ -86,6 +107,7 @@ the usability floor or runs out of memory, and the floor — not the window —
 sets the harness compaction threshold.
 
 Published quality scores have the same problem. They cover full-precision
-weights, and what fits on a desktop is a quant. Quality has to be measured
-per quantization and per runtime, because MLX and GGUF weights are different
-artifacts of the same model.
+weights, and what fits on a desktop is a quant, so quality is measured on
+the quant actually served. Narrow differences between runtimes' standard
+quants do not count: one score per model and thinking mode covers them.
+Aggressive or calibrated quants get their own gate.
