@@ -6,7 +6,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 
 - **Best quality:** Qwen3.8-27B on MLX — 0.982 / 0.939 EvalPlus. Send hard
   problems here.
-- **Best depth:** Gemma-12B on the LM Studio engine — 29.9 tok/s at 168K used
+- **Best depth:** Gemma-12B on the LM Studio engine — 29.7 tok/s at 169.6K used
   tokens, in 8.8 GB. LM Studio's own MLX loader caps it at 170K (a known
   LM Studio bug, not a memory or speed limit of the model).
 - **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, still 22 at
@@ -75,7 +75,7 @@ Measured 2026-08-28 at wired limit 25000.
 | Bonsai prism fork (q4 KV) | 14.6 | 10.6 | | | | speed — under 8 tok/s at ~30K | pending |
 | Qwen3.8 llama (q8, MTP) | 14.1 | 8.6 | | | | speed — under 8 tok/s at ~19K | pending |
 | Gemma-12B llama (q8, MTP) | 14.0 | | | | | speed — under 8 tok/s at ~11K | pending |
-| **Gemma-12B MLX (LM Studio engine, CLI)** | 36.7 | 36.9 | 34.8 | 33.1 | 29.9 (168K) | engine — LM Studio auto-fits MLX context to 170K regardless of the requested value (unfixed LM Studio bug); still 29.9 tok/s at 168K, the deepest point reached, no OOM and no speed floor hit; served via lms CLI, 8.8 GB RSS at 74K | pending |
+| **Gemma-12B MLX (LM Studio engine, CLI)** | 36.7 | 36.9 | 34.8 | 33.1 | 29.7 (169.6K) | engine — LM Studio auto-fits MLX context to 170K regardless of the requested value (unfixed LM Studio bug); still 29.7 tok/s at 169.6K, the deepest healthy point, 171K fails clean; served via lms CLI, 8.8 GB RSS at 74K | pending |
 
 Cells are blank past a config's cap. *8K value.
 

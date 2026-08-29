@@ -151,15 +151,18 @@ release).
 | 147.5K | 25.1 |
 | 155.8K | 30.8 |
 | 163.9K | 30.0 |
-| **168.0K** | **29.9 — deepest point reached, still healthy** |
+| 168.0K | 29.9 |
+| **169.6K** | **29.7 — deepest healthy point; 171K fails clean (server rejects, does not crash or OOM)** |
 
-**The flattest curve of the whole project** (-9% over 168K) at 8.8 GB RSS —
+**The flattest curve of the whole project** (-9% over 169K) at 8.8 GB RSS —
 LM Studio's gemma4_unified implementation appears to honor the
 sliding-window attention that the llama.cpp path does not (llama floor ~11K
 on the same model). Decode speed never drops toward the 8 tok/s floor and
-no Metal OOM ever appears. The ceiling here is LM Studio's own MLX loader:
-it auto-fits the loaded context to 170240 tokens regardless of what is
-requested at load time (confirmed via
+no Metal OOM ever appears; the request past the boundary fails instantly
+with a clean rejection, and the server serves normally again right after.
+The ceiling here is LM Studio's own MLX loader: it auto-fits the loaded
+context to 170240 tokens regardless of what is requested at load time
+(confirmed via
 [lmstudio-bug-tracker#2250](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/2250)
 and [#1902](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1902),
 open, unfixed, no workaround as of 2026-08). This model's own trained

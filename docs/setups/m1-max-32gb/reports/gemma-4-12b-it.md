@@ -64,7 +64,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
 | 33K / 49K | | 34.8 / 33.1 |
 | 74K / 98K | | 30.8 / 28.6 |
 | 131K / 147K | | 26.1 / 25.1 |
-| **168K** | | **29.9 — deepest point reached, still healthy; LM Studio's loader caps the context at 170K, not this model or this machine** |
+| **169.6K** | | **29.7 — deepest healthy point; 171K fails clean, LM Studio's loader caps it at 170K, not this model or this machine** |
 
 ## Context (n-max 4, f16 KV)
 
