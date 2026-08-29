@@ -30,19 +30,10 @@ the law.
 ### M1 Max, 32 GB
 
 Apple Silicon, wired limit 24000 MB. Five models, four runtimes:
-llama-server, mlx_lm.server, LM Studio, and the PrismML llama.cpp fork. Depth
-sweeps are complete for every model and runtime; quality scores are partial.
-
-- **Best quality:** Qwen3.8-27B on MLX — 0.982 / 0.939 EvalPlus. Qwen3.6-35B
-  is close behind at 0.939 / 0.921, and four times faster.
-- **Best depth:** Gemma-12B on the LM Studio engine — 29.7 tok/s still at
-  169.6K used tokens, in 8.8 GB. LM Studio's own MLX loader caps it at 170K
-  (a known LM Studio bug, not a memory or speed limit of the model).
-- **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, 22 at 74K.
-- **Best all-day agent:** Ternary Bonsai-27B — 27B-class quality from 8 GB of
-  weights.
-- **The law:** MLX runtimes barely slow down but hit hard memory ceilings;
-  llama runtimes slow down faster but never OOM inside their window.
+llama-server, mlx_lm.server, LM Studio, and the PrismML llama.cpp fork.
+Depth sweeps are complete; quality scores are partial. The law: MLX
+runtimes barely slow down but hit hard memory ceilings; llama runtimes
+slow down faster but never OOM inside their window.
 
 | Suggested for | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |---|---|--:|:--:|--:|--:|--:|
