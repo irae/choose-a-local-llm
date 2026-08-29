@@ -1,0 +1,16 @@
+{"task_id": "HumanEval/0", "wall": 61.405598878860474, "completion_tokens": 2004, "reasoning_tokens": 1595, "reasoning_chars": 4997, "finish_reason": "stop"}
+{"task_id": "HumanEval/1", "wall": 505.2778100967407, "completion_tokens": 16383, "reasoning_tokens": 16381, "reasoning_chars": 51934, "finish_reason": "length"}
+{"task_id": "HumanEval/2", "wall": 51.43839478492737, "completion_tokens": 1690, "reasoning_tokens": 1389, "reasoning_chars": 4160, "finish_reason": "stop"}
+{"task_id": "HumanEval/3", "wall": 31.49832820892334, "completion_tokens": 1011, "reasoning_tokens": 706, "reasoning_chars": 2490, "finish_reason": "stop"}
+{"task_id": "HumanEval/4", "wall": 506.1036751270294, "completion_tokens": 16383, "reasoning_tokens": 16381, "reasoning_chars": 39521, "finish_reason": "length"}
+{"task_id": "HumanEval/5", "wall": 45.638396978378296, "completion_tokens": 1489, "reasoning_tokens": 1136, "reasoning_chars": 3738, "finish_reason": "stop"}
+{"task_id": "HumanEval/6", "wall": 506.05663204193115, "completion_tokens": 16383, "reasoning_tokens": 16381, "reasoning_chars": 42988, "finish_reason": "length"}
+{"task_id": "HumanEval/7", "wall": 25.281282901763916, "completion_tokens": 815, "reasoning_tokens": 564, "reasoning_chars": 1960, "finish_reason": "stop"}
+{"task_id": "HumanEval/8", "wall": 35.948527097702026, "completion_tokens": 1183, "reasoning_tokens": 881, "reasoning_chars": 2794, "finish_reason": "stop"}
+{"task_id": "HumanEval/9", "wall": 56.462854862213135, "completion_tokens": 1864, "reasoning_tokens": 1521, "reasoning_chars": 4343, "finish_reason": "stop"}
+{"task_id": "HumanEval/10", "wall": 500.97368717193604, "completion_tokens": 16383, "reasoning_tokens": 16381, "reasoning_chars": 47793, "finish_reason": "length"}
+{"task_id": "HumanEval/11", "wall": 59.68271279335022, "completion_tokens": 1985, "reasoning_tokens": 1600, "reasoning_chars": 5270, "finish_reason": "stop"}
+{"task_id": "HumanEval/12", "wall": 35.789331912994385, "completion_tokens": 1171, "reasoning_tokens": 892, "reasoning_chars": 3291, "finish_reason": "stop"}
+{"task_id": "HumanEval/13", "wall": 30.60851001739502, "completion_tokens": 1004, "reasoning_tokens": 854, "reasoning_chars": 2661, "finish_reason": "stop"}
+{"task_id": "HumanEval/14", "wall": 27.5038902759552, "completion_tokens": 901, "reasoning_tokens": 657, "reasoning_chars": 2164, "finish_reason": "stop"}
+{"task_id": "HumanEval/15", "wall": 24.688295125961304, "completion_tokens": 813, "reasoning_tokens": 546, "reasoning_chars": 1654, "finish_reason": "stop"}

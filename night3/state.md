@@ -110,6 +110,42 @@ already showed 2/10 sample problems never finishing reasoning at a 30K
 cap, and the reports page documents Gemma's thinking-convergence problem.
 Stopped `night2/mem-watch.sh` and the server.
 
+## gemma12-lmstudio-off: confirmed genuinely thinking-off (2026-08-29)
+
+The owner asked whether the archived `gemma12-lmstudio-off` row (block
+above, `gemma-4-12b-it-mlx`, 0.909/0.872, 0/164 empty) might have
+secretly had thinking on. Checked directly, not from archaeology alone
+(evalplus's own code only ever reads `.content`, never
+`.reasoning_content` — the archived `.raw.jsonl` cannot prove either way
+by itself).
+
+Test: ran problems HumanEval/0-15 through `google/gemma-4-12b` on LM
+Studio (0.4.23, mlx-engine 1.10.1) with thinking confirmed active
+(`reasoning_content` populated, budget 16384,
+`tools/sweeps/lmstudio_evalplus_smoke.py`, results at
+`/tmp/gemma12-lmstudio-thinking-smoke/c1_think-omit.jsonl` and
+`.stats.jsonl`, not committed — exploration only). Compared against the
+archived run's own per-problem results on the same 16 problems, from
+`night3/results/gemma12-lmstudio-off/humaneval/gemma-4-12b-it-mlx_openai_temp_0.0_eval_results.json`.
+
+| | archived (labeled thinking-off) | confirmed thinking-on (this session) |
+|---|---|---|
+| pass@1, same 16 problems | 15/16 (0.938) | 12/16 (0.75) |
+| empty/truncated (`finish_reason: length`) | 0/16 | 4/16, all with `reasoning_tokens≈16381` |
+| reasoning phase in server log | none | every problem, `"Start thinking... Done reasoning, ~26s+"` |
+
+Scores differ (0.938 vs 0.75) and the confirmed-thinking-on run shows a
+distinctive failure signature (budget exhausted by non-convergent
+reasoning) that appears on 25% of this sample — matching the same rate
+seen on Gemma-26B thinking-on tonight (46/164, 28%, see the block
+above). The archived run shows zero instances of that signature across
+its full 164 problems. If it had been secretly reasoning, that failure
+mode would very likely show up at least some of the time — it does not.
+
+**Conclusion: the archived `gemma12-lmstudio-off` score is genuinely
+thinking-off.** The suspicion does not hold up. Not written to the site
+— this is a note to explain the archived number, not a new measurement.
+
 ## Next
 
 Per the runbook, the next block is bonsai-prism (the PrismML fork A/B).
