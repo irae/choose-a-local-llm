@@ -13,14 +13,16 @@ llama-server (build 10621) · unsloth UD-Q4_K_XL + MTP draft · benchmarked
 - **Thinking is nearly free**: it costs only ~3 tok/s.
 - Weak point: on llama it crosses the 8 tok/s floor at ~24K. The depth
   belongs to its MLX build, not its llama build.
-- Weak point: quality is unscored. Its thinking mode sometimes never
-  converges.
+- Weak point: EvalPlus 0.713/0.701, 46/164 (~28%) empty. Its thinking mode
+  often never converges — the worst convergence rate of any scored model
+  here.
 
 ## Best option
 
 **MLX for depth and speed** — the fast-and-deep contender for the main-agent
-seat, quality pending. **llama-server for window size** — the only way to
-get the full 256K, and the only way to get two slots.
+seat, quality now scored (0.713/0.701, see below). **llama-server for
+window size** — the only way to get the full 256K, and the only way to get
+two slots.
 
 Single agent — one 256K slot, q8_0 KV (pi id `gemma-4-26b-a4b`):
 
@@ -51,6 +53,15 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
 | **Max context** | llama-server + MTP n=2, q8_0 KV, 1 slot | 62.4 / 53.3 | 256K |
 | **Max js speed** | f16 KV at small context (32K) | 74.8 / 71.6 | 32K |
 | **Two agents** | `--parallel 2 -c 376832`, q8_0 KV | 58.4 / 56.5 single-stream | 2×184K |
+
+## Quality — EvalPlus HumanEval+
+
+| config scored | pass@1 base | pass@1 plus | empty completions |
+|---|--:|--:|--:|
+| mlx_lm.server 4-bit, thinking on, budget 30000 | 0.713 | 0.701 | 46/164 (~28%) |
+
+Score is shared with the llama+MTP config at the same quant (both serve the
+same weights).
 
 ## Decode speed vs used context (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
@@ -119,11 +130,13 @@ on/off, default off, with no graded effort levels. The speed numbers on this
 page were measured with thinking off. Thinking costs only ~3 tok/s, so there
 is little reason to avoid it on quality grounds.
 
-**Quality is unscored, and the reason is interesting.** Calibration alone
-showed that at a 30K output cap, 2 of 10 sample problems never finished
-reasoning at all. That is model behavior, not a harness limit. Its smaller
-sibling, the 12B, does it more often — counterintuitively. The EvalPlus gate
-for this config is pending.
+**Quality is scored, and the convergence problem is real.** Calibration
+alone showed that at a 30K output cap, 2 of 10 sample problems never
+finished reasoning at all. The full 164-problem run confirmed it at scale:
+46/164 (~28%) empty completions, well above the calibration sample's rate,
+for a final EvalPlus of 0.713/0.701. This is model behavior, not a harness
+limit — every empty completion still had budget left in the 30000-token
+cap. Its smaller sibling, the 12B, does it more often — counterintuitively.
 
 A deep-fill decode check on the llama config is still pending.
 

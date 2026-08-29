@@ -7,9 +7,10 @@
 - **Depth sweeps are complete** for every model and every runtime. The
   decode-vs-used-context table on the [comparison page](./comparison.md) is
   this project's main artifact.
-- **Three models have fair quality scores.** Qwen3.8 at 0.982/0.939,
-  Qwen3.6 at 0.939/0.921, and Bonsai at 0.915/0.884. Only the Gemmas are
-  unscored.
+- **Four models have fair quality scores.** Qwen3.8 at 0.982/0.939,
+  Qwen3.6 at 0.939/0.921, Bonsai at 0.915/0.884, and Gemma-26B at
+  0.713/0.701 (its thinking mode converges only ~72% of the time). Gemma-12B
+  is still unscored.
 - **Four runtimes are in play**, not one: llama-server, mlx_lm.server, LM
   Studio's engine, and the PrismML llama.cpp fork.
 - **The law:** MLX barely slows down but OOMs hard; llama slows down faster
@@ -58,9 +59,10 @@ As of 2026-08-29, after the slow-creep re-test.
   in 20.0 GB; Qwen3.6 llama never floors inside 96K; Qwen3.6 MLX holds 42
   tok/s at 33K.
 - Fair EvalPlus scores: Qwen3.8-mlx-medium **0.982/0.939**,
-  Qwen3.6-llama-think **0.939/0.921**, Bonsai-mlx-f16 **0.915/0.884**. The
-  Gemmas are unscored; their thinking mode sometimes never converges, and the
-  12B does it more than the 26B.
+  Qwen3.6-llama-think **0.939/0.921**, Bonsai-mlx-f16 **0.915/0.884**,
+  Gemma-26B-mlx-think **0.713/0.701** (46/164 empty — its thinking mode
+  converges only ~72% of the time). Gemma-12B is still unscored; its
+  smaller size makes it converge even less often than the 26B.
 - Bonsai extras: the PrismML fork is installed at `~/prism-llama/`. Its
   desktop profile holds q4 KV at 9.8 GB flat with a ~30K floor, and serves
   2×48K slots at 9.8 tok/s each concurrently — 3×48K gives 7.6 each. The
@@ -68,10 +70,11 @@ As of 2026-08-29, after the slow-creep re-test.
   so it is not used for scoring.
 - pi wiring today: qwen3.8-mlx at a 26K window, bonsai-mlx at 48K, qwen3.6
   llama at 96K, gemma-26b llama at 256K with q8. Pending decisions: the
-  bonsai-prism entry, and the Gemma windows once quality scores exist.
-- Seat sketch, pending Gemma quality: main and deep go to Gemma-26B MLX or
-  Qwen3.6; hard problems go to Qwen3.8-MLX at 26K; all-day and swarm go to
-  Bonsai. Gemma-12B re-entered play through LM Studio.
+  bonsai-prism entry, and the main-agent seat now that Gemma-26B's score
+  (0.713/0.701, 28% empty) is in.
+- Seat sketch: main and deep go to Gemma-26B MLX or Qwen3.6; hard problems
+  go to Qwen3.8-MLX at 26K; all-day and swarm go to Bonsai. Gemma-12B
+  re-entered play through LM Studio.
 
 ## Open work
 
