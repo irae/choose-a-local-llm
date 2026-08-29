@@ -63,7 +63,8 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
 | 16K | 6.8 — under the 8 tok/s floor | 36.9 |
 | 33K / 49K | | 34.8 / 33.1 |
 | 74K / 98K | | 30.8 / 28.6 |
-| 131K / 147K | | 26.1 / **25.1 — LM Studio caps the context at 170K here** |
+| 131K / 147K | | 26.1 / 25.1 |
+| **168K** | | **29.9 — deepest point reached, still healthy; LM Studio's loader caps the context at 170K, not this model or this machine** |
 
 ## Context (n-max 4, f16 KV)
 

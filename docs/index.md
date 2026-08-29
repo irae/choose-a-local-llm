@@ -35,8 +35,8 @@ sweeps are complete for every model and runtime; quality scores are partial.
 
 - **Best quality:** Qwen3.8-27B on MLX — 0.982 / 0.939 EvalPlus. Qwen3.6-35B
   is close behind at 0.939 / 0.921, and four times faster.
-- **Best depth:** Gemma-12B on the LM Studio engine — 25.1 tok/s still at
-  147K used tokens, in 8.8 GB. LM Studio's own MLX loader caps it at 170K
+- **Best depth:** Gemma-12B on the LM Studio engine — 29.9 tok/s still at
+  168K used tokens, in 8.8 GB. LM Studio's own MLX loader caps it at 170K
   (a known LM Studio bug, not a memory or speed limit of the model).
 - **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, 22 at 74K.
 - **Best all-day agent:** Ternary Bonsai-27B — 27B-class quality from 8 GB of
