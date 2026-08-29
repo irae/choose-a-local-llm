@@ -36,21 +36,22 @@ sweeps are complete for every model and runtime; quality scores are partial.
 - **Best quality:** Qwen3.8-27B on MLX — 0.982 / 0.939 EvalPlus. Qwen3.6-35B
   is close behind at 0.939 / 0.921, and four times faster.
 - **Best depth:** Gemma-12B on the LM Studio engine — 25.1 tok/s still at
-  147K used tokens, in 8.8 GB.
+  147K used tokens, in 8.8 GB. LM Studio's own MLX loader caps it at 170K
+  (a known LM Studio bug, not a memory or speed limit of the model).
 - **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, 22 at 74K.
 - **Best all-day agent:** Ternary Bonsai-27B — 27B-class quality from 8 GB of
   weights.
 - **The law:** MLX runtimes barely slow down but hit hard memory ceilings;
   llama runtimes slow down faster but never OOM inside their window.
 
-| seat | config | tok/s (shallow → deep) | memory | EvalPlus |
-|---|---|--:|--:|--:|
-| **Hard problems** | Qwen3.8 MLX, compact ~26K | 17 → 14 at 28K | 14.3 GB | 0.982/0.939 |
-| **Deep sessions** | Qwen3.6 llama+MTP q8, 96K | 44 → 8.1 at 90K | 22.8 GB | 0.939/0.921 |
-| **Fast + deep (contender)** | Gemma-26B MLX | 51 → 22 at 74K | 13.5 GB | run 3 |
-| **Flattest (contender)** | Gemma-12B via LM Studio (lms CLI) | 37 → 31 at 74K | 8.8 GB | run 3 |
-| **All-day background** | Bonsai MLX, 48K, bounded cache | 24.5 → 18.8 at 49K | grows to ~15 GB | 0.915/0.884 |
-| **Desktop + multi-agent** | Bonsai prism fork q4, 2×48K slots | 14.6 solo; 9.8 each concurrent | 10.0 GB flat | run 3 (q4) |
+| Suggested for | Config | Gated at | Gated by | tok/s (shallow → deep) | Memory | EvalPlus |
+|---|---|--:|:--:|--:|--:|--:|
+| **Hard problems** | Qwen3.8 MLX, compact | 28K | mem | 17 → 14 | 14.3 GB | 0.982/0.939 |
+| **Deep sessions** | Qwen3.6 llama+MTP q8 | 90K | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
+| **Fast + deep (contender)** | Gemma-26B MLX | 74K | mem | 51 → 22 | 13.5 GB | pending |
+| **Flattest (contender)** | Gemma-12B via LM Studio (lms CLI) | 170K | engine | 37 → 31 | 8.8 GB | pending |
+| **All-day background** | Bonsai MLX, bounded cache | 49K | mem | 24.5 → 18.8 | grows to ~15 GB | 0.915/0.884 |
+| **Desktop + multi-agent** | Bonsai prism fork q4, 2×48K slots | 48K per slot | speed | 14.6 solo; 9.8 each concurrent | 10.0 GB flat | pending |
 
 | model | report | benchmarks |
 |---|---|---|

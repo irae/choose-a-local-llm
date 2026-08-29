@@ -66,34 +66,26 @@ As of 2026-08-28, end of day.
 - pi wiring today: qwen3.8-mlx at a 26K window, bonsai-mlx at 48K, qwen3.6
   llama at 96K, gemma-26b llama at 256K with q8. Pending decisions: the
   bonsai-prism entry, and the Gemma windows once quality scores exist.
-- Seat sketch, pending run-3 quality: main and deep go to Gemma-26B MLX or
+- Seat sketch, pending Gemma quality: main and deep go to Gemma-26B MLX or
   Qwen3.6; hard problems go to Qwen3.8-MLX at 26K; all-day and swarm go to
   Bonsai. Gemma-12B re-entered play through LM Studio.
 
 ## Open work
 
-- Run 3, remaining blocks: Gemma scores including the MLX and LM Studio
-  variants, the bonsai-prism q4 A/B, and a Bonsai thinking-off pass. Each
-  block waits for a go-ahead.
-- Ceiling brackets for the MLX configs that never floored. Runs in flight.
+- Gemma scores, including the MLX and LM Studio variants, the bonsai-prism
+  q4 A/B, and a Bonsai thinking-off pass. Each block waits for a go-ahead.
+- Ceiling brackets for the MLX configs that never floored.
 - Aider tier 2, driven from another computer. Docker does not fit here.
 - Watch list and owner context: `HANDOFF.md`, not committed.
 
-## Benchmark run history
+## Why quality scores needed a correction
 
-- **Run 1** (`night1/`): the first EvalPlus pass. It found and patched four
-  EvalPlus 0.3.1 defects, and discovered the `max_tokens` flaw that made
-  every score a deflated lower bound. Full incident log: `night1/state.md`.
-- **Run 2** (`night2/`): calibrated per-model output budgets, then corrected
-  qwen3.8 and bonsai cheaply by regenerating only the empty completions,
-  which is safe because temperature 0 is deterministic. It also found
-  EvalPlus's infinite-retry timeout bug and established the heartbeat rule.
-  Log: `night2/state.md`.
-- **Run 3** (`night3/`): finished the qwen3.6 correction that run 2 had
-  parked — 56 completions regenerated at the calibrated 26624 budget, taking
-  the score to **0.939/0.921**. Clean run, no incidents.
-  Remaining blocks wait for a go-ahead, one at a time. Log:
-  `night3/state.md`.
+EvalPlus's default output cap was too small for a reasoning model: it cut
+off mid-thought, and the truncated completion scored as a failure. That
+capped every early score to a deflated lower bound. The fix is a budget
+calibrated per model from measured reasoning length; every corrected score
+went up. Superseded numbers under the old cap live on
+[the historical page](./historical.md), never on a current page.
 
 ## The wired limit, and why it is 25000
 

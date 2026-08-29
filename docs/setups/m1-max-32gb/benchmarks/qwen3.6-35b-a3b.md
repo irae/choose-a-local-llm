@@ -104,23 +104,24 @@ Max single-session at 27000: 208K (q8_0 KV); two slots: 2×96K. f16 alternatives
 The chat template has no `reasoning_effort` (unlike Qwen3.8) — only binary `enable_thinking`
 (default on). Disable with `--chat-template-kwargs '{"enable_thinking":false}'`.
 
-## Quality — EvalPlus HumanEval+ (run 3, fair budget)
+## Quality — EvalPlus HumanEval+ (2026-08-28, fair budget)
 
 | config scored | budget | pass@1 base | pass@1 plus | empty | regenerated |
 |---|--:|--:|--:|--:|--:|
 | llama-server+MTP Q4_K_XL, thinking on | 26624 | **0.939** | **0.921** | 5/164 | 56 (54 missing + 2 previously empty) |
 
-Run 3 finished the correction that run 2 had parked. It regenerated the 56
-missing or empty completions at the calibrated budget of 26624 tokens, which
-is safe because temperature 0 is deterministic. The run was clean: the server
-and the memory probe stayed healthy through every heartbeat check.
+This corrected the 56 missing or empty completions at the calibrated budget
+of 26624 tokens, which is safe because temperature 0 is deterministic. The
+run was clean: the server and the memory probe stayed healthy through every
+heartbeat check.
 
 5 completions stay genuinely empty at the full budget. That is a real model
-limit, the same pattern bonsai-think showed in run 2, not a harness artifact.
+limit, not a harness artifact.
 
-Run 1's flawed 3072-token cap had scored this config 0.610/0.610 with 62/164
-empty (`night1/results.md`) — the worst-affected block of that run. The
-corrected score is 0.329 higher on base.
+A 2026-08-26 pass under a flawed 3072-token cap had scored this config
+0.610/0.610 with 62/164 empty (superseded, see
+[the historical page](../historical.md)). The corrected score is 0.329
+higher on base.
 
 ## Pending
 

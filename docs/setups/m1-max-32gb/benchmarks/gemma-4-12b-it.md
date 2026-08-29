@@ -153,4 +153,4 @@ release).
 **The flattest curve of the whole project** (-16% over 70K) at 8.8 GB RSS —
 LM Studio's gemma4_unified implementation appears to honor the
 sliding-window attention that the llama.cpp path does not (llama floor ~11K
-on the same model). Quality unscored; a run-3 candidate.
+on the same model). Quality unscored, pending.

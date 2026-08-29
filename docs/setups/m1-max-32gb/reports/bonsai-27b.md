@@ -48,7 +48,7 @@ fork instead — 9.8 GB flat, floor ~30K:
 | **Max speed** | same config, shallow context | 24.5 | ≤8K |
 | **Multi-agent** | prism fork `--parallel 2 -c 98304`, q4 KV | 9.8×2 | 2×48K |
 
-## Quality — EvalPlus HumanEval+ (run 2)
+## Quality — EvalPlus HumanEval+
 
 | config scored | pass@1 base | pass@1 plus | empty completions |
 |---|--:|--:|--:|
@@ -84,23 +84,22 @@ fork instead — 9.8 GB flat, floor ~30K:
 
 **The quality number was wrong at first, and the correction was the biggest
 of any model.** Ternary Bonsai is PrismML's quality-oriented compression of
-Qwen3.6-27B, and they claim 95% of full-precision performance. Run 1 scored
-it far too low, with a token budget that was too small. Run 2 calibrated
-the budget (10240) and regenerated all 55 truncated completions. The score
-jumped to 0.915/0.884, the second-largest correction in the project. The
+Qwen3.6-27B, and they claim 95% of full-precision performance. An early pass
+scored it far too low, with a token budget that was too small. Calibrating
+the budget (10240) and regenerating all 55 truncated completions moved the
+score to 0.915/0.884, the second-largest correction in the project. The
 flawed cap had been hiding most of its ability. The deflated number is on
 [the historical page](../historical.md).
 The 5 empty completions that remain are a real model ceiling — they stay
 empty at the full budget — not a harness artifact. The ternary claim holds
-up: 2-bit compression kept near-27B-class quality. Details in
-`night2/results.md`.
+up: 2-bit compression kept near-27B-class quality.
 
 **Two serving profiles, and they trade against each other.** MLX is fastest
 at every depth it reaches, but memory grows with the session and hard-OOMs by
 ~57-61K. The prism fork q4 at 64K alloc stays at 9.8 GB flat with a ~30K
 floor, so the Mac stays usable while the agent runs. The q4 quality, which
-carries PrismML's own calibration bias, still needs its EvalPlus check
-(run 3).
+carries PrismML's own calibration bias, still needs its EvalPlus check —
+pending.
 
 **The DSpark drafter is not worth it past shallow context.** It is
 output-lossless and lifts shallow decode to 19.1/21.5 py/js at n-max 2, with

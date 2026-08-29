@@ -39,7 +39,7 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
 | **Max speed** | same config (near-empty context) | 68 / 74 | same |
 | **Multi-agent** | untested at limit 25000 (at 24000: OOM even at 2×20K) | – | – |
 
-## Quality — EvalPlus HumanEval+ (run 3)
+## Quality — EvalPlus HumanEval+
 
 | config scored | budget | pass@1 base | pass@1 plus | empty completions |
 |---|--:|--:|--:|--:|
@@ -80,17 +80,16 @@ stay empty at the full budget.
 ## History and reasoning
 
 **The first quality score was broken, and the correction moved it further
-than any other model's.** Run 1 capped output at 3072 tokens. This model's
-reasoning exhausted that budget on 38% of the problems, and each empty
-completion scores as a hard failure, so the first score was a floor rather
-than a measurement. It was the worst-affected block of that run. Run 2 parked
-the fix partway through. Run 3 finished it: 56 missing or empty completions
-regenerated at the calibrated budget of 26624, which is safe because
+than any other model's.** An early pass capped output at 3072 tokens. This
+model's reasoning exhausted that budget on 38% of the problems, and each
+empty completion scores as a hard failure, so the first score was a floor
+rather than a measurement. The fix regenerated the 56 missing or empty
+completions at the calibrated budget of 26624, which is safe because
 temperature 0 is deterministic. The prediction held — its base model reports
 73.4 SWE-bench Verified, and the real capability was far higher than the
 flawed cap suggested. The deflated numbers are on
-[the historical page](../historical.md); do not use them.
-Details in `night1/results.md`, `night2/state.md`, and `night3/results.md`.
+[the historical page](../historical.md); do not use them. Full data:
+[the benchmarks page](../benchmarks/qwen3.6-35b-a3b.md).
 
 **The wired limit cost this model most of its context.** The limit is now
 25000. At 27000 the machine became too slow for normal use; at 24000 context

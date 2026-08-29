@@ -4,6 +4,26 @@ Not published. The site build ignores this file: it sits outside `docs/`.
 Read it before you write or change any page. It records the owner's choices
 so they survive across sessions and agents.
 
+## Sharp conclusions, not stories
+
+We are not storytellers. We state conclusions.
+
+- A current page states what is true now, and the pick it implies. It does
+  not narrate how we got there.
+- History earns its place only when it justifies a current decision (for
+  example: why a number moved, why a config was dropped). Cut everything
+  else.
+- Do not number or name benchmark runs in prose (no "run 3", "night 3",
+  "benchmark run 2"). A run number is an internal detail, not a fact the
+  reader needs.
+- State progress as one of two words: **tested** or **pending**. Nothing
+  in between, no run-count language.
+- If a fact needs a source, use a date or a link to the setup's
+  `benchmarks/<model>.md` page, not a run number.
+- This applies everywhere, including `benchmarks/*.md`. Those pages still
+  keep the full archive (see "Historical figures" below), but tell rows
+  apart by date, not by run number.
+
 ## Page shape
 
 Every content page uses this order. Do not reorder it.
@@ -23,10 +43,11 @@ Do not open a page with a prose summary. Open it with bullets.
 
 ## Words
 
-- Say **"benchmark run"**, never "night run", "night agent", or "overnight".
+- Say **"benchmark run"** if a run must be named at all, never "night run",
+  "night agent", or "overnight". Prefer not naming it — see "Sharp
+  conclusions, not stories" above.
 - Do **not** tell apart work run by hand from work run unattended. The reader
   does not care who was awake. A measurement is a measurement.
-- Number the runs: "benchmark run 3" on first use, "run 3" after that.
 - Write all prose in ASD-STE100 Simplified Technical English: short
   sentences, active voice, one idea per sentence, one word for one meaning.
 
@@ -58,7 +79,7 @@ prose. This is the owner's rule and methodology rule 7 says the same.
   say plainly that those numbers are not to be used.
 - The `benchmarks/*.md` pages are the exception. They keep the full archive,
   because that is their job — but every section there states the wired limit
-  and the run it came from.
+  and the date it was measured, not a run number.
 - The red warning block at the top of `historical.md` must stay. It is the
   first thing a reader sees on that page.
 

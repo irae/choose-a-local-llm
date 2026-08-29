@@ -6,8 +6,9 @@ benchmarked 2026-08-25
 ## Highlights
 
 - **The deepest and flattest usable curve of the whole project.** On the LM
-  Studio engine: 25.1 tok/s still at 147K used tokens, with no memory ceiling
-  found yet.
+  Studio engine: 25.1 tok/s still at 147K used tokens. LM Studio's own MLX
+  loader caps the context at 170K, regardless of what is requested — a
+  known LM Studio bug, not a memory or speed limit of the model.
 - **The smallest footprint of any usable config.** 8.8 GB RSS at 74K.
 - **Context is model-limited, not memory-limited.** The full 256K trained
   window fits in ~14 GB and leaves ~18 GB free.
@@ -62,7 +63,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
 | 16K | 6.8 — under the 8 tok/s floor | 36.9 |
 | 33K / 49K | | 34.8 / 33.1 |
 | 74K / 98K | | 30.8 / 28.6 |
-| 131K / 147K | | 26.1 / **25.1 — ceiling still not found** |
+| 131K / 147K | | 26.1 / **25.1 — LM Studio caps the context at 170K here** |
 
 ## Context (n-max 4, f16 KV)
 
@@ -117,8 +118,8 @@ unsloth repo.
 **Thinking is binary.** Gemma 4 has trained-in reasoning (`<|think|>`),
 toggled by `enable_thinking` — on/off, default off, no graded effort levels.
 
-Quality is unscored; the EvalPlus gate for the LM Studio config is scheduled
-for run 3.
+Quality is unscored; the EvalPlus gate for the LM Studio config is
+pending.
 
 ---
 

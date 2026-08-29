@@ -51,15 +51,16 @@ Both servers: 14.9 GB RSS combined. ~12 GB left for KV → roughly 2×35K contex
 
 **Decision: ruled out.** Two servers mean two weight copies and per-agent endpoint wiring in the harness — not worth it. Parallel serving is llama-server's job; Bonsai gets a multi-session story when its ternary GGUF loads on a stable brew llama.cpp.
 
-## Quality — EvalPlus HumanEval+ (run 2, fair budget)
+## Quality — EvalPlus HumanEval+ (2026-08-27, fair budget)
 
 **pass@1 0.915 base / 0.884 plus** (mlx, thinking on, output budget 10240,
-temperature 0). Run 1's flawed 3072 cap had scored it 0.640/0.634 — the
-biggest correction of any model. 5/164 completions stay empty even at the full
-budget: a real model ceiling, not a harness artifact. The ternary 95% claim
-holds up in practice. Bonsai is also the least disruptive model to run while
-working (moderate fan noise, ~8 GB weights) — a practical all-day
-background-agent candidate. Details: `night2/results.md`.
+temperature 0). A 2026-08-26 pass under a flawed 3072-token cap had scored
+it 0.640/0.634 — the biggest correction of any model (superseded, see
+[the historical page](../historical.md)). 5/164 completions stay empty even
+at the full budget: a real model ceiling, not a harness artifact. The
+ternary 95% claim holds up in practice. Bonsai is also the least disruptive
+model to run while working (moderate fan noise, ~8 GB weights) — a
+practical all-day background-agent candidate.
 
 ## Corrected serving command + depth sweep (limit 25000, 2026-08-28)
 
@@ -88,9 +89,9 @@ Decode vs used context (append-only prompts, streamed timing, 64-tok probes):
 
 Flattest depth curve measured (-23% over 45K); the limit is memory, not
 speed. The old 96K/26.4 GB figures were taken at the retired 27000 limit and
-are withdrawn from the HTML. PrismML's bigger-context figures (100K @ ~15 GB,
-262K with 4-bit KV) require their llama.cpp fork path — see run 3's
-bonsai-prism block.
+are on [the historical page](../historical.md). PrismML's bigger-context
+figures (100K @ ~15 GB, 262K with 4-bit KV) require their llama.cpp fork
+path — see the PrismML section below.
 
 ## PrismML llama.cpp fork (prism-b10660), Q2_g64 — measured 2026-08-28
 
@@ -125,7 +126,7 @@ q4's ~30K) and costs 4-5 GB; q4 KV beats q8 on both
 floor and memory. Full 262K allocates in 17.1 GB — storage, not speed.
 mem-watch (20 s interval) showed zero swap during all sweeps: compute-bound.
 
-**Two serving profiles** (quality of q4+bias pending run 3 EvalPlus):
+**Two serving profiles** (quality of q4+bias pending EvalPlus):
 - Speed (MLX): 24.5→18.8 tok/s to the ~49K memory ceiling; RSS grows with
   depth. `mlx_lm.server ... --prompt-cache-size 2`.
 - Desktop (fork): `prism-llama -m Ternary-Bonsai-27B-Q2_g64.gguf -c 65536

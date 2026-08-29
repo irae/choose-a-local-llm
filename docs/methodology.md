@@ -34,6 +34,11 @@ This is the law for every test cycle. Do not skip steps.
    the harness compaction threshold belongs. Measured law so far: MLX
    runtimes barely creep but hit hard memory ceilings; llama runtimes creep
    faster but never OOM inside their window.
+   **A ceiling sweep must run to the model's trained/max context length, not
+   stop at an arbitrary depth list.** A sweep that stops early without
+   hitting the speed floor or OOM has not found a ceiling — it has just
+   stopped. Record "no ceiling found up to `<the model's max context>`" only
+   after the sweep actually reached that number.
 7. **Record each result on every surface in the same pass** — a result is not
    recorded until all agree: the model's
    `docs/setups/<setup>/benchmarks/*.md` (full data), its
@@ -148,7 +153,8 @@ numbers; add thinking-off passes where sub-agent use is planned.
 scores.** Calibrate per model: sample ~10 fixed problems at a 30K cap,
 record real `completion_tokens`, set budget = observed max × 1.5 (floor
 8192). An undersized budget lets reasoning exhaust the cap and empty
-completions score as failures — run 1's flaw (up to 38% of scores lost).
+completions score as failures — a flaw an early pass here hit (up to 38% of
+scores lost before it was found).
 For models whose thinking sometimes never converges (finish_reason length at
 any budget), the budget is a waste-limiter: set it just above the longest
 SUCCESSFUL completion. Speculative decoding never changes outputs at
@@ -162,7 +168,8 @@ matters.
 - **Heartbeat, mandatory**: schedule a wakeup ≤20 minutes after starting any
   block; verify real output growth (not process liveness); restart dead
   blocks; every wakeup ends with a new wakeup or the shutdown checklist.
-  Verified necessary on run 2: a block sat 52 minutes in a silent retry loop.
+  Verified necessary here: a block once sat 52 minutes in a silent retry
+  loop before this rule existed.
 - Close background apps before the run; start the memory probe.
 - The prompt-cache rule, the mlx watchdog, and the server-failure lore above
   all bind run scripts.
