@@ -4,7 +4,7 @@ MoE: 26B total parameters, ~4B active per token. Trained context 262144. MTP via
 Model: `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL` (~14.2 GB).
 Build: llama-server 0.3.0 (build 10621). Temperature 0, `n_predict` 256, warmup before every measurement. Same prompts as the other models. Thinking: binary `enable_thinking` in the chat template (trained-in `<|think|>` token, default OFF, no effort levels). All speed numbers below were measured with thinking off (raw `/completion` prompts).
 
-## Recommended configuration (at `iogpu.wired_limit_mb=25000`)
+## Recommended configuration (at `iogpu.wired_limit_mb=24000`)
 
 ```bash
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
@@ -18,9 +18,9 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
 Two agents: same command with `--parallel 2 -c 376832` and alias
 `gemma-4-26b-a4b-2x` (2×184K).
 
-## Context at `iogpu.wired_limit_mb=25000` (current, 2026-08-25)
+## Context at `iogpu.wired_limit_mb=24000` (current, 2026-08-25)
 
-At the old 27000 limit the full 256K window fit with f16 KV. At 25000 it needs
+At the old 27000 limit the full 256K window fit with f16 KV. At 24000 it needs
 q8_0 KV — so q8 now buys context on this model too.
 
 | `-c` | slots | kv | result | rss |
@@ -83,7 +83,7 @@ f16 two-slot max was 2×128K. Single-slot stays f16 (model-limited at 256K; q8 b
 
 - EvalPlus quality gate (benchmark runs).
 
-## Depth sweeps (limit 25000, 2026-08-28)
+## Depth sweeps (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
 | depth | llama+MTP q8 (128K alloc) | mlx (`gemma-4-26b-a4b-it-4bit`) |
 |---|---|---|
@@ -92,12 +92,17 @@ f16 two-slot max was 2×128K. Single-slot stays f16 (model-limited at 256K; q8 b
 | 24.5K | 7.97 — below the 8 tok/s floor | 39.6 |
 | 33K | – | 35.6 |
 | 49K | – | 28.8 |
-| 74K | – | 22.2 |
-| 82K | – | 20.6 |
-| ~98K | – | Metal OOM — **ceiling 82-98K** |
+| 60K | – | 24.96 |
+| 62K | – | 13.44 |
+| 64K | – | 23.91 |
+| 66K | – | 13.07 |
+| 68K | – | 23.08 |
+| **70K** | – | **12.83 — last stable** |
+| ~72K | – | Metal OOM — **ceiling ~70-72K at limit 24000** |
 
-llama floor ~24K (speed). **MLX is the deepest fast curve measured in the
-whole project**: 22+ tok/s at 74K, RSS 13.5 GB, OOM at 82-98K.
+llama floor ~24K (speed), RSS 15.4 GB there. MLX stays fast through ~68K,
+then swings between ~13 and ~24 tok/s at 62-70K, then OOMs at ~72K (limit
+24000; gfx-resident 20.0 GB at the last stable depth).
 Quality on MLX is unscored (the EvalPlus history is llama-side; thinking-mode
 convergence issues noted in `night2/calibration.md` apply to the model, not
 the runtime).

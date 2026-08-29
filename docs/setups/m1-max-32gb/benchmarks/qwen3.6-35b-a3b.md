@@ -4,7 +4,7 @@ MoE: 35B total parameters, ~3B active per token. Trained context 262144 (GGUF me
 Model: `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` (~20 GB).
 Build: llama-server 0.3.0 (build 10621). Temperature 0, `n_predict` 256, warmup before every measurement. Same prompts as the other models (py = ISO dates, js = deep clone).
 
-## Recommended configuration (at `iogpu.wired_limit_mb=25000`)
+## Recommended configuration (at `iogpu.wired_limit_mb=24000`)
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
@@ -19,7 +19,7 @@ Multi-slot at 25000 is untested. At 24000, `--parallel 2 -c 40960` OOMed (the
 second slot adds compute buffers). The old `qwen3.6-35b-a3b-2x` (2×96K) needed
 the 27000 limit and is retired.
 
-## Context — q8_0 KV at `iogpu.wired_limit_mb=25000` (current, 2026-08-25)
+## Context — q8_0 KV at `iogpu.wired_limit_mb=24000` (current, 2026-08-25)
 
 Limit history on this 32 GB machine: 27000 made the machine too slow for normal
 use; 24000 capped this model at 40K; 25000 is the compromise.
@@ -127,7 +127,7 @@ higher on base.
 
 - Thinking-off pass, for sub-agent use.
 
-## Depth sweeps (limit 25000, 2026-08-28)
+## Depth sweeps (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
 Decode vs used context, synthetic continuation prompts, 8 tok/s early stop:
 

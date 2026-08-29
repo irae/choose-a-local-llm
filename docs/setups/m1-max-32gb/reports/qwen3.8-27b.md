@@ -11,7 +11,7 @@ llama-server (Metal, build 10621) + mlx-lm 0.31.3 · benchmarked 2026-08-25
   slow inside the context it can hold.
 - Weak point: it is the slowest model on this hardware. 19.7 tok/s is its
   ceiling.
-- Weak point: a small window. MLX OOMs between 29K and 33K.
+- Weak point: a small window. MLX OOMs between 28K and 30K.
 - Weak point: prompt processing is poor, ~123 tok/s even on long prompts.
 
 ## Best option
@@ -19,7 +19,7 @@ llama-server (Metal, build 10621) + mlx-lm 0.31.3 · benchmarked 2026-08-25
 **mlx_lm.server, 4-bit, with compaction set at ~26K.** Plain MLX beats
 llama-server's best MTP configuration, and it keeps its speed to the edge of
 its window. Set the harness compaction threshold at ~26K, below the
-verified-good 28.7K.
+verified-good 28K.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit --port 8081
@@ -45,7 +45,7 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
 
 | need | config | tok/s (py/js) | context |
 |---|---|--:|--:|
-| **Daily driver** | mlx_lm.server, compaction at ~26K | 14-17 across the window | to ~29K ceiling |
+| **Daily driver** | mlx_lm.server, compaction at ~26K | 14-17 across the window | to ~28K ceiling |
 | **llama alternative** | llama-server + MTP n=3, q8_0 KV | 14.1 shallow | floor ~19K; maxima pending re-probe |
 
 ## Quality — EvalPlus HumanEval+
@@ -54,15 +54,20 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
 |---|--:|--:|--:|
 | mlx_lm.server 4-bit, reasoning_effort=medium | 0.982 | 0.939 | 0/164 |
 
-## Decode speed vs used context (limit 25000, 2026-08-28)
+## Decode speed vs used context (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
 | depth | llama+MTP q8 | mlx |
 |---|--:|--:|
 | 4-8K | 14.1 / 12.8 | 17.1 |
 | 16K | 8.6 | 16.4 |
-| 24.5K | 7.3 — below the 8 tok/s floor | 15.4 |
-| 28.7K | – | 14.2 (RSS 14.3 GB) |
-| ~32K | – | Metal OOM — server thread dies, /health stays 200 |
+| 22K | – | 10.23 |
+| 24K | – | 14.79 |
+| 24.5K | 7.3 — below the 8 tok/s floor | – |
+| 26K | – | 15.19 |
+| **28K** | – | **15.29 — last stable** |
+| ~30K | – | Metal OOM — server thread dies, /health stays 200; gfx-resident ~22 GB at last stable depth |
+
+llama RSS at floor depth (19K, q8_0 KV, 32K alloc): 18.9 GB.
 
 ## Backend comparison: llama-server (GGUF) vs mlx-lm (MLX)
 
@@ -145,7 +150,7 @@ choice is the same for both languages.
 
 **The old context maxima are withdrawn.** Every allocation figure for this
 model was measured at the retired 27000 wired limit and awaits a re-probe at
-25000. Those tables are on
+24000. Those tables are on
 [the historical page](../historical.md); do not use them.
 The depth floor at ~19K makes large allocations pointless here anyway.
 [The benchmarks](../benchmarks/qwen3.8-27b.md) keep the labeled archive.

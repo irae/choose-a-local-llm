@@ -1,7 +1,7 @@
 # Qwen3.6-35B-A3B (MoE) on M1 Max 32 GB
 
 llama-server (build 10621) · unsloth UD-Q4_K_XL + embedded MTP · benchmarked
-2026-08-25 · `iogpu.wired_limit_mb=25000`
+2026-08-25 · `iogpu.wired_limit_mb=24000`
 
 ## Highlights
 
@@ -48,7 +48,7 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
 The 5 empty completions are a real model limit, not a harness artifact — they
 stay empty at the full budget.
 
-## Decode speed vs used context (depth sweeps, limit 25000)
+## Decode speed vs used context (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
 | depth | llama+MTP q8 (96K alloc) | MLX (Qwen3.6-35B-A3B-4bit) |
 |---|--:|--:|
@@ -60,7 +60,7 @@ stay empty at the full budget.
 | 49K | 13.5 | |
 | 65K / 82K / 90K | 10.7 / 8.8 / 8.1 | |
 
-## Context ramp (n-max 3, q8_0 KV, limit 25000 — current)
+## Context ramp (n-max 3, q8_0 KV, limit 24000 — current)
 
 | -c | result | tok/s | RSS |
 |---|---|--:|--:|
@@ -92,7 +92,7 @@ flawed cap suggested. The deflated numbers are on
 [the benchmarks page](../benchmarks/qwen3.6-35b-a3b.md).
 
 **The wired limit cost this model most of its context.** The limit is now
-25000. At 27000 the machine became too slow for normal use; at 24000 context
+24000. At 27000 the machine became too slow for normal use; at 24000 context
 capped at 40K. Under the current limit, single-session context reaches 96K.
 The larger single-slot and two-agent configs that the 27000 limit allowed are
 retired; their numbers are on

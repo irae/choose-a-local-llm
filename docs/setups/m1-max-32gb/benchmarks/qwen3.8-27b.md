@@ -222,7 +222,7 @@ had scored it 0.970/0.939 (superseded, see
 [the historical page](../historical.md)). Zero empty completions. The
 strongest HumanEval+ result of the models scored so far.
 
-## Depth sweeps at `iogpu.wired_limit_mb=25000` (2026-08-28)
+## Depth sweeps (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
 Decode vs used context, append-only prompts, 8 tok/s early stop:
 
@@ -231,12 +231,16 @@ Decode vs used context, append-only prompts, 8 tok/s early stop:
 | 4K | 14.1 | – |
 | 8K | 12.8 | 17.1 |
 | 16K | 8.6 | 16.4 |
-| 24.5K | 7.3 — below floor | 15.4 |
-| 28.7K | – | 14.2, RSS 14.3 GB |
-| ~32K | – | Metal OOM (server thread dies; /health stays 200) |
+| 22K | – | 10.23 |
+| 24K | – | 14.79 |
+| 24.5K | 7.3 — below floor | – |
+| 26K | – | 15.19 |
+| **28K** | – | **15.29 — last stable** |
+| ~30K | – | Metal OOM (server thread dies; /health stays 200; gfx-resident ~22 GB) |
 
-**llama floor ~19K (speed); mlx never crosses the floor — its limit is a
-memory ceiling between 28.7K and ~33K.** MLX wins this model's equilibrium:
-~14-17 tok/s across its whole usable window. Suggested pi setup: mlx config
-with compaction threshold ~26K (below the known-good 28.7K). The 27000-era
-context maxima (160K single, 2×72K) are withdrawn pending re-probe.
+**llama floor ~19K (speed), RSS 18.9 GB there; mlx never crosses the floor — its limit is a
+memory ceiling between 28K and ~30K at limit 24000.** MLX wins this model's
+equilibrium: ~10-17 tok/s across its whole usable window. Suggested pi setup:
+mlx config with compaction threshold ~26K (below the known-good 28K). The
+27000-era context maxima (160K single, 2×72K) are withdrawn pending
+re-probe.

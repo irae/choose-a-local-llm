@@ -9,8 +9,8 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 - **Best depth:** Gemma-12B on the LM Studio engine — 29.7 tok/s at 169.6K used
   tokens, in 8.8 GB. LM Studio's own MLX loader caps it at 170K (a known
   LM Studio bug, not a memory or speed limit of the model).
-- **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, still 22 at
-  74K, in 13.5 GB.
+- **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, still 12.8 at
+  70K (ceiling), in 20.0 GB.
 - **Best big window, and the best all-round config:** Qwen3.6-35B on llama —
   never crosses the 8 tok/s floor inside its whole 96K window, and now scores
   0.939 / 0.921.
@@ -26,17 +26,17 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 
 | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |
 |---|--:|:--:|--:|--:|--:|
-| Qwen3.8-27B, MLX, compaction ~26k, effort medium | *28k* | mem | 17 → 14 | *14.3 GB* | 0.982/0.939 |
-| Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | pending | 0.982/0.939 |
+| Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
+| Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | 18.9 GB | 0.982/0.939 |
 | Qwen3.6-35B-A3B, MLX, thinking on | 34.9k | mem | 53.3 → 41.5 | 22.1 GB | 0.939/0.921 |
 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
-| Gemma-4-26B-A4B, MLX | *74k* | mem | 51 → 22 | *13.5 GB* | pending |
-| Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | pending | pending |
+| Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | pending |
+| Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | pending |
 | Gemma-4-12B, MLX³ | 170k | engine | 37 → 31 | 8.8 GB | pending |
 | Gemma-4-12B, MLX³, thinking off | 170k | engine | 37 → 31 | 8.8 GB | 0.909/0.872 |
-| Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | pending | 0.909/0.872 |
-| Ternary-Bonsai-27B, MLX, bounded cache, thinking on | *49k* | mem | 24.5 → 18.8 | *~15 GB* | 0.915/0.884 |
-| Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 2x48k | speed | 14.6 → ? | 10.0 GB | pending |
+| Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | 8.2 GB | 0.909/0.872 |
+| Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
+| Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 2x48k | speed | 14.9 → 7.9 | 10.0 GB | pending |
 
 ¹ Whichever limit hits first: the max memory a config fits in, or the max
 context that stays usable — usable meaning at or above the 8 tok/s floor.
@@ -54,10 +54,9 @@ see the floor table below.
 
 ⁴ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
 
-*Italic* values are fast-sweep ceilings from before the slow-creep rule;
-a re-test comes soon and their memory figures are suspect. See
-[the measurement rules](../../methodology#measurement-rules) for why the slow creep
-is more realistic.
+All ceilings below are slow-creep re-tests at wired limit 24000 (2026-08-29).
+See [the measurement rules](../../methodology#measurement-rules) for why the
+slow creep is more realistic than a fast sweep.
 
 "Memory (at max ctx)" is the wired GPU memory the config holds at max ctx.
 
@@ -81,20 +80,19 @@ Compaction thresholds come from the floor table below, not from the window.
 
 ## Decode speed vs used context — the 8 tok/s usability floor
 
-Measured 2026-08-28 at wired limit 24000 (identical ceilings at 24000 and
-25000 — physical RAM binds first above 24000). The Qwen3.6 MLX row is
-re-tested 2026-08-29 with the slow creep; the other MLX rows still carry
-fast-sweep ceilings and a slow-creep re-test is pending.
+Measured at wired limit 24000. All MLX ceiling rows (Gemma-26B, Qwen3.6-35B,
+Bonsai, Qwen3.8) are slow-creep re-tests (2026-08-29); llama rows are
+speed-floored, not memory-gated, so the fast 2026-08-28 sweep still applies.
 
 | model / runtime | tok/s @ 4K | @ 16K | @ 32-33K | @ 49K | @ 74-90K | capped by | EvalPlus (base/plus) |
 |---|--:|--:|--:|--:|--:|---|--:|
-| **Gemma-26B MLX** | 51.1 | 43.5 | 35.6 | 28.8 | 22.2 (74K) | mem — *stable to 82K, 20.6 tok/s there* | pending |
+| **Gemma-26B MLX** | 51.1 | 43.5 | 35.6 | 28.8 | 12.8 (70K) | mem — stable to 70K, 12.8 tok/s there | pending |
 | **Qwen3.6-35B MLX** | 53.3 | 49.6 | 42.2 | | | mem — stable to 34.9K, 41.5 tok/s there | pending |
 | **Qwen3.6-35B llama (q8, MTP)** | 44.5 | 30.1 | 18.8 | 13.5 | 8.1 (90K) | speed — its 96K window ends at 8.1 tok/s | 0.939/0.921 |
-| Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 18.2 (57K) | mem — *stable to 57K, 18.2 tok/s there* | 0.915/0.884 |
-| Qwen3.8 MLX | 17.1* | 16.4 | | | | mem — *stable to 28K, 14.2 tok/s there* | 0.982/0.939 |
+| Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 17.3 (58K) | mem — stable to 58K, 17.3 tok/s there | 0.915/0.884 |
+| Qwen3.8 MLX | 17.1* | 16.4 | | | 15.3 (28K) | mem — stable to 28K, 15.3 tok/s there | 0.982/0.939 |
 | Gemma-26B llama (q8, MTP) | 23.5 | 11.2 | | | | speed — under 8 tok/s at ~24K | pending |
-| Bonsai prism fork (q4 KV) | 14.6 | 10.6 | | | | speed — under 8 tok/s at ~30K | pending |
+| Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 9.2 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | pending |
 | Qwen3.8 llama (q8, MTP) | 14.1 | 8.6 | | | | speed — under 8 tok/s at ~19K | pending |
 | Gemma-12B llama (q8, MTP) | 14.0 | | | | | speed — under 8 tok/s at ~11K | pending |
 | **Gemma-12B MLX (LM Studio engine, CLI)** | 36.7 | 36.9 | 34.8 | 33.1 | 29.7 (169.6K) | engine — LM Studio auto-fits MLX context to 170K regardless of the requested value (unfixed LM Studio bug); still 29.7 tok/s at 169.6K, the deepest healthy point, 171K fails clean; served via lms CLI, 8.8 GB RSS at 74K | pending |

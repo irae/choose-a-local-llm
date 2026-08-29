@@ -8,7 +8,7 @@ show what changed and why.
 
 - **Retired memory limit.** Many rows were measured at
   `iogpu.wired_limit_mb=27000`, which made the machine too slow for normal
-  use. The current limit is 25000, so every context maximum here is too high.
+  use. The current limit is 24000, so every context maximum here is too high.
 - **Wrong axis.** Several tables measure *allocated* context, which is
   storage, not speed. The depth sweeps replaced this with decode speed
   against *used* context — the number that decides whether a config is
@@ -38,6 +38,20 @@ bounds, not measurements.
 The lesson generalizes: treat any single-pass score with a fixed output
 budget as a lower bound until the budget is calibrated from measured
 reasoning length.
+
+## Fast-sweep memory ceilings, pre slow-creep rule (limit 25000, 2026-08-28)
+
+The first depth sweeps for these three MLX configs used a fast sweep — no
+pause between depth steps. The slow-creep rule (25 s pause per step,
+[the measurement rules](../../methodology#measurement-rules)) replaced them
+with a re-test at limit 24000 on 2026-08-29. Shallow-depth rows (below the
+lowest row here) did not change and stay on the current pages.
+
+| model | fast-sweep ceiling | fast-sweep last stable | slow-creep re-test |
+|---|---|---|---|
+| Gemma-4-26B-A4B, MLX | 82-98K | 82K, 20.6 tok/s | 70-72K; last stable 70K, 12.83 tok/s |
+| Ternary-Bonsai-27B, MLX | 57-61K | 57K, 18.2 tok/s | 58-60K; last stable 58K, 17.27 tok/s |
+| Qwen3.8-27B, MLX | ~32K (OOM, server thread died) | 28.7K, 14.2 tok/s, RSS 14.3 GB | 28-30K; last stable 28K, 15.29 tok/s |
 
 ## Qwen3.6-35B-A3B — context ramp at the retired 27000 limit
 

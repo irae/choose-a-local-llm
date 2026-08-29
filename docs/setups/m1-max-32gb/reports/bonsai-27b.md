@@ -11,12 +11,13 @@ mlx-lm 0.31.3 · prism-ml ternary 2-bit · benchmarked 2026-08-25
   footprint. The best all-day background agent.
 - **The only multi-agent setup that leaves the machine free.** The prism fork
   serves 2×48K slots at 9.8 tok/s each, in 10.0 GB flat.
-- Weak point: memory grows with the session on MLX and OOMs by ~57-61K.
+- Weak point: memory grows with the session on MLX and OOMs by ~58-60K
+  (limit 24000).
 
 ## Best option
 
 **mlx_lm.server, 2-bit, bounded prompt cache.** 24.5 tok/s shallow, 18.8
-tok/s at 49K, healthy to 57K.
+tok/s at 49K, healthy to 58K (17.27 tok/s there, limit 24000).
 
 ```bash
 mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
@@ -44,7 +45,7 @@ fork instead — 9.8 GB flat, floor ~30K:
 
 | need | config | tok/s | context |
 |---|---|--:|--:|
-| **Max context** | mlx_lm.server, bounded prompt cache | 18.8 at 49K | 57K OK; OOM before 61K (limit 25000) |
+| **Max context** | mlx_lm.server, bounded prompt cache | 17.27 at 58K | 58K OK; OOM ~60K (limit 24000) |
 | **Max speed** | same config, shallow context | 24.5 | ≤8K |
 | **Multi-agent** | prism fork `--parallel 2 -c 98304`, q4 KV | 9.8×2 | 2×48K |
 
@@ -54,7 +55,7 @@ fork instead — 9.8 GB flat, floor ~30K:
 |---|--:|--:|--:|
 | mlx_lm.server 2-bit, thinking on, budget 10240 | 0.915 | 0.884 | 5/164 (~3%) |
 
-## Decode speed vs used context (sweep, limit 25000)
+## Decode speed vs used context (shallow: limit 25000, 2026-08-28; deep re-test: limit 24000, slow creep, 2026-08-29)
 
 | depth (used tokens) | decode tok/s |
 |---|--:|
@@ -63,9 +64,17 @@ fork instead — 9.8 GB flat, floor ~30K:
 | 16K | 22.9 |
 | 24K | 22.0 |
 | 32K | 20.5 |
-| 49K | 18.8 |
-| **57K** | **18.2 — deepest healthy point** |
-| ~61K | Metal OOM — ceiling 57-61K |
+| 40K | 18.60 |
+| 42K | 18.66 |
+| 44K | 12.10 |
+| 46K | 11.89 |
+| 48K | 11.33 |
+| 50K | 18.36 |
+| 52K | 18.09 |
+| 54K | 17.64 |
+| 56K | 17.69 |
+| **58K** | **17.27 — last stable, limit 24000** |
+| ~60K | Metal OOM — ceiling ~58-60K at limit 24000 |
 
 ## PrismML llama.cpp fork (measured 2026-08-28)
 

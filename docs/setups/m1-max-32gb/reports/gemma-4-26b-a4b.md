@@ -1,13 +1,13 @@
 # Gemma-4-26B-A4B (MoE) on M1 Max 32 GB
 
 llama-server (build 10621) · unsloth UD-Q4_K_XL + MTP draft · benchmarked
-2026-08-25 · `iogpu.wired_limit_mb=25000`
+2026-08-25 · `iogpu.wired_limit_mb=24000`
 
 ## Highlights
 
 - **The full 256K trained window fits on one slot**, in 19.3 GB.
 - **The fastest depth curve measured on this machine**, on MLX: 51 tok/s at
-  4K, still 22 at 74K, in only 13.5 GB.
+  4K, still 12.8 at 70K (ceiling), in 20.0 GB.
 - **Fastest Python decode of the llama configs**: 62 tok/s.
 - **Two agents at 184K each** on one weight copy.
 - **Thinking is nearly free**: it costs only ~3 tok/s.
@@ -52,7 +52,7 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
 | **Max js speed** | f16 KV at small context (32K) | 74.8 / 71.6 | 32K |
 | **Two agents** | `--parallel 2 -c 376832`, q8_0 KV | 58.4 / 56.5 single-stream | 2×184K |
 
-## Decode speed vs used context (depth sweeps, limit 25000)
+## Decode speed vs used context (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
 | depth | llama+MTP q8 | MLX (gemma-4-26b-a4b-it-4bit) |
 |---|--:|--:|
@@ -61,11 +61,17 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
 | 24.5K | 7.97 — under the 8 tok/s floor | 39.6 |
 | 33K | | 35.6 |
 | 49K | | 28.8 |
-| 74K | | 22.2 |
-| 82K | | 20.6 |
-| ~98K | | Metal OOM — ceiling 82-98K |
+| 60K | | 24.96 |
+| 62K | | 13.44 |
+| 64K | | 23.91 |
+| 66K | | 13.07 |
+| 68K | | 23.08 |
+| **70K** | | **12.83 — last stable, limit 24000** |
+| ~72K | | Metal OOM — ceiling ~70-72K at limit 24000 |
 
-## Context (n-max 2, q8_0 KV, limit 25000 — current)
+llama RSS at floor depth (24.5K, q8_0 KV, 32K alloc): 15.4 GB.
+
+## Context (n-max 2, q8_0 KV, limit 24000 — current)
 
 | -c | slots | result | RSS |
 |---|---|---|--:|
@@ -93,7 +99,7 @@ Full thinking-off tables in
 ## History and reasoning
 
 **q8_0 KV is now mandatory, and it costs JavaScript speed.** Under the
-current 25000 wired limit, f16 KV no longer fits the full window at all. q8
+current 24000 wired limit, f16 KV no longer fits the full window at all. q8
 lowers js draft acceptance from 81% to 68%, so js decodes at ~53 tok/s while
 py keeps 62-68. The retired 27000 limit allowed more on both counts; those
 figures are on
@@ -101,10 +107,11 @@ figures are on
 
 **llama is capped by speed; MLX is capped by memory.** The llama build floors
 at ~24K, which makes its 256K window mostly storage. The MLX build stays fast
-the whole way to 74K in 13.5 GB and then OOMs between 82K and 98K. For actual
-deep work, MLX is the config that matters; the llama window is what you use
-when you need to *hold* a lot of context rather than decode quickly through
-it.
+the whole way to ~68K, then swings between ~13 and ~24 tok/s at 62-70K before
+OOMing at ~72K (limit 24000, slow-creep sweep, 2026-08-29; 20.0 GB gfx-resident
+at the last stable depth). For actual deep work, MLX is the config that
+matters; the llama window is what you use when you need to *hold* a lot of
+context rather than decode quickly through it.
 
 **Thinking is binary here.** Gemma 4 has trained-in reasoning
 (`<|think|>`) toggled by `enable_thinking` in the chat template. It is

@@ -51,11 +51,12 @@ scope.
 
 ## Current state
 
-As of 2026-08-28, end of day.
+As of 2026-08-29, after the slow-creep re-test.
 
 - Best curves, all quality-unscored: Gemma-12B on LM Studio is flattest at
-  30.8 tok/s at 74K in 8.8 GB; Gemma-26B MLX runs 51→22 at 74K in 13.5 GB;
-  Qwen3.6 llama never floors inside 96K; Qwen3.6 MLX holds 42 tok/s at 33K.
+  30.8 tok/s at 74K in 8.8 GB; Gemma-26B MLX runs 51→12.8 to a 70K ceiling
+  in 20.0 GB; Qwen3.6 llama never floors inside 96K; Qwen3.6 MLX holds 42
+  tok/s at 33K.
 - Fair EvalPlus scores: Qwen3.8-mlx-medium **0.982/0.939**,
   Qwen3.6-llama-think **0.939/0.921**, Bonsai-mlx-f16 **0.915/0.884**. The
   Gemmas are unscored; their thinking mode sometimes never converges, and the

@@ -62,7 +62,7 @@ ternary 95% claim holds up in practice. Bonsai is also the least disruptive
 model to run while working (moderate fan noise, ~8 GB weights) — a
 practical all-day background-agent candidate.
 
-## Corrected serving command + depth sweep (limit 25000, 2026-08-28)
+## Corrected serving command + depth sweep (shallow: limit 25000, 2026-08-28; deep re-test: limit 24000, slow creep, 2026-08-29)
 
 Always start the mlx server with a bounded prompt cache — the default pools
 several distinct KV caches (multi-GB each at depth) and behaves like a memory
@@ -82,16 +82,24 @@ Decode vs used context (append-only prompts, streamed timing, 64-tok probes):
 | 16K | 22.9 |
 | 24K | 22.0 |
 | 32K | 20.5 |
-| 49K | 18.8 |
-| 53K | 18.6 |
-| **57K** | **18.2 — deepest healthy point** |
-| ~61K | Metal OOM — **ceiling 57-61K** |
+| 40K | 18.60 |
+| 42K | 18.66 |
+| 44K | 12.10 |
+| 46K | 11.89 |
+| 48K | 11.33 |
+| 50K | 18.36 |
+| 52K | 18.09 |
+| 54K | 17.64 |
+| 56K | 17.69 |
+| **58K** | **17.27 — last stable, limit 24000** |
+| ~60K | Metal OOM — **ceiling ~58-60K at limit 24000** |
 
 Flattest depth curve measured (-23% over 45K); the limit is memory, not
-speed. The old 96K/26.4 GB figures were taken at the retired 27000 limit and
-are on [the historical page](../historical.md). PrismML's bigger-context
-figures (100K @ ~15 GB, 262K with 4-bit KV) require their llama.cpp fork
-path — see the PrismML section below.
+speed. Slow-creep re-test at limit 24000 (2026-08-29) found gfx-resident
+22.5 GB at the last stable depth. The old 96K/26.4 GB figures were taken at
+the retired 27000 limit and are on [the historical page](../historical.md).
+PrismML's bigger-context figures (100K @ ~15 GB, 262K with 4-bit KV) require
+their llama.cpp fork path — see the PrismML section below.
 
 ## PrismML llama.cpp fork (prism-b10660), Q2_g64 — measured 2026-08-28
 
@@ -141,3 +149,20 @@ concurrently at **9.8 / 9.9 tok/s** (aggregate 19.7, +35% from batching),
 RSS **10.0 GB**. Two agents above the 8 tok/s floor with ~20 GB left for the
 system — the only multi-agent config measured that keeps the machine free.
 3×32K is the projected next probe for grunt-agent swarms.
+
+## Fork multi-slot, single-slot depth sweep (2026-08-29)
+
+Same `--parallel 2 -c 98304` config, but per the measurement rules a
+multi-slot config gets its reported depth curve from one slot decoding
+alone — the other slot stays loaded but idle. Slot 0 swept:
+
+| depth | slot-0 tok/s |
+|---|---|
+| 4K | 14.89 |
+| 8K | 13.21 |
+| 16K | 10.81 |
+| 24K | 9.15 |
+| **32K** | **7.88 — crosses the 8 tok/s floor** |
+
+Matches the single-slot plain-q4 floor (~30K) closely — the idle second
+slot costs almost nothing.
