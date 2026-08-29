@@ -24,6 +24,23 @@ This is the law for every test cycle. Do not skip steps.
    step. A config that loads but decodes degraded counts as failed.
    Speculative decoding: sweep the draft depth per model AND per mode — the
    optimum shifts with output style (thinking on/off) and with depth.
+   **Ceiling sweeps creep slowly: pause ~25 s between depth steps.** The
+   pause simulates real use — an agent's model waits on the user and on
+   tool runs between requests — and it gives macOS time to compress other
+   memory, which raises the measured ceiling (verified: ~2K extra tokens
+   on Qwen3.6-35B MLX at limit 24000). A no-pause sweep understates the
+   ceiling a real harness reaches.
+   **Know which limit actually gates the OOM.** Below ~24000 MB on a 32 GB
+   machine, `iogpu.wired_limit_mb` gates cleanly: the process's
+   `IOAccelerator (graphics)` resident memory (per-process view: `vmmap
+   --summary <pid>`) hits the sysctl value exactly and the process gets
+   the Metal OOM while the system stays healthy. At ~24000 MB and above,
+   physical RAM binds first: free RAM runs to near zero before the sysctl
+   matters, the crash point stops responding to sysctl changes, and the
+   machine locks up and shows visual glitches. Ceilings measured in that
+   regime are the machine's true maxima but cost system usability.
+   Budget model for MLX (Qwen3.6-35B measured): weights + a ~1-2 GB
+   transient prefill spike + ~115 KiB per token of KV.
 6. **Sweep decode speed against USED context — the depth sweep.** Allocation
    is storage; used tokens are what decode pays for. Grow a prompt in steps
    (4K, 8K, 16K, 24K, 32K, then 16K steps), measure decode at each depth, and

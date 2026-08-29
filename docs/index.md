@@ -29,7 +29,8 @@ the law.
 
 ### M1 Max, 32 GB
 
-Apple Silicon, wired limit 25000 MB. Five models, four runtimes:
+Apple Silicon, wired limit 24000 MB unattended / 22000 MB in use. Five
+models, four runtimes:
 llama-server, mlx_lm.server, LM Studio, and the PrismML llama.cpp fork. Depth
 sweeps are complete for every model and runtime; quality scores are partial.
 
