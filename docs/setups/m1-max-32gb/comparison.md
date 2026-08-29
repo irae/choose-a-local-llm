@@ -24,19 +24,21 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 
 ## Models evaluated
 
+<!-- gen:models-evaluated:start -->
 | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |
 |---|--:|:--:|--:|--:|--:|
 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
 | Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | 18.9 GB | 0.982/0.939 |
-| Qwen3.6-35B-A3B, MLX, thinking on | 34.9k | mem | 53.3 → 41.5 | 22.1 GB | 0.939/0.921 |
 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
+| Qwen3.6-35B-A3B, MLX, thinking on | 34.9k | mem | 53.3 → 41.5 | 22.1 GB | 0.939/0.921 |
+| Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
+| Gemma-4-12B, MLX³, thinking off | 170k | engine | 37 → 31 | 8.8 GB | 0.909/0.872 |
+| Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | 8.2 GB | 0.909/0.872 |
 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
 | Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701 |
 | Gemma-4-12B, MLX³ | 170k | engine | 37 → 31 | 8.8 GB | pending |
-| Gemma-4-12B, MLX³, thinking off | 170k | engine | 37 → 31 | 8.8 GB | 0.909/0.872 |
-| Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | 8.2 GB | 0.909/0.872 |
-| Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 2x48k | speed | 14.9 → 7.9 | 10.0 GB | pending |
+<!-- gen:models-evaluated:end -->
 
 ¹ Whichever limit hits first: the max memory a config fits in, or the max
 context that stays usable — usable meaning at or above the 8 tok/s floor.

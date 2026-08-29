@@ -70,6 +70,19 @@ names. Only prose changes.
 This table (in `docs/index.md` and each setup's `comparison.md`) has its
 own rules, on top of the ones above.
 
+**The table is generated, never hand-edited.** Its source of truth is
+`docs/setups/<setup>/models.json`: one row per config, holding only the
+current, measured value for each field — no history array. Edit the JSON,
+then run `npm run docs:tables` to write both copies. Do not touch the
+markdown between the `<!-- gen:models-evaluated:start -->` /
+`<!-- gen:models-evaluated:end -->` markers directly — the next
+`docs:tables` run overwrites it. `npm run docs:check` fails the build if
+either copy has drifted from the JSON, so a forgotten regeneration cannot
+reach the site. The generator sorts rows by EvalPlus score (pass@1 base,
+descending), then by Max ctx (descending) for ties — highest scores and,
+within a tie, the deepest context, at the top. `pending` scores sort to
+the bottom.
+
 - **Columns, in order**: Config | Max ctx | Gated by¹ |
   tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus². There is no
   "Suggested for" column — seat suggestions live only in the setup

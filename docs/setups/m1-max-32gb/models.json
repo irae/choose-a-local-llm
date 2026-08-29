@@ -1,0 +1,116 @@
+{
+  "setup": "m1-max-32gb",
+  "wiredLimit": 24000,
+  "rows": [
+    {
+      "config": "Qwen3.8-27B, MLX, compaction ~26k, effort medium",
+      "maxCtx": "28k",
+      "gatedBy": "mem",
+      "tokShallow": "17",
+      "tokDeep": "15.3",
+      "memory": "22.0 GB",
+      "evalplus": "0.982/0.939",
+      "pendingRetest": false
+    },
+    {
+      "config": "Qwen3.8-27B, GGUF, MTP q8, effort medium",
+      "maxCtx": "19k",
+      "gatedBy": "speed",
+      "tokShallow": "14.1",
+      "tokDeep": "8",
+      "memory": "18.9 GB",
+      "evalplus": "0.982/0.939",
+      "pendingRetest": false
+    },
+    {
+      "config": "Qwen3.6-35B-A3B, MLX, thinking on",
+      "maxCtx": "34.9k",
+      "gatedBy": "mem",
+      "tokShallow": "53.3",
+      "tokDeep": "41.5",
+      "memory": "22.1 GB",
+      "evalplus": "0.939/0.921",
+      "pendingRetest": false
+    },
+    {
+      "config": "Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on",
+      "maxCtx": "90k",
+      "gatedBy": "speed",
+      "tokShallow": "44",
+      "tokDeep": "8.1",
+      "memory": "22.8 GB",
+      "evalplus": "0.939/0.921",
+      "pendingRetest": false
+    },
+    {
+      "config": "Gemma-4-26B-A4B, MLX",
+      "maxCtx": "70k",
+      "gatedBy": "mem",
+      "tokShallow": "51",
+      "tokDeep": "12.8",
+      "memory": "20.0 GB",
+      "evalplus": "0.713/0.701",
+      "pendingRetest": false
+    },
+    {
+      "config": "Gemma-4-26B-A4B, GGUF, MTP q8",
+      "maxCtx": "24k",
+      "gatedBy": "speed",
+      "tokShallow": "23.5",
+      "tokDeep": "8",
+      "memory": "15.4 GB",
+      "evalplus": "0.713/0.701",
+      "pendingRetest": false
+    },
+    {
+      "config": "Gemma-4-12B, MLX³",
+      "maxCtx": "170k",
+      "gatedBy": "engine",
+      "tokShallow": "37",
+      "tokDeep": "31",
+      "memory": "8.8 GB",
+      "evalplus": "pending",
+      "pendingRetest": false
+    },
+    {
+      "config": "Gemma-4-12B, MLX³, thinking off",
+      "maxCtx": "170k",
+      "gatedBy": "engine",
+      "tokShallow": "37",
+      "tokDeep": "31",
+      "memory": "8.8 GB",
+      "evalplus": "0.909/0.872",
+      "pendingRetest": false
+    },
+    {
+      "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
+      "maxCtx": "11k",
+      "gatedBy": "speed",
+      "tokShallow": "14.0",
+      "tokDeep": "8",
+      "memory": "8.2 GB",
+      "evalplus": "0.909/0.872",
+      "pendingRetest": false
+    },
+    {
+      "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking on",
+      "maxCtx": "58k",
+      "gatedBy": "mem",
+      "tokShallow": "24.5",
+      "tokDeep": "17.3",
+      "memory": "22.5 GB",
+      "evalplus": "0.915/0.884",
+      "pendingRetest": false
+    },
+    {
+      "config": "Ternary-Bonsai-27B, GGUF⁴, q4, thinking on",
+      "maxCtx": "2x48k",
+      "gatedBy": "speed",
+      "tokShallow": "14.9",
+      "tokDeep": "7.9",
+      "memory": "10.0 GB",
+      "evalplus": "pending",
+      "pendingRetest": false
+    }
+  ]
+}
