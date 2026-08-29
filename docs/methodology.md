@@ -39,6 +39,14 @@ This is the law for every test cycle. Do not skip steps.
    hitting the speed floor or OOM has not found a ceiling — it has just
    stopped. Record "no ceiling found up to `<the model's max context>`" only
    after the sweep actually reached that number.
+   **Multi-slot (multi-agent) configs get their reported tok/s from one
+   slot decoding alone, not all slots decoding at once.** Slots are
+   parallel *contexts*, not parallel *use*: a sub-agent's slot holds its
+   place while it is idle, but a main agent and a sub-agent rarely
+   generate at the same instant. All-slots-decoding is a worst case, not
+   the typical one, so it is not the number reported. Depth-sweep the
+   single slot exactly as any other config; the other slots stay loaded
+   but idle during the sweep.
 7. **Record each result on every surface in the same pass** — a result is not
    recorded until all agree: the model's
    `docs/setups/<setup>/benchmarks/*.md` (full data), its

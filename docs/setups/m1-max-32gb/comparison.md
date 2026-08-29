@@ -17,30 +17,35 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 - **Best all-day agent:** Ternary Bonsai-27B — 27B-class quality from 8 GB of
   weights, and the flattest curve of any model.
 - **Best multi-agent:** Bonsai on the prism fork — 2×48K slots at 9.8 tok/s
-  each, in 10.0 GB flat. The only setup that leaves the machine free.
+  each, in 10.0 GB. The only setup that leaves the machine free.
 - **The law that decides everything:** MLX runtimes barely slow down but hit
   hard memory ceilings. llama runtimes slow down faster but never OOM inside
   their window.
 
 ## Models evaluated
 
-| Suggested for | Config | Gated at | Gated by | tok/s (shallow → deep) | Memory | EvalPlus |
+| Suggested for | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |---|---|--:|:--:|--:|--:|--:|
-| **Hard problems** | Qwen3.8 MLX, compact | 28K | mem | 17 → 14 | 14.3 GB | 0.982/0.939 |
-| **Deep sessions** | Qwen3.6 llama+MTP q8 | 90K | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
-| **Fast + deep (contender)** | Gemma-26B MLX | 74K | mem | 51 → 22 | 13.5 GB | pending |
-| **Flattest (contender)** | Gemma-12B via LM Studio (lms CLI) | 170K | engine | 37 → 31 | 8.8 GB | pending |
-| **All-day background** | Bonsai MLX, bounded cache | 49K | mem | 24.5 → 18.8 | grows to ~15 GB | 0.915/0.884 |
-| **Desktop + multi-agent** | Bonsai prism fork q4, 2×48K slots | 48K per slot | speed | 14.6 solo; 9.8 each concurrent | 10.0 GB flat | pending |
+| **Hard problems** | Qwen3.8, MLX, compact | 28k | mem | 17 → 14 | 14.3 GB | 0.982/0.939 |
+| **Deep sessions** | Qwen3.6, GGUF, MTP q8 | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
+| **Fast + deep (contender)** | Gemma-26B, MLX | 74k | mem | 51 → 22 | 13.5 GB | pending |
+| **Flattest (contender)** | Gemma-12B, MLX² | 170k | engine | 37 → 31 | 8.8 GB | pending |
+| **Fast sub-agents** | Gemma-12B, MLX², thinking off | 170k | engine | 37 → 31 | 8.8 GB | 0.909/0.872 |
+| **All-day background** | Bonsai 27B, MLX, bounded cache | 49k | mem | 24.5 → 18.8 | ~15 GB | 0.915/0.884 |
+| **Desktop + multi-agent** | Bonsai 27B, GGUF³, Ternary q4 | 2x48k | speed | 14.6 solo; 9.8 each concurrent | 10.0 GB | pending |
 
-"Gated at / by" is the used-context point where a config first breaks, and
-why: memory (MLX runtimes OOM), speed (llama runtimes cross the 8 tok/s
-usability floor), or engine (LM Studio's MLX loader auto-fits the context
-to its own RAM estimate and cannot be told to allocate more — a known,
-unfixed LM Studio bug, not a measurement of this model or this machine).
-"tok/s (shallow → deep)" is decode speed near an empty context, then at
-the gated depth. "Memory" is the wired GPU memory the config holds at
-that depth.
+¹ Whichever limit hits first: the max memory a config fits in, or the max
+context that stays usable — usable meaning at or above the 8 tok/s floor.
+"tok/s (shallow → deep)" is that same decode speed, near an empty context
+then at max ctx.
+
+² LM Studio's MLX engine — the only runtime that loads this model's
+`gemma4_unified` architecture. Its context auto-fit cannot be overridden;
+see the floor table below.
+
+³ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
+
+"Memory (at max ctx)" is the wired GPU memory the config holds at max ctx.
 
 Server commands live in each model's report; aliases equal the pi model ids.
 Compaction thresholds come from the floor table below, not from the window.

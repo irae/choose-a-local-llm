@@ -65,6 +65,49 @@ names. Only prose changes.
 - Tables carry the numbers. Bold the winning row.
 - No code comments unless the owner asks for them.
 
+## The "Models evaluated" table
+
+This table (in `docs/index.md` and each setup's `comparison.md`) has its
+own rules, on top of the ones above.
+
+- **Columns, in order**: Suggested for | Config | Max ctx | Gated by¹ |
+  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus.
+- **Config is a comma list: Model, Runtime, Details.** Runtime is the
+  model's download/weight format only — `MLX` or `GGUF` — never a
+  specific server, tool, or fork name (no "LM Studio", "prism fork",
+  "lms CLI", "mlx_lm.server", "llama"). Details is optional (quant, MTP,
+  thinking mode, and similar) and can be dropped if there is nothing to
+  add. Do not mention slot count here — see multi-agent rows below.
+- **Footnote ¹ always lives on the "Gated by" header**, not on any cell.
+  It explains what the column measures: whichever limit hits first, the
+  max memory a config fits in or the max context that stays usable
+  (usable meaning at or above the 8 tok/s floor) — and it also covers
+  what "tok/s (shallow → deep)" means, since the two are the same idea.
+  Do not give tok/s its own separate explanation.
+- **A row served by a custom binary or fork gets its own footnote**,
+  attached directly to the Runtime abbreviation in Config (e.g. "MLX²"),
+  not to any other cell. The same fork reuses its number across every row
+  that uses it. Number them ², ³, ... in the order they first appear in
+  the table.
+- **Each footnote is its own paragraph below the table** — a blank line
+  between ¹, ², ³, and so on, not one run-on block.
+- **Multi-agent configs**: say "multi-agent" in Suggested for (for
+  example "Desktop + multi-agent"). Show the slot count in **Max ctx** as
+  "Nx\<size\>", e.g. "2x48k" — never in Config.
+- **Max ctx** (the used-context point where a config first breaks): the
+  cell must end with the number and its unit — never a trailing word like
+  "per slot".
+- **"tok/s (shallow → deep)" is two numbers only** — "X → Y" — never a
+  qualifier word like "solo" or "concurrent" in the cell. For a multi-slot
+  config, the number is one slot decoding alone (see methodology); if the
+  method needs explaining, that explanation goes in the methodology, not
+  as a note on this table.
+- **"Memory (at max ctx)" is one number only** — the max figure reached,
+  nothing else. No "flat", no "grows to", no qualifier of any kind.
+- **"tok/s (shallow → deep)"** and **"Memory (at max ctx)"** headers break
+  onto two lines before the parenthesis (`<br>`), so the column stays
+  narrow.
+
 ## Historical figures
 
 **No superseded number appears on a current page.** Not in a table, not in
