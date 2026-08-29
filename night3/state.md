@@ -43,9 +43,45 @@ the same pattern seen on bonsai-think in night 2 (5/164 empty there too).
 Stopped the qwen36-think server and `night2/mem-watch.sh` after the
 evaluate step finished. GPU idle.
 
+## Block: gemma12-lmstudio, thinking-off (finished)
+
+Fresh 164-problem run on LM Studio, model `gemma-4-12b-it-mlx`
+(`lmstudio-community/gemma-4-12B-it-MLX-4bit`). Thinking is off by
+default for this model (no `enable_thinking` in the request body).
+
+Setup notes, for the next agent:
+- The `lms` CLI lives at `~/.cache/lm-studio/bin/lms`, not on `PATH` by
+  default.
+- `lms load` needs the short model key from `lms ls` (`gemma-4-12b-it-mlx`),
+  not the full `lmstudio-community/...` HF-style path used to download it.
+- Started the LM Studio server on port 8081, not the runbook's suggested
+  1234, so it lines up with the port `night2/calibrate.py` and
+  `night1/run_codegen_wrapper.py` already hardcode. Functionally the same
+  outcome, fewer script edits.
+- Added `night3/run-humaneval.sh`, a copy of `night2/run-humaneval.sh`
+  that writes to `night3/results/<name>/` instead of `night2/results/`,
+  since this is a fresh night-3 run, not a night-2 correction.
+
+Steps:
+1. Calibrated the thinking-off budget with `night2/calibrate.py` (10 fixed
+   problems, cap 30000). All 10 finished cleanly, no cap hits. Max
+   completion 4963 tokens, so budget = round(4963 * 1.5) = 7500.
+2. Ran `night3/run-humaneval.sh gemma12-lmstudio-off gemma-4-12b-it-mlx`
+   at budget 7500 with `night2/mem-watch.sh` running alongside.
+3. Heartbeat-checked every ~20 minutes (then every 5 minutes near the
+   end). No crash signatures, steady pace throughout (~19-32s/problem).
+   Total run time about 1h33m for codegen, then evaluate.
+
+Result: pass@1 base 0.909 / plus 0.872, 0/164 empty. Stopped
+`night2/mem-watch.sh`; left the LM Studio server and model loaded, since
+the next sub-step (thinking-on, budget 16384) reuses it.
+
 ## Next
 
-Per user instruction, no other block starts before this session's docs are
-updated. Next block per `night3/NIGHT-AGENT.md`: gemma12-lmstudio
-(thinking-off first, calibrate its budget, then thinking-on at 16384).
-Waiting for the user's go-ahead to start it — blocks run one at a time.
+Per the runbook, the next sub-step is gemma12-lmstudio thinking-on at
+budget 16384, reusing the same loaded model. Waiting for the user's
+go-ahead — blocks run one at a time.
+
+Also per the owner's new rule in `AGENTS.md`: benchmark runs from now on
+live on their own branch, not master. This run stayed on master because
+it started before the rule existed; the next one should branch first.
