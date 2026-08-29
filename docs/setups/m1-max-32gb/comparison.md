@@ -24,26 +24,40 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 
 ## Models evaluated
 
-| Suggested for | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
-|---|---|--:|:--:|--:|--:|--:|
-| **Hard problems** | Qwen3.8, MLX, compact | 28k | mem | 17 → 14 | 14.3 GB | 0.982/0.939 |
-| **Deep sessions** | Qwen3.6, GGUF, MTP q8 | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
-| **Fast + deep (contender)** | Gemma-26B, MLX | 74k | mem | 51 → 22 | 13.5 GB | pending |
-| **Flattest (contender)** | Gemma-12B, MLX² | 170k | engine | 37 → 31 | 8.8 GB | pending |
-| **Fast sub-agents** | Gemma-12B, MLX², thinking off | 170k | engine | 37 → 31 | 8.8 GB | 0.909/0.872 |
-| **All-day background** | Bonsai 27B, MLX, bounded cache | 49k | mem | 24.5 → 18.8 | ~15 GB | 0.915/0.884 |
-| **Desktop + multi-agent** | Bonsai 27B, GGUF³, Ternary q4 | 2x48k | speed | 14.6 solo; 9.8 each concurrent | 10.0 GB | pending |
+| Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |
+|---|--:|:--:|--:|--:|--:|
+| Qwen3.8-27B, MLX, compaction ~26k, effort medium | *28k* | mem | 17 → 14 | *14.3 GB* | 0.982/0.939 |
+| Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | pending | 0.982/0.939 |
+| Qwen3.6-35B-A3B, MLX, thinking on | 34.9k | mem | 53.3 → 41.5 | 22.1 GB | 0.939/0.921 |
+| Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
+| Gemma-4-26B-A4B, MLX | *74k* | mem | 51 → 22 | *13.5 GB* | pending |
+| Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | pending | pending |
+| Gemma-4-12B, MLX³ | 170k | engine | 37 → 31 | 8.8 GB | pending |
+| Gemma-4-12B, MLX³, thinking off | 170k | engine | 37 → 31 | 8.8 GB | 0.909/0.872 |
+| Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | pending | 0.909/0.872 |
+| Ternary-Bonsai-27B, MLX, bounded cache, thinking on | *49k* | mem | 24.5 → 18.8 | *~15 GB* | 0.915/0.884 |
+| Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 2x48k | speed | 14.6 → ? | 10.0 GB | pending |
 
 ¹ Whichever limit hits first: the max memory a config fits in, or the max
 context that stays usable — usable meaning at or above the 8 tok/s floor.
 "tok/s (shallow → deep)" is that same decode speed, near an empty context
 then at max ctx.
 
-² LM Studio's MLX engine — the only runtime that loads this model's
+² Scored once per model and thinking mode; runtimes serving the same
+model at a standard quant share the score. Aggressive quants (for
+example the prism fork's calibrated q4 KV) do not share — they pass the
+gate separately.
+
+³ LM Studio's MLX engine — the only runtime that loads this model's
 `gemma4_unified` architecture. Its context auto-fit cannot be overridden;
 see the floor table below.
 
-³ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
+⁴ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
+
+*Italic* values are fast-sweep ceilings from before the slow-creep rule;
+a re-test comes soon and their memory figures are suspect. See
+[the measurement rules](../../methodology#measurement-rules) for why the slow creep
+is more realistic.
 
 "Memory (at max ctx)" is the wired GPU memory the config holds at max ctx.
 
@@ -67,15 +81,18 @@ Compaction thresholds come from the floor table below, not from the window.
 
 ## Decode speed vs used context — the 8 tok/s usability floor
 
-Measured 2026-08-28 at wired limit 25000.
+Measured 2026-08-28 at wired limit 24000 (identical ceilings at 24000 and
+25000 — physical RAM binds first above 24000). The Qwen3.6 MLX row is
+re-tested 2026-08-29 with the slow creep; the other MLX rows still carry
+fast-sweep ceilings and a slow-creep re-test is pending.
 
 | model / runtime | tok/s @ 4K | @ 16K | @ 32-33K | @ 49K | @ 74-90K | capped by | EvalPlus (base/plus) |
 |---|--:|--:|--:|--:|--:|---|--:|
-| **Gemma-26B MLX** | 51.1 | 43.5 | 35.6 | 28.8 | 22.2 (74K) | mem — OOM at 82-98K, 20.6 tok/s at 82K | pending |
-| **Qwen3.6-35B MLX** | 53.3 | 49.6 | 42.2 | | | mem — OOM at 37-41K, 42.0 tok/s at 37K | pending |
+| **Gemma-26B MLX** | 51.1 | 43.5 | 35.6 | 28.8 | 22.2 (74K) | mem — *stable to 82K, 20.6 tok/s there* | pending |
+| **Qwen3.6-35B MLX** | 53.3 | 49.6 | 42.2 | | | mem — stable to 34.9K, 41.5 tok/s there | pending |
 | **Qwen3.6-35B llama (q8, MTP)** | 44.5 | 30.1 | 18.8 | 13.5 | 8.1 (90K) | speed — its 96K window ends at 8.1 tok/s | 0.939/0.921 |
-| Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 18.2 (57K) | mem — OOM at 57-61K, 18.2 tok/s at 57K | 0.915/0.884 |
-| Qwen3.8 MLX | 17.1* | 16.4 | | | | mem — OOM at 29-33K, still 14.2 tok/s at 28K | 0.982/0.939 |
+| Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 18.2 (57K) | mem — *stable to 57K, 18.2 tok/s there* | 0.915/0.884 |
+| Qwen3.8 MLX | 17.1* | 16.4 | | | | mem — *stable to 28K, 14.2 tok/s there* | 0.982/0.939 |
 | Gemma-26B llama (q8, MTP) | 23.5 | 11.2 | | | | speed — under 8 tok/s at ~24K | pending |
 | Bonsai prism fork (q4 KV) | 14.6 | 10.6 | | | | speed — under 8 tok/s at ~30K | pending |
 | Qwen3.8 llama (q8, MTP) | 14.1 | 8.6 | | | | speed — under 8 tok/s at ~19K | pending |
@@ -117,7 +134,8 @@ compaction threshold belongs.
 **How to read the numbers.** Sweep prompts are synthetic code continuations,
 so MTP-model numbers read below the standard py/js bench, because draft
 acceptance differs. The curves stay comparable across rows. Scores are
-HumanEval+ pass@1, measured on the same weights as the row's runtime.
+HumanEval+ pass@1, one score per model and thinking mode (footnote ²
+above).
 
 **Quality scores need a calibrated output budget.** A fixed budget that is
 too small lets reasoning exhaust the cap, and empty completions score as

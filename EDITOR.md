@@ -70,14 +70,33 @@ names. Only prose changes.
 This table (in `docs/index.md` and each setup's `comparison.md`) has its
 own rules, on top of the ones above.
 
-- **Columns, in order**: Suggested for | Config | Max ctx | Gated by¹ |
-  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus.
-- **Config is a comma list: Model, Runtime, Details.** Runtime is the
-  model's download/weight format only — `MLX` or `GGUF` — never a
-  specific server, tool, or fork name (no "LM Studio", "prism fork",
-  "lms CLI", "mlx_lm.server", "llama"). Details is optional (quant, MTP,
-  thinking mode, and similar) and can be dropped if there is nothing to
-  add. Do not mention slot count here — see multi-agent rows below.
+- **Columns, in order**: Config | Max ctx | Gated by¹ |
+  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus². There is no
+  "Suggested for" column — seat suggestions live only in the setup
+  overview and in analysis/decision prose.
+- **One row per config; a model shows every runtime that has sweep
+  data** (MLX and GGUF rows side by side), grouped by model.
+- **Config is a comma list: Model, Runtime, Details.** Model is the
+  HuggingFace repo name: a MoE model carries its active-parameter spec
+  in the name (Qwen3.6-35B-A3B, Gemma-4-26B-A4B); a dense model is a
+  plain size (Qwen3.8-27B) — the missing A-suffix marks it dense.
+  Runtime is the model's download/weight format only — `MLX` or `GGUF`
+  — never a specific server, tool, or fork name (no "LM Studio", "prism
+  fork", "lms CLI", "mlx_lm.server", "llama"). Details is optional
+  (quant, MTP, thinking mode, and similar) and can be dropped if there
+  is nothing to add. A scored row states its thinking mode ("thinking
+  on/off", or "effort medium" for graded-effort models). No invented
+  shorthand — write "compaction ~26k", not "compact". Do not mention
+  slot count here — see multi-agent rows below.
+- **Footnote ² lives on the EvalPlus header**: one score per model and
+  thinking mode; runtimes at standard quants share it; aggressive
+  quants (calibrated q4 KV and similar) gate separately and show
+  "pending" until they pass. Scores never propagate across thinking
+  modes.
+- ***Italic* cells are values pending a re-test** (for example
+  fast-sweep ceilings from before the slow-creep rule). The note below
+  the footnotes says so and links to the methodology's measurement
+  rules.
 - **Footnote ¹ always lives on the "Gated by" header**, not on any cell.
   It explains what the column measures: whichever limit hits first, the
   max memory a config fits in or the max context that stays usable
@@ -85,14 +104,13 @@ own rules, on top of the ones above.
   what "tok/s (shallow → deep)" means, since the two are the same idea.
   Do not give tok/s its own separate explanation.
 - **A row served by a custom binary or fork gets its own footnote**,
-  attached directly to the Runtime abbreviation in Config (e.g. "MLX²"),
+  attached directly to the Runtime abbreviation in Config (e.g. "MLX³"),
   not to any other cell. The same fork reuses its number across every row
-  that uses it. Number them ², ³, ... in the order they first appear in
-  the table.
+  that uses it. Number them ³, ⁴, ... in the order they first appear in
+  the table (¹ and ² are reserved for the header footnotes).
 - **Each footnote is its own paragraph below the table** — a blank line
   between ¹, ², ³, and so on, not one run-on block.
-- **Multi-agent configs**: say "multi-agent" in Suggested for (for
-  example "Desktop + multi-agent"). Show the slot count in **Max ctx** as
+- **Multi-agent configs**: show the slot count in **Max ctx** as
   "Nx\<size\>", e.g. "2x48k" — never in Config.
 - **Max ctx** (the used-context point where a config first breaks): the
   cell must end with the number and its unit — never a trailing word like
@@ -107,6 +125,14 @@ own rules, on top of the ones above.
 - **"tok/s (shallow → deep)"** and **"Memory (at max ctx)"** headers break
   onto two lines before the parenthesis (`<br>`), so the column stays
   narrow.
+
+## Stable values only
+
+A ceiling sweep finds a last stable depth and, past it, a death point.
+The site renders the stable value only: the deepest depth that still
+served correctly, with its tok/s. The death point and the unstable
+bracket ("OOM at X-YK") never appear on a page — they stay in the run
+logs. This holds for "Max ctx" cells, "capped by" cells, and prose.
 
 ## Historical figures
 

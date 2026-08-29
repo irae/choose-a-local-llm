@@ -156,9 +156,12 @@ This is the law for every test cycle. Do not skip steps.
   their 4-bit-KV path and their layout migrations for a while.
 - **Use the most popular mainstream quant repos** (HF download counts);
   verify exact file lists first.
-- **Per-quantization scoring**: what you run is a quant; quality must be
-  measured per quant AND per runtime (mlx vs GGUF weights are different
-  artifacts of the same model).
+- **Score the quant, once per model.** Published full-precision scores do
+  not count: what you run is a quant. But narrow differences between
+  runtimes' standard quants do not count either — score each model once
+  per thinking mode and share that score across runtimes. Aggressive or
+  calibrated quants (for example the prism fork's q4 KV) are not narrow;
+  each passes the gate separately.
 
 ## Code-quality gate (EvalPlus, then Aider)
 
