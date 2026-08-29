@@ -18,13 +18,12 @@
 ## Setup
 
 ```bash
-# Unattended max-context runs (benchmarks, night runs):
 sudo sysctl iogpu.wired_limit_mb=24000
-# When you also use the machine (keyboard, screen):
-sudo sysctl iogpu.wired_limit_mb=22000
 ```
 
-**This resets on reboot.** Re-run it before any model work.
+**This resets on reboot.** Re-run it before any model work. Set 22000
+instead when you also use the machine — see
+[the wired limit](#the-wired-limit-24000-unattended-22000-in-use).
 
 - Servers always listen on port 8081. Port 8080 is the DB admin UI. LM Studio
   serves on 1234.
