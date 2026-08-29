@@ -118,8 +118,19 @@ Cells are blank past a config's cap. *8K value.
 - Memory ceilings for the MLX configs that never hit the speed floor.
 - Aider polyglot (tier 2) for gate survivors — driven from another computer;
   docker does not fit beside a loaded model here.
+- **Qwen3-Coder-30B-A3B is the only promising untested contender.** Not on
+  this machine yet. Community-reported EvalPlus HumanEval+ 0.902 (unverified
+  by our gate); MoE, 3.3B active, GGUF Q4_K_M ~18.6 GB. Math projects its
+  GGUF single-slot ceiling above 45K, but its 2-slot ceiling lands close to
+  our 45K bar either way — not a clear win, and likely below our best
+  score. Worth a real test before ruling it out, low priority otherwise.
 - Watch list: brew llama.cpp reading ternary Q2; mlx-lm gaining
-  `gemma4_unified` and server-side KV quantization.
+  `gemma4_unified` and server-side KV quantization; LM Studio's MLX
+  continuous batching (mlx-engine, general since 0.4.2 — confirmed here at
+  0.4.21) as the only path to real multi-slot MLX serving. Plain
+  `mlx_lm.server` has no shared-weight multi-slot mode — concurrent MLX
+  decode needs a second full weight copy, so MLX 2-slot math does not
+  apply to it the way GGUF's does.
 
 ## History and reasoning
 
