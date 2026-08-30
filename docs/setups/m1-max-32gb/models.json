@@ -104,6 +104,16 @@
   },
   {
    "config": "Ternary-Bonsai-27B, GGUF⁴, q4, thinking on",
+   "maxCtx": "pending",
+   "gatedBy": "speed",
+   "tokShallow": "14.6",
+   "tokDeep": "pending",
+   "memory": "9.8 GB",
+   "evalplus": "0.927/0.890",
+   "pendingRetest": false
+  },
+  {
+   "config": "Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on",
    "maxCtx": "2x48k",
    "gatedBy": "speed",
    "tokShallow": "14.9",
