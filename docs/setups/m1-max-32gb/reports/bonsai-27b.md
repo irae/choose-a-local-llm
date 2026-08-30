@@ -32,8 +32,10 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
-| 2 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | pending | speed | 14.6 → pending | 9.8 GB | 0.927/0.890 |
-| 3 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.9 | 10.0 GB | 0.927/0.890 |
+| 2 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | pending | speed | 14.6† → pending | 9.8 GB† | 0.927/0.890 |
+| 3 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k† | speed | 14.9† → 7.9 | 10.0 GB† | 0.927/0.890 |
+
+† from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
 
 ## Configs

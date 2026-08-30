@@ -176,10 +176,15 @@ the bottom.
   quants (calibrated q4 KV and similar) gate separately and show
   "pending" until they pass. Scores never propagate across thinking
   modes.
-- ***Italic* cells are values pending a re-test** (for example
-  fast-sweep ceilings from before the slow-creep rule). The note below
-  the footnotes says so and links to the methodology's measurement
-  rules.
+- **Stale cells carry a dagger (`†`)**: a value measured under an
+  earlier serving config or method (a retired wired limit, a fast
+  sweep, a pre-calibration config) that the current method has not
+  re-measured yet. It is derived data: each row's `stale` array in
+  `models.json` lists the affected field names, and the generator
+  renders the glyph and its legend on every table that shows one. When
+  a new run lands, write the new value AND remove the field from
+  `stale` — nothing else to touch; every table updates on the next
+  `docs:tables` run.
 - **Footnote ¹ always lives on the "Gated by" header**, not on any cell.
   It explains what the column measures: whichever limit hits first, the
   max memory a config fits in or the max context that stays usable

@@ -47,12 +47,20 @@ function renderTable(rows, { footnotes = true, sort = true } = {}) {
     '|--:|---|--:|:--:|--:|--:|--:|',
   ]
   const ordered = sort ? sortRows(rows) : rows
+  let anyStale = false
+  const cell = (r, field) => {
+    const stale = (r.stale || []).includes(field)
+    if (stale) anyStale = true
+    return `${r[field]}${stale ? '†' : ''}`
+  }
   const body = ordered.map((r, i) => {
-    const maxCtx = r.pendingRetest ? `*${r.maxCtx}*` : r.maxCtx
-    const memory = r.pendingRetest ? `*${r.memory}*` : r.memory
-    return `| ${i + 1} | ${r.config} | ${maxCtx} | ${r.gatedBy} | ${r.tokShallow} → ${r.tokDeep} | ${memory} | ${r.evalplus} |`
+    const tok = `${cell(r, 'tokShallow')} → ${cell(r, 'tokDeep')}`
+    return `| ${i + 1} | ${r.config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} | ${cell(r, 'memory')} | ${cell(r, 'evalplus')} |`
   })
-  return [...header, ...body].join('\n')
+  const legend = anyStale
+    ? ['', '† from an earlier serving config or method; re-run pending.']
+    : []
+  return [...header, ...body, ...legend].join('\n')
 }
 
 function majorName(config) {

@@ -29,7 +29,9 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Qwen3.6-35B-A3B, MLX, thinking on | 34.9k | mem | 53.3 → 41.5 | 22.1 GB | 0.939/0.921 |
-| 2 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
+| 2 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k† | speed | 44† → 8.1† | 22.8 GB† | 0.939/0.921 |
+
+† from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
 
 ## Configs
