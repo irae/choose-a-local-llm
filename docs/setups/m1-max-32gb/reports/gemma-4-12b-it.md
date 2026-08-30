@@ -6,9 +6,12 @@ benchmarked 2026-08-25
 ## Highlights
 
 - **The deepest and flattest usable curve of the whole project.** On the LM
-  Studio engine: 25.1 tok/s still at 147K used tokens. LM Studio's own MLX
-  loader caps the context at 170K, regardless of what is requested — a
-  known LM Studio bug, not a memory or speed limit of the model.
+  Studio engine: 25.1 tok/s still at 147K used tokens.
+- **Two ceiling readings, two uses.** Memory compression starts between
+  65K and 74K — that is the benchmark-grade ceiling. Beyond it the engine
+  stays functional to ~150K and the loader stops at ~158-170K. For
+  harness work, ~150K is the safe practical limit. See "Two ceilings"
+  below.
 - **The smallest footprint of any usable config.** 8.8 GB RSS at 74K.
 - **Context is model-limited, not memory-limited.** The full 256K trained
   window fits in ~14 GB and leaves ~18 GB free.
@@ -67,11 +70,10 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
 | **169.6K** | | **29.7 — deepest healthy point; 171K fails clean, LM Studio's loader caps it at 170K, not this model or this machine** |
 
 **Ceiling, revised criterion (2026-08-30):** context length cannot be
-pinned for this model — every `-c`/`--context-length` path is ignored;
-auto-fit always gives 158,464 at wired limit 24000 (see
-`night4/lmstudio-forensics.md`). The ceiling is now the onset of memory
-compression/swap, not the loader's raw context cap. Confirmation sweep
-(`--parallel 4`, watcher at 20 s interval):
+pinned for this model — the engine ignores every `-c`/`--context-length`
+path; auto-fit always gives 158,464 at wired limit 24000. The ceiling is
+now the onset of memory compression/swap, not the loader's raw context
+cap. Confirmation sweep (`--parallel 4`, watcher at 20 s interval):
 
 | depth | decode tok/s | watcher state |
 |---|--:|---|
@@ -136,6 +138,30 @@ q8_0 by +5.5 py tok/s, which is why it was used. q8_0 is now the default on
 every config, per the KV policy, so a re-probe under the current wired limit
 is pending. MTP uses the separate `mtp-gemma-4-12b-it.gguf` draft from the
 unsloth repo.
+
+**Two ceilings: what the findings mean (2026-08-30).** The two
+context figures on this page describe two different limits, and both are
+real:
+
+- **~170K is the functional limit.** The engine serves requests to
+  ~158-170K used tokens (auto-fit window; the loader refuses beyond it).
+  The curve stays above 22 tok/s the whole way. This config "sort of
+  works": past ~74K the system leans on memory compression, and near the
+  window edge a request can force a full ~150K-token recompute when the
+  disk cache evicts. For harness use, stay near **~150K** to keep a
+  margin below the window edge.
+- **~65-74K is the clean limit.** Memory compression and swap start
+  inside the 74K step. Below it the system is free of memory pressure.
+  Benchmarks and depth sweeps use this reading, because they hold deep
+  contexts hot for hours. A harness does not hit the machine that hard —
+  occasional deep calls above the onset are fine.
+- The context column in the tables keeps the auto-fit estimate (158,464)
+  flagged as a loader estimate; the trained max is 262,144 and does not
+  fit on this machine.
+- None of this is tunable. The engine ignores every context-length
+  setting for this model (CLI flags, REST body, per-model config file,
+  app default). Auto-fit computes the window from the GPU wired limit.
+  `--parallel` is the one load knob that works.
 
 **Thinking is binary.** Gemma 4 has trained-in reasoning (`<|think|>`),
 toggled by `enable_thinking` — on/off, default off, no graded effort levels.
