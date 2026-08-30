@@ -2,6 +2,20 @@
   --vp-layout-max-width: 1920px;
 }
 
+/* Mobile: tables scroll sideways instead of truncating.
+   Pattern: Adrian Roselli, "Under-Engineered Responsive Tables". */
+.vp-doc table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.vp-doc th,
+.vp-doc td {
+  white-space: nowrap;
+}
+
 .VPDoc.has-aside .content-container {
   max-width: 1280px !important;
 }
