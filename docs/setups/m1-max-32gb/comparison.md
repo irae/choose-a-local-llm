@@ -115,6 +115,27 @@ Cells are blank past a config's cap. *8K value.
 | **Gemma-4-26B-A4B** | mlx 4-bit, thinking on, budget 30000 | **0.713** | **0.701** | 46/164 (~28%) empty is a real model ceiling — the thinking-convergence problem |
 | Gemma-4-12B | calibrated only (budget 30000) | – | – | pending — 4/10 sample problems hit the cap, worse than the 26B |
 
+## Mendel — agentic quality (issue-13 bake-off)
+
+| model | config scored | score | status |
+|---|---|--:|---|
+| Ternary Bonsai-27B | mlx 2-bit, `pi` harness | **55/100** | partial — blocked by an `mlx_lm.server` tool-parser crash (below) |
+
+Full rubric, scoring method, and the rest of the field (proprietary and
+other local models) live in the open-source
+[Mendel benchmark](https://github.com/irae/mendel/tree/benchmark).
+
+**Blocked: `mlx_lm.server`'s tool-call parser crashes on multi-line edit
+arguments.** Two attempts on Ternary Bonsai-27B (mlx 2-bit) hit the same
+crash in `mlx_lm`'s `qwen3_coder` tool parser: a multi-line edit-tool
+JSON argument with an embedded quote fails `ast.literal_eval`, and the
+response stream ends with no `finish_reason`. The run stopped at 3 of 8
+libraries (all correct on inspection), before it reached the
+`rimraf`/`glob` trap. Not a firewall or network issue — checked Little
+Snitch's log across the crash window, no blocks recorded. This blocks
+Mendel scoring for any Bonsai config served through `mlx_lm.server`'s
+tool-calling path until the parser is fixed upstream.
+
 ## Open questions
 
 - EvalPlus for Gemma-12B (MLX and LM Studio), the Bonsai prism-fork
