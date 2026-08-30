@@ -59,7 +59,7 @@ see the floor table below.
 ⁴ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
 
 All ceilings below are slow-creep re-tests at wired limit 24000 (2026-08-29).
-See [the measurement rules](../../methodology#measurement-rules) for why the
+See [the measurement rules](../../methodology/context-creep) for why the
 slow creep is more realistic than a fast sweep.
 
 "Memory (at max ctx)" is the wired GPU memory the config holds at max ctx.

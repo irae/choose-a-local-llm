@@ -23,23 +23,55 @@ run. Publishing is the owner's step, always.
 If another agent is already serving on 5173, add a port:
 `npm run dev -- --port 5174`.
 
-## What to read
+## Full index — what to read, and when, to not make mistakes
 
-| Your task | Read this |
-|---|---|
-| Change any page, wording, or layout | [EDITOR.md](./EDITOR.md) |
-| Run a benchmark, or record a result | [docs/methodology.md](./docs/methodology.md) |
-| Change the site structure or the deploy | [docs/website-plan.md](./docs/website-plan.md) |
+Site and process docs:
 
-**EDITOR.md** is the one to open for content work. It holds the page shape
-every page follows, the vocabulary rules, where each file lives, and how to
-record a measurement across every surface.
+- [EDITOR.md](./EDITOR.md) — before you change any page, wording, or
+  layout. Page shape, vocabulary, where each file lives, how to record
+  a measurement across every surface.
+- [docs/methodology.md](./docs/methodology.md) — the law for
+  measurements, split by task. Read its table and open the page for
+  what you are about to do. The pages, and when they save you:
+  - `docs/methodology/checklist.md` — before starting ANY benchmark,
+    sweep, or scoring run. Agents forget the memory watcher and the
+    idle/silent-crash monitor; this is the checklist that prevents it.
+  - `docs/methodology/common-rules.md` — before writing or running any
+    measurement script (prompt-cache rule, KV policy, record-everywhere
+    rule — the one that catches people).
+  - `docs/methodology/context-creep.md` — before a depth sweep, and
+    before interpreting any LM Studio ceiling (compression-onset
+    criterion).
+  - `docs/methodology/memory-ceiling.md` — before probing allocation
+    maxima or changing the wired limit.
+  - `docs/methodology/evalplus.md` — before EvalPlus or any scoring
+    benchmark. The budget-calibration rule lives here; skipping it
+    once cost 38% of a score.
+  - `docs/methodology/mendel.md` — before a Mendel run. The real
+    instructions live in the Mendel repo; this page says where and the
+    house rules (one at a time, daemon cleanup).
+  - `docs/methodology/polyglot.md` — before an Aider polyglot run.
+  - `docs/methodology/server-lore.md` — before touching any server,
+    and FIRST when a run stalls or a number looks impossible.
+- [docs/website-plan.md](./docs/website-plan.md) — before changing the
+  site structure or the deploy. Not needed for content work.
 
-**docs/methodology.md** is the law for measurements. Rule 7 is the one that
-catches people: a result is not recorded until every surface agrees.
+Benchmark work:
 
-**docs/website-plan.md** covers the site build and the deploy. You should not
-need it for content work.
+- `benchmarks/INDEX.md` — start here to learn what each run found;
+  links every run's state and results.
+- `benchmarks/bench<N>/AGENT.md` — the runbook to execute for run N.
+  Read the newest one before doing any benchmark work.
+- `benchmarks/bench<N>/state.md` — the run's log; read before resuming
+  or touching anything that run left behind.
+- `benchmarks/bench4/lmstudio-forensics.md` — before any LM Studio
+  work; it overrides older lore.
+- `benchmarks/` (root) — the shared tools every run uses:
+  `run-humaneval.sh`, `run_codegen_wrapper.py` (patched EvalPlus
+  client), `calibrate.py`, `mem-watch.sh`, `calibration-*.json`.
+- `tools/sweeps/` — depth-sweep scripts and fast memory watcher.
+- `HANDOFF.md` — the owner's working context for the next main-thread
+  agent; read it first when starting a session. Not committed.
 
 ## Standing rules
 
@@ -63,8 +95,10 @@ need it for content work.
 - **Do not write code comments** unless the owner asks for them.
 - **Commit before you ask for review.**
 - **Verify before you claim.** Run `npm run verify` and quote the result.
-- The working directories `night1/`, `night2/`, `night3/` keep their names,
-  but prose calls them **benchmark runs**, numbered. Never "night runs".
+- Run kits live in `benchmarks/bench<N>/`; shared run tools in
+  `benchmarks/`. Site prose calls them **benchmark runs**, numbered —
+  never "night runs". When a run closes, add its findings to
+  `benchmarks/INDEX.md`.
 - `HANDOFF.md` is the owner's working context and is not committed.
 
 Nothing outside `docs/` reaches the published site.

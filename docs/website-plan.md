@@ -76,7 +76,7 @@ from converted pages.
 
 Notes:
 
-- `night1/ night2/ night3/`, `HANDOFF.md`, and scripts stay outside `docs/`
+- `benchmarks/bench1/ benchmarks/bench2/ benchmarks/bench3/`, `HANDOFF.md`, and scripts stay outside `docs/`
   and off the site.
 - The `benchmarks/*.md` files become real site pages for free.
 - The `reports/*.html` and `comparison.html` files pass through unchanged in

@@ -51,9 +51,11 @@ Do not open a page with a prose summary. Open it with bullets.
 - Write all prose in ASD-STE100 Simplified Technical English: short
   sentences, active voice, one idea per sentence, one word for one meaning.
 
-Known mismatch: the working directories are still named `night1/`, `night2/`,
-`night3/`, and the prose points at paths inside them. Paths keep their real
-names. Only prose changes.
+Run kits live in `benchmarks/bench<N>/` (runbook `AGENT.md`, log
+`state.md`, results). Shared run tools sit in `benchmarks/`, and
+`benchmarks/INDEX.md` is the per-run findings index — add each run's
+most interesting findings there when the run closes. None of it is site
+content.
 
 ## Format
 
@@ -162,6 +164,9 @@ prose. This is the owner's rule and methodology rule 7 says the same.
 - The `benchmarks/*.md` pages are the exception. They keep the full archive,
   because that is their job — but every section there states the wired limit
   and the date it was measured, not a run number.
+- `historical.md` orders sections newest-first: the newest supersession
+  goes at the top, directly under the summary. The summary block always
+  stays at the top so a reader knows what the page is before any table.
 - The red warning block at the top of `historical.md` must stay. It is the
   first thing a reader sees on that page.
 
@@ -211,8 +216,8 @@ docs/
     historical.md              superseded measurements, with a danger warning
 ```
 
-Anything outside `docs/` never reaches the site. That is where `night*/`,
-`HANDOFF.md`, this file, and `AGENTS.md` live.
+Anything outside `docs/` never reaches the site. That is where
+`benchmarks/`, `HANDOFF.md`, this file, and `AGENTS.md` live.
 
 ## How to record a new measurement
 

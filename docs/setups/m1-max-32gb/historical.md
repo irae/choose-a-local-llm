@@ -1,6 +1,13 @@
 # Historical data — M1 Max 32 GB
 
-Superseded measurements, moved off the current pages as they were replaced.
+## What this page is
+
+Superseded measurements, moved off the current pages as they were
+replaced. **Newest first**: the top section is the most recent
+supersession; the bottom is the oldest era. Each section says what
+replaced it and why. The per-run findings and conclusions live in the
+repo's
+[benchmark findings index](https://github.com/irae/choose-a-local-llm/blob/master/benchmarks/INDEX.md).
 
 ::: danger DO NOT USE THESE NUMBERS
 Everything on this page is **superseded, wrong, or both**. It is kept only to
@@ -23,7 +30,35 @@ For numbers you can act on, go to [the comparison page](./comparison.md).
 Full raw archives, with their eras labeled, live in the benchmarks pages.
 :::
 
-## Deflated EvalPlus scores (fixed 3072-token budget)
+## Gemma-4-12B LM Studio ceiling, old criterion (superseded 2026-08-30)
+
+Old rows read "170K, 29.7 tok/s" — the deepest point LM Studio's auto-fit
+loader let a request reach before failing clean, not a compression/swap
+ceiling. The revised criterion
+([context creep](../../methodology/context-creep)) defines the ceiling
+as the onset of memory compression/swap in the watcher log, with tok/s
+taken from the last clean step before onset. A confirmation sweep under
+the new criterion found onset between 65K and 74K used tokens (65,094
+tokens clean at 29.29 tok/s; 74,099 tokens shows compression bursts up
+to 114,012 pages). Current figures are on
+[the comparison page](./comparison.md) and
+[the Gemma-12B report](./reports/gemma-4-12b-it.md).
+
+## Fast-sweep memory ceilings, pre slow-creep rule (limit 25000, superseded 2026-08-29)
+
+The first depth sweeps for these three MLX configs used a fast sweep — no
+pause between depth steps. The slow-creep rule (25 s pause per step,
+[the measurement rules](../../methodology/context-creep)) replaced them
+with a re-test at limit 24000 on 2026-08-29. Shallow-depth rows (below the
+lowest row here) did not change and stay on the current pages.
+
+| model | fast-sweep ceiling | fast-sweep last stable | slow-creep re-test |
+|---|---|---|---|
+| Gemma-4-26B-A4B, MLX | 82-98K | 82K, 20.6 tok/s | 70-72K; last stable 70K, 12.83 tok/s |
+| Ternary-Bonsai-27B, MLX | 57-61K | 57K, 18.2 tok/s | 58-60K; last stable 58K, 17.27 tok/s |
+| Qwen3.8-27B, MLX | ~32K (OOM, server thread died) | 28.7K, 14.2 tok/s, RSS 14.3 GB | 28-30K; last stable 28K, 15.29 tok/s |
+
+## Deflated EvalPlus scores (fixed 3072-token budget, corrected 2026-08-28/29)
 
 The first quality pass capped output at 3072 tokens. Reasoning exhausted the
 cap, and the empty completions scored as hard failures. These are lower
@@ -37,23 +72,62 @@ bounds, not measurements.
 
 The lesson generalizes: treat any single-pass score with a fixed output
 budget as a lower bound until the budget is calibrated from measured
-reasoning length.
+reasoning length ([the EvalPlus method](../../methodology/evalplus)).
 
-## Fast-sweep memory ceilings, pre slow-creep rule (limit 25000, 2026-08-28)
+## Decode speed (best server-usable config per model, retired 2026-08-28)
 
-The first depth sweeps for these three MLX configs used a fast sweep — no
-pause between depth steps. The slow-creep rule (25 s pause per step,
-[the measurement rules](../../methodology#measurement-rules)) replaced them
-with a re-test at limit 24000 on 2026-08-29. Shallow-depth rows (below the
-lowest row here) did not change and stay on the current pages.
+Cards moved out of the comparison page when it was slimmed to the current
+picture, 2026-08-28.
 
-| model | fast-sweep ceiling | fast-sweep last stable | slow-creep re-test |
-|---|---|---|---|
-| Gemma-4-26B-A4B, MLX | 82-98K | 82K, 20.6 tok/s | 70-72K; last stable 70K, 12.83 tok/s |
-| Ternary-Bonsai-27B, MLX | 57-61K | 57K, 18.2 tok/s | 58-60K; last stable 58K, 17.27 tok/s |
-| Qwen3.8-27B, MLX | ~32K (OOM, server thread died) | 28.7K, 14.2 tok/s, RSS 14.3 GB | 28-30K; last stable 28K, 15.29 tok/s |
+| model | config | py tok/s | js tok/s |
+|---|---|--:|--:|
+| Gemma-4-26B-A4B (MoE) | llama-server + MTP n=2 | 71.9 | 69.3 |
+| Qwen3.6-35B-A3B (MoE) | llama-server + MTP n=3 | 68.2 | 73.5 |
+| Gemma-4-12B | llama-server + MTP n=3 | 35.0 | 35.6 |
+| Ternary Bonsai-27B | mlx_lm.server (limit 25000: 24.5) | 24.5 | 24.5 |
+| Qwen3.8-27B | mlx_lm.server | 19.7 | 19.6 |
+| Qwen3.8-27B | llama-server + MTP n=3 | 16.9 | 15.7 |
 
-## Qwen3.6-35B-A3B — context ramp at the retired 27000 limit
+All values are thinking-on where the model supports it. Thinking-off
+(sub-agent mode): Gemma-26B 74.8/71.6 at n=2, Gemma-12B 45.2/31.3 at n=4.
+Qwen's true fastest, MLX + MTP at 20.2/22.5, is CLI-only and cannot back a
+harness. Gemma-26B's numbers are f16 KV at 32K; its 256K config needs q8 KV
+now, which drops js to ~53 tok/s because draft acceptance falls under q8.
+
+## Max context — single session (retired 2026-08-28)
+
+| model | config | max context | tok/s at it |
+|---|---|--:|--:|
+| Gemma-4-26B-A4B (MoE) | llama-server, 1 slot, q8_0 KV | 256K (model limit) | 62.4 py / 53.3 js |
+| Gemma-4-12B | llama-server, 1 slot | 256K (model limit) | 45.2 |
+| Qwen3.6-35B-A3B (MoE) | llama-server, 1 slot, q8_0 KV | 96K (memory, limit 25000) | 62.0 |
+| Ternary Bonsai-27B | mlx_lm.server, bounded prompt cache | 49K (memory, limit 25000) | 18.8 |
+| Qwen3.8-27B | llama-server, 1 slot, q8_0 KV | re-probe pending at limit 25000 | – |
+| Qwen3.8-27B | mlx_lm.server | 28K OK; ceiling &lt;33K (limit 25000) | 14.2 at 28K |
+
+Context limits are mode-independent, because KV is preallocated. The tok/s
+column here comes from short thinking-off probes; see each report for
+thinking-on speeds.
+
+## Multi-session, concurrent agents (retired 2026-08-28)
+
+| model | config | sessions | context each |
+|---|---|--:|--:|
+| Gemma-4-12B | llama-server `--parallel 4 -c 1048576`, q8_0 KV | 4 | 256K |
+| Gemma-4-26B-A4B (MoE) | llama-server `--parallel 2 -c 376832`, q8_0 KV | 2 | 184K |
+| Qwen3.6-35B-A3B (MoE) | untested at limit 25000 (at 24000: OOM at 2×20K) | – | – |
+| Qwen3.8-27B | re-probe pending at limit 25000 | – | – |
+| Ternary Bonsai-27B | prism fork `--parallel 2 -c 98304`, q4_0 KV | 2 | 48K — 9.8 tok/s each concurrent, 10.0 GB RSS |
+
+**Decision: parallel serving runs on llama-server only.** MLX has no slots.
+Its only concurrency is one server process per agent, each with its own full
+weight copy and its own port to wire into the harness. That was measured —
+two Bonsai instances at 14.0 tok/s each, 14.9 GB — but ruled out as not worth
+the operational fiddling. Bonsai regains a multi-session story when a brew
+llama.cpp release loads its ternary GGUF, with a projected ~300K total
+context to split across slots.
+
+## Qwen3.6-35B-A3B — context ramp at the retired 27000 limit (oldest era)
 
 Moved off the report page. f16 KV, MTP n-max 3. Under the current 25000
 limit this config reaches 96K with q8_0 KV, not 139K.
@@ -70,7 +144,7 @@ limit this config reaches 96K with q8_0 KV, not 139K.
 With q8_0 KV the 27000 limit reached 208K on one slot and 2×96K on two.
 Those configs are retired.
 
-## Qwen3.8-27B — context ramp and slot layouts at the retired 27000 limit
+## Qwen3.8-27B — context ramp and slot layouts at the retired 27000 limit (oldest era)
 
 Moved off the report page. f16 KV, MTP n-max 3. The current maxima at 25000
 have not been re-probed, so no replacement table exists yet — the depth floor
@@ -93,72 +167,6 @@ at ~19K makes big allocations pointless for this model anyway.
 MTP stayed active in both. The next 8K step OOMed in both: `-c 106496` with
 one slot, `-c 98304` with two. The 160K single and 2×72K configs from this
 era are withdrawn.
-
-## Decode speed (best server-usable config per model)
-
-Cards moved out of the comparison page when it was slimmed to the current
-picture, 2026-08-28.
-
-| model | config | py tok/s | js tok/s |
-|---|---|--:|--:|
-| Gemma-4-26B-A4B (MoE) | llama-server + MTP n=2 | 71.9 | 69.3 |
-| Qwen3.6-35B-A3B (MoE) | llama-server + MTP n=3 | 68.2 | 73.5 |
-| Gemma-4-12B | llama-server + MTP n=3 | 35.0 | 35.6 |
-| Ternary Bonsai-27B | mlx_lm.server (limit 25000: 24.5) | 24.5 | 24.5 |
-| Qwen3.8-27B | mlx_lm.server | 19.7 | 19.6 |
-| Qwen3.8-27B | llama-server + MTP n=3 | 16.9 | 15.7 |
-
-All values are thinking-on where the model supports it. Thinking-off
-(sub-agent mode): Gemma-26B 74.8/71.6 at n=2, Gemma-12B 45.2/31.3 at n=4.
-Qwen's true fastest, MLX + MTP at 20.2/22.5, is CLI-only and cannot back a
-harness. Gemma-26B's numbers are f16 KV at 32K; its 256K config needs q8 KV
-now, which drops js to ~53 tok/s because draft acceptance falls under q8.
-
-## Max context — single session
-
-| model | config | max context | tok/s at it |
-|---|---|--:|--:|
-| Gemma-4-26B-A4B (MoE) | llama-server, 1 slot, q8_0 KV | 256K (model limit) | 62.4 py / 53.3 js |
-| Gemma-4-12B | llama-server, 1 slot | 256K (model limit) | 45.2 |
-| Qwen3.6-35B-A3B (MoE) | llama-server, 1 slot, q8_0 KV | 96K (memory, limit 25000) | 62.0 |
-| Ternary Bonsai-27B | mlx_lm.server, bounded prompt cache | 49K (memory, limit 25000) | 18.8 |
-| Qwen3.8-27B | llama-server, 1 slot, q8_0 KV | re-probe pending at limit 25000 | – |
-| Qwen3.8-27B | mlx_lm.server | 28K OK; ceiling &lt;33K (limit 25000) | 14.2 at 28K |
-
-Context limits are mode-independent, because KV is preallocated. The tok/s
-column here comes from short thinking-off probes; see each report for
-thinking-on speeds.
-
-## Multi-session (concurrent agents)
-
-| model | config | sessions | context each |
-|---|---|--:|--:|
-| Gemma-4-12B | llama-server `--parallel 4 -c 1048576`, q8_0 KV | 4 | 256K |
-| Gemma-4-26B-A4B (MoE) | llama-server `--parallel 2 -c 376832`, q8_0 KV | 2 | 184K |
-| Qwen3.6-35B-A3B (MoE) | untested at limit 25000 (at 24000: OOM at 2×20K) | – | – |
-| Qwen3.8-27B | re-probe pending at limit 25000 | – | – |
-| Ternary Bonsai-27B | prism fork `--parallel 2 -c 98304`, q4_0 KV | 2 | 48K — 9.8 tok/s each concurrent, 10.0 GB RSS |
-
-**Decision: parallel serving runs on llama-server only.** MLX has no slots.
-Its only concurrency is one server process per agent, each with its own full
-weight copy and its own port to wire into the harness. That was measured —
-two Bonsai instances at 14.0 tok/s each, 14.9 GB — but ruled out as not worth
-the operational fiddling. Bonsai regains a multi-session story when a brew
-llama.cpp release loads its ternary GGUF, with a projected ~300K total
-context to split across slots.
-
-## Gemma-4-12B LM Studio ceiling, old criterion (raw-cap reading, superseded 2026-08-30)
-
-Old rows read "170K, 29.7 tok/s" — the deepest point LM Studio's auto-fit
-loader let a request reach before failing clean, not a compression/swap
-ceiling. The owner's revised criterion (`night4/lmstudio-forensics.md`)
-defines the ceiling as the onset of memory compression/swap in the
-watcher log, with tok/s taken from the last clean step before onset. A
-confirmation sweep under the new criterion found onset between 65K and
-74K used tokens (65,094 tokens clean at 29.29 tok/s; 74,099 tokens shows
-compression bursts up to 114,012 pages). Current figures are on
-[the comparison page](./comparison.md) and
-[the Gemma-12B report](./reports/gemma-4-12b-it.md).
 
 ---
 

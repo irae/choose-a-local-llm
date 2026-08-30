@@ -143,7 +143,7 @@ model ceiling at this quant, not a harness artifact. This score beats
 the MLX 2-bit config (0.915/0.884) by a small margin — the calibrated
 q4 KV bias does not cost quality versus 2-bit MLX; if anything it holds
 up slightly better. Run resumed cleanly from a 72/164 partial left by
-run 3 (`night3/results/bonsai-prism/`); `night2/mem-watch.sh` ran the
+run 3 (`benchmarks/bench3/results/bonsai-prism/`); `benchmarks/mem-watch.sh` ran the
 whole time, no crash signatures, no unusual compression events.
 
 **Two serving profiles** (quality of q4+bias now scored):

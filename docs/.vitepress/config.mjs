@@ -23,7 +23,21 @@ export default defineConfig({
     ],
     sidebar: [
       { text: 'Home', link: '/' },
-      { text: 'Methodology', link: '/methodology' },
+      {
+        text: 'Methodology',
+        link: '/methodology',
+        collapsed: true,
+        items: [
+          { text: 'Bench run checklist', link: '/methodology/checklist' },
+          { text: 'Common rules', link: '/methodology/common-rules' },
+          { text: 'Context creep', link: '/methodology/context-creep' },
+          { text: 'Memory ceiling', link: '/methodology/memory-ceiling' },
+          { text: 'EvalPlus', link: '/methodology/evalplus' },
+          { text: 'Mendel', link: '/methodology/mendel' },
+          { text: 'Polyglot', link: '/methodology/polyglot' },
+          { text: 'Server lore', link: '/methodology/server-lore' },
+        ],
+      },
       {
         text: 'M1 Max 32 GB',
         collapsed: false,

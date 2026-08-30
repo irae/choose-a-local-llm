@@ -21,9 +21,9 @@ Working on this repo? Start at [AGENTS.md](./AGENTS.md).
 
 - `docs/index.md` — project intro, goals, per-setup summaries.
 - `docs/methodology.md` — the flow: measurement rules, runtime policy,
-  model-selection reasoning, the quality gate, night-run rules. The flow is
+  model-selection reasoning, the quality gate, bench-run rules. The flow is
   the law; read it before running anything.
 - `docs/setups/<setup>/` — one directory per measured machine: setup
   overview, comparison, per-model reports, raw benchmark data.
-- `night<N>/` — unattended-run kits: runbook (`NIGHT-AGENT.md`), state,
+- `benchmarks/bench<N>/` — unattended-run kits: runbook (`AGENT.md`), state,
   results, scripts. Not part of the site.

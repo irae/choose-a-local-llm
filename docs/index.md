@@ -70,7 +70,7 @@ see the setup's comparison page.
 
 *Italic* values are fast-sweep ceilings from before the slow-creep rule;
 a re-test comes soon and their memory figures are suspect. See
-[the measurement rules](./methodology#measurement-rules) for why the slow creep
+[the measurement rules](./methodology/context-creep) for why the slow creep
 is more realistic.
 
 "Memory (at max ctx)" is the wired GPU memory the config holds at max ctx.
