@@ -125,6 +125,41 @@ These rules bind every `reports/<model>.md` page:
   rows when thinking mode, effort, and quant match — regardless of
   context size, slot count, tok/s, or what gates the config.
 
+## The decode-speed page (`benchmarks/decode-speed.md`)
+
+This page is a written story, not a data dump. Keep its shape when
+updating:
+
+1. **The opening stays the hook**: the 1.7 tok/s origin observation,
+   why the test runs first, the two reading rules (the 8 tok/s floor;
+   used vs allocated), and the one-sentence gate warning (EvalPlus and
+   Mendel drop slow-but-low scorers anyway). Do not grow it past two
+   paragraphs plus the two bullets.
+2. **The summary table is generated** (`gen:decode-summary` markers):
+   one row per model/backend pair, from `models.json`. Never hand-edit
+   inside the markers; it updates itself when rows change.
+3. **The two curve matrices are hand-maintained and current-era only.**
+   One matrix per engine law (MLX-side: flat then OOM; llama-side:
+   decay, never OOM). A new config becomes a COLUMN in the matrix its
+   behavior matches; a third matrix needs a genuinely new law, not a
+   new model. Endpoints are marked inline in the cell (**last
+   stable**, *OOM*, *floor*, *window end*, *compression onset*).
+   Superseded readings leave the matrix — they live in `historical.md`
+   and the per-model archives. Dagger old-era series in the column
+   header (or cell), consistent with the `stale` arrays.
+4. **"What this test caught" stays selective**: only findings that
+   changed a rule or retired a number, 3-5 bullets, each one punchy
+   line-pair. It is not a changelog.
+5. **"Fast is a ticket, not a win" stays**, with a live example of a
+   fast config dropped on quality. Update the example if a better one
+   appears; never delete the section.
+6. **Full curves never move here.** They stay on the per-model archive
+   pages, linked only in the footer, as a completeness afterthought.
+
+New benchmark-type pages (evalplus, mendel, polyglot) should grow
+toward this same shape: story first, generated summary, selective
+findings, archives at the bottom.
+
 ## The "Models evaluated" table
 
 This table (in `docs/index.md` and each setup's `comparison.md`) has its
