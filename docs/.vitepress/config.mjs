@@ -45,7 +45,7 @@ export default defineConfig({
           { text: 'Setup overview', link: '/setups/m1-max-32gb/' },
           { text: 'Comparison', link: '/setups/m1-max-32gb/comparison' },
           {
-            text: 'Reports',
+            text: 'Models',
             collapsed: false,
             items: [
               { text: 'Qwen3.6-35B-A3B', link: '/setups/m1-max-32gb/reports/qwen3.6-35b-a3b' },
@@ -59,11 +59,10 @@ export default defineConfig({
             text: 'Benchmarks',
             collapsed: false,
             items: [
-              { text: 'Qwen3.6-35B-A3B', link: '/setups/m1-max-32gb/benchmarks/qwen3.6-35b-a3b' },
-              { text: 'Gemma-4-26B-A4B', link: '/setups/m1-max-32gb/benchmarks/gemma-4-26b-a4b' },
-              { text: 'Gemma-4-12B-it', link: '/setups/m1-max-32gb/benchmarks/gemma-4-12b-it' },
-              { text: 'Ternary Bonsai-27B', link: '/setups/m1-max-32gb/benchmarks/bonsai-27b' },
-              { text: 'Qwen3.8-27B', link: '/setups/m1-max-32gb/benchmarks/qwen3.8-27b' },
+              { text: 'Decode speed vs context depth', link: '/setups/m1-max-32gb/benchmarks/decode-speed' },
+              { text: 'EvalPlus', link: '/setups/m1-max-32gb/benchmarks/evalplus' },
+              { text: 'Mendel', link: '/setups/m1-max-32gb/benchmarks/mendel' },
+              { text: 'Aider polyglot', link: '/setups/m1-max-32gb/benchmarks/polyglot' },
             ],
           },
           { text: 'Historical', link: '/setups/m1-max-32gb/historical' },

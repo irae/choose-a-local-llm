@@ -285,7 +285,14 @@ docs/
     index.md                   the machine, its models, current state
     comparison.md              cross-model tables for that setup
     reports/<model>.md         one page per model
-    benchmarks/<model>.md      full raw data, current and historical
+    benchmarks/<type>.md       cross-model page per benchmark type
+                               (decode-speed, evalplus, mendel,
+                               polyglot) — these are in the sidebar,
+                               ordered as the tests usually run
+    benchmarks/<model>.md      full raw data per model, current and
+                               historical — linked from the model page
+                               and the type pages, NOT in the sidebar;
+                               keep updating them
     historical.md              superseded measurements, with a danger warning
 ```
 
