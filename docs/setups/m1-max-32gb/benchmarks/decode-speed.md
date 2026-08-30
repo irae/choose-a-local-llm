@@ -8,7 +8,9 @@ in the stack because everything else depends on its answer: the
 harness compaction threshold, the "gated by" verdict, the published max
 context, and which seat (main agent, sub-agent, background) a config
 can hold. The community measures the same axis as llama.cpp's
-`llama-bench` token-generation rate at depth.
+`llama-bench` token-generation rate at depth. And it is only the first
+gate: a config that flies here but scores low on
+[EvalPlus](./evalplus.md) or [Mendel](./mendel.md) gets dropped anyway.
 
 Two rules to read the tables by:
 
@@ -18,16 +20,21 @@ Two rules to read the tables by:
   allocated-context table this project once published is retired on
   [the historical page](../historical.md).
 
-## Latest per model
+## Latest per model and backend
 
 <!-- gen:decode-summary:start -->
 | model | best curve | tok/s (shallow → deep) | at | gated by |
 |---|---|--:|--:|---|
+| [Ternary-Bonsai-27B](./bonsai-27b.md) | MLX, bounded cache, thinking on | 24.5 → 17.3 | 58k | mem |
 | [Ternary-Bonsai-27B](./bonsai-27b.md) | GGUF⁴, q4, 2 slots, thinking on | 14.9† → 7.9 | 2x48k† | speed |
 | [Gemma-4-12B](./gemma-4-12b-it.md) | MLX³, thinking off | 37† → 29.29 | 158k* | mem |
+| [Gemma-4-12B](./gemma-4-12b-it.md) | GGUF, MTP q8, thinking off | 14.0† → 8† | 11k† | speed |
 | [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | MLX | 51 → 12.8 | 70k | mem |
+| [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | GGUF, MTP q8 | 23.5† → 8† | 24k† | speed |
+| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | MLX, thinking on | 53.3 → 42.0 | 37k | mem |
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | GGUF, MTP q8, thinking on | 44† → 8.1† | 90k† | speed |
 | [Qwen3.8-27B](./qwen3.8-27b.md) | MLX, compaction ~26k, effort medium | 17 → 15.3 | 28k | mem |
+| [Qwen3.8-27B](./qwen3.8-27b.md) | GGUF, MTP q8, effort medium | 14.1† → 8† | 19k† | speed |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:decode-summary:end -->
@@ -103,6 +110,18 @@ of that model's depth lives in its LM Studio engine.
   and a 7 tok/s crash at 98K on Gemma-12B both vanished on watched
   re-runs — transient system episodes. The memory watcher is mandatory
   for exactly this reason.
+
+## Fast is a ticket, not a win
+
+This test decides whether a config is *usable*, not whether it is
+*chosen*. The quality tiers come after: EvalPlus gates, Mendel tests
+real agentic work, polyglot ranks the survivors — and a config that
+loses there is dropped no matter how good its curve was. The live
+example is Gemma-26B: the fastest MLX depth curve on this page
+(51 tok/s shallow, 70K deep), parked anyway after scoring 0.713 on the
+gate and failing the agentic tier. Read this page as the entry
+requirement, and [the comparison](../comparison.md) for who actually
+wins seats.
 
 ## Method, in one breath
 

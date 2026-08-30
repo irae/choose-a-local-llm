@@ -155,11 +155,19 @@ function renderDecodeSummary(data) {
     if (stale) anyStale = true
     return `${r[field]}${stale ? '†' : ''}`
   }
-  const body = Object.entries(data.models || {}).map(([slug, model]) => {
-    const rows = modelRows(data, model).filter((r) => !hasPending(r))
-    const pick = sortRows(rows.length ? rows : modelRows(data, model))[0]
-    const detail = pick.config.split(',').slice(1).join(',').trim() || '—'
-    return `| [${majorName(pick.config)}](./${slug}.md) | ${detail} | ${cell(pick, 'tokShallow')} → ${cell(pick, 'tokDeep')} | ${cell(pick, 'maxCtx')} | ${cell(pick, 'gatedBy')} |`
+  const body = Object.entries(data.models || {}).flatMap(([slug, model]) => {
+    const backends = new Map()
+    for (const r of modelRows(data, model)) {
+      const backend = (r.config.split(',')[1] || '').trim().replace(/[^A-Za-z].*$/, '') || 'other'
+      if (!backends.has(backend)) backends.set(backend, [])
+      backends.get(backend).push(r)
+    }
+    return [...backends.values()].map((rows) => {
+      const complete = rows.filter((r) => !hasPending(r))
+      const pick = sortRows(complete.length ? complete : rows)[0]
+      const detail = pick.config.split(',').slice(1).join(',').trim() || '—'
+      return `| [${majorName(pick.config)}](./${slug}.md) | ${detail} | ${cell(pick, 'tokShallow')} → ${cell(pick, 'tokDeep')} | ${cell(pick, 'maxCtx')} | ${cell(pick, 'gatedBy')} |`
+    })
   })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']
