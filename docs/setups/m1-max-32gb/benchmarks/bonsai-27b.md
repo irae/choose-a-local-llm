@@ -178,3 +178,21 @@ alone — the other slot stays loaded but idle. Slot 0 swept:
 
 Matches the single-slot plain-q4 floor (~30K) closely — the idle second
 slot costs almost nothing.
+
+## Fork scored config — single-slot depth sweep (2026-08-30)
+
+Same scored command (rotation flag, q4 KV, `--kv-mean-center` bias), slow
+creep, `STEP_SLEEP=25`, watcher scoped to the run. No compression or swap
+in the watcher log:
+
+| depth | decode tok/s |
+|---|---|
+| 4K | 14.79 |
+| 8K | 13.22 |
+| 16K | 10.77 |
+| 24K | 9.08 |
+| **32.8K** | **7.85 — crosses the 8 tok/s floor** |
+
+RSS 9.6 GB at the floor. Verdict: **speed**. Matches the plain-q4 proxy
+(~30K) and the 2×48K single-slot sweep almost exactly — the bias and
+rotation flags do not move the floor.

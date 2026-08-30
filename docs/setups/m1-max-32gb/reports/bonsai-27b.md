@@ -23,8 +23,9 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 - **The only multi-agent setup that leaves the machine free**: 2×48K
   fork slots in 10.0 GB — but window is not usable depth: the fork's
   speed floor is ~30K used tokens.
-- Weak point: the scored fork config has no depth curve yet — its floor
-  is pending.
+- The scored fork config's speed floor is 33K used tokens, 9.6 GB flat —
+  the calibration bias and rotation flag do not move it versus the plain
+  q4 proxy.
 
 ## All configs — this model
 
@@ -32,7 +33,7 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
-| 2 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | pending | speed | 14.6† → pending | 9.8 GB† | 0.927/0.890 |
+| 2 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890 |
 | 3 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k† | speed | 14.9† → 7.9 | 10.0 GB† | 0.927/0.890 |
 
 † from an earlier serving config or method; re-run pending.
@@ -131,7 +132,7 @@ matches the PQ2_0 variant.
 | need | config | tok/s (used depth) | gated by |
 |---|---|--:|---|
 | **Depth + speed, one agent** | MLX #1 | 24.5 shallow; 17.27 at 58K | mem: OOM ~58-60K |
-| **Light desktop, one agent** | fork scored #2 | 14.6 shallow (plain-q4 proxy) | speed: floor pending; plain-q4 proxy ~30K |
+| **Light desktop, one agent** | fork scored #2 | 14.8 shallow, 7.9 at 33K | speed: floor 33K used |
 | **Two agents** | fork 2×48K #3 | 14.89 shallow, one slot decoding | speed: slot floor ~32K used |
 
 ## Quality — EvalPlus HumanEval+
@@ -163,15 +164,21 @@ matches the PQ2_0 variant.
 [the historical page](../historical.md); the watched re-test recovered
 to ~18 tok/s past it.)
 
-## Config 2 (fork scored) — depth: pending
+## Config 2 (fork scored) — depth: measured 2026-08-30
 
-The scored config (bias + rotation flag) has no depth curve yet. The
-closest measured proxy is plain q4 (no bias): floor ~30K used, 9.8 GB
-RSS, allocation size irrelevant below 262K. **Pending: a slow-creep
-depth sweep of the exact scored config** — the bias and rotation flag
-could move the floor and the gating. Until then, treat ~30K as the
-planning number. Full plain-q4 variant tables (q8, DSpark drafter,
-262K alloc) are in [the benchmarks](../benchmarks/bonsai-27b.md).
+| depth (used tokens) | decode tok/s |
+|---|--:|
+| 4K | 14.79 |
+| 8K | 13.22 |
+| 16K | 10.77 |
+| 24K | 9.08 |
+| **33K** | **7.85 — crosses the 8 tok/s floor** |
+
+9.6 GB RSS at the floor, no compression or swap in the watcher log.
+Matches the plain-q4 proxy (~30K) and the 2×48K single-slot sweep
+almost exactly — the bias and rotation flags do not move the floor.
+Full plain-q4 variant tables (q8, DSpark drafter, 262K alloc) are in
+[the benchmarks](../benchmarks/bonsai-27b.md).
 
 ## Config 3 (fork 2×48K) — single-slot depth (one slot decoding, other idle)
 

@@ -195,20 +195,16 @@
   },
   {
    "config": "Ternary-Bonsai-27B, GGUF⁴, q4, thinking on",
-   "maxCtx": "pending",
+   "maxCtx": "33k",
    "gatedBy": "speed",
-   "tokShallow": "14.6",
-   "tokDeep": "pending",
-   "memory": "9.8 GB",
+   "tokShallow": "14.8",
+   "tokDeep": "7.9",
+   "memory": "9.6 GB",
    "evalplus": "0.927/0.890",
    "id": "bonsai-fork-single",
    "hidden": false,
    "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
-   "note": "The scored config. Regenerate the bias file with the vendor's `make_kv_bias.sh` if `/tmp` was wiped — see [the benchmarks](../benchmarks/bonsai-27b.md).",
-   "stale": [
-    "tokShallow",
-    "memory"
-   ]
+   "note": "The scored config. Regenerate the bias file with the vendor's `make_kv_bias.sh` if `/tmp` was wiped — see [the benchmarks](../benchmarks/bonsai-27b.md)."
   },
   {
    "config": "Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on",
