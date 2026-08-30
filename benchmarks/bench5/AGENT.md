@@ -30,18 +30,21 @@ block, including Mendel and polyglot.
    4K through ~33K on `google/gemma-4-12b` to confirm or replace the
    37† shallow figure, and record memory at depth to clear the 8.8 GB†
    cell on both LM Studio rows.
-4. **Resume Gemma-12B thinking-on EvalPlus** from 54/164
+4. **Mendel, two runs to completion** (one at a time, per the Mendel
+   block below): first **Bonsai MLX single agent**, then
+   **Qwen3.8-27B effort medium**. Run each to completion (or to
+   Mendel's 180-minute limit / completeness criterion) and score it
+   before anything else continues. NOT Gemma-26B (parked).
+5. **Resume Gemma-12B thinking-on EvalPlus** from 54/164
    (`RESULTS_BASE=benchmarks/bench3/results`, budget 12000, identical
    command). Fills the pending score.
-5. **Qwen3.8-27B thinking low** — as before (download, verify the
+6. **Qwen3.8-27B thinking low** — as before (download, verify the
    low-effort control, 10 worst problems, then creep + full EvalPlus if
    promising).
-6. **bonsai-off** — thinking-off EvalPlus on the mlx-f16 config,
+7. **bonsai-off** — thinking-off EvalPlus on the mlx-f16 config,
    recalibrated budget.
-7. **Mendel** (one at a time, per the Mendel block below): Bonsai MLX
-   single agent first, then Qwen3.8-27B effort medium, then Gemma-12B
-   LM Studio. NOT Gemma-26B (parked).
-8. **Aider polyglot** — only after Mendel, only if the table is
+8. **Mendel, remaining model**: Gemma-12B LM Studio.
+9. **Aider polyglot** — only after Mendel, only if the table is
    complete. Gemma-26B is excluded.
 
 After every block: update the value in `models.json` AND remove the
