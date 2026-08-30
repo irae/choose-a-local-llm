@@ -7,7 +7,7 @@ Backends: llama-server, mlx-lm · [Qwen3.6-35B-A3B-MTP GGUF on Hugging Face](htt
   <div class="kpi"><b>53.3 tok/s</b><span>decode, shallow (MLX)</span></div>
   <div class="kpi"><b>0.939 / 0.921</b><span>EvalPlus, thinking on</span></div>
   <div class="kpi"><b>90K</b><span>GGUF depth to the 8 tok/s floor</span></div>
-  <div class="kpi"><b>34.9K</b><span>MLX memory ceiling</span></div>
+  <div class="kpi"><b>37K</b><span>MLX last stable depth (OOM ~41K)</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
@@ -28,7 +28,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.6-35B-A3B, MLX, thinking on | 34.9k | mem | 53.3 → 41.5 | 22.1 GB | 0.939/0.921 |
+| 1 | Qwen3.6-35B-A3B, MLX, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921 |
 | 2 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k† | speed | 44† → 8.1† | 22.8 GB† | 0.939/0.921 |
 
 † from an earlier serving config or method; re-run pending.

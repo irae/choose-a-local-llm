@@ -36,11 +36,11 @@
   },
   {
    "config": "Qwen3.6-35B-A3B, MLX, thinking on",
-   "maxCtx": "34.9k",
+   "maxCtx": "37k",
    "gatedBy": "mem",
    "tokShallow": "53.3",
-   "tokDeep": "41.5",
-   "memory": "22.1 GB",
+   "tokDeep": "42.0",
+   "memory": "18.7 GB",
    "evalplus": "0.939/0.921",
    "id": "qwen36-mlx-think",
    "hidden": false,
@@ -376,11 +376,11 @@
      "label": "GGUF depth to the 8 tok/s floor"
     },
     "mlxCeiling": {
-     "value": "34.9K",
-     "label": "MLX memory ceiling"
+     "value": "37K",
+     "label": "MLX last stable depth (OOM ~41K)"
     },
     "memory": {
-     "value": "22.1 GB",
+     "value": "18.7 GB",
      "label": "at max ctx (MLX)"
     },
     "empties": {

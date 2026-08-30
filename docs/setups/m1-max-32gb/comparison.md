@@ -32,7 +32,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 | 1 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
 | 2 | Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k† | speed | 14.1† → 8† | 18.9 GB† | 0.982/0.939 |
 | 3 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k† | speed | 44† → 8.1† | 22.8 GB† | 0.939/0.921 |
-| 4 | Qwen3.6-35B-A3B, MLX, thinking on | 34.9k | mem | 53.3 → 41.5 | 22.1 GB | 0.939/0.921 |
+| 4 | Qwen3.6-35B-A3B, MLX, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921 |
 | 5 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k† | speed | 14.9† → 7.9 | 10.0 GB† | 0.927/0.890 |
 | 6 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
 | 7 | Gemma-4-12B, MLX³, thinking off | 158k* | mem | 37† → 29.29 | 8.8 GB† | 0.909/0.872 |
@@ -92,12 +92,12 @@ speed-floored, not memory-gated, so the fast 2026-08-28 sweep still applies.
 | model / runtime | tok/s @ 4K | @ 16K | @ 32-33K | @ 49K | @ 74-90K | capped by | EvalPlus (base/plus) |
 |---|--:|--:|--:|--:|--:|---|--:|
 | **Gemma-26B MLX** | 51.1 | 43.5 | 35.6 | 28.8 | 12.8 (70K) | mem — stable to 70K, 12.8 tok/s there | 0.713/0.701 |
-| **Qwen3.6-35B MLX** | 53.3 | 49.6 | 42.2 | | | mem — stable to 34.9K, 41.5 tok/s there | pending |
+| **Qwen3.6-35B MLX** | 53.3 | 49.6 | 42.2 | | | mem — stable to 37K, 42.0 tok/s there | pending |
 | **Qwen3.6-35B llama (q8, MTP)** | 44.5 | 30.1 | 18.8 | 13.5 | 8.1 (90K) | speed — its 96K window ends at 8.1 tok/s | 0.939/0.921 |
 | Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 17.3 (58K) | mem — stable to 58K, 17.3 tok/s there | 0.915/0.884 |
 | Qwen3.8 MLX | 17.1* | 16.4 | | | 15.3 (28K) | mem — stable to 28K, 15.3 tok/s there | 0.982/0.939 |
 | Gemma-26B llama (q8, MTP) | 23.5 | 11.2 | | | | speed — under 8 tok/s at ~24K | 0.713/0.701 |
-| Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 9.2 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890 |
+| Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 7.9 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890 |
 | Qwen3.8 llama (q8, MTP) | 14.1 | 8.6 | | | | speed — under 8 tok/s at ~19K | pending |
 | Gemma-12B llama (q8, MTP) | 14.0 | | | | | speed — under 8 tok/s at ~11K | pending |
 | **Gemma-12B MLX (LM Studio engine, CLI)** | 36.7 | 36.9 | 34.8 | 30.25 (49K) | 29.29 (65K) | mem — compression/swap onset between 65K and 74K used tokens (last clean: 65,094 @ 29.29 tok/s); context length cannot be pinned, LM Studio auto-fits to 158,464 (loader estimate, trained max 262,144); served via lms CLI, 8.8 GB RSS at 74K | pending |

@@ -9,7 +9,7 @@ and house rules: [Mendel in the methodology](../../../methodology/mendel).
 | model | serving | score /100 | status |
 |---|---|--:|---|
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | llama-server | 42 | tested |
-| [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | llama-server | 41 | partial — stopped in a thinking loop; thinking-off re-run pending |
+| [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | llama-server | 41 | failed — stopped in a thinking loop; model parked, no re-run scheduled |
 | [Ternary-Bonsai-27B](./bonsai-27b.md) | MLX | pending | |
 | [Qwen3.8-27B](./qwen3.8-27b.md) | MLX, effort medium | pending | |
 | [Gemma-4-12B](./gemma-4-12b-it.md) | MLX (LM Studio) | pending | |

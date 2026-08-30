@@ -9,24 +9,44 @@ publish.
 
 ## Blocks, in order
 
-1. **Finish Gemma-12B thinking-on EvalPlus** (night 4 left it
-   mid-codegen; results under
-   `benchmarks/bench3/results/gemma12-lmstudio-thinking-on/`, budget 12000,
-   calibration said expect a high empty rate). Resume with the identical
-   command, plus `RESULTS_BASE=benchmarks/bench3/results` so the general
-   `benchmarks/run-humaneval.sh` writes into the existing results dir —
-   evalplus's codegen resume skips existing task_ids. Evaluate,
-   record the score with the honest empty count, update the tables,
-   commit.
-2. **Qwen3.8-27B thinking low** — as written in `benchmarks/bench4/AGENT.md`
-   block 4 (download, verify the low-effort control changes
-   `reasoning_content` length, 10 worst-scoring problems, then context
-   creep and full EvalPlus if promising).
-3. **bonsai-off** — as written in `benchmarks/bench4/AGENT.md` block 5.
-4. **Mendel benchmark for our models.** See "Mendel benchmark" below.
-   Runs one at a time, never in parallel — one GPU.
-5. **Aider polyglot** — only after Mendel, and only if the comparison
-   table is 100% complete.
+The focus of this run: clear the dagger (†) cells we expect to improve,
+and fill the pending cells. Do NOT re-run the GGUF MTP depth floors
+(Qwen3.6 90K window, Qwen3.8 ~19K, Gemma-12B ~11K) — those decays are
+compute-bound and a re-run is not expected to move them. Gemma-4-26B is
+PARKED (owner's decision, 2026-08-30): no benchmarks for it, in any
+block, including Mendel and polyglot.
+
+1. **Bonsai fork, single agent, the scored config — TOP PRIORITY.**
+   Slow-creep depth sweep of the exact scored command (the
+   `bonsai-fork-single` row's `command` in
+   `docs/setups/m1-max-32gb/models.json`: rotation flag + q4 KV +
+   `--kv-mean-center` bias). This fills the row's pending maxCtx and
+   tokDeep and clears its stale shallow/memory daggers. Watcher scoped,
+   ~25 s pauses, run to the floor.
+2. **Bonsai fork 2×48K, serial slow creep** with the same flags (one
+   slot decoding, the other loaded and idle). Clears that row's
+   daggers; check whether the bias flags move the ~32K slot floor.
+3. **Gemma-12B LM Studio shallow probe.** One short watched sweep from
+   4K through ~33K on `google/gemma-4-12b` to confirm or replace the
+   37† shallow figure, and record memory at depth to clear the 8.8 GB†
+   cell on both LM Studio rows.
+4. **Resume Gemma-12B thinking-on EvalPlus** from 54/164
+   (`RESULTS_BASE=benchmarks/bench3/results`, budget 12000, identical
+   command). Fills the pending score.
+5. **Qwen3.8-27B thinking low** — as before (download, verify the
+   low-effort control, 10 worst problems, then creep + full EvalPlus if
+   promising).
+6. **bonsai-off** — thinking-off EvalPlus on the mlx-f16 config,
+   recalibrated budget.
+7. **Mendel** (one at a time, per the Mendel block below): Bonsai MLX
+   single agent first, then Qwen3.8-27B effort medium, then Gemma-12B
+   LM Studio. NOT Gemma-26B (parked).
+8. **Aider polyglot** — only after Mendel, only if the table is
+   complete. Gemma-26B is excluded.
+
+After every block: update the value in `models.json` AND remove the
+field from that row's `stale` array, then `npm run docs:tables` — the
+dagger clears on every page at once. Commit.
 
 ## Mendel benchmark (before polyglot, owner's order)
 

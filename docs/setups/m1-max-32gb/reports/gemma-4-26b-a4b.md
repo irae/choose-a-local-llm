@@ -11,7 +11,7 @@ Backends: llama-server, mlx-lm · [GGUF on Hugging Face](https://huggingface.co/
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired limit 24000); EvalPlus scored 2026-08-29.
+Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired limit 24000); EvalPlus scored 2026-08-29. **Parked 2026-08-30 — no further benchmarks scheduled.**
 
 ## Highlights
 
@@ -72,6 +72,13 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+**Parked (2026-08-30).** The quality gate ended this model's campaign:
+EvalPlus 0.713/0.701 with a 28% empty rate, and the agentic benchmark
+run had to be stopped in a thinking loop. That is not a good use of
+this hardware while stronger models fit the same seat. It does not go
+to polyglot. It can return later as a grunt-work config — fast tokens,
+low reasoning — if a task appears that fits that shape.
 
 **q8_0 KV is now mandatory, and it costs JavaScript speed.** Under the
 current 24000 wired limit, f16 KV no longer fits the full window at all. q8
