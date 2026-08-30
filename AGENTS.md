@@ -58,6 +58,10 @@ Site and process docs:
 
 Benchmark work:
 
+- `benchmarks/PLANNING.md` — before planning a run or writing a
+  `bench<N>/AGENT.md`. The coordinator/runner role split and the
+  HANDOFF writing rules live here. Coordinators read it; runners never
+  do.
 - `benchmarks/INDEX.md` — start here to learn what each run found;
   links every run's state and results.
 - `benchmarks/bench<N>/AGENT.md` — the runbook to execute for run N.
@@ -123,6 +127,8 @@ Benchmark work:
   site one.
 - **When you add or move a file agents need, update the index above in
   the same commit** — a line nobody can find does not exist.
-- `HANDOFF.md` is the owner's working context and is not committed.
+- `HANDOFF.md` is the owner's working context: gitignored, coordinator
+  agents only, never the benchmark runner. Writing rules in
+  `benchmarks/PLANNING.md`; every repo user starts with an empty one.
 
 Nothing outside `docs/` reaches the published site.

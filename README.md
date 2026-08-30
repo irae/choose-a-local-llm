@@ -27,3 +27,19 @@ Working on this repo? Start at [AGENTS.md](./AGENTS.md).
   overview, comparison, per-model reports, raw benchmark data.
 - `benchmarks/bench<N>/` — unattended-run kits: runbook (`AGENT.md`), state,
   results, scripts. Not part of the site.
+
+## How to use this repo to run your benchmarks
+
+The process stands on its own; only the measurements are ours.
+
+1. Read `AGENTS.md` (the index and the standing rules), then
+   `docs/methodology.md` and its per-task pages — the flow is the law.
+2. Plan a run per [benchmarks/PLANNING.md](./benchmarks/PLANNING.md):
+   a coordinator agent writes `benchmarks/bench<N>/AGENT.md`, a smaller
+   runner agent executes it.
+3. Keep your own `HANDOFF.md` at the repo root for coordinator state.
+   It is gitignored; start yours empty. The writing rules are in
+   `benchmarks/PLANNING.md`.
+4. Record results the way `EDITOR.md` and the methodology's
+   record-everywhere rule demand, and add each run's findings to
+   `benchmarks/INDEX.md`.
