@@ -99,6 +99,30 @@ Benchmark work:
   `benchmarks/`. Site prose calls them **benchmark runs**, numbered —
   never "night runs". When a run closes, add its findings to
   `benchmarks/INDEX.md`.
+- **Every run kit has the same shape**: `AGENT.md` (the runbook),
+  `state.md` (the log, deviations noted as they happen), `results.md`
+  (the summary table), `results/` (raw output). Do not invent other
+  names, and do not put anything in a `bench<N>/` that a later run will
+  need — that goes in `benchmarks/` (root).
+- **Improve shared tools in place; never copy them into a run folder.**
+  A script that two runs need lives in `benchmarks/` (root). Copying it
+  into a `bench<N>/` to tweak it forks it (this happened three times
+  with `run-humaneval.sh` before the reorganization). Old copies inside
+  `bench1/`-`bench2/` are archive, not tools — do not run them.
+- **The methodology stays split by task.** `docs/methodology.md` is the
+  overview only; a new rule, quirk, or lore item goes into the matching
+  `docs/methodology/` page, not into the overview and not into a run
+  file. The checklist stays a checklist: steps only, the "why" links
+  out. A new test kind gets its own page, added in the same pass to the
+  overview's table, the sidebar (`docs/.vitepress/config.mjs`), and the
+  index above.
+- **Two different `benchmarks/` exist — do not mix them.**
+  `benchmarks/` at the repo root holds run kits and tools (never
+  published). `docs/setups/<setup>/benchmarks/` holds the site's
+  raw-data pages (published). "The benchmarks page" always means the
+  site one.
+- **When you add or move a file agents need, update the index above in
+  the same commit** — a line nobody can find does not exist.
 - `HANDOFF.md` is the owner's working context and is not committed.
 
 Nothing outside `docs/` reaches the published site.
