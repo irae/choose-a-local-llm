@@ -16,6 +16,44 @@
   white-space: nowrap;
 }
 
+/* Scroll hint: an arrow pinned to the visible right edge at scroll 0.
+   It is positioned against the unscrolled padding box, so the first
+   swipe carries it away with the content — no JavaScript. */
+@media (max-width: 767px) {
+  .vp-doc table {
+    position: relative;
+  }
+
+  .vp-doc table::after {
+    content: '⇢';
+    position: absolute;
+    top: 0.1em;
+    right: 0.3em;
+    font-size: 1.25em;
+    color: var(--vp-c-brand-1);
+    pointer-events: none;
+  }
+
+  /* Idle pulse, a call to action: people who do not know the table can
+     scroll read the arrow as "swipe me". Infinite 1 s cycle — the full
+     second fades the arrow from solid to invisible, then it restarts
+     solid with no animation. On scroll the arrow rides away with the
+     content (it is anchored to the unscrolled padding box), so no
+     scroll detection is needed. */
+  .vp-doc table::after {
+    animation: table-hint-pulse 1s linear infinite;
+  }
+}
+
+@keyframes table-hint-pulse {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 .VPDoc.has-aside .content-container {
   max-width: 1280px !important;
 }
