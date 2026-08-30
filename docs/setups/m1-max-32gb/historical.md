@@ -30,6 +30,20 @@ For numbers you can act on, go to [the comparison page](./comparison.md).
 Full raw archives, with their eras labeled, live in the benchmarks pages.
 :::
 
+## Bonsai MLX depth rows 44-48K, transient dip (superseded 2026-08-30)
+
+Three rows from an early depth pass read far under the curve. The
+watched slow-creep re-test recovered to ~18 tok/s at greater depths
+(50-58K), so the dip was a transient system episode (memory pressure or
+background load), not a property of the config. The current
+[Bonsai report](./reports/bonsai-27b.md) shows the clean curve.
+
+| depth | decode tok/s |
+|---|--:|
+| 44K | 12.10 |
+| 46K | 11.89 |
+| 48K | 11.33 |
+
 ## Gemma-4-12B LM Studio ceiling, old criterion (superseded 2026-08-30)
 
 Old rows read "170K, 29.7 tok/s" — the deepest point LM Studio's auto-fit
