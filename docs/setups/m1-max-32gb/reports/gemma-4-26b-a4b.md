@@ -3,19 +3,25 @@
 llama-server (build 10621) · unsloth UD-Q4_K_XL + MTP draft · benchmarked
 2026-08-25 · `iogpu.wired_limit_mb=24000`
 
+<!-- gen:model-kpis:start -->
+<div class="kpis">
+  <div class="kpi"><b>51 tok/s</b><span>decode, shallow (MLX)</span></div>
+  <div class="kpi"><b>70K</b><span>last stable depth, 12.8 tok/s (MLX)</span></div>
+  <div class="kpi"><b>0.713 / 0.701</b><span>EvalPlus, thinking on</span></div>
+  <div class="kpi"><b>46/164</b><span>empty: thinking non-convergence</span></div>
+</div>
+<!-- gen:model-kpis:end -->
+
 ## Highlights
 
-- **The full 256K trained window fits on one slot**, in 19.3 GB.
 - **The fastest depth curve measured on this machine**, on MLX: 51 tok/s at
   4K, still 12.8 at 70K (ceiling), in 20.0 GB.
-- **Fastest Python decode of the llama configs**: 62 tok/s.
-- **Two agents at 184K each** on one weight copy.
-- **Thinking is nearly free**: it costs only ~3 tok/s.
+- **The full 256K trained window fits on one slot** (19.3 GB), and two
+  agents get 184K each on one weight copy — llama only.
 - Weak point: on llama it crosses the 8 tok/s floor at ~24K. The depth
   belongs to its MLX build, not its llama build.
-- Weak point: EvalPlus 0.713/0.701, 46/164 (~28%) empty. Its thinking mode
-  often never converges — the worst convergence rate of any scored model
-  here.
+- Weak point: EvalPlus 0.713/0.701 with 46/164 (~28%) empty — its thinking
+  often never converges, the worst convergence rate of any scored model.
 
 ## Best option
 
@@ -45,6 +51,15 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
+
+## All configs — this model
+
+<!-- gen:model-table:start -->
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
+|---|--:|:--:|--:|--:|--:|
+| Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
+| Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701 |
+<!-- gen:model-table:end -->
 
 ## Which to pick for a coding task
 

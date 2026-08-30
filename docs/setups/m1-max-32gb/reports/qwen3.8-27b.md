@@ -2,17 +2,24 @@
 
 llama-server (Metal, build 10621) + mlx-lm 0.31.3 · benchmarked 2026-08-25
 
+<!-- gen:model-kpis:start -->
+<div class="kpis">
+  <div class="kpi"><b>0.982 / 0.939</b><span>EvalPlus, effort medium — best score</span></div>
+  <div class="kpi"><b>17 tok/s</b><span>decode, shallow (MLX)</span></div>
+  <div class="kpi"><b>28K</b><span>MLX memory ceiling</span></div>
+  <div class="kpi"><b>~26K</b><span>pi compaction setting</span></div>
+</div>
+<!-- gen:model-kpis:end -->
+
 ## Highlights
 
 - **The best quality score of any config measured here.** EvalPlus 0.982 /
-  0.939, with zero empty completions.
-- **The model to send hard problems to.** Nothing else scores close.
+  0.939, zero empty completions — the model to send hard problems to.
 - **MLX holds 14-17 tok/s across its whole usable window.** It never gets
   slow inside the context it can hold.
-- Weak point: it is the slowest model on this hardware. 19.7 tok/s is its
-  ceiling.
+- Weak point: the slowest model on this hardware (19.7 tok/s ceiling),
+  with poor prompt processing (~123 tok/s).
 - Weak point: a small window. MLX OOMs between 28K and 30K.
-- Weak point: prompt processing is poor, ~123 tok/s even on long prompts.
 
 ## Best option
 
@@ -40,6 +47,15 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
+
+## All configs — this model
+
+<!-- gen:model-table:start -->
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
+|---|--:|:--:|--:|--:|--:|
+| Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
+| Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | 18.9 GB | 0.982/0.939 |
+<!-- gen:model-table:end -->
 
 ## Which to pick for a coding task
 

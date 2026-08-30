@@ -3,6 +3,15 @@
 mlx-lm 0.31.3 + prism-llama fork · prism-ml ternary 2-bit · benchmarked
 2026-08-25, quality and fork updated 2026-08-30
 
+<!-- gen:model-kpis:start -->
+<div class="kpis">
+  <div class="kpi"><b>24.5 tok/s</b><span>decode, shallow (MLX)</span></div>
+  <div class="kpi"><b>58K</b><span>max healthy depth, 17.3 tok/s (MLX)</span></div>
+  <div class="kpi"><b>0.927 / 0.890</b><span>EvalPlus base/plus (fork, calibrated q4)</span></div>
+  <div class="kpi"><b>2×48K</b><span>fork slots in 10.0 GB</span></div>
+</div>
+<!-- gen:model-kpis:end -->
+
 Three configs matter for this model. Everything on this page is one of
 them:
 
@@ -13,20 +22,16 @@ them:
 
 ## Highlights
 
-- **27B-class quality from 8 GB of weights.** EvalPlus 0.927 / 0.890 on
-  the calibrated fork config; 0.915 / 0.884 on MLX 2-bit.
-- **The vendor's q4-KV calibration costs no quality.** The fork with
-  PrismML's bias scores slightly above plain MLX 2-bit.
-- **The flattest speed curve of any model here** (MLX): only −23% from
-  4K to 49K, and it never hits the speed floor — its limit is memory
-  (~58-60K at limit 24000).
-- **The only multi-agent setup that leaves the machine free.** 2×48K
-  slots in 10.0 GB flat.
-- **Window is not usable depth** on the fork: it allocates the full
-  262K window in 17.1 GB and never OOMs inside it, but decode crosses
-  the 8 tok/s floor at ~30K used tokens.
+- **27B-class quality from 8 GB of weights** — EvalPlus 0.927 / 0.890,
+  and the vendor's q4-KV calibration costs no quality (it beats plain
+  MLX 2-bit's 0.915 / 0.884).
+- **The flattest speed curve of any model here** (MLX): −23% from 4K to
+  49K, never hits the speed floor; the limit is memory (~58-60K).
+- **The only multi-agent setup that leaves the machine free**: 2×48K
+  fork slots in 10.0 GB — but window is not usable depth: the fork's
+  speed floor is ~30K used tokens.
 - Weak point: the scored fork config has no depth curve yet — its floor
-  is pending (see the fork table below).
+  is pending.
 
 ## Best option
 
@@ -61,20 +66,29 @@ was wiped — see [the benchmarks](../benchmarks/bonsai-27b.md).)
 **Config 3 — fork, two agents.** Same flags as config 2 with
 `--parallel 2 -c 98304` (2×48K slots), 10.0 GB RSS.
 
+## All configs — this model
+
+<!-- gen:model-table:start -->
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
+|---|--:|:--:|--:|--:|--:|
+| Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 2x48k | speed | 14.9 → 7.9 | 10.0 GB | 0.927/0.890 |
+| Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
+<!-- gen:model-table:end -->
+
 ## Which to pick
 
 | need | config | tok/s (used depth) | gated by |
 |---|---|--:|---|
-| **Depth + speed, one agent** | 1: MLX | 24.5 shallow; 17.27 at 58K | mem: OOM ~58-60K |
-| **Light desktop, one agent** | 2: fork scored | 14.6 shallow (plain-q4 proxy) | speed: floor pending; plain-q4 proxy ~30K |
-| **Two agents** | 3: fork 2×48K | 14.89 shallow, one slot decoding | speed: slot floor ~32K used |
+| **Depth + speed, one agent** | MLX #1 | 24.5 shallow; 17.27 at 58K | mem: OOM ~58-60K |
+| **Light desktop, one agent** | fork scored #2 | 14.6 shallow (plain-q4 proxy) | speed: floor pending; plain-q4 proxy ~30K |
+| **Two agents** | fork 2×48K #3 | 14.89 shallow, one slot decoding | speed: slot floor ~32K used |
 
 ## Quality — EvalPlus HumanEval+
 
 | config scored | pass@1 base | pass@1 plus | empty completions |
 |---|--:|--:|--:|
-| 2: fork, q4_0 KV + calibration bias, thinking on, budget 10240 | 0.927 | 0.890 | 4/164 (~2%) |
-| 1: MLX 2-bit, thinking on, budget 10240 | 0.915 | 0.884 | 5/164 (~3%) |
+| fork, q4_0 KV + calibration bias, thinking on, budget 10240 #2 | 0.927 | 0.890 | 4/164 (~2%) |
+| MLX 2-bit, thinking on, budget 10240 #1 | 0.915 | 0.884 | 5/164 (~3%) |
 
 ## Config 1 (MLX) — decode speed vs used context (slow creep, limit 24000)
 

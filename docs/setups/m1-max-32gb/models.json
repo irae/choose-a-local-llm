@@ -1,116 +1,313 @@
 {
-  "setup": "m1-max-32gb",
-  "wiredLimit": 24000,
-  "rows": [
-    {
-      "config": "Qwen3.8-27B, MLX, compaction ~26k, effort medium",
-      "maxCtx": "28k",
-      "gatedBy": "mem",
-      "tokShallow": "17",
-      "tokDeep": "15.3",
-      "memory": "22.0 GB",
-      "evalplus": "0.982/0.939",
-      "pendingRetest": false
+ "setup": "m1-max-32gb",
+ "wiredLimit": 24000,
+ "rows": [
+  {
+   "config": "Qwen3.8-27B, MLX, compaction ~26k, effort medium",
+   "maxCtx": "28k",
+   "gatedBy": "mem",
+   "tokShallow": "17",
+   "tokDeep": "15.3",
+   "memory": "22.0 GB",
+   "evalplus": "0.982/0.939",
+   "pendingRetest": false
+  },
+  {
+   "config": "Qwen3.8-27B, GGUF, MTP q8, effort medium",
+   "maxCtx": "19k",
+   "gatedBy": "speed",
+   "tokShallow": "14.1",
+   "tokDeep": "8",
+   "memory": "18.9 GB",
+   "evalplus": "0.982/0.939",
+   "pendingRetest": false
+  },
+  {
+   "config": "Qwen3.6-35B-A3B, MLX, thinking on",
+   "maxCtx": "34.9k",
+   "gatedBy": "mem",
+   "tokShallow": "53.3",
+   "tokDeep": "41.5",
+   "memory": "22.1 GB",
+   "evalplus": "0.939/0.921",
+   "pendingRetest": false
+  },
+  {
+   "config": "Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on",
+   "maxCtx": "90k",
+   "gatedBy": "speed",
+   "tokShallow": "44",
+   "tokDeep": "8.1",
+   "memory": "22.8 GB",
+   "evalplus": "0.939/0.921",
+   "pendingRetest": false
+  },
+  {
+   "config": "Gemma-4-26B-A4B, MLX",
+   "maxCtx": "70k",
+   "gatedBy": "mem",
+   "tokShallow": "51",
+   "tokDeep": "12.8",
+   "memory": "20.0 GB",
+   "evalplus": "0.713/0.701",
+   "pendingRetest": false
+  },
+  {
+   "config": "Gemma-4-26B-A4B, GGUF, MTP q8",
+   "maxCtx": "24k",
+   "gatedBy": "speed",
+   "tokShallow": "23.5",
+   "tokDeep": "8",
+   "memory": "15.4 GB",
+   "evalplus": "0.713/0.701",
+   "pendingRetest": false
+  },
+  {
+   "config": "Gemma-4-12B, MLX³",
+   "maxCtx": "158k*",
+   "gatedBy": "mem",
+   "tokShallow": "37",
+   "tokDeep": "29.29",
+   "memory": "8.8 GB",
+   "evalplus": "pending",
+   "pendingRetest": false
+  },
+  {
+   "config": "Gemma-4-12B, MLX³, thinking off",
+   "maxCtx": "158k*",
+   "gatedBy": "mem",
+   "tokShallow": "37",
+   "tokDeep": "29.29",
+   "memory": "8.8 GB",
+   "evalplus": "0.909/0.872",
+   "pendingRetest": false
+  },
+  {
+   "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
+   "maxCtx": "11k",
+   "gatedBy": "speed",
+   "tokShallow": "14.0",
+   "tokDeep": "8",
+   "memory": "8.2 GB",
+   "evalplus": "0.909/0.872",
+   "pendingRetest": false
+  },
+  {
+   "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking on",
+   "maxCtx": "58k",
+   "gatedBy": "mem",
+   "tokShallow": "24.5",
+   "tokDeep": "17.3",
+   "memory": "22.5 GB",
+   "evalplus": "0.915/0.884",
+   "pendingRetest": false
+  },
+  {
+   "config": "Ternary-Bonsai-27B, GGUF⁴, q4, thinking on",
+   "maxCtx": "2x48k",
+   "gatedBy": "speed",
+   "tokShallow": "14.9",
+   "tokDeep": "7.9",
+   "memory": "10.0 GB",
+   "evalplus": "0.927/0.890",
+   "pendingRetest": false
+  }
+ ],
+ "models": {
+  "bonsai-27b": {
+   "rowMatch": "Ternary-Bonsai-27B",
+   "kpis": [
+    "decodeShallow",
+    "maxDepth",
+    "evalplus",
+    "multiAgent"
+   ],
+   "stats": {
+    "decodeShallow": {
+     "value": "24.5 tok/s",
+     "label": "decode, shallow (MLX)"
     },
-    {
-      "config": "Qwen3.8-27B, GGUF, MTP q8, effort medium",
-      "maxCtx": "19k",
-      "gatedBy": "speed",
-      "tokShallow": "14.1",
-      "tokDeep": "8",
-      "memory": "18.9 GB",
-      "evalplus": "0.982/0.939",
-      "pendingRetest": false
+    "maxDepth": {
+     "value": "58K",
+     "label": "max healthy depth, 17.3 tok/s (MLX)"
     },
-    {
-      "config": "Qwen3.6-35B-A3B, MLX, thinking on",
-      "maxCtx": "34.9k",
-      "gatedBy": "mem",
-      "tokShallow": "53.3",
-      "tokDeep": "41.5",
-      "memory": "22.1 GB",
-      "evalplus": "0.939/0.921",
-      "pendingRetest": false
+    "evalplus": {
+     "value": "0.927 / 0.890",
+     "label": "EvalPlus base/plus (fork, calibrated q4)"
     },
-    {
-      "config": "Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on",
-      "maxCtx": "90k",
-      "gatedBy": "speed",
-      "tokShallow": "44",
-      "tokDeep": "8.1",
-      "memory": "22.8 GB",
-      "evalplus": "0.939/0.921",
-      "pendingRetest": false
+    "evalplusMlx": {
+     "value": "0.915 / 0.884",
+     "label": "EvalPlus base/plus (MLX 2-bit)"
     },
-    {
-      "config": "Gemma-4-26B-A4B, MLX",
-      "maxCtx": "70k",
-      "gatedBy": "mem",
-      "tokShallow": "51",
-      "tokDeep": "12.8",
-      "memory": "20.0 GB",
-      "evalplus": "0.713/0.701",
-      "pendingRetest": false
+    "multiAgent": {
+     "value": "2×48K",
+     "label": "fork slots in 10.0 GB"
     },
-    {
-      "config": "Gemma-4-26B-A4B, GGUF, MTP q8",
-      "maxCtx": "24k",
-      "gatedBy": "speed",
-      "tokShallow": "23.5",
-      "tokDeep": "8",
-      "memory": "15.4 GB",
-      "evalplus": "0.713/0.701",
-      "pendingRetest": false
+    "weights": {
+     "value": "8 GB",
+     "label": "ternary 2-bit weights"
     },
-    {
-      "config": "Gemma-4-12B, MLX³",
-      "maxCtx": "158k*",
-      "gatedBy": "mem",
-      "tokShallow": "37",
-      "tokDeep": "29.29",
-      "memory": "8.8 GB",
-      "evalplus": "pending",
-      "pendingRetest": false
+    "forkRss": {
+     "value": "9.8 GB",
+     "label": "fork RSS, flat"
     },
-    {
-      "config": "Gemma-4-12B, MLX³, thinking off",
-      "maxCtx": "158k*",
-      "gatedBy": "mem",
-      "tokShallow": "37",
-      "tokDeep": "29.29",
-      "memory": "8.8 GB",
-      "evalplus": "0.909/0.872",
-      "pendingRetest": false
+    "forkFloor": {
+     "value": "~30K",
+     "label": "fork speed floor (plain-q4 proxy)"
     },
-    {
-      "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
-      "maxCtx": "11k",
-      "gatedBy": "speed",
-      "tokShallow": "14.0",
-      "tokDeep": "8",
-      "memory": "8.2 GB",
-      "evalplus": "0.909/0.872",
-      "pendingRetest": false
-    },
-    {
-      "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking on",
-      "maxCtx": "58k",
-      "gatedBy": "mem",
-      "tokShallow": "24.5",
-      "tokDeep": "17.3",
-      "memory": "22.5 GB",
-      "evalplus": "0.915/0.884",
-      "pendingRetest": false
-    },
-    {
-      "config": "Ternary-Bonsai-27B, GGUF⁴, q4, thinking on",
-      "maxCtx": "2x48k",
-      "gatedBy": "speed",
-      "tokShallow": "14.9",
-      "tokDeep": "7.9",
-      "memory": "10.0 GB",
-      "evalplus": "0.927/0.890",
-      "pendingRetest": false
+    "empties": {
+     "value": "4/164",
+     "label": "empty completions at full budget"
     }
-  ]
+   }
+  },
+  "gemma-4-12b-it": {
+   "rowMatch": "Gemma-4-12B",
+   "kpis": [
+    "deepSpeed",
+    "onset",
+    "evalplusOff",
+    "slots"
+   ],
+   "stats": {
+    "deepSpeed": {
+     "value": "29.3 tok/s",
+     "label": "at 65K used (LM Studio)"
+    },
+    "onset": {
+     "value": "65-74K",
+     "label": "ceiling: compression onset (LM Studio)"
+    },
+    "window": {
+     "value": "158K*",
+     "label": "loader auto-fit window estimate"
+    },
+    "evalplusOff": {
+     "value": "0.909 / 0.872",
+     "label": "EvalPlus, thinking off"
+    },
+    "evalplusOn": {
+     "value": "pending",
+     "label": "EvalPlus, thinking on"
+    },
+    "slots": {
+     "value": "4×256K",
+     "label": "llama q8 slots, 16.9 GB"
+    },
+    "shallowLlama": {
+     "value": "35.6 tok/s",
+     "label": "llama MTP, shallow"
+    },
+    "offPeak": {
+     "value": "45.2 tok/s",
+     "label": "thinking-off peak (llama MTP)"
+    }
+   }
+  },
+  "gemma-4-26b-a4b": {
+   "rowMatch": "Gemma-4-26B-A4B",
+   "kpis": [
+    "shallow",
+    "depth",
+    "evalplus",
+    "empties"
+   ],
+   "stats": {
+    "shallow": {
+     "value": "51 tok/s",
+     "label": "decode, shallow (MLX)"
+    },
+    "depth": {
+     "value": "70K",
+     "label": "last stable depth, 12.8 tok/s (MLX)"
+    },
+    "evalplus": {
+     "value": "0.713 / 0.701",
+     "label": "EvalPlus, thinking on"
+    },
+    "empties": {
+     "value": "46/164",
+     "label": "empty: thinking non-convergence"
+    },
+    "memory": {
+     "value": "20.0 GB",
+     "label": "at max ctx (MLX)"
+    },
+    "ggufFloor": {
+     "value": "24K",
+     "label": "GGUF MTP speed floor"
+    }
+   }
+  },
+  "qwen3.6-35b-a3b": {
+   "rowMatch": "Qwen3.6-35B-A3B",
+   "kpis": [
+    "shallow",
+    "evalplus",
+    "depthGguf",
+    "mlxCeiling"
+   ],
+   "stats": {
+    "shallow": {
+     "value": "53.3 tok/s",
+     "label": "decode, shallow (MLX)"
+    },
+    "evalplus": {
+     "value": "0.939 / 0.921",
+     "label": "EvalPlus, thinking on"
+    },
+    "depthGguf": {
+     "value": "90K",
+     "label": "GGUF depth to the 8 tok/s floor"
+    },
+    "mlxCeiling": {
+     "value": "34.9K",
+     "label": "MLX memory ceiling"
+    },
+    "memory": {
+     "value": "22.1 GB",
+     "label": "at max ctx (MLX)"
+    },
+    "empties": {
+     "value": "5/164",
+     "label": "empty completions at full budget"
+    }
+   }
+  },
+  "qwen3.8-27b": {
+   "rowMatch": "Qwen3.8-27B",
+   "kpis": [
+    "evalplus",
+    "shallow",
+    "ceiling",
+    "compaction"
+   ],
+   "stats": {
+    "evalplus": {
+     "value": "0.982 / 0.939",
+     "label": "EvalPlus, effort medium — best score"
+    },
+    "shallow": {
+     "value": "17 tok/s",
+     "label": "decode, shallow (MLX)"
+    },
+    "ceiling": {
+     "value": "28K",
+     "label": "MLX memory ceiling"
+    },
+    "compaction": {
+     "value": "~26K",
+     "label": "pi compaction setting"
+    },
+    "ggufFloor": {
+     "value": "19K",
+     "label": "GGUF speed floor"
+    },
+    "empties": {
+     "value": "0/164",
+     "label": "empty completions at budget 8192"
+    }
+   }
+  }
+ }
 }

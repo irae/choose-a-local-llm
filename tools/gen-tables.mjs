@@ -5,6 +5,10 @@ const CHECK = process.argv.includes('--check')
 
 const START = '<!-- gen:models-evaluated:start -->'
 const END = '<!-- gen:models-evaluated:end -->'
+const KPI_START = '<!-- gen:model-kpis:start -->'
+const KPI_END = '<!-- gen:model-kpis:end -->'
+const MODEL_START = '<!-- gen:model-table:start -->'
+const MODEL_END = '<!-- gen:model-table:end -->'
 
 function parseCtx(s) {
   const nxk = s.match(/(\d+)x([\d.]+)k/i)
@@ -27,9 +31,11 @@ function sortRows(rows) {
   })
 }
 
-function renderTable(data) {
+function renderTable(data, { footnotes = true } = {}) {
   const header = [
-    '| Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |',
+    footnotes
+      ? '| Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |'
+      : '| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |',
     '|---|--:|:--:|--:|--:|--:|',
   ]
   const rows = sortRows(data.rows).map((r) => {
@@ -40,15 +46,34 @@ function renderTable(data) {
   return [...header, ...rows].join('\n')
 }
 
-function applyTable(content, table) {
-  const startIdx = content.indexOf(START)
-  const endIdx = content.indexOf(END)
+function applyBlock(content, startMark, endMark, block, target) {
+  const startIdx = content.indexOf(startMark)
+  const endIdx = content.indexOf(endMark)
   if (startIdx === -1 || endIdx === -1 || endIdx < startIdx) {
-    throw new Error(`missing or malformed ${START} / ${END} markers`)
+    throw new Error(`missing or malformed ${startMark} / ${endMark} markers in ${target}`)
   }
-  const before = content.slice(0, startIdx + START.length)
+  const before = content.slice(0, startIdx + startMark.length)
   const after = content.slice(endIdx)
-  return `${before}\n${table}\n${after}`
+  return `${before}\n${block}\n${after}`
+}
+
+function applyTable(content, table) {
+  return applyBlock(content, START, END, table, 'comparison target')
+}
+
+function renderKpis(model) {
+  const tiles = model.kpis.map((name) => {
+    const stat = model.stats[name]
+    if (!stat) throw new Error(`kpi "${name}" has no entry in stats`)
+    return `  <div class="kpi"><b>${stat.value}</b><span>${stat.label}</span></div>`
+  })
+  return ['<div class="kpis">', ...tiles, '</div>'].join('\n')
+}
+
+function renderModelTable(data, model) {
+  const rows = data.rows.filter((r) => r.config.startsWith(model.rowMatch))
+  const extra = model.extraRows || []
+  return renderTable({ rows: [...rows, ...extra] }, { footnotes: false })
 }
 
 const dataFiles = globSync('docs/setups/*/models.json')
@@ -64,6 +89,21 @@ for (const dataFile of dataFiles) {
   for (const target of targets) {
     const original = readFileSync(target, 'utf8')
     const updated = applyTable(original, table)
+    if (updated === original) continue
+    if (CHECK) {
+      console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)
+      drift = true
+    } else {
+      writeFileSync(target, updated)
+      console.log(`updated: ${target}`)
+    }
+  }
+
+  for (const [slug, model] of Object.entries(data.models || {})) {
+    const target = `${setupDir}/reports/${slug}.md`
+    const original = readFileSync(target, 'utf8')
+    let updated = applyBlock(original, KPI_START, KPI_END, renderKpis(model), target)
+    updated = applyBlock(updated, MODEL_START, MODEL_END, renderModelTable(data, model), target)
     if (updated === original) continue
     if (CHECK) {
       console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)

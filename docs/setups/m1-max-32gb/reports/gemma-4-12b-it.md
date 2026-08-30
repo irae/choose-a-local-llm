@@ -3,24 +3,29 @@
 llama-server (Metal, build 10621) + LM Studio MLX engine · unsloth Q4_K_XL ·
 benchmarked 2026-08-25
 
+<!-- gen:model-kpis:start -->
+<div class="kpis">
+  <div class="kpi"><b>29.3 tok/s</b><span>at 65K used (LM Studio)</span></div>
+  <div class="kpi"><b>65-74K</b><span>ceiling: compression onset (LM Studio)</span></div>
+  <div class="kpi"><b>0.909 / 0.872</b><span>EvalPlus, thinking off</span></div>
+  <div class="kpi"><b>4×256K</b><span>llama q8 slots, 16.9 GB</span></div>
+</div>
+<!-- gen:model-kpis:end -->
+
 ## Highlights
 
-- **The deepest and flattest usable curve of the whole project.** On the LM
-  Studio engine: 25.1 tok/s still at 147K used tokens.
+- **The deepest and flattest usable curve of the whole project** (LM
+  Studio): 25.1 tok/s still at 147K used tokens, in the smallest
+  footprint of any usable config.
 - **Two ceiling readings, two uses.** Memory compression starts between
-  65K and 74K — that is the benchmark-grade ceiling. Beyond it the engine
-  stays functional to ~150K and the loader stops at ~158-170K. For
-  harness work, ~150K is the safe practical limit. See "Two ceilings"
-  below.
-- **The smallest footprint of any usable config.** 8.8 GB RSS at 74K.
-- **Context is model-limited, not memory-limited.** The full 256K trained
-  window fits in ~14 GB and leaves ~18 GB free.
+  65K and 74K — the benchmark-grade ceiling. The engine stays functional
+  to ~150K, the safe practical limit for harness work. See "Two
+  ceilings" below.
 - **The best concurrency story.** Four 256K slots fit with q8_0 KV, in
-  16.9 GB.
-- Weak point: on llama it floors at ~11K. All of its depth comes from the LM
-  Studio engine, not llama.
-- Weak point: quality is unscored, and its thinking mode fails to converge
-  more often than the larger 26B.
+  16.9 GB (llama).
+- Weak point: on llama it floors at ~11K — the depth belongs to LM
+  Studio. Quality: 0.909/0.872 thinking off; thinking on is pending, and
+  its thinking fails to converge more often than the larger 26B.
 
 ## Best option
 
@@ -56,6 +61,16 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
+
+## All configs — this model
+
+<!-- gen:model-table:start -->
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
+|---|--:|:--:|--:|--:|--:|
+| Gemma-4-12B, MLX³, thinking off | 158k* | mem | 37 → 29.29 | 8.8 GB | 0.909/0.872 |
+| Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | 8.2 GB | 0.909/0.872 |
+| Gemma-4-12B, MLX³ | 158k* | mem | 37 → 29.29 | 8.8 GB | pending |
+<!-- gen:model-table:end -->
 
 ## Decode speed vs used context (depth sweeps, limit 25000)
 

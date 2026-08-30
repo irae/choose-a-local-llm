@@ -3,19 +3,24 @@
 llama-server (build 10621) · unsloth UD-Q4_K_XL + embedded MTP · benchmarked
 2026-08-25 · `iogpu.wired_limit_mb=24000`
 
+<!-- gen:model-kpis:start -->
+<div class="kpis">
+  <div class="kpi"><b>53.3 tok/s</b><span>decode, shallow (MLX)</span></div>
+  <div class="kpi"><b>0.939 / 0.921</b><span>EvalPlus, thinking on</span></div>
+  <div class="kpi"><b>90K</b><span>GGUF depth to the 8 tok/s floor</span></div>
+  <div class="kpi"><b>34.9K</b><span>MLX memory ceiling</span></div>
+</div>
+<!-- gen:model-kpis:end -->
+
 ## Highlights
 
 - **The speed king: 68 py / 74 js tok/s.** 1.5× Gemma-12B, 4× dense Qwen3.8.
 - **The deep-context king.** llama never crosses the 8 tok/s floor inside its
   whole 96K window — still 8.1 tok/s at 90K.
-- **The strongest base-model coding pedigree tested.** 73.4 SWE-bench
-  Verified.
 - **Second-best quality measured here: 0.939 / 0.921 EvalPlus.** Only
   Qwen3.8 scores higher, and Qwen3.8 is four times slower.
-- **Its MLX build is the second-fastest curve measured here.** 42 tok/s still
-  at 33K, but memory-capped at 37-41K.
-- Weak point: decode falls to ~17 tok/s once ~30K tokens are in use.
-- Weak point: no thinking-off score yet, so sub-agent use is unmeasured.
+- Weak point: decode falls to ~17 tok/s past ~30K used, and there is no
+  thinking-off score yet, so sub-agent use is unmeasured.
 
 ## Best option
 
@@ -30,6 +35,15 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
+
+## All configs — this model
+
+<!-- gen:model-table:start -->
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
+|---|--:|:--:|--:|--:|--:|
+| Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
+| Qwen3.6-35B-A3B, MLX, thinking on | 34.9k | mem | 53.3 → 41.5 | 22.1 GB | 0.939/0.921 |
+<!-- gen:model-table:end -->
 
 ## Which to pick for a coding task
 
