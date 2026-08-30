@@ -9,6 +9,8 @@ const KPI_START = '<!-- gen:model-kpis:start -->'
 const KPI_END = '<!-- gen:model-kpis:end -->'
 const MODEL_START = '<!-- gen:model-table:start -->'
 const MODEL_END = '<!-- gen:model-table:end -->'
+const CONFIGS_START = '<!-- gen:model-configs:start -->'
+const CONFIGS_END = '<!-- gen:model-configs:end -->'
 
 function parseCtx(s) {
   const nxk = s.match(/(\d+)x([\d.]+)k/i)
@@ -101,10 +103,31 @@ function renderKpis(model) {
   return ['<div class="kpis">', ...tiles, '</div>'].join('\n')
 }
 
+function modelRows(data, model) {
+  const rows = data.rows.filter((r) => r.config.startsWith(model.rowMatch) && !r.hidden)
+  const extra = (model.extraRows || []).filter((r) => !r.hidden)
+  return [...rows, ...extra]
+}
+
 function renderModelTable(data, model) {
-  const rows = data.rows.filter((r) => r.config.startsWith(model.rowMatch))
-  const extra = model.extraRows || []
-  return renderTable([...rows, ...extra], { footnotes: false, sort: false })
+  return renderTable(modelRows(data, model), { footnotes: false, sort: false })
+}
+
+function renderModelConfigs(data, model) {
+  const blocks = modelRows(data, model).map((r, i) => {
+    const note = r.note ? ` ${r.note}` : ''
+    return ['**#' + (i + 1) + ' — ' + r.config + '.**' + note, '', '```bash', r.command, '```'].join('\n')
+  })
+  return blocks.join('\n\n')
+}
+
+function checkRefs(content, count, target) {
+  for (const m of content.matchAll(/#(\d+)/g)) {
+    const n = parseInt(m[1], 10)
+    if (n > count) {
+      throw new Error(`${target}: reference #${n} exceeds the ${count} visible config rows`)
+    }
+  }
 }
 
 const dataFiles = globSync('docs/setups/*/models.json')
@@ -113,8 +136,9 @@ let drift = false
 for (const dataFile of dataFiles) {
   const setupDir = dataFile.replace(/\/models\.json$/, '')
   const data = JSON.parse(readFileSync(dataFile, 'utf8'))
-  const comparisonTable = renderTable(data.rows.filter((r) => !hasPending(r)))
-  const homeTable = renderHomeTable(data)
+  const visible = data.rows.filter((r) => !r.hidden)
+  const comparisonTable = renderTable(visible.filter((r) => !hasPending(r)))
+  const homeTable = renderHomeTable({ ...data, rows: visible })
 
   const targets = [
     [`${setupDir}/comparison.md`, comparisonTable],
@@ -139,6 +163,8 @@ for (const dataFile of dataFiles) {
     const original = readFileSync(target, 'utf8')
     let updated = applyBlock(original, KPI_START, KPI_END, renderKpis(model), target)
     updated = applyBlock(updated, MODEL_START, MODEL_END, renderModelTable(data, model), target)
+    updated = applyBlock(updated, CONFIGS_START, CONFIGS_END, renderModelConfigs(data, model), target)
+    checkRefs(updated, modelRows(data, model).length, target)
     if (updated === original) continue
     if (CHECK) {
       console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)

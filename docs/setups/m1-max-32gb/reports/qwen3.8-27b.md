@@ -34,21 +34,17 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 
 ## Configs
 
-**mlx_lm.server, 4-bit, with compaction set at ~26K.** Plain MLX beats
-llama-server's best MTP configuration, and it keeps its speed to the edge of
-its window. Set the harness compaction threshold at ~26K, below the
-verified-good 28K.
+Each table row above is one config; start it with its block below.
+
+<!-- gen:model-configs:start -->
+**#1 — Qwen3.8-27B, MLX, compaction ~26k, effort medium.** Set the harness compaction threshold at ~26K.
 
 ```bash
-mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit --port 8081
+mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
+  --reasoning-effort medium --port 8081
 ```
 
-Add `--reasoning-effort medium` when top quality is not needed: it is ~21%
-faster per token, and it is the setting the record EvalPlus score was
-measured on.
-
-The llama alternative — the ~19K depth floor makes big allocations
-pointless, so this is sized just above the floor (pi id `qwen3.8-27b`):
+**#2 — Qwen3.8-27B, GGUF, MTP q8, effort medium.** pi id `qwen3.8-27b`.
 
 ```bash
 llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
@@ -58,6 +54,7 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
+<!-- gen:model-configs:end -->
 
 ## Model details and findings
 

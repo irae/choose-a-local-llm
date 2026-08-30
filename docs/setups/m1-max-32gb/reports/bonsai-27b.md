@@ -38,46 +38,50 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 
 ## Configs
 
-Three configs matter for this model. Everything on this page is one of
-them:
+Each table row above is one config; start it with its block below.
 
-1. **MLX** — max usable depth, and f16 KV (slightly higher fidelity).
-2. **Fork, single agent, full optimizations** — the EvalPlus-scored
-   config (q4 KV + PrismML's calibration bias).
-3. **Fork, 2×48K slots** — the multi-agent config.
-
-**Config 1 — MLX, for one agent that needs depth.** Fastest at every
-depth it reaches: 24.5 tok/s shallow, 17.27 at 58K, OOM ~60K (limit
-24000). Keep `--prompt-cache-size 2`: the default cache pool behaves
-like a memory leak and once faked a 44K OOM.
+<!-- gen:model-configs:start -->
+**#1 — Ternary-Bonsai-27B, MLX, bounded cache, thinking on.** Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak.
 
 ```bash
 mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**Config 2 — fork, single agent, the scored config.** 9.8 GB flat, the
-Mac stays usable. This exact command carries the EvalPlus score; without
-the rotation flag and the `--kv-mean-center` bias you are serving an
-unscored variant:
+**#2 — Ternary-Bonsai-27B, GGUF⁴, q4, thinking on.** The scored config. Regenerate the bias file with the vendor's `make_kv_bias.sh` if `/tmp` was wiped — see [the benchmarks](../benchmarks/bonsai-27b.md).
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \
   --alias bonsai-prism \
-  -ngl 999 -fa on -c 65536 \
+  -ngl 999 -fa on -c 65536 --parallel 1 \
   --cache-type-k q4_0 --cache-type-v q4_0 \
   --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \
   --jinja --port 8081
 ```
 
-(Regenerate the bias file with the vendor's `make_kv_bias.sh` if `/tmp`
-was wiped — see [the benchmarks](../benchmarks/bonsai-27b.md).)
+**#3 — Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on.**
 
-**Config 3 — fork, two agents.** Same flags as config 2 with
-`--parallel 2 -c 98304` (2×48K slots), 10.0 GB RSS.
+```bash
+LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
+  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \
+  --alias bonsai-prism-2x \
+  -ngl 999 -fa on -c 98304 --parallel 2 \
+  --cache-type-k q4_0 --cache-type-v q4_0 \
+  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \
+  --jinja --port 8081
+```
+<!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+**Window is not usable depth** on the fork. It allocates huge windows in
+little memory (the full 262K trained window fits in 17.1 GB with q8 KV)
+and never OOMs inside them — but decode crosses the 8 tok/s floor at
+~30K used tokens. MLX is the opposite: fastest at every depth it
+reaches, and memory-limited at ~58K. For one agent that needs depth,
+MLX (#1) wins on both axes; the fork's niches are the light desktop
+(#2) and multi-agent slots (#3).
 
 **The quality number was wrong at first, and the correction was the biggest
 of any model.** Ternary Bonsai is PrismML's quality-oriented compression of

@@ -105,6 +105,18 @@ These rules bind every `reports/<model>.md` page:
   incomplete.
 - **Config numbers go at the end of table lines as `#1`, `#2`** — never
   as a `1:`/`2:` prefix.
+- **Every row in `models.json` carries a mnemonic `id`, a `hidden`
+  flag, and its `command`** (plus an optional one-line `note` — never a
+  param-change instruction; a different set of params is a different
+  row). `hidden: true` removes the row from every table AND its config
+  block on the next `docs:tables` run — use it instead of deleting.
+- **The Configs section is generated** between
+  `<!-- gen:model-configs:... -->` markers: one `#N — config` block per
+  visible row, with its exact startup command. Never hand-edit inside;
+  never write prose that tells the reader to change a parameter.
+- **`docs:tables` fails if prose references a `#N` beyond the visible
+  row count**, so a hidden or deleted row cannot leave dangling
+  references silently — but renumbering is still yours to re-check.
 - **Every stat box must be backed by the page's tables**: the number a
   box quotes appears in a table row on the same page, or that row marks
   it `pending`. A box never quotes a figure the tables do not carry.

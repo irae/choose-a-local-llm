@@ -41,17 +41,24 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling r
 
 ## Configs
 
-**LM Studio's MLX engine, driven from the `lms` CLI.** It is the only working
-MLX path for this model — mlx-lm lacks the `gemma4_unified` type — and it
-gives the flattest curve measured anywhere in this project.
+Each table row above is one config; start it with its block below.
+
+<!-- gen:model-configs:start -->
+**#1 — Gemma-4-12B, MLX³.** Thinking is always on with this engine; context is auto-fit (158,464 at wired limit 24000).
 
 ```bash
-lms server start --port 1234
-lms load lmstudio-community/gemma-4-12B-it-MLX-4bit --gpu max
+~/.cache/lm-studio/bin/lms server start --port 8081
+~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y
 ```
 
-Use llama-server when you need slots or the trained window rather than depth.
-Single agent — one 256K slot, q8_0 KV (pi id `gemma-4-12b`):
+**#2 — Gemma-4-12B, MLX³, thinking off.** Archived score: current engine builds always think, so this config is not reproducible today.
+
+```bash
+~/.cache/lm-studio/bin/lms server start --port 8081
+~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y
+```
+
+**#3 — Gemma-4-12B, GGUF, MTP q8, thinking off.** pi id `gemma-4-12b`.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -62,8 +69,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-Four concurrent agents — 4×256K slots, q8_0 KV, 16.9 GB RSS, 33.7 tok/s, MTP
-active (pi id `gemma-4-12b-4x`; the f16 alternative reaches 3×256K):
+**#4 — Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off.** pi id `gemma-4-12b-4x`.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -73,6 +79,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
+<!-- gen:model-configs:end -->
 
 ## Model details and findings
 

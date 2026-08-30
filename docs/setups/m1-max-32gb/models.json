@@ -10,7 +10,11 @@
    "tokDeep": "15.3",
    "memory": "22.0 GB",
    "evalplus": "0.982/0.939",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "qwen38-mlx-medium",
+   "hidden": false,
+   "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --reasoning-effort medium --port 8081",
+   "note": "Set the harness compaction threshold at ~26K."
   },
   {
    "config": "Qwen3.8-27B, GGUF, MTP q8, effort medium",
@@ -20,7 +24,11 @@
    "tokDeep": "8",
    "memory": "18.9 GB",
    "evalplus": "0.982/0.939",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "qwen38-gguf-medium",
+   "hidden": false,
+   "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 32768 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+   "note": "pi id `qwen3.8-27b`."
   },
   {
    "config": "Qwen3.6-35B-A3B, MLX, thinking on",
@@ -30,7 +38,10 @@
    "tokDeep": "41.5",
    "memory": "22.1 GB",
    "evalplus": "0.939/0.921",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "qwen36-mlx-think",
+   "hidden": false,
+   "command": "mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \\\n  --prompt-cache-size 2 --port 8081"
   },
   {
    "config": "Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on",
@@ -40,7 +51,11 @@
    "tokDeep": "8.1",
    "memory": "22.8 GB",
    "evalplus": "0.939/0.921",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "qwen36-gguf-think",
+   "hidden": false,
+   "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+   "note": "pi id `qwen3.6-35b-a3b`."
   },
   {
    "config": "Gemma-4-26B-A4B, MLX",
@@ -50,7 +65,10 @@
    "tokDeep": "12.8",
    "memory": "20.0 GB",
    "evalplus": "0.713/0.701",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "gemma26-mlx",
+   "hidden": false,
+   "command": "mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \\\n  --prompt-cache-size 2 --port 8081"
   },
   {
    "config": "Gemma-4-26B-A4B, GGUF, MTP q8",
@@ -60,7 +78,11 @@
    "tokDeep": "8",
    "memory": "15.4 GB",
    "evalplus": "0.713/0.701",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "gemma26-gguf",
+   "hidden": false,
+   "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+   "note": "pi id `gemma-4-26b-a4b`."
   },
   {
    "config": "Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots",
@@ -70,7 +92,11 @@
    "tokDeep": "pending",
    "memory": "pending",
    "evalplus": "0.713/0.701",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "gemma26-gguf-2x",
+   "hidden": false,
+   "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 376832 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+   "note": "pi id `gemma-4-26b-a4b-2x`."
   },
   {
    "config": "Gemma-4-12B, MLX³",
@@ -80,7 +106,11 @@
    "tokDeep": "29.29",
    "memory": "8.8 GB",
    "evalplus": "pending",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "gemma12-lmstudio-think",
+   "hidden": false,
+   "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y",
+   "note": "Thinking is always on with this engine; context is auto-fit (158,464 at wired limit 24000)."
   },
   {
    "config": "Gemma-4-12B, MLX³, thinking off",
@@ -90,7 +120,11 @@
    "tokDeep": "29.29",
    "memory": "8.8 GB",
    "evalplus": "0.909/0.872",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "gemma12-lmstudio-off",
+   "hidden": false,
+   "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y",
+   "note": "Archived score: current engine builds always think, so this config is not reproducible today."
   },
   {
    "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
@@ -100,7 +134,11 @@
    "tokDeep": "8",
    "memory": "8.2 GB",
    "evalplus": "0.909/0.872",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "gemma12-gguf-off",
+   "hidden": false,
+   "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+   "note": "pi id `gemma-4-12b`."
   },
   {
    "config": "Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off",
@@ -110,7 +148,11 @@
    "tokDeep": "pending",
    "memory": "16.9 GB",
    "evalplus": "0.909/0.872",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "gemma12-gguf-4x",
+   "hidden": false,
+   "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-4x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \\\n  -ngl 999 -fa on -c 1048576 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+   "note": "pi id `gemma-4-12b-4x`."
   },
   {
    "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking on",
@@ -120,7 +162,11 @@
    "tokDeep": "17.3",
    "memory": "22.5 GB",
    "evalplus": "0.915/0.884",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "bonsai-mlx",
+   "hidden": false,
+   "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
+   "note": "Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak."
   },
   {
    "config": "Ternary-Bonsai-27B, GGUF⁴, q4, thinking on",
@@ -130,7 +176,11 @@
    "tokDeep": "pending",
    "memory": "9.8 GB",
    "evalplus": "0.927/0.890",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "bonsai-fork-single",
+   "hidden": false,
+   "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
+   "note": "The scored config. Regenerate the bias file with the vendor's `make_kv_bias.sh` if `/tmp` was wiped — see [the benchmarks](../benchmarks/bonsai-27b.md)."
   },
   {
    "config": "Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on",
@@ -140,7 +190,10 @@
    "tokDeep": "7.9",
    "memory": "10.0 GB",
    "evalplus": "0.927/0.890",
-   "pendingRetest": false
+   "pendingRetest": false,
+   "id": "bonsai-fork-2x",
+   "hidden": false,
+   "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism-2x \\\n  -ngl 999 -fa on -c 98304 --parallel 2 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081"
   }
  ],
  "models": {

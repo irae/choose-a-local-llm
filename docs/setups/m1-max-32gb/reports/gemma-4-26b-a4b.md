@@ -36,12 +36,17 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 
 ## Configs
 
-**MLX for depth and speed** — the fast-and-deep contender for the main-agent
-seat, quality now scored (0.713/0.701, see below). **llama-server for
-window size** — the only way to get the full 256K, and the only way to get
-two slots.
+Each table row above is one config; start it with its block below.
 
-Single agent — one 256K slot, q8_0 KV (pi id `gemma-4-26b-a4b`):
+<!-- gen:model-configs:start -->
+**#1 — Gemma-4-26B-A4B, MLX.**
+
+```bash
+mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \
+  --prompt-cache-size 2 --port 8081
+```
+
+**#2 — Gemma-4-26B-A4B, GGUF, MTP q8.** pi id `gemma-4-26b-a4b`.
 
 ```bash
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
@@ -52,7 +57,7 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-Two concurrent agents — 2×184K slots, q8_0 KV (pi id `gemma-4-26b-a4b-2x`):
+**#3 — Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots.** pi id `gemma-4-26b-a4b-2x`.
 
 ```bash
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
@@ -62,6 +67,7 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
+<!-- gen:model-configs:end -->
 
 ## Model details and findings
 

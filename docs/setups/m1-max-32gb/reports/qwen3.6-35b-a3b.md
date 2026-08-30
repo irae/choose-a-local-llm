@@ -34,8 +34,17 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
 
 ## Configs
 
-**llama-server + MTP n=3, q8_0 KV, one 96K slot.** 62-68 tok/s shallow, and
-it stays usable all the way to 90K. pi id `qwen3.6-35b-a3b`.
+Each table row above is one config; start it with its block below.
+
+<!-- gen:model-configs:start -->
+**#1 — Qwen3.6-35B-A3B, MLX, thinking on.**
+
+```bash
+mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
+  --prompt-cache-size 2 --port 8081
+```
+
+**#2 — Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on.** pi id `qwen3.6-35b-a3b`.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
@@ -45,6 +54,7 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
+<!-- gen:model-configs:end -->
 
 ## Model details and findings
 
