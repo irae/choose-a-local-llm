@@ -1,7 +1,6 @@
 # Gemma-4-12B-it on M1 Max 32 GB
 
-llama-server (Metal, build 10621) + LM Studio MLX engine · unsloth Q4_K_XL ·
-benchmarked 2026-08-25
+Backends: llama-server, LM Studio MLX engine · [GGUF on Hugging Face](https://huggingface.co/unsloth/gemma-4-12b-it-GGUF) · [MLX 4-bit](https://huggingface.co/lmstudio-community/gemma-4-12B-it-MLX-4bit)
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
@@ -11,6 +10,8 @@ benchmarked 2026-08-25
   <div class="kpi"><b>4×256K</b><span>llama q8 slots, 16.9 GB</span></div>
 </div>
 <!-- gen:model-kpis:end -->
+
+Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling re-measured 2026-08-30 under the compression-onset criterion.
 
 ## Highlights
 
@@ -27,7 +28,17 @@ benchmarked 2026-08-25
   Studio. Quality: 0.909/0.872 thinking off; thinking on is pending, and
   its thinking fails to converge more often than the larger 26B.
 
-## Best option
+## All configs — this model
+
+<!-- gen:model-table:start -->
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
+|---|--:|:--:|--:|--:|--:|
+| Gemma-4-12B, MLX³, thinking off | 158k* | mem | 37 → 29.29 | 8.8 GB | 0.909/0.872 |
+| Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | 8.2 GB | 0.909/0.872 |
+| Gemma-4-12B, MLX³ | 158k* | mem | 37 → 29.29 | 8.8 GB | pending |
+<!-- gen:model-table:end -->
+
+## Configs
 
 **LM Studio's MLX engine, driven from the `lms` CLI.** It is the only working
 MLX path for this model — mlx-lm lacks the `gemma4_unified` type — and it
@@ -62,71 +73,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-## All configs — this model
-
-<!-- gen:model-table:start -->
-| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
-|---|--:|:--:|--:|--:|--:|
-| Gemma-4-12B, MLX³, thinking off | 158k* | mem | 37 → 29.29 | 8.8 GB | 0.909/0.872 |
-| Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | 8.2 GB | 0.909/0.872 |
-| Gemma-4-12B, MLX³ | 158k* | mem | 37 → 29.29 | 8.8 GB | pending |
-<!-- gen:model-table:end -->
-
-## Decode speed vs used context (depth sweeps, limit 25000)
-
-| depth | llama+MTP q8 | LM Studio MLX engine (lms CLI, port 1234) |
-|---|--:|--:|
-| 4K | 14.0 | 36.7 |
-| 8K | 9.0 | |
-| 16K | 6.8 — under the 8 tok/s floor | 36.9 |
-| 33K / 49K | | 34.8 / 33.1 |
-| 74K / 98K | | 30.8 / 28.6 |
-| 131K / 147K | | 26.1 / 25.1 |
-| **169.6K** | | **29.7 — deepest healthy point; 171K fails clean, LM Studio's loader caps it at 170K, not this model or this machine** |
-
-**Ceiling, revised criterion (2026-08-30):** context length cannot be
-pinned for this model — the engine ignores every `-c`/`--context-length`
-path; auto-fit always gives 158,464 at wired limit 24000. The ceiling is
-now the onset of memory compression/swap, not the loader's raw context
-cap. Confirmation sweep (`--parallel 4`, watcher at 20 s interval):
-
-| depth | decode tok/s | watcher state |
-|---|--:|---|
-| 41,095 | 31.05 | clean |
-| 49,112 | 30.25 | clean |
-| 57,077 | 29.25 | clean |
-| **65,094** | **29.29 — last clean step** | clean |
-| 74,099 | 27.95 | compression/swap onset inside this step (d_compress up to 114,012 pages, d_swapout 128) |
-
-**Ceiling = onset between 65K and 74K, tok/s 29.29 at 65,094 tokens.**
-The 158,464 context-window figure is the loader's auto-fit estimate,
-not a true measured ceiling — the trained max is 262,144 (footnote).
-
-llama RSS at floor depth (11K, q8_0 KV, 16K alloc): 8.2 GB.
-
-## Context (n-max 4, f16 KV)
-
-| -c | slots | result | RSS |
-|---|---|---|--:|
-| 131,072 | 1 | OK | 10.4 GB |
-| **262,144** | **1** | **OK — trained maximum, validated with 4K-token prompt** | **12.4 GB** |
-| **524,288** | **2×256K** | **OK — MTP active on both slots** | **16.9 GB** |
-
-## MTP sweep — thinking ON
-
-Chat endpoint, `enable_thinking: true`, 1024 tokens.
-
-| --spec-draft-n-max | py tok/s | py accept | js tok/s | js accept |
-|---|--:|--:|--:|--:|
-| **3** | **35.00** | **70%** | **35.55** | **72%** |
-| 4 | 33.34 | 64% | 33.91 | 65% |
-| 6 | 26.80 | 55% | 25.92 | 53% |
-
-Thinking OFF (sub-agent / fast mode) peaks at **45.2 py / 31.3 js tok/s**, at
-n-max 4 with f16 KV — against 22.3 without MTP. Full thinking-off sweep and
-KV tables in [the benchmarks](../benchmarks/gemma-4-12b-it.md).
-
-## History and reasoning
+## Model details and findings
 
 **This model re-entered play because of the runtime, not the weights.**
 mlx-lm cannot serve it: it lacks the `gemma4_unified` model type. LM Studio's
@@ -183,6 +130,60 @@ toggled by `enable_thinking` — on/off, default off, no graded effort levels.
 
 Quality is unscored; the EvalPlus gate for the LM Studio config is
 pending.
+
+## Decode speed vs used context (depth sweeps, limit 25000)
+
+| depth | llama+MTP q8 | LM Studio MLX engine (lms CLI, port 1234) |
+|---|--:|--:|
+| 4K | 14.0 | 36.7 |
+| 8K | 9.0 | |
+| 16K | 6.8 — under the 8 tok/s floor | 36.9 |
+| 33K / 49K | | 34.8 / 33.1 |
+| 74K / 98K | | 30.8 / 28.6 |
+| 131K / 147K | | 26.1 / 25.1 |
+| **169.6K** | | **29.7 — deepest healthy point; 171K fails clean, LM Studio's loader caps it at 170K, not this model or this machine** |
+
+**Ceiling, revised criterion (2026-08-30):** context length cannot be
+pinned for this model — the engine ignores every `-c`/`--context-length`
+path; auto-fit always gives 158,464 at wired limit 24000. The ceiling is
+now the onset of memory compression/swap, not the loader's raw context
+cap. Confirmation sweep (`--parallel 4`, watcher at 20 s interval):
+
+| depth | decode tok/s | watcher state |
+|---|--:|---|
+| 41,095 | 31.05 | clean |
+| 49,112 | 30.25 | clean |
+| 57,077 | 29.25 | clean |
+| **65,094** | **29.29 — last clean step** | clean |
+| 74,099 | 27.95 | compression/swap onset inside this step (d_compress up to 114,012 pages, d_swapout 128) |
+
+**Ceiling = onset between 65K and 74K, tok/s 29.29 at 65,094 tokens.**
+The 158,464 context-window figure is the loader's auto-fit estimate,
+not a true measured ceiling — the trained max is 262,144 (footnote).
+
+llama RSS at floor depth (11K, q8_0 KV, 16K alloc): 8.2 GB.
+
+## Context (n-max 4, f16 KV)
+
+| -c | slots | result | RSS |
+|---|---|---|--:|
+| 131,072 | 1 | OK | 10.4 GB |
+| **262,144** | **1** | **OK — trained maximum, validated with 4K-token prompt** | **12.4 GB** |
+| **524,288** | **2×256K** | **OK — MTP active on both slots** | **16.9 GB** |
+
+## MTP sweep — thinking ON
+
+Chat endpoint, `enable_thinking: true`, 1024 tokens.
+
+| --spec-draft-n-max | py tok/s | py accept | js tok/s | js accept |
+|---|--:|--:|--:|--:|
+| **3** | **35.00** | **70%** | **35.55** | **72%** |
+| 4 | 33.34 | 64% | 33.91 | 65% |
+| 6 | 26.80 | 55% | 25.92 | 53% |
+
+Thinking OFF (sub-agent / fast mode) peaks at **45.2 py / 31.3 js tok/s**, at
+n-max 4 with f16 KV — against 22.3 without MTP. Full thinking-off sweep and
+KV tables in [the benchmarks](../benchmarks/gemma-4-12b-it.md).
 
 ---
 

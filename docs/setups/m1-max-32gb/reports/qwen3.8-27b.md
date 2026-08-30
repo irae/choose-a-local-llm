@@ -1,6 +1,6 @@
 # Qwen3.8-27B on M1 Max 32 GB
 
-llama-server (Metal, build 10621) + mlx-lm 0.31.3 · benchmarked 2026-08-25
+Backends: llama-server, mlx-lm · [Qwen3.8-27B MLX 4-bit on Hugging Face](https://huggingface.co/mlx-community/Qwen3.8-27B-4bit)
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
@@ -10,6 +10,8 @@ llama-server (Metal, build 10621) + mlx-lm 0.31.3 · benchmarked 2026-08-25
   <div class="kpi"><b>~26K</b><span>pi compaction setting</span></div>
 </div>
 <!-- gen:model-kpis:end -->
+
+Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort medium re-scored 2026-08-28 with the calibrated budget.
 
 ## Highlights
 
@@ -21,7 +23,16 @@ llama-server (Metal, build 10621) + mlx-lm 0.31.3 · benchmarked 2026-08-25
   with poor prompt processing (~123 tok/s).
 - Weak point: a small window. MLX OOMs between 28K and 30K.
 
-## Best option
+## All configs — this model
+
+<!-- gen:model-table:start -->
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
+|---|--:|:--:|--:|--:|--:|
+| Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
+| Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | 18.9 GB | 0.982/0.939 |
+<!-- gen:model-table:end -->
+
+## Configs
 
 **mlx_lm.server, 4-bit, with compaction set at ~26K.** Plain MLX beats
 llama-server's best MTP configuration, and it keeps its speed to the edge of
@@ -48,14 +59,56 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
   --jinja --port 8081
 ```
 
-## All configs — this model
+## Model details and findings
 
-<!-- gen:model-table:start -->
-| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
-|---|--:|:--:|--:|--:|--:|
-| Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
-| Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | 18.9 GB | 0.982/0.939 |
-<!-- gen:model-table:end -->
+**MLX wins this model's equilibrium, and that was not obvious.** MLX beats
+GGUF+MTP on decode because its Metal kernels handle this hybrid DeltaNet
+architecture better than llama.cpp's. But MLX loses on every other axis: max
+context measured 48K against llama-server's 96K, prompt processing at ~105
+tok/s is no faster than llama.cpp's 123, it serves one request at a time with
+no sub-agent slots, and multi-instance is impossible because two 15.5 GB
+weight copies exceed the wired limit. It still wins, because llama crosses
+the 8 tok/s floor at ~19K while MLX never drops below 14 inside its window.
+Speed you can actually use beats a window you cannot decode through.
+
+**The quality score is fair, and it is the project's best.** The output
+budget was calibrated to 8192 — its longest observed reasoning was only
+~2.6K tokens — and the three empty completions left from an earlier,
+uncalibrated pass were regenerated. Zero empty completions remain. Full
+data: [the benchmarks](../benchmarks/qwen3.8-27b.md).
+
+**Medium reasoning effort is faster for a mechanical reason.** The MTP head
+predicts medium-effort text better than xhigh-effort text, so acceptance
+climbs from 58–61% to 73–81%. That is where the ~21% per-token gain comes
+from.
+
+**q8_0 KV is free here.** It halves KV memory, unlocks 160K context — 176K
+OOMs — and produced byte-identical outputs to f16 in a deterministic temp-0
+comparison over 512 tokens and both prompts. f16 remains the secondary
+option: ~1% faster, capped at 96K. KV grows only ~0.8 GB per 16K tokens,
+because the hybrid DeltaNet layers keep no KV; only the full-attention layers
+do.
+
+**The n-max 3 result is real.** It repeated exactly on a second run (16.77).
+A second JS prompt — debounce, run twice — matched deep clone within 0.3
+tok/s, so the JS penalty comes from the language, not the task. The settings
+choice is the same for both languages.
+
+**The old context maxima are withdrawn.** Every allocation figure for this
+model was measured at the retired 27000 wired limit and awaits a re-probe at
+24000. Those tables are on
+[the historical page](../historical.md); do not use them.
+The depth floor at ~19K makes large allocations pointless here anyway.
+[The benchmarks](../benchmarks/qwen3.8-27b.md) keep the labeled archive.
+MTP-on-MLX exists only as a CLI with no API, so it is disqualified for
+harness use; its raw numbers stay in the benchmarks too.
+
+**Open issue: prompt processing.** It is ~20 tok/s on short prompts and
+reaches only ~123–127 tok/s on 1.5K–4K prompts, which is low for this
+hardware class. It is independent of MTP — the no-MTP baseline shows the same
+numbers — so it looks like a Metal kernel limitation of the new hybrid
+DeltaNet architecture in the current build. Worth re-testing on future
+llama.cpp releases.
 
 ## Which to pick for a coding task
 
@@ -128,57 +181,6 @@ At medium effort the llama peak stays at n-max 3:
 |---|--:|--:|---|
 | q8_0 | 16.79 | 15.58 | near-lossless |
 | **f16** | **16.93** | **15.73** | **lossless** |
-
-## History and reasoning
-
-**MLX wins this model's equilibrium, and that was not obvious.** MLX beats
-GGUF+MTP on decode because its Metal kernels handle this hybrid DeltaNet
-architecture better than llama.cpp's. But MLX loses on every other axis: max
-context measured 48K against llama-server's 96K, prompt processing at ~105
-tok/s is no faster than llama.cpp's 123, it serves one request at a time with
-no sub-agent slots, and multi-instance is impossible because two 15.5 GB
-weight copies exceed the wired limit. It still wins, because llama crosses
-the 8 tok/s floor at ~19K while MLX never drops below 14 inside its window.
-Speed you can actually use beats a window you cannot decode through.
-
-**The quality score is fair, and it is the project's best.** The output
-budget was calibrated to 8192 — its longest observed reasoning was only
-~2.6K tokens — and the three empty completions left from an earlier,
-uncalibrated pass were regenerated. Zero empty completions remain. Full
-data: [the benchmarks](../benchmarks/qwen3.8-27b.md).
-
-**Medium reasoning effort is faster for a mechanical reason.** The MTP head
-predicts medium-effort text better than xhigh-effort text, so acceptance
-climbs from 58–61% to 73–81%. That is where the ~21% per-token gain comes
-from.
-
-**q8_0 KV is free here.** It halves KV memory, unlocks 160K context — 176K
-OOMs — and produced byte-identical outputs to f16 in a deterministic temp-0
-comparison over 512 tokens and both prompts. f16 remains the secondary
-option: ~1% faster, capped at 96K. KV grows only ~0.8 GB per 16K tokens,
-because the hybrid DeltaNet layers keep no KV; only the full-attention layers
-do.
-
-**The n-max 3 result is real.** It repeated exactly on a second run (16.77).
-A second JS prompt — debounce, run twice — matched deep clone within 0.3
-tok/s, so the JS penalty comes from the language, not the task. The settings
-choice is the same for both languages.
-
-**The old context maxima are withdrawn.** Every allocation figure for this
-model was measured at the retired 27000 wired limit and awaits a re-probe at
-24000. Those tables are on
-[the historical page](../historical.md); do not use them.
-The depth floor at ~19K makes large allocations pointless here anyway.
-[The benchmarks](../benchmarks/qwen3.8-27b.md) keep the labeled archive.
-MTP-on-MLX exists only as a CLI with no API, so it is disqualified for
-harness use; its raw numbers stay in the benchmarks too.
-
-**Open issue: prompt processing.** It is ~20 tok/s on short prompts and
-reaches only ~123–127 tok/s on 1.5K–4K prompts, which is low for this
-hardware class. It is independent of MTP — the no-MTP baseline shows the same
-numbers — so it looks like a Metal kernel limitation of the new hybrid
-DeltaNet architecture in the current build. Worth re-testing on future
-llama.cpp releases.
 
 ---
 

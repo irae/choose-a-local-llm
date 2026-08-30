@@ -24,22 +24,35 @@ We are not storytellers. We state conclusions.
   keep the full archive (see "Historical figures" below), but tell rows
   apart by date, not by run number.
 
-## Page shape
+## Page shape (model report pages)
 
-Every content page uses this order. Do not reorder it.
+Every report page uses this order. Do not reorder it.
 
-1. **Highlights** — bullet points. What the model or the page is good at.
-   Short lines. No paragraph blobs.
-2. **Best option** — the pick, and the command to run it.
-3. **Tables** — the measured data.
-4. **History and reasoning** — the prose. This is where the long
-   explanations go, at the bottom, for the reader who wants them.
+1. **Title** — "model on hardware".
+2. **Backends line** — the backends used and a Hugging Face model link.
+   No dates.
+3. **Stat boxes** — the generated `kpis` row (see the generated-blocks
+   section below).
+4. **Details line** — one or two lines of prose: benchmark dates,
+   builds, whatever the numbers need. Never longer; it is metadata, not
+   a summary.
+5. **Highlights** — 2 to 4 bullet points. Short lines. No paragraph
+   blobs.
+6. **All configs — this model** — the generated per-model table.
+7. **Configs** — one block per config with its startup command. Label
+   configs descriptively; do not crown a "best option" — the pick, when
+   one exists, lives in a "Which to pick" table, not in prose.
+8. **Model details and findings** — the prose: configs compared with
+   each other; brief historical pointers allowed.
+9. **Everything else** — the measured data tables, then the method
+   footer.
 
-The rule behind the order: a reader must get the answer from bullets and a
-table. Blobs of text are tedious to read. Nobody should have to read a
-paragraph to learn which model is fastest.
+The rule behind the order: a reader must get the answer from the boxes,
+the bullets, and a table. Blobs of text are tedious to read. Nobody
+should have to read a paragraph to learn which config is fastest.
 
-Do not open a page with a prose summary. Open it with bullets.
+Do not open a page with a prose summary. The only prose above the
+Highlights is the two-line details line.
 
 ## Words
 

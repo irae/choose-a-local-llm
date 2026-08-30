@@ -1,7 +1,6 @@
 # Gemma-4-26B-A4B (MoE) on M1 Max 32 GB
 
-llama-server (build 10621) · unsloth UD-Q4_K_XL + MTP draft · benchmarked
-2026-08-25 · `iogpu.wired_limit_mb=24000`
+Backends: llama-server, mlx-lm · [GGUF on Hugging Face](https://huggingface.co/unsloth/gemma-4-26b-a4b-it-GGUF) · [MLX 4-bit](https://huggingface.co/mlx-community/gemma-4-26b-a4b-it-4bit)
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
@@ -11,6 +10,8 @@ llama-server (build 10621) · unsloth UD-Q4_K_XL + MTP draft · benchmarked
   <div class="kpi"><b>46/164</b><span>empty: thinking non-convergence</span></div>
 </div>
 <!-- gen:model-kpis:end -->
+
+Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired limit 24000); EvalPlus scored 2026-08-29.
 
 ## Highlights
 
@@ -23,7 +24,16 @@ llama-server (build 10621) · unsloth UD-Q4_K_XL + MTP draft · benchmarked
 - Weak point: EvalPlus 0.713/0.701 with 46/164 (~28%) empty — its thinking
   often never converges, the worst convergence rate of any scored model.
 
-## Best option
+## All configs — this model
+
+<!-- gen:model-table:start -->
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
+|---|--:|:--:|--:|--:|--:|
+| Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
+| Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701 |
+<!-- gen:model-table:end -->
+
+## Configs
 
 **MLX for depth and speed** — the fast-and-deep contender for the main-agent
 seat, quality now scored (0.713/0.701, see below). **llama-server for
@@ -52,14 +62,38 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-## All configs — this model
+## Model details and findings
 
-<!-- gen:model-table:start -->
-| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
-|---|--:|:--:|--:|--:|--:|
-| Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
-| Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701 |
-<!-- gen:model-table:end -->
+**q8_0 KV is now mandatory, and it costs JavaScript speed.** Under the
+current 24000 wired limit, f16 KV no longer fits the full window at all. q8
+lowers js draft acceptance from 81% to 68%, so js decodes at ~53 tok/s while
+py keeps 62-68. The retired 27000 limit allowed more on both counts; those
+figures are on
+[the historical page](../historical.md).
+
+**llama is capped by speed; MLX is capped by memory.** The llama build floors
+at ~24K, which makes its 256K window mostly storage. The MLX build stays fast
+the whole way to ~68K, then swings between ~13 and ~24 tok/s at 62-70K before
+OOMing at ~72K (limit 24000, slow-creep sweep, 2026-08-29; 20.0 GB gfx-resident
+at the last stable depth). For actual deep work, MLX is the config that
+matters; the llama window is what you use when you need to *hold* a lot of
+context rather than decode quickly through it.
+
+**Thinking is binary here.** Gemma 4 has trained-in reasoning
+(`<|think|>`) toggled by `enable_thinking` in the chat template. It is
+on/off, default off, with no graded effort levels. The speed numbers on this
+page were measured with thinking off. Thinking costs only ~3 tok/s, so there
+is little reason to avoid it on quality grounds.
+
+**Quality is scored, and the convergence problem is real.** Calibration
+alone showed that at a 30K output cap, 2 of 10 sample problems never
+finished reasoning at all. The full 164-problem run confirmed it at scale:
+46/164 (~28%) empty completions, well above the calibration sample's rate,
+for a final EvalPlus of 0.713/0.701. This is model behavior, not a harness
+limit — every empty completion still had budget left in the 30000-token
+cap. Its smaller sibling, the 12B, does it more often — counterintuitively.
+
+A deep-fill decode check on the llama config is still pending.
 
 ## Which to pick for a coding task
 
@@ -121,39 +155,6 @@ Thinking ON (chat endpoint, `enable_thinking: true`, 1024 tokens):
 Thinking OFF (sub-agent / fast mode): peak 74.8 py / 71.6 js, also at n-max 2.
 Full thinking-off tables in
 [the benchmarks](../benchmarks/gemma-4-26b-a4b.md).
-
-## History and reasoning
-
-**q8_0 KV is now mandatory, and it costs JavaScript speed.** Under the
-current 24000 wired limit, f16 KV no longer fits the full window at all. q8
-lowers js draft acceptance from 81% to 68%, so js decodes at ~53 tok/s while
-py keeps 62-68. The retired 27000 limit allowed more on both counts; those
-figures are on
-[the historical page](../historical.md).
-
-**llama is capped by speed; MLX is capped by memory.** The llama build floors
-at ~24K, which makes its 256K window mostly storage. The MLX build stays fast
-the whole way to ~68K, then swings between ~13 and ~24 tok/s at 62-70K before
-OOMing at ~72K (limit 24000, slow-creep sweep, 2026-08-29; 20.0 GB gfx-resident
-at the last stable depth). For actual deep work, MLX is the config that
-matters; the llama window is what you use when you need to *hold* a lot of
-context rather than decode quickly through it.
-
-**Thinking is binary here.** Gemma 4 has trained-in reasoning
-(`<|think|>`) toggled by `enable_thinking` in the chat template. It is
-on/off, default off, with no graded effort levels. The speed numbers on this
-page were measured with thinking off. Thinking costs only ~3 tok/s, so there
-is little reason to avoid it on quality grounds.
-
-**Quality is scored, and the convergence problem is real.** Calibration
-alone showed that at a 30K output cap, 2 of 10 sample problems never
-finished reasoning at all. The full 164-problem run confirmed it at scale:
-46/164 (~28%) empty completions, well above the calibration sample's rate,
-for a final EvalPlus of 0.713/0.701. This is model behavior, not a harness
-limit — every empty completion still had budget left in the 30000-token
-cap. Its smaller sibling, the 12B, does it more often — counterintuitively.
-
-A deep-fill decode check on the llama config is still pending.
 
 ---
 
