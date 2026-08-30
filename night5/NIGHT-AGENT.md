@@ -58,10 +58,12 @@ one identical prompt, a 100-point rubric.
 - **Known methodology bug, not fixed in that repo yet: "Mendel Daemon"
   processes stay behind after a run finishes.** After each run ends, YOU
   (the agent running the benchmark, never the coder model being
-  benchmarked, and never mid-run) check for and kill stray Mendel
-  daemon processes (`ps aux | grep -i "mendel" | grep -vi grep`, then
-  kill the leftovers) before starting the next model. Do not commit a
-  fix for this in the Mendel repo.
+  benchmarked, and never mid-run) check for and kill stray
+  "Mendel Daemon" processes before starting the next model. The name is
+  exact — capital D, it sets `process.name`:
+  `pkill -f "Mendel Daemon"` (check first with
+  `pgrep -fl "Mendel Daemon"`). Do not commit a fix for this in the
+  Mendel repo.
 
 ## Report format for heartbeat checks
 
