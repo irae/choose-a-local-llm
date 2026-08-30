@@ -64,20 +64,20 @@
     },
     {
       "config": "Gemma-4-12B, MLX³",
-      "maxCtx": "170k",
-      "gatedBy": "engine",
+      "maxCtx": "158k*",
+      "gatedBy": "mem",
       "tokShallow": "37",
-      "tokDeep": "31",
+      "tokDeep": "29.29",
       "memory": "8.8 GB",
       "evalplus": "pending",
       "pendingRetest": false
     },
     {
       "config": "Gemma-4-12B, MLX³, thinking off",
-      "maxCtx": "170k",
-      "gatedBy": "engine",
+      "maxCtx": "158k*",
+      "gatedBy": "mem",
       "tokShallow": "37",
-      "tokDeep": "31",
+      "tokDeep": "29.29",
       "memory": "8.8 GB",
       "evalplus": "0.909/0.872",
       "pendingRetest": false
@@ -109,7 +109,7 @@
       "tokShallow": "14.9",
       "tokDeep": "7.9",
       "memory": "10.0 GB",
-      "evalplus": "pending",
+      "evalplus": "0.927/0.890",
       "pendingRetest": false
     }
   ]

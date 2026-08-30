@@ -66,6 +66,25 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
 | 131K / 147K | | 26.1 / 25.1 |
 | **169.6K** | | **29.7 — deepest healthy point; 171K fails clean, LM Studio's loader caps it at 170K, not this model or this machine** |
 
+**Ceiling, revised criterion (2026-08-30):** context length cannot be
+pinned for this model — every `-c`/`--context-length` path is ignored;
+auto-fit always gives 158,464 at wired limit 24000 (see
+`night4/lmstudio-forensics.md`). The ceiling is now the onset of memory
+compression/swap, not the loader's raw context cap. Confirmation sweep
+(`--parallel 4`, watcher at 20 s interval):
+
+| depth | decode tok/s | watcher state |
+|---|--:|---|
+| 41,095 | 31.05 | clean |
+| 49,112 | 30.25 | clean |
+| 57,077 | 29.25 | clean |
+| **65,094** | **29.29 — last clean step** | clean |
+| 74,099 | 27.95 | compression/swap onset inside this step (d_compress up to 114,012 pages, d_swapout 128) |
+
+**Ceiling = onset between 65K and 74K, tok/s 29.29 at 65,094 tokens.**
+The 158,464 context-window figure is the loader's auto-fit estimate,
+not a true measured ceiling — the trained max is 262,144 (footnote).
+
 llama RSS at floor depth (11K, q8_0 KV, 16K alloc): 8.2 GB.
 
 ## Context (n-max 4, f16 KV)

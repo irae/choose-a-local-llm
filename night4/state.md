@@ -68,3 +68,36 @@ Branch `run4` created before block 1.
   `docs/setups/m1-max-32gb/comparison.md` (both pending rows for the
   prism fork q4 config). Desired next state: block 2, gemma-12b LM
   Studio ceiling confirmation sweep.
+
+### Block 2: gemma-12b LM Studio ceiling confirmation (finished)
+
+- Stopped LM Studio's server, restarted it on port 8081, `lms load
+  google/gemma-4-12b --parallel 4 --gpu max -y` (confirmed via `lms ps`:
+  CONTEXT=158464, PARALLEL=4).
+- `tools/sweeps/mem-watch-fast.sh`, `MEMWATCH_INTERVAL=20`, scoped to
+  this sweep only (started right before, stopped right after).
+- `DEPTH_LIST="41000,49000,57000,65000,74000"
+  tools/sweeps/lmstudio_sweep.py` (comma-separated, not space-separated
+  — the script errors on spaces).
+- Result: 41,095→31.05, 49,112→30.25, 57,077→29.25, 65,094→29.29 (all
+  clean, no compression), 74,099→27.95 (watcher shows compression burst
+  onset inside this step, up to 114,012 pages, plus a swapout burst).
+  **Ceiling = onset between 65K and 74K used tokens. Last clean tok/s =
+  29.29 at 65,094 tokens.** Context-window figure stays 158,464, flagged
+  as the loader's auto-fit estimate (trained max 262,144 in a
+  footnote) — matches the forensics prediction ("onset inside the
+  74,108-token step").
+- Updated `docs/setups/m1-max-32gb/reports/gemma-4-12b-it.md` (new
+  ceiling table with watcher state per step),
+  `docs/setups/m1-max-32gb/models.json` (maxCtx 158k*, gatedBy mem,
+  tokDeep 29.29, regenerated `comparison.md` and `docs/index.md` via
+  `node tools/gen-tables.mjs`), the floor table in `comparison.md`
+  (hand-maintained, not generated), the highlights bullet, and
+  `docs/setups/m1-max-32gb/historical.md` (old 170K/29.7 reading
+  labeled superseded, with the reason).
+- Also filled the Bonsai prism-fork EvalPlus cell in `models.json`
+  (0.927/0.890, from block 1) so the regenerated tables carry it
+  consistently.
+- Left `google/gemma-4-12b` loaded (parallel 4) for block 3, which
+  reuses this server. Desired next state: block 3, Gemma-12B
+  thinking-on EvalPlus (calibrate budget first).

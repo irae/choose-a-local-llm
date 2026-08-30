@@ -6,9 +6,11 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 
 - **Best quality:** Qwen3.8-27B on MLX — 0.982 / 0.939 EvalPlus. Send hard
   problems here.
-- **Best depth:** Gemma-12B on the LM Studio engine — 29.7 tok/s at 169.6K used
-  tokens, in 8.8 GB. LM Studio's own MLX loader caps it at 170K (a known
-  LM Studio bug, not a memory or speed limit of the model).
+- **Best depth:** Gemma-12B on the LM Studio engine — 29.29 tok/s at 65,094
+  used tokens, in 8.8 GB, before memory compression/swap onset (between 65K
+  and 74K). Context length cannot be pinned on this model; LM Studio's
+  auto-fit always gives 158,464 at the current wired limit — a loader
+  estimate, not the model's trained max of 262,144.
 - **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, still 12.8 at
   70K (ceiling), in 20.0 GB.
 - **Best big window, and the best all-round config:** Qwen3.6-35B on llama —
@@ -31,13 +33,13 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 | Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | 18.9 GB | 0.982/0.939 |
 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
 | Qwen3.6-35B-A3B, MLX, thinking on | 34.9k | mem | 53.3 → 41.5 | 22.1 GB | 0.939/0.921 |
+| Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 2x48k | speed | 14.9 → 7.9 | 10.0 GB | 0.927/0.890 |
 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
-| Gemma-4-12B, MLX³, thinking off | 170k | engine | 37 → 31 | 8.8 GB | 0.909/0.872 |
+| Gemma-4-12B, MLX³, thinking off | 158k* | mem | 37 → 29.29 | 8.8 GB | 0.909/0.872 |
 | Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | 8.2 GB | 0.909/0.872 |
 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
 | Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701 |
-| Gemma-4-12B, MLX³ | 170k | engine | 37 → 31 | 8.8 GB | pending |
-| Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 2x48k | speed | 14.9 → 7.9 | 10.0 GB | 0.927/0.890 |
+| Gemma-4-12B, MLX³ | 158k* | mem | 37 → 29.29 | 8.8 GB | pending |
 <!-- gen:models-evaluated:end -->
 
 ¹ Whichever limit hits first: the max memory a config fits in, or the max
@@ -97,7 +99,7 @@ speed-floored, not memory-gated, so the fast 2026-08-28 sweep still applies.
 | Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 9.2 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890 |
 | Qwen3.8 llama (q8, MTP) | 14.1 | 8.6 | | | | speed — under 8 tok/s at ~19K | pending |
 | Gemma-12B llama (q8, MTP) | 14.0 | | | | | speed — under 8 tok/s at ~11K | pending |
-| **Gemma-12B MLX (LM Studio engine, CLI)** | 36.7 | 36.9 | 34.8 | 33.1 | 29.7 (169.6K) | engine — LM Studio auto-fits MLX context to 170K regardless of the requested value (unfixed LM Studio bug); still 29.7 tok/s at 169.6K, the deepest healthy point, 171K fails clean; served via lms CLI, 8.8 GB RSS at 74K | pending |
+| **Gemma-12B MLX (LM Studio engine, CLI)** | 36.7 | 36.9 | 34.8 | 30.25 (49K) | 29.29 (65K) | mem — compression/swap onset between 65K and 74K used tokens (last clean: 65,094 @ 29.29 tok/s); context length cannot be pinned, LM Studio auto-fits to 158,464 (loader estimate, trained max 262,144); served via lms CLI, 8.8 GB RSS at 74K | pending |
 
 Cells are blank past a config's cap. *8K value.
 

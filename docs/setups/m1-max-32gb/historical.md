@@ -147,6 +147,19 @@ the operational fiddling. Bonsai regains a multi-session story when a brew
 llama.cpp release loads its ternary GGUF, with a projected ~300K total
 context to split across slots.
 
+## Gemma-4-12B LM Studio ceiling, old criterion (raw-cap reading, superseded 2026-08-30)
+
+Old rows read "170K, 29.7 tok/s" — the deepest point LM Studio's auto-fit
+loader let a request reach before failing clean, not a compression/swap
+ceiling. The owner's revised criterion (`night4/lmstudio-forensics.md`)
+defines the ceiling as the onset of memory compression/swap in the
+watcher log, with tok/s taken from the last clean step before onset. A
+confirmation sweep under the new criterion found onset between 65K and
+74K used tokens (65,094 tokens clean at 29.29 tok/s; 74,099 tokens shows
+compression bursts up to 114,012 pages). Current figures are on
+[the comparison page](./comparison.md) and
+[the Gemma-12B report](./reports/gemma-4-12b-it.md).
+
 ---
 
 Raw data, with eras labeled, in the benchmarks pages.
