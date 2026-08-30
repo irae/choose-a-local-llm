@@ -31,19 +31,50 @@ function sortRows(rows) {
   })
 }
 
-function renderTable(data, { footnotes = true } = {}) {
+function hasPending(r) {
+  return ['maxCtx', 'gatedBy', 'tokShallow', 'tokDeep', 'memory', 'evalplus'].some(
+    (k) => String(r[k]).includes('pending'),
+  )
+}
+
+function renderTable(rows, { footnotes = true, sort = true } = {}) {
   const header = [
     footnotes
-      ? '| Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |'
-      : '| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |',
-    '|---|--:|:--:|--:|--:|--:|',
+      ? '| # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |'
+      : '| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |',
+    '|--:|---|--:|:--:|--:|--:|--:|',
   ]
-  const rows = sortRows(data.rows).map((r) => {
+  const ordered = sort ? sortRows(rows) : rows
+  const body = ordered.map((r, i) => {
     const maxCtx = r.pendingRetest ? `*${r.maxCtx}*` : r.maxCtx
     const memory = r.pendingRetest ? `*${r.memory}*` : r.memory
-    return `| ${r.config} | ${maxCtx} | ${r.gatedBy} | ${r.tokShallow} → ${r.tokDeep} | ${memory} | ${r.evalplus} |`
+    return `| ${i + 1} | ${r.config} | ${maxCtx} | ${r.gatedBy} | ${r.tokShallow} → ${r.tokDeep} | ${memory} | ${r.evalplus} |`
   })
-  return [...header, ...rows].join('\n')
+  return [...header, ...body].join('\n')
+}
+
+function majorName(config) {
+  return config.split(',')[0].trim()
+}
+
+function renderHomeTable(data) {
+  const seen = []
+  const groups = new Map()
+  for (const r of data.rows) {
+    const name = majorName(r.config)
+    if (!groups.has(name)) {
+      groups.set(name, [])
+      seen.push(name)
+    }
+    groups.get(name).push(r)
+  }
+  const best = seen.map((name) => {
+    const rows = groups.get(name)
+    const complete = rows.filter((r) => !hasPending(r))
+    const pick = sortRows(complete.length ? complete : rows)[0]
+    return { ...pick, config: name }
+  })
+  return renderTable(best)
 }
 
 function applyBlock(content, startMark, endMark, block, target) {
@@ -73,7 +104,7 @@ function renderKpis(model) {
 function renderModelTable(data, model) {
   const rows = data.rows.filter((r) => r.config.startsWith(model.rowMatch))
   const extra = model.extraRows || []
-  return renderTable({ rows: [...rows, ...extra] }, { footnotes: false })
+  return renderTable([...rows, ...extra], { footnotes: false, sort: false })
 }
 
 const dataFiles = globSync('docs/setups/*/models.json')
@@ -82,11 +113,15 @@ let drift = false
 for (const dataFile of dataFiles) {
   const setupDir = dataFile.replace(/\/models\.json$/, '')
   const data = JSON.parse(readFileSync(dataFile, 'utf8'))
-  const table = renderTable(data)
+  const comparisonTable = renderTable(data.rows.filter((r) => !hasPending(r)))
+  const homeTable = renderHomeTable(data)
 
-  const targets = [`${setupDir}/comparison.md`, 'docs/index.md']
+  const targets = [
+    [`${setupDir}/comparison.md`, comparisonTable],
+    ['docs/index.md', homeTable],
+  ]
 
-  for (const target of targets) {
+  for (const [target, table] of targets) {
     const original = readFileSync(target, 'utf8')
     const updated = applyTable(original, table)
     if (updated === original) continue

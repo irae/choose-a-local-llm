@@ -31,12 +31,12 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling r
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
-|---|--:|:--:|--:|--:|--:|
-| Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off | 4x256k | speed | 33.7 → pending | 16.9 GB | 0.909/0.872 |
-| Gemma-4-12B, MLX³, thinking off | 158k* | mem | 37 → 29.29 | 8.8 GB | 0.909/0.872 |
-| Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | 8.2 GB | 0.909/0.872 |
-| Gemma-4-12B, MLX³ | 158k* | mem | 37 → 29.29 | 8.8 GB | pending |
+| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
+|--:|---|--:|:--:|--:|--:|--:|
+| 1 | Gemma-4-12B, MLX³ | 158k* | mem | 37 → 29.29 | 8.8 GB | pending |
+| 2 | Gemma-4-12B, MLX³, thinking off | 158k* | mem | 37 → 29.29 | 8.8 GB | 0.909/0.872 |
+| 3 | Gemma-4-12B, GGUF, MTP q8, thinking off | 11k | speed | 14.0 → 8 | 8.2 GB | 0.909/0.872 |
+| 4 | Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off | 4x256k | speed | 33.7 → pending | 16.9 GB | 0.909/0.872 |
 <!-- gen:model-table:end -->
 
 ## Configs

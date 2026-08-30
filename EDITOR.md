@@ -131,8 +131,18 @@ descending), then by Max ctx (descending) for ties — highest scores and,
 within a tie, the deepest context, at the top. `pending` scores sort to
 the bottom.
 
-- **Columns, in order**: Config | Max ctx | Gated by¹ |
-  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus². There is no
+- **Columns, in order**: # | Config | Max ctx | Gated by¹ |
+  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus². The `#`
+  column numbers the rows of that page, top to bottom — every page
+  counts its own.
+- **The homepage table holds one line per model** (the major name
+  before the first comma), showing that model's best complete row.
+- **The comparison table holds every config row but suppresses any row
+  with a pending cell** — pending work is visible on the model pages,
+  not on the comparison.
+- **Per-model tables keep the order the rows have in `models.json`**
+  (no re-sort), so their `#` numbers are stable; all references to a
+  config on that page use its `#` number. There is no
   "Suggested for" column — seat suggestions live only in the setup
   overview and in analysis/decision prose.
 - **One row per config; a model shows every runtime that has sweep

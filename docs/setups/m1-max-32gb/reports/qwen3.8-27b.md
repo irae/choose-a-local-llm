@@ -26,10 +26,10 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
-|---|--:|:--:|--:|--:|--:|
-| Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
-| Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | 18.9 GB | 0.982/0.939 |
+| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
+|--:|---|--:|:--:|--:|--:|--:|
+| 1 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
+| 2 | Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | 18.9 GB | 0.982/0.939 |
 <!-- gen:model-table:end -->
 
 ## Configs
