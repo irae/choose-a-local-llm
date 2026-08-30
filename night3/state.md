@@ -146,11 +146,58 @@ mode would very likely show up at least some of the time — it does not.
 thinking-off.** The suspicion does not hold up. Not written to the site
 — this is a note to explain the archived number, not a new measurement.
 
-## Next
+## gemma12-lmstudio depth sweeps, v2: watched and pinned (2026-08-29)
 
-Per the runbook, the next block is bonsai-prism (the PrismML fork A/B).
-See HANDOFF.md for the exact serving command and the calibration-bias
-step (`make_kv_bias.sh`).
+The first pass at these sweeps (single-context, then 2-context
+alternating) ran without the memory watcher for roughly their first
+half — a rule violation. Both were re-run clean, watcher running from
+the first request, model reloaded with a pinned config
+(`lms load google/gemma-4-12b -c 158464 --parallel 4 --gpu max -y`) for
+reproducibility instead of trusting LM Studio's per-load auto-fit.
+
+**Single-context v2** (`tools/sweeps/lmstudio_sweep.py`, watcher log
+`/tmp/mem-watch-gemma12-single.log`, not committed): reached the full
+pinned window, 158,072 tokens, at 22.77 tok/s, never crossed the 8 tok/s
+floor. Full curve: 4071→35.07, 8084→35.29, 16101→34.14, 32074→32.34,
+49087→30.53, 74108→28.27, 98089→25.19, 131066→23.03, 147091→23.36,
+158072→22.77. This directly contradicts the first (unwatched) pass,
+which crashed to 7.08 tok/s at the identical 98089-token depth and
+stopped there — that crash does not reproduce under watched, pinned
+conditions and looks like transient system noise (possibly related to
+having two model instances loaded at once during the first pass), not a
+real property of this config.
+
+**2-context alternating v2** (`lmstudio_sweep_alt.py`, watcher log
+`/tmp/mem-watch-gemma12-alt.log`, not committed): both contexts tracked
+each other closely through 147,091 tokens (A: 23.14 tok/s, B: 23.20
+tok/s). The 147K step hit LM Studio's disk-cache eviction
+(`cached_tokens=0 uncached_tokens=152673`, step wall time inflated to
+~1187-1219s by a forced recompute — the decode tok/s figure itself stays
+valid, since it is measured from post-prefill streaming only, but the
+timing is contaminated). The next step (~158K) failed cleanly with a
+real server error, not a crash: `"The number of tokens to keep from the
+initial prompt is greater than the context length"` — context A's real
+token count exceeded the pinned 158,464 limit (the script's chars/4
+token estimate undercounts). This is our own pinned window being hit,
+not a memory or speed ceiling.
+
+**Not written to the site.** Pinning to 158,464 copied whatever LM
+Studio's auto-fit had picked earlier in the night — it is not the
+model's trained max (262,144), so this run never actually searched for
+the real ceiling. Writing "158k" over the existing site figure ("170k",
+from LM Studio's auto-fit, already flagged there as a loader quirk
+rather than a true measurement) would read as a regression when neither
+number is really a found ceiling. The owner decided: do not update the
+site for this pass. See HANDOFF.md and night4 for the follow-up (re-pin
+to 262144, run the real ceiling search, decide what if anything
+supersedes the 170k figure).
+
+## Handed to night4
+
+Everything left open at the end of night 3 moved to `night4/`:
+bonsai-prism (resume from 72/164, this time with `night2/mem-watch.sh`
+running throughout), bonsai-off, and the LM Studio gemma-12b real-ceiling
+follow-up. See `night4/NIGHT-AGENT.md`.
 
 Also per the owner's new rule in `AGENTS.md`: benchmark runs from now on
 live on their own branch, not master. This run stayed on master because
