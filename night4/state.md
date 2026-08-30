@@ -101,3 +101,45 @@ Branch `run4` created before block 1.
 - Left `google/gemma-4-12b` loaded (parallel 4) for block 3, which
   reuses this server. Desired next state: block 3, Gemma-12B
   thinking-on EvalPlus (calibrate budget first).
+
+### Block 3: Gemma-12B thinking-on EvalPlus (in progress)
+
+- Calibration (`night2/calibrate.py gemma12-lmstudio-thinking-on
+  google/gemma-4-12b`, cap 30000, watcher scoped to the run): 6/10
+  sample problems hit the 30000 cap with empty content — non-convergent
+  reasoning is common for this model, worse than the 28%/25% rates
+  documented for Gemma-26B and the earlier 16-problem smoke. 4
+  successful completions: 1162, 3200, 11549, 727 tokens. Budget set to
+  12000 (just above the longest successful completion, per the
+  methodology's waste-limiter rule for non-convergent models).
+- Started the full 164-problem run:
+  `EVALPLUS_MAX_NEW_TOKENS=12000 night3/run-humaneval.sh
+  gemma12-lmstudio-thinking-on google/gemma-4-12b`, results under
+  `night3/results/gemma12-lmstudio-thinking-on/`,
+  `tools/sweeps/mem-watch-fast.sh` running scoped to this run
+  (`MEMWATCH_INTERVAL=20`, log `/tmp/gemma12-thinkon-run-memwatch.log`).
+  Expect a high empty-completion rate given the calibration; will record
+  it honestly, not chase zero empties with a bigger budget (per the
+  runbook).
+- Desired next state: keep polling until 164/164, evaluate, record score
+  honestly including the empty count, update
+  `docs/setups/m1-max-32gb/models.json` (Gemma-4-12B, MLX³ row,
+  currently "pending"), regenerate tables, commit.
+- Heartbeat (~48 min in): 38/164 lines. No crash signatures, watcher
+  shows normal activity. Pace is uneven (fast for convergent problems,
+  slow for cap-outs) — averaging roughly 75s/problem so far.
+- **Night 4 closed by the owner at 54/164.** Codegen stopped cleanly,
+  watcher stopped, model unloaded, LM Studio server stopped, GPU idle.
+  The 54-line jsonl and the calibration file are committed; evalplus's
+  codegen resume continues from them with the identical command
+  (`EVALPLUS_MAX_NEW_TOKENS=12000 night3/run-humaneval.sh
+  gemma12-lmstudio-thinking-on google/gemma-4-12b`).
+
+## Night 4 close
+
+Done: LM Studio forensics; block 1 bonsai-prism 0.927/0.890 (on the
+site); block 2 gemma-12b ceiling under the compression-onset criterion
+(on the site). Partial: block 3 thinking-on EvalPlus at 54/164
+(resumable). Not started: Qwen3.8-27B low, bonsai-off, polyglot — all
+moved to `night5/NIGHT-AGENT.md`, together with the new Mendel
+benchmark block (before polyglot, owner's order).
