@@ -33,8 +33,8 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling r
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Gemma-4-12B, MLX³ | 158k* | mem | 37† → 29.29 | 8.8 GB† | pending |
-| 2 | Gemma-4-12B, MLX³, thinking off | 158k* | mem | 37† → 29.29 | 8.8 GB† | 0.909/0.872 |
+| 1 | Gemma-4-12B, MLX³ | 158k* | mem | 35.4 → 29.29 | 8.1 GB | pending |
+| 2 | Gemma-4-12B, MLX³, thinking off | 158k* | mem | 35.4 → 29.29 | 8.1 GB | 0.909/0.872 |
 | 3 | Gemma-4-12B, GGUF, MTP q8, thinking off | 11k† | speed | 14.0† → 8† | 8.2 GB† | 0.909/0.872 |
 | 4 | Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off | 4x256k† | speed | 33.7† → pending | 16.9 GB† | 0.909/0.872 |
 
@@ -170,6 +170,24 @@ cap. Confirmation sweep (`--parallel 4`, watcher at 20 s interval):
 **Ceiling = onset between 65K and 74K, tok/s 29.29 at 65,094 tokens.**
 The 158,464 context-window figure is the loader's auto-fit estimate,
 not a true measured ceiling — the trained max is 262,144 (footnote).
+
+**Shallow confirmation sweep (2026-08-30):** `google/gemma-4-12b`,
+`--parallel 4`, watcher scoped to the run, `STEP_SLEEP=25`, no
+compression or swap through the whole range:
+
+| depth | decode tok/s |
+|---|--:|
+| 4,175 | 35.41 |
+| 8,292 | 34.89 |
+| 16,465 | 33.88 |
+| 24,638 | 33.08 |
+| 33,071 | 32.19 |
+
+RSS 8.1 GB at 33,071 tokens (llmworker process). Replaces the earlier
+unverified 37 tok/s shallow figure and the 8.8 GB memory figure — the
+new shallow reading is 35.41 tok/s, and memory stays flat and small
+through the tested range, consistent with the 65K/29.29-tok/s clean
+ceiling above.
 
 llama RSS at floor depth (11K, q8_0 KV, 16K alloc): 8.2 GB.
 

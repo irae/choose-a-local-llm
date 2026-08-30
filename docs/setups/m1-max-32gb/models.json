@@ -113,35 +113,27 @@
    "config": "Gemma-4-12B, MLX³",
    "maxCtx": "158k*",
    "gatedBy": "mem",
-   "tokShallow": "37",
+   "tokShallow": "35.4",
    "tokDeep": "29.29",
-   "memory": "8.8 GB",
+   "memory": "8.1 GB",
    "evalplus": "pending",
    "id": "gemma12-lmstudio-think",
    "hidden": false,
    "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y",
-   "note": "Thinking is always on with this engine; context is auto-fit (158,464 at wired limit 24000).",
-   "stale": [
-    "tokShallow",
-    "memory"
-   ]
+   "note": "Thinking is always on with this engine; context is auto-fit (158,464 at wired limit 24000)."
   },
   {
    "config": "Gemma-4-12B, MLX³, thinking off",
    "maxCtx": "158k*",
    "gatedBy": "mem",
-   "tokShallow": "37",
+   "tokShallow": "35.4",
    "tokDeep": "29.29",
-   "memory": "8.8 GB",
+   "memory": "8.1 GB",
    "evalplus": "0.909/0.872",
    "id": "gemma12-lmstudio-off",
    "hidden": false,
    "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y",
-   "note": "Archived score: current engine builds always think, so this config is not reproducible today.",
-   "stale": [
-    "tokShallow",
-    "memory"
-   ]
+   "note": "Archived score: current engine builds always think, so this config is not reproducible today."
   },
   {
    "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
