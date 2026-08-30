@@ -105,6 +105,13 @@ These rules bind every `reports/<model>.md` page:
   incomplete.
 - **Config numbers go at the end of table lines as `#1`, `#2`** — never
   as a `1:`/`2:` prefix.
+- **Every stat box must be backed by the page's tables**: the number a
+  box quotes appears in a table row on the same page, or that row marks
+  it `pending`. A box never quotes a figure the tables do not carry.
+- **Every serving config a page gives a command for gets its own table
+  row**, incomplete cells allowed (`pending`). Scores are shared across
+  rows when thinking mode, effort, and quant match — regardless of
+  context size, slot count, tok/s, or what gates the config.
 
 ## The "Models evaluated" table
 

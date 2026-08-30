@@ -63,6 +63,16 @@
    "pendingRetest": false
   },
   {
+   "config": "Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots",
+   "maxCtx": "2x184k",
+   "gatedBy": "speed",
+   "tokShallow": "pending",
+   "tokDeep": "pending",
+   "memory": "pending",
+   "evalplus": "0.713/0.701",
+   "pendingRetest": false
+  },
+  {
    "config": "Gemma-4-12B, MLX³",
    "maxCtx": "158k*",
    "gatedBy": "mem",
@@ -89,6 +99,16 @@
    "tokShallow": "14.0",
    "tokDeep": "8",
    "memory": "8.2 GB",
+   "evalplus": "0.909/0.872",
+   "pendingRetest": false
+  },
+  {
+   "config": "Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off",
+   "maxCtx": "4x256k",
+   "gatedBy": "speed",
+   "tokShallow": "33.7",
+   "tokDeep": "pending",
+   "memory": "16.9 GB",
    "evalplus": "0.909/0.872",
    "pendingRetest": false
   },
