@@ -55,6 +55,13 @@ one identical prompt, a 100-point rubric.
 - Scoring rules from `PLAN.md` apply unchanged: same base commit, real
   `pnpm install`, no mid-run help, never trust the model's own claims,
   rubric unchanged.
+- **Known methodology bug, not fixed in that repo yet: "Mendel Daemon"
+  processes stay behind after a run finishes.** After each run ends, YOU
+  (the agent running the benchmark, never the coder model being
+  benchmarked, and never mid-run) check for and kill stray Mendel
+  daemon processes (`ps aux | grep -i "mendel" | grep -vi grep`, then
+  kill the leftovers) before starting the next model. Do not commit a
+  fix for this in the Mendel repo.
 
 ## Report format for heartbeat checks
 
