@@ -1,16 +1,22 @@
 # Ternary Bonsai-27B on M1 Max 32 GB
 
-mlx-lm 0.31.3 · prism-ml ternary 2-bit · benchmarked 2026-08-25
+mlx-lm 0.31.3 + prism-llama fork · prism-ml ternary 2-bit · benchmarked
+2026-08-25, quality and fork updated 2026-08-30
 
 ## Highlights
 
-- **27B-class quality from 8 GB of weights.** EvalPlus 0.915 / 0.884.
+- **27B-class quality from 8 GB of weights.** EvalPlus 0.927 / 0.890 on
+  the calibrated fork config; 0.915 / 0.884 on MLX 2-bit.
+- **The vendor's q4-KV calibration costs no quality.** The fork with
+  PrismML's bias scores slightly above plain MLX 2-bit — the aggressive
+  KV quant passed its own gate.
 - **The flattest speed curve of any model here.** Only −23% from 4K to 49K.
-- **Never hits the speed floor.** Its limit is memory, not speed.
+- **Never hits the speed floor on MLX.** Its limit there is memory, not
+  speed. The fork is the reverse: huge windows, but a ~30K speed floor.
 - **The least disruptive model to work beside.** Moderate fan noise, small
   footprint. The best all-day background agent.
 - **The only multi-agent setup that leaves the machine free.** The prism fork
-  serves 2×48K slots at 9.8 tok/s each, in 10.0 GB flat.
+  serves 2×48K slots in 10.0 GB flat.
 - Weak point: memory grows with the session on MLX and OOMs by ~58-60K
   (limit 24000).
 
@@ -30,24 +36,39 @@ leak across differently-shaped requests. Bounding the pool removed a false
 44K OOM and reduced depth creep.
 
 For a desktop that must stay usable, or for multiple agents, use the prism
-fork instead — 9.8 GB flat, floor ~30K:
+fork instead — 9.8 GB flat, floor ~30K. This is the scored config
+(0.927/0.890): it needs the attention-rotation flag and PrismML's
+`--kv-mean-center` calibration bias, or you are serving an unscored
+variant:
 
 ```bash
-~/prism-llama/llama-server \
+LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \
   --alias bonsai-prism \
   -ngl 999 -fa on -c 65536 \
   --cache-type-k q4_0 --cache-type-v q4_0 \
+  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \
   --jinja --port 8081
 ```
 
+(Regenerate the bias file with the vendor's `make_kv_bias.sh` if `/tmp`
+was wiped — see [the benchmarks](../benchmarks/bonsai-27b.md).)
+
+**Window is not usable depth.** The fork allocates huge windows in
+little memory (the full 262K trained window fits in 17.1 GB with q8
+KV) and never OOMs inside them — but decode crosses the 8 tok/s floor
+at ~30K *used* tokens. MLX is the opposite: fastest at every depth it
+reaches, and memory-limited at ~58K. For one agent that needs depth,
+MLX wins on both speed and usable depth; the fork's niches are
+multi-agent slots and a light desktop.
+
 ## Which to pick for a coding task
 
-| need | config | tok/s | context |
+| need | config | tok/s (used depth) | context |
 |---|---|--:|--:|
 | **Max context** | mlx_lm.server, bounded prompt cache | 17.27 at 58K | 58K OK; OOM ~60K (limit 24000) |
 | **Max speed** | same config, shallow context | 24.5 | ≤8K |
-| **Multi-agent** | prism fork `--parallel 2 -c 98304`, q4 KV | 9.8×2 | 2×48K |
+| **Multi-agent** | prism fork `--parallel 2 -c 98304`, q4 KV | 9.8 each with BOTH decoding (worst case) | 2×48K allocated; ~30K usable each (speed floor) |
 
 ## Quality — EvalPlus HumanEval+
 
@@ -67,15 +88,23 @@ fork instead — 9.8 GB flat, floor ~30K:
 | 32K | 20.5 |
 | 40K | 18.60 |
 | 42K | 18.66 |
-| 44K | 12.10 |
-| 46K | 11.89 |
-| 48K | 11.33 |
+| 44K | 12.10 — transient, see note |
+| 46K | 11.89 — transient, see note |
+| 48K | 11.33 — transient, see note |
 | 50K | 18.36 |
 | 52K | 18.09 |
 | 54K | 17.64 |
 | 56K | 17.69 |
 | **58K** | **17.27 — last stable, limit 24000** |
 | ~60K | Metal OOM — ceiling ~58-60K at limit 24000 |
+
+The 44-48K dip is not a real property of this config: the deeper 50-58K
+rows, taken later under the slow-creep rule (25 s pauses, limit 24000,
+watcher running), sit back at ~18 tok/s — a real mid-curve collapse
+would not recover at greater depth. The dip rows came from an earlier
+pass and look like a transient system episode (memory pressure or
+background load). They stay in the table as measured; read the curve as
+a smooth ~24.5 → 17.3 decline.
 
 ## PrismML llama.cpp fork (measured 2026-08-28)
 
