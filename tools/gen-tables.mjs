@@ -11,6 +11,10 @@ const MODEL_START = '<!-- gen:model-table:start -->'
 const MODEL_END = '<!-- gen:model-table:end -->'
 const CONFIGS_START = '<!-- gen:model-configs:start -->'
 const CONFIGS_END = '<!-- gen:model-configs:end -->'
+const EVALPLUS_START = '<!-- gen:evalplus-table:start -->'
+const EVALPLUS_END = '<!-- gen:evalplus-table:end -->'
+const DECODE_START = '<!-- gen:decode-summary:start -->'
+const DECODE_END = '<!-- gen:decode-summary:end -->'
 
 function parseCtx(s) {
   const nxk = s.match(/(\d+)x([\d.]+)k/i)
@@ -129,6 +133,40 @@ function renderModelConfigs(data, model) {
   return blocks.join('\n\n')
 }
 
+function renderEvalplusTable(data) {
+  const header = [
+    '| model | mode | pass@1 base | pass@1 plus | empty |',
+    '|---|---|--:|--:|--:|',
+  ]
+  const body = (data.evalplusRuns || []).map(
+    (r) => `| [${r.model}](./${r.slug}.md) | ${r.mode} | ${r.base} | ${r.plus} | ${r.empty} |`,
+  )
+  return [...header, ...body].join('\n')
+}
+
+function renderDecodeSummary(data) {
+  const header = [
+    '| model | best curve | tok/s (shallow → deep) | at | gated by |',
+    '|---|---|--:|--:|---|',
+  ]
+  let anyStale = false
+  const cell = (r, field) => {
+    const stale = (r.stale || []).includes(field)
+    if (stale) anyStale = true
+    return `${r[field]}${stale ? '†' : ''}`
+  }
+  const body = Object.entries(data.models || {}).map(([slug, model]) => {
+    const rows = modelRows(data, model).filter((r) => !hasPending(r))
+    const pick = sortRows(rows.length ? rows : modelRows(data, model))[0]
+    const detail = pick.config.split(',').slice(1).join(',').trim() || '—'
+    return `| [${majorName(pick.config)}](./${slug}.md) | ${detail} | ${cell(pick, 'tokShallow')} → ${cell(pick, 'tokDeep')} | ${cell(pick, 'maxCtx')} | ${cell(pick, 'gatedBy')} |`
+  })
+  const legend = anyStale
+    ? ['', '† from an earlier serving config or method; re-run pending.']
+    : []
+  return [...header, ...body, ...legend].join('\n')
+}
+
 function checkRefs(content, count, target) {
   for (const m of content.matchAll(/#(\d+)/g)) {
     const n = parseInt(m[1], 10)
@@ -159,6 +197,23 @@ for (const dataFile of dataFiles) {
     if (updated === original) continue
     if (CHECK) {
       console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)
+      drift = true
+    } else {
+      writeFileSync(target, updated)
+      console.log(`updated: ${target}`)
+    }
+  }
+
+  const typePages = [
+    [`${setupDir}/benchmarks/evalplus.md`, EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(data)],
+    [`${setupDir}/benchmarks/decode-speed.md`, DECODE_START, DECODE_END, renderDecodeSummary(data)],
+  ]
+  for (const [target, mstart, mend, block] of typePages) {
+    const original = readFileSync(target, 'utf8')
+    const updated = applyBlock(original, mstart, mend, block, target)
+    if (updated === original) continue
+    if (CHECK) {
+      console.error('STALE: ' + target + ' does not match ' + dataFile + '. Run `npm run docs:tables`.')
       drift = true
     } else {
       writeFileSync(target, updated)

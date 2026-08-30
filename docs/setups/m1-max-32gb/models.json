@@ -424,5 +424,63 @@
     }
    }
   }
- }
+ },
+ "evalplusRuns": [
+  {
+   "slug": "qwen3.8-27b",
+   "model": "Qwen3.8-27B",
+   "mode": "effort medium",
+   "base": "0.982",
+   "plus": "0.939",
+   "empty": "0/164"
+  },
+  {
+   "slug": "qwen3.6-35b-a3b",
+   "model": "Qwen3.6-35B-A3B",
+   "mode": "thinking on",
+   "base": "0.939",
+   "plus": "0.921",
+   "empty": "5/164"
+  },
+  {
+   "slug": "bonsai-27b",
+   "model": "Ternary-Bonsai-27B (fork q4+bias)",
+   "mode": "thinking on",
+   "base": "0.927",
+   "plus": "0.890",
+   "empty": "4/164"
+  },
+  {
+   "slug": "bonsai-27b",
+   "model": "Ternary-Bonsai-27B (MLX 2-bit)",
+   "mode": "thinking on",
+   "base": "0.915",
+   "plus": "0.884",
+   "empty": "5/164"
+  },
+  {
+   "slug": "gemma-4-12b-it",
+   "model": "Gemma-4-12B",
+   "mode": "thinking off",
+   "base": "0.909",
+   "plus": "0.872",
+   "empty": "0/164"
+  },
+  {
+   "slug": "gemma-4-12b-it",
+   "model": "Gemma-4-12B",
+   "mode": "thinking on",
+   "base": "pending",
+   "plus": "pending",
+   "empty": "—"
+  },
+  {
+   "slug": "gemma-4-26b-a4b",
+   "model": "Gemma-4-26B-A4B",
+   "mode": "thinking on",
+   "base": "0.713",
+   "plus": "0.701",
+   "empty": "46/164"
+  }
+ ]
 }
