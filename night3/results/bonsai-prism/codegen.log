@@ -2,76 +2,169 @@ Greedy decoding ON (--greedy): setting bs=1, n_samples=1, temperature=0
 Initializing a decoder model: bonsai-prism ...
 Sanitized code outputs will be saved to /Users/irae/code/choose-a-local-llm/night3/results/bonsai-prism/humaneval/bonsai-prism_openai_temp_0.0.jsonl
 Raw outputs will be saved to /Users/irae/code/choose-a-local-llm/night3/results/bonsai-prism/humaneval/bonsai-prism_openai_temp_0.0.raw.jsonl
-Codegen: HumanEval/0 @ bonsai-prism
-Codegen: HumanEval/1 @ bonsai-prism
-Codegen: HumanEval/2 @ bonsai-prism
-Codegen: HumanEval/3 @ bonsai-prism
-Codegen: HumanEval/4 @ bonsai-prism
-Codegen: HumanEval/5 @ bonsai-prism
-Codegen: HumanEval/6 @ bonsai-prism
-Codegen: HumanEval/7 @ bonsai-prism
-Codegen: HumanEval/8 @ bonsai-prism
-Codegen: HumanEval/9 @ bonsai-prism
-Codegen: HumanEval/10 @ bonsai-prism
-Codegen: HumanEval/11 @ bonsai-prism
-Codegen: HumanEval/12 @ bonsai-prism
-Codegen: HumanEval/13 @ bonsai-prism
-Codegen: HumanEval/14 @ bonsai-prism
-Codegen: HumanEval/15 @ bonsai-prism
-Codegen: HumanEval/16 @ bonsai-prism
-Codegen: HumanEval/17 @ bonsai-prism
-Codegen: HumanEval/18 @ bonsai-prism
-Codegen: HumanEval/19 @ bonsai-prism
-Codegen: HumanEval/20 @ bonsai-prism
-Codegen: HumanEval/21 @ bonsai-prism
-Codegen: HumanEval/22 @ bonsai-prism
-Codegen: HumanEval/23 @ bonsai-prism
-Codegen: HumanEval/24 @ bonsai-prism
-Codegen: HumanEval/25 @ bonsai-prism
-Codegen: HumanEval/26 @ bonsai-prism
-Codegen: HumanEval/27 @ bonsai-prism
-Codegen: HumanEval/28 @ bonsai-prism
-Codegen: HumanEval/29 @ bonsai-prism
-Codegen: HumanEval/30 @ bonsai-prism
-Codegen: HumanEval/31 @ bonsai-prism
-Codegen: HumanEval/32 @ bonsai-prism
-Codegen: HumanEval/33 @ bonsai-prism
-Codegen: HumanEval/34 @ bonsai-prism
-Codegen: HumanEval/35 @ bonsai-prism
-Codegen: HumanEval/36 @ bonsai-prism
-Codegen: HumanEval/37 @ bonsai-prism
-Codegen: HumanEval/38 @ bonsai-prism
-Codegen: HumanEval/39 @ bonsai-prism
-Codegen: HumanEval/40 @ bonsai-prism
-Codegen: HumanEval/41 @ bonsai-prism
-Codegen: HumanEval/42 @ bonsai-prism
-Codegen: HumanEval/43 @ bonsai-prism
-Codegen: HumanEval/44 @ bonsai-prism
-Codegen: HumanEval/45 @ bonsai-prism
-Codegen: HumanEval/46 @ bonsai-prism
-Codegen: HumanEval/47 @ bonsai-prism
-Codegen: HumanEval/48 @ bonsai-prism
-Codegen: HumanEval/49 @ bonsai-prism
-Codegen: HumanEval/50 @ bonsai-prism
-Codegen: HumanEval/51 @ bonsai-prism
-Codegen: HumanEval/52 @ bonsai-prism
-Codegen: HumanEval/53 @ bonsai-prism
-Codegen: HumanEval/54 @ bonsai-prism
-Codegen: HumanEval/55 @ bonsai-prism
-Codegen: HumanEval/56 @ bonsai-prism
-Codegen: HumanEval/57 @ bonsai-prism
-Codegen: HumanEval/58 @ bonsai-prism
-Codegen: HumanEval/59 @ bonsai-prism
-Codegen: HumanEval/60 @ bonsai-prism
-Codegen: HumanEval/61 @ bonsai-prism
-Codegen: HumanEval/62 @ bonsai-prism
-Codegen: HumanEval/63 @ bonsai-prism
-Codegen: HumanEval/64 @ bonsai-prism
-Codegen: HumanEval/65 @ bonsai-prism
-Codegen: HumanEval/66 @ bonsai-prism
-Codegen: HumanEval/67 @ bonsai-prism
-Codegen: HumanEval/68 @ bonsai-prism
-Codegen: HumanEval/69 @ bonsai-prism
-Codegen: HumanEval/70 @ bonsai-prism
-Codegen: HumanEval/71 @ bonsai-prism
+Codegen: HumanEval/0 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/1 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/2 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/3 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/4 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/5 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/6 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/7 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/8 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/9 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/10 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/11 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/12 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/13 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/14 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/15 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/16 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/17 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/18 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/19 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/20 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/21 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/22 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/23 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/24 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/25 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/26 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/27 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/28 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/29 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/30 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/31 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/32 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/33 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/34 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/35 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/36 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/37 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/38 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/39 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/40 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/41 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/42 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/43 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/44 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/45 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/46 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/47 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/48 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/49 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/50 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/51 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/52 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/53 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/54 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/55 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/56 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/57 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/58 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/59 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/60 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/61 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/62 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/63 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/64 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/65 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/66 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/67 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/68 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/69 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/70 @ bonsai-prism (resuming from 1)
+Codegen: HumanEval/71 @ bonsai-prism (resuming from 1)
 Codegen: HumanEval/72 @ bonsai-prism
+Codegen: HumanEval/73 @ bonsai-prism
+Codegen: HumanEval/74 @ bonsai-prism
+Codegen: HumanEval/75 @ bonsai-prism
+Codegen: HumanEval/76 @ bonsai-prism
+Codegen: HumanEval/77 @ bonsai-prism
+Codegen: HumanEval/78 @ bonsai-prism
+Codegen: HumanEval/79 @ bonsai-prism
+Codegen: HumanEval/80 @ bonsai-prism
+Codegen: HumanEval/81 @ bonsai-prism
+Codegen: HumanEval/82 @ bonsai-prism
+Codegen: HumanEval/83 @ bonsai-prism
+Codegen: HumanEval/84 @ bonsai-prism
+Codegen: HumanEval/85 @ bonsai-prism
+Codegen: HumanEval/86 @ bonsai-prism
+Codegen: HumanEval/87 @ bonsai-prism
+Codegen: HumanEval/88 @ bonsai-prism
+Codegen: HumanEval/89 @ bonsai-prism
+Codegen: HumanEval/90 @ bonsai-prism
+Codegen: HumanEval/91 @ bonsai-prism
+Codegen: HumanEval/92 @ bonsai-prism
+Codegen: HumanEval/93 @ bonsai-prism
+Codegen: HumanEval/94 @ bonsai-prism
+Codegen: HumanEval/95 @ bonsai-prism
+Codegen: HumanEval/96 @ bonsai-prism
+Codegen: HumanEval/97 @ bonsai-prism
+Codegen: HumanEval/98 @ bonsai-prism
+Codegen: HumanEval/99 @ bonsai-prism
+Codegen: HumanEval/100 @ bonsai-prism
+Codegen: HumanEval/101 @ bonsai-prism
+Codegen: HumanEval/102 @ bonsai-prism
+Codegen: HumanEval/103 @ bonsai-prism
+Codegen: HumanEval/104 @ bonsai-prism
+Codegen: HumanEval/105 @ bonsai-prism
+Codegen: HumanEval/106 @ bonsai-prism
+Codegen: HumanEval/107 @ bonsai-prism
+Codegen: HumanEval/108 @ bonsai-prism
+Codegen: HumanEval/109 @ bonsai-prism
+Codegen: HumanEval/110 @ bonsai-prism
+Codegen: HumanEval/111 @ bonsai-prism
+Codegen: HumanEval/112 @ bonsai-prism
+Codegen: HumanEval/113 @ bonsai-prism
+Codegen: HumanEval/114 @ bonsai-prism
+Codegen: HumanEval/115 @ bonsai-prism
+Codegen: HumanEval/116 @ bonsai-prism
+Codegen: HumanEval/117 @ bonsai-prism
+Codegen: HumanEval/118 @ bonsai-prism
+Codegen: HumanEval/119 @ bonsai-prism
+Codegen: HumanEval/120 @ bonsai-prism
+Codegen: HumanEval/121 @ bonsai-prism
+Codegen: HumanEval/122 @ bonsai-prism
+Codegen: HumanEval/123 @ bonsai-prism
+Codegen: HumanEval/124 @ bonsai-prism
+Codegen: HumanEval/125 @ bonsai-prism
+Codegen: HumanEval/126 @ bonsai-prism
+Codegen: HumanEval/127 @ bonsai-prism
+Codegen: HumanEval/128 @ bonsai-prism
+Codegen: HumanEval/129 @ bonsai-prism
+Codegen: HumanEval/130 @ bonsai-prism
+Codegen: HumanEval/131 @ bonsai-prism
+Codegen: HumanEval/132 @ bonsai-prism
+Codegen: HumanEval/133 @ bonsai-prism
+Codegen: HumanEval/134 @ bonsai-prism
+Codegen: HumanEval/135 @ bonsai-prism
+Codegen: HumanEval/136 @ bonsai-prism
+Codegen: HumanEval/137 @ bonsai-prism
+Codegen: HumanEval/138 @ bonsai-prism
+Codegen: HumanEval/139 @ bonsai-prism
+Codegen: HumanEval/140 @ bonsai-prism
+Codegen: HumanEval/141 @ bonsai-prism
+Codegen: HumanEval/142 @ bonsai-prism
+Codegen: HumanEval/143 @ bonsai-prism
+Codegen: HumanEval/144 @ bonsai-prism
+Codegen: HumanEval/145 @ bonsai-prism
+Codegen: HumanEval/146 @ bonsai-prism
+Codegen: HumanEval/147 @ bonsai-prism
+Codegen: HumanEval/148 @ bonsai-prism
+Codegen: HumanEval/149 @ bonsai-prism
+Codegen: HumanEval/150 @ bonsai-prism
+Codegen: HumanEval/151 @ bonsai-prism
+Codegen: HumanEval/152 @ bonsai-prism
+Codegen: HumanEval/153 @ bonsai-prism
+Codegen: HumanEval/154 @ bonsai-prism
+Codegen: HumanEval/155 @ bonsai-prism
+Codegen: HumanEval/156 @ bonsai-prism
+Codegen: HumanEval/157 @ bonsai-prism
+Codegen: HumanEval/158 @ bonsai-prism
+Codegen: HumanEval/159 @ bonsai-prism
+Codegen: HumanEval/160 @ bonsai-prism
+Codegen: HumanEval/161 @ bonsai-prism
+Codegen: HumanEval/162 @ bonsai-prism
+Codegen: HumanEval/163 @ bonsai-prism
+humaneval •100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 164/164 • 6:13:19
+/Users/irae/code/choose-a-local-llm/night3/results/bonsai-prism/humaneval/bonsai-prism_openai_temp_0.0.jsonl

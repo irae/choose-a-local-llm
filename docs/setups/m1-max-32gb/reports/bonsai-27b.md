@@ -54,6 +54,7 @@ fork instead — 9.8 GB flat, floor ~30K:
 | config scored | pass@1 base | pass@1 plus | empty completions |
 |---|--:|--:|--:|
 | mlx_lm.server 2-bit, thinking on, budget 10240 | 0.915 | 0.884 | 5/164 (~3%) |
+| prism fork, q4_0 KV + calibration bias, thinking on, budget 10240 | 0.927 | 0.890 | 4/164 (~2%) |
 
 ## Decode speed vs used context (shallow: limit 25000, 2026-08-28; deep re-test: limit 24000, slow creep, 2026-08-29)
 
@@ -107,8 +108,9 @@ up: 2-bit compression kept near-27B-class quality.
 at every depth it reaches, but memory grows with the session and hard-OOMs by
 ~57-61K. The prism fork q4 at 64K alloc stays at 9.8 GB flat with a ~30K
 floor, so the Mac stays usable while the agent runs. The q4 quality, which
-carries PrismML's own calibration bias, still needs its EvalPlus check —
-pending.
+carries PrismML's own calibration bias, is now scored: 0.927/0.890, slightly
+ahead of MLX 2-bit's 0.915/0.884. The calibrated q4 KV bias does not cost
+quality versus 2-bit MLX.
 
 **The DSpark drafter is not worth it past shallow context.** It is
 output-lossless and lifts shallow decode to 19.1/21.5 py/js at n-max 2, with

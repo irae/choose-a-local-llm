@@ -6,8 +6,10 @@ completed before night 4 started.
 
 | block | model | budget | pass@1 base | pass@1 plus | empty | incidents |
 |---|---|---|---|---|---|---|
+| 1 | bonsai-prism (prism fork, q4_0 KV + calibration bias) | 10240 | 0.927 | 0.890 | 4/164 | none; resumed cleanly from 72/164 |
 
 ## Not yet run
 
-bonsai-prism (resume from 72/164), bonsai-off, Gemma-12B thinking-on
-(newly unblocked, see `night4/NIGHT-AGENT.md`).
+gemma-12b LM Studio ceiling confirmation, Gemma-12B thinking-on,
+Qwen3.8-27B thinking-low, bonsai-off, Aider polyglot (see
+`night4/NIGHT-AGENT.md`).

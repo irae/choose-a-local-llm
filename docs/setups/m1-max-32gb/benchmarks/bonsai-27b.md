@@ -134,7 +134,19 @@ q4's ~30K) and costs 4-5 GB; q4 KV beats q8 on both
 floor and memory. Full 262K allocates in 17.1 GB — storage, not speed.
 mem-watch (20 s interval) showed zero swap during all sweeps: compute-bound.
 
-**Two serving profiles** (quality of q4+bias pending EvalPlus):
+## Quality — EvalPlus HumanEval+, prism fork q4 KV (2026-08-30)
+
+**pass@1 0.927 base / 0.890 plus** (`bonsai-prism`, q4_0 KV,
+`--kv-mean-center` PrismML bias file, thinking on, output budget 10240,
+temperature 0). 4/164 completions stay empty at the full budget — a real
+model ceiling at this quant, not a harness artifact. This score beats
+the MLX 2-bit config (0.915/0.884) by a small margin — the calibrated
+q4 KV bias does not cost quality versus 2-bit MLX; if anything it holds
+up slightly better. Run resumed cleanly from a 72/164 partial left by
+run 3 (`night3/results/bonsai-prism/`); `night2/mem-watch.sh` ran the
+whole time, no crash signatures, no unusual compression events.
+
+**Two serving profiles** (quality of q4+bias now scored):
 - Speed (MLX): 24.5→18.8 tok/s to the ~49K memory ceiling; RSS grows with
   depth. `mlx_lm.server ... --prompt-cache-size 2`.
 - Desktop (fork): `prism-llama -m Ternary-Bonsai-27B-Q2_g64.gguf -c 65536

@@ -37,7 +37,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
 | Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701 |
 | Gemma-4-12B, MLX³ | 170k | engine | 37 → 31 | 8.8 GB | pending |
-| Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 2x48k | speed | 14.9 → 7.9 | 10.0 GB | pending |
+| Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 2x48k | speed | 14.9 → 7.9 | 10.0 GB | 0.927/0.890 |
 <!-- gen:models-evaluated:end -->
 
 ¹ Whichever limit hits first: the max memory a config fits in, or the max
@@ -94,7 +94,7 @@ speed-floored, not memory-gated, so the fast 2026-08-28 sweep still applies.
 | Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 17.3 (58K) | mem — stable to 58K, 17.3 tok/s there | 0.915/0.884 |
 | Qwen3.8 MLX | 17.1* | 16.4 | | | 15.3 (28K) | mem — stable to 28K, 15.3 tok/s there | 0.982/0.939 |
 | Gemma-26B llama (q8, MTP) | 23.5 | 11.2 | | | | speed — under 8 tok/s at ~24K | 0.713/0.701 |
-| Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 9.2 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | pending |
+| Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 9.2 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890 |
 | Qwen3.8 llama (q8, MTP) | 14.1 | 8.6 | | | | speed — under 8 tok/s at ~19K | pending |
 | Gemma-12B llama (q8, MTP) | 14.0 | | | | | speed — under 8 tok/s at ~11K | pending |
 | **Gemma-12B MLX (LM Studio engine, CLI)** | 36.7 | 36.9 | 34.8 | 33.1 | 29.7 (169.6K) | engine — LM Studio auto-fits MLX context to 170K regardless of the requested value (unfixed LM Studio bug); still 29.7 tok/s at 169.6K, the deepest healthy point, 171K fails clean; served via lms CLI, 8.8 GB RSS at 74K | pending |
