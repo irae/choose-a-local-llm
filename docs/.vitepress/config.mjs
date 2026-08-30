@@ -5,6 +5,11 @@ export default defineConfig({
   description:
     'A repeatable process to find the best local model, runtime, and configuration for one specific computer.',
   base: '/choose-a-local-llm/',
+  vite: {
+    server: {
+      allowedHosts: ['irae-kamaji.tailc9708.ts.net', '100.73.3.114'],
+    },
+  },
   cleanUrls: true,
   sitemap: { hostname: 'https://irae.github.io/choose-a-local-llm/' },
   lastUpdated: true,
