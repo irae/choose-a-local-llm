@@ -34,9 +34,7 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
 | 2 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890 |
-| 3 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k† | speed | 14.9† → 7.9 | 10.0 GB† | 0.927/0.890 |
-
-† from an earlier serving config or method; re-run pending.
+| 3 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890 |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -133,7 +131,7 @@ matches the PQ2_0 variant.
 |---|---|--:|---|
 | **Depth + speed, one agent** | MLX #1 | 24.5 shallow; 17.27 at 58K | mem: OOM ~58-60K |
 | **Light desktop, one agent** | fork scored #2 | 14.8 shallow, 7.9 at 33K | speed: floor 33K used |
-| **Two agents** | fork 2×48K #3 | 14.89 shallow, one slot decoding | speed: slot floor ~32K used |
+| **Two agents** | fork 2×48K #3 | 14.94 shallow, 7.78 at 33K, one slot decoding | speed: slot floor 33K used |
 
 ## Quality — EvalPlus HumanEval+
 
@@ -180,21 +178,21 @@ almost exactly — the bias and rotation flags do not move the floor.
 Full plain-q4 variant tables (q8, DSpark drafter, 262K alloc) are in
 [the benchmarks](../benchmarks/bonsai-27b.md).
 
-## Config 3 (fork 2×48K) — single-slot depth (one slot decoding, other idle)
+## Config 3 (fork 2×48K) — single-slot depth (one slot decoding, other idle), measured 2026-08-30
 
 | depth (used tokens) | slot-0 tok/s |
 |---|--:|
-| 4K | 14.89 |
-| 8K | 13.21 |
-| 16K | 10.81 |
-| 24K | 9.15 |
-| **32K** | **7.88 — crosses the 8 tok/s floor** |
+| 4K | 14.94 |
+| 8K | 13.15 |
+| 16K | 10.65 |
+| 24K | 9.10 |
+| **33K** | **7.78 — crosses the 8 tok/s floor** |
 
-The idle second slot costs almost nothing (floor matches single-slot
-plain q4). Both slots decoding at once — the worst case, not the
-reported number — ran 9.8/9.9 tok/s each, aggregate 19.7. This sweep
-also predates the bias flags; it re-runs with them when config 2 gets
-its curve.
+10.9 GB RSS at the floor, no compression or swap. The idle second slot
+costs almost nothing (floor matches config 2's single-slot floor and
+the plain-q4 proxy). Both slots decoding at once — the worst case, not
+the reported number — ran 9.8/9.9 tok/s each, aggregate 19.7 (from an
+earlier pass, predates the bias flags).
 
 ---
 

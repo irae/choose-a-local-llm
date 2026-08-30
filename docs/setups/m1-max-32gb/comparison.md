@@ -33,7 +33,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 | 2 | Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k† | speed | 14.1† → 8† | 18.9 GB† | 0.982/0.939 |
 | 3 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k† | speed | 44† → 8.1† | 22.8 GB† | 0.939/0.921 |
 | 4 | Qwen3.6-35B-A3B, MLX, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921 |
-| 5 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k† | speed | 14.9† → 7.9 | 10.0 GB† | 0.927/0.890 |
+| 5 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890 |
 | 6 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890 |
 | 7 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
 | 8 | Gemma-4-12B, MLX³, thinking off | 158k* | mem | 37† → 29.29 | 8.8 GB† | 0.909/0.872 |

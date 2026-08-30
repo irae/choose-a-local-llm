@@ -211,17 +211,12 @@
    "maxCtx": "2x48k",
    "gatedBy": "speed",
    "tokShallow": "14.9",
-   "tokDeep": "7.9",
-   "memory": "10.0 GB",
+   "tokDeep": "7.8",
+   "memory": "10.9 GB",
    "evalplus": "0.927/0.890",
    "id": "bonsai-fork-2x",
    "hidden": false,
-   "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism-2x \\\n  -ngl 999 -fa on -c 98304 --parallel 2 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
-   "stale": [
-    "maxCtx",
-    "tokShallow",
-    "memory"
-   ]
+   "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism-2x \\\n  -ngl 999 -fa on -c 98304 --parallel 2 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081"
   }
  ],
  "models": {

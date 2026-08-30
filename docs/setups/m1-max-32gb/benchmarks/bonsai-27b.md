@@ -162,22 +162,24 @@ RSS **10.0 GB**. Two agents above the 8 tok/s floor with ~20 GB left for the
 system — the only multi-agent config measured that keeps the machine free.
 3×32K is the projected next probe for grunt-agent swarms.
 
-## Fork multi-slot, single-slot depth sweep (2026-08-29)
+## Fork multi-slot, single-slot depth sweep (2026-08-30, with bias flags)
 
-Same `--parallel 2 -c 98304` config, but per the measurement rules a
-multi-slot config gets its reported depth curve from one slot decoding
-alone — the other slot stays loaded but idle. Slot 0 swept:
+Same `--parallel 2 -c 98304` config, now with the rotation flag and
+`--kv-mean-center` bias (the scored config's flags), slot 0 swept with
+slot 1 loaded and idle, `STEP_SLEEP=25`, watcher scoped to the run. No
+compression or swap in the watcher log through the sweep window:
 
 | depth | slot-0 tok/s |
 |---|---|
-| 4K | 14.89 |
-| 8K | 13.21 |
-| 16K | 10.81 |
-| 24K | 9.15 |
-| **32K** | **7.88 — crosses the 8 tok/s floor** |
+| 4K | 14.94 |
+| 8K | 13.15 |
+| 16K | 10.65 |
+| 24K | 9.10 |
+| **32.8K** | **7.78 — crosses the 8 tok/s floor** |
 
-Matches the single-slot plain-q4 floor (~30K) closely — the idle second
-slot costs almost nothing.
+RSS 10.9 GB at the floor. Matches the single-slot scored-config floor
+(33K) and the single-slot plain-q4 floor (~30K) closely — the bias
+flags do not move the 2-slot floor either.
 
 ## Fork scored config — single-slot depth sweep (2026-08-30)
 
