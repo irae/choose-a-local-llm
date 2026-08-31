@@ -56,12 +56,16 @@ on the rubric.
 
 ## Guided test
 
-Cloud anchors so far; the local models queue up next on the same
-frozen prompt.
+Three local models have run the guided prompt so far, alongside two
+cloud anchors. Two more local runs (Gemma-12B, Qwen3.8-27B at effort
+medium) are still queued on the same frozen prompt.
 
 <!-- gen:mendel-guided:start -->
 | model | harness | score |
 |---|---|--:|
 | claude-sonnet-5 | claude-code | **97.5/100** |
+| [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | pi | **84/100** (partial) |
+| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **70/100** (partial) |
+| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **67.5/100** |
 | claude-haiku-4.5 | claude-code | **66.5/100** |
 <!-- gen:mendel-guided:end -->
