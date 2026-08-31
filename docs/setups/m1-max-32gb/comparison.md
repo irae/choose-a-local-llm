@@ -117,6 +117,14 @@ Cells are blank past a config's cap. *8K value.
 
 ## Mendel — agentic quality (issue-13 bake-off)
 
+Two independent tests of the same task (rubric unchanged, everything
+else different — never compare a score across them): **blind** (terse
+prompt, model must find the traps itself) and **guided** (numbered
+workflow, traps disclosed, tests instruction-following instead of trap
+discovery). Full rubric, scoring method, and the rest of the field
+(proprietary and other local models) live in the open-source
+[Mendel benchmark](https://github.com/irae/mendel/tree/benchmark).
+
 | model | config scored | score | status |
 |---|---|--:|---|
 | Qwen3.8-27B | mlx 4-bit, effort medium, `pi` harness | **79.5/100** | partial — closed at the ~4h time budget, 3/8 libraries done |
@@ -151,6 +159,30 @@ pending diff cleanly, with no lost or duplicated work. Closed at the
 project's soft time budget (~4 hours) with 3 of 8 libraries fully done
 and `rimraf` partially done; never reached `glob`, `chalk`, `tmp`, or
 `shasum`.
+
+**The guided prompt cuts wall clock sharply and shifts the failure mode
+from "never reached the trap" to "botched the disclosed trap anyway."**
+Qwen3.6-35B-A3B finished all 8 libraries in 75.6 minutes on the guided
+prompt — its blind run only got 42/100 by contrast — but still shipped
+two real bugs the guided prompt explicitly warned about: a stray
+`fs.readFileSync` call after only destructuring `{ globSync }` from
+`require('fs')` (undefined at runtime), and a chalk `enableColor:false`
+fix applied in one function but not the other, so disabled color still
+leaks ANSI codes half the time. Commit craft was the weak point: every
+commit used `--no-verify` with no hook failure to explain it, and 5 of
+8 commits combined multiple packages against the prompt's explicit
+one-package-per-commit rule.
+
+**Finding, unrelated to scoring: Qwen3.6-35B-A3B's MTP drafter is
+currently broken on this brew build.** `--spec-type draft-mtp
+--spec-draft-n-max 3` fails to allocate and leaves the whole
+llama-server backend in a broken state (every completion after that
+returns HTTP 500, even though `/health` still reports ready) —
+reproduced at both `-c 98304` and `-c 65536` with the GPU idle
+beforehand. The guided run above used the same command without the
+drafter flags, which loads and generates normally. The site's own
+`14.1/8.6 tok/s` decode figures for this config need a re-check against
+the current brew build before the next depth sweep.
 
 ## Open questions
 
