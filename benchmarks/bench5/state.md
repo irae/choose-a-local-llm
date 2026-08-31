@@ -78,4 +78,32 @@ nothing lost):
    blind score (79.5/100 partial); needs the guided run. Moved last
    per the owner.
 
+Owner added a 5th item on 2026-08-30 night, before Qwen3.8-27B medium:
+Gemma-12B LM Studio guided. Final queue: Qwen3.6-35B-A3B, Bonsai MLX,
+Qwen3.8-27B low, Gemma-12B LM Studio, Qwen3.8-27B medium.
+
+**Finding: the Qwen3.6-35B-A3B MTP drafter is currently broken on this
+brew llama.cpp build.** `--spec-type draft-mtp --spec-draft-n-max 3`
+fails to allocate (`Insufficient Memory`, Metal command buffer error),
+and once it fails the whole backend enters a broken state — every
+completion after that returns HTTP 500 `Compute error`, even though
+`/health` still reports ready. This reproduced at both `-c 98304` and
+`-c 65536`, with the GPU fully idle beforehand (plenty of free
+memory), so it is not a memory-pressure fluke. Dropping the drafter
+flags entirely loads and generates normally at the full `-c 98304`.
+The Mendel guided run for this model uses the no-drafter command
+below; this does not affect scoring (Mendel does not measure tok/s),
+but it does mean the site's own `14.1/8.6 tok/s` figures for this
+config are unverified against the current brew build and may need a
+re-check before the next depth sweep.
+
+Guided serving command actually used (no MTP):
+```
+llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
+  --alias qwen3.6-35b-a3b --no-mmproj --parallel 1 \
+  -ngl 999 -fa on -c 98304 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081
+```
+
 Blocks 6-9 from the original runbook wait until this queue is done.
