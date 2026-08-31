@@ -63,9 +63,9 @@ medium) are still queued on the same frozen prompt.
 <!-- gen:mendel-guided:start -->
 | model | harness | score |
 |---|---|--:|
-| claude-sonnet-5 | claude-code | **97.5/100** |
+| claude-sonnet-5 | claude-code | **98.5/100** |
 | [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | pi | **84/100** (partial) |
-| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **70/100** (partial) |
-| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **67.5/100** |
-| claude-haiku-4.5 | claude-code | **66.5/100** |
+| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **69.0/100** (partial) |
+| claude-haiku-4.5 | claude-code | **68/100** |
+| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **65.5/100** |
 <!-- gen:mendel-guided:end -->
