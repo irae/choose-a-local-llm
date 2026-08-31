@@ -41,11 +41,38 @@ unverified 37), 8.1 GB RSS (replaces 8.8 GB). Matches the bench4
   onto the owner's new "round 2" guided/blind commits, pushed to
   `origin/benchmark`. Imported into `docs/setups/m1-max-32gb/comparison.md`.
 
-### Block 5: Gemma-12B thinking-on EvalPlus resume — in progress
+### Block 5: Gemma-12B thinking-on EvalPlus resume — paused at 98/164
 
-Resumed from the 54/164 jsonl left by bench4, budget 12000.
+Resumed from the 54/164 jsonl left by bench4, budget 12000. Owner
+changed the plan (2026-08-30 night): stop this block, focus fully on
+Mendel guided runs for the rest of the night. Stopped cleanly at
+98/164, watcher stopped, LM Studio unloaded and server stopped. The
+jsonl resumes cleanly with the identical command:
 `RESULTS_BASE=benchmarks/bench3/results EVALPLUS_MAX_NEW_TOKENS=12000
 benchmarks/run-humaneval.sh gemma12-lmstudio-thinking-on
-google/gemma-4-12b`. Expect a high empty-completion rate (calibration:
-6/10 samples hit a 30000-token cap). Desired next state: keep polling
-until 164/164, evaluate, record honestly, then move to block 6.
+google/gemma-4-12b`. Desired next state: resume this once the Mendel
+guided queue is done (or the owner says so).
+
+## Plan change (owner's instruction, 2026-08-30 night): Mendel guided runs
+
+The owner added a new "guided" Mendel prompt/rubric track (already
+merged upstream on `../mendel`'s `benchmark` branch as the round-2
+guided/blind split: `prompt-guided.txt`, `results-guided.json`,
+`results-guided.csv`, `report-guided.html`). Owner wants every local
+model that already has a blind Mendel score, plus Qwen3.8-27B thinking
+low (unscored, new config), run against the guided prompt tonight.
+Order: best to worst by our own EvalPlus pass@1 plus score.
+
+Queue (Gemma-4-26B-A4B excluded — parked, reminder to owner: still
+parked, no benchmarks including Mendel):
+
+1. Qwen3.8-27B, mlx 4-bit, effort medium (0.939 plus) — already has a
+   blind score (79.5/100 partial); needs the guided run.
+2. Qwen3.6-35B-A3B, llama-server MoE (0.921 plus) — already has a
+   blind score (`qwen3.6-35b-a3b`, 42/100); needs the guided run.
+3. Ternary Bonsai-27B, mlx 2-bit (0.884 plus) — already has a blind
+   score (55/100 partial); needs the guided run.
+4. Qwen3.8-27B, effort low — new config, no EvalPlus score yet; runs
+   last since there is nothing to rank it against.
+
+Blocks 6-9 from the original runbook wait until this queue is done.
