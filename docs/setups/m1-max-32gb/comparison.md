@@ -196,6 +196,18 @@ diff was discarded rather than committed. It also never ran `eslint` or
 `prettier` itself, and never checked off a single `TASKS.md` item
 despite finishing 3 libraries.
 
+**Qwen3.8-27B at reasoning effort low had the best commit craft of the
+whole night**: all 6 commits `chore` type, one package per commit, no
+`--no-verify`, no `git add -A`, and it ran `eslint`/`prettier` itself
+(both came back clean). It survived one silent `pi` exit the same way
+the medium-effort blind run did — resumed in the same worktree with no
+lost work. It stopped for good when `pi` exited right before its own
+commit step on `rimraf`'s last site; the diff was clean and its own
+test run already showed 260/260 passing, so it was committed to
+reflect real finished work rather than discarded. It missed the
+disclosed `legacy-packages/mendel-requirify` `rimraf` reference and
+never ran the mandatory full-suite check after its 5th commit.
+
 ## Open questions
 
 - EvalPlus for Gemma-12B (MLX and LM Studio), the Bonsai prism-fork
