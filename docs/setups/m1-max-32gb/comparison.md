@@ -184,6 +184,18 @@ drafter flags, which loads and generates normally. The site's own
 `14.1/8.6 tok/s` decode figures for this config need a re-check against
 the current brew build before the next depth sweep.
 
+**Ternary Bonsai-27B's guided run had no crash at all — the first clean
+run of this model+backend all night** (both blind attempts hit the same
+`mlx_lm.server` tool-parser crash). Commit hygiene was excellent (no
+`--no-verify`, no `git add -A`, lockfile actually shrank), but it got
+stuck for over 45 minutes on a bug it introduced itself while fixing
+`rimraf`: a duplicate `const fs` declaration and a broken JSON edit (a
+stray comma where a removed `package.json` line had been). It never
+recovered, so the run was closed out at 3 of 8 libraries; the broken
+diff was discarded rather than committed. It also never ran `eslint` or
+`prettier` itself, and never checked off a single `TASKS.md` item
+despite finishing 3 libraries.
+
 ## Open questions
 
 - EvalPlus for Gemma-12B (MLX and LM Studio), the Bonsai prism-fork
