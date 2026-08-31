@@ -28,10 +28,10 @@ The tables below are drawn from the mirrored result files in
 <!-- gen:mendel-local:start -->
 | model | serving | score | worst defect |
 |---|---|--:|---|
-| [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | mlx_lm.server | **79.5/100** (partial) | medium |
-| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **55/100** (partial) | critical |
-| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **42/100** | critical |
-| [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **41/100** (partial) | critical |
+| [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | mlx_lm.server | **80.0/100** (partial) | medium |
+| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **58.0/100** (partial) | critical |
+| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **41.5/100** | critical |
+| [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **38/100** (partial) | critical |
 <!-- gen:mendel-local:end -->
 
 Run notes for the two partials are in the
@@ -44,13 +44,13 @@ on the rubric.
 <!-- gen:mendel-cloud:start -->
 | model | harness | score |
 |---|---|--:|
-| grok-4.6 | pi | **88/100** |
+| grok-4.6 | pi | **89.5/100** |
 | claude-opus-5 | claude-code | **87/100** |
-| gpt-5.6-luna | pi | **85/100** |
-| kimi-k3 | pi | **82/100** |
+| gpt-5.6-luna | pi | **84.5/100** |
 | claude-sonnet-5 | claude-code | **81.5/100** |
-| deepseek-v4-pro-0813 | pi | **72/100** |
-| gpt-5.6-sol | pi | **69/100** |
+| kimi-k3 | pi | **80.5/100** |
+| deepseek-v4-pro-0813 | pi | **70.5/100** |
+| gpt-5.6-sol | pi | **65.5/100** |
 | claude-haiku-4.5 | claude-code | **49.5/100** |
 <!-- gen:mendel-cloud:end -->
 
