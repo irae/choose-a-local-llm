@@ -64,15 +64,18 @@ low (unscored, new config), run against the guided prompt tonight.
 Order: best to worst by our own EvalPlus pass@1 plus score.
 
 Queue (Gemma-4-26B-A4B excluded — parked, reminder to owner: still
-parked, no benchmarks including Mendel):
+parked, no benchmarks including Mendel). Owner reordered on
+2026-08-30 night: Qwen3.8-27B medium moved to last (a first attempt
+started and was stopped with zero commits, worktree/branch cleaned up,
+nothing lost):
 
-1. Qwen3.8-27B, mlx 4-bit, effort medium (0.939 plus) — already has a
-   blind score (79.5/100 partial); needs the guided run.
-2. Qwen3.6-35B-A3B, llama-server MoE (0.921 plus) — already has a
+1. Qwen3.6-35B-A3B, llama-server MoE (0.921 plus) — already has a
    blind score (`qwen3.6-35b-a3b`, 42/100); needs the guided run.
-3. Ternary Bonsai-27B, mlx 2-bit (0.884 plus) — already has a blind
+2. Ternary Bonsai-27B, mlx 2-bit (0.884 plus) — already has a blind
    score (55/100 partial); needs the guided run.
-4. Qwen3.8-27B, effort low — new config, no EvalPlus score yet; runs
-   last since there is nothing to rank it against.
+3. Qwen3.8-27B, effort low — new config, no EvalPlus score yet.
+4. Qwen3.8-27B, mlx 4-bit, effort medium (0.939 plus) — already has a
+   blind score (79.5/100 partial); needs the guided run. Moved last
+   per the owner.
 
 Blocks 6-9 from the original runbook wait until this queue is done.
