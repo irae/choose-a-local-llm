@@ -29,8 +29,8 @@ test.** Never compare a score across the two tests.
   them because it is us who benchmarks the local models. The site's
   [Mendel page](../setups/m1-max-32gb/benchmarks/mendel.md) draws its
   tables from the mirrored CSVs, and the reports are served at
-  [/mendel/report.html](../mendel/report.html) and
-  [/mendel/report-guided.html](../mendel/report-guided.html).
+  <a href="../mendel/report.html" target="_blank" rel="noreferrer">/mendel/report.html</a> and
+  <a href="../mendel/report-guided.html" target="_blank" rel="noreferrer">/mendel/report-guided.html</a>.
 
 ## House rules for runs from this project
 

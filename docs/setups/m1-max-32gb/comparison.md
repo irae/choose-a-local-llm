@@ -132,8 +132,8 @@ discovery). Full rubric, scoring method, and the rest of the field
 
 Full tables for both Mendel tests are on the
 [Mendel page](./benchmarks/mendel.md), and the complete reports are
-hosted here: [blind](../../mendel/report.html) ·
-[guided](../../mendel/report-guided.html). The rubric and raw data live
+hosted here: <a href="../../mendel/report.html" target="_blank" rel="noreferrer">blind</a> ·
+<a href="../../mendel/report-guided.html" target="_blank" rel="noreferrer">guided</a>. The rubric and raw data live
 in the open-source
 [Mendel benchmark](https://github.com/irae/mendel/tree/benchmark).
 

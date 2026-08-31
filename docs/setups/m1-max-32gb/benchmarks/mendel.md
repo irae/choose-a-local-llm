@@ -15,9 +15,9 @@ it. Scores never compare across the two tests.
 
 The full reports are hosted here, generated from the Mendel data:
 
-- [Blind report](../../../mendel/report.html) — scoreboard, criteria
+- <a href="../../../mendel/report.html" target="_blank" rel="noreferrer">Blind report</a> — scoreboard, criteria
   matrix, cost tables, defect ledger.
-- [Guided report](../../../mendel/report-guided.html) — same format,
+- <a href="../../../mendel/report-guided.html" target="_blank" rel="noreferrer">Guided report</a> — same format,
   guided runs only.
 
 The tables below are drawn from the mirrored result files in
