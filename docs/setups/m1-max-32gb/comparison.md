@@ -119,6 +119,7 @@ Cells are blank past a config's cap. *8K value.
 
 | model | config scored | score | status |
 |---|---|--:|---|
+| Qwen3.8-27B | mlx 4-bit, effort medium, `pi` harness | **79.5/100** | partial — closed at the ~4h time budget, 3/8 libraries done |
 | Ternary Bonsai-27B | mlx 2-bit, `pi` harness | **55/100** | partial — blocked by an `mlx_lm.server` tool-parser crash (below) |
 
 Full rubric, scoring method, and the rest of the field (proprietary and
@@ -135,6 +136,18 @@ libraries (all correct on inspection), before it reached the
 Snitch's log across the crash window, no blocks recorded. This blocks
 Mendel scoring for any Bonsai config served through `mlx_lm.server`'s
 tool-calling path until the parser is fixed upstream.
+
+**Qwen3.8-27B showed much better process discipline than Bonsai**, on
+the same `mlx_lm.server` + `pi` stack: real `pnpm install` runs (the
+lockfile actually shrank), 13 package test runs and 7 lint runs before
+committing, correct `chore:` commit types, one package per commit. One
+run hit a different failure — `mlx_lm.server` logged a truncated
+tool-call warning and the `pi` client exited silently — but resuming
+`pi` in the same worktree picked up the existing commits and the
+pending diff cleanly, with no lost or duplicated work. Closed at the
+project's soft time budget (~4 hours) with 3 of 8 libraries fully done
+and `rimraf` partially done; never reached `glob`, `chalk`, `tmp`, or
+`shasum`.
 
 ## Open questions
 
