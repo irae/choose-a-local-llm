@@ -2,16 +2,66 @@
 
 The agentic tier of the quality flow, after EvalPlus and before
 polyglot: one real repo task with known traps, scored on a 100-point
-rubric — from the open-source [Mendel](https://github.com/irae/mendel)
-project, where the task, the rubric, and the full results live. Method
-and house rules: [Mendel in the methodology](../../../methodology/mendel).
+rubric — from the open-source
+[Mendel](https://github.com/irae/mendel/tree/benchmark) project, where
+the task, the rubric, and the raw results live. Method and house rules:
+[Mendel in the methodology](../../../methodology/mendel).
 
-| model | serving | score /100 | status |
+Mendel is two tests on the same task. The **blind** test gives a terse
+prompt and asks whether the model finds the traps by itself. The
+**guided** test hands every model the same structured plan with the
+traps disclosed, and measures instruction-following — all new runs use
+it. Scores never compare across the two tests.
+
+The full reports are hosted here, generated from the Mendel data:
+
+- [Blind report](../../../mendel/report.html) — scoreboard, criteria
+  matrix, cost tables, defect ledger.
+- [Guided report](../../../mendel/report-guided.html) — same format,
+  guided runs only.
+
+The tables below are drawn from the mirrored result files in
+`benchmarks/mendel/` (`npm run docs:tables`).
+
+## Local models — blind test
+
+<!-- gen:mendel-local:start -->
+| model | serving | score | worst defect |
 |---|---|--:|---|
-| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | llama-server | 42 | tested |
-| [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | llama-server | 41 | failed — stopped in a thinking loop; model parked, no re-run scheduled |
-| [Ternary-Bonsai-27B](./bonsai-27b.md) | MLX | pending | |
-| [Qwen3.8-27B](./qwen3.8-27b.md) | MLX, effort medium | pending | |
-| [Gemma-4-12B](./gemma-4-12b-it.md) | MLX (LM Studio) | pending | |
+| [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | mlx_lm.server | **79.5/100** (partial) | medium |
+| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **55/100** (partial) | critical |
+| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **42/100** | critical |
+| [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **41/100** (partial) | critical |
+<!-- gen:mendel-local:end -->
 
-For scale: cloud models score 49.5-88 on the same task.
+Run notes for the two partials are in the
+[comparison page's Mendel section](../comparison#mendel-agentic-quality-issue-13-bake-off):
+both closed early on `mlx_lm.server` failures or the time budget, not
+on the rubric.
+
+## Cloud reference — blind test
+
+<!-- gen:mendel-cloud:start -->
+| model | harness | score |
+|---|---|--:|
+| grok-4.6 | pi | **88/100** |
+| claude-opus-5 | claude-code | **87/100** |
+| gpt-5.6-luna | pi | **85/100** |
+| kimi-k3 | pi | **82/100** |
+| claude-sonnet-5 | claude-code | **81.5/100** |
+| deepseek-v4-pro-0813 | pi | **72/100** |
+| gpt-5.6-sol | pi | **69/100** |
+| claude-haiku-4.5 | claude-code | **49.5/100** |
+<!-- gen:mendel-cloud:end -->
+
+## Guided test
+
+Cloud anchors so far; the local models queue up next on the same
+frozen prompt.
+
+<!-- gen:mendel-guided:start -->
+| model | harness | score |
+|---|---|--:|
+| claude-sonnet-5 | claude-code | **97.5/100** |
+| claude-haiku-4.5 | claude-code | **66.5/100** |
+<!-- gen:mendel-guided:end -->

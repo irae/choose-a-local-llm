@@ -15,6 +15,83 @@ const EVALPLUS_START = '<!-- gen:evalplus-table:start -->'
 const EVALPLUS_END = '<!-- gen:evalplus-table:end -->'
 const DECODE_START = '<!-- gen:decode-summary:start -->'
 const DECODE_END = '<!-- gen:decode-summary:end -->'
+const MENDEL_LOCAL_START = '<!-- gen:mendel-local:start -->'
+const MENDEL_LOCAL_END = '<!-- gen:mendel-local:end -->'
+const MENDEL_CLOUD_START = '<!-- gen:mendel-cloud:start -->'
+const MENDEL_CLOUD_END = '<!-- gen:mendel-cloud:end -->'
+const MENDEL_GUIDED_START = '<!-- gen:mendel-guided:start -->'
+const MENDEL_GUIDED_END = '<!-- gen:mendel-guided:end -->'
+
+// Minimal CSV parser: handles quoted fields with embedded commas/quotes.
+function parseCsv(text) {
+  const rows = []
+  let row = [], field = '', inQ = false
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i]
+    if (inQ) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++ } else inQ = false
+      } else field += c
+    } else if (c === '"') inQ = true
+    else if (c === ',') { row.push(field); field = '' }
+    else if (c === '\n') { row.push(field); rows.push(row); row = []; field = '' }
+    else if (c !== '\r') field += c
+  }
+  if (field !== '' || row.length) { row.push(field); rows.push(row) }
+  const header = rows.shift()
+  return rows
+    .filter((r) => r.length > 1)
+    .map((r) => Object.fromEntries(header.map((h, i) => [h, r[i] ?? ''])))
+}
+
+// Mendel model id -> this setup's report page slug.
+const MENDEL_SLUGS = {
+  'qwen3.6-35b-a3b': 'qwen3.6-35b-a3b',
+  'gemma-4-26b-a4b': 'gemma-4-26b-a4b',
+  'prism-ml/Ternary-Bonsai-27B-mlx-2bit': 'bonsai-27b',
+  'mlx-community/Qwen3.8-27B-4bit': 'qwen3.8-27b',
+  'gemma-4-12b': 'gemma-4-12b-it',
+}
+
+function mendelName(r) {
+  const slug = MENDEL_SLUGS[r.model]
+  const short = r.model.replace(/^.*\//, '')
+  return slug ? `[${short}](../reports/${slug}.md)` : short
+}
+
+function mendelScore(r) {
+  return `**${r.score_total}/100**${r.partial === 'True' ? ' (partial)' : ''}`
+}
+
+function renderMendelLocal(rows) {
+  const header = [
+    '| model | serving | score | worst defect |',
+    '|---|---|--:|---|',
+  ]
+  const sev = (d) => (d.match(/^(critical|medium|minor)/) || [])[1] || (d ? 'see report' : 'none found')
+  const body = rows
+    .filter((r) => r.local === 'True')
+    .sort((a, b) => b.score_total - a.score_total)
+    .map((r) => `| ${mendelName(r)} | ${r.serving} | ${mendelScore(r)} | ${sev(r.defects)} |`)
+  return [...header, ...body].join('\n')
+}
+
+function renderMendelCloud(rows) {
+  const header = ['| model | harness | score |', '|---|---|--:|']
+  const body = rows
+    .filter((r) => r.local !== 'True')
+    .sort((a, b) => b.score_total - a.score_total)
+    .map((r) => `| ${mendelName(r)} | ${r.harness} | ${mendelScore(r)} |`)
+  return [...header, ...body].join('\n')
+}
+
+function renderMendelGuided(rows) {
+  const header = ['| model | harness | score |', '|---|---|--:|']
+  const body = rows
+    .sort((a, b) => b.score_total - a.score_total)
+    .map((r) => `| ${mendelName(r)} | ${r.harness} | ${mendelScore(r)} |`)
+  return [...header, ...body].join('\n')
+}
 
 function parseCtx(s) {
   const nxk = s.match(/(\d+)x([\d.]+)k/i)
@@ -212,9 +289,14 @@ for (const dataFile of dataFiles) {
     }
   }
 
+  const mendelBlind = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8'))
+  const mendelGuided = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8'))
   const typePages = [
     [`${setupDir}/benchmarks/evalplus.md`, EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(data)],
     [`${setupDir}/benchmarks/decode-speed.md`, DECODE_START, DECODE_END, renderDecodeSummary(data)],
+    [`${setupDir}/benchmarks/mendel.md`, MENDEL_LOCAL_START, MENDEL_LOCAL_END, renderMendelLocal(mendelBlind)],
+    [`${setupDir}/benchmarks/mendel.md`, MENDEL_CLOUD_START, MENDEL_CLOUD_END, renderMendelCloud(mendelBlind)],
+    [`${setupDir}/benchmarks/mendel.md`, MENDEL_GUIDED_START, MENDEL_GUIDED_END, renderMendelGuided(mendelGuided)],
   ]
   for (const [target, mstart, mend, block] of typePages) {
     const original = readFileSync(target, 'utf8')

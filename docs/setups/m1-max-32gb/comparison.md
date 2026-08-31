@@ -122,8 +122,11 @@ Cells are blank past a config's cap. *8K value.
 | Qwen3.8-27B | mlx 4-bit, effort medium, `pi` harness | **79.5/100** | partial — closed at the ~4h time budget, 3/8 libraries done |
 | Ternary Bonsai-27B | mlx 2-bit, `pi` harness | **55/100** | partial — blocked by an `mlx_lm.server` tool-parser crash (below) |
 
-Full rubric, scoring method, and the rest of the field (proprietary and
-other local models) live in the open-source
+Full tables for both Mendel tests are on the
+[Mendel page](./benchmarks/mendel.md), and the complete reports are
+hosted here: [blind](../../mendel/report.html) ·
+[guided](../../mendel/report-guided.html). The rubric and raw data live
+in the open-source
 [Mendel benchmark](https://github.com/irae/mendel/tree/benchmark).
 
 **Blocked: `mlx_lm.server`'s tool-call parser crashes on multi-line edit

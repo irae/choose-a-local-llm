@@ -4,7 +4,9 @@
   "private": true,
   "description": "Finding the best local coding model for your machine",
   "scripts": {
+    "predev": "node tools/sync-static.mjs",
     "dev": "vitepress dev docs",
+    "prebuild": "node tools/sync-static.mjs",
     "build": "vitepress build docs",
     "preview": "vitepress preview docs",
     "verify": "npm run build && node tools/check-links.mjs",
