@@ -7,12 +7,14 @@ run's runbook (`AGENT.md`), log (`state.md`), results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
-## bench6 — planned
+## bench6 — 2026-09-01 ([state](bench6/state.md), [results](bench6/results.md))
 
-- Runbook: [bench6/AGENT.md](bench6/AGENT.md). EvalPlus only: finish the
-  Gemma-12B thinking-on run, Qwen3.8-27B effort low, bonsai-off, and
-  re-check the Qwen3.6-35B-A3B MTP drafter. Mendel and Aider polyglot
-  move to run 7.
+- Runbook: [bench6/AGENT.md](bench6/AGENT.md). EvalPlus only: finished
+  the Gemma-12B thinking-on run (0.622/0.610, resumed from 98/164),
+  Qwen3.8-27B effort low (0.976/0.927), bonsai-off (0.927/0.902).
+  **Block 4 (Qwen3.6-35B-A3B MTP drafter re-check) deferred to run 7**
+  (owner's decision, 2026-09-01) — run 6 closes after block 3. Mendel
+  and Aider polyglot also move to run 7.
 - **Planning note for bench7 (owner's call, 2026-09-01):** bench6 scored
   EvalPlus for two new configs (Qwen3.8-27B effort low, bonsai-off)
   without a tok/s depth sweep first — the site rows carry stale

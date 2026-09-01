@@ -88,6 +88,48 @@ speed/memory cells copied from the medium row and marked `stale` per
 `AGENT.md` (no depth sweep this run — see the owner's planning note
 above and in `benchmarks/INDEX.md`). `npm run docs:tables` run.
 
+### Block 3: bonsai-off (Ternary Bonsai-27B MLX, thinking off) — in progress
+
+Killed the block-2 `mlx_lm.server` (Qwen3.8-27B) and started:
+```
+mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
+  --prompt-cache-size 2 --port 8081
+```
+Verified the `enable_thinking:false` toggle works: with thinking on,
+500 completion tokens / 1964 reasoning chars on a test prompt; with
+`{"chat_template_kwargs":{"enable_thinking":false}}`, 123 completion
+tokens / 0 reasoning chars, no `<think>` tag in content. Toggle is
+real. Calibrated with `benchmarks/calibrate.py bonsai-off
+prism-ml/Ternary-Bonsai-27B-mlx-2bit
+'{"chat_template_kwargs":{"enable_thinking":false}}'` (a fresh budget,
+not reusing the 10240 thinking-on figure).
+
+One calibration problem, HumanEval/76, hit the 30000-token cap without
+converging (`finish_reason: length`, took 1372s) even with thinking
+off — a genuine non-convergence case, not a harness artifact (server
+stayed responsive throughout: sustained 37-46% CPU, live response to a
+parallel test request). The other 9 problems all finished normally
+(88-662 completion tokens, 4-30s each). Per the EvalPlus methodology's
+non-convergence rule, used the longest *successful* completion (662,
+HumanEval/124) rather than the capped one for the budget calc:
+662 x 1.5 = 993, still below the 8192 floor, so budget = 8192. Expect
+and record a real non-zero empty rate for this config; not chasing it
+with a larger budget.
+
+Full run finished fast (~46 min codegen + eval — much faster than
+blocks 1-2, this model/config decodes quickly). No swap the whole run,
+plenty of free memory throughout. Final result: 164/164 evaluated,
+pass@1 base 0.927, pass@1 plus 0.902, 0/164 empty — HumanEval/76
+(the one calibration problem that didn't converge at 30000 tokens)
+converged fine within the 8192 budget on this pass, so the expected
+non-zero empty rate did not materialize; recorded honestly either way.
+Added `bonsai-mlx-off` row to `docs/setups/m1-max-32gb/models.json`
+next to `bonsai-mlx`, speed/memory copied from that row and marked
+`stale` (no depth sweep this run). `npm run docs:tables` run.
+
+**Block 3 is the last EvalPlus block in this run's plan.** Once block 4
+(the non-scoring MTP drafter re-check) is done, bench6 is complete.
+
 **Owner's planning note (2026-09-01):** the owner considers it a
 planning miss that bench6 scores EvalPlus for `qwen38-mlx-low` and
 `bonsai-mlx-off` (block 3) without a tok/s depth sweep first, ahead of

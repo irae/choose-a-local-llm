@@ -25,7 +25,7 @@ Two rules to read the tables by:
 <!-- gen:decode-summary:start -->
 | model | best curve | tok/s (shallow → deep) | at | gated by |
 |---|---|--:|--:|---|
-| [Ternary-Bonsai-27B](./bonsai-27b.md) | MLX, bounded cache, thinking on | 24.5 → 17.3 | 58k | mem |
+| [Ternary-Bonsai-27B](./bonsai-27b.md) | MLX, bounded cache, thinking off | 24.5† → 17.3† | 58k† | mem |
 | [Ternary-Bonsai-27B](./bonsai-27b.md) | GGUF⁴, q4, 2 slots, thinking on | 14.9 → 7.8 | 2x48k | speed |
 | [Gemma-4-12B](./gemma-4-12b-it.md) | MLX³, thinking off | 35.4 → 29.29 | 158k* | mem |
 | [Gemma-4-12B](./gemma-4-12b-it.md) | GGUF, MTP q8, thinking off | 14.0† → 8† | 11k† | speed |

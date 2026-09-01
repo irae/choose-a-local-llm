@@ -41,7 +41,7 @@ slow down faster but never OOM inside their window.
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Qwen3.8-27B | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
 | 2 | Qwen3.6-35B-A3B | 90k† | speed | 44† → 8.1† | 22.8 GB† | 0.939/0.921 |
-| 3 | Ternary-Bonsai-27B | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890 |
+| 3 | Ternary-Bonsai-27B | 58k† | mem | 24.5† → 17.3† | 22.5 GB† | 0.927/0.902 |
 | 4 | Gemma-4-12B | 158k* | mem | 35.4 → 29.29 | 8.1 GB | 0.909/0.872 |
 | 5 | Gemma-4-26B-A4B | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
 

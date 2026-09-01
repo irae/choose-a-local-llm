@@ -101,7 +101,10 @@ the updated `master`.
    `stale`). Run `npm run docs:tables`, update `results.md`, `state.md`,
    commit.
 
-4. **Qwen3.6-35B-A3B GGUF MTP drafter re-check.** Run 5 found that
+4. **Qwen3.6-35B-A3B GGUF MTP drafter re-check — deferred to run 7**
+   (owner's decision, 2026-09-01, after block 3 finished). Run 6 closes
+   after block 3. See `benchmarks/INDEX.md` and `state.md` for the
+   carry-over note. Run 5 found that
    `--spec-type draft-mtp --spec-draft-n-max 3` fails to allocate on the
    current brew llama.cpp build and leaves the backend returning HTTP
    500 (see `benchmarks/bench5/state.md`). The site row
@@ -132,6 +135,10 @@ Commit on `run6`.
 - GGUF MTP depth-floor re-runs (Qwen3.6 90K, Qwen3.8 ~19K, Gemma-12B
   ~11K) — compute-bound decays; a re-run is not expected to move them.
 - Gemma-4-26B-A4B — parked.
+- **Block 4 (Qwen3.6-35B-A3B GGUF MTP drafter re-check)** — deferred to
+  run 7 (owner's decision, 2026-09-01). Run 6 closes with blocks 1-3
+  done; the `qwen36-gguf-think` row's speed figures stay unverified
+  against the current brew build until run 7 checks the drafter.
 
 ## Report format for heartbeat checks
 

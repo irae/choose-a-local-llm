@@ -33,8 +33,11 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
-| 2 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890 |
-| 3 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890 |
+| 2 | Ternary-Bonsai-27B, MLX, bounded cache, thinking off | 58k† | mem | 24.5† → 17.3† | 22.5 GB† | 0.927/0.902 |
+| 3 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890 |
+| 4 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890 |
+
+† from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -49,7 +52,14 @@ mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#2 — Ternary-Bonsai-27B, GGUF⁴, q4, thinking on.** The scored config. Regenerate the bias file with the vendor's `make_kv_bias.sh` if `/tmp` was wiped — see [the benchmarks](../benchmarks/bonsai-27b.md).
+**#2 — Ternary-Bonsai-27B, MLX, bounded cache, thinking off.** Extra body per request: `{"chat_template_kwargs":{"enable_thinking":false}}`. Speed/memory copied from bonsai-mlx; no depth sweep this run (bench6 planning note, see benchmarks/INDEX.md).
+
+```bash
+mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
+  --prompt-cache-size 2 --port 8081
+```
+
+**#3 — Ternary-Bonsai-27B, GGUF⁴, q4, thinking on.** The scored config. Regenerate the bias file with the vendor's `make_kv_bias.sh` if `/tmp` was wiped — see [the benchmarks](../benchmarks/bonsai-27b.md).
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
@@ -61,7 +71,7 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --jinja --port 8081
 ```
 
-**#3 — Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on.**
+**#4 — Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on.**
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \

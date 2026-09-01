@@ -7,7 +7,7 @@ Earlier blocks: `benchmarks/bench4/results.md`, `benchmarks/bench3/results.md`.
 |---|---|---|---|---|---|---|
 | 1 | gemma12-lmstudio-thinking-on (resumed from 98/164) | 12000 | 0.622 | 0.610 | 61/164 | 2 tasks (161, 164) hit long reasoning passes (44 min, 45 min); confirmed active, not stalls |
 | 2 | qwen38-mlx-low | 8192 | 0.976 | 0.927 | 0/164 | none; `--reasoning-effort` CLI flag doesn't exist in mlx-lm 0.31.3, used `--chat-template-args` instead |
-| 3 | bonsai-off | | | | | |
+| 3 | bonsai-off | 8192 | 0.927 | 0.902 | 0/164 | one calibration problem (HumanEval/76) hit the 30000-token cap without converging even with thinking off; the full run's HumanEval/76 converged fine at the 8192 budget |
 
 ## Block 4: Qwen3.6-35B-A3B MTP drafter re-check (not EvalPlus, no table row)
 

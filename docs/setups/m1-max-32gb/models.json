@@ -205,6 +205,25 @@
    "note": "Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak."
   },
   {
+   "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking off",
+   "maxCtx": "58k",
+   "gatedBy": "mem",
+   "tokShallow": "24.5",
+   "tokDeep": "17.3",
+   "memory": "22.5 GB",
+   "evalplus": "0.927/0.902",
+   "id": "bonsai-mlx-off",
+   "hidden": false,
+   "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
+   "note": "Extra body per request: `{\"chat_template_kwargs\":{\"enable_thinking\":false}}`. Speed/memory copied from bonsai-mlx; no depth sweep this run (bench6 planning note, see benchmarks/INDEX.md).",
+   "stale": [
+    "maxCtx",
+    "tokShallow",
+    "tokDeep",
+    "memory"
+   ]
+  },
+  {
    "config": "Ternary-Bonsai-27B, GGUF⁴, q4, thinking on",
    "maxCtx": "33k",
    "gatedBy": "speed",
