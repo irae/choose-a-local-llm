@@ -6,8 +6,11 @@ with test feedback, docker against your servers. Hours per model.
 
 ## Requirements
 
-- The config passed the [EvalPlus gate](./evalplus.md) and has a
-  [Mendel](./mendel.md) result.
+- The config passed the [EvalPlus gate](./evalplus.md).
+- [Mendel](./mendel.md) is a soft filter, not a gate. The intent is to
+  send only the configs that do well on Mendel to polyglot, because
+  polyglot costs hours per model. The owner can decide to run polyglot
+  before Mendel is ready for a config, or for all gate survivors.
 - On this machine docker does not fit beside a loaded model: Aider runs
   driven from another computer against the Mac's server.
 - Serve through the exact config from the model's report page (the
