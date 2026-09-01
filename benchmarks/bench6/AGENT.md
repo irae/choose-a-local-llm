@@ -6,7 +6,8 @@ rules that still apply), `docs/methodology.md`, then
 `docs/methodology/checklist.md` and `docs/methodology/evalplus.md`.
 Execution rules are unchanged: STE prose, one model on the GPU at a
 time, port 8081, heartbeats at most 20 min apart, scoped memory watcher
-on every run, own branch (`run6`), never push, never publish.
+on every run, local run branch (`run6`, merged back into `master` when the run ends),
+never push, never publish.
 
 This run holds only EvalPlus and site-table work. **No Mendel runs in
 this run.** The Mendel guided queue and Aider polyglot move to run 7.
