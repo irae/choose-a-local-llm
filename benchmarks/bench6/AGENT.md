@@ -14,6 +14,17 @@ this run.** The Mendel guided queue and Aider polyglot move to run 7.
 Gemma-4-26B-A4B is PARKED (owner's decision): no benchmarks for it, in
 any block.
 
+## Before block 1: consolidate local branches
+
+The Mac may still hold local branches from earlier runs (for example
+`run5`). Before you create `run6`, run `git branch` and `git fetch
+--prune`. For every local branch other than `master`: if it has commits
+that `master` lacks (`git log master..<branch>`), rebase it onto
+`master`, fast-forward `master`, and verify (`npm run verify`); then
+delete the branch. If it has no such commits, delete it. Also check
+`git worktree list` and remove stray worktrees. Then create `run6` from
+the updated `master`.
+
 ## Blocks, in order
 
 1. **Resume Gemma-12B thinking-on EvalPlus from 98/164.** The jsonl in
