@@ -29,7 +29,8 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
-| 2 | Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k† | speed | 14.1† → 8† | 18.9 GB† | 0.982/0.939 |
+| 2 | Qwen3.8-27B, MLX, effort low | 28k† | mem | 17† → 15.3† | 22.0 GB† | 0.976/0.927 |
+| 3 | Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k† | speed | 14.1† → 8† | 18.9 GB† | 0.982/0.939 |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
@@ -46,7 +47,14 @@ mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --reasoning-effort medium --port 8081
 ```
 
-**#2 — Qwen3.8-27B, GGUF, MTP q8, effort medium.** pi id `qwen3.8-27b`.
+**#2 — Qwen3.8-27B, MLX, effort low.** Speed/memory copied from qwen38-mlx-medium; no depth sweep for this config yet (bench6 planning note, see benchmarks/INDEX.md).
+
+```bash
+mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
+  --chat-template-args '{"reasoning_effort":"low"}' --prompt-cache-size 2 --port 8081
+```
+
+**#3 — Qwen3.8-27B, GGUF, MTP q8, effort medium.** pi id `qwen3.8-27b`.
 
 ```bash
 llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \

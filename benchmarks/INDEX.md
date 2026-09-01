@@ -13,6 +13,16 @@ run's runbook (`AGENT.md`), log (`state.md`), results (`results.md`,
   Gemma-12B thinking-on run, Qwen3.8-27B effort low, bonsai-off, and
   re-check the Qwen3.6-35B-A3B MTP drafter. Mendel and Aider polyglot
   move to run 7.
+- **Planning note for bench7 (owner's call, 2026-09-01):** bench6 scored
+  EvalPlus for two new configs (Qwen3.8-27B effort low, bonsai-off)
+  without a tok/s depth sweep first — the site rows carry stale
+  speed/memory cells copied from a sibling config instead. The owner
+  considers this a planning miss (the usual order is memory ceiling,
+  then depth curve, then quality gate) but is keeping bench6's plan as
+  is since it is still a valid EvalPlus-only run. For bench7: schedule
+  the depth/tok-s sweep for both `qwen38-mlx-low` and `bonsai-mlx-off`
+  before, or instead of, treating their `stale` speed/memory fields as
+  settled.
 
 ## bench5 — 2026-08-30/31 ([state](bench5/state.md))
 

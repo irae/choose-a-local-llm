@@ -16,6 +16,25 @@
    "note": "Set the harness compaction threshold at ~26K."
   },
   {
+   "config": "Qwen3.8-27B, MLX, effort low",
+   "maxCtx": "28k",
+   "gatedBy": "mem",
+   "tokShallow": "17",
+   "tokDeep": "15.3",
+   "memory": "22.0 GB",
+   "evalplus": "0.976/0.927",
+   "id": "qwen38-mlx-low",
+   "hidden": false,
+   "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --chat-template-args '{\"reasoning_effort\":\"low\"}' --prompt-cache-size 2 --port 8081",
+   "note": "Speed/memory copied from qwen38-mlx-medium; no depth sweep for this config yet (bench6 planning note, see benchmarks/INDEX.md).",
+   "stale": [
+    "maxCtx",
+    "tokShallow",
+    "tokDeep",
+    "memory"
+   ]
+  },
+  {
    "config": "Qwen3.8-27B, GGUF, MTP q8, effort medium",
    "maxCtx": "19k",
    "gatedBy": "speed",
