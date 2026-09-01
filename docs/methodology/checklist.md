@@ -7,7 +7,8 @@ lives in [common rules](./common-rules.md) and
 
 ## Before the run
 
-1. Branch. No benchmark runs on `master` (see `AGENTS.md`).
+1. Branch locally for the run (for example `run6`); it merges back into
+   `master` when the run ends and is never pushed (see `AGENTS.md`).
 2. Check the GPU is free: `pgrep -fl "llama-server|mlx_lm"` and
    `~/.cache/lm-studio/bin/lms ps`. Stop leftovers.
 3. Check `sysctl iogpu.wired_limit_mb` is the documented limit (24000).

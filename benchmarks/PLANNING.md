@@ -25,7 +25,7 @@ and the methodology pages the runbook points to.
 2. Open with the reading list: the run's `state.md` history, the
    relevant `docs/methodology/` pages, and any forensics file that
    overrides older lore. Point, do not paste — the runbook stays short.
-3. State the execution rules the runner must not relearn: branch first,
+3. State the execution rules the runner must not relearn: local run branch first (merged back to `master` at the end, never pushed),
    one model on the GPU at a time, port, heartbeat cadence, the scoped
    memory watcher on every run, commit as results land, never push,
    never publish.

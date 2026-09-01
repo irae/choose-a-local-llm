@@ -84,12 +84,14 @@ Benchmark work:
   master.** Git enforces this: a branch lives in one worktree at a time, so
   from any other worktree the merge is refused. If you are not on master,
   commit on your branch and stop.
-- **No one develops or runs benchmarks on master.** Before a benchmark run
-  starts, create and check out a branch for it (for example `run4`). Commit
-  the run's progress there. Merge to master only when the run finishes and
-  its results are ready to publish. This keeps master free for site work and
-  lets a benchmark run and site work proceed at the same time, each in its
-  own worktree.
+- **A run branch is temporary and local; origin holds only `master`.**
+  Planning a run (writing `bench<N>/AGENT.md`) happens on `master`.
+  When the run starts on the benchmark machine, create a local branch
+  for it (for example `run6`), commit the run's progress there, and
+  merge it back into `master` when the run finishes. Never push a run
+  branch to origin. The branch exists only so a benchmark run and site
+  work can proceed at the same time, each in its own worktree; all
+  communication between agents goes through `master`.
 - **No superseded number on a current page.** Not in a table, not in prose.
   Old figures move to the setup's `historical.md`, which opens with a red
   warning telling readers not to use them. Only the `benchmarks/*.md` pages
