@@ -40,6 +40,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 | 9 | Gemma-4-12B, GGUF, MTP q8, thinking off | 11k† | speed | 14.0† → 8† | 8.2 GB† | 0.909/0.872 |
 | 10 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
 | 11 | Gemma-4-26B-A4B, GGUF, MTP q8 | 24k† | speed | 23.5† → 8† | 15.4 GB† | 0.713/0.701 |
+| 12 | Gemma-4-12B, MLX³ | 158k* | mem | 35.4 → 29.29 | 8.1 GB | 0.622/0.610 |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->

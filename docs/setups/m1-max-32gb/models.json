@@ -116,7 +116,7 @@
    "tokShallow": "35.4",
    "tokDeep": "29.29",
    "memory": "8.1 GB",
-   "evalplus": "pending",
+   "evalplus": "0.622/0.610",
    "id": "gemma12-lmstudio-think",
    "hidden": false,
    "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y",

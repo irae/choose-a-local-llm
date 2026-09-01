@@ -56,48 +56,115 @@ Codegen: HumanEval/50 @ google/gemma-4-12b (resuming from 1)
 Codegen: HumanEval/51 @ google/gemma-4-12b (resuming from 1)
 Codegen: HumanEval/52 @ google/gemma-4-12b (resuming from 1)
 Codegen: HumanEval/53 @ google/gemma-4-12b (resuming from 1)
-Codegen: HumanEval/54 @ google/gemma-4-12b
-Codegen: HumanEval/55 @ google/gemma-4-12b
-Codegen: HumanEval/56 @ google/gemma-4-12b
-Codegen: HumanEval/57 @ google/gemma-4-12b
-Codegen: HumanEval/58 @ google/gemma-4-12b
-Codegen: HumanEval/59 @ google/gemma-4-12b
-Codegen: HumanEval/60 @ google/gemma-4-12b
-Codegen: HumanEval/61 @ google/gemma-4-12b
-Codegen: HumanEval/62 @ google/gemma-4-12b
-Codegen: HumanEval/63 @ google/gemma-4-12b
-Codegen: HumanEval/64 @ google/gemma-4-12b
-Codegen: HumanEval/65 @ google/gemma-4-12b
-Codegen: HumanEval/66 @ google/gemma-4-12b
-Codegen: HumanEval/67 @ google/gemma-4-12b
-Codegen: HumanEval/68 @ google/gemma-4-12b
-Codegen: HumanEval/69 @ google/gemma-4-12b
-Codegen: HumanEval/70 @ google/gemma-4-12b
-Codegen: HumanEval/71 @ google/gemma-4-12b
-Codegen: HumanEval/72 @ google/gemma-4-12b
-Codegen: HumanEval/73 @ google/gemma-4-12b
-Codegen: HumanEval/74 @ google/gemma-4-12b
-Codegen: HumanEval/75 @ google/gemma-4-12b
-Codegen: HumanEval/76 @ google/gemma-4-12b
-Codegen: HumanEval/77 @ google/gemma-4-12b
-Codegen: HumanEval/78 @ google/gemma-4-12b
-Codegen: HumanEval/79 @ google/gemma-4-12b
-Codegen: HumanEval/80 @ google/gemma-4-12b
-Codegen: HumanEval/81 @ google/gemma-4-12b
-Codegen: HumanEval/82 @ google/gemma-4-12b
-Codegen: HumanEval/83 @ google/gemma-4-12b
-Codegen: HumanEval/84 @ google/gemma-4-12b
-Codegen: HumanEval/85 @ google/gemma-4-12b
-Codegen: HumanEval/86 @ google/gemma-4-12b
-Codegen: HumanEval/87 @ google/gemma-4-12b
-Codegen: HumanEval/88 @ google/gemma-4-12b
-Codegen: HumanEval/89 @ google/gemma-4-12b
-Codegen: HumanEval/90 @ google/gemma-4-12b
-Codegen: HumanEval/91 @ google/gemma-4-12b
-Codegen: HumanEval/92 @ google/gemma-4-12b
-Codegen: HumanEval/93 @ google/gemma-4-12b
-Codegen: HumanEval/94 @ google/gemma-4-12b
-Codegen: HumanEval/95 @ google/gemma-4-12b
-Codegen: HumanEval/96 @ google/gemma-4-12b
-Codegen: HumanEval/97 @ google/gemma-4-12b
+Codegen: HumanEval/54 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/55 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/56 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/57 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/58 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/59 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/60 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/61 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/62 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/63 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/64 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/65 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/66 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/67 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/68 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/69 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/70 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/71 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/72 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/73 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/74 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/75 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/76 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/77 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/78 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/79 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/80 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/81 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/82 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/83 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/84 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/85 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/86 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/87 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/88 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/89 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/90 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/91 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/92 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/93 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/94 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/95 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/96 @ google/gemma-4-12b (resuming from 1)
+Codegen: HumanEval/97 @ google/gemma-4-12b (resuming from 1)
 Codegen: HumanEval/98 @ google/gemma-4-12b
+Codegen: HumanEval/99 @ google/gemma-4-12b
+Codegen: HumanEval/100 @ google/gemma-4-12b
+Codegen: HumanEval/101 @ google/gemma-4-12b
+Codegen: HumanEval/102 @ google/gemma-4-12b
+Codegen: HumanEval/103 @ google/gemma-4-12b
+Codegen: HumanEval/104 @ google/gemma-4-12b
+Codegen: HumanEval/105 @ google/gemma-4-12b
+Codegen: HumanEval/106 @ google/gemma-4-12b
+Codegen: HumanEval/107 @ google/gemma-4-12b
+Codegen: HumanEval/108 @ google/gemma-4-12b
+Codegen: HumanEval/109 @ google/gemma-4-12b
+Codegen: HumanEval/110 @ google/gemma-4-12b
+Codegen: HumanEval/111 @ google/gemma-4-12b
+Codegen: HumanEval/112 @ google/gemma-4-12b
+Codegen: HumanEval/113 @ google/gemma-4-12b
+Codegen: HumanEval/114 @ google/gemma-4-12b
+Codegen: HumanEval/115 @ google/gemma-4-12b
+Codegen: HumanEval/116 @ google/gemma-4-12b
+Codegen: HumanEval/117 @ google/gemma-4-12b
+Codegen: HumanEval/118 @ google/gemma-4-12b
+Codegen: HumanEval/119 @ google/gemma-4-12b
+Codegen: HumanEval/120 @ google/gemma-4-12b
+Codegen: HumanEval/121 @ google/gemma-4-12b
+Codegen: HumanEval/122 @ google/gemma-4-12b
+Codegen: HumanEval/123 @ google/gemma-4-12b
+Codegen: HumanEval/124 @ google/gemma-4-12b
+Codegen: HumanEval/125 @ google/gemma-4-12b
+Codegen: HumanEval/126 @ google/gemma-4-12b
+Codegen: HumanEval/127 @ google/gemma-4-12b
+Codegen: HumanEval/128 @ google/gemma-4-12b
+Codegen: HumanEval/129 @ google/gemma-4-12b
+Codegen: HumanEval/130 @ google/gemma-4-12b
+Codegen: HumanEval/131 @ google/gemma-4-12b
+Codegen: HumanEval/132 @ google/gemma-4-12b
+Codegen: HumanEval/133 @ google/gemma-4-12b
+Codegen: HumanEval/134 @ google/gemma-4-12b
+Codegen: HumanEval/135 @ google/gemma-4-12b
+Codegen: HumanEval/136 @ google/gemma-4-12b
+Codegen: HumanEval/137 @ google/gemma-4-12b
+Codegen: HumanEval/138 @ google/gemma-4-12b
+Codegen: HumanEval/139 @ google/gemma-4-12b
+Codegen: HumanEval/140 @ google/gemma-4-12b
+Codegen: HumanEval/141 @ google/gemma-4-12b
+Codegen: HumanEval/142 @ google/gemma-4-12b
+Codegen: HumanEval/143 @ google/gemma-4-12b
+Codegen: HumanEval/144 @ google/gemma-4-12b
+Codegen: HumanEval/145 @ google/gemma-4-12b
+Codegen: HumanEval/146 @ google/gemma-4-12b
+Codegen: HumanEval/147 @ google/gemma-4-12b
+Codegen: HumanEval/148 @ google/gemma-4-12b
+Codegen: HumanEval/149 @ google/gemma-4-12b
+Codegen: HumanEval/150 @ google/gemma-4-12b
+Codegen: HumanEval/151 @ google/gemma-4-12b
+Codegen: HumanEval/152 @ google/gemma-4-12b
+Codegen: HumanEval/153 @ google/gemma-4-12b
+Codegen: HumanEval/154 @ google/gemma-4-12b
+Codegen: HumanEval/155 @ google/gemma-4-12b
+Codegen: HumanEval/156 @ google/gemma-4-12b
+Codegen: HumanEval/157 @ google/gemma-4-12b
+Codegen: HumanEval/158 @ google/gemma-4-12b
+Codegen: HumanEval/159 @ google/gemma-4-12b
+Codegen: HumanEval/160 @ google/gemma-4-12b
+Codegen: HumanEval/161 @ google/gemma-4-12b
+Codegen: HumanEval/162 @ google/gemma-4-12b
+Codegen: HumanEval/163 @ google/gemma-4-12b
+humaneval •100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 164/164 • 3:59:10
+/Users/irae/code/choose-a-local-llm/benchmarks/bench3/results/gemma12-lmstudio-thinking-on/humaneval/google--gemma-4-12b_openai_temp_0.0.jsonl
