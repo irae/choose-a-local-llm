@@ -7,11 +7,35 @@ run's runbook (`AGENT.md`), log (`state.md`), results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
-## bench5 — planned
+## bench6 — planned
 
-- Runbook: [bench5/AGENT.md](bench5/AGENT.md). Finish the Gemma-12B
-  thinking-on EvalPlus, Qwen3.8-27B thinking low, bonsai-off, the
-  Mendel benchmark (before polyglot), then Aider polyglot.
+- Runbook: [bench6/AGENT.md](bench6/AGENT.md). EvalPlus only: finish the
+  Gemma-12B thinking-on run, Qwen3.8-27B effort low, bonsai-off, and
+  re-check the Qwen3.6-35B-A3B MTP drafter. Mendel and Aider polyglot
+  move to run 7.
+
+## bench5 — 2026-08-30/31 ([state](bench5/state.md))
+
+- **Bonsai fork depth sweeps** (`bonsai-fork-single`, `bonsai-fork-2x`):
+  speed floor 33K used tokens at 7.9 / 7.8 tok/s, 9.6 / 10.9 GB RSS, no
+  compression or swap. Daggers cleared.
+- **Gemma-12B LM Studio shallow probe**: 35.4 tok/s (replaces the
+  unverified 37), 8.1 GB RSS (replaces 8.8 GB).
+- **Mendel blind rows**: Bonsai MLX 55/100 partial, Qwen3.8-27B medium
+  79.5/100 partial. **Mendel guided rows** (prompt v2.1): Qwen3.6-35B-A3B
+  67.5, Bonsai MLX 70 partial, Qwen3.8-27B low 84 partial. All rows were
+  re-scored from branches and session logs on 2026-08-31; the report
+  and the site mirror (`benchmarks/mendel/`) carry the current numbers.
+- **`pi -p` retired for Mendel**: it exits on the first `length`/error
+  stop. Runs now go through `run-pi-rpc.mjs` (`pi --mode rpc`) with a
+  fixed nudge policy. Two `mlx_lm.server` failure classes recorded
+  (tool-call parser crash on embedded quotes; truncated tool-call
+  warning followed by a silent `pi` exit).
+- **Qwen3.6-35B-A3B MTP drafter fails to allocate** on the current brew
+  llama.cpp build and leaves the backend returning HTTP 500 while
+  `/health` stays ready. The guided Mendel run used the no-drafter
+  command. Re-check planned in bench6.
+- Gemma-12B thinking-on EvalPlus paused at 98/164 — resumes in bench6.
 
 ## bench4 — 2026-08-29/30 ([state](bench4/state.md), [results](bench4/results.md))
 
