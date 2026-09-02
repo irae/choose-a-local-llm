@@ -370,7 +370,38 @@ only this one.
   pushed too. Worktree removed. Did not run `pkill -f "Mendel
   Daemon"` — `claude-haiku-4-5` blind scoring and `claude-sonnet-4-5`
   blind may still be in flight.
-- Queue is now fully started: items 8-13 have all run. Remaining work
-  for a future check: confirm items 10 (`claude-haiku-4-5` blind) and
-  11 (`claude-sonnet-4-5` blind) are scored, then run the AGENT.md
-  closing/stop-and-sync steps.
+- Queue item 10 done. `claude-haiku-4-5` blind (v1.1): score 34/100.
+  Weak run overall, consistent with a small/fast model on the harder
+  blind prompt. Only 6 of 8 libraries functionally correct: trap A HIT
+  (critical) — `apply-extra-options.js`'s naive `.then()` on
+  `fs.promises.glob()` throws `TypeError` (same failure mode as items
+  9 and 12). Trap B missed: `mendel-requirify` still requires `rimraf`
+  in two test files and its `package.json`, never touched. A second
+  critical defect: root `package.json` still declares BOTH `rimraf`
+  and `tmp` — neither was ever removed, no `pnpm install` ran at any
+  point, lockfile shows zero change at all (RUBRIC.md scores
+  never-removing-root-deps-at-all as its own critical defect, separate
+  from trap B). `node_modules` pruning scored 0/8 (no install
+  attempted, verified or not). Chalk correct (plain `util.styleText`,
+  no forced colour). Trap C avoided (no exit hook added). Commit craft
+  weak: all 8 commits used `fix`, not `chore` (0/4), 5 of 8
+  multi-package, and 10 separate `git add -A` calls (a real
+  commit-craft violation, not just a missed convention). No `TASKS.md`
+  was ever created — the coarsest possible outcome, scored 0/4 (worse
+  than "coarse or unmaintained", since there was no list at all).
+  Lint clean on re-run but hook-only, model never self-ran the tools —
+  capped at 3/5. Only 2 full-suite runs across 8 commits, no visible
+  narrow per-package runs. Truncation share 70% (highest in the blind
+  queue this run alongside item 12's 69%). Full test suite is clean
+  standalone regardless (674/674, 1 skip) since no unit test covers
+  trap A's file. Zero nudges. Wall clock 10.2 min, cost $1.05 metered
+  (`probe-plan.mjs` returned "no plan involved", same as items 8, 9,
+  and 12). Scored, committed (`c51f802` in `mendel-benchmark`), and
+  pushed to mendel `benchmark`; run branch
+  `anthropic-claude-haiku-4-5-high-issue-13` pushed too. Worktree
+  removed. Did not run `pkill -f "Mendel Daemon"` — `claude-sonnet-4-5`
+  blind (item 11) was still in flight at the time.
+- Queue is now fully started: items 8-13 have all run, and 8, 9, 10,
+  12, 13 are scored and pushed. Remaining work for a future check:
+  confirm item 11 (`claude-sonnet-4-5` blind) finishes and is scored,
+  then run the AGENT.md closing/stop-and-sync steps.
