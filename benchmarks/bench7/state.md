@@ -176,3 +176,11 @@ into local `master` now (not pushed).
   to origin per the 2026-08-31 policy (run branches are pushed now).
 - Worker worktree removed, Mendel Daemon/server/memwatch confirmed
   stopped. Moving to block 2 run 3 (blind high).
+
+## Block 4 — Qwen3.6-35B-A3B (llama-server)
+
+- 23:10 local: server up (`llama-server -hf
+  unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`, no MTP drafter flags
+  per AGENT.md), loaded from local cache in <1s, no download. Warmup
+  OK, memwatch running.
+- 23:12 local: blind high started (`qwen3.6-35b-a3b-high-issue-13`).
