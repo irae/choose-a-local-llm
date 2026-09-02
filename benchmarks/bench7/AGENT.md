@@ -5,12 +5,15 @@ else. Write all prose in ASD-STE100 Simplified Technical English.
 
 ## Read first
 
-1. `docs/methodology/checklist.md` — the run loop.
-2. `docs/methodology/mendel.md` — house rules for Mendel runs.
-3. `docs/methodology/server-lore.md` — open it FIRST when a run stalls.
-4. `../mendel-benchmark/benchmark/PLAN.md` — how to run and how to
+1. `benchmarks/bench7/state.md` — what earlier sessions of this run
+   already did. Resume where its handing-over section says; never
+   redo a scored run (the worker aborts on an existing branch).
+2. `docs/methodology/checklist.md` — the run loop.
+3. `docs/methodology/mendel.md` — house rules for Mendel runs.
+4. `docs/methodology/server-lore.md` — open it FIRST when a run stalls.
+5. `../mendel-benchmark/benchmark/PLAN.md` — how to run and how to
    score. It is the law for everything inside the Mendel repo.
-5. `../mendel-benchmark/benchmark/RUBRIC.md` — the scoring rubric.
+6. `../mendel-benchmark/benchmark/RUBRIC.md` — the scoring rubric.
 
 ## Step 1 — one-time cleanup of this machine (2026-09-02)
 

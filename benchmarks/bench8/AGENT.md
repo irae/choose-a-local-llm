@@ -6,12 +6,15 @@ Technical English.
 
 ## Read first
 
-1. `docs/methodology/mendel.md` — house rules for Mendel runs.
-2. `../mendel-benchmark/benchmark/PLAN.md` — how to run and how to
+1. `benchmarks/bench8/state.md` — what earlier sessions of this run
+   already did. Resume where its last section says; never redo a
+   scored run (the worker aborts on an existing branch).
+2. `docs/methodology/mendel.md` — house rules for Mendel runs.
+3. `../mendel-benchmark/benchmark/PLAN.md` — how to run and how to
    score. It is the law for everything inside the Mendel repo. Read
    "Plan accounting" with care: two providers here run on subscription
    plans.
-3. `../mendel-benchmark/benchmark/RUBRIC.md` — the scoring rubric.
+4. `../mendel-benchmark/benchmark/RUBRIC.md` — the scoring rubric.
 
 There is no GPU work on this box: no server to start, no mem-watch, no
 wired limit. The models are remote APIs that pi is already logged into
