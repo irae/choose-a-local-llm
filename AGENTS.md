@@ -92,6 +92,17 @@ Benchmark work:
   branch to origin. The branch exists only so a benchmark run and site
   work can proceed at the same time, each in its own worktree; all
   communication between agents goes through `master`.
+- **The main worktree belongs to the coordinator.** A runner never works
+  in the main worktree of this repo or of `../mendel`. The runner
+  creates a fresh sibling worktree for its run branch (for example
+  `git worktree add ../choose-a-local-llm-run<N> -b run<N>`) and works
+  only there. Mendel runs use two mendel worktrees: the benchmark
+  branch checkout (`../mendel-benchmark`) and the per-model worktrees
+  that `run-worker.sh` creates. When the run closes, the runner removes
+  its worktrees (`git worktree remove`, then `git worktree prune`) and
+  keeps only the branches. Never reuse an old worktree — gitignored
+  artifacts stay behind in it. The merge of a run branch into `master`
+  happens from the master worktree only (see the merge rule above).
 - **No superseded number on a current page.** Not in a table, not in prose.
   Old figures move to the setup's `historical.md`, which opens with a red
   warning telling readers not to use them. Only the `benchmarks/*.md` pages

@@ -25,7 +25,11 @@ and the methodology pages the runbook points to.
 2. Open with the reading list: the run's `state.md` history, the
    relevant `docs/methodology/` pages, and any forensics file that
    overrides older lore. Point, do not paste — the runbook stays short.
-3. State the execution rules the runner must not relearn: local run branch first (merged back to `master` at the end, never pushed),
+3. State the execution rules the runner must not relearn: local run
+   branch in a fresh sibling worktree (the main worktree stays with the
+   coordinator; the coordinator merges the branch into `master` from
+   there when the run closes; never pushed), worktree teardown at run
+   end (see the worktree rule in `AGENTS.md`, standing rules),
    one model on the GPU at a time, port, heartbeat cadence, the scoped
    memory watcher on every run, commit as results land, never push,
    never publish.
