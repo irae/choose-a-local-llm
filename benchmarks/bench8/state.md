@@ -340,3 +340,37 @@ only this one.
   Worktree removed, no stray process for this run (did not run
   `pkill -f "Mendel Daemon"`, since `claude-haiku-4-5` blind and
   `glm-5p3-flash` guided were still in flight at the time).
+- Queue item 13 done. `glm-5p3-flash` guided (v3.0): score 98/100.
+  All 8 libraries replaced, all three traps handled: trap A avoided
+  (`SYNC OK`), trap B fixed (`mendel-requirify` rimraf refs replaced
+  across two commits), trap C avoided by design — the model's own
+  `TASKS.md` notes the debug-manifest dump is "intentionally left
+  behind, same as tmp's default", i.e. it read the issue's `tmp`
+  claim correctly and chose not to add the buggy exit hook. Chalk
+  uses plain `util.styleText`, no forced level, per the v3.0
+  Node-defaults rule. Lint clean, model self-ran `prettier --check`
+  and `eslint .` after its last edits. All 18 commits `chore`-typed,
+  one package each, no multi-package, no `--no-verify`/`git add -A`,
+  root devDeps removed via verified `pnpm remove -w`. Full suite
+  clean standalone (680/680, 1 skip), 14 full-suite runs across 18
+  commits (a handful of commit batches ran without an immediately
+  preceding full run, short of the guided "before every commit" bar,
+  hence 9/10 not 10/10). Task list textbook progressive, per-file
+  sub-items grouped by package, ticked per commit. Zero nudges, zero
+  self-repair commits. Truncation share 66%, but by deliberate
+  `| tail -N` noise reduction on the model's own test/build output,
+  not lossy harness capping — scored full marks per the rubric's
+  "truncation is about effect, not just the pipe count" note (same
+  precedent as `deepseek-v4-flash-0731`'s 75%-truncation full-score
+  guided row). No defects. Wall clock 24.0 min, cost $0.25 metered
+  (`no plan involved`, fireworks is metered). Scored, committed
+  (`c2807c4` in `mendel-benchmark`), and pushed to mendel `benchmark`;
+  run branch
+  `accounts-fireworks-models-glm-5p3-flash-high-guided-v3-issue-13`
+  pushed too. Worktree removed. Did not run `pkill -f "Mendel
+  Daemon"` — `claude-haiku-4-5` blind scoring and `claude-sonnet-4-5`
+  blind may still be in flight.
+- Queue is now fully started: items 8-13 have all run. Remaining work
+  for a future check: confirm items 10 (`claude-haiku-4-5` blind) and
+  11 (`claude-sonnet-4-5` blind) are scored, then run the AGENT.md
+  closing/stop-and-sync steps.
