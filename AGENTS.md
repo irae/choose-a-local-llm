@@ -122,6 +122,10 @@ Benchmark work:
   keeps only the branches. Never reuse an old worktree — gitignored
   artifacts stay behind in it. The merge of a run branch into `master`
   happens from the master worktree only (see the merge rule above).
+- **Never download a model.** Every model in the cache was chosen,
+  downloaded, and tested by the owner; results depend on those exact
+  files, revisions, and quants. A missing model means STOP and ask the
+  owner — never pull it yourself. See `docs/methodology/common-rules.md`.
 - **Never run a bare `git stash`.** The stash list lives in the shared
   `.git` directory, not per-worktree, so parallel agents clobber or
   cross-apply each other's stashes. Save work in progress as a WIP

@@ -96,6 +96,9 @@ list`, and `ps aux | grep -iE 'mendel|mlx|llama'`, and record in
   the stop-and-sync steps in `AGENTS.md` (merge to `master`, push
   `master`, delete the branch, remove the worktree — that one push is
   required).
+- Never download a model. Every model is already in the cache, in the
+  exact tested revision and quant. If one is missing, STOP and ask the
+  owner.
 - One model on the GPU at a time. Port 8081. No parallel workers.
 - Before the first run: step 1 above, confirm the GPU is
   idle, confirm `sysctl iogpu.wired_limit_mb` is 24000.
