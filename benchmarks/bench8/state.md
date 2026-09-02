@@ -54,3 +54,21 @@ budget). Runbook: `AGENT.md`. Note deviations here as they happen.
   Worktree cleaned, no stray daemon.
 - Starting queue item 3: `accounts/fireworks/models/kimi-k3` pi blind
   high.
+- Queue item 3 done. `kimi-k3` blind (v1.1): score 93.5/100. All 8
+  libraries replaced, trap A and trap C avoided, chalk handled per
+  v1.1 Node-defaults rule, lint clean, all commits `chore`-typed and
+  split per package, root devDeps removed cleanly. mendel-pipeline
+  showed 6 flaky timeouts under load in the full-suite run; confirmed
+  clean standalone (2/2), not a regression. Trap B missed: the model
+  found the `mendel-requirify` `rimraf` references (noted in its own
+  TASKS.md) but judged them out of scope and left them — medium
+  defect. Zero nudges. Wall clock 20.3 min, cost $2.13 metered.
+  Scored, committed (`3eb0fb8`), and pushed to mendel `benchmark`; run
+  branch pushed too. Worktree cleaned, no stray daemon. Also fixed a
+  scoring-script bug this run surfaced: the existing `v1.0` kimi-k3
+  row shares the bare `model` field with this `v1.1` row, so any
+  future lookup by `model` alone must also filter by
+  `prompt_version`/`branch` — the CSV append hit this and was
+  corrected before commit.
+- Starting queue item 4: `accounts/fireworks/models/deepseek-v4-pro-0813`
+  pi blind high.
