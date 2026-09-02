@@ -73,3 +73,49 @@ Runbook: `AGENT.md`. Note deviations here as they happen.
   model (see SESSIONS.md blind-runs note on the first Bonsai attempt).
   Per-request exception, not a server crash; server stayed up and kept
   serving. No restart needed.
+
+- 11:51 local: block 2 run 1 ended on the runner's wall-clock hard stop
+  (300 min), partial. 3/8 libraries done (uuid, xtend, urlsafe-base64),
+  rimraf partially done but missed the mendel-requirify trap reference.
+  One self-inflicted JSON syntax break in
+  `mendel-transform-less/package.json` cost 4 commit attempts (~40
+  min) before the model fixed it itself. Scored (score_total=55),
+  committed+pushed to mendel benchmark (merged cleanly with run8's
+  concurrent pushes, now at @97f4977). Worktree removed, server/watcher/
+  daemon stopped and confirmed idle.
+
+## Handing over — stopped here on request (2026-09-02, ~11:55 local)
+
+Stopped at a clean boundary: block 2 run 1 is done, scored, and pushed.
+**Nothing else was started.** To resume, pick up at block 2 run 2 per
+`AGENT.md`:
+
+1. `git -C ../mendel pull origin benchmark` first (other agents/run8
+   have been pushing concurrently — expect commits past `97f4977`).
+2. Serve: `mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit
+   --prompt-cache-size 2 --port 8081`, warmup, restart the mem-watch
+   watcher.
+3. `./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi guided low`
+   — **watch for the out-prefix collision bug**: this run's output
+   files share the same name as run 1's (no bench-type suffix), so the
+   raw runner.log/meta.json for run 1 will be overwritten (already
+   scored and committed, so harmless, but don't rely on them after).
+4. Then blind high, then guided high (block 2's remaining 2 runs).
+5. Move to Block 3 (Gemma-12B, LM Studio), Block 4 (Qwen3.6-35B-A3B,
+   llama-server), and Block 5 (Qwen3.8-27B-4bit guided xhigh, only if
+   time remains) per `AGENT.md`.
+
+Known open issues carried forward:
+- mlx entries in `~/.pi/agent/models.json` can have `maxTokens` too
+  close to `contextWindow` for models with a small window (hit
+  Qwen3.8-27B-4bit hard in block 1); not fixed, just documented.
+- `run-worker.sh` names guided and blind runs of the same thinking
+  level identically — no fix applied yet.
+- mlx_lm.server dead-thread crashes (Metal OOM, `/health` stays 200)
+  are a recurring hazard; restart-and-resume per `server-lore.md` is
+  the known mitigation, not a fix.
+
+Local repo: worktrees clean (`git worktree list` shows only the main
+worktree), no server/daemon/watcher running, mendel benchmark branch
+pushed through `97f4977`. This repo's `run7` branch is being merged
+into local `master` now (not pushed).
