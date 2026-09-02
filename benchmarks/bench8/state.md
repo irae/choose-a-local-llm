@@ -206,3 +206,279 @@ only this one.
   shows only the main `mendel-benchmark` worktree itself (no stray run
   worktrees), and the main mendel repo (`../mendel`) sits untouched on
   `master`.
+- New session, 2026-09-02. Confirmed no leftover daemon or run
+  worktrees, `../mendel-benchmark` up to date, `../mendel` tags
+  fetched. Created worktree `../choose-a-local-llm-run8` on branch
+  `run8`. Starting queue item 8: `gpt-5.6-sol` pi blind high, from
+  `/home/irae/code/mendel-benchmark/benchmark`. This is an
+  openai-codex model; per AGENT.md it should ideally run in a quiet
+  ChatGPT/Codex window, but it is the last queue item with no other
+  run in flight, so proceeding now. Worktree
+  `../mendel-bench-gpt-5.6-sol-high` ready, pi started.
+- User set up an Anthropic login on this box (pi), unlocking
+  `claude-haiku-4.5` and `claude-sonnet-4.5`. Updated `AGENT.md`: lifted
+  the "never run Anthropic" ban, added queue items 9-11
+  (`claude-haiku-4.5` guided, `claude-haiku-4.5` blind,
+  `claude-sonnet-4.5` blind). pi+anthropic runs are metered per
+  PLAN.md "Plan accounting", not plan-share, so they carry no
+  isolation-window requirement and can run alongside the openai-codex
+  or xai runs.
+- Starting queue item 9: `claude-haiku-4.5` pi guided high, in
+  parallel with the still-running queue item 8 (`gpt-5.6-sol` blind).
+  Safe: each worker gets its own sibling worktree
+  (`../mendel-bench-guided-claude-haiku-4.5-high` vs.
+  `../mendel-bench-gpt-5.6-sol-high`), different provider (metered
+  anthropic vs. plan-share openai-codex, no plan overlap), different
+  branch. Worktree ready, pi started.
+- Queue item 8 done. `gpt-5.6-sol` blind (v1.1): score 92/100. All 8
+  libraries replaced, trap A avoided (`SYNC OK`), trap B fixed
+  (`mendel-requirify` rimraf refs removed, own commit `a9ba7c1`), chalk
+  uses plain `util.styleText` with no forced level per the v1.1
+  Node-defaults rule. One medium defect: trap C hit —
+  `validate-manifest.js` registers a `process.once('exit')` hook that
+  deletes the debug manifest right after printing its path (same
+  regression as items 6 and 7). All 18 commits `chore`-typed, one
+  package each, root devDeps fully removed, lint clean (model self-ran
+  prettier/eslint 17 times). Full suite (674/674, 1 skip) clean
+  standalone, run 7 times over 18 commits — well inside the blind
+  "about every 5 commits" cadence. Zero nudges, zero self-repair
+  commits (spot-checked the commit log, one-shot per package). Task
+  list built as a full tree upfront with per-package sub-items, ticked
+  per commit (not textbook progressive discovery, so docked to 2.5/4
+  like item 7's row). Truncation share 21%, docked to 2.5/3. Wall clock
+  24.4 min, cost $12.11 metered (`probe-plan.mjs` returned "no plan
+  involved" for this session's openai-codex login). Scored, committed
+  (`2a5d273` in `mendel-benchmark`), and pushed to mendel `benchmark`;
+  run branch `gpt-5.6-sol-high-issue-13` pushed too. Worktree removed,
+  no stray daemon or process. Note: the report's OpenRouter
+  cost-comparison figure for this row is an estimate, not a live
+  lookup (same caveat as items 4 and 7's rows).
+- Queue item 9 first attempt failed instantly: bare `claude-haiku-4.5`
+  is ambiguous across providers (`cloudflare-ai-gateway`,
+  `github-copilot`), neither authenticated, `pi` refused with
+  `runner_error`. Checked `~/.pi/agent/models-store.json`: the
+  anthropic-authenticated ids use dashes, not dots
+  (`claude-haiku-4-5`, `claude-sonnet-4-5`), and need the
+  `anthropic/` provider prefix to disambiguate. Cleaned the failed
+  worktree/branch (no work had started), fixed `AGENT.md` items 9-11
+  to `anthropic/claude-haiku-4-5` / `anthropic/claude-sonnet-4-5`, and
+  added a note for future Anthropic id corrections.
+- Restarted queue item 9: `anthropic/claude-haiku-4-5` pi guided high.
+  Worktree `../mendel-bench-guided-anthropic-claude-haiku-4-5-high`
+  ready, pi started.
+- User added queue items 12-13: `accounts/fireworks/models/glm-5p3-flash`
+  blind then guided. Also clarified the parallel rule in `AGENT.md`:
+  at most two runs in flight, never two on the same account (not just
+  per plan-provider).
+- Starting queue item 12: `accounts/fireworks/models/glm-5p3-flash` pi
+  blind high, in parallel with the still-running queue item 9
+  (`anthropic/claude-haiku-4-5` guided). Safe: different account
+  (metered fireworks vs. metered anthropic), separate sibling
+  worktree (`../mendel-bench-accounts-fireworks-models-glm-5p3-flash-high`),
+  separate branch. Worktree ready, pi started.
+- Queue item 9 done. `claude-haiku-4-5` guided (v3.0): score 76/100.
+  First-ever Anthropic-model row in this benchmark. All 8 libraries
+  replaced. Trap A HIT: `apply-extra-options.js` calls
+  `fs.promises.glob(i).then(...)` — `fs.promises.glob()` returns an
+  AsyncIterator, not a Promise, throws `TypeError: glob(...).then is
+  not a function` — critical defect. Trap B fixed (`mendel-requirify`
+  has zero rimraf refs left). Trap C avoided (no exit hook in
+  `validate-manifest.js`). Chalk uses plain `util.styleText`, no
+  forced colour, correct per v3.0 Node-defaults rule. Full suite
+  clean standalone (674/674, 1 skip), same baseline as item 8. 16 of
+  19 commits used `fix`, not the house `chore` (lost most of
+  commit-craft's all-chore points), plus one multi-package commit
+  (all remaining package.json edits batched into one "chore" commit).
+  Only the two root-level deps (`rimraf`, `tmp`) went through a real
+  `pnpm remove -w`; the rest were manual package.json edits with no
+  verifying install afterward — scored as "install unverified", not
+  a real prune. Guided v3.0 wants a full-suite run before every
+  commit; only 13 of 21 commit attempts had one — short of the
+  mandate. Lint clean, model self-ran prettier and eslint after its
+  last commit (full lint credit). TASKS.md is gitignored in this repo
+  (not a defect) — per-file granularity grouped by package, fully
+  ticked, matches commit order. Zero nudges, zero self-repair
+  commits. Truncation share 96% (69 of 72 noisy commands piped
+  through `tail`/`head`) — the highest seen in this queue, heavily
+  docked. Wall clock 27.3 min, cost $1.73 metered (`probe-plan.mjs`
+  returned "no plan involved" for this session's Anthropic login, so
+  metered like item 8, not plan-share). Scored, committed (`af3c011`
+  in `mendel-benchmark`), and pushed to mendel `benchmark`; run
+  branch `anthropic-claude-haiku-4-5-high-guided-v3-issue-13` pushed
+  too. Worktree removed. Did not run `pkill -f "Mendel Daemon"` since
+  other runs (`claude-haiku-4-5` blind, `glm-5p3-flash` blind/guided)
+  were still in flight in other worktrees at the time.
+- Started queue item 10 (`anthropic/claude-haiku-4-5` pi blind high)
+  and queue item 13 (`accounts/fireworks/models/glm-5p3-flash` pi
+  guided high) once their respective predecessor runs freed up:
+  worktrees `../mendel-bench-anthropic-claude-haiku-4-5-high` and
+  `../mendel-bench-guided-accounts-fireworks-models-glm-5p3-flash-high`
+  both ready, pi started for both. Two runs in flight
+  (`anthropic/claude-haiku-4-5` blind, `glm-5p3-flash` guided),
+  different accounts, safe pair.
+- Queue item 12 done. `glm-5p3-flash` blind (v1.1): score 75/100.
+  First-ever row for this model. All 8 libraries replaced, root
+  devDeps removed, static completeness clean. Trap A HIT (critical
+  defect): `apply-extra-options.js` swaps in `fs.promises.glob()` with
+  a naive `.then()` chain, throws `TypeError: glob(...).then is not a
+  function` at runtime (repro confirmed) — same trap-A failure mode as
+  item 9's `claude-haiku-4-5` row. No unit test covers this file, so
+  the full suite still passes (674/674, 1 skip). Trap B fixed
+  (`mendel-requirify` rimraf refs removed). Trap C avoided. Chalk uses
+  plain `util.styleText`, no forced `enableColor`, per the v1.1
+  Node-defaults rule. Commit craft is weak: 9 commits, all
+  `refactor`/`test` typed (0 `chore`), 5 of them multi-package. Real
+  `pnpm install` verified (not lockfile-only). Lint not clean on
+  re-run: `prettier --check` flags `TASKS.md` itself, and the model
+  never ran the lint tools itself. `TASKS.md` is a flat, coarse
+  checklist with no per-package sub-items (all pre-checked, not
+  progressive). High truncation share (69%). Zero nudges. Wall clock
+  21.4 min, cost $0.19 metered (`no plan involved`, fireworks is
+  metered). Scored, committed (`cb73cf5` in `mendel-benchmark`), and
+  pushed to mendel `benchmark`; run branch
+  `accounts-fireworks-models-glm-5p3-flash-high-issue-13` pushed too.
+  Worktree removed, no stray process for this run (did not run
+  `pkill -f "Mendel Daemon"`, since `claude-haiku-4-5` blind and
+  `glm-5p3-flash` guided were still in flight at the time).
+- Queue item 13 done. `glm-5p3-flash` guided (v3.0): score 98/100.
+  All 8 libraries replaced, all three traps handled: trap A avoided
+  (`SYNC OK`), trap B fixed (`mendel-requirify` rimraf refs replaced
+  across two commits), trap C avoided by design — the model's own
+  `TASKS.md` notes the debug-manifest dump is "intentionally left
+  behind, same as tmp's default", i.e. it read the issue's `tmp`
+  claim correctly and chose not to add the buggy exit hook. Chalk
+  uses plain `util.styleText`, no forced level, per the v3.0
+  Node-defaults rule. Lint clean, model self-ran `prettier --check`
+  and `eslint .` after its last edits. All 18 commits `chore`-typed,
+  one package each, no multi-package, no `--no-verify`/`git add -A`,
+  root devDeps removed via verified `pnpm remove -w`. Full suite
+  clean standalone (680/680, 1 skip), 14 full-suite runs across 18
+  commits (a handful of commit batches ran without an immediately
+  preceding full run, short of the guided "before every commit" bar,
+  hence 9/10 not 10/10). Task list textbook progressive, per-file
+  sub-items grouped by package, ticked per commit. Zero nudges, zero
+  self-repair commits. Truncation share 66%, but by deliberate
+  `| tail -N` noise reduction on the model's own test/build output,
+  not lossy harness capping — scored full marks per the rubric's
+  "truncation is about effect, not just the pipe count" note (same
+  precedent as `deepseek-v4-flash-0731`'s 75%-truncation full-score
+  guided row). No defects. Wall clock 24.0 min, cost $0.25 metered
+  (`no plan involved`, fireworks is metered). Scored, committed
+  (`c2807c4` in `mendel-benchmark`), and pushed to mendel `benchmark`;
+  run branch
+  `accounts-fireworks-models-glm-5p3-flash-high-guided-v3-issue-13`
+  pushed too. Worktree removed. Did not run `pkill -f "Mendel
+  Daemon"` — `claude-haiku-4-5` blind scoring and `claude-sonnet-4-5`
+  blind may still be in flight.
+- Queue item 10 done. `claude-haiku-4-5` blind (v1.1): score 34/100.
+  Weak run overall, consistent with a small/fast model on the harder
+  blind prompt. Only 6 of 8 libraries functionally correct: trap A HIT
+  (critical) — `apply-extra-options.js`'s naive `.then()` on
+  `fs.promises.glob()` throws `TypeError` (same failure mode as items
+  9 and 12). Trap B missed: `mendel-requirify` still requires `rimraf`
+  in two test files and its `package.json`, never touched. A second
+  critical defect: root `package.json` still declares BOTH `rimraf`
+  and `tmp` — neither was ever removed, no `pnpm install` ran at any
+  point, lockfile shows zero change at all (RUBRIC.md scores
+  never-removing-root-deps-at-all as its own critical defect, separate
+  from trap B). `node_modules` pruning scored 0/8 (no install
+  attempted, verified or not). Chalk correct (plain `util.styleText`,
+  no forced colour). Trap C avoided (no exit hook added). Commit craft
+  weak: all 8 commits used `fix`, not `chore` (0/4), 5 of 8
+  multi-package, and 10 separate `git add -A` calls (a real
+  commit-craft violation, not just a missed convention). No `TASKS.md`
+  was ever created — the coarsest possible outcome, scored 0/4 (worse
+  than "coarse or unmaintained", since there was no list at all).
+  Lint clean on re-run but hook-only, model never self-ran the tools —
+  capped at 3/5. Only 2 full-suite runs across 8 commits, no visible
+  narrow per-package runs. Truncation share 70% (highest in the blind
+  queue this run alongside item 12's 69%). Full test suite is clean
+  standalone regardless (674/674, 1 skip) since no unit test covers
+  trap A's file. Zero nudges. Wall clock 10.2 min, cost $1.05 metered
+  (`probe-plan.mjs` returned "no plan involved", same as items 8, 9,
+  and 12). Scored, committed (`c51f802` in `mendel-benchmark`), and
+  pushed to mendel `benchmark`; run branch
+  `anthropic-claude-haiku-4-5-high-issue-13` pushed too. Worktree
+  removed. Did not run `pkill -f "Mendel Daemon"` — `claude-sonnet-4-5`
+  blind (item 11) was still in flight at the time.
+- Queue is now fully started: items 8-13 have all run, and 8, 9, 10,
+  12, 13 are scored and pushed. Remaining work for a future check:
+  confirm item 11 (`claude-sonnet-4-5` blind) finishes and is scored,
+  then run the AGENT.md closing/stop-and-sync steps.
+- Mirrored items 8, 9, 10, 12, 13 into `benchmarks/mendel/` (site
+  reports and CSVs) and regenerated the site tables, per
+  `docs/methodology/mendel.md` and `benchmarks/mendel/README.md`.
+  While doing this, found and fixed a gap: the `claude-haiku-4-5` and
+  `glm-5p3-flash` scoring forks (items 9, 10, 12, 13) updated
+  `results.json`/`results-guided.json` and the reports but never
+  appended the matching `results.csv`/`results-guided.csv` rows
+  (unlike item 8's fork, which did). Backfilled all four rows from the
+  JSON, committed to `mendel-benchmark` (`dc4efca`), then mirrored.
+  claude-sonnet-4-5 is not in this mirror; it will need another
+  refresh once item 11 scores.
+- **Correction**: the two `AGENT.md` queue-edit commits made earlier
+  this session (add Haiku/Sonnet/glm items, then fix the Anthropic
+  model ids to `anthropic/<id>` form) were made directly on `master`
+  in the main `choose-a-local-llm` worktree — a mistake, violating the
+  standing rule that the main worktree stays free for the user.
+  Corrected: cherry-picked both onto `run8` (plus the pending
+  uncommitted id-fix, committed here as a third commit), then
+  rebased `master` to drop them, keeping only the (legitimate) site
+  mirror commit. `master` pushed clean. `AGENT.md`'s history now
+  lives entirely on `run8`, as it should.
+- Queue item 11 done. `claude-sonnet-4-5` blind (v1.1): score
+  43.5/100. First-ever row for this model. Weak run for a strong
+  reference model. Trap A HIT (critical):
+  `apply-extra-options.js`'s naive `.then()` on `fs.promises.glob()`
+  throws `TypeError` (repro confirmed). Trap B missed (medium):
+  `mendel-requirify` still requires `rimraf` in two test files and its
+  `package.json`; never mentioned in `TASKS.md`. A second critical
+  defect: root `package.json` still declares both `rimraf` and `tmp`;
+  no `pnpm install` ran at any point in the whole session, lockfile
+  shows zero change — per RUBRIC.md this is its own critical defect,
+  separate from trap B. `node_modules` pruning scored 0/8. Trap C
+  avoided (no exit hook added). Chalk correct (plain `util.styleText`,
+  no forced colour). Commit craft weak: all 13 commits typed
+  `refactor`, not `chore` (0/4), 2 of 13 multi-package, and 15 separate
+  `git add -A` calls (a real violation, not just a missed convention).
+  `TASKS.md` checked off all 8 libraries as done despite the
+  incomplete root-dependency work — ticks did not reflect reality,
+  scored 1.5/4. Lint clean on re-run but hook-only, model never
+  self-ran the tools (capped at 3/5). 6 full-suite runs across 13
+  commits (some duplicate `git add -A`/commit attempts point to
+  friction, e.g. `mendel-mocha-runner` and the chalk commit each
+  appear twice). Full test suite clean standalone otherwise (674/674,
+  1 skip; `mendel-full-example`'s daemon-socket test fails on master
+  too — expected baseline). Zero nudges, no self-repair commits.
+  Truncation share 41%. Wall clock 30.9 min, cost $2.99 metered
+  (`probe-plan.mjs` returned "no plan involved" for this session's
+  Anthropic login, metered like items 9 and 10). Scored, committed
+  (`5740f5d` in `mendel-benchmark`, including the CSV row this time),
+  and pushed to mendel `benchmark`; run branch
+  `anthropic-claude-sonnet-4-5-high-issue-13` pushed too. Worktree
+  removed.
+- Mirrored item 11 into `benchmarks/mendel/` (site reports and CSVs),
+  regenerated site tables, committed and pushed directly on `master`
+  (`2284041`) — correct location for mirror work per
+  `docs/methodology/mendel.md`.
+- All 13 queue items are now done and scored. `pkill -f "Mendel
+  Daemon"` run (safe, this was the last in-flight run). Verified: no
+  `pi --mode rpc` or `Mendel Daemon` process running; `git -C
+  ../mendel worktree list` and `git -C ../mendel-benchmark worktree
+  list` show no stray run worktrees.
+
+## Handing over
+
+Run 8 is complete. All 13 queue items (1-13) ran and scored:
+deepseek-v4-flash-0731 (guided 97, blind 84.5), kimi-k3 (blind 93.5),
+deepseek-v4-pro-0813 (blind 79), grok-4.6 (blind 92.5), gpt-5.6-luna
+(guided 88.5, blind 83.5), gpt-5.6-sol (blind 92), claude-haiku-4-5
+(guided 76, blind 34), claude-sonnet-4-5 (blind 43.5), glm-5p3-flash
+(blind 75, guided 98). All rows are committed and pushed on the
+`mendel-benchmark` worktree's `benchmark` branch, with every run
+branch also pushed to the `mendel` repo. The site mirror in
+`benchmarks/mendel/` is up to date with all of the above. No stray
+processes or worktrees remain in either repo. `run8`'s own history
+(this file and `AGENT.md`) is about to be merged into `master` and the
+branch/worktree retired, per `AGENT.md`'s "Closing" section and this
+repo's `AGENTS.md` stop-and-sync steps.

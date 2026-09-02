@@ -40,19 +40,24 @@ wired limit. The models are remote APIs that pi is already logged into
   the worker resolves them, but they must exist locally and match
   origin.
 - One run at a time by default. The owner may direct parallel runs
-  from separate shells, different models. The limit is per plan
-  provider: at most ONE openai-codex run and at most ONE xai run in
-  flight at any moment — two runs on the same plan contaminate each
-  other's plan-window deltas. Cross-provider pairs are fine (grok +
-  openai, either + fireworks); metered fireworks models may overlap
-  freely. The plan probes also need a quiet account: during an
-  openai-codex run nobody may use ChatGPT or Codex. Run the
+  from separate shells, different models. Keep at most TWO runs in
+  flight at once, and never two on the same account (plan provider,
+  or the same metered API account). At most ONE openai-codex run and
+  at most ONE xai run in flight at any moment — two runs on the same
+  plan contaminate each other's plan-window deltas. Cross-account
+  pairs are fine (grok + openai, either + fireworks, either +
+  anthropic); metered fireworks and metered anthropic (pi) runs may
+  each overlap with any other account, but not with another run on
+  their own account. The plan probes also need a quiet account:
+  during an openai-codex run nobody may use ChatGPT or Codex. Run the
   openai-codex items in the deepest night hours.
 - Heartbeat in chat about every 20 minutes. No approval gates: when a
   run is scored and pushed, start the next at once.
 - After EVERY run: `pkill -f "Mendel Daemon"` (never mid-run), clean
   the worktree per PLAN.md "Cleanup"; keep the branch.
-- Never run any Anthropic model. There is no budget and no login.
+- Anthropic models are allowed now: login and budget exist on this
+  box. pi+anthropic runs are metered, not plan-share, so no isolation
+  window applies to them.
 - Never trust the model under test. Score only from the verification
   battery (`node ../mendel-benchmark/benchmark/score.mjs` plus the
   rubric).
@@ -103,13 +108,18 @@ last (quiet-account window).
 6. `./run-worker.sh gpt-5.6-luna pi guided high`
 7. `./run-worker.sh gpt-5.6-luna pi blind high`
 8. `./run-worker.sh gpt-5.6-sol pi blind high`
-9. **SKIP — claude-haiku-4.5, blind + guided, thinking high.** Stays on
-   the list so a later run picks it up. Reason: no Anthropic login and
-   no budget on this box today. Do not attempt it.
+9. `./run-worker.sh anthropic/claude-haiku-4-5 pi guided high`
+10. `./run-worker.sh anthropic/claude-haiku-4-5 pi blind high`
+11. `./run-worker.sh anthropic/claude-sonnet-4-5 pi blind high`
+12. `./run-worker.sh accounts/fireworks/models/glm-5p3-flash pi blind high`
+13. `./run-worker.sh accounts/fireworks/models/glm-5p3-flash pi guided high`
 
 If a fireworks model id is rejected, list the store
 (`~/.pi/agent/models-store.json`) and use the exact id from there;
-record the correction in `state.md`.
+record the correction in `state.md`. A bare Anthropic model name is
+ambiguous across providers (cloudflare-ai-gateway, github-copilot);
+always use the `anthropic/<id>` form, with dashes not dots (e.g.
+`anthropic/claude-haiku-4-5`).
 
 ## Closing
 
