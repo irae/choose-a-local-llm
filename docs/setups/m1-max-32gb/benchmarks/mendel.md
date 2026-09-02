@@ -10,8 +10,9 @@ the task, the rubric, and the raw results live. Method and house rules:
 Mendel is two tests on the same task. The **blind** test gives a terse
 prompt and asks whether the model finds the traps by itself. The
 **guided** test hands every model the same structured plan with the
-traps disclosed, and measures instruction-following — all new runs use
-it. Scores never compare across the two tests.
+traps disclosed, and measures instruction-following. Strong API models
+run blind only; local and weak models run both, so each pair shows the
+lift. Scores never compare across the two tests.
 
 The full reports are hosted here, generated from the Mendel data:
 
@@ -21,17 +22,19 @@ The full reports are hosted here, generated from the Mendel data:
   guided runs only.
 
 The tables below are drawn from the mirrored result files in
-`benchmarks/mendel/` (`npm run docs:tables`).
+`benchmarks/mendel/` (`npm run docs:tables`). They show only the
+current prompt version of each test (blind v1.1, guided v3.0); rows
+from older prompt versions live in
+[historical](../historical.md) and in the hosted reports, one
+scoreboard per version.
 
 ## Local models — blind test
 
 <!-- gen:mendel-local:start -->
 | model | serving | score | worst defect |
 |---|---|--:|---|
-| [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | mlx_lm.server | **80.0/100** (partial) | medium |
-| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **58.0/100** (partial) | critical |
-| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **41.5/100** | critical |
-| [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **38/100** (partial) | critical |
+| [Qwen3.8-27B (mlx, low)](../reports/qwen3.8-27b.md) | mlx_lm.server | **67.5/100** (partial) | minor |
+| [Ternary-Bonsai-27B (mlx, low)](../reports/bonsai-27b.md) | mlx_lm.server | **55/100** (partial) | medium |
 <!-- gen:mendel-local:end -->
 
 Run notes for the two partials are in the
@@ -44,28 +47,23 @@ on the rubric.
 <!-- gen:mendel-cloud:start -->
 | model | harness | score |
 |---|---|--:|
-| grok-4.6 | pi | **89.5/100** |
-| claude-opus-5 | claude-code | **88/100** |
-| gpt-5.6-luna | pi | **84.5/100** |
-| claude-sonnet-5 | claude-code | **83/100** |
-| kimi-k3 | pi | **80.5/100** |
-| deepseek-v4-pro-0813 | pi | **70.5/100** |
-| gpt-5.6-sol | pi | **65.5/100** |
-| claude-haiku-4.5 | claude-code | **51.5/100** |
+| kimi-k3 | pi | **93.5/100** |
+| grok-4.6 | pi | **92.5/100** |
+| deepseek-v4-flash-0731 | pi | **84.5/100** |
+| gpt-5.6-luna | pi | **83.5/100** |
+| deepseek-v4-pro-0813 | pi | **79/100** |
 <!-- gen:mendel-cloud:end -->
 
 ## Guided test
 
-Three local models have run the guided prompt so far, alongside two
-cloud anchors. Two more local runs (Gemma-12B, Qwen3.8-27B at effort
-medium) are still queued on the same frozen prompt.
+One local model has a guided row on the current prompt so far,
+alongside two cloud anchors. More local guided runs are queued on the
+same frozen prompt; a blind-guided pair can land at different times.
 
 <!-- gen:mendel-guided:start -->
 | model | harness | score |
 |---|---|--:|
-| claude-sonnet-5 | claude-code | **98.5/100** |
-| [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | pi | **84/100** (partial) |
-| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **69.0/100** (partial) |
-| claude-haiku-4.5 | claude-code | **68/100** |
-| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **65.5/100** |
+| deepseek-v4-flash-0731 | pi | **97/100** |
+| gpt-5.6-luna | pi | **88.5/100** |
+| [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | pi | **34/100** (partial) |
 <!-- gen:mendel-guided:end -->

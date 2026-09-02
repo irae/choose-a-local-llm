@@ -11,13 +11,16 @@ test discipline, staying inside scope.
 ## Two tests
 
 Mendel is two tests on the same task, documented in the Mendel repo's
-`benchmark/PLAN.md`. The **blind** test (terse prompt, base `182b07f`)
-asks whether the model discovers the traps. The **guided** test
-(structured step-by-step prompt with the traps disclosed, base
-`4679b5a`, prompt frozen) measures instruction-following — it exists
-because the blind run showed weaker and local models losing most of
-their points to discoverable traps. **All new runs use the guided
-test.** Never compare a score across the two tests.
+`benchmark/PLAN.md`. The **blind** test (terse prompt, base: tag
+`benchmark-blind-base`) asks whether the model discovers the traps.
+The **guided** test (structured step-by-step prompt with the traps
+disclosed, base: tag `benchmark-guided-base`, prompt frozen) measures
+instruction-following — it exists because the blind run showed weaker
+and local models losing most of their points to discoverable traps.
+Which test a model runs is set by `PLAN.md` ("Which models run which
+test"): strong API models run blind only; local and weak models run
+both, so each pair shows the lift. Never compare a score across the
+two tests.
 
 ## Where things live
 

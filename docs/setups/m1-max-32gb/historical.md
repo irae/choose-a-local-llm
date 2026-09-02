@@ -30,6 +30,30 @@ For numbers you can act on, go to [the comparison page](./comparison.md).
 Full raw archives, with their eras labeled, live in the benchmarks pages.
 :::
 
+## Mendel rows from old prompt versions (superseded 2026-09-02)
+
+Replaced by run 7/8's fresh rows: blind prompt v1.1 and guided v3.0,
+run from the new moving base tags (`benchmark-blind-base`,
+`benchmark-guided-base`), which include the tap crash fix. The site
+tables now count only the current prompt version; the full per-version
+archive stays in the hosted Mendel reports. Never compare these rows
+with the current ones — different prompt versions never share a table.
+
+| model | test | config | score | status |
+|---|---|---|--:|---|
+| Qwen3.8-27B | blind v1.0 | mlx 4-bit, effort medium, `pi` | 80/100 | partial — ~4h time budget, 3/8 libraries |
+| Ternary Bonsai-27B | blind v1.0 | mlx 2-bit, `pi` | 58/100 | partial — `mlx_lm.server` tool-parser crash |
+| Qwen3.6-35B-A3B | blind v1.0 | llama-server | 41.5/100 | complete |
+| Gemma-4-26B-A4B | blind v1.0 | llama-server | 38/100 | partial |
+| Qwen3.6-35B-A3B | guided v2.1 | llama-server | 65.5/100 | complete — all 8 libraries in 75.6 min |
+| Ternary Bonsai-27B | guided v2.1 | mlx 2-bit, `pi` | 69/100 | partial — stuck 45+ min on a self-made bug, closed at 3/8 |
+| Qwen3.8-27B | guided v2.1 | mlx 4-bit, `pi` | 84/100 | partial |
+
+The run narratives for these rows lived on the comparison page; their
+findings stay in the
+[benchmark findings index](https://github.com/irae/choose-a-local-llm/blob/master/benchmarks/INDEX.md)
+and the hosted reports' defect ledgers.
+
 ## Bonsai MLX depth rows 44-48K, transient dip (superseded 2026-08-30)
 
 Three rows from an early depth pass read far under the curve. The

@@ -128,10 +128,16 @@ discovery). Full rubric, scoring method, and the rest of the field
 (proprietary and other local models) live in the open-source
 [Mendel benchmark](https://github.com/irae/mendel/tree/benchmark).
 
-| model | config scored | score | status |
-|---|---|--:|---|
-| Qwen3.8-27B | mlx 4-bit, effort medium, `pi` harness | **79.5/100** | partial — closed at the ~4h time budget, 3/8 libraries done |
-| Ternary Bonsai-27B | mlx 2-bit, `pi` harness | **55/100** | partial — blocked by an `mlx_lm.server` tool-parser crash (below) |
+Current rows come from run 7 (blind prompt v1.1, guided v3.0, fresh
+base tags with the tap crash fix). Rows from older prompt versions
+moved to [historical](./historical.md); never compare across prompt
+versions.
+
+| model | test | config scored | score | status |
+|---|---|---|--:|---|
+| Qwen3.8-27B | blind | mlx 4-bit, effort low, `pi` harness | **67.5/100** | partial — tooling-nudge budget hit at 1/8 libraries; the mlx entry's fixed 26624-token window forced repeated premature stops (serving limit, not the model) |
+| Ternary Bonsai-27B | blind | mlx 2-bit, effort low, `pi` harness | **55/100** | partial — 300-min wall clock at 3/8 libraries, `rimraf` partial |
+| Qwen3.8-27B | guided | mlx 4-bit, effort low, `pi` harness | **34/100** | partial — three Metal OOM server crashes, tooling budget exhausted, zero commits |
 
 Full tables for both Mendel tests are on the
 [Mendel page](./benchmarks/mendel.md), and the complete reports are
@@ -140,41 +146,20 @@ hosted here: <a href="../../mendel/report.html" target="_blank" rel="noreferrer"
 in the open-source
 [Mendel benchmark](https://github.com/irae/mendel/tree/benchmark).
 
-**Blocked: `mlx_lm.server`'s tool-call parser crashes on multi-line edit
-arguments.** Two attempts on Ternary Bonsai-27B (mlx 2-bit) hit the same
-crash in `mlx_lm`'s `qwen3_coder` tool parser: a multi-line edit-tool
-JSON argument with an embedded quote fails `ast.literal_eval`, and the
-response stream ends with no `finish_reason`. The run stopped at 3 of 8
-libraries (all correct on inspection), before it reached the
-`rimraf`/`glob` trap. Not a firewall or network issue — checked Little
-Snitch's log across the crash window, no blocks recorded. This blocks
-Mendel scoring for any Bonsai config served through `mlx_lm.server`'s
-tool-calling path until the parser is fixed upstream.
+**The `mlx_lm.server` `qwen3_coder` tool-parser crash no longer blocks
+scoring.** In run 7 the crash still fired on Bonsai (per-request
+JSONDecodeError on malformed tool-call arguments), but the server
+stayed up, the runner's unscored tooling nudges resumed the session,
+and the run reached the wall clock with a scored row. Earlier attempts
+died on it; those rows are in [historical](./historical.md).
 
-**Qwen3.8-27B showed much better process discipline than Bonsai**, on
-the same `mlx_lm.server` + `pi` stack: real `pnpm install` runs (the
-lockfile actually shrank), 13 package test runs and 7 lint runs before
-committing, correct `chore:` commit types, one package per commit. One
-run hit a different failure — `mlx_lm.server` logged a truncated
-tool-call warning and the `pi` client exited silently — but resuming
-`pi` in the same worktree picked up the existing commits and the
-pending diff cleanly, with no lost or duplicated work. Closed at the
-project's soft time budget (~4 hours) with 3 of 8 libraries fully done
-and `rimraf` partially done; never reached `glob`, `chalk`, `tmp`, or
-`shasum`.
-
-**The guided prompt cuts wall clock sharply and shifts the failure mode
-from "never reached the trap" to "botched the disclosed trap anyway."**
-Qwen3.6-35B-A3B finished all 8 libraries in 75.6 minutes on the guided
-prompt — its blind run only got 42/100 by contrast — but still shipped
-two real bugs the guided prompt explicitly warned about: a stray
-`fs.readFileSync` call after only destructuring `{ globSync }` from
-`require('fs')` (undefined at runtime), and a chalk `enableColor:false`
-fix applied in one function but not the other, so disabled color still
-leaks ANSI codes half the time. Commit craft was the weak point: every
-commit used `--no-verify` with no hook failure to explain it, and 5 of
-8 commits combined multiple packages against the prompt's explicit
-one-package-per-commit rule.
+**The recurring limit for Qwen3.8-27B on `mlx_lm.server` is the serving
+window, not the model.** The blind low run kept stopping at 1 output
+token once the prompt neared the mlx entry's fixed 26624-token window
+(unverifiable on `mlx_lm.server`), and burned the tooling-nudge budget.
+The guided low run grew past the same window and the server hit the
+Metal OOM dead-thread trap three times. Verify or raise the window
+before the next mlx run; the scores above carry that caveat.
 
 **Finding, unrelated to scoring: Qwen3.6-35B-A3B's MTP drafter is
 currently broken on this brew build.** `--spec-type draft-mtp
@@ -187,29 +172,13 @@ drafter flags, which loads and generates normally. The site's own
 `14.1/8.6 tok/s` decode figures for this config need a re-check against
 the current brew build before the next depth sweep.
 
-**Ternary Bonsai-27B's guided run had no crash at all — the first clean
-run of this model+backend all night** (both blind attempts hit the same
-`mlx_lm.server` tool-parser crash). Commit hygiene was excellent (no
-`--no-verify`, no `git add -A`, lockfile actually shrank), but it got
-stuck for over 45 minutes on a bug it introduced itself while fixing
-`rimraf`: a duplicate `const fs` declaration and a broken JSON edit (a
-stray comma where a removed `package.json` line had been). It never
-recovered, so the run was closed out at 3 of 8 libraries; the broken
-diff was discarded rather than committed. It also never ran `eslint` or
-`prettier` itself, and never checked off a single `TASKS.md` item
-despite finishing 3 libraries.
-
-**Qwen3.8-27B at reasoning effort low had the best commit craft of the
-whole night**: all 6 commits `chore` type, one package per commit, no
-`--no-verify`, no `git add -A`, and it ran `eslint`/`prettier` itself
-(both came back clean). It survived one silent `pi` exit the same way
-the medium-effort blind run did — resumed in the same worktree with no
-lost work. It stopped for good when `pi` exited right before its own
-commit step on `rimraf`'s last site; the diff was clean and its own
-test run already showed 260/260 passing, so it was committed to
-reflect real finished work rather than discarded. It missed the
-disclosed `legacy-packages/mendel-requirify` `rimraf` reference and
-never ran the mandatory full-suite check after its 5th commit.
+**Bonsai's blind low run lost most of its clock to self-inflicted
+breakage.** It finished 3 of 8 libraries (uuid, xtend, urlsafe-base64)
+and part of `rimraf`, but one JSON syntax break it made in
+`mendel-transform-less/package.json` cost four commit attempts (~40
+minutes) before it fixed the file itself, and it missed the
+`legacy-packages/mendel-requirify` `rimraf` reference. The run ended
+on the 300-minute wall clock, not on the rubric.
 
 ## Open questions
 

@@ -50,6 +50,8 @@ const MENDEL_SLUGS = {
   'gemma-4-26b-a4b': 'gemma-4-26b-a4b',
   'prism-ml/Ternary-Bonsai-27B-mlx-2bit': 'bonsai-27b',
   'mlx-community/Qwen3.8-27B-4bit': 'qwen3.8-27b',
+  'Qwen3.8-27B (mlx, low)': 'qwen3.8-27b',
+  'Ternary-Bonsai-27B (mlx, low)': 'bonsai-27b',
   'gemma-4-12b': 'gemma-4-12b-it',
 }
 
@@ -61,6 +63,12 @@ function mendelName(r) {
 
 function mendelScore(r) {
   return `**${r.score_total}/100**${r.partial === 'True' ? ' (partial)' : ''}`
+}
+
+function currentPromptVersion(rows) {
+  const num = (v) => String(v || 'v0').replace(/^v/, '').split('.').reduce((a, p) => a * 1000 + Number(p), 0)
+  const latest = rows.map((r) => r.prompt_version).sort((a, b) => num(a) - num(b)).at(-1)
+  return rows.filter((r) => r.prompt_version === latest)
 }
 
 function renderMendelLocal(rows) {
@@ -289,8 +297,8 @@ for (const dataFile of dataFiles) {
     }
   }
 
-  const mendelBlind = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8'))
-  const mendelGuided = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8'))
+  const mendelBlind = currentPromptVersion(parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8')))
+  const mendelGuided = currentPromptVersion(parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8')))
   const typePages = [
     [`${setupDir}/benchmarks/evalplus.md`, EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(data)],
     [`${setupDir}/benchmarks/decode-speed.md`, DECODE_START, DECODE_END, renderDecodeSummary(data)],

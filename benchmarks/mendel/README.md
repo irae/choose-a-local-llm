@@ -6,9 +6,11 @@ Source of truth: the `benchmark` branch of the open-source
 the site needs. We host them here because it is us who benchmarks the
 local models.
 
-- `results.csv` — the blind test (terse prompt, base `182b07f`).
+- `results.csv` — the blind test (terse prompt, base: tag
+  `benchmark-blind-base`).
 - `results-guided.csv` — the guided test (structured prompt with the
-  traps disclosed, base `4679b5a`). All new runs use this test.
+  traps disclosed, base: tag `benchmark-guided-base`). Which test a
+  model runs is set by the Mendel `PLAN.md`.
 - `report.html` / `report-guided.html` — the self-contained reports.
   Served verbatim at `/mendel/report.html` and
   `/mendel/report-guided.html` (`tools/sync-static.mjs` copies them to
@@ -22,7 +24,7 @@ the site's Mendel page. Do not edit these files here.
 After a run is scored and committed on the Mendel `benchmark` branch:
 
 ```bash
-cp ../mendel/benchmark/{report.html,report-guided.html,results.csv,results-guided.csv} benchmarks/mendel/
+cp ../mendel-benchmark/benchmark/{report.html,report-guided.html,results.csv,results-guided.csv} benchmarks/mendel/
 npm run docs:tables
 ```
 
