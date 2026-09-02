@@ -120,6 +120,14 @@ budget). Runbook: `AGENT.md`. Note deviations here as they happen.
   `benchmark`; run branch pushed too. Worktree cleaned, no stray
   daemon.
 - Paused after item 5: user flagged a possible blind/guided plan
-  issue for some queue items. Queue item 6 (`gpt-5.6-luna` guided) not
-  started, awaiting review. No processes running, no worktrees open,
-  repo clean.
+  issue for some queue items. On review the user confirmed the queue
+  order is correct (misread on their side) — resuming.
+- Starting queue item 6: `gpt-5.6-luna` pi guided high. Passed the
+  plan probe and config guard; worktree
+  `../mendel-bench-guided-gpt-5.6-luna-high` ready at `guided-v3-base`
+  (6458616), pi started. Quiet-account window not required for xai
+  (grok) runs — only openai-codex needs it; this is an openai-codex
+  model, so per AGENT.md this run should ideally sit in a quiet
+  ChatGPT/Codex window. Proceeding since the user asked to continue;
+  noting the deviation from "run openai-codex last, in the deepest
+  night hours" for the record.
