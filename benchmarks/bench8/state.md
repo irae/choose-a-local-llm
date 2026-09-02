@@ -8,4 +8,16 @@ budget). Runbook: `AGENT.md`. Note deviations here as they happen.
 
 ## Run log
 
-(nothing yet)
+- Mendel repo confirmed at `79526d6` on branch `benchmark` (matches or
+  is later than the expected commit).
+- Checked existing rows: `results.json` has old `v1.0` blind rows for
+  grok-4.6, gpt-5.6-luna, kimi-k3, deepseek-v4-pro-0813, gpt-5.6-sol.
+  Current blind prompt is `v1.1`, so the queue items for these models
+  are re-runs at the new prompt version, not duplicates. No deviation
+  needed.
+- `deepseek-v4-flash-0731` has no row yet (blind or guided).
+  `gpt-5.6-luna` has no guided row yet.
+- Started queue item 1: `accounts/fireworks/models/deepseek-v4-flash-0731`
+  pi guided high. Worktree
+  `../mendel-bench-guided-accounts-fireworks-models-deepseek-v4-flash-0731-high`
+  created at `guided-v3-base` (6458616).
