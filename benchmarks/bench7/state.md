@@ -6,4 +6,116 @@ Runbook: `AGENT.md`. Note deviations here as they happen.
 
 ## Run log
 
-(nothing yet)
+### Block 1 — Qwen3.8-27B-4bit, effort low
+
+- 21:24 local: server up, warmup OK.
+- 21:25 local: blind low run started (`mlx-community-Qwen3.8-27B-4bit-low`).
+- 22:24-22:28 local: three tooling nudges in a row, each a premature length
+  stop at 1 output token (budget 16384). No death signature in the server
+  log. `contextWindow` (26624) is unverified for mlx_lm.server per PLAN.md;
+  prompt tokens had grown to ~20318 at the time, leaving little of the
+  26624 window for a 16384-token completion — likely cause. Tooling
+  nudges are never scored; watching the tooling-nudge budget (max 10) in
+  case the run ends `tooling_budget_exhausted`.
+
+- 01:51 local: blind low scored (partial, tooling_budget_exhausted,
+  libraries_done=1, score_total=67.5). Committed+pushed to mendel
+  benchmark @6394cf7. Worktree cleaned, Mendel Daemon killed.
+- 01:53 local: guided low started, same server.
+
+- 01:53 local: guided low failed immediately: `fatal: invalid reference:
+  guided-v3-base` — tag existed on origin but not fetched locally.
+  Fixed with `git fetch origin --tags`. Restarting guided low.
+
+- 02:20 local: found run-worker.sh names guided-low's output files
+  identically to blind-low's (`runs/mlx-community-Qwen3.8-27B-4bit-low-*`,
+  no bench-type suffix) — the guided run overwrote the blind run's raw
+  `runner.log`/`meta.json`/etc. No data lost: the blind row was already
+  scored, and its committed artifact (the redacted, `-issue-13-`-suffixed
+  session copy) has a distinct name. Deviation only; harness bug worth a
+  fix later (not touched now, mid-queue).
+
+- 02:10 local: server crashed mid guided-low run — dead-thread trap
+  (`RuntimeError: [METAL] Command buffer execution failed: Insufficient
+  Memory`), `/health` still returned 200. Killed and restarted
+  `mlx_lm.server` per server-lore.md; the hung request errored and the
+  harness resumed the same session (server log shows a fresh prompt
+  request right after restart). Not a model-authored fault.
+
+- 02:53 local: second server crash, same dead-thread trap (Metal OOM),
+  now at 8/10 tooling nudges. Server prompt had grown past its own
+  26624-token window (29639 tokens seen). Restarted the server again;
+  resumed. If this run reaches `tooling_budget_exhausted` it will score
+  as partial like the blind row; the harness's fixed 26624 window for
+  this mlx entry is the recurring root cause, not the model.
+
+- 03:35 local: third server crash (same dead-thread trap), right as
+  guided low reached 10/10 tooling nudges. Restarted the server so the
+  hung request could resolve and the run could finalize.
+
+- 06:42 local: guided low scored (partial, tooling_budget_exhausted,
+  three mlx server crashes, zero commits, libraries_done=0,
+  score_total=34). run8 (Linux/API queue) pushed a deepseek-v4-flash
+  guided row to mendel benchmark concurrently; merged cleanly (own row
+  re-applied on top of theirs) and pushed @8460cc6.
+- Block 1 closed. Cleaning worktree, moving to Block 2
+  (Ternary-Bonsai-27B-mlx-2bit, four runs).
+
+### Block 2 — Ternary-Bonsai-27B-mlx-2bit
+
+- 03:49 local: server up, warmup OK, memwatch restarted.
+- 03:50 local: run 1 (blind low) started.
+
+- 09:26-09:31 UTC: block 2 run 1 hit 3 tooling nudges ("Stream ended
+  without finish_reason") caused by a tool-call parser crash in
+  mlx-lm's qwen3_coder parser (JSONDecodeError on malformed tool-call
+  args) — matches the previously-documented failure for this exact
+  model (see SESSIONS.md blind-runs note on the first Bonsai attempt).
+  Per-request exception, not a server crash; server stayed up and kept
+  serving. No restart needed.
+
+- 11:51 local: block 2 run 1 ended on the runner's wall-clock hard stop
+  (300 min), partial. 3/8 libraries done (uuid, xtend, urlsafe-base64),
+  rimraf partially done but missed the mendel-requirify trap reference.
+  One self-inflicted JSON syntax break in
+  `mendel-transform-less/package.json` cost 4 commit attempts (~40
+  min) before the model fixed it itself. Scored (score_total=55),
+  committed+pushed to mendel benchmark (merged cleanly with run8's
+  concurrent pushes, now at @97f4977). Worktree removed, server/watcher/
+  daemon stopped and confirmed idle.
+
+## Handing over — stopped here on request (2026-09-02, ~11:55 local)
+
+Stopped at a clean boundary: block 2 run 1 is done, scored, and pushed.
+**Nothing else was started.** To resume, pick up at block 2 run 2 per
+`AGENT.md`:
+
+1. `git -C ../mendel pull origin benchmark` first (other agents/run8
+   have been pushing concurrently — expect commits past `97f4977`).
+2. Serve: `mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit
+   --prompt-cache-size 2 --port 8081`, warmup, restart the mem-watch
+   watcher.
+3. `./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi guided low`
+   — **watch for the out-prefix collision bug**: this run's output
+   files share the same name as run 1's (no bench-type suffix), so the
+   raw runner.log/meta.json for run 1 will be overwritten (already
+   scored and committed, so harmless, but don't rely on them after).
+4. Then blind high, then guided high (block 2's remaining 2 runs).
+5. Move to Block 3 (Gemma-12B, LM Studio), Block 4 (Qwen3.6-35B-A3B,
+   llama-server), and Block 5 (Qwen3.8-27B-4bit guided xhigh, only if
+   time remains) per `AGENT.md`.
+
+Known open issues carried forward:
+- mlx entries in `~/.pi/agent/models.json` can have `maxTokens` too
+  close to `contextWindow` for models with a small window (hit
+  Qwen3.8-27B-4bit hard in block 1); not fixed, just documented.
+- `run-worker.sh` names guided and blind runs of the same thinking
+  level identically — no fix applied yet.
+- mlx_lm.server dead-thread crashes (Metal OOM, `/health` stays 200)
+  are a recurring hazard; restart-and-resume per `server-lore.md` is
+  the known mitigation, not a fix.
+
+Local repo: worktrees clean (`git worktree list` shows only the main
+worktree), no server/daemon/watcher running, mendel benchmark branch
+pushed through `97f4977`. This repo's `run7` branch is being merged
+into local `master` now (not pushed).
