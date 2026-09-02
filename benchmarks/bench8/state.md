@@ -316,3 +316,27 @@ only this one.
   both ready, pi started for both. Two runs in flight
   (`anthropic/claude-haiku-4-5` blind, `glm-5p3-flash` guided),
   different accounts, safe pair.
+- Queue item 12 done. `glm-5p3-flash` blind (v1.1): score 75/100.
+  First-ever row for this model. All 8 libraries replaced, root
+  devDeps removed, static completeness clean. Trap A HIT (critical
+  defect): `apply-extra-options.js` swaps in `fs.promises.glob()` with
+  a naive `.then()` chain, throws `TypeError: glob(...).then is not a
+  function` at runtime (repro confirmed) — same trap-A failure mode as
+  item 9's `claude-haiku-4-5` row. No unit test covers this file, so
+  the full suite still passes (674/674, 1 skip). Trap B fixed
+  (`mendel-requirify` rimraf refs removed). Trap C avoided. Chalk uses
+  plain `util.styleText`, no forced `enableColor`, per the v1.1
+  Node-defaults rule. Commit craft is weak: 9 commits, all
+  `refactor`/`test` typed (0 `chore`), 5 of them multi-package. Real
+  `pnpm install` verified (not lockfile-only). Lint not clean on
+  re-run: `prettier --check` flags `TASKS.md` itself, and the model
+  never ran the lint tools itself. `TASKS.md` is a flat, coarse
+  checklist with no per-package sub-items (all pre-checked, not
+  progressive). High truncation share (69%). Zero nudges. Wall clock
+  21.4 min, cost $0.19 metered (`no plan involved`, fireworks is
+  metered). Scored, committed (`cb73cf5` in `mendel-benchmark`), and
+  pushed to mendel `benchmark`; run branch
+  `accounts-fireworks-models-glm-5p3-flash-high-issue-13` pushed too.
+  Worktree removed, no stray process for this run (did not run
+  `pkill -f "Mendel Daemon"`, since `claude-haiku-4-5` blind and
+  `glm-5p3-flash` guided were still in flight at the time).
