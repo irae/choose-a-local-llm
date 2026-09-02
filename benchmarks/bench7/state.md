@@ -65,3 +65,11 @@ Runbook: `AGENT.md`. Note deviations here as they happen.
 
 - 03:49 local: server up, warmup OK, memwatch restarted.
 - 03:50 local: run 1 (blind low) started.
+
+- 09:26-09:31 UTC: block 2 run 1 hit 3 tooling nudges ("Stream ended
+  without finish_reason") caused by a tool-call parser crash in
+  mlx-lm's qwen3_coder parser (JSONDecodeError on malformed tool-call
+  args) — matches the previously-documented failure for this exact
+  model (see SESSIONS.md blind-runs note on the first Bonsai attempt).
+  Per-request exception, not a server crash; server stayed up and kept
+  serving. No restart needed.
