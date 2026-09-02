@@ -206,3 +206,12 @@ only this one.
   shows only the main `mendel-benchmark` worktree itself (no stray run
   worktrees), and the main mendel repo (`../mendel`) sits untouched on
   `master`.
+- New session, 2026-09-02. Confirmed no leftover daemon or run
+  worktrees, `../mendel-benchmark` up to date, `../mendel` tags
+  fetched. Created worktree `../choose-a-local-llm-run8` on branch
+  `run8`. Starting queue item 8: `gpt-5.6-sol` pi blind high, from
+  `/home/irae/code/mendel-benchmark/benchmark`. This is an
+  openai-codex model; per AGENT.md it should ideally run in a quiet
+  ChatGPT/Codex window, but it is the last queue item with no other
+  run in flight, so proceeding now. Worktree
+  `../mendel-bench-gpt-5.6-sol-high` ready, pi started.
