@@ -426,3 +426,59 @@ only this one.
   rebased `master` to drop them, keeping only the (legitimate) site
   mirror commit. `master` pushed clean. `AGENT.md`'s history now
   lives entirely on `run8`, as it should.
+- Queue item 11 done. `claude-sonnet-4-5` blind (v1.1): score
+  43.5/100. First-ever row for this model. Weak run for a strong
+  reference model. Trap A HIT (critical):
+  `apply-extra-options.js`'s naive `.then()` on `fs.promises.glob()`
+  throws `TypeError` (repro confirmed). Trap B missed (medium):
+  `mendel-requirify` still requires `rimraf` in two test files and its
+  `package.json`; never mentioned in `TASKS.md`. A second critical
+  defect: root `package.json` still declares both `rimraf` and `tmp`;
+  no `pnpm install` ran at any point in the whole session, lockfile
+  shows zero change — per RUBRIC.md this is its own critical defect,
+  separate from trap B. `node_modules` pruning scored 0/8. Trap C
+  avoided (no exit hook added). Chalk correct (plain `util.styleText`,
+  no forced colour). Commit craft weak: all 13 commits typed
+  `refactor`, not `chore` (0/4), 2 of 13 multi-package, and 15 separate
+  `git add -A` calls (a real violation, not just a missed convention).
+  `TASKS.md` checked off all 8 libraries as done despite the
+  incomplete root-dependency work — ticks did not reflect reality,
+  scored 1.5/4. Lint clean on re-run but hook-only, model never
+  self-ran the tools (capped at 3/5). 6 full-suite runs across 13
+  commits (some duplicate `git add -A`/commit attempts point to
+  friction, e.g. `mendel-mocha-runner` and the chalk commit each
+  appear twice). Full test suite clean standalone otherwise (674/674,
+  1 skip; `mendel-full-example`'s daemon-socket test fails on master
+  too — expected baseline). Zero nudges, no self-repair commits.
+  Truncation share 41%. Wall clock 30.9 min, cost $2.99 metered
+  (`probe-plan.mjs` returned "no plan involved" for this session's
+  Anthropic login, metered like items 9 and 10). Scored, committed
+  (`5740f5d` in `mendel-benchmark`, including the CSV row this time),
+  and pushed to mendel `benchmark`; run branch
+  `anthropic-claude-sonnet-4-5-high-issue-13` pushed too. Worktree
+  removed.
+- Mirrored item 11 into `benchmarks/mendel/` (site reports and CSVs),
+  regenerated site tables, committed and pushed directly on `master`
+  (`2284041`) — correct location for mirror work per
+  `docs/methodology/mendel.md`.
+- All 13 queue items are now done and scored. `pkill -f "Mendel
+  Daemon"` run (safe, this was the last in-flight run). Verified: no
+  `pi --mode rpc` or `Mendel Daemon` process running; `git -C
+  ../mendel worktree list` and `git -C ../mendel-benchmark worktree
+  list` show no stray run worktrees.
+
+## Handing over
+
+Run 8 is complete. All 13 queue items (1-13) ran and scored:
+deepseek-v4-flash-0731 (guided 97, blind 84.5), kimi-k3 (blind 93.5),
+deepseek-v4-pro-0813 (blind 79), grok-4.6 (blind 92.5), gpt-5.6-luna
+(guided 88.5, blind 83.5), gpt-5.6-sol (blind 92), claude-haiku-4-5
+(guided 76, blind 34), claude-sonnet-4-5 (blind 43.5), glm-5p3-flash
+(blind 75, guided 98). All rows are committed and pushed on the
+`mendel-benchmark` worktree's `benchmark` branch, with every run
+branch also pushed to the `mendel` repo. The site mirror in
+`benchmarks/mendel/` is up to date with all of the above. No stray
+processes or worktrees remain in either repo. `run8`'s own history
+(this file and `AGENT.md`) is about to be merged into `master` and the
+branch/worktree retired, per `AGENT.md`'s "Closing" section and this
+repo's `AGENTS.md` stop-and-sync steps.
