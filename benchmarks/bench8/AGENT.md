@@ -108,15 +108,18 @@ last (quiet-account window).
 6. `./run-worker.sh gpt-5.6-luna pi guided high`
 7. `./run-worker.sh gpt-5.6-luna pi blind high`
 8. `./run-worker.sh gpt-5.6-sol pi blind high`
-9. `./run-worker.sh claude-haiku-4.5 pi guided high`
-10. `./run-worker.sh claude-haiku-4.5 pi blind high`
-11. `./run-worker.sh claude-sonnet-4.5 pi blind high`
+9. `./run-worker.sh anthropic/claude-haiku-4-5 pi guided high`
+10. `./run-worker.sh anthropic/claude-haiku-4-5 pi blind high`
+11. `./run-worker.sh anthropic/claude-sonnet-4-5 pi blind high`
 12. `./run-worker.sh accounts/fireworks/models/glm-5p3-flash pi blind high`
 13. `./run-worker.sh accounts/fireworks/models/glm-5p3-flash pi guided high`
 
 If a fireworks model id is rejected, list the store
 (`~/.pi/agent/models-store.json`) and use the exact id from there;
-record the correction in `state.md`.
+record the correction in `state.md`. A bare Anthropic model name is
+ambiguous across providers (cloudflare-ai-gateway, github-copilot);
+always use the `anthropic/<id>` form, with dashes not dots (e.g.
+`anthropic/claude-haiku-4-5`).
 
 ## Closing
 
