@@ -52,3 +52,11 @@ Runbook: `AGENT.md`. Note deviations here as they happen.
 - 03:35 local: third server crash (same dead-thread trap), right as
   guided low reached 10/10 tooling nudges. Restarted the server so the
   hung request could resolve and the run could finalize.
+
+- 06:42 local: guided low scored (partial, tooling_budget_exhausted,
+  three mlx server crashes, zero commits, libraries_done=0,
+  score_total=34). run8 (Linux/API queue) pushed a deepseek-v4-flash
+  guided row to mendel benchmark concurrently; merged cleanly (own row
+  re-applied on top of theirs) and pushed @8460cc6.
+- Block 1 closed. Cleaning worktree, moving to Block 2
+  (Ternary-Bonsai-27B-mlx-2bit, four runs).
