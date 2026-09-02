@@ -151,3 +151,10 @@ into local `master` now (not pushed).
   run's files carry a `-guided-` suffix
   (`prism-ml-Ternary-Bonsai-27B-mlx-2bit-low-guided-runner.log`), no
   longer colliding with the blind run's names.
+- 20:20 local: block 2 run 2 (guided low), still running (~2h45m in).
+  Model is looping on a self-authored path typo
+  (`.../Ternary-Bonsai-2bit-low/...` — missing `27B-mlx-`), repeating
+  the same failing `ls` command many times in a row. Harness/server
+  fine throughout; not intervening (no human input goes into a run per
+  AGENT.md). Watching tooling-nudge budget; if this loop burns it, the
+  run will end `tooling_budget_exhausted` like block 1 and run 1.
