@@ -17,3 +17,8 @@ Runbook: `AGENT.md`. Note deviations here as they happen.
   26624 window for a 16384-token completion — likely cause. Tooling
   nudges are never scored; watching the tooling-nudge budget (max 10) in
   case the run ends `tooling_budget_exhausted`.
+
+- 01:51 local: blind low scored (partial, tooling_budget_exhausted,
+  libraries_done=1, score_total=67.5). Committed+pushed to mendel
+  benchmark @6394cf7. Worktree cleaned, Mendel Daemon killed.
+- 01:53 local: guided low started, same server.
