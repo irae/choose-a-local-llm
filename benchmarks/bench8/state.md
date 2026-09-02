@@ -276,3 +276,43 @@ only this one.
   (metered fireworks vs. metered anthropic), separate sibling
   worktree (`../mendel-bench-accounts-fireworks-models-glm-5p3-flash-high`),
   separate branch. Worktree ready, pi started.
+- Queue item 9 done. `claude-haiku-4-5` guided (v3.0): score 76/100.
+  First-ever Anthropic-model row in this benchmark. All 8 libraries
+  replaced. Trap A HIT: `apply-extra-options.js` calls
+  `fs.promises.glob(i).then(...)` — `fs.promises.glob()` returns an
+  AsyncIterator, not a Promise, throws `TypeError: glob(...).then is
+  not a function` — critical defect. Trap B fixed (`mendel-requirify`
+  has zero rimraf refs left). Trap C avoided (no exit hook in
+  `validate-manifest.js`). Chalk uses plain `util.styleText`, no
+  forced colour, correct per v3.0 Node-defaults rule. Full suite
+  clean standalone (674/674, 1 skip), same baseline as item 8. 16 of
+  19 commits used `fix`, not the house `chore` (lost most of
+  commit-craft's all-chore points), plus one multi-package commit
+  (all remaining package.json edits batched into one "chore" commit).
+  Only the two root-level deps (`rimraf`, `tmp`) went through a real
+  `pnpm remove -w`; the rest were manual package.json edits with no
+  verifying install afterward — scored as "install unverified", not
+  a real prune. Guided v3.0 wants a full-suite run before every
+  commit; only 13 of 21 commit attempts had one — short of the
+  mandate. Lint clean, model self-ran prettier and eslint after its
+  last commit (full lint credit). TASKS.md is gitignored in this repo
+  (not a defect) — per-file granularity grouped by package, fully
+  ticked, matches commit order. Zero nudges, zero self-repair
+  commits. Truncation share 96% (69 of 72 noisy commands piped
+  through `tail`/`head`) — the highest seen in this queue, heavily
+  docked. Wall clock 27.3 min, cost $1.73 metered (`probe-plan.mjs`
+  returned "no plan involved" for this session's Anthropic login, so
+  metered like item 8, not plan-share). Scored, committed (`af3c011`
+  in `mendel-benchmark`), and pushed to mendel `benchmark`; run
+  branch `anthropic-claude-haiku-4-5-high-guided-v3-issue-13` pushed
+  too. Worktree removed. Did not run `pkill -f "Mendel Daemon"` since
+  other runs (`claude-haiku-4-5` blind, `glm-5p3-flash` blind/guided)
+  were still in flight in other worktrees at the time.
+- Started queue item 10 (`anthropic/claude-haiku-4-5` pi blind high)
+  and queue item 13 (`accounts/fireworks/models/glm-5p3-flash` pi
+  guided high) once their respective predecessor runs freed up:
+  worktrees `../mendel-bench-anthropic-claude-haiku-4-5-high` and
+  `../mendel-bench-guided-accounts-fireworks-models-glm-5p3-flash-high`
+  both ready, pi started for both. Two runs in flight
+  (`anthropic/claude-haiku-4-5` blind, `glm-5p3-flash` guided),
+  different accounts, safe pair.
