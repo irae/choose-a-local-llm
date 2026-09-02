@@ -36,6 +36,10 @@ and the `benchmark` branch gets its own worktree. Before the first run:
 4. If `../mendel-benchmark` does not exist:
    `git -C ../mendel worktree add ../mendel-benchmark benchmark`.
 5. `git -C ../mendel-benchmark pull origin benchmark`.
+6. If a leftover `benchmark/` directory sits in `../mendel` (files
+   from before the worktree split): move its `runs/` content into
+   `../mendel-benchmark/scratchpad/benchmark/runs/`, then delete
+   `../mendel/benchmark`.
 
 ## Ground rules
 
@@ -77,7 +81,9 @@ cd /Users/irae/code/mendel-benchmark/benchmark
 ./run-worker.sh <model> pi <blind|guided> <thinking>
 ```
 
-Watch `runs/<slug>-runner.log` during the run. Exit 3 means bad model
+Watch `scratchpad/benchmark/runs/<slug>-<bench>-runner.log` during
+the run (transient outputs live under `scratchpad/`, gitignored;
+only scored artifacts get committed into `benchmark/runs/`). Exit 3 means bad model
 config: fix `~/.pi/agent/models.json`, never pass `--allow-bad-config`.
 No human input goes into a run; the runner's nudge policy is the only
 voice.

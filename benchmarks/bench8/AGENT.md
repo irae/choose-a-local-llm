@@ -63,8 +63,9 @@ cd /home/irae/code/mendel-benchmark/benchmark
 ./run-worker.sh <model> pi <blind|guided> high
 ```
 
-Every run on this box uses thinking `high`. Watch
-`runs/<slug>-runner.log` during the run. Exit 3 means bad model config;
+Every run on this box uses thinking `high`. Watch `scratchpad/benchmark/runs/<slug>-<bench>-runner.log` during
+the run (transient outputs live under `scratchpad/`, gitignored;
+only scored artifacts get committed into `benchmark/runs/`). Exit 3 means bad model config;
 fix the config, never pass `--allow-bad-config`. If the worker aborts
 because a plan probe fails, record it in `state.md` and move to the
 next model on a different provider; do not skip the probe. No human
