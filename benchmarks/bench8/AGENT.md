@@ -36,12 +36,15 @@ wired limit. The models are remote APIs that pi is already logged into
   the MOVING tags `benchmark-blind-base` and `benchmark-guided-base`;
   the worker resolves them, but they must exist locally and match
   origin.
-- One run at a time by default. The owner may direct two runs in
-  parallel; that is allowed ONLY for metered (fireworks) models, from
-  two shells, different models. Never overlap an openai-codex or xai
-  run with anything — the plan probes need a quiet account: during the
-  openai-codex runs nobody may use ChatGPT or Codex. Run those last,
-  in the deepest night hours, strictly alone.
+- One run at a time by default. The owner may direct parallel runs
+  from separate shells, different models. The limit is per plan
+  provider: at most ONE openai-codex run and at most ONE xai run in
+  flight at any moment — two runs on the same plan contaminate each
+  other's plan-window deltas. Cross-provider pairs are fine (grok +
+  openai, either + fireworks); metered fireworks models may overlap
+  freely. The plan probes also need a quiet account: during an
+  openai-codex run nobody may use ChatGPT or Codex. Run the
+  openai-codex items in the deepest night hours.
 - Heartbeat in chat about every 20 minutes. No approval gates: when a
   run is scored and pushed, start the next at once.
 - After EVERY run: `pkill -f "Mendel Daemon"` (never mid-run), clean
