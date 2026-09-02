@@ -173,3 +173,36 @@ only this one.
   accordingly.
 - Starting queue item 7: `gpt-5.6-luna` pi blind high, from the new
   path `/home/irae/code/mendel-benchmark/benchmark`.
+- Queue item 7 done. `gpt-5.6-luna` blind (v1.1): score 83.5/100. All
+  8 libraries replaced, trap A avoided (`SYNC OK`), trap B fixed
+  (mendel-requirify's stale rimraf require removed, own commit
+  `2768421`), chalk uses `util.styleText` with no forced level per the
+  v1.1 Node-defaults rule. One medium defect: trap C hit —
+  `validate-manifest.js` registers a `process.once('exit')` hook that
+  deletes the debug manifest right after printing its path (same
+  regression as the v1.0 row and item 6). Prettier/ESLint clean on
+  re-run but the model never ran the tools itself (hook-only credit,
+  capped at 3/5). Commit craft took a real hit: 18 of 21 commits used
+  `fix`, only 3 used the house `chore` type (all-chore component of
+  criterion 5 scored 0/4; package-per-commit and no-violations
+  components stayed full). One model nudge (model stopped with
+  TASKS.md items unchecked, resumed and finished 3 min later). Full
+  suite run 6 times over 21 commits (meets the blind "about every 5
+  commits" cadence). `mendel-pipeline`'s lerna-batch run SIGILL'd on
+  `dual-package-cjs.js`; confirmed clean standalone (5/5) — a machine-
+  load flake, not a regression. `mendel-full-example`'s daemon-socket
+  test fails on master too — expected baseline. Wall clock 27.2 min,
+  cost $0.47 metered (`probe-plan.mjs` returned "no plan involved" for
+  this session's openai-codex login). Scored, committed (`9897c6b`
+  in the new `mendel-benchmark` worktree), and pushed to mendel
+  `benchmark`; run branch `gpt-5.6-luna-high-issue-13` pushed too.
+  Worktree removed, no stray daemon or process. Note: the report's
+  OpenRouter cost-comparison figure for this row is an estimate, not a
+  live lookup (same caveat as item 4's row).
+- **Paused after item 7 per user request.** Queue item 8
+  (`gpt-5.6-sol` blind) and the `claude-haiku-4.5` skip note remain
+  for a future session. Verified: no `pi --mode rpc` or `Mendel
+  Daemon` process running, `git -C ../mendel-benchmark worktree list`
+  shows only the main `mendel-benchmark` worktree itself (no stray run
+  worktrees), and the main mendel repo (`../mendel`) sits untouched on
+  `master`.
