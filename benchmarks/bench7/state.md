@@ -119,3 +119,35 @@ Local repo: worktrees clean (`git worktree list` shows only the main
 worktree), no server/daemon/watcher running, mendel benchmark branch
 pushed through `97f4977`. This repo's `run7` branch is being merged
 into local `master` now (not pushed).
+
+## Session 2026-09-02 — step 1 cleanup, then resume
+
+- Step 1 cleanup done. Found `../mendel-benchmark` worktree missing
+  (expected problem from AGENT.md); recreated with `git -C ../mendel
+  worktree add ../mendel-benchmark benchmark`, pulled, now at `44a9980`
+  (fast-forward from `97f4977`, brought in `run-worker.sh` and
+  `score.mjs` changes from other agents). No other cleanup needed:
+  both main worktrees already matched the desired state (`master`,
+  clean, equal to origin), tags fetched and match origin, no stray
+  worktrees, no stray processes.
+- GPU confirmed idle (no `llama-server`/`mlx_lm`, `lms ps` empty),
+  `iogpu.wired_limit_mb` = 24000.
+- Owner note: DB may run today for a while, so reordering the queue —
+  Block 2 (Bonsai) first, since it is already in progress, then Block
+  1 does not apply (already scored/closed). Resuming at block 2 run 2
+  per the hand-over above.
+- `run7` worktree/branch created at `../choose-a-local-llm-run7`.
+- 14:36 local: `mlx_lm.server` for `prism-ml/Ternary-Bonsai-27B-mlx-2bit`
+  up, warmup OK. Memory watcher started, scoped
+  (`/tmp/bonsai-run2-memwatch.log`).
+- 14:51 local: the qwen3_coder tool-call parser crash from run 1
+  recurred (JSONDecodeError on malformed tool-call args, per-request
+  exception, server stayed up and kept serving). Same known cause, no
+  action needed.
+- 14:36 local: block 2 run 2 (guided low) started. Branch
+  `prism-ml-Ternary-Bonsai-27B-mlx-2bit-low-guided-v3-issue-13`. The
+  out-prefix collision bug from run 1 looks fixed by the
+  `run-worker.sh` update pulled in with the worktree setup — this
+  run's files carry a `-guided-` suffix
+  (`prism-ml-Ternary-Bonsai-27B-mlx-2bit-low-guided-runner.log`), no
+  longer colliding with the blind run's names.
