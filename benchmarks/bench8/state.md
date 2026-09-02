@@ -253,3 +253,26 @@ only this one.
   no stray daemon or process. Note: the report's OpenRouter
   cost-comparison figure for this row is an estimate, not a live
   lookup (same caveat as items 4 and 7's rows).
+- Queue item 9 first attempt failed instantly: bare `claude-haiku-4.5`
+  is ambiguous across providers (`cloudflare-ai-gateway`,
+  `github-copilot`), neither authenticated, `pi` refused with
+  `runner_error`. Checked `~/.pi/agent/models-store.json`: the
+  anthropic-authenticated ids use dashes, not dots
+  (`claude-haiku-4-5`, `claude-sonnet-4-5`), and need the
+  `anthropic/` provider prefix to disambiguate. Cleaned the failed
+  worktree/branch (no work had started), fixed `AGENT.md` items 9-11
+  to `anthropic/claude-haiku-4-5` / `anthropic/claude-sonnet-4-5`, and
+  added a note for future Anthropic id corrections.
+- Restarted queue item 9: `anthropic/claude-haiku-4-5` pi guided high.
+  Worktree `../mendel-bench-guided-anthropic-claude-haiku-4-5-high`
+  ready, pi started.
+- User added queue items 12-13: `accounts/fireworks/models/glm-5p3-flash`
+  blind then guided. Also clarified the parallel rule in `AGENT.md`:
+  at most two runs in flight, never two on the same account (not just
+  per plan-provider).
+- Starting queue item 12: `accounts/fireworks/models/glm-5p3-flash` pi
+  blind high, in parallel with the still-running queue item 9
+  (`anthropic/claude-haiku-4-5` guided). Safe: different account
+  (metered fireworks vs. metered anthropic), separate sibling
+  worktree (`../mendel-bench-accounts-fireworks-models-glm-5p3-flash-high`),
+  separate branch. Worktree ready, pi started.
