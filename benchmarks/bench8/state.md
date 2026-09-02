@@ -482,3 +482,13 @@ processes or worktrees remain in either repo. `run8`'s own history
 (this file and `AGENT.md`) is about to be merged into `master` and the
 branch/worktree retired, per `AGENT.md`'s "Closing" section and this
 repo's `AGENTS.md` stop-and-sync steps.
+
+## Reopened, 2026-09-02
+
+User asked for one more model: `anthropic/claude-sonnet-4-5` guided
+(item 14), to pair with its existing blind row (43.5). Recreated the
+worktree (`../choose-a-local-llm-run8` on branch `run8`, fresh off the
+merged `master`) and `../mendel-benchmark`/`../mendel` are already up
+to date from the close-out. Added item 14 to `AGENT.md`'s queue.
+Started: worktree `../mendel-bench-guided-anthropic-claude-sonnet-4-5-high`
+ready, pi started.
