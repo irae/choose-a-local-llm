@@ -34,3 +34,10 @@ Runbook: `AGENT.md`. Note deviations here as they happen.
   scored, and its committed artifact (the redacted, `-issue-13-`-suffixed
   session copy) has a distinct name. Deviation only; harness bug worth a
   fix later (not touched now, mid-queue).
+
+- 02:10 local: server crashed mid guided-low run — dead-thread trap
+  (`RuntimeError: [METAL] Command buffer execution failed: Insufficient
+  Memory`), `/health` still returned 200. Killed and restarted
+  `mlx_lm.server` per server-lore.md; the hung request errored and the
+  harness resumed the same session (server log shows a fresh prompt
+  request right after restart). Not a model-authored fault.
