@@ -6,6 +6,14 @@ blind for the cheap probe (deepseek-v4-flash) and the strong reference
 (gpt-5.6-luna). Anthropic models are on the list but skipped (no
 budget). Runbook: `AGENT.md`. Note deviations here as they happen.
 
+**Standing rule (user, 2026-09-02):** keep all main repo worktrees
+free for the user's own parallel use. Never run benchmark work
+(commits, run-worker.sh, scoring) directly in a repo's main worktree
+if that repo has one — use a dedicated sibling worktree instead, and
+leave the main worktree checked out to a normal branch (e.g.
+`master`) the user can use freely. This applies to future runs, not
+only this one.
+
 ## Run log
 
 - Mendel repo confirmed at `79526d6` on branch `benchmark` (matches or
