@@ -22,6 +22,15 @@ wired limit. The models are remote APIs that pi is already logged into
 
 ## Ground rules
 
+- **FIRST ACTION, before you read further or touch any file:**
+  `git worktree add ../choose-a-local-llm-run8 -b run8` (or `cd` into
+  it if it exists), then `cd ../choose-a-local-llm-run8`. Verify with
+  `pwd` and `git worktree list`. Every command of this run happens
+  there — never in `~/code/choose-a-local-llm`.
+- Never run a bare `git stash` in any worktree of either repo — the
+  stash list is shared and parallel agents clobber each other. Prefer
+  a WIP commit on your run branch. If a stash is unavoidable: `git
+  stash push -m "run8: <what>"` and pop by name only.
 - Work sits in two repos, and the main worktree of each stays with the
   coordinator — never work in it. Benchmark artifacts, scores,
   reports, run branches: the `../mendel-benchmark` worktree (branch

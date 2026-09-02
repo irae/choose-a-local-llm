@@ -122,6 +122,12 @@ Benchmark work:
   keeps only the branches. Never reuse an old worktree — gitignored
   artifacts stay behind in it. The merge of a run branch into `master`
   happens from the master worktree only (see the merge rule above).
+- **Never run a bare `git stash`.** The stash list lives in the shared
+  `.git` directory, not per-worktree, so parallel agents clobber or
+  cross-apply each other's stashes. Save work in progress as a WIP
+  commit on your own branch instead. If a stash is unavoidable, name it
+  (`git stash push -m "<agent/run>: <what>"`) and apply or pop it by
+  that name only (`git stash pop 'stash^{/<name>}'`) — never by index.
 - **No superseded number on a current page.** Not in a table, not in prose.
   Old figures move to the setup's `historical.md`, which opens with a red
   warning telling readers not to use them. Only the `benchmarks/*.md` pages
