@@ -30,3 +30,12 @@ budget). Runbook: `AGENT.md`. Note deviations here as they happen.
   no stray daemon.
 - Starting queue item 2: `accounts/fireworks/models/deepseek-v4-flash-0731`
   pi blind high.
+- Quirk found: `runs/<model>-<thinking>-meta.json` (and the sibling
+  `-session.jsonl`, `-session.html`, `-runner.log`, `-events.jsonl`,
+  `-install.log`, `-worker.json`, `-plan-before/after.json`) are named
+  by model+thinking only, not by bench. Starting a blind run for a
+  model right after its guided run overwrites these files. The
+  branch-suffixed evidence and session copies made during scoring are
+  safe; only the live in-progress files collide. Scoring the guided
+  run before starting the blind run (as this queue already does)
+  avoids data loss, since the guided copies were already made.
