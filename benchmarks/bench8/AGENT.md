@@ -52,7 +52,9 @@ wired limit. The models are remote APIs that pi is already logged into
   run is scored and pushed, start the next at once.
 - After EVERY run: `pkill -f "Mendel Daemon"` (never mid-run), clean
   the worktree per PLAN.md "Cleanup"; keep the branch.
-- Never run any Anthropic model. There is no budget and no login.
+- Anthropic models are allowed now: login and budget exist on this
+  box. pi+anthropic runs are metered, not plan-share, so no isolation
+  window applies to them.
 - Never trust the model under test. Score only from the verification
   battery (`node ../mendel-benchmark/benchmark/score.mjs` plus the
   rubric).
@@ -103,9 +105,9 @@ last (quiet-account window).
 6. `./run-worker.sh gpt-5.6-luna pi guided high`
 7. `./run-worker.sh gpt-5.6-luna pi blind high`
 8. `./run-worker.sh gpt-5.6-sol pi blind high`
-9. **SKIP — claude-haiku-4.5, blind + guided, thinking high.** Stays on
-   the list so a later run picks it up. Reason: no Anthropic login and
-   no budget on this box today. Do not attempt it.
+9. `./run-worker.sh claude-haiku-4.5 pi guided high`
+10. `./run-worker.sh claude-haiku-4.5 pi blind high`
+11. `./run-worker.sh claude-sonnet-4.5 pi blind high`
 
 If a fireworks model id is rejected, list the store
 (`~/.pi/agent/models-store.json`) and use the exact id from there;
