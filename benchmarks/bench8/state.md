@@ -87,4 +87,16 @@ budget). Runbook: `AGENT.md`. Note deviations here as they happen.
   (no live OpenRouter lookup available to the scoring fork), not a
   looked-up quote — flag for a follow-up correction if exact pricing
   matters later.
-- Starting queue item 5: `grok-4.6` pi blind high.
+- Queue item 5 first attempt hit the config guard (exit `bad_config`):
+  `~/.pi/agent/models-store.json` reports `grok-4.6` with
+  `maxTokens (500000) == contextWindow (500000)`, so auto-compaction
+  cannot trigger. Per AGENT.md ("fix the config, never
+  `--allow-bad-config`"), added an operator override at
+  `~/.pi/agent/models.json` (`providers.xai.modelOverrides["grok-4.6"].
+  maxTokens: 128000`) — the value pi's own built-in catalog uses for
+  the same model on other providers (github-copilot, opencode), so it
+  is truthful, not a guess. `run-worker.sh` copies this file into the
+  per-run pinned config dir automatically. Cleaned up the failed
+  worktree/branch and restarted.
+- Starting queue item 5 (retry): `grok-4.6` pi blind high. Passed the
+  config guard this time, worktree ready, pi started.
