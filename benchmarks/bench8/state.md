@@ -492,3 +492,64 @@ merged `master`) and `../mendel-benchmark`/`../mendel` are already up
 to date from the close-out. Added item 14 to `AGENT.md`'s queue.
 Started: worktree `../mendel-bench-guided-anthropic-claude-sonnet-4-5-high`
 ready, pi started.
+- Item 14 done. `claude-sonnet-4-5` guided (v3.0): score 88/100 — a big
+  lift over the same model's 43.5 blind score, consistent with the
+  guided prompt's purpose. Trap A HIT (critical):
+  `apply-extra-options.js` calls `fs.promises.glob(...).then(...)` at
+  three call sites, throws `TypeError: glob(...).then is not a
+  function` (repro confirmed). Trap B fixed (`mendel-requirify` has
+  zero `rimraf` refs left). Trap C avoided (no exit hook in
+  `validate-manifest.js`). Chalk correct (plain `util.styleText`, no
+  forced colour). All 16 commits `chore`-typed, one package each (two
+  bundle the root `package.json` change with a package commit, allowed
+  under the v3.0 criterion-5 note), no `--no-verify`/`git add -A`/
+  TASKS.md leak. Root devDeps removed via real `pnpm remove` (verified,
+  not just a lockfile-only edit). Lint clean, model self-ran
+  `eslint`/`prettier` after its last change. Full suite clean
+  standalone (674/674, 1 skip), same baseline as this model's blind
+  run. `TASKS.md` textbook per-file, grouped by package, fully ticked
+  and (unlike the blind sibling) the ticks matched reality. Test
+  discipline docked: only 12 full-suite runs across 16 commits, short
+  of guided v3.0's "before every commit" mandate. Truncation share
+  72%, scored full marks — spot-checked as deliberate `| tail -N`
+  noise reduction on the model's own output, same precedent as
+  `glm-5p3-flash`'s guided row. Zero nudges, zero self-repair commits.
+  Wall clock 32.2 min, cost $3.92 metered (`no plan involved` for this
+  session's Anthropic login). Scored, CSV row appended this time (no
+  repeat of the earlier session's omission), committed
+  (`1200322` in `mendel-benchmark`), then a concurrent Mac push
+  (`Ternary-Bonsai-27B` guided row) required a merge (`01de789`) —
+  resolved a trivial JSON trailing-brace conflict and regenerated
+  `report-guided.html` fresh rather than hand-merging the generated
+  HTML. Pushed. Run branch
+  `anthropic-claude-sonnet-4-5-high-guided-v3-issue-13` pushed too.
+  **Found pre-existing uncommitted local changes** to
+  `generate-report.mjs`, `report-template.html`,
+  `report-guided-template.html`, and `report.html` in the
+  `mendel-benchmark` worktree, unrelated to this item (they predate
+  this session's work here) — stashed rather than committed or
+  discarded (`git stash list` in `../mendel-benchmark`, entry "On
+  benchmark: pre-existing uncommitted generate-report.mjs/template/
+  report.html changes, unrelated to sonnet-guided scoring, left for
+  the coordinator to review"). A future session should look at that
+  stash and decide whether to commit or drop it.
+- Mirrored item 14 into `benchmarks/mendel/` (site reports and CSVs;
+  also picked up the concurrent `Ternary-Bonsai-27B` guided row from
+  the merge), regenerated site tables, committed and pushed directly
+  on `master` (`ab507c2`).
+- Item 14 closing: `pkill -f "Mendel Daemon"` run (safe, this was the
+  only in-flight item this session). Verified: no `pi --mode rpc` or
+  `Mendel Daemon` process running; `git -C ../mendel worktree list`
+  and `git -C ../mendel-benchmark worktree list` show no stray run
+  worktrees.
+
+## Handing over (second close)
+
+Item 14 (`claude-sonnet-4-5` guided, 88/100) is done, scored, pushed,
+and mirrored. This reopened run8 session is otherwise identical in
+shape to the first close: no stray processes or worktrees, both repos
+pushed. One open item for a future session: the stash left in
+`../mendel-benchmark` (see above) needs review. `run8`'s history (this
+file and `AGENT.md`) is about to be merged into `master` again and the
+branch/worktree retired, per `AGENT.md`'s "Closing" section and this
+repo's `AGENTS.md` stop-and-sync steps.
