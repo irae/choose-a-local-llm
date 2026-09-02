@@ -27,12 +27,12 @@ and the methodology pages the runbook points to.
    overrides older lore. Point, do not paste — the runbook stays short.
 3. State the execution rules the runner must not relearn: local run
    branch in a fresh sibling worktree (the main worktree stays with the
-   coordinator; the coordinator merges the branch into `master` from
-   there when the run closes; never pushed), worktree teardown at run
-   end (see the worktree rule in `AGENTS.md`, standing rules),
+   coordinator), the stop-and-sync procedure from `AGENTS.md` standing
+   rules when the owner asks to stop (merge to `master`, push `master`,
+   delete the branch, remove the worktree — that one push is required),
    one model on the GPU at a time, port, heartbeat cadence, the scoped
-   memory watcher on every run, commit as results land, never push,
-   never publish.
+   memory watcher on every run, commit as results land, never push a
+   run branch, never publish.
 4. Write the blocks in priority order. Each block gives: the exact
    serving command, the exact run command (with every env var), where
    results land, what "done" means, and what to update when it is done
@@ -58,7 +58,8 @@ links them at the exact step where they apply.
 ## Spawning the runner
 
 Give the runner a short prompt: the reading list (its `AGENT.md` first),
-the standing prohibitions (no push, no publish), the heartbeat format,
+the standing prohibitions (push only on owner request — and then only
+`master` — no publish), the heartbeat format,
 and the instruction to keep working until every block is done or truly
 blocked. Pass the STE prose rule on. Do not paste findings or history
 into the prompt — that is what the files are for.

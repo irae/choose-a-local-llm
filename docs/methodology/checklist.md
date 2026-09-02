@@ -7,8 +7,11 @@ lives in [common rules](./common-rules.md) and
 
 ## Before the run
 
-1. Branch locally for the run (for example `run6`); it merges back into
-   `master` when the run ends and is never pushed (see `AGENTS.md`).
+1. Branch locally for the run (for example `run6`) in a fresh sibling
+   worktree; the main worktree stays with the coordinator. Never push
+   the run branch. When the owner asks to stop and merge, follow the
+   stop-and-sync steps in `AGENTS.md`: merge to `master`, push
+   `master`, delete the branch, remove the worktree.
 2. Check the GPU is free: `pgrep -fl "llama-server|mlx_lm"` and
    `~/.cache/lm-studio/bin/lms ps`. Stop leftovers.
 3. Check `sysctl iogpu.wired_limit_mb` is the documented limit (24000).

@@ -79,7 +79,9 @@ Benchmark work:
 
 ## Standing rules
 
-- **Do not push.** The owner pushes, always.
+- **Push only on owner request.** Never push on your own initiative.
+  When the owner asks for a push or for stop-and-sync, push `master` —
+  and only `master`. Refusing a requested push loses data; do it.
 - **Only the agent whose worktree has master checked out may merge into
   master.** Git enforces this: a branch lives in one worktree at a time, so
   from any other worktree the merge is refused. If you are not on master,
@@ -92,6 +94,23 @@ Benchmark work:
   branch to origin. The branch exists only so a benchmark run and site
   work can proceed at the same time, each in its own worktree; all
   communication between agents goes through `master`.
+- **Stop and sync — when the owner asks to stop a run and merge.** The
+  goal state: all work is on `master`, `master` is on `origin/master`,
+  no run branch remains anywhere, no run worktree remains. Follow these
+  steps in order:
+  1. Commit all open work on the run branch, including `state.md` with
+     a handing-over section. `git status` must be clean.
+  2. Go to the master worktree. Run `git pull --ff-only origin master`.
+  3. Run `git merge run<N>`.
+  4. Run `git push origin master`. This push is required — the owner
+     asked for it, so the push rule above permits it.
+  5. Remove the run worktree: `git worktree remove
+     ../choose-a-local-llm-run<N>`, then `git worktree prune`.
+  6. Delete the branch: `git branch -d run<N>`. Use `-d`, not `-D` —
+     if git refuses, the merge did not land; go back to step 3.
+  7. Verify and report: `git branch` lists no run branch, `git
+     rev-parse master origin/master` prints the same hash twice,
+     `git status` is clean. Quote these outputs.
 - **The main worktree belongs to the coordinator.** A runner never works
   in the main worktree of this repo or of `../mendel`. The runner
   creates a fresh sibling worktree for its run branch (for example
