@@ -48,3 +48,7 @@ Runbook: `AGENT.md`. Note deviations here as they happen.
   resumed. If this run reaches `tooling_budget_exhausted` it will score
   as partial like the blind row; the harness's fixed 26624 window for
   this mlx entry is the recurring root cause, not the model.
+
+- 03:35 local: third server crash (same dead-thread trap), right as
+  guided low reached 10/10 tooling nudges. Restarted the server so the
+  hung request could resolve and the run could finalize.
