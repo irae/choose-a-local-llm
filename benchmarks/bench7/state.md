@@ -41,3 +41,10 @@ Runbook: `AGENT.md`. Note deviations here as they happen.
   `mlx_lm.server` per server-lore.md; the hung request errored and the
   harness resumed the same session (server log shows a fresh prompt
   request right after restart). Not a model-authored fault.
+
+- 02:53 local: second server crash, same dead-thread trap (Metal OOM),
+  now at 8/10 tooling nudges. Server prompt had grown past its own
+  26624-token window (29639 tokens seen). Restarted the server again;
+  resumed. If this run reaches `tooling_budget_exhausted` it will score
+  as partial like the blind row; the harness's fixed 26624 window for
+  this mlx entry is the recurring root cause, not the model.
