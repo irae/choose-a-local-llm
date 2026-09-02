@@ -39,3 +39,18 @@ budget). Runbook: `AGENT.md`. Note deviations here as they happen.
   safe; only the live in-progress files collide. Scoring the guided
   run before starting the blind run (as this queue already does)
   avoids data loss, since the guided copies were already made.
+- Queue item 2 done. `deepseek-v4-flash-0731` blind (v1.1): score
+  84.5/100. All 8 libraries replaced, trap A and trap C avoided,
+  chalk handled per v1.1 Node-defaults rule, lint and unit suite
+  clean (mendel-core batch flake confirmed clean standalone). Trap B
+  missed: the model found the `mendel-requirify` `rimraf` references
+  (noted in its own TASKS.md) but judged them out of scope and left
+  them. Root `package.json` still declares `tmp` as an unused
+  devDependency. Commits used `fix`/`test` types, not the house
+  `chore` convention. One model nudge at the end. One minor defect
+  logged (root `tmp` left declared). Wall clock 100.6 min, cost $0.79
+  metered. Scored, committed (`bce066a`, rebased over a concurrent Mac
+  push), and pushed to mendel `benchmark`; run branch pushed too.
+  Worktree cleaned, no stray daemon.
+- Starting queue item 3: `accounts/fireworks/models/kimi-k3` pi blind
+  high.
