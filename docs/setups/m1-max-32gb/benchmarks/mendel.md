@@ -70,6 +70,7 @@ same frozen prompt; a blind-guided pair can land at different times.
 | glm-5p3-flash | pi | **98/100** |
 | deepseek-v4-flash-0731 | pi | **97/100** |
 | gpt-5.6-luna | pi | **88.5/100** |
+| claude-sonnet-4.5 | pi | **88/100** |
 | Claude Haiku 4.5 | pi | **76/100** |
 | [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | pi | **34/100** (partial) |
 <!-- gen:mendel-guided:end -->
