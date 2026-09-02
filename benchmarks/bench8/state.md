@@ -405,3 +405,24 @@ only this one.
   12, 13 are scored and pushed. Remaining work for a future check:
   confirm item 11 (`claude-sonnet-4-5` blind) finishes and is scored,
   then run the AGENT.md closing/stop-and-sync steps.
+- Mirrored items 8, 9, 10, 12, 13 into `benchmarks/mendel/` (site
+  reports and CSVs) and regenerated the site tables, per
+  `docs/methodology/mendel.md` and `benchmarks/mendel/README.md`.
+  While doing this, found and fixed a gap: the `claude-haiku-4-5` and
+  `glm-5p3-flash` scoring forks (items 9, 10, 12, 13) updated
+  `results.json`/`results-guided.json` and the reports but never
+  appended the matching `results.csv`/`results-guided.csv` rows
+  (unlike item 8's fork, which did). Backfilled all four rows from the
+  JSON, committed to `mendel-benchmark` (`dc4efca`), then mirrored.
+  claude-sonnet-4-5 is not in this mirror; it will need another
+  refresh once item 11 scores.
+- **Correction**: the two `AGENT.md` queue-edit commits made earlier
+  this session (add Haiku/Sonnet/glm items, then fix the Anthropic
+  model ids to `anthropic/<id>` form) were made directly on `master`
+  in the main `choose-a-local-llm` worktree — a mistake, violating the
+  standing rule that the main worktree stays free for the user.
+  Corrected: cherry-picked both onto `run8` (plus the pending
+  uncommitted id-fix, committed here as a third commit), then
+  rebased `master` to drop them, keeping only the (legitimate) site
+  mirror commit. `master` pushed clean. `AGENT.md`'s history now
+  lives entirely on `run8`, as it should.
