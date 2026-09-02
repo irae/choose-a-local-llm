@@ -40,13 +40,16 @@ wired limit. The models are remote APIs that pi is already logged into
   the worker resolves them, but they must exist locally and match
   origin.
 - One run at a time by default. The owner may direct parallel runs
-  from separate shells, different models. The limit is per plan
-  provider: at most ONE openai-codex run and at most ONE xai run in
-  flight at any moment — two runs on the same plan contaminate each
-  other's plan-window deltas. Cross-provider pairs are fine (grok +
-  openai, either + fireworks); metered fireworks models may overlap
-  freely. The plan probes also need a quiet account: during an
-  openai-codex run nobody may use ChatGPT or Codex. Run the
+  from separate shells, different models. Keep at most TWO runs in
+  flight at once, and never two on the same account (plan provider,
+  or the same metered API account). At most ONE openai-codex run and
+  at most ONE xai run in flight at any moment — two runs on the same
+  plan contaminate each other's plan-window deltas. Cross-account
+  pairs are fine (grok + openai, either + fireworks, either +
+  anthropic); metered fireworks and metered anthropic (pi) runs may
+  each overlap with any other account, but not with another run on
+  their own account. The plan probes also need a quiet account:
+  during an openai-codex run nobody may use ChatGPT or Codex. Run the
   openai-codex items in the deepest night hours.
 - Heartbeat in chat about every 20 minutes. No approval gates: when a
   run is scored and pushed, start the next at once.
@@ -108,6 +111,8 @@ last (quiet-account window).
 9. `./run-worker.sh claude-haiku-4.5 pi guided high`
 10. `./run-worker.sh claude-haiku-4.5 pi blind high`
 11. `./run-worker.sh claude-sonnet-4.5 pi blind high`
+12. `./run-worker.sh accounts/fireworks/models/glm-5p3-flash pi blind high`
+13. `./run-worker.sh accounts/fireworks/models/glm-5p3-flash pi guided high`
 
 If a fireworks model id is rejected, list the store
 (`~/.pi/agent/models-store.json`) and use the exact id from there;
