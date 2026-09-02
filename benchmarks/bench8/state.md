@@ -21,3 +21,12 @@ budget). Runbook: `AGENT.md`. Note deviations here as they happen.
   pi guided high. Worktree
   `../mendel-bench-guided-accounts-fireworks-models-deepseek-v4-flash-0731-high`
   created at `guided-v3-base` (6458616).
+- Queue item 1 done. `deepseek-v4-flash-0731` guided (v3.0): score
+  97/100. All 8 libraries replaced, all three traps handled, lint and
+  full test suite clean. One model nudge (output budget hit once,
+  docked on criterion 6). No critical or medium defects. Wall clock
+  249 min, cost $2.47 metered. Scored, committed, and pushed to mendel
+  `benchmark` (`c261517`); run branch pushed too. Worktree cleaned,
+  no stray daemon.
+- Starting queue item 2: `accounts/fireworks/models/deepseek-v4-flash-0731`
+  pi blind high.
