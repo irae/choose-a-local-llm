@@ -230,3 +230,26 @@ only this one.
   `../mendel-bench-gpt-5.6-sol-high`), different provider (metered
   anthropic vs. plan-share openai-codex, no plan overlap), different
   branch. Worktree ready, pi started.
+- Queue item 8 done. `gpt-5.6-sol` blind (v1.1): score 92/100. All 8
+  libraries replaced, trap A avoided (`SYNC OK`), trap B fixed
+  (`mendel-requirify` rimraf refs removed, own commit `a9ba7c1`), chalk
+  uses plain `util.styleText` with no forced level per the v1.1
+  Node-defaults rule. One medium defect: trap C hit —
+  `validate-manifest.js` registers a `process.once('exit')` hook that
+  deletes the debug manifest right after printing its path (same
+  regression as items 6 and 7). All 18 commits `chore`-typed, one
+  package each, root devDeps fully removed, lint clean (model self-ran
+  prettier/eslint 17 times). Full suite (674/674, 1 skip) clean
+  standalone, run 7 times over 18 commits — well inside the blind
+  "about every 5 commits" cadence. Zero nudges, zero self-repair
+  commits (spot-checked the commit log, one-shot per package). Task
+  list built as a full tree upfront with per-package sub-items, ticked
+  per commit (not textbook progressive discovery, so docked to 2.5/4
+  like item 7's row). Truncation share 21%, docked to 2.5/3. Wall clock
+  24.4 min, cost $12.11 metered (`probe-plan.mjs` returned "no plan
+  involved" for this session's openai-codex login). Scored, committed
+  (`2a5d273` in `mendel-benchmark`), and pushed to mendel `benchmark`;
+  run branch `gpt-5.6-sol-high-issue-13` pushed too. Worktree removed,
+  no stray daemon or process. Note: the report's OpenRouter
+  cost-comparison figure for this row is an estimate, not a live
+  lookup (same caveat as items 4 and 7's rows).
