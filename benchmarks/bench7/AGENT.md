@@ -12,34 +12,62 @@ else. Write all prose in ASD-STE100 Simplified Technical English.
    score. It is the law for everything inside the Mendel repo.
 5. `../mendel-benchmark/benchmark/RUBRIC.md` — the scoring rubric.
 
-## One-time setup on this machine (changed 2026-09-02)
+## Step 1 — one-time cleanup of this machine (2026-09-02)
 
-The mendel `master` was rebased and force-pushed, the bench bases are
-now the MOVING tags `benchmark-blind-base` and `benchmark-guided-base`,
-and the `benchmark` branch gets its own worktree. Before the first run:
+Do this FIRST, before any run. Background: mendel `master` was rebased
+and force-pushed, the bench bases are now the MOVING tags
+`benchmark-blind-base` and `benchmark-guided-base`, and each repo's
+main worktree stays on `master` for the coordinator. Earlier runs may
+not have cleaned up. Bring the machine to the desired state below on
+your own; do not report problems from the expected list — fix them.
+Stop and ask the owner ONLY if you find a commit that exists on no
+origin branch.
 
-1. `git -C ../mendel fetch --force --tags origin`.
-2. If `git -C ../mendel branch --show-current` prints `benchmark`:
-   move the main worktree back to master with
-   `git -C ../mendel switch master`, but ONLY when
-   `git -C ../mendel status` is clean — otherwise stop and ask the
-   owner.
-3. Align master to the rewritten origin. Run
-   `git -C ../mendel log --oneline origin/master..master`. An empty
-   list, or only these six pre-rebase subjects, is expected: the tap
-   SIGSEGV/SIGILL test fix, the mendel-deps fixture change, the
-   lockfile hash update, the node:-prefix lint patch, the AGENTS.md
-   legacy-packages note, the mendel-pipeline root declaration (origin
-   now has all six, rebased as `chore:`). In that case run
-   `git -C ../mendel reset --hard origin/master`. Any other subject is
-   unaccounted local work: stop and ask the owner.
-4. If `../mendel-benchmark` does not exist:
-   `git -C ../mendel worktree add ../mendel-benchmark benchmark`.
-5. `git -C ../mendel-benchmark pull origin benchmark`.
-6. If a leftover `benchmark/` directory sits in `../mendel` (files
-   from before the worktree split): move its `runs/` content into
-   `../mendel-benchmark/scratchpad/benchmark/runs/`, then delete
-   `../mendel/benchmark`.
+Desired state:
+
+- `~/code/choose-a-local-llm`: main worktree on `master`, equal to
+  `origin/master`. No `run*` branch, no extra worktree (your own
+  `../choose-a-local-llm-run7` comes later, when you create it).
+- `~/code/mendel`: main worktree on `master`, equal to
+  `origin/master`, tags equal to origin. No `benchmark/` directory in
+  it. Keep the pushed `*-issue-13` run branches.
+- `~/code/mendel-benchmark`: worktree of `../mendel` on branch
+  `benchmark`, equal to `origin/benchmark`. Transient run files live
+  only under its gitignored `scratchpad/`.
+- No `mendel-bench-*` worktree. No stray process: no `Mendel Daemon`,
+  no `mlx_lm.server`, no `llama-server`, no leftover `pi`.
+
+Expected problems and their fixes:
+
+- Stale or missing tags: `git -C ../mendel fetch --force --tags
+  origin` (the base tags move; a plain fetch does not update them).
+- Mendel main worktree still on `benchmark`: commit nothing, confirm
+  `git status` clean, `git switch master`.
+- Mendel `master` diverged from origin: the divergence is the
+  pre-rebase commits (origin has them all, rewritten as `chore:`);
+  `git reset --hard origin/master`. If choose-a-local-llm `master`
+  diverged instead, stop and ask the owner.
+- `../mendel-benchmark` missing:
+  `git -C ../mendel worktree add ../mendel-benchmark benchmark`, then
+  pull it.
+- Leftover untracked `benchmark/` files in `../mendel` (from before
+  the worktree split): move the `runs/` content into
+  `../mendel-benchmark/scratchpad/benchmark/runs/`, delete the rest of
+  `../mendel/benchmark`.
+- Stale `scratchpad/benchmark/.pi-agent/` (the old shared config dir)
+  in the benchmark worktree: delete it; workers now build per-run
+  dirs. Keep `scratchpad/benchmark/runs/` content — it includes the
+  only copies of the claude-era `*-result.json` telemetry.
+- Stale `mendel-bench-*` worktrees or prunable entries:
+  `pkill -f <worktree path>`, `git -C ../mendel worktree remove
+  --force <path>`, `git -C ../mendel worktree prune`. The run data is
+  the branch, which is pushed; the worktree holds nothing to keep.
+- Merged leftover `run7` branch here: `git branch -d run7` (if `-d`
+  refuses, it is unmerged — stop and ask the owner).
+
+End of step 1: run `git -C ../mendel worktree list`, `git worktree
+list`, and `ps aux | grep -iE 'mendel|mlx|llama'`, and record in
+`state.md` that the machine matches the desired state.
 
 ## Ground rules
 
@@ -57,7 +85,7 @@ and the `benchmark` branch gets its own worktree. Before the first run:
   `master`, delete the branch, remove the worktree — that one push is
   required).
 - One model on the GPU at a time. Port 8081. No parallel workers.
-- Before the first run: the one-time setup above, confirm the GPU is
+- Before the first run: step 1 above, confirm the GPU is
   idle, confirm `sysctl iogpu.wired_limit_mb` is 24000.
 - Scoped mem-watch around every run
   (`tools/sweeps/mem-watch-fast.sh`, `MEMWATCH_INTERVAL=20`), stopped
