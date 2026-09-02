@@ -45,13 +45,13 @@ on the rubric.
 | model | harness | score |
 |---|---|--:|
 | grok-4.6 | pi | **89.5/100** |
-| claude-opus-5 | claude-code | **87/100** |
+| claude-opus-5 | claude-code | **88/100** |
 | gpt-5.6-luna | pi | **84.5/100** |
-| claude-sonnet-5 | claude-code | **81.5/100** |
+| claude-sonnet-5 | claude-code | **83/100** |
 | kimi-k3 | pi | **80.5/100** |
 | deepseek-v4-pro-0813 | pi | **70.5/100** |
 | gpt-5.6-sol | pi | **65.5/100** |
-| claude-haiku-4.5 | claude-code | **49.5/100** |
+| claude-haiku-4.5 | claude-code | **51.5/100** |
 <!-- gen:mendel-cloud:end -->
 
 ## Guided test
