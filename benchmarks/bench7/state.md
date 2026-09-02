@@ -60,3 +60,8 @@ Runbook: `AGENT.md`. Note deviations here as they happen.
   re-applied on top of theirs) and pushed @8460cc6.
 - Block 1 closed. Cleaning worktree, moving to Block 2
   (Ternary-Bonsai-27B-mlx-2bit, four runs).
+
+### Block 2 — Ternary-Bonsai-27B-mlx-2bit
+
+- 03:49 local: server up, warmup OK, memwatch restarted.
+- 03:50 local: run 1 (blind low) started.
