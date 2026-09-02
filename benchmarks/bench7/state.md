@@ -26,3 +26,11 @@ Runbook: `AGENT.md`. Note deviations here as they happen.
 - 01:53 local: guided low failed immediately: `fatal: invalid reference:
   guided-v3-base` — tag existed on origin but not fetched locally.
   Fixed with `git fetch origin --tags`. Restarting guided low.
+
+- 02:20 local: found run-worker.sh names guided-low's output files
+  identically to blind-low's (`runs/mlx-community-Qwen3.8-27B-4bit-low-*`,
+  no bench-type suffix) — the guided run overwrote the blind run's raw
+  `runner.log`/`meta.json`/etc. No data lost: the blind row was already
+  scored, and its committed artifact (the redacted, `-issue-13-`-suffixed
+  session copy) has a distinct name. Deviation only; harness bug worth a
+  fix later (not touched now, mid-queue).
