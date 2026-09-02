@@ -7,6 +7,37 @@ run's runbook (`AGENT.md`), log (`state.md`), results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench8 — 2026-09-02 ([state](bench8/state.md))
+
+- Runbook: [bench8/AGENT.md](bench8/AGENT.md). API-model Mendel re-runs
+  on the Linux box, through pi (no GPU work). Blind v1.1 for the
+  strong models, guided v3.0 plus blind for the cheap probe
+  (deepseek-v4-flash-0731) and the strong reference (gpt-5.6-luna),
+  plus two Anthropic models added mid-run once login/budget arrived
+  (`claude-haiku-4-5`, `claude-sonnet-4-5`) and a new fireworks model
+  (`glm-5p3-flash`). Up to two runs ran in parallel, never two on the
+  same account.
+- **Scores**: deepseek-v4-flash-0731 guided 97, blind 84.5; kimi-k3
+  blind 93.5; deepseek-v4-pro-0813 blind 79; grok-4.6 blind 92.5;
+  gpt-5.6-luna guided 88.5, blind 83.5; gpt-5.6-sol blind 92;
+  glm-5p3-flash blind 75, guided 98; claude-haiku-4-5 guided 76, blind
+  34; claude-sonnet-4-5 blind 43.5.
+- **Anthropic models underperformed their reputation on this task**:
+  claude-haiku-4-5 and claude-sonnet-4-5 both hit trap A (the
+  `fs.promises.glob()` AsyncIterator trap) on their blind runs, and
+  neither removed the root `rimraf`/`tmp` devDependencies at all —
+  sonnet's blind row never ran `pnpm install` in any form. Both used
+  `refactor`/`fix` commit types instead of the house `chore`
+  convention. Haiku's guided run (76) showed the usual guided lift
+  over its blind run (34), consistent with other weak/local models in
+  this project's Mendel history.
+- glm-5p3-flash's guided run (98) is the strongest score of this run,
+  with all three traps handled correctly, including trap C avoided by
+  design (the model's own TASKS.md reasoned through the issue's wrong
+  claim about `tmp` and chose not to add a buggy exit hook).
+- Site mirror (`benchmarks/mendel/`) refreshed to match; see
+  `docs/methodology/mendel.md` for how the two Mendel tests differ.
+
 ## bench6 — 2026-09-01 ([state](bench6/state.md), [results](bench6/results.md))
 
 - Runbook: [bench6/AGENT.md](bench6/AGENT.md). EvalPlus only: finished
