@@ -215,3 +215,18 @@ only this one.
   ChatGPT/Codex window, but it is the last queue item with no other
   run in flight, so proceeding now. Worktree
   `../mendel-bench-gpt-5.6-sol-high` ready, pi started.
+- User set up an Anthropic login on this box (pi), unlocking
+  `claude-haiku-4.5` and `claude-sonnet-4.5`. Updated `AGENT.md`: lifted
+  the "never run Anthropic" ban, added queue items 9-11
+  (`claude-haiku-4.5` guided, `claude-haiku-4.5` blind,
+  `claude-sonnet-4.5` blind). pi+anthropic runs are metered per
+  PLAN.md "Plan accounting", not plan-share, so they carry no
+  isolation-window requirement and can run alongside the openai-codex
+  or xai runs.
+- Starting queue item 9: `claude-haiku-4.5` pi guided high, in
+  parallel with the still-running queue item 8 (`gpt-5.6-sol` blind).
+  Safe: each worker gets its own sibling worktree
+  (`../mendel-bench-guided-claude-haiku-4.5-high` vs.
+  `../mendel-bench-gpt-5.6-sol-high`), different provider (metered
+  anthropic vs. plan-share openai-codex, no plan overlap), different
+  branch. Worktree ready, pi started.
