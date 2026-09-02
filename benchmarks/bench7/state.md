@@ -22,3 +22,7 @@ Runbook: `AGENT.md`. Note deviations here as they happen.
   libraries_done=1, score_total=67.5). Committed+pushed to mendel
   benchmark @6394cf7. Worktree cleaned, Mendel Daemon killed.
 - 01:53 local: guided low started, same server.
+
+- 01:53 local: guided low failed immediately: `fatal: invalid reference:
+  guided-v3-base` — tag existed on origin but not fetched locally.
+  Fixed with `git fetch origin --tags`. Restarting guided low.
