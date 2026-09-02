@@ -72,3 +72,19 @@ budget). Runbook: `AGENT.md`. Note deviations here as they happen.
   corrected before commit.
 - Starting queue item 4: `accounts/fireworks/models/deepseek-v4-pro-0813`
   pi blind high.
+- Queue item 4 done. `deepseek-v4-pro-0813` blind (v1.1): score
+  79/100. Trap A hit: `fs.promises.glob()` swapped in with a naive
+  `.then()`, throws `TypeError` at runtime — critical defect. Trap B
+  missed: `mendel-requirify` still requires `rimraf` in two test files
+  and its `package.json` — medium defect. Trap C avoided. Root
+  devDeps (`rimraf`, `tmp`) fully removed. Prettier and ESLint clean,
+  model ran the tools itself. Commits used `refactor` type, not the
+  house `chore` convention (lost commit-craft points). Zero nudges.
+  Wall clock 92.5 min, cost $3.33 metered. Scored, committed
+  (`fac0c1b`), and pushed to mendel `benchmark`; run branch pushed
+  too. Worktree cleaned, no stray daemon. Note: the OpenRouter
+  cost-comparison figure in this row's `cost.or_usd` is an estimate
+  (no live OpenRouter lookup available to the scoring fork), not a
+  looked-up quote — flag for a follow-up correction if exact pricing
+  matters later.
+- Starting queue item 5: `grok-4.6` pi blind high.
