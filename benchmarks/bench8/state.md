@@ -139,3 +139,37 @@ only this one.
   ChatGPT/Codex window. Proceeding since the user asked to continue;
   noting the deviation from "run openai-codex last, in the deepest
   night hours" for the record.
+- Queue item 6 done. `gpt-5.6-luna` guided (v3.0): score 88.5/100.
+  All 8 libraries replaced, trap A avoided (`SYNC OK`), trap B found
+  and fixed (own commit `27ea4bd`), root devDeps fully removed via
+  their own commits, prettier/eslint clean (model self-checked 4×),
+  full suite run 20× over 18 commits (satisfies the v3.0
+  before-every-commit cadence), task list per-file with per-commit
+  ticks. One medium defect: trap C hit — `validate-manifest.js`
+  registers a `process.once('exit')` hook that deletes the debug
+  manifest right after printing its path, a self-inflicted regression
+  not on master. Minor dings: one multi-package commit (xtend
+  replaced across two packages in one commit) and one self-repair
+  commit (dropped an obsolete forced chalk colour option after an
+  earlier commit left it in) cost small deductions on commit-craft and
+  right-the-first-time. Zero nudges. `mendel-pipeline`'s lerna-batch
+  run flaked (0 of 22 suites completing); confirmed clean standalone
+  (260/260) — not a regression. Wall clock 40.4 min, cost $0.70
+  metered (`probe-plan.mjs` returned "no plan involved" for this
+  session's openai-codex login, so no plan-share accounting applies).
+  Scored, committed (`e86dd50`), and pushed to mendel `benchmark`; run
+  branch pushed too. Worktree cleaned, no stray daemon.
+- **Restructure**: per the user's standing rule (see header), moved
+  all mendel benchmark work out of the main `../mendel` worktree. That
+  repo now sits on `master`, clean, free for the user's own parallel
+  use. Created a dedicated worktree `../mendel-benchmark` checked out
+  to `benchmark`; all leftover untracked run artifacts (meta/session/
+  plan/log files from items 1-6, whose branch-suffixed copies were
+  already committed) were moved there too, nothing lost. **From now
+  on, every mendel benchmark command (run-worker.sh, score.mjs,
+  generate-report.mjs, git commits/pushes on branch `benchmark`) runs
+  from `/home/irae/code/mendel-benchmark/benchmark`, not
+  `/home/irae/code/mendel/benchmark`.** Update any future step
+  accordingly.
+- Starting queue item 7: `gpt-5.6-luna` pi blind high, from the new
+  path `/home/irae/code/mendel-benchmark/benchmark`.
