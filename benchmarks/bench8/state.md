@@ -100,3 +100,26 @@ budget). Runbook: `AGENT.md`. Note deviations here as they happen.
   worktree/branch and restarted.
 - Starting queue item 5 (retry): `grok-4.6` pi blind high. Passed the
   config guard this time, worktree ready, pi started.
+- Queue item 5 done. `grok-4.6` blind (v1.1): score 92.5/100. All 8
+  libraries replaced, trap A avoided (`SYNC OK`), trap B fixed
+  explicitly (`mendel-requirify` rimraf refs replaced with
+  `fs.rmSync`, own commit `fb7f406`), lint clean, model ran prettier
+  and eslint itself (16×), full unit suite green (260/260; the
+  `mendel-resolver` lerna-batch failure was a flake, confirmed clean
+  standalone 75/75; `mendel-full-example`'s daemon-socket test fails
+  on master too — expected baseline, not a regression). All 18
+  commits `chore`-typed, one package each, root devDeps fully
+  removed, zero nudges. One medium defect: trap C hit —
+  `validate-manifest.js` now registers a `process.on('exit')` hook
+  that deletes the debug-manifest temp dir, undoing the point of
+  printing its path; this is a self-inflicted regression not present
+  on master. Wall clock 21.4 min, cost $7.29 metered (this session's
+  xai login is not on a plan — `probe-plan.mjs` returned "no plan
+  involved" — unlike the existing v1.0 row, which used plan-share
+  accounting). Scored, committed (`3e15cf6`), and pushed to mendel
+  `benchmark`; run branch pushed too. Worktree cleaned, no stray
+  daemon.
+- Paused after item 5: user flagged a possible blind/guided plan
+  issue for some queue items. Queue item 6 (`gpt-5.6-luna` guided) not
+  started, awaiting review. No processes running, no worktrees open,
+  repo clean.
