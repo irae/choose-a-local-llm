@@ -158,3 +158,21 @@ into local `master` now (not pushed).
   fine throughout; not intervening (no human input goes into a run per
   AGENT.md). Watching tooling-nudge budget; if this loop burns it, the
   run will end `tooling_budget_exhausted` like block 1 and run 1.
+
+- 22:37 local: block 2 run 2 (guided low) ended on the runner's
+  wall-clock hard stop (300 min), partial. Scored: score_total=59,
+  libraries_done=1 (uuid only). Deviation: the session log's only
+  `thinking_level_change` event reads "high", though the worker was
+  invoked with `--thinking low` — the flag was not honored; scored and
+  reported as the observed level ("high"), noted in the row's
+  `config_note`. No bugs found in the one landed commit; most of the
+  score loss is incomplete work plus a self-authored path-typo loop
+  (see above) that burned a large share of the run.
+- Committed+pushed to mendel benchmark. Concurrent pushes from other
+  agents (blind Haiku 4.5, guided Haiku 4.5, blind claude-sonnet-4-5)
+  landed in between; merged cleanly (own row re-applied alongside
+  theirs), pushed @1c1bb9f. Run branch
+  `prism-ml-Ternary-Bonsai-27B-mlx-2bit-low-guided-v3-issue-13` pushed
+  to origin per the 2026-08-31 policy (run branches are pushed now).
+- Worker worktree removed, Mendel Daemon/server/memwatch confirmed
+  stopped. Moving to block 2 run 3 (blind high).
