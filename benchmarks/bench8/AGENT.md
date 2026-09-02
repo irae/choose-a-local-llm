@@ -7,10 +7,11 @@ Technical English.
 ## Read first
 
 1. `docs/methodology/mendel.md` — house rules for Mendel runs.
-2. `../mendel/benchmark/PLAN.md` — how to run and how to score. It is
-   the law for everything inside the Mendel repo. Read "Plan
-   accounting" with care: two providers here run on subscription plans.
-3. `../mendel/benchmark/RUBRIC.md` — the scoring rubric.
+2. `../mendel-benchmark/benchmark/PLAN.md` — how to run and how to
+   score. It is the law for everything inside the Mendel repo. Read
+   "Plan accounting" with care: two providers here run on subscription
+   plans.
+3. `../mendel-benchmark/benchmark/RUBRIC.md` — the scoring rubric.
 
 There is no GPU work on this box: no server to start, no mem-watch, no
 wired limit. The models are remote APIs that pi is already logged into
@@ -18,31 +19,44 @@ wired limit. The models are remote APIs that pi is already logged into
 
 ## Ground rules
 
-- Work sits in two repos. Benchmark artifacts, scores, reports, run
-  branches: `../mendel`, branch `benchmark` — commit there with type
+- Work sits in two repos, and the main worktree of each stays with the
+  coordinator — never work in it. Benchmark artifacts, scores,
+  reports, run branches: the `../mendel-benchmark` worktree (branch
+  `benchmark` of `../mendel`) — commit there with type
   `chore(benchmark)` and PUSH there after each scored run. This repo:
-  create a LOCAL branch `run8`, log progress in
-  `benchmarks/bench8/state.md`, commit as you go, merge back to
-  `master` when the run closes, NEVER push this repo.
-- Before the first run: `git -C ../mendel pull` (branch `benchmark`,
-  expect `79526d6` or later).
-- One run at a time, strictly serial. The plan probes in the worker
-  need a quiet account: during the openai-codex runs nobody may use
-  ChatGPT or Codex. Run those last, in the deepest night hours.
+  create the LOCAL branch `run8` in a fresh sibling worktree
+  (`git worktree add ../choose-a-local-llm-run8 -b run8`) and work
+  there; log progress in `benchmarks/bench8/state.md`, commit as you
+  go. Never push a run branch. When the owner asks to stop, follow
+  the stop-and-sync steps in `AGENTS.md` (merge to `master`, push
+  `master`, delete the branch, remove the worktree — that one push is
+  required).
+- Before the first run: `git -C ../mendel-benchmark pull` and
+  `git -C ../mendel fetch --force --tags origin`. The bench bases are
+  the MOVING tags `benchmark-blind-base` and `benchmark-guided-base`;
+  the worker resolves them, but they must exist locally and match
+  origin.
+- One run at a time by default. The owner may direct two runs in
+  parallel; that is allowed ONLY for metered (fireworks) models, from
+  two shells, different models. Never overlap an openai-codex or xai
+  run with anything — the plan probes need a quiet account: during the
+  openai-codex runs nobody may use ChatGPT or Codex. Run those last,
+  in the deepest night hours, strictly alone.
 - Heartbeat in chat about every 20 minutes. No approval gates: when a
   run is scored and pushed, start the next at once.
 - After EVERY run: `pkill -f "Mendel Daemon"` (never mid-run), clean
   the worktree per PLAN.md "Cleanup"; keep the branch.
 - Never run any Anthropic model. There is no budget and no login.
 - Never trust the model under test. Score only from the verification
-  battery (`node ../mendel/benchmark/score.mjs` plus the rubric).
+  battery (`node ../mendel-benchmark/benchmark/score.mjs` plus the
+  rubric).
 
 ## The worker command
 
 All runs go through the worker; never `pi -p`, never the TUI:
 
 ```bash
-cd /home/irae/code/mendel/benchmark
+cd /home/irae/code/mendel-benchmark/benchmark
 ./run-worker.sh <model> pi <blind|guided> high
 ```
 
@@ -55,7 +69,8 @@ input goes into a run; the runner's nudge policy is the only voice.
 
 ## After each run — score and record
 
-Follow `../mendel/benchmark/PLAN.md` "How to score a run" exactly:
+Follow `../mendel-benchmark/benchmark/PLAN.md` "How to score a run"
+exactly:
 evidence pack with `score.mjs`, your judgement only where the rubric
 says so, one new row in `results.json` (blind, `prompt_version` v1.1)
 or `results-guided.json` (guided, v3.0), regenerate with
@@ -91,7 +106,10 @@ record the correction in `state.md`.
 
 ## Closing
 
-When the queue ends: confirm no Mendel Daemon and no leftover worktrees
-(`ps aux`, `git -C ../mendel worktree list`). Write the handing-over
-section in `state.md`, merge `run8` into `master` locally, do not push
-this repo. The mendel repo must already be pushed run by run.
+When the queue ends: confirm no Mendel Daemon and no leftover run
+worktrees (`ps aux`, `git -C ../mendel worktree list` — the
+`mendel-benchmark` worktree itself stays). Write the handing-over
+section in `state.md`, then follow the stop-and-sync steps in
+`AGENTS.md` for `run8` (merge, push `master`, delete the branch,
+remove the worktree). The mendel repo must already be pushed run by
+run.
