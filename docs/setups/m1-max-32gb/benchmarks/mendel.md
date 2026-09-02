@@ -54,6 +54,7 @@ on the rubric.
 | gpt-5.6-luna | pi | **83.5/100** |
 | deepseek-v4-pro-0813 | pi | **79/100** |
 | glm-5p3-flash | pi | **75/100** |
+| Claude Sonnet 4.5 | pi | **43.5/100** |
 | claude-haiku-4.5 | pi | **34/100** |
 <!-- gen:mendel-cloud:end -->
 
