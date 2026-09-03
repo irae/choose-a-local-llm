@@ -53,6 +53,15 @@ sweeps. Full forensic record:
   explicitly with `lms load` and verify with `lms ps` before starting.
   Loading while another instance is resident creates a duplicate
   (`:2`) instance — unload first.
+- **`lms load` does not start the HTTP server, and `lms ps` will not
+  tell you.** A loaded model shows `IDLE` with its context and parallel
+  slots in `lms ps` whether or not anything can reach it. Every client
+  request then fails with a bare `Connection error.` — no hint that the
+  server is the problem. Check `lms server status` and start it with
+  `lms server start`. Verify the endpoint itself before a run:
+  `curl -s http://127.0.0.1:1234/v1/models`. Two commands, because the
+  two states are independent: the model is loaded, and the server is
+  listening.
 - **`/v1/completions` (raw prompt, no chat) is broken on this build.**
   It returns garbage text and streams in one sub-5 ms burst; any tok/s
   computed from it is nonsense. Use `/v1/chat/completions`, growing a

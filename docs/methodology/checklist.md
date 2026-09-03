@@ -86,8 +86,11 @@ lives in [common rules](./common-rules.md) and
    the exact tested revision and quant. A missing model means STOP and
    ask the owner ([common rules](./common-rules.md)).
 6. Start the server for ONE config. Verify it serves (warmup request).
-   LM Studio: load explicitly with `lms load`, verify with `lms ps` —
-   never trust JIT ([server lore](./server-lore.md)).
+   LM Studio: load explicitly with `lms load`, verify with `lms ps`,
+   then check the SERVER is up with `lms server status` and start it
+   with `lms server start` if it is not. `lms load` does not start it
+   and `lms ps` does not reveal it. Never trust JIT
+   ([server lore](./server-lore.md)).
 7. Start the memory watcher, scoped to this run only:
    `MEMWATCH_LOG=/tmp/<run>-memwatch.log MEMWATCH_INTERVAL=20
    bash tools/sweeps/mem-watch-fast.sh &` (or `benchmarks/mem-watch.sh`
