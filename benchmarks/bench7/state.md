@@ -489,3 +489,51 @@ in after Block 0 before continuing.
   flat lists of items #7/#8), 0 nudges so far. Looking much healthier
   than the two high attempts — low thinking may avoid whatever
   triggers the collapse. Still running, watching.
+- Item #9 ran healthily for ~45 min (0 nudges, real orientation work),
+  then hit the same newline-flood collapse as items #7/#8 — low
+  thinking delayed the collapse, did not avoid it. 3 nudges total
+  (first two: output-budget hit; third: a clean 36-token stop with
+  unchecked TASKS.md items — a different signature). Ran ~99 min
+  total, `model_budget_exhausted`, still 0 commits. Fable scored it
+  29.5/100 (independent scoring): the model built a fully correct
+  per-file plan in its reasoning by minute 4 — including trap B
+  (`legacy-packages/mendel-requirify` rimraf) — then lost it to an
+  empty-argument `edit` call, then alternated newline floods with a
+  ~12-minute, 100-call loop of a malformed `ls -F_r` command. Never
+  edited a file. Copied+redacted the session log, added to
+  `SESSIONS.md`, appended the row to `results-guided.json`,
+  regenerated `report-guided.html`. Committed and pushed to mendel
+  benchmark @4058d37. Cleaned up the worktree/branch (0 commits).
+- **Gemma-12B block done — 3 runs complete** (30.5, 30, 29.5, all
+  partial with 0 commits — a consistent pattern across all three,
+  worth flagging to the owner: this model/harness pairing (LM Studio
+  + pi) seems to reliably collapse into a newline-flood generation
+  failure after its first real edit attempt, regardless of thinking
+  level). Stopped LM Studio (unload + server stop) and memwatch.
+
+### Item #10 — Gemma-12B dagger sweep
+
+- Checked `docs/setups/m1-max-32gb/models.json`: the daggered row
+  (`gemma12-gguf-off`) is a llama-server GGUF config with an MTP
+  drafter and `-c 262144` — the same risk pattern that OOM'd on
+  Qwen3.6-35B-A3B (item #3). Tried it anyway per instruction ("try
+  once, defer if it OOMs").
+- Server loaded and warmed up cleanly — **no OOM this time** (Gemma-
+  12B is much smaller than Qwen3.6-35B-A3B, fits comfortably under
+  the current 24000 wired limit even with the large `-c`).
+- Ran the context-creep depth sweep (`tools/sweeps/llama_sweep.py`,
+  `DEPTH_LIST=4096,8192,16384,24576,32768`): 13.76 tok/s at 4,115
+  tokens, 8.76 at 8,234, 6.54 at 16,410 — floor crossed at 16,410.
+  Closely matches the report's own existing (unstaled) body-text
+  table (14.0/9.0/6.8 at the same depths, measured at wired limit
+  25000) — a clean re-confirmation, not a surprise. RSS 10.5 GB, no
+  compression/swap events in the memwatch log.
+- Updated all surfaces per the record-everywhere rule: `models.json`
+  (cleared the `stale` array, new values), regenerated
+  `comparison.md`/`decode-speed.md`/the report's summary table via
+  `node tools/gen-tables.mjs`, added a re-confirmation note to the
+  benchmarks page and the report's "Benchmarked" line and "Weak
+  point" bullet (11K → 16K). Committed to this repo's `run7` branch
+  @d3c6308.
+- Stopped the server and memwatch. GPU idle. Moving to item #11
+  (Bonsai-PrismML blind high, PrismML fork).
