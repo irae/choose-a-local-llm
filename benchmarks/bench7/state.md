@@ -694,3 +694,71 @@ do-over, the first attempt's failure is part of this model/config's
 record. Exact penalty mechanism (points off, a note field, a
 `config_note` annotation, or keeping both rows) is the coordinator's
 call — not decided here, just flagged so it isn't missed.
+
+## Item #12 (Bonsai-PrismML guided high) — ABORTED, not scored, owner ran out of time
+
+Stopped by the owner mid-run (~08:44 local, ~94 min in) — not enough
+time left before they needed the laptop. This is a deliberate abort,
+not a model failure: **do not treat it as a scored data point.**
+
+- No result row was written to `results-guided.json`. No commit, no
+  push for this attempt.
+- The worker worktree and branch (`bonsai-prism-high-guided-v3-issue-13`,
+  2 commits: both `uuid` locations) were deleted — discarded, not
+  kept, per the owner's "cleanup as if it never happened" instruction.
+- The raw evidence survives and was NOT deleted, in case it's useful
+  later (e.g. to see how far a fresh retry should expect to get):
+  the full pi session transcript is still at
+  `../mendel-benchmark/scratchpad/benchmark/.pi-agent-bonsai-prism-high-guided/sessions/--Users-irae-code-mendel-bench-guided-bonsai-prism-high--/2026-09-03T07-10-27-775Z_01a0661a-cdbf-7b1c-8edd-a01dea8bd281.jsonl`,
+  plus the harness's own copies at
+  `../mendel-benchmark/scratchpad/benchmark/runs/bonsai-prism-high-guided-*`
+  (events, meta, install log, runner log, plan-before). `scratchpad/`
+  is gitignored, so this evidence is LOCAL ONLY on this machine — it
+  will not survive a fresh clone or a different machine. If it stays
+  useful, copy it into `benchmark/runs/` on a future session.
+- Server, memwatch, and any daemon confirmed stopped; GPU idle.
+
+**Queued for retry alongside item #11** (see the pending section
+above): `./run-worker.sh bonsai-prism pi guided high`, fresh
+worktree/branch, when the next session has time for it. No penalty
+instruction was given for this one specifically (only for item #11's
+blind-high retry) — ask the owner if unclear, since this abort was
+time-driven, not a model failure worth penalizing.
+
+## Handing over — stopped here on request (2026-09-03, ~08:44 local)
+
+Owner needed the laptop back mid-run, so stopping at a clean
+boundary rather than letting item #12 finish or hit its wall-clock
+cap. Summary of the whole night for the next session:
+
+**Scored and pushed to mendel benchmark** (`benchmark` branch,
+latest commit @207c2af at time of writing): Qwen3.6-35B-A3B guided
+high (83/100), Gemma-12B blind high (30.5/100, partial), Gemma-12B
+guided high (30/100, partial), Gemma-12B guided low (29.5/100,
+partial), Bonsai-PrismML blind high (60.5/100, `libraries_done: 1`
+— **needs a from-scratch retry with a mandatory score penalty**, see
+above). Gemma-12B's dagger sweep (item #10) re-confirmed and pushed
+to this repo's `run7` branch.
+
+**Not done, queued for the next session** (see `AGENT.md`'s "Pending"
+section for the Bonsai retry, and the numbered queue for the rest):
+- Item #11 retry (Bonsai-PrismML blind high, from scratch, penalty
+  required on success).
+- Item #12 retry (Bonsai-PrismML guided high, from scratch, no
+  penalty instruction given — ask if unclear).
+- Items #3/#4 (Qwen3.6 and Bonsai-mlx dagger sweeps): blocked by a
+  GPU OOM that later research (see "Dagger sweep OOM — research for
+  bench9" above) traced to probably-insufficient memory-recovery
+  time after killing a large prior server, not a hard machine
+  ceiling. Retry under the suggested fix (poll memory back to
+  baseline before starting a large server, not just check the
+  process is gone).
+- Items #13/#14 (Qwen3.8-27B-4bit guided xhigh + its dagger sweep):
+  never started, only-if-time-remains priority.
+
+Local repo: worktrees clean after this session's stop-and-sync
+(`git worktree list` shows only the main worktree), no
+server/daemon/watcher running, mendel benchmark branch pushed
+through @207c2af. This repo's `run7` branch is being merged into
+local `master` now and will not be pushed as a branch — only
+`master` gets pushed, per `AGENTS.md`.
