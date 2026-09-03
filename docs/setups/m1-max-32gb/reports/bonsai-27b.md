@@ -52,7 +52,7 @@ mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#2 — Ternary-Bonsai-27B, MLX, bounded cache, thinking off.** Extra body per request: `{"chat_template_kwargs":{"enable_thinking":false}}`. Speed/memory copied from bonsai-mlx; no depth sweep this run (bench6 planning note, see benchmarks/INDEX.md).
+**#2 — Ternary-Bonsai-27B, MLX, bounded cache, thinking off.** Extra body per request: `{"chat_template_kwargs":{"enable_thinking":false}}`. Speed/memory copied from bonsai-mlx; no depth sweep yet.
 
 ```bash
 mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \

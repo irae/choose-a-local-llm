@@ -26,7 +26,7 @@
    "id": "qwen38-mlx-low",
    "hidden": false,
    "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --chat-template-args '{\"reasoning_effort\":\"low\"}' --prompt-cache-size 2 --port 8081",
-   "note": "Speed/memory copied from qwen38-mlx-medium; no depth sweep for this config yet (bench6 planning note, see benchmarks/INDEX.md).",
+   "note": "Speed/memory copied from qwen38-mlx-medium; no depth sweep for this config yet.",
    "stale": [
     "maxCtx",
     "tokShallow",
@@ -215,7 +215,7 @@
    "id": "bonsai-mlx-off",
    "hidden": false,
    "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
-   "note": "Extra body per request: `{\"chat_template_kwargs\":{\"enable_thinking\":false}}`. Speed/memory copied from bonsai-mlx; no depth sweep this run (bench6 planning note, see benchmarks/INDEX.md).",
+   "note": "Extra body per request: `{\"chat_template_kwargs\":{\"enable_thinking\":false}}`. Speed/memory copied from bonsai-mlx; no depth sweep yet.",
    "stale": [
     "maxCtx",
     "tokShallow",

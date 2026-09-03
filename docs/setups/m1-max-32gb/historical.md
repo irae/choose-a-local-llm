@@ -32,8 +32,8 @@ Full raw archives, with their eras labeled, live in the benchmarks pages.
 
 ## Mendel rows from old prompt versions (superseded 2026-09-02)
 
-Replaced by run 7/8's fresh rows: blind prompt v1.1 and guided v3.0,
-run from the new moving base tags (`benchmark-blind-base`,
+Replaced by fresh rows on blind prompt v1.1 and guided v3.0, run
+from the new moving base tags (`benchmark-blind-base`,
 `benchmark-guided-base`), which include the tap crash fix. The site
 tables now count only the current prompt version; the full per-version
 archive stays in the hosted Mendel reports. Never compare these rows

@@ -61,8 +61,8 @@ on the rubric.
 
 ## Guided test
 
-One local model has a guided row on the current prompt so far,
-alongside two cloud anchors. More local guided runs are queued on the
+Two local models have guided rows on the current prompt so far,
+alongside the cloud anchors. More local guided runs are queued on the
 same frozen prompt; a blind-guided pair can land at different times.
 
 <!-- gen:mendel-guided:start -->
@@ -73,5 +73,6 @@ same frozen prompt; a blind-guided pair can land at different times.
 | gpt-5.6-luna | pi | **88.5/100** |
 | claude-sonnet-4.5 | pi | **88/100** |
 | Claude Haiku 4.5 | pi | **76/100** |
+| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **59/100** (partial) |
 | [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | pi | **34/100** (partial) |
 <!-- gen:mendel-guided:end -->
