@@ -1,8 +1,8 @@
 # Goal 3 — the tool-call rules trial
 
-Status: baseline measured, models chosen, trial NOT yet run. The A/B
-needs the machine and the cold-start sequence. Everything below comes
-from the session logs already on disk.
+Status: CLOSED 2026-09-03 by owner decision. The A/B was never run and
+will not be. See "Outcome" at the end. What follows is the measurement
+and reasoning that led there.
 
 ## The runbook's premise for model 1 does not hold
 
@@ -186,3 +186,44 @@ worked example — before checking whether the harness already did the
 job. The check was one question to a running model and took 30 seconds.
 Ask what the harness already sends before writing a rule that tells a
 model something.
+
+
+## Outcome — closed without running the A/B
+
+The owner decided on 2026-09-03 that `agents-global.md` stays frozen at
+v1.0, because changing it invalidates every scored row. That closes the
+prompt layer entirely, so there is nothing for an A/B to inform. The
+trial is closed without being run.
+
+This is the right call on the evidence. Of the draft's three paragraphs,
+one was already measured as redundant — pi's own system prompt supplies
+the docs path and a topic map, and the tool schemas are in context. The
+remaining two are plausible but unproven, and proving them would cost
+machine time on a change that cannot ship.
+
+**What the work produced anyway**, and what survives the closure:
+
+- The runbook's premise for model 1 was wrong. `bonsai-prism` has no
+  loop; the 30-call typo'd-path loop belongs to
+  `prism-ml/Ternary-Bonsai-27B-mlx-2bit`, a different row on a different
+  runtime. Anyone citing that loop should cite the MLX row.
+- The worst tool-call record is `google/gemma-4-12b` at 70.5% errors,
+  with one invalid command repeated 72 times consecutively. The two
+  models the runbook proposed as candidates are among the cleanest.
+- pi hands the model its tool schemas and its documentation index, so
+  prompt rules telling a model either of those things are wasted tokens.
+- A kernel panic in `IOGPUFamily`, found while setting this up, which
+  matters far beyond this goal.
+
+**Where the problem goes.** The loops are real and now unaddressed at
+the prompt layer, so the question moves to the sampler and the harness:
+`research/run2/AGENT.md` section I, "Stopping loops without touching the
+prompt". It carries the measurements above as its motivation, notes that
+`repeat_penalty` is already a known negative for the Gemma case, and
+flags the design question that matters most — a harness that rescues a
+looping model changes what the benchmark reports, so it may belong as a
+stop rather than a fix.
+
+The tooling built here stays usable: `replay-probe.sh` and
+`count-replay.py` measure loop length and distinct-call fraction from
+any pi session, which is how section I would evaluate a sampler setting.

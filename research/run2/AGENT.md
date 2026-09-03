@@ -196,6 +196,68 @@ check llama.cpp support), Mistral Devstral Small 2 (24B dense, leaves
 context headroom). Downloads only after the owner approves the
 shortlist.
 
+### I. Stopping loops without touching the prompt
+
+New item, filed by run 1 on 2026-09-03. Research only, not for this
+run's execution unless it turns out cheap.
+
+**Why it is here.** Run 1 measured what a prompt rule could do about
+tool-call loops and the answer is: we cannot use one. `agents-global.md`
+is frozen at v1.0 because changing it invalidates every scored row, and
+the owner has decided it stays frozen. So the prompt layer is closed.
+The failures are real and unaddressed:
+
+- `google/gemma-4-12b` repeated one invalid command (`ls -F_r`) 72 times
+  in a row, 88 times in total, out of 130 tool calls with only 30
+  distinct.
+- `prism-ml/Ternary-Bonsai-27B-mlx-2bit` repeated the same `ls` 30 times
+  in a row on a path it had typed wrong itself.
+- Gemma-4's model-level repetition collapse (see section D) is the same
+  shape one layer down.
+
+Measurements in `research/run1/results/tool-call-trial.md`.
+
+**The question.** If the prompt cannot be changed, what else stops a
+loop? Two layers are open: the sampler, and the harness.
+
+**Sampler side, starting points.** Note that section D already records
+`repeat_penalty` failing against Gemma-4's collapse, so treat that as a
+known negative and look wider:
+
+- `repeat_penalty` and `repeat_last_n` — llama.cpp only, and already
+  reported not to help the Gemma case. Confirm the scope: does
+  `mlx_lm.server` expose anything equivalent, or is this genuinely
+  llama-only? That gap would itself be a finding, because it would mean
+  MLX-served models have no sampler defence at all.
+- `frequency_penalty` and `presence_penalty` — these ride the
+  OpenAI-compatible API, so they may reach BOTH backends. Check whether
+  llama-server and `mlx_lm.server` honour them or silently drop them.
+  Silently dropped parameters are this project's recurring trap.
+- DRY and XTC samplers in llama.cpp — DRY targets repeated sequences
+  specifically, which is closer to the failure than a flat penalty.
+- Whether any of these can be set per-request by the harness rather
+  than at server start, since a benchmark cannot restart a server
+  mid-run.
+
+**Harness side, starting points.** pi supports extensions
+(`docs/extensions.md`) with `tool_call` and `tool_result` events, so a
+loop detector is implementable without touching any prompt:
+
+- Count identical consecutive tool calls; after N, inject a tool result
+  that says so rather than the same error again.
+- The existing telemetry already computes the signal — distinct calls
+  as a fraction of total calls — so the detection rule is known to work
+  offline. The question is only whether it can act in time.
+- Decide whether a harness that intervenes is still measuring the model.
+  This is the important one: a detector that rescues a looping model
+  changes what the benchmark reports. It may belong in the runner as a
+  safety stop that ENDS the run, rather than a fix that continues it.
+
+**What would make this shippable.** A defence that needs no prompt
+change, works on both backends or is honestly documented as
+backend-specific, and either does not alter what is measured or is
+declared loudly where it does.
+
 ## Deliverables
 
 - `state.md`: running log, handing-over sections.
