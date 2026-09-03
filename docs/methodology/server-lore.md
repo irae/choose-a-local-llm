@@ -66,6 +66,17 @@ sweeps. Full forensic record:
   trigger, unproven: repeated load/unload churn in LM Studio with a
   client connecting between cycles. Mitigation is already the rule —
   load once per session, quit the app rather than cycling it.
+- **LM Studio cannot serve without Electron, and any `lms` command
+  revives it.** `LM Studio --run-as-service` is the headless mode: no
+  menubar, but it still runs the Electron Framework, an Electron GPU
+  helper, and `~/.cache/lm-studio/.internal/utils/node`. The engine is
+  Electron-hosted and `lms server start` only toggles the HTTP listener
+  inside it. So quitting the app does NOT keep it gone — a later
+  `lms ps` prints "Waking up LM Studio service..." and brings the whole
+  stack back, GPU helper included. After quitting, verify with
+  `pgrep -fl "LM Studio"`, never with `lms`. This matters because the
+  2026-09-03 kernel panic named `node` with 40 threads, which fits that
+  internal node helper.
 - **`lms load` does not start the HTTP server, and `lms ps` will not
   tell you.** A loaded model shows `IDLE` with its context and parallel
   slots in `lms ps` whether or not anything can reach it. Every client
