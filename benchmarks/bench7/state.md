@@ -593,3 +593,83 @@ in after Block 0 before continuing.
   prompt evidently gives it enough to avoid the blind run's
   repo-typo/self-scoping failure), one real commit landed already
   (`uuid` → `crypto.randomUUID()`). Still running, watching.
+
+## Dagger sweep OOM — research for bench9 (owner asked for hypotheses, no time to retry tonight)
+
+Re-read the actual logs from item #3's failed attempt
+(`/tmp/run7-sweep-qwen36-server.log`, `/tmp/run7-sweep-qwen36-memwatch.log`
+— both still on disk) after the owner questioned the OOM conclusion.
+Found evidence at the time that was not surfaced in the original
+write-up:
+
+**H1 — primary, evidenced by the memwatch log itself.** The memwatch
+log for the failed attempt (23:44:46-23:47:47) shows `free_mb`
+pinned at 60-220 MB for the ENTIRE window, with non-zero
+`d_swapin` on every single 20 s sample (up to 3319 pages/interval) —
+the system was under severe memory pressure from the very first
+sample, before the model even started loading. Compare the Gemma-12B
+dagger sweep two hours later (`/tmp/run7-sweep-gemma12-memwatch.log`),
+which started at `free_mb=6511` and never swapped. The qwen3.6
+dagger sweep server was started only ~3 minutes after killing the
+previous ~23 GB non-MTP Mendel server (item #2's cleanup, then item
+#3's server start) — that gap looks too short for macOS to have
+fully reclaimed the killed process's Metal-wired GPU memory back
+into the "free" pool. The retry ("waited for memory to settle,
+restarted once") also happened inside this same short memwatch
+window, so it likely never got a real recovery period either — not
+a second independent data point, just a repeat under the same
+starved condition. **This is the most likely root cause, and it is
+fixable**: verify actual free memory (vm_stat / memwatch reading,
+not just `pgrep` process-liveness) has returned to the idle baseline
+before starting a large model server, not just after killing the
+previous one.
+
+**H2 — contributing, evidenced in the server log.** The daggered
+command hardcodes `-ngl 999`. The log's first warning is
+`common_fit_params: failed to fit params to free device memory:
+n_gpu_layers already set by user to 999, abort` — llama.cpp's
+automatic memory-fitting safety net (which would normally reduce
+layers/context to whatever's actually free) is disabled whenever
+`-ngl` is explicitly set. With it disabled, the loader proceeds
+unconditionally into the MTP draft-context init
+(`common_speculative_init_result: creating MTP draft context...`)
+and hits real Metal `kIOGPUCommandBufferCallbackErrorOutOfMemory`
+errors a fraction of a second later — there is no graceful
+degradation, just a hard failure. This means the exact daggered
+config has zero cushion for transient memory pressure; it only works
+when the machine is already at a clean baseline (matching its own
+prior successful measurement in the report).
+
+**H3 — the owner's MLX/MTP mixup hypothesis, checked, not
+confirmed for this specific failure.** Compared the two Qwen3.6 rows
+in `docs/setups/m1-max-32gb/models.json` (`qwen36-mlx-think`, mlx_lm.server;
+`qwen36-gguf-think`, llama-server+MTP) — different `id`s, `command`s,
+`gatedBy` values, no copy-paste cross-contamination found. No MLX
+process had been started anywhere in this session before the qwen3.6
+dagger attempt (the first MLX-adjacent thing to run was LM Studio's
+`google/gemma-4-12b`, which is itself an MLX model under the hood —
+but that happened LATER, for items #7-9, after this failure). So a
+literal MLX-process-still-resident explanation doesn't fit this
+instance's timeline, but it's worth keeping `pgrep -fl 'mlx|lms'` as
+a standard pre-flight check regardless, since LM Studio silently
+serves MLX weights and that's easy to forget.
+
+**H4 — untested, worth checking on retry.** vm_stat's system-wide
+free-page count might lag behind or differ from the specific
+`iogpu.wired_limit_mb` accounting inside the kernel's IOAccelerator
+subsystem (per `memory-ceiling.md`'s own note that behavior gets
+messy right at this limit). A future attempt could poll
+`vmmap --summary <pid>` or GPU-specific memory counters, not just
+`vm_stat`, to see if they disagree.
+
+**Suggested fix for the bench9 runbook (for the planner):** add an
+explicit "wait for memory to actually recover" step to
+`server-lore.md`/`checklist.md`, distinct from the existing
+process-liveness check — poll `vm_stat` free pages (or the
+memwatch log) until they return to the session's own idle baseline
+after stopping any server with RSS above roughly 15 GB, BEFORE
+starting the next one. Re-attempt the qwen3.6 and Bonsai-mlx dagger
+sweeps under that discipline; if they still OOM with confirmed-clean
+free memory, H1/H2 are ruled out and the machine's actual ceiling at
+`wired_limit_mb=24000` for this MTP config is the real, load-bearing
+finding.
