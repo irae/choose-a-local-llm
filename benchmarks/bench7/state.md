@@ -297,3 +297,10 @@ in after Block 0 before continuing.
   `../mendel-bench-guided-qwen3.6-35b-a3b-high`). Verified
   `thinking_level: "high"` in the meta file and the session events —
   correct, matches the requested level.
+- 23:35 local: run finished (`end_reason: complete`), 0 nudges,
+  0 respawns, 1 compaction. 8/8 `TASKS.md` items done, all sub-items
+  checked. 15 commits (16 counting the pre-existing lockfile-hash
+  base commit) in the worker worktree, all typed `chore`/`refactor`.
+  Ran `score.mjs` to build the evidence pack; dispatched a Fable
+  subagent to apply the rubric per PLAN.md. Awaiting its result before
+  committing the row to `results-guided.json`.
