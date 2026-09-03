@@ -148,16 +148,24 @@ coordinator does it.
 
 ## The queue — priority order, do not reorder
 
-A fully scored-and-pushed prefix is the goal; the tail can wait for
-another night.
+Consolidated 2026-09-03 after the owner's newer decisions. Done so
+far: Block 1 (both Qwen3.8 low runs, partial), the Bonsai mlx runs
+(kept as high — the low flag was not honored), Qwen3.6-35B-A3B blind
+high (re-scored on Fable; the row in `results.json` is the truth). A
+fully scored-and-pushed prefix is
+the goal; the tail can wait for another night.
 
-### Block 1 — Qwen3.8-27B-4bit, effort low (mlx)
+Scoring reminder: score in a Fable subagent (`claude-fable-5`), never
+on a smaller model.
 
-Serve: `mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit
---prompt-cache-size 2 --port 8081`
+### Block 1 — Qwen3.6-35B-A3B guided high (llama-server) — NEXT
 
-1. `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi blind low`
-2. `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi guided low`
+The server for this model is already proven; finish its pair first.
+Serve with the exact config from its report page
+(`docs/setups/m1-max-32gb/`). No MTP drafter flags. Model id
+`qwen3.6-35b-a3b`.
+
+1. `./run-worker.sh qwen3.6-35b-a3b pi guided high`
 
 ### Block 2 — Ternary Bonsai-27B on the PrismML fork, low first
 
@@ -196,16 +204,7 @@ is missing, add it per PLAN.md model-config rules before the run.
 2. guided `high`
 3. guided `low`
 
-### Block 4 — Qwen3.6-35B-A3B (llama-server)
-
-Serve with the exact config from its report page
-(`docs/setups/m1-max-32gb/`). Do NOT pass any MTP drafter flags; they
-break this brew build. Use the pi model id `qwen3.6-35b-a3b`.
-
-1. `./run-worker.sh qwen3.6-35b-a3b pi blind high`
-2. `./run-worker.sh qwen3.6-35b-a3b pi guided high`
-
-### Block 5 — only if time remains
+### Block 4 — only if time remains
 
 `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi guided xhigh`
 (guided only, no blind pair).
