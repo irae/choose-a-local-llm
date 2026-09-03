@@ -42,30 +42,45 @@ lives in [common rules](./common-rules.md) and
       listed in the owner's config. Needs the config in
       `~/.config/choose-a-local-llm/`; see `tools/README-mac-quiet.md`.
    2. **Reboot.** A disabled item that is already running keeps
-      running, so nothing in step 1 takes effect without this. The
-      reboot is also what clears leftover swap.
+      running, so nothing in step 1 takes effect without this.
+      Once per SESSION, not once per model. When the machine is doing
+      nothing but benchmarks, one reboot can cover several days.
    3. `sudo sysctl iogpu.wired_limit_mb=24000`. It resets to 0 on
       every reboot, and 0 means the system default, not "no limit".
       Every ceiling depends on it, so set it before reading any memory
       number.
-   4. **Load the model under test and use it as the balloon.** Do not
-      use a synthetic one. Load the real weights, then drive the
-      context up SLOWLY towards the configured maximum. This single
-      step does five jobs: it applies the memory pressure that makes
-      the machine yield, it warms the model, it proves the config
-      loads instead of assuming it, it produces the ceiling for this
-      exact config, and it surfaces a failure now rather than two
-      hours into a run.
+   4. **Probe first, and only balloon if you need to.** Read free
+      memory. **Above 25 GB free, skip the balloon** — the machine has
+      already yielded and there is nothing to gain.
+      Below that, balloon with **the model under test**, never a
+      synthetic one. Load the real weights, then drive the context up
+      SLOWLY towards the configured maximum. That one step applies the
+      pressure, warms the model, proves the config instead of assuming
+      it, produces the ceiling for this exact config, and surfaces a
+      failure now rather than two hours in.
       Go slowly. Rate changes the answer — see the rate rule in
       [memory ceiling](./memory-ceiling.md). A fast walk drives the
       machine into swap and reports a ceiling no real session would
       hit.
-   5. Verify with a memory probe before starting: `vm_stat` for
-      `Pages wired down`, and `sysctl -n vm.swapusage`. **Swap must be
-      0.** Any swap means the balloon overshot; recover before
-      continuing. Wired is the counter to trust — free and active move
-      for reasons unrelated to the run, and the compressor can inflate
-      an allocation total until it is meaningless.
+   5. Record the starting numbers before you begin: `Pages wired down`
+      from `vm_stat`, and `sysctl -n vm.swapusage`. Wired is the
+      counter to trust — free and active move for reasons unrelated to
+      the run, and the compressor can inflate an allocation total until
+      it is meaningless.
+      **Swap is judged by the delta, not by the level.** Leftover swap
+      from an earlier run is pages a dead process already released; it
+      costs disk, not memory, and it will not reclaim itself into this
+      run. So a non-zero start is not a blocker. Write the starting
+      value down and watch for an INCREASE, which is the real signal.
+      What the increase means depends on what is being measured:
+      * Measuring **tokens per second or a ceiling**: any swap growth
+        invalidates the number. The run is timing the swap file. Treat
+        the point where swap starts growing as the ceiling.
+      * Measuring **model intelligence** (Mendel, polyglot, EvalPlus):
+        swap growth does not invalidate the score, because the answer
+        is judged, not timed. Record it as a deviation and carry on.
+      Either way it should not be happening. Swap growth on a machine
+      prepared by this sequence means something is wrong upstream.
    6. Only now start the real benchmark.
 5. Do NOT download any model. All models are already in the cache, in
    the exact tested revision and quant. A missing model means STOP and

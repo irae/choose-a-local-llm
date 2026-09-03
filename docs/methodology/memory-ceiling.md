@@ -102,11 +102,26 @@ machine's behaviour. It is not part of run preparation.
 fast walk drives the machine into swap and reports a number no real
 session would meet.
 
-**Why swap must be 0 before starting.** macOS does not refuse an
+**Why swap is judged by the delta.** macOS does not refuse an
 impossible request. It compresses, then swaps, then keeps going. A run
-that begins with swap in use can complete and report throughput that
-measures the swap file. A failed allocation is easy to spot; a slow one
-is not.
+that swaps can complete and report throughput that measures the swap
+file. A failed allocation is easy to spot; a slow one is not.
+
+Leftover swap from an earlier run is not the problem. Those pages
+belong to processes that already released them: they cost disk, not
+memory, and nothing reclaims them into the next run. Requiring zero
+would mean rebooting for no gain. What matters is growth DURING the
+run, so record the starting value and watch for an increase.
+
+The consequence of growth depends on what is being measured. A
+throughput or ceiling number is invalid, because it timed the swap
+file, and the point where swap starts growing is the real ceiling. A
+judged score — Mendel, polyglot, EvalPlus — survives, because the
+answer is graded rather than timed; record it as a deviation.
+
+**Why the balloon is optional.** Above 25 GB free the machine has
+already yielded and pressure buys nothing. Probe first, balloon only
+below that.
 
 **Why wired is the counter to read.** Wired pages are never compressed
 and never swapped. Everything else can mislead: free and active move for
@@ -115,10 +130,10 @@ until it is fiction. An early version of the probe filled blocks with a
 repeated value and "allocated" 35840 MB on a 32 GB machine, because the
 compressor squeezed the blocks to nothing. Wired never lied.
 
-**What the sequence costs.** A reboot per session, and a few minutes of
-slow loading per config. Reboot once per session rather than once per
-model; the model-as-balloon step re-establishes the state between
-models. The background items stay disabled until `tools/mac-quiet.sh on`
+**What the sequence costs.** One reboot per session, and a few minutes
+of slow loading per config when the balloon is needed at all. Reboot
+once per session, never once per model; when the machine is doing
+nothing but benchmarks, one reboot can cover several days. The background items stay disabled until `tools/mac-quiet.sh on`
 runs, so the owner gets their machine back when the session ends.
 
 Full measurements behind this: `research/run1/results/memory-gate.md`.
