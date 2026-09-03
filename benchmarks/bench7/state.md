@@ -145,3 +145,9 @@ rules and `AGENTS.md`): score in a Fable subagent only; never
 download a model; never bare `git stash` (named stashes only); first
 action is the run7 worktree (reuse `../choose-a-local-llm-run7` if it
 exists with the `run7` branch, else create it fresh).
+
+Pending item for the next session: the Qwen3.6-35B-A3B blind-high
+session log and meta file were never committed into
+`benchmark/runs/` (the Fable re-score found neither on the Linux
+box). Copy them from the Mac per PLAN.md and list them in
+SESSIONS.md.
