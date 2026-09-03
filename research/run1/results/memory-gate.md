@@ -289,3 +289,30 @@ The compressor held about 900 MB across every probe and never released
 it. Nothing ever swapped. The compressed pages are idle app memory that
 the owner is not using, and they stay compressed, so the balloon effect
 persists rather than decaying.
+
+
+## Correction to findings 4 and 5 — the allocation ceilings were fiction
+
+The first version of `tools/mem-probe.py` filled each block with
+`mx.ones`. A block of one repeated value costs almost nothing to hold:
+the compressor squeezes it to a fraction of its size. The probe walked
+far past real memory and reported a ceiling that does not exist. With
+the cap raised to 36000 MB it "allocated" 35840 MB on a 32 GB machine
+and still did not fail.
+
+**Every allocation ceiling in findings 4 and 5 is void.** The blocks
+compressed, so the numbers describe the compressor, not the machine.
+
+**The wired numbers stand.** Wired pages are never compressed by
+definition, so `Pages wired down` could not be inflated this way. That
+is the whole of findings 4 and 5: the same request wired 12489 MB from
+a dirty machine and 24257-25295 MB from a clean one. Those measurements
+are unaffected, and the gate formula built on them is unaffected.
+
+The fix is `mx.random.uniform`. Random float32 does not compress, so
+every megabyte asked for is a megabyte held.
+
+This is a good argument for the rule the owner already set: read the
+counter that cannot lie. Free and active moved for reasons that had
+nothing to do with the run, and the allocation total was inflated by
+the compressor. Wired was right the whole time.

@@ -15,6 +15,33 @@ run loop apply ([common rules](./common-rules.md),
    the optimum shifts with output style (thinking on/off) and with
    depth.
 5. Record on every surface, with the wired limit it was measured under.
+6. Record the allocation RATE too, and never compare a ceiling measured
+   at one rate with a ceiling measured at another.
+
+## Rate changes the ceiling, so a benchmark OOMs early
+
+A ceiling is not a property of the machine alone. It also depends on
+how fast the memory is asked for.
+
+macOS answers a large allocation by compressing and evicting idle
+pages, and that work takes time. Ask fast and the system cannot keep
+up, so the allocation fails while memory it could have freed is still
+in use. Ask slowly and the same machine yields more.
+
+This matters because our benchmarks and our real workload sit at
+opposite ends of that scale. A sweep that raises `-c` and reloads in a
+tight loop is the fast case. A coding agent is the slow case: it stops
+constantly for tool calls, test runs, web requests and model thinking,
+and every one of those gaps is time the system uses to catch up.
+
+So **a benchmark OOM is pessimistic**. The config that failed a sweep
+may serve a real agent session at the same size. Do not turn a swept
+ceiling into a published maximum without saying it was measured fast.
+
+When a ceiling decides something the owner will rely on, measure it at
+both rates and quote both. `tools/mem-probe.py --pause` exists for
+this: `--pause 0` is the fast case, a pause of a second or more
+approximates the gaps in agent work.
 
 ## Know which limit actually gates the OOM
 

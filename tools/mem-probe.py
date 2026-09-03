@@ -16,11 +16,18 @@ pages are never compressed and never swapped, so wired at peak is what
 a GPU actually got. A model needs wired memory; the rest is a promise
 the system can take back under pressure.
 
+Allocation RATE changes the answer, so --pause is not a convenience.
+A fast walk gives macOS no time to compress and evict, and finds a lower
+ceiling than a slow one. Real agent work is slow: tool calls, test runs
+and web requests leave gaps where the system catches up. A benchmark
+that hammers allocation therefore OOMs earlier than the workload it is
+meant to represent. Measure both and say which number you are quoting.
+
 Safety: MLX raises on a failed allocation, so the ceiling is found by a
 caught exception, not by an out-of-memory kill. STEP_MB and CAP_MB bound
 the walk. Everything is freed between probes and at exit.
 
-Usage: python3 tools/mem-probe.py [--step MB] [--cap MB]
+Usage: python3 tools/mem-probe.py [--step MB] [--cap MB] [--pause SEC]
 """
 
 import argparse
@@ -97,9 +104,17 @@ def report(label):
 
 
 def allocate_one_block(size_mb):
-    """Allocates size_mb of GPU memory and writes to it so it is resident."""
+    """Allocates size_mb of GPU memory filled with incompressible data.
+
+    The fill MUST be random. A block of a repeated value costs almost
+    nothing to hold: the compressor squeezes it to a fraction of its
+    size, so the probe walks far past real memory and reports a ceiling
+    that does not exist. An earlier version used mx.ones and "allocated"
+    35840 MB on a 32 GB machine. Random float32 does not compress, so
+    every megabyte asked for is a megabyte held.
+    """
     elements = size_mb * MB // 4
-    block = mx.ones((elements,), dtype=mx.float32)
+    block = mx.random.uniform(shape=(elements,), dtype=mx.float32)
     mx.eval(block)
     return block
 
@@ -110,7 +125,7 @@ def free_everything(blocks):
     mx.clear_cache()
 
 
-def run_probe(name, step_mb, cap_mb):
+def run_probe(name, step_mb, cap_mb, pause_sec):
     print()
     print("=== {} ===".format(name))
 
@@ -131,6 +146,9 @@ def run_probe(name, step_mb, cap_mb):
 
         if held_mb % 4096 == 0:
             print("  holding {:>6} MB".format(held_mb))
+
+        if pause_sec > 0:
+            time.sleep(pause_sec)
 
     print("  CEILING {} MB".format(held_mb))
 
@@ -220,19 +238,29 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--step", type=int, default=512, help="step size in MB")
     parser.add_argument("--cap", type=int, default=30000, help="stop at this many MB")
+    parser.add_argument(
+        "--pause",
+        type=float,
+        default=0.0,
+        help="seconds to wait between steps; 0 is a fast walk",
+    )
     args = parser.parse_args()
 
     print("mem-probe — {}".format(time.strftime("%Y-%m-%d %H:%M:%S")))
     check_wired_limit()
-    print("step {} MB, cap {} MB".format(args.step, args.cap))
+    print("step {} MB, cap {} MB, pause {} s".format(args.step, args.cap, args.pause))
 
-    first = run_probe("probe 1, from current state", args.step, args.cap)
+    if args.pause == 0:
+        print("FAST walk. This finds the pessimistic ceiling, not the one a")
+        print("real agent workload would reach. See the module docstring.")
+
+    first = run_probe("probe 1, from current state", args.step, args.cap, args.pause)
 
     print()
     print("Settling for 60 seconds before the second probe.")
     time.sleep(60)
 
-    second = run_probe("probe 2, after pressure", args.step, args.cap)
+    second = run_probe("probe 2, after pressure", args.step, args.cap, args.pause)
 
     summarize(first, second, args.step)
 
