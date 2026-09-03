@@ -7,6 +7,14 @@
 # of four full Mendel runs. If the rules do not move the numbers here,
 # the full runs are not worth the machine time.
 #
+# The rules under test are the draft's first two paragraphs only. The
+# third told the model to consult pi's offline docs, and pi has no
+# user-facing tool reference: the seven doc files that mention tools all
+# describe how to BUILD them (custom-provider, extensions, sdk, rpc,
+# session-format, json, tui). `pi --help` lists CLI flags a running
+# agent cannot change. Sending a stuck 12B model into thirty developer
+# documents spends context and teaches it nothing, so it is cut.
+#
 # Situation A, the loop: the task names a path that does not exist. The
 #   question is how many times the model repeats the identical failing
 #   call before it changes approach.
@@ -43,10 +51,6 @@ it.
 Prefer several small edits over one large edit. Do not put long
 multi-line text with embedded quotes into tool-call arguments; write
 a file instead of editing when the change is large.
-
-Your harness (pi) documents itself offline: `pi --help`, and the
-docs directory next to the pi binary. Consult them when a tool
-behaves in a way you do not expect.
 RULESEOF
 }
 
