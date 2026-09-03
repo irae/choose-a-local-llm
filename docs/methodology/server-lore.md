@@ -53,6 +53,19 @@ sweeps. Full forensic record:
   explicitly with `lms load` and verify with `lms ps` before starting.
   Loading while another instance is resident creates a duplicate
   (`:2`) instance — unload first.
+- **A lost run may be a kernel panic, not an OOM.** This Mac panicked
+  in `IOGPUFamily` on 2026-09-03: `"completeMemory() prepare count
+  underflow" @IOGPUMemory.cpp:492`, panicking task `node`. The panic
+  log's own accounting showed memory was FINE (compressor at 3%, swap
+  OK), so it was not memory exhaustion — it is a reference-counting
+  fault in Apple's GPU memory manager, reachable from ordinary GPU
+  work. A panic takes the whole machine, so it leaves the same evidence
+  as a silent death: no server log, no session log, no row. Before
+  calling any lost run an OOM, check
+  `ls -t /Library/Logs/DiagnosticReports/*.panic | head`. Suspected
+  trigger, unproven: repeated load/unload churn in LM Studio with a
+  client connecting between cycles. Mitigation is already the rule —
+  load once per session, quit the app rather than cycling it.
 - **`lms load` does not start the HTTP server, and `lms ps` will not
   tell you.** A loaded model shows `IDLE` with its context and parallel
   slots in `lms ps` whether or not anything can reach it. Every client
