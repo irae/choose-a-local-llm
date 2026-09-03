@@ -34,6 +34,7 @@ scoreboard per version.
 | model | serving | score | worst defect |
 |---|---|--:|---|
 | [Qwen3.8-27B (mlx, low)](../reports/qwen3.8-27b.md) | mlx_lm.server | **67.5/100** (partial) | minor |
+| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **63/100** | critical |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **55/100** (partial) | medium |
 <!-- gen:mendel-local:end -->
 
