@@ -363,3 +363,47 @@ in after Block 0 before continuing.
   depth steps in `tools/sweeps/llama_sweep.py`, per the "creep
   slowly" rule in `context-creep.md` (the script had no pause
   before).
+
+### Item #5 — Bonsai-PrismML blind low — STOPPED early (thinking level wrong)
+
+- 23:49-23:52 local: no pi model entry existed yet for `bonsai-prism`
+  — added one to `~/.pi/agent/models.json` (provider `llama`,
+  `contextWindow: 65536` matching `-c 65536`, `thinkingLevelMap` with
+  only `off`/`high` mapped — copied the shape of the existing
+  `prism-ml/Ternary-Bonsai-27B-mlx-2bit` entry, since the report page
+  for this model only documents a binary "thinking on"/"thinking
+  off" toggle, no graduated low/medium/high; there is no evidence
+  this architecture supports graduated reasoning effort at all).
+- Served the exact `bonsai-prism` config from
+  `docs/setups/m1-max-32gb/reports/bonsai-27b.md` #3 (PrismML fork,
+  `-c 65536`, q4_0 KV + calibration bias). Warmup OK. Started
+  `./run-worker.sh bonsai-prism pi blind low`.
+- Checked the meta file within seconds of start per AGENT.md's
+  mandatory check: `"thinking": "low"` (requested) but
+  `"thinking_level": "high"` (applied) — the low flag was not
+  honored, same failure as the earlier mlx Bonsai runs. Because the
+  `thinkingLevelMap` I just added has `"low": null` (mirroring the
+  mlx entry, which has the same gap), this is a deterministic,
+  structural limitation of this model on this harness, not a flaky
+  one-off — retrying the identical config would reproduce the same
+  result every time, so no retry attempted.
+- Per AGENT.md's explicit rule for this block ("If the level is
+  wrong, stop the run at once... do not burn wall clock on a wrong
+  config"), stopped the run immediately (a few seconds in, before any
+  commits). Killed the worker process, removed the worker worktree
+  and its branch (nothing to keep — zero commits landed). Server and
+  memwatch still up (same model, about to reuse for the next
+  attempt).
+- Decision: item #6 (Bonsai-PrismML guided low) would hit the exact
+  same structural block — same model, same `thinkingLevelMap` lookup
+  — so skipping it too rather than repeating a known-dead attempt.
+  Bonsai-PrismML "low" appears unsupported end to end on this
+  harness/model pair; only items #11/#12 (blind/guided **high**) are
+  reachable for this backend. Moving to item #7 (Gemma-12B blind
+  high) — the next reachable Mendel run in the reordered queue.
+  Owner should decide later whether "low" for this model needs a
+  different mechanism (e.g. a prompt-level reasoning-effort
+  instruction instead of the harness's thinking-level plumbing) or is
+  simply not offered by this build.
+- Stopped the Bonsai server and memwatch (Gemma-12B is a different
+  serving stack, LM Studio).
