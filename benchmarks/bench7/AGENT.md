@@ -261,10 +261,19 @@ issue 13, and self-scoped to chalk only. Re-run
 `./run-worker.sh bonsai-prism pi blind high` fresh (new worktree,
 new branch — do not reuse the scored one). **If the retry succeeds,
 its score must carry a penalty for needing a retry at all** — this
-is an explicit owner instruction, not optional. Do not silently
-replace the first row with a clean one. Flag this to the Fable
-scorer and note it in `state.md`. See `state.md`'s "Pending —
-Bonsai-PrismML blind high" section for full detail.
+is an explicit owner instruction, not optional. Penalty mechanism
+(coordinator decision, 2026-09-03): score the retry normally, then
+set the "Right the first time" criterion to 0 — the model was not
+right the first time; a whole-run retry is the strongest form of
+that failure. The retry row replaces the 60.5 row; its `config_note`
+must name the discarded first attempt and its score. Flag this to
+the Fable scorer and note it in `state.md`.
+
+Also pending, same rules minus the penalty: the item-12 retry
+(Bonsai-PrismML guided high) — the owner aborted the first attempt
+on time, so the retry scores clean, from scratch. Copy the aborted
+attempt's session files from the Mac's `scratchpad/` into
+`benchmark/runs/` first if they are still there.
 
 ## Dagger sweeps — clear † marks while a model is hot
 

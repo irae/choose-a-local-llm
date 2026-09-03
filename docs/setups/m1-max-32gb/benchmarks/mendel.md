@@ -35,7 +35,9 @@ scoreboard per version.
 |---|---|--:|---|
 | [Qwen3.8-27B (mlx, low)](../reports/qwen3.8-27b.md) | mlx_lm.server | **67.5/100** (partial) | minor |
 | [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **63/100** | critical |
+| bonsai-prism | llama-server | **60.5/100** | critical |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **55/100** (partial) | medium |
+| gemma-4-12b | lm-studio | **30.5/100** (partial) | critical |
 <!-- gen:mendel-local:end -->
 
 Run notes for the two partials are in the
@@ -73,7 +75,10 @@ same frozen prompt; a blind-guided pair can land at different times.
 | deepseek-v4-flash-0731 | pi | **97/100** |
 | gpt-5.6-luna | pi | **88.5/100** |
 | claude-sonnet-4.5 | pi | **88/100** |
+| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **83/100** |
 | Claude Haiku 4.5 | pi | **76/100** |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **59/100** (partial) |
 | [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | pi | **34/100** (partial) |
+| gemma-4-12b | pi | **30/100** (partial) |
+| Gemma-4-12B (low) | pi | **29.5/100** (partial) |
 <!-- gen:mendel-guided:end -->

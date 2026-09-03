@@ -64,6 +64,13 @@ lives in [common rules](./common-rules.md) and
     harness config. Update `benchmarks/bench<N>/results.md` and
     `state.md`.
 14. Commit before moving to the next block.
-15. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
+15. After stopping any server above ~15 GB RSS, wait for memory to
+    RECOVER before loading the next model or starting a sweep: poll
+    `vm_stat` (or the memwatch log) until free memory returns to the
+    idle baseline. Process death is not memory recovery — a sweep
+    started ~3 min after killing a 23 GB server ran the whole window
+    with 60-220 MB free and continuous swap-ins, and OOMed
+    ([server lore](./server-lore.md)).
+16. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
     no background task holding the GPU. End the session with the
     machine idle.
