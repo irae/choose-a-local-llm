@@ -118,48 +118,71 @@ not worth the machine time.
 2. Confirm which Mendel dependency is the single handed task.
 
 
-## The third rule: resolved, not invented, and not trialled
+## The third rule is redundant — CUT IT
 
-The draft's third paragraph read:
+The draft's third paragraph told the model to consult pi's offline
+documentation. Measured 2026-09-03: **pi already does this, better.**
 
-> Your harness (pi) documents itself offline: `pi --help`, and the
-> docs directory next to the pi binary. Consult them when a tool
-> behaves in a way you do not expect.
+### Evidence 1 — the docs path is in the system prompt
 
-Two problems. "The docs directory next to the pi binary" is not a path
-a model can act on — `pi` is a symlink into a global npm tree, so the
-docs are three levels up from the resolved target. And the docs do not
-document the tools. The seven files that mention tools describe how to
-BUILD them: `custom-provider`, `extensions`, `sdk`, `rpc`,
-`session-format`, `json`, `tui`. There is no user-facing tool
-reference. `pi --help` lists CLI flags a running agent cannot change.
+Asked directly, `prism-ml/Ternary-Bonsai-27B-mlx-2bit` quoted this back
+from its own system prompt:
 
-The path resolves with one line, verified on this machine:
+> Pi documentation (read only when the user asks about pi itself, its
+> SDK, extensions, themes, skills, prompt templates, TUI):
+> - Main documentation: `<abs path>/README.md`
+> - Additional docs: `<abs path>/docs`
+> - Examples: `<abs path>/examples`
+> - When asked about: extensions (docs/extensions.md), themes
+>   (docs/themes.md), skills (docs/skills.md), ... environment
+>   variables (docs/environment-variables.md)
 
-    ls "$(npm root -g)/@earendil-works/pi-coding-agent/docs"
+Absolute paths, already resolved, plus a topic-to-file map. That is
+strictly more than the draft paragraph offered.
 
-The `readlink` form also works but depends on the nvm layout:
-`ls "$(dirname "$(readlink -f "$(which pi)")")/../../docs"`.
+### Evidence 2 — the probe cannot discriminate, and shows why
 
-So the paragraph should ship as:
+The docs probe asked for the default of `PI_TUI_ESC_TIMEOUT`, a value
+that exists only in the docs. Two arms: bare, and with the rule.
 
-> Your harness (pi) ships its documentation offline. List it with
-> `ls "$(npm root -g)/@earendil-works/pi-coding-agent/docs"`. It
-> describes harness behaviour — sessions, compaction, skills, models —
-> not the tool schemas. For a failing tool call, read the error.
+| Model | bare | with rule | calls, bare arm |
+| --- | --- | --- | --- |
+| prism-ml/Ternary-Bonsai-27B-mlx-2bit | 2/2 correct | 2/2 correct | 1 |
+| deepseek-v4-flash-0731 | 2/2 correct | 2/2 correct | 1-2 |
 
-That is honest about what is there, gives a command instead of a
-description, and stops a model spending context looking for a tool
-reference that does not exist.
+In the BARE arm the Bonsai went straight to the absolute path of
+`environment-variables.md` in a single call. It did not list the
+directory or search. The system prompt's topic map took it there.
 
-**It is not in the trial.** Advice about consulting documentation cannot
-move the loop length or the parser-crash count, which are the two things
-these situations measure. Including it would add a variable with no
-route to the outcome. The trial trials the two behavioural rules; this
-paragraph is a documentation fix that ships or does not on its own
-merits.
+### Evidence 3 — the tool half was already redundant
 
-If the owner wants it tested, the honest experiment is different: give
-the model a task that needs a harness behaviour it does not know, and
-see whether the line makes it look. That is a third situation, not a
-variant of these two.
+pi's system prompt also carries `.activeTools` and `.toolSnippets`,
+"one-line descriptions for each tool" (`docs/extensions.md:543`), and
+the API sends the full tool schemas separately. A model cannot learn
+anything about its tools from documentation that does not describe
+them, when it already holds the schemas.
+
+### Recommendation
+
+**Cut the paragraph.** Both halves are redundant: the tool half against
+the schemas in context, the docs half against pi's own system prompt.
+Shipping it would add tokens to every turn of every run and buy nothing
+measurable.
+
+The owner earlier chose to reframe it to harness behaviour rather than
+cut it. That choice was made before this evidence. The reframed version
+is redundant too, because the system prompt's topic map already covers
+exactly those subjects — sessions, compaction, skills, settings.
+
+What ships is then the two behavioural rules only: do not repeat a
+failed call unchanged, and prefer small edits over one large edit with
+embedded quotes. Those target observed failures and nothing in pi's
+prompt already says them.
+
+### What this cost, and the lesson
+
+Three redesigns of the same paragraph — vague path, resolved path,
+worked example — before checking whether the harness already did the
+job. The check was one question to a running model and took 30 seconds.
+Ask what the harness already sends before writing a rule that tells a
+model something.

@@ -48,15 +48,6 @@ it.
 Prefer several small edits over one large edit. Do not put long
 multi-line text with embedded quotes into tool-call arguments; write
 a file instead of editing when the change is large.
-
-Your harness (pi) ships its documentation offline. When you need
-to know how pi itself behaves — compaction, sessions, skills,
-settings — read its index:
-
-{"type":"toolCall","name":"bash","arguments":{"command":"cat \"$(npm root -g)/@earendil-works/pi-coding-agent/docs/index.md\""}}
-
-It lists every document with one line each. Your tools are already
-described to you; the docs do not cover them.
 RULEEOF
 }
 

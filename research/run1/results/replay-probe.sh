@@ -60,15 +60,6 @@ RULESEOF
 
     cp "$RULES" "$RULES_PLUS"
     cat >> "$RULES_PLUS" <<'PLUSEOF'
-
-Your harness (pi) ships its documentation offline. When you need
-to know how pi itself behaves — compaction, sessions, skills,
-settings — read its index:
-
-{"type":"toolCall","name":"bash","arguments":{"command":"cat \"$(npm root -g)/@earendil-works/pi-coding-agent/docs/index.md\""}}
-
-It lists every document with one line each. Your tools are already
-described to you; the docs do not cover them.
 PLUSEOF
 }
 
