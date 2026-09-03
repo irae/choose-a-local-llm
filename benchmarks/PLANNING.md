@@ -91,3 +91,9 @@ Rules for writing it:
 - Keep only what the next coordinator session needs and no other file
   holds. When something belongs to a run, move it to the run kit; when
   it is a durable rule, move it to the methodology or `AGENTS.md`.
+- Keep it SMALL (owner rule, 2026-09-03). The handoff exists to pick
+  up where things are and to say WHERE the detail lives. Committed
+  content gets a pointer, never a summary. Only uncommitted state,
+  open decisions, and in-flight work earn sentences. The handoff
+  itself opens with a "Handoff guidelines" section that carries these
+  rules and is never removed on a rewrite.
