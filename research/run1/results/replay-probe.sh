@@ -61,16 +61,14 @@ RULESEOF
     cp "$RULES" "$RULES_PLUS"
     cat >> "$RULES_PLUS" <<'PLUSEOF'
 
-Your harness (pi) ships its documentation offline. This is a
-correctly formed tool call that lists it:
+Your harness (pi) ships its documentation offline. When you need
+to know how pi itself behaves — compaction, sessions, skills,
+settings — read its index:
 
-{"type":"toolCall","name":"bash","arguments":{"command":"ls \"$(npm root -g)/@earendil-works/pi-coding-agent/docs\""}}
+{"type":"toolCall","name":"bash","arguments":{"command":"cat \"$(npm root -g)/@earendil-works/pi-coding-agent/docs/index.md\""}}
 
-Every tool call takes that shape: a name, and an arguments object
-whose keys the tool defines. The docs it lists describe harness
-behaviour — sessions, compaction, skills, models. They do not
-describe the tools, so for a failing tool call read the error
-instead.
+It lists every document with one line each. Your tools are already
+described to you; the docs do not cover them.
 PLUSEOF
 }
 
