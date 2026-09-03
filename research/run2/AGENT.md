@@ -97,6 +97,49 @@ mishandles stop sequences. Alternatives, ranked by the researcher:
 If nothing works, propose marking the Gemma-12B x LM Studio x agent
 combination unsupported (feeds run 1 goal 2).
 
+**Run 1 findings that bear on this section (all committed to master).**
+Run 1 hit LM Studio hard while setting up its goal-3 trial and stopped,
+handing the parameter question here. What it established:
+
+- **The Mac kernel-panicked, and it was not an OOM.**
+  `"completeMemory() prepare count underflow" @IOGPUMemory.cpp:492`,
+  kext `com.apple.iokit.IOGPUFamily`, panicking task `node`. The panic
+  log's own accounting shows memory was fine: compressor at 3%, swap
+  OK. Context was repeated LM Studio load/unload of
+  `google/gemma-4-12b` with a client connecting between cycles. Not
+  reproduced on purpose. See `research/run1/results/backend-diagnosis.md`
+  and `docs/methodology/server-lore.md`.
+- **LM Studio cannot serve without Electron.** `--run-as-service` is
+  the headless mode and still runs the Electron Framework, an Electron
+  GPU helper, and `~/.cache/lm-studio/.internal/utils/node`. The
+  panicking task was `node` with 40 threads, which fits that internal
+  helper. This matters for alternative 6, comparing LM Studio's MLX
+  wrapper against upstream `mlx_lm.server`: the wrapper is not a thin
+  layer, it is a separate process tree.
+- **Any `lms` command revives the whole stack.** Quitting the app is
+  not enough; a later `lms ps` prints a waking-up message and restarts
+  Electron and the GPU helper. Verify with `pgrep -fl "LM Studio"`,
+  never with `lms`. A status check during a run can put a second
+  process on the GPU.
+- **`lms load` does not start the HTTP server, and `lms ps` does not
+  reveal it.** A loaded model reads `IDLE` with context and slots while
+  nothing can reach it; clients get a bare `Connection error.` Check
+  `lms server status` and curl `/v1/models`.
+- **Gemma-12B's tool-call record, from the session logs.** 117 errors
+  in 166 calls across three runs, 70.5%, the worst of any local model.
+  Its low-guided run made 130 calls with only 30 distinct, including
+  one invalid command (`ls -F_r`) repeated 72 times consecutively and
+  88 times in total. That is the same failure family as the newline
+  flood: the model emits a broken thing and then repeats it. See
+  `research/run1/results/tool-call-trial.md`.
+- **The MLX Bonsai on upstream `mlx_lm.server` was clean** on the same
+  short probes run minutes later: 4/4 correct, one tool call each, no
+  swap growth, no crash. That is a data point for alternative 6 —
+  upstream MLX behaved where the LM Studio path did not.
+
+Run 1 owns none of this section. It is blocked here and will not retry
+the Gemma-12B x LM Studio combination.
+
 ### E. mlx_lm.server dead thread and OOM
 
 Upstream: confirmed open bug — /health never checks the generation
