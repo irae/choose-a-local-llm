@@ -62,7 +62,9 @@ function mendelName(r) {
 }
 
 function mendelScore(r) {
-  return `**${r.score_total}/100**${r.partial === 'True' ? ' (partial)' : ''}`
+  const done = r.libraries_done === '' ? 8 : Number(r.libraries_done)
+  const cap = Math.min(Number(r.score_total), (100 * done) / 8)
+  return `**${cap}/100**${r.partial === 'True' ? ' (partial)' : ''}`
 }
 
 function currentPromptVersion(rows) {
@@ -79,7 +81,7 @@ function renderMendelLocal(rows) {
   const sev = (d) => (d.match(/^(critical|medium|minor)/) || [])[1] || (d ? 'see report' : 'none found')
   const body = rows
     .filter((r) => r.local === 'True')
-    .sort((a, b) => b.score_total - a.score_total)
+    .sort((a, b) => Math.min(b.score_total, (100 * (b.libraries_done === '' ? 8 : b.libraries_done)) / 8) - Math.min(a.score_total, (100 * (a.libraries_done === '' ? 8 : a.libraries_done)) / 8))
     .map((r) => `| ${mendelName(r)} | ${r.serving} | ${mendelScore(r)} | ${sev(r.defects)} |`)
   return [...header, ...body].join('\n')
 }
@@ -88,7 +90,7 @@ function renderMendelCloud(rows) {
   const header = ['| model | harness | score |', '|---|---|--:|']
   const body = rows
     .filter((r) => r.local !== 'True')
-    .sort((a, b) => b.score_total - a.score_total)
+    .sort((a, b) => Math.min(b.score_total, (100 * (b.libraries_done === '' ? 8 : b.libraries_done)) / 8) - Math.min(a.score_total, (100 * (a.libraries_done === '' ? 8 : a.libraries_done)) / 8))
     .map((r) => `| ${mendelName(r)} | ${r.harness} | ${mendelScore(r)} |`)
   return [...header, ...body].join('\n')
 }
@@ -96,7 +98,7 @@ function renderMendelCloud(rows) {
 function renderMendelGuided(rows) {
   const header = ['| model | harness | score |', '|---|---|--:|']
   const body = rows
-    .sort((a, b) => b.score_total - a.score_total)
+    .sort((a, b) => Math.min(b.score_total, (100 * (b.libraries_done === '' ? 8 : b.libraries_done)) / 8) - Math.min(a.score_total, (100 * (a.libraries_done === '' ? 8 : a.libraries_done)) / 8))
     .map((r) => `| ${mendelName(r)} | ${r.harness} | ${mendelScore(r)} |`)
   return [...header, ...body].join('\n')
 }
@@ -297,8 +299,8 @@ for (const dataFile of dataFiles) {
     }
   }
 
-  const mendelBlind = currentPromptVersion(parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8')))
-  const mendelGuided = currentPromptVersion(parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8')))
+  const mendelBlind = currentPromptVersion(parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8')).filter((r) => r.invalid !== 'True'))
+  const mendelGuided = currentPromptVersion(parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8')).filter((r) => r.invalid !== 'True'))
   const typePages = [
     [`${setupDir}/benchmarks/evalplus.md`, EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(data)],
     [`${setupDir}/benchmarks/decode-speed.md`, DECODE_START, DECODE_END, renderDecodeSummary(data)],

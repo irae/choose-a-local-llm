@@ -34,7 +34,27 @@ findings feed `../run2/` (runtime improvements).
    upstream issue. Check whether the build predates llama.cpp PR
    23485 and PR 20817.
 
-## Goal 2 — trial the tool-call rules (unscored)
+## Goal 2 — audit run labels against session logs
+
+Two measurement errors are confirmed; audit EVERY current-version row
+for both, from the session logs:
+
+1. **Thinking level.** A run that asked for low but recorded only
+   `thinkingLevel: high` ran at high — that is OUR benchmark error,
+   not a model anomaly. Policy (owner, 2026-09-03): re-label the row
+   as high. When a model then has two valid runs of the same config
+   and level, keep the BEST as the row, mark it `best_of: <n>`, and
+   put the low run back on the queue — pending a diagnosed way to
+   actually run low (run 2's job). If low is unreachable on a
+   harness, low is not offered for that model.
+2. **Compactions.** pi writes a "split turn / No prior history"
+   marker that is NOT a context compaction; two rows (qwen3.6,
+   deepseek-v4-pro v1.1) had it miscounted and are fixed. Check every
+   row's compaction count against real compaction events, and check
+   that `peak_context` is the maximum across ALL compaction cycles,
+   not the post-compaction value.
+
+## Goal 3 — trial the tool-call rules (unscored)
 
 `results/agents-global-trial.md` holds a draft "Tool calls" section
 for `agents-global.md` and three trial designs. Pick the cheapest

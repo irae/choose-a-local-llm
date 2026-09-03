@@ -140,18 +140,23 @@ base tags with the tap crash fix. Rows from older prompt versions
 moved to [historical](./historical.md); never compare across prompt
 versions.
 
+Scores wear a completion cap: a score cannot exceed the fraction of
+the task that got done (`min(raw, 100 × done/8)`). Runs where a
+serving failure prevented any real work are invalid and not listed
+here; the hosted reports show them dimmed, with reasons.
+
 | model | test | config scored | score | status |
 |---|---|---|--:|---|
-| Qwen3.8-27B | blind | mlx 4-bit, effort low, `pi` harness | **67.5/100** | partial — tooling-nudge budget hit at 1/8 libraries; the mlx entry's fixed 26624-token window forced repeated premature stops (serving limit, not the model) |
-| Qwen3.6-35B-A3B | blind | llama-server, thinking high, `pi` harness | **63/100** | complete — all 8 libraries; one critical runtime defect (trap A) |
 | Qwen3.6-35B-A3B | guided | llama-server, thinking high, `pi` harness | **83/100** | complete — all 8 libraries |
-| Ternary Bonsai-27B | blind | mlx 2-bit, thinking high, `pi` harness | **55/100** | partial — 300-min wall clock at 3/8 libraries, `rimraf` partial |
-| Ternary Bonsai-27B | guided | mlx 2-bit, thinking high, `pi` harness | **59/100** | partial — 300-min wall clock at 1/8 libraries |
-| Ternary Bonsai-27B | blind | PrismML GGUF fork, thinking high, `pi` harness | **60.5/100** | complete but 1/8 libraries — typoed the repo path, self-scoped to chalk; a penalized retry is pending |
-| Qwen3.8-27B | guided | mlx 4-bit, effort low, `pi` harness | **34/100** | partial — three Metal OOM server crashes, tooling budget exhausted, zero commits |
-| Gemma-4-12B | blind | LM Studio MLX, thinking high, `pi` harness | **30.5/100** | partial — newline-flood collapse, zero commits |
-| Gemma-4-12B | guided | LM Studio MLX, thinking high, `pi` harness | **30/100** | partial — same collapse, zero commits |
-| Gemma-4-12B | guided | LM Studio MLX, thinking low, `pi` harness | **29.5/100** | partial — same collapse, delayed onset, zero commits |
+| Qwen3.6-35B-A3B | blind | llama-server, thinking high, `pi` harness | **63/100** | complete — all 8 libraries; one critical runtime defect (trap A) |
+| Ternary Bonsai-27B | blind | mlx 2-bit, thinking high, `pi` harness | **37.5/100** (raw 55) | partial — 300-min wall clock at 3/8 libraries, `rimraf` partial |
+| Qwen3.8-27B | blind | mlx 4-bit, effort low, `pi` harness | **12.5/100** (raw 67.5) | partial — tooling-nudge budget hit at 1/8 libraries; the mlx entry's fixed 26624-token window forced repeated premature stops (serving limit, not the model) |
+| Ternary Bonsai-27B | guided | mlx 2-bit, thinking high, `pi` harness | **12.5/100** (raw 59) | partial — 300-min wall clock at 1/8 libraries |
+| Ternary Bonsai-27B | blind | PrismML GGUF fork, thinking high, `pi` harness | **12.5/100** (raw 60.5) | 1/8 libraries — typoed the repo path, self-scoped to chalk; a penalized retry is pending |
+
+Invalid, not scored as model quality: three Gemma-4-12B runs (LM
+Studio MLX newline-flood collapse, zero commits) and the Qwen3.8-27B
+guided run (three Metal OOM server crashes, zero commits).
 
 Full tables for both Mendel tests are on the
 [Mendel page](./benchmarks/mendel.md), and the complete reports are

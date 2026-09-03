@@ -110,7 +110,21 @@ or a measured `-ngl` minus 15-20% margin; skip MTP entirely on 32 GB
 research); harness-side relaunch-without-drafter fallback; match
 drafter and main context sizes.
 
-### F. New model candidates (verify cards first; some figures are
+### F. Prompt-cache hit monitoring (config health, not scoring)
+
+A config that never hits the prompt cache re-reads the whole context
+every turn, runs far slower, and can die on the 300-min budget — our
+config's fault, not the model's. Telemetry already records
+`cache_read`; the cost table shows the cache share for API runs.
+Extend it to local backends: find what llama-server, mlx_lm.server,
+and LM Studio expose (llama-server slots/metrics, `cached_tokens` in
+responses — the LM Studio sweep already reads it), log the hit rate
+per run, and propose an alert threshold (for example: cache share
+near zero after turn 3 = misconfigured serving; fix the config before
+blaming the model). Wilder: make the worker log it live so a
+zero-cache run gets flagged in the first 10 minutes, not after 300.
+
+### G. New model candidates (verify cards first; some figures are
 secondary-source)
 
 GLM-4.7-Flash (30B-A3B MoE, MIT — same active class as Qwen3.6),
