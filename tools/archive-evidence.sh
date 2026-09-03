@@ -73,6 +73,23 @@ copy_evidence() {
         done
     done
 
+    for probe_dir in "$source"/session-*; do
+        [ -d "$probe_dir" ] || continue
+        local probe_name
+        probe_name=$(basename "$probe_dir")
+        mkdir -p "$target/$probe_name"
+        while IFS= read -r file; do
+            cp -p "$file" "$target/$probe_name/"
+            copied=$(( copied + 1 ))
+        done < <(find "$probe_dir" -name '*.jsonl' -type f)
+    done
+
+    for extra in "$source"/out-*.txt "$source"/server-*.log "$source"/*.log; do
+        [ -f "$extra" ] || continue
+        cp -p "$extra" "$target/"
+        copied=$(( copied + 1 ))
+    done
+
     for agent_dir in "$source"/.pi-agent-*; do
         [ -d "$agent_dir" ] || continue
         local name
