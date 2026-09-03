@@ -35,3 +35,4 @@ for target in [int(x) for x in os.environ["DEPTH_LIST"].split(",")]:
     if tps < 8:
         print(f"stop: below 8 tok/s at depth {cur}", flush=True)
         break
+    time.sleep(float(os.environ.get("STEP_PAUSE_S", "25")))
