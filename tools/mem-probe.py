@@ -6,12 +6,15 @@ yield to MLX, and whether forcing memory pressure first changes that.
 Two probes run back to back. Each grows an MLX allocation in steps until
 the allocation fails, records the ceiling, then frees everything.
 
-  Probe 1 finds the ceiling from the machine's current state.
-  Probe 2 finds it again, after probe 1 has already pushed the system.
+  Probe 1 runs from the machine's current state.
+  Probe 2 runs again, after probe 1 has already pushed the system.
 
-If probe 2 reaches higher, pressure moved idle pages out of the way and
-they stayed out. That is the balloon effect. If the ceilings match, the
-system yields the same amount either way and pre-warming is pointless.
+Watch WIRED at peak, not the allocation ceiling. macOS satisfies a large
+allocation whether or not it can wire the pages, so the ceiling can be
+identical while the memory behind it is completely different. Wired
+pages are never compressed and never swapped, so wired at peak is what
+a GPU actually got. A model needs wired memory; the rest is a promise
+the system can take back under pressure.
 
 Safety: MLX raises on a failed allocation, so the ceiling is found by a
 caught exception, not by an out-of-memory kill. STEP_MB and CAP_MB bound
@@ -178,17 +181,34 @@ def summarize(first, second, step_mb):
     delta = second["ceiling_mb"] - first["ceiling_mb"]
     print("  delta:           {:>+6} MB".format(delta))
 
-    if delta > step_mb:
-        print("  Pressure helped. The balloon effect is real.")
-    elif delta < -step_mb:
-        print("  Pressure hurt. The first probe left the machine worse off.")
-    else:
-        print("  No difference beyond one step. Pre-warming is pointless.")
+    if first["ceiling_mb"] == second["ceiling_mb"]:
+        print("  Same ceiling. This alone says nothing — read wired below.")
 
-    compressor = first["after"].get("Pages occupied by compressor", 0)
+    first_wired = first["at_peak"].get("Pages wired down", 0)
+    second_wired = second["at_peak"].get("Pages wired down", 0)
+    wired_delta = second_wired - first_wired
 
     print()
-    print("  compressor after probe 1 released: {} MB".format(compressor))
+    print("  probe 1 wired at peak: {:>6} MB".format(first_wired))
+    print("  probe 2 wired at peak: {:>6} MB".format(second_wired))
+    print("  delta:                 {:>+6} MB".format(wired_delta))
+
+    if wired_delta > 1024:
+        print("  Pressure helped. The same allocation got more wired backing")
+        print("  the second time, so pre-warming buys real GPU memory.")
+    elif wired_delta < -1024:
+        print("  Pressure hurt. The first probe left the machine worse off.")
+    else:
+        print("  No meaningful difference. Pre-warming is pointless.")
+
+    compressor = first["after"].get("Pages occupied by compressor", 0)
+    first_free = first["after"].get("Pages free", 0)
+    second_free = second["after"].get("Pages free", 0)
+
+    print()
+    print("  free after probe 1 released: {:>6} MB".format(first_free))
+    print("  free after probe 2 released: {:>6} MB".format(second_free))
+    print("  compressor still held:       {:>6} MB".format(compressor))
 
     if compressor > 0:
         print("  Pages stayed compressed, so pressure did move idle memory out.")

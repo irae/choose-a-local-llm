@@ -1,0 +1,48 @@
+mem-probe — 2026-09-03 16:52:55
+iogpu.wired_limit_mb = 24000
+step 512 MB, cap 30000 MB
+
+=== probe 1, from current state ===
+  before                 free   9634 MB   active   9724 MB   wired  1565 MB
+                         compressor    0 MB   inactive   5354 MB   swap     0 MB
+  holding   4096 MB
+  holding   8192 MB
+  holding  12288 MB
+  holding  16384 MB
+  holding  20480 MB
+  holding  24576 MB
+  holding  28672 MB
+  CEILING 29696 MB
+  stopped by: reached the 30000 MB cap
+  at peak                free     71 MB   active   9191 MB   wired 12489 MB
+                         compressor  957 MB   inactive   8889 MB   swap     0 MB
+  after release          free  22110 MB   active   3682 MB   wired  1564 MB
+                         compressor  912 MB   inactive   3301 MB   swap     0 MB
+
+Settling for 60 seconds before the second probe.
+
+=== probe 2, after pressure ===
+  before                 free  22129 MB   active   3663 MB   wired  1575 MB
+                         compressor  859 MB   inactive   3308 MB   swap     0 MB
+  holding   4096 MB
+  holding   8192 MB
+  holding  12288 MB
+  holding  16384 MB
+  holding  20480 MB
+  holding  24576 MB
+  holding  28672 MB
+  CEILING 29696 MB
+  stopped by: reached the 30000 MB cap
+  at peak                free     79 MB   active   2800 MB   wired 25285 MB
+                         compressor  923 MB   inactive   2661 MB   swap     0 MB
+  after release          free  25263 MB   active   1994 MB   wired  1716 MB
+                         compressor  922 MB   inactive   1775 MB   swap     0 MB
+
+=== RESULT ===
+  probe 1 ceiling:  29696 MB
+  probe 2 ceiling:  29696 MB
+  delta:               +0 MB
+  No difference beyond one step. Pre-warming is pointless.
+
+  compressor after probe 1 released: 912 MB
+  Pages stayed compressed, so pressure did move idle memory out.

@@ -152,3 +152,83 @@ automatic install, so it is not a spike source here.
 These matter for variance during a run, not for the memory they hold
 at rest. Killing them to save 89 MB is not worth it. Preventing a
 scan from starting in the middle of a two-hour run is.
+
+
+## Finding 4 — the same allocation gets half the wired memory on a dirty machine
+
+Measured 2026-09-03 16:52 with `tools/mem-probe.py`, step 512 MB, cap
+30000 MB, `iogpu.wired_limit_mb=24000`. Two identical probes back to
+back. Each grows an MLX allocation, records the peak, frees everything.
+
+| Probe | free before | allocated | WIRED at peak | free after |
+| --- | --- | --- | --- | --- |
+| 1, from current state | 9634 MB | 29696 MB | 12489 MB | 22110 MB |
+| 2, after pressure | 22129 MB | 29696 MB | 25285 MB | 25263 MB |
+
+Swap stayed at 0 throughout. Both probes reached the 30000 MB cap, so
+the allocation ceiling was never found. That number is not the finding.
+
+**The finding is the wired column. The same 29696 MB allocation got
+12489 MB wired the first time and 25285 MB the second — twice as much.**
+
+### Why this matters more than free memory
+
+macOS satisfies a large allocation whether or not it can wire the
+pages. Probe 1 succeeded. It looked like it worked. But only 12.5 GB
+of it was wired, and the rest was ordinary pageable memory that the
+system can compress or take back at any moment.
+
+A GPU workload needs wired memory. Wired pages are never compressed
+and never swapped. So an allocation that reports success while sitting
+mostly on pageable memory is a run waiting to fail.
+
+Probe 2 reached 25285 MB wired, which is the configured 24000 MB limit
+plus about 1.3 GB of kernel base. That is the real ceiling. Probe 1
+stopped at half of it, not because the limit was lower, but because
+the machine could not free app memory fast enough to wire it.
+
+### This explains the dagger-sweep OOM
+
+`benchmarks/bench7/state.md` H1 describes a sweep that started about
+three minutes after a 23 GB server was killed, with free memory pinned
+at 60-220 MB. The loader proceeded, then Metal failed with
+`kIOGPUCommandBufferCallbackErrorOutOfMemory`.
+
+That is this effect. The allocation was accepted. The wiring was not
+available. H1 called it "memory had not recovered", which is right,
+but the mechanism is sharper than that: recovery means wirable pages,
+not free pages.
+
+### What the pressure actually did
+
+Active memory fell 9724 to 3682 to 1994 MB across the two probes. The
+compressor went from 0 to about 920 MB and stayed there after both
+releases. Idle app pages were compressed and did not come back.
+
+So the balloon works. Free memory after the second release was 25263
+MB, on a 32 GB machine, with the owner's normal working set still
+logged in. This matches the owner's memory of once seeing about 24 GB
+free.
+
+### What to do with it
+
+Two options, both untested as a pre-run step:
+
+* Run a balloon before a benchmark to force the compression up front,
+  then release it and start the model on a machine that has already
+  yielded. Costs about a minute.
+* Skip the balloon and instead gate on a wired probe: ask for the
+  memory the run needs, check it wires, release, then start. Slower to
+  design, but it tests the actual precondition instead of a proxy.
+
+The second is better if the numbers hold, because it answers "will
+this run fit" rather than "does this machine look clean". Neither is
+adopted. The owner decides.
+
+### Caveat
+
+One run, two probes, one ordering. Probe 2 always follows probe 1, so
+the ordering is not controlled. A rerun after a fresh reboot, and a
+reversed pairing, would separate "pressure helps" from "the second
+probe always wins". The effect is large enough (2x) that ordering
+alone is unlikely to explain it, but it is not ruled out.
