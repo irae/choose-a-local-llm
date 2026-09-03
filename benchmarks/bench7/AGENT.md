@@ -230,6 +230,28 @@ is missing, add it per PLAN.md model-config rules before the run.
 `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi guided xhigh`
 (guided only, no blind pair).
 
+## Dagger sweeps — clear † marks while a model is hot
+
+The comparison table carries † (stale) cells: values measured under a
+retired config. Clear them between Mendel runs: when a model's Mendel
+runs finish and BEFORE you unload its weights, restart the server
+with the exact config of that model's daggered comparison row (the
+row config, not the Mendel config — they differ) and run the pending
+measurements per `docs/methodology/` (context-creep depth sweep,
+memory-ceiling, decode speeds — the fields in the row's `stale` array
+in `docs/setups/m1-max-32gb/models.json`). NOT evalplus.
+
+In this queue: Qwen3.6-35B-A3B (its row uses MTP q8 — Mendel forbids
+MTP, the sweep requires it) and Gemma-12B GGUF (its daggered row is
+llama-server MTP, not LM Studio). Qwen3.8 rows only if Block 4 runs.
+The Bonsai † row is the mlx stack — skip it unless time remains after
+everything else. Gemma-26B stays parked.
+
+Record per the record-everywhere rule, remove the cleared fields from
+the row's `stale` array, run `node tools/gen-tables.mjs`, commit.
+Mendel runs keep priority: sweeps fill the gap between a model's last
+Mendel run and the next model's first, never delay a Mendel run.
+
 ## Closing
 
 When the queue ends (or morning comes): stop everything, confirm no

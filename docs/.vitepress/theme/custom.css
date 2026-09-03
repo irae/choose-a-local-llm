@@ -1,5 +1,12 @@
-:root {
-  --vp-layout-max-width: 1920px;
+/* Wide-monitor layout: the 1920px cap applies only where the theme's
+   >=1440px navbar/sidebar math stays non-negative (viewport >= cap - 64).
+   Below that the default 1440px cap keeps the vanilla auto-fit layout;
+   a global 1920px cap collapses the sidebar and title on mid-size
+   screens. */
+@media (min-width: 1856px) {
+  :root {
+    --vp-layout-max-width: 1920px;
+  }
 }
 
 /* Mobile: tables scroll sideways instead of truncating.

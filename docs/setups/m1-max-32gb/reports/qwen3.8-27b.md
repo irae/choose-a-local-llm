@@ -47,7 +47,7 @@ mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --reasoning-effort medium --port 8081
 ```
 
-**#2 — Qwen3.8-27B, MLX, effort low.** Speed/memory copied from qwen38-mlx-medium; no depth sweep for this config yet (bench6 planning note, see benchmarks/INDEX.md).
+**#2 — Qwen3.8-27B, MLX, effort low.** Speed/memory copied from qwen38-mlx-medium; no depth sweep for this config yet.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \

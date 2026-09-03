@@ -128,15 +128,17 @@ discovery). Full rubric, scoring method, and the rest of the field
 (proprietary and other local models) live in the open-source
 [Mendel benchmark](https://github.com/irae/mendel/tree/benchmark).
 
-Current rows come from run 7 (blind prompt v1.1, guided v3.0, fresh
-base tags with the tap crash fix). Rows from older prompt versions
+Current rows use blind prompt v1.1 and guided v3.0, run from fresh
+base tags with the tap crash fix. Rows from older prompt versions
 moved to [historical](./historical.md); never compare across prompt
 versions.
 
 | model | test | config scored | score | status |
 |---|---|---|--:|---|
 | Qwen3.8-27B | blind | mlx 4-bit, effort low, `pi` harness | **67.5/100** | partial — tooling-nudge budget hit at 1/8 libraries; the mlx entry's fixed 26624-token window forced repeated premature stops (serving limit, not the model) |
-| Ternary Bonsai-27B | blind | mlx 2-bit, effort low, `pi` harness | **55/100** | partial — 300-min wall clock at 3/8 libraries, `rimraf` partial |
+| Qwen3.6-35B-A3B | blind | llama-server, thinking high, `pi` harness | **63/100** | complete — all 8 libraries; one critical runtime defect (trap A) |
+| Ternary Bonsai-27B | blind | mlx 2-bit, thinking high, `pi` harness | **55/100** | partial — 300-min wall clock at 3/8 libraries, `rimraf` partial |
+| Ternary Bonsai-27B | guided | mlx 2-bit, thinking high, `pi` harness | **59/100** | partial — 300-min wall clock at 1/8 libraries |
 | Qwen3.8-27B | guided | mlx 4-bit, effort low, `pi` harness | **34/100** | partial — three Metal OOM server crashes, tooling budget exhausted, zero commits |
 
 Full tables for both Mendel tests are on the
@@ -147,7 +149,7 @@ in the open-source
 [Mendel benchmark](https://github.com/irae/mendel/tree/benchmark).
 
 **The `mlx_lm.server` `qwen3_coder` tool-parser crash no longer blocks
-scoring.** In run 7 the crash still fired on Bonsai (per-request
+scoring.** The crash still fired on Bonsai (per-request
 JSONDecodeError on malformed tool-call arguments), but the server
 stayed up, the runner's unscored tooling nudges resumed the session,
 and the run reached the wall clock with a scored row. Earlier attempts
@@ -167,12 +169,17 @@ currently broken on this brew build.** `--spec-type draft-mtp
 llama-server backend in a broken state (every completion after that
 returns HTTP 500, even though `/health` still reports ready) —
 reproduced at both `-c 98304` and `-c 65536` with the GPU idle
-beforehand. The guided run above used the same command without the
+beforehand. The Qwen3.6 Mendel runs use the same command without the
 drafter flags, which loads and generates normally. The site's own
 `14.1/8.6 tok/s` decode figures for this config need a re-check against
 the current brew build before the next depth sweep.
 
-**Bonsai's blind low run lost most of its clock to self-inflicted
+**Both Bonsai mlx rows ran at thinking high, not the requested low.**
+The runner asked for low, but the session logs record high — the flag
+was not honored on `mlx_lm.server`. The rows are scored and labeled at
+the observed level.
+
+**Bonsai's blind run lost most of its clock to self-inflicted
 breakage.** It finished 3 of 8 libraries (uuid, xtend, urlsafe-base64)
 and part of `rimraf`, but one JSON syntax break it made in
 `mendel-transform-less/package.json` cost four commit attempts (~40
