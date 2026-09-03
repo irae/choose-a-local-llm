@@ -34,6 +34,15 @@ findings feed `../run2/` (runtime improvements).
    upstream issue. Check whether the build predates llama.cpp PR
    23485 and PR 20817.
 
+## Goal 2 — trial the tool-call rules (unscored)
+
+`results/agents-global-trial.md` holds a draft "Tool calls" section
+for `agents-global.md` and three trial designs. Pick the cheapest
+design with the owner, run it OUTSIDE the scored benchmark (never as
+a bench row, never by editing the frozen v1.0 file), and report
+whether the rules change the failure patterns. The owner decides
+adoption from your results.
+
 ## Deliverables
 
 - `state.md`: running log + handing-over section.
