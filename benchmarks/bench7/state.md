@@ -574,3 +574,22 @@ in after Block 0 before continuing.
 - Started item #12 (Bonsai-PrismML guided high) on the same server
   while scoring runs — no GPU conflict. Verified `thinking_level:
   "high"` correct. Watchdog running.
+- 04:32 local: Fable scored item #11 at 60.5/100 (`partial: false`,
+  `libraries_done: 1`). Root cause found: the model typoed the repo
+  as `irai/mendel`, got 404 on 8 fetch attempts for issue 13, gave
+  up, then ran `git log --grep=chalk`, found older chalk commits, and
+  self-scoped the whole task to chalk removal. `TASKS.md` was
+  chalk-only from its first write — fully checked, so the harness
+  never nudged (nothing looked unfinished from its view). One real
+  bug landed and was self-repaired (`styleText('bgWhite black', ...)`
+  — invalid format, threw at runtime, caught by the package's own tap
+  run and fixed in the next commit). Copied+redacted the session log,
+  added to `SESSIONS.md`, appended the row to `results.json`,
+  regenerated `report.html`. Committed and pushed to mendel benchmark
+  @207c2af. Pushed the run branch `bonsai-prism-high-issue-13` to
+  origin. Removed the worktree (kept the branch, already pushed).
+- Item #12 (Bonsai-PrismML guided high) checked: proceeding
+  correctly, unlike item #11 — full 8-library `TASKS.md` (the guided
+  prompt evidently gives it enough to avoid the blind run's
+  repo-typo/self-scoping failure), one real commit landed already
+  (`uuid` → `crypto.randomUUID()`). Still running, watching.
