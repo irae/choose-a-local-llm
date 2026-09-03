@@ -673,3 +673,24 @@ sweeps under that discipline; if they still OOM with confirmed-clean
 free memory, H1/H2 are ruled out and the machine's actual ceiling at
 `wired_limit_mb=24000` for this MTP config is the real, load-bearing
 finding.
+
+## Pending — Bonsai-PrismML blind high (item #11) needs a from-scratch retry
+
+The owner wants `bonsai-prism-high-issue-13` (scored 60.5/100,
+`libraries_done: 1`, row committed at `results.json` @207c2af)
+re-run from scratch — not corrected, a full fresh attempt. Root
+cause was the model typoing the repo as `irai/mendel`, getting 404
+on every issue-13 fetch, then self-scoping the whole task to chalk
+from `git log --grep=chalk`. No time to retry tonight; the owner
+needs the laptop.
+
+**Important scoring instruction from the owner:** if the retry
+succeeds (finds the real issue, attempts the full 8-library scope),
+its score should carry a PENALTY for needing a retry at all — do not
+just replace the row with a clean score as if the first attempt
+never happened. Flag this explicitly to whoever scores the retry
+(Fable subagent) and to the coordinator: the retry is not a free
+do-over, the first attempt's failure is part of this model/config's
+record. Exact penalty mechanism (points off, a note field, a
+`config_note` annotation, or keeping both rows) is the coordinator's
+call — not decided here, just flagged so it isn't missed.

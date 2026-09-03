@@ -253,6 +253,19 @@ is missing, add it per PLAN.md model-config rules before the run.
 `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi guided xhigh`
 (guided only, no blind pair).
 
+### Pending — Bonsai-PrismML blind high retry (owner request, 2026-09-03)
+
+`bonsai-prism-high-issue-13` (scored 60.5/100, `libraries_done: 1`)
+needs a from-scratch retry: the model typoed the repo, never found
+issue 13, and self-scoped to chalk only. Re-run
+`./run-worker.sh bonsai-prism pi blind high` fresh (new worktree,
+new branch — do not reuse the scored one). **If the retry succeeds,
+its score must carry a penalty for needing a retry at all** — this
+is an explicit owner instruction, not optional. Do not silently
+replace the first row with a clean one. Flag this to the Fable
+scorer and note it in `state.md`. See `state.md`'s "Pending —
+Bonsai-PrismML blind high" section for full detail.
+
 ## Dagger sweeps — clear † marks while a model is hot
 
 The comparison table carries † (stale) cells: values measured under a
