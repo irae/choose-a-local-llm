@@ -58,3 +58,47 @@ Open decisions for the owner:
    items. Confirm before the gate designs get written.
 
 Not started: goals 1, 2, 3.
+
+
+## Session 1 continued — after the reboot, goal 0
+
+- 16:07 owner rebooted. Set `iogpu.wired_limit_mb=24000` by hand and
+  noted it resets to 0 on every boot.
+- 16:25-16:42 four idle samples. Free memory moved across a 1284 MB
+  band with nobody touching the machine. A scheduled `XProtect` scan
+  took 1084 MB of it. Recorded as finding 3.
+- 16:51 wrote `tools/mem-probe.py`. It grows an MLX allocation to a cap
+  and records what the system wired behind it.
+- 16:52 first probe run. Same 29696 MB allocation wired 12489 MB from a
+  dirty machine and 25285 MB after pressure. Finding 4.
+- 16:56 control run from the clean state. Its first probe wired 24257
+  MB, which rules out probe ordering. Finding 5, with a candidate gate
+  formula.
+- Checklist updated: quit the LM Studio app rather than only unloading
+  the model, reset the wired limit after every reboot, and settle
+  before trusting any memory reading.
+
+### Handing over, second pass
+
+The owner's instinct about wired memory was right and it changed the
+goal. The gate should not compare free memory to an idle baseline. It
+should ask whether the memory a run needs can be wired.
+
+Open, in the order that matters:
+
+1. Test the gate formula against the models already measured. Take a
+   model with a known working footprint and a known OOM, compute
+   `min(free + 3000, wired_limit + 1300)` before each, and see if it
+   predicts which one fails. Four points on one machine is not a law.
+2. Decide the pre-run reset. A balloon before every run costs about a
+   minute and leaves the machine at about 25 GB free. A wired probe
+   sized to the run is slower to build but tests the real precondition.
+   Untested either way, and the owner picks.
+3. Redo the widget test. It is now cheap: the reboot proved the toggle
+   does not stop the extensions loading, so the only remaining question
+   is what stopping `chronod` frees. Needs the owner's approval.
+4. Goals 1, 2 and 3 are untouched.
+
+Machine state left behind: desktop widgets off, `StandardHideWidgets =
+1`. `iogpu.wired_limit_mb=24000`, which will reset on the next reboot.
+Nothing else changed. `tools/mac-quiet.sh` has never been run.
