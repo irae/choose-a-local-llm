@@ -606,3 +606,26 @@ blind high`, the owner's one granted Opus run. Recreated the worktree
   15. A future session resumes item 15 once the owner has cleared the
   usage gate; the run8 branch/worktree should be recreated fresh for
   that (per AGENT.md's ground rules), not resumed from here.
+
+**Standing rule (owner, 2026-09-02): do not spend paid-run budget on
+an attempt that cannot finish.** Both item-15 attempts above failed
+before any real work happened (an `invalid_request_error` on the
+first tool call, hit 10 times until `tooling_budget_exhausted`) — so
+neither attempt cost meaningful spend, but the risk is real: if a run
+like this had gotten further before hitting a hard account gate, the
+partial work would be stuck mid-run, unscored, and the spend wasted.
+Before starting a paid/metered item after any error, budget change, or
+long gap since the last successful run on that account, do one cheap
+sanity check first (for example, confirm the model responds to a
+trivial pi prompt outside the worker) instead of launching straight
+into a multi-hour `run-worker.sh` run. If a run does fail partway
+with commits already on its run branch, do not delete that worktree
+or branch by default — leave it and note the state here for the owner
+to decide resume vs. discard, rather than assuming a fresh restart is
+always required.
+
+## Reopened, 2026-09-02 (fourth open — item 15 retry, Opus)
+
+Owner added "extra usage" budget at claude.ai/settings/usage, clearing
+the gate that blocked both prior attempts. Retrying item 15 now in a
+fresh `run8` worktree per the note above.
