@@ -407,3 +407,26 @@ in after Block 0 before continuing.
   simply not offered by this build.
 - Stopped the Bonsai server and memwatch (Gemma-12B is a different
   serving stack, LM Studio).
+
+### Item #7 — Gemma-12B blind high (LM Studio)
+
+- 23:52 local: `lms load google/gemma-4-12b --parallel 4 --gpu max
+  -y` succeeded, verified with `lms ps` (IDLE, 6.77 GB, context
+  158464, parallel 4). Deviation: the LM Studio API server itself was
+  not running (`lms server status` → not running) even with the
+  model loaded — `lms load` does not imply the server is up. Started
+  it with `lms server start --port 1234`. Warmup request OK.
+- Started scoped memwatch. Launched
+  `./run-worker.sh google/gemma-4-12b pi blind high`. Verified
+  `thinking_level: "high"` matches the request — correct.
+- First attempt failed fast: `end_reason: bad_config` — the pi model
+  entry's `contextWindow: 262144` (the trained max) did not match the
+  server's actual loaded context (158464, per LM Studio's own
+  `/api/v0/models`, since `--parallel 4` splits the window). Per
+  AGENT.md, fixed the entry instead of bypassing the check: set
+  `contextWindow: 158464` and added the missing `maxTokens: 16384`.
+  Removed the aborted worktree/branch (no commits, nothing lost).
+  Relaunched; this time no `end_reason` at start (running normally),
+  `thinking_level: "high"` confirmed correct.
+- Server/worker liveness watchdog running (Monitor). Owner still
+  asleep, continuing unattended.
