@@ -437,3 +437,17 @@ in after Block 0 before continuing.
   server while scoring runs in parallel — no GPU conflict, scoring
   doesn't touch the GPU. Item #8 running cleanly, `thinking_level:
   "high"` confirmed. Watchdog running for item #8 too.
+- 00:52 local: Fable scored item #7 at 30.5/100 (partial). Diagnosis:
+  15 tool calls of orientation in the first 23 min, then a failed
+  exact-match `edit`, then every later turn collapsed into ~16K
+  tokens of newline characters with a stray `<|channel|>` token in
+  the thinking channel until the 16384-token output cap — a
+  generation collapse, not excessive reasoning. All 3 nudges
+  reproduced it. Copied+redacted the session log, added it to
+  `SESSIONS.md`, appended the row to `results.json`, regenerated
+  `report.html` (note: the second `generate-report.mjs` arg,
+  `docs/superpowers/issue13-model-bakeoff.html`, does not exist in
+  this worktree — ran with only the first arg). Committed and pushed
+  to mendel benchmark @e9bf680. Removed the worktree and branch (0
+  commits, nothing to keep).
+- Item #8 (Gemma-12B guided high) still running, server healthy.
