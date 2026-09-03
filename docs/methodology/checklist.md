@@ -38,18 +38,27 @@ lives in [common rules](./common-rules.md) and
    of run preparation. It does not aim at a clean machine, which does
    not exist — it aims at the SAME machine every time. Read
    [memory ceiling](./memory-ceiling.md) for why each step is here.
-   1. `tools/mac-quiet.sh off` — disables the background login items
+   1. **Set Little Snitch to "silently allow" BEFORE anything else.**
+      Its network extension keeps filtering after the app is quit and
+      cannot be unloaded by disabling the login item. With the Agent
+      not running there is nothing to show an approval prompt, so an
+      unapproved binary is denied in silence. `curl` keeps working on
+      its existing rules while `node` fails with a bare
+      `fetch failed`, which looks like a broken API key or a dead
+      network and is neither. An absent tray icon means no Agent, not
+      no filter.
+   2. `tools/mac-quiet.sh off` — disables the background login items
       listed in the owner's config. Needs the config in
       `~/.config/choose-a-local-llm/`; see `tools/README-mac-quiet.md`.
-   2. **Reboot.** A disabled item that is already running keeps
+   3. **Reboot.** A disabled item that is already running keeps
       running, so nothing in step 1 takes effect without this.
       Once per SESSION, not once per model. When the machine is doing
       nothing but benchmarks, one reboot can cover several days.
-   3. `sudo sysctl iogpu.wired_limit_mb=24000`. It resets to 0 on
+   4. `sudo sysctl iogpu.wired_limit_mb=24000`. It resets to 0 on
       every reboot, and 0 means the system default, not "no limit".
       Every ceiling depends on it, so set it before reading any memory
       number.
-   4. **Probe first, and only balloon if you need to.** Read free
+   5. **Probe first, and only balloon if you need to.** Read free
       memory. **Above 25 GB free, skip the balloon** — the machine has
       already yielded and there is nothing to gain.
       Below that, balloon with **the model under test**, never a
@@ -62,7 +71,7 @@ lives in [common rules](./common-rules.md) and
       [memory ceiling](./memory-ceiling.md). A fast walk drives the
       machine into swap and reports a ceiling no real session would
       hit.
-   5. Record the starting numbers before you begin: `Pages wired down`
+   6. Record the starting numbers before you begin: `Pages wired down`
       from `vm_stat`, and `sysctl -n vm.swapusage`. Wired is the
       counter to trust — free and active move for reasons unrelated to
       the run, and the compressor can inflate an allocation total until
@@ -81,7 +90,7 @@ lives in [common rules](./common-rules.md) and
         is judged, not timed. Record it as a deviation and carry on.
       Either way it should not be happening. Swap growth on a machine
       prepared by this sequence means something is wrong upstream.
-   6. Only now start the real benchmark.
+   7. Only now start the real benchmark.
 5. Do NOT download any model. All models are already in the cache, in
    the exact tested revision and quant. A missing model means STOP and
    ask the owner ([common rules](./common-rules.md)).
