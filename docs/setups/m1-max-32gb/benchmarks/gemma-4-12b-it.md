@@ -130,6 +130,14 @@ worth a look if this model stays in play. RSS 9.5 GB. MLX: unsupported —
 mlx-lm 0.31.3 lacks the `gemma4_unified` model type (watch for an mlx-lm
 release).
 
+Re-confirmed 2026-09-03 under the current wired limit (24000), same
+`-c 262144` command: 13.76 at 4,115, 8.76 at 8,234, 6.54 at 16,410 —
+**below the 8 tok/s floor at 16,410**, close to the earlier reading
+(the exact crossing point was not re-bracketed at ~11K this time).
+RSS 10.5 GB. No load-time OOM at the huge `-c 262144` allocation,
+unlike the same MTP-drafter pattern on Qwen3.6-35B-A3B — this model
+is small enough to fit comfortably under the current limit.
+
 ## Depth sweep via LM Studio's MLX engine (limit 25000, 2026-08-28)
 
 `lmstudio-community/gemma-4-12B-it-MLX-4bit` served CLI-only: `lms load

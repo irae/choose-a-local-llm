@@ -156,22 +156,16 @@
   },
   {
    "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
-   "maxCtx": "11k",
+   "maxCtx": "16k",
    "gatedBy": "speed",
-   "tokShallow": "14.0",
-   "tokDeep": "8",
-   "memory": "8.2 GB",
+   "tokShallow": "13.8",
+   "tokDeep": "6.5",
+   "memory": "10.5 GB",
    "evalplus": "0.909/0.872",
    "id": "gemma12-gguf-off",
    "hidden": false,
    "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-   "note": "pi id `gemma-4-12b`.",
-   "stale": [
-    "maxCtx",
-    "tokShallow",
-    "tokDeep",
-    "memory"
-   ]
+   "note": "pi id `gemma-4-12b`. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep."
   },
   {
    "config": "Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off",

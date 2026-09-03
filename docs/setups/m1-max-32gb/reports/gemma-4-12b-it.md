@@ -11,7 +11,7 @@ Backends: llama-server, LM Studio MLX engine · [GGUF on Hugging Face](https://h
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling re-measured 2026-08-30 under the compression-onset criterion.
+Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling re-measured 2026-08-30 under the compression-onset criterion; llama GGUF depth sweep re-confirmed 2026-09-03 under wired limit 24000.
 
 ## Highlights
 
@@ -24,7 +24,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling r
   ceilings" below.
 - **The best concurrency story.** Four 256K slots fit with q8_0 KV, in
   16.9 GB (llama).
-- Weak point: on llama it floors at ~11K — the depth belongs to LM
+- Weak point: on llama it floors at ~16K — the depth belongs to LM
   Studio. Quality: 0.909/0.872 thinking off; thinking on is pending, and
   its thinking fails to converge more often than the larger 26B.
 
@@ -35,7 +35,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling r
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Gemma-4-12B, MLX³ | 158k* | mem | 35.4 → 29.29 | 8.1 GB | 0.622/0.610 |
 | 2 | Gemma-4-12B, MLX³, thinking off | 158k* | mem | 35.4 → 29.29 | 8.1 GB | 0.909/0.872 |
-| 3 | Gemma-4-12B, GGUF, MTP q8, thinking off | 11k† | speed | 14.0† → 8† | 8.2 GB† | 0.909/0.872 |
+| 3 | Gemma-4-12B, GGUF, MTP q8, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.909/0.872 |
 | 4 | Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off | 4x256k† | speed | 33.7† → pending | 16.9 GB† | 0.909/0.872 |
 
 † from an earlier serving config or method; re-run pending.
@@ -60,7 +60,7 @@ Each table row above is one config; start it with its block below.
 ~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y
 ```
 
-**#3 — Gemma-4-12B, GGUF, MTP q8, thinking off.** pi id `gemma-4-12b`.
+**#3 — Gemma-4-12B, GGUF, MTP q8, thinking off.** pi id `gemma-4-12b`. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
