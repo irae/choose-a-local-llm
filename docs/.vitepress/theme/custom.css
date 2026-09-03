@@ -1,9 +1,46 @@
 :root {
   --vp-layout-max-width: 1920px;
-  /* The default 272px clips the site title over the search box.
-     VitePress gives the nav title calc(sidebar-width - 64px), so the
-     title needs sidebar-width ≥ its text width + 64px. */
-  --vp-sidebar-width: 340px;
+}
+
+/* The theme's ≥1440px navbar rules compute widths from
+   (100% - --vp-layout-max-width), which our raised 1920px cap turns
+   negative on viewports under ~1856px — the title area collapses and
+   the search box slides over it. Floor them at their <1440px values. */
+@media (min-width: 1440px) {
+  .VPNavBar.has-sidebar .title {
+    width: max(
+      var(--vp-sidebar-width),
+      calc(
+        (100% - (var(--vp-layout-max-width) - 64px)) / 2 +
+          var(--vp-sidebar-width) - 32px
+      )
+    );
+  }
+  .VPNavBar.has-sidebar .content {
+    padding-right: max(
+      32px,
+      calc((100vw - var(--vp-layout-max-width)) / 2 + 32px)
+    );
+    padding-left: max(
+      var(--vp-sidebar-width),
+      calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width))
+    );
+  }
+  .VPNavBar.has-sidebar .divider {
+    padding-left: max(
+      var(--vp-sidebar-width),
+      calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width))
+    );
+  }
+  .VPSidebar {
+    width: max(
+      var(--vp-sidebar-width),
+      calc(
+        (100% - (var(--vp-layout-max-width) - 64px)) / 2 +
+          var(--vp-sidebar-width) - 32px
+      )
+    ) !important;
+  }
 }
 
 /* Mobile: tables scroll sideways instead of truncating.
@@ -100,8 +137,12 @@
 
 @media (min-width: 1440px) {
   .VPFooter.has-sidebar {
-    padding-left: calc(
-      (100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width) + 32px
+    padding-left: max(
+      calc(var(--vp-sidebar-width) + 32px),
+      calc(
+        (100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width) +
+          32px
+      )
     );
   }
 }
