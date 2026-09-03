@@ -4,3 +4,10 @@ docs/.vitepress/cache/
 docs/.vitepress/dist/
 /.vitepress/
 docs/public/
+
+# Personal machine state. Never versioned. See AGENTS.md standing rules.
+*btm-dump*
+*disabled-gui*
+*disabled-system*
+quiet-*.conf
+quiet-state

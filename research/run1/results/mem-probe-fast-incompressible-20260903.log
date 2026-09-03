@@ -1,0 +1,25 @@
+mem-probe — 2026-09-03 17:03:43
+iogpu.wired_limit_mb = 24000
+step 512 MB, cap 36000 MB, pause 0.0 s
+FAST walk. This finds the pessimistic ceiling, not the one a
+real agent workload would reach. See the module docstring.
+
+=== probe 1, from current state ===
+  before                 free  24152 MB   active   2317 MB   wired  1562 MB
+                         compressor  940 MB   inactive   1806 MB   swap     0 MB
+  holding   4096 MB
+  holding   8192 MB
+  holding  12288 MB
+  holding  16384 MB
+  holding  20480 MB
+  holding  24576 MB
+  holding  28672 MB
+  holding  32768 MB
+  CEILING 35840 MB
+  stopped by: reached the 36000 MB cap
+  at peak                free    436 MB   active    559 MB   wired  3079 MB
+                         compressor 27270 MB   inactive    404 MB   swap  8192 MB
+  after release          free  28329 MB   active    773 MB   wired  1689 MB
+                         compressor  328 MB   inactive    392 MB   swap  1627 MB
+
+Settling for 60 seconds before the second probe.
