@@ -51,6 +51,7 @@ on the rubric.
 | kimi-k3 | pi | **93.5/100** |
 | grok-4.6 | pi | **92.5/100** |
 | gpt-5.6-sol | pi | **92/100** |
+| Claude Opus 5 | pi | **90.5/100** |
 | deepseek-v4-flash-0731 | pi | **84.5/100** |
 | gpt-5.6-luna | pi | **83.5/100** |
 | deepseek-v4-pro-0813 | pi | **79/100** |
