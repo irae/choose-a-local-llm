@@ -451,3 +451,25 @@ in after Block 0 before continuing.
   to mendel benchmark @e9bf680. Removed the worktree and branch (0
   commits, nothing to keep).
 - Item #8 (Gemma-12B guided high) still running, server healthy.
+- 01:32 local: item #8 finished, identical failure signature to item
+  #7: `model_budget_exhausted`, 0 commits, `TASKS.md` 0/8, 3 model
+  nudges. Ran `score.mjs` for the evidence pack — it crashed:
+  `TypeError: c.includes is not a function` at the session-habits
+  step. Root cause: the model emitted a malformed `bash` tool call
+  with `command: 3` (an integer, not a string) at two points in the
+  session — part of the same generation-collapse pattern. Fixed
+  `score.mjs` defensively (only push string commands into the
+  habits list, at both the `toolCall` and `tool_use` push sites) —
+  matches the checklist's "suspect the harness before the model"
+  rule; a scoring tool should tolerate garbage tool-call arguments,
+  not crash on them. Evidence pack built cleanly after the fix.
+  Dispatched a Fable subagent to score item #8 independently (not
+  copying item #7's row — instructed to read this run's own session
+  log).
+- While scoring ran, started item #9 (Gemma-12B guided low) — worth
+  trying since less requested reasoning might avoid the collapse
+  seen at high. Cleaned up item #8's worktree/branch first (0
+  commits, nothing to keep). Verified `thinking_level: "low"` matches
+  the request — **this model DOES honor low** (unlike Bonsai-PrismML
+  — a real graduated reasoning-effort model, not a binary
+  on/off one). Watchdog running.
