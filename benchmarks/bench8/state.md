@@ -553,3 +553,46 @@ pushed. One open item for a future session: the stash left in
 file and `AGENT.md`) is about to be merged into `master` again and the
 branch/worktree retired, per `AGENT.md`'s "Closing" section and this
 repo's `AGENTS.md` stop-and-sync steps.
+
+## Reopened, 2026-09-02 (third open — item 15, Opus)
+
+User added item 15 to `AGENT.md`'s queue: `anthropic/claude-opus-5 pi
+blind high`, the owner's one granted Opus run. Recreated the worktree
+(`../choose-a-local-llm-run8` on branch `run8`, fresh off `master`).
+
+- First attempt: started `run-worker.sh` with `nohup ... &` from a
+  Bash tool call. The process was killed when the tool call's shell
+  exited (no true detach in this sandbox); only 3 commits landed in
+  the run worktree (`replace xtend with Object.assign` x2, `use
+  crypto.randomUUID instead of uuid`) before it died silently, no
+  score, no "done" line. Cleaned up: killed any leftover process,
+  `git worktree remove --force`, deleted branch
+  `anthropic-claude-opus-5-high-issue-13`. Lesson: always use the
+  harness's `run_in_background` Bash mode for `run-worker.sh`, never
+  bare `nohup ... &`, in this sandbox.
+- Second attempt: relaunched with the harness's `run_in_background`
+  Bash mode. The worker exited clean (code 0, `anthropic-claude-opus-5-high:
+  done`) but the run itself failed immediately: `tooling_budget_exhausted`
+  after all 10 tooling nudges, each caused by the same API error:
+  `invalid_request_error — "Third-party apps now draw from your extra
+  usage, not your plan limits. Add more at claude.ai/settings/usage
+  and keep going."` Zero commits landed (`HEAD` stayed at the base
+  commit `2652ed6`). This is an account/billing gate on the
+  Anthropic side for pi (a third-party app) calling `claude-opus-5` —
+  not a code or prompt problem. Cleaned up: `git worktree remove
+  --force ../mendel-bench-anthropic-claude-opus-5-high`, deleted
+  branch `anthropic-claude-opus-5-high-issue-13`.
+- **Blocked.** Item 15 needs the owner to add "extra usage" budget at
+  claude.ai/settings/usage (or otherwise clear the third-party-app
+  gate) before a retry can work. Not attempting a third retry without
+  that. Raw evidence left in `../mendel-benchmark`'s gitignored
+  scratchpad: `scratchpad/benchmark/runs/anthropic-claude-opus-5-high-blind-*`
+  (meta, session, events, logs) — transient, not committed, safe to
+  discard once reviewed or once a successful retry supersedes them.
+- No Mendel Daemon or stray Mendel worktrees left running. `run8`'s
+  history (this file and `AGENT.md`) is about to be merged into
+  `master` and the branch/worktree retired, per `AGENT.md`'s "Closing"
+  section, since there is nothing further this session can do on item
+  15. A future session resumes item 15 once the owner has cleared the
+  usage gate; the run8 branch/worktree should be recreated fresh for
+  that (per AGENT.md's ground rules), not resumed from here.
