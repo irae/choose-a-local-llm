@@ -92,6 +92,9 @@ input goes into a run; the runner's nudge policy is the only voice.
 
 Score in a subagent on the Fable model (`claude-fable-5`) — scoring is
 LLM judgment; a smaller model misjudges rubric calls and cost bases.
+For a plan run with no usable probe delta, never record the metered
+token price: run `node estimate-plan-share.mjs <model>` (see PLAN.md
+"Plan accounting", fallback estimator).
 Follow `../mendel-benchmark/benchmark/PLAN.md` "How to score a run"
 exactly:
 evidence pack with `score.mjs`, your judgement only where the rubric
