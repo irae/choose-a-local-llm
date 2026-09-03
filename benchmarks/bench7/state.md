@@ -428,5 +428,12 @@ in after Block 0 before continuing.
   Removed the aborted worktree/branch (no commits, nothing lost).
   Relaunched; this time no `end_reason` at start (running normally),
   `thinking_level: "high"` confirmed correct.
-- Server/worker liveness watchdog running (Monitor). Owner still
-  asleep, continuing unattended.
+- 00:45 local: run finished, `end_reason: model_budget_exhausted`,
+  **0 commits landed**, `TASKS.md` entirely unchecked (0/8). 3 model
+  nudges, each hitting the 16384-token output budget
+  (`stop_reason: "length"`) before finishing a turn. Built the
+  evidence pack (`score.mjs`); dispatched a Fable subagent to score
+  the partial. Started item #8 (Gemma-12B guided high) on the same
+  server while scoring runs in parallel — no GPU conflict, scoring
+  doesn't touch the GPU. Item #8 running cleanly, `thinking_level:
+  "high"` confirmed. Watchdog running for item #8 too.
