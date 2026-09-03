@@ -302,5 +302,23 @@ in after Block 0 before continuing.
   checked. 15 commits (16 counting the pre-existing lockfile-hash
   base commit) in the worker worktree, all typed `chore`/`refactor`.
   Ran `score.mjs` to build the evidence pack; dispatched a Fable
-  subagent to apply the rubric per PLAN.md. Awaiting its result before
-  committing the row to `results-guided.json`.
+  subagent to apply the rubric per PLAN.md.
+- 23:41 local: Fable scored it 83/100 (blind pair was 63). Trap A
+  caught: `apply-extra-options.js` calls `.then()` on
+  `fs.promises.glob()`, which returns an AsyncIterator, not a
+  Promise — runtime TypeError on any bundle with ignore/exclude
+  globs. Minor: 5/16 commits typed `refactor` not `chore`; some
+  style drift (mixed `node:` prefix, extra test teardowns, a
+  drive-by comment). Copied+redacted the session log to
+  `benchmark/runs/qwen3.6-35b-a3b-high-guided-v3-issue-13-session.jsonl`,
+  added it to `SESSIONS.md`, appended the row to
+  `results-guided.json`, regenerated `report-guided.html`. Committed
+  and pushed to mendel benchmark @4ac03c3. Pushed the run branch
+  `qwen3.6-35b-a3b-high-guided-v3-issue-13` to origin (2026-08-31
+  policy: run branches are pushed).
+- Cleanup: killed `Mendel Daemon`, `llama-server`, the memwatch;
+  confirmed all stopped. Removed the worker worktree
+  `../mendel-bench-guided-qwen3.6-35b-a3b-high`. Machine idle.
+- Queue item #2 done. Moving to item #3 (Qwen3.6-35B-A3B dagger
+  sweep) before item #4 (Bonsai mlx dagger sweep) and item #5
+  (Bonsai-PrismML blind low).
