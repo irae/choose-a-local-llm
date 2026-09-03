@@ -473,3 +473,19 @@ in after Block 0 before continuing.
   the request — **this model DOES honor low** (unlike Bonsai-PrismML
   — a real graduated reasoning-effort model, not a binary
   on/off one). Watchdog running.
+- 01:37 local: Fable scored item #8 at 30/100 (partial, independent
+  scoring — same terminal failure as item #7, but this run collapsed
+  earlier: ~18 min in, on a failed `TASKS.md` sub-item edit, before
+  any code was touched, vs. item #7's ~23 min collapse on a real code
+  edit). Also flagged a milder, separate glitch: two `bash` calls
+  with `command: 3` that the model itself noticed and recovered from
+  ("I keep typing 3 for some reason") — distinct from the terminal
+  newline-flood collapse it never recovered from. Copied+redacted the
+  session log, added to `SESSIONS.md`, appended the row to
+  `results-guided.json`, regenerated `report-guided.html`. Committed
+  and pushed to mendel benchmark @4617fc4.
+- Item #9 (Gemma-12B guided low) checked a few minutes in: proper
+  detailed `TASKS.md` (per-library AND per-file sub-items, unlike the
+  flat lists of items #7/#8), 0 nudges so far. Looking much healthier
+  than the two high attempts — low thinking may avoid whatever
+  triggers the collapse. Still running, watching.
