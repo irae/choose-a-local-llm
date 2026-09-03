@@ -12,7 +12,35 @@ done by the coordinator (see `results/scoring-penalty.md` and
 Your single goal is the diagnosis only a Mac-local agent can do. Your
 findings feed `../run2/` (runtime improvements).
 
-## Goal — backend failure deep-dive (diagnose, do not fix)
+## Goal 0 — clean-memory gate (TOP PRIORITY: confirm, test, settle
+this before anything else)
+
+OOM runs likely shared the machine with leftover apps (a browser was
+probably open during at least one). MLX suffers most (hard wired
+ceilings); GGUF is also affected. Draft protocol to test and refine —
+the owner confirms the final version before it enters the checklist:
+
+1. Baseline: measure the machine's true idle memory after a fresh
+   reboot with login items pruned. Record it (free MB, wired MB,
+   swap 0) as THE baseline number in `results/`.
+2. Pre-run gate, before any server load or sweep:
+   - `vm_stat` free+inactive within an agreed margin of baseline;
+     swap-ins near zero over a 60 s window.
+   - No disallowed process: browsers, Electron apps, Docker, media —
+     build a denylist by scanning `ps aux` on a dirty vs clean boot.
+   - WARN and list offenders; BAIL if killing them does not restore
+     the margin. Never start a run on a dirty machine.
+3. Reset procedure when dirty: quit offenders; if memory does not
+   recover to baseline (macOS hoards compressed memory), REBOOT —
+   test whether reboot-to-baseline is faster and more reliable than
+   waiting. Evaluate trimming login items / launch agents that eat
+   memory at startup (list them for the owner first).
+4. Deliver: a `tools/` script proposal (check + warn/bail, callable
+   from the checklist and run-worker) and the measured thresholds.
+   Wire into `docs/methodology/checklist.md` only after the owner
+   confirms.
+
+## Goal 1 — backend failure deep-dive (diagnose, do not fix)
 
 1. **Memory recovery after server death** (the dagger-sweep OOM,
    hypotheses in `benchmarks/bench7/state.md`): after stopping a big

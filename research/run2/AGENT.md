@@ -52,7 +52,19 @@ restart and keep working.
 - Pin exact HF revisions for every model file — quant makers replace
   files silently.
 
-### B. Re-quantization — make better local builds
+### B. Bonsai configs — thinking OFF, and q8 KV on the fork
+
+The published choose-a-local-llm tables benchmark Bonsai mlx with
+thinking OFF (its best EvalPlus row, 0.927/0.902); the Mendel runs
+were scheduled at "low", which the stack cannot even reach. Owner
+decision (2026-09-03): try thinking OFF for Bonsai Mendel runs — it
+matches the published config and sidesteps the unreachable-low
+problem. On the prism fork, also try q8_0 KV instead of the
+calibrated q4 KV (q4 KV silently drifts output — see the research),
+at reduced context if memory demands. Fix the MLX serving config too,
+not only the fork.
+
+### C. Re-quantization — make better local builds
 
 - Re-quantize one model from original weights with
   `mlx_lm.convert -q --q-bits 4 --q-group-size 32
@@ -63,7 +75,7 @@ restart and keep working.
 - A/B K-quant vs IQ-quant decode speed on the M1 Max GPU (IQ reported
   3.5x slower on Apple GPUs).
 
-### C. Gemma-12B newline flood (LM Studio MLX)
+### D. Gemma-12B newline flood (LM Studio MLX)
 
 Upstream facts: Gemma-4 has a confirmed model-level repetition
 collapse (44-60% repro on long agent prompts, present in F16 —
@@ -85,7 +97,7 @@ mishandles stop sequences. Alternatives, ranked by the researcher:
 If nothing works, propose marking the Gemma-12B x LM Studio x agent
 combination unsupported (feeds run 1 goal 2).
 
-### D. mlx_lm.server dead thread and OOM
+### E. mlx_lm.server dead thread and OOM
 
 Upstream: confirmed open bug — /health never checks the generation
 thread (issues 1505/1390/854; unmerged PRs 1513/1514/1791).
@@ -97,7 +109,7 @@ honestly; periodic `mx.clear_cache()`; `--max-kv-size` is in the
 library but not exposed by the server (could patch); check if a newer
 mlx-lm fixes the Qwen3.8 26624 window pinning.
 
-### E. llama.cpp memory fit and the MTP drafter
+### F. llama.cpp memory fit and the MTP drafter
 
 Upstream: `--fit` exists but UMA accounting is admittedly broken;
 `-fit on` ignoring the drafter's memory was fixed by PR 23485 —
@@ -110,7 +122,7 @@ or a measured `-ngl` minus 15-20% margin; skip MTP entirely on 32 GB
 research); harness-side relaunch-without-drafter fallback; match
 drafter and main context sizes.
 
-### F. Prompt-cache hit monitoring (config health, not scoring)
+### G. Prompt-cache hit monitoring (config health, not scoring)
 
 A config that never hits the prompt cache re-reads the whole context
 every turn, runs far slower, and can die on the 300-min budget — our
@@ -124,14 +136,22 @@ near zero after turn 3 = misconfigured serving; fix the config before
 blaming the model). Wilder: make the worker log it live so a
 zero-cache run gets flagged in the first 10 minutes, not after 300.
 
-### G. New model candidates (verify cards first; some figures are
-secondary-source)
+### H. LM Studio trials, and new model candidates
 
-GLM-4.7-Flash (30B-A3B MoE, MIT — same active class as Qwen3.6),
-Meta Muse Glimmer 30B (dense, official GGUF+MLX), Poolside Laguna
-XS 2.1 (33.4B/3B MoE — check llama.cpp support), Mistral Devstral
-Small 2 (24B dense, leaves context headroom). Downloads only after
-the owner approves the shortlist.
+
+LM Studio trials for existing models: Qwen3.8-27B first (its mlx
+26624-window failure is the motivation; LM Studio auto-fit would give
+it a far larger window), then other models where the mlx path is the
+blocker — with the known LM Studio MLX-engine bugs (stop sequences,
+thinking flag, templates) watched in the session logs.
+
+New model candidates — CODING-FOCUSED only (owner cut Muse Glimmer:
+weak coding scores; re-filter every candidate for coding/agentic
+benchmarks before shortlisting): GLM-4.7-Flash (30B-A3B MoE, MIT —
+same active class as Qwen3.6), Poolside Laguna XS 2.1 (33.4B/3B MoE —
+check llama.cpp support), Mistral Devstral Small 2 (24B dense, leaves
+context headroom). Downloads only after the owner approves the
+shortlist.
 
 ## Deliverables
 
