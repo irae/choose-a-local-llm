@@ -261,3 +261,16 @@ in after Block 0 before continuing.
   and pushed to mendel benchmark @866348a.
 - Checking in with the owner before starting Block 1 (Qwen3.6-35B-A3B
   guided high) per their instruction.
+- Owner said continue the whole run overnight, unattended.
+
+### Block 1 — Qwen3.6-35B-A3B guided high (llama-server)
+
+- 22:03 local: server already up and healthy (left running idle from
+  the prior session's block 4 run 1). Started scoped memwatch
+  (`MEMWATCH_INTERVAL=20`, log `/tmp/run7-block1-memwatch.log`).
+- 22:04 local: `./run-worker.sh qwen3.6-35b-a3b pi guided high`
+  started in the background (branch
+  `qwen3.6-35b-a3b-high-guided-v3-issue-13`, worktree
+  `../mendel-bench-guided-qwen3.6-35b-a3b-high`). Verified
+  `thinking_level: "high"` in the meta file and the session events —
+  correct, matches the requested level.
