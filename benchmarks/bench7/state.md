@@ -119,3 +119,29 @@ Local repo: worktrees clean (`git worktree list` shows only the main
 worktree), no server/daemon/watcher running, mendel benchmark branch
 pushed through `97f4977`. This repo's `run7` branch is being merged
 into local `master` now (not pushed).
+
+## Coordinator recap (2026-09-03) — start here
+
+Everything above is history from earlier sessions; some of its "next
+steps" are superseded. The current truth:
+
+Done so far in run 7 (all scored, pushed, merged):
+- Block 1: Qwen3.8-27B-4bit low, blind (67.5, partial) and guided
+  (34, partial). Both hit the small mlx context window.
+- Bonsai mlx runs: blind (55, partial) and guided v3.0 (59, partial).
+  BOTH ran at high — mlx did not honor the low flag; the rows are
+  renamed/annotated. No more Bonsai runs on mlx.
+- Qwen3.6-35B-A3B blind high: scored and pushed; the coordinator
+  re-scored it on Fable (the row in `results.json` is the truth).
+
+Where to start: `AGENT.md`, "The queue" — Block 1 there is
+Qwen3.6-35B-A3B guided high; then Block 2, Bonsai on the PrismML
+fork, LOW first, with the mandatory thinking-level check at run
+start. The queue was consolidated on 2026-09-03; trust it over any
+older ordering in this file.
+
+New standing rules since the last session (all in `AGENT.md` ground
+rules and `AGENTS.md`): score in a Fable subagent only; never
+download a model; never bare `git stash` (named stashes only); first
+action is the run7 worktree (reuse `../choose-a-local-llm-run7` if it
+exists with the `run7` branch, else create it fresh).
