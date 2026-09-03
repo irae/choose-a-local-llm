@@ -1,7 +1,9 @@
 :root {
   --vp-layout-max-width: 1920px;
-  /* The default 272px clips the site title over the search box. */
-  --vp-sidebar-width: 310px;
+  /* The default 272px clips the site title over the search box.
+     VitePress gives the nav title calc(sidebar-width - 64px), so the
+     title needs sidebar-width ≥ its text width + 64px. */
+  --vp-sidebar-width: 340px;
 }
 
 /* Mobile: tables scroll sideways instead of truncating.
