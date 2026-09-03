@@ -184,3 +184,21 @@ into local `master` now (not pushed).
   per AGENT.md), loaded from local cache in <1s, no download. Warmup
   OK, memwatch running.
 - 23:12 local: blind high started (`qwen3.6-35b-a3b-high-issue-13`).
+
+- 00:29 local: block 4 run 1 (Qwen3.6-35B-A3B blind high) finished
+  clean (`end_reason: complete`, 0 nudges). 8/8 libraries done, 13
+  commits. Scored: score_total=61/100. Critical defect: trap A hit —
+  `apply-extra-options.js` destructures `glob` from `require('fs')`
+  (callback API, not `fs.promises`) then calls `.then()` on it,
+  throwing at runtime. One self-inflicted trap-C near-miss (added an
+  `fs.rmSync` exit-hook cleanup, same pattern trap C warns against)
+  was caught and removed by the model two commits later — did not
+  land in the final tree. All 13 commits typed `fix` not `chore`; one
+  `git add -A`; root `package.json` still declares `tmp`.
+- Committed+pushed to mendel benchmark. Concurrent pushes from other
+  agents landed in between; merged cleanly, pushed @142d1a8. Run
+  branch `qwen3.6-35b-a3b-high-issue-13` pushed to origin.
+- Worker worktree removed, server/watcher/daemon confirmed stopped.
+  Machine idle. Owner asked to hold — not starting the next block yet
+  (block 4 run 2, guided high, is next in queue; Gemma-12B/LM Studio
+  block 3 was requested to run after block 4).
