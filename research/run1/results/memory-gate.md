@@ -99,3 +99,56 @@ idle baseline and wait for recovery. Design options are still open.
   is in `~/.config/choose-a-local-llm/`.
 - The widget test must be redone from a confirmed start state, with a
   reboot between arms.
+
+## Finding 3 — the post-reboot idle baseline is a band, not a number
+
+Measured 2026-09-03 after a clean reboot, four samples over 34 minutes.
+No user activity between samples. Mail was opened once to sign in, then
+quit before the first sample.
+
+| Sample | uptime | free | active | load 1-min |
+| --- | --- | --- | --- | --- |
+| 1 | 18 min | 13070 MB | 8508 MB | 17.13 |
+| 2 | 20 min | 13699 MB | 8159 MB | 3.24 |
+| 3 | 26 min | 13499 MB | 8267 MB | 2.71 |
+| 4 | 34 min | 12415 MB | 8814 MB | 2.55 |
+
+Swap stayed at 0. Compressor stayed at 0 the whole time.
+
+Free memory moved across a 1284 MB band with the machine idle. The
+gate cannot compare against a single idle number, because the machine
+does not have one.
+
+Sample 4 shows why. Free memory fell 1084 MB from sample 3 while
+nothing was asked of the machine. `XProtectRemediatorSheepSwap` had
+started, holding 116 MB and pulling more into active. This is a
+scheduled malware scan. It fires on its own timetable.
+
+Spotlight had stopped shrinking by sample 4 (`mds_stores` 345 MB,
+steady from 344), so the reindex storm was over. The 1 GB swing is a
+second, separate event.
+
+### What this means for the gate
+
+A threshold on free memory alone will fail intermittently. It will
+pass a run that starts between scans and fail the same run a minute
+later, and neither result says anything about the run.
+
+The gate needs a settle criterion, not only a level: sample free
+memory more than once, and require the samples to agree within a
+margin before starting. A single reading is not evidence.
+
+### Background daemons that can spike mid-run
+
+All present on this machine at idle: `backupd` (Time Machine),
+`photoanalysisd` and `mediaanalysisd` (Photos analysis), `bird` and
+`cloudd` (iCloud sync), `mds_stores` (Spotlight), `suggestd` (Siri
+suggestions), `maild` and `icloudmailagent` (Mail, which stay resident
+after the app quits), `XProtect` (malware scan), `bzserv` (backup).
+
+macOS software update is already set to no automatic download and no
+automatic install, so it is not a spike source here.
+
+These matter for variance during a run, not for the memory they hold
+at rest. Killing them to save 89 MB is not worth it. Preventing a
+scan from starting in the middle of a two-hour run is.
