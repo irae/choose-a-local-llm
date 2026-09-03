@@ -106,7 +106,10 @@ speed-floored, not memory-gated, so the fast 2026-08-28 sweep still applies.
 | Gemma-12B llama (q8, MTP) | 14.0 | | | | | speed — under 8 tok/s at ~11K | pending |
 | **Gemma-12B MLX (LM Studio engine, CLI)** | 36.7 | 36.9 | 34.8 | 30.25 (49K) | 29.29 (65K) | mem — compression onset 65-74K, 29.29 tok/s at 65K² | pending |
 
-Cells are blank past a config's cap. *8K value.
+Cells are blank past a config's cap.
+
+\*8K value.
+
 ² Compression/swap onset between 65K and 74K used tokens (last clean:
 65,094 @ 29.29 tok/s). Context length cannot be pinned; LM Studio
 auto-fits to 158,464 (loader estimate, trained max 262,144). Served
