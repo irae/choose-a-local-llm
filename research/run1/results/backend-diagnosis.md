@@ -117,3 +117,46 @@ degrades gracefully instead of failing, which is the fix if it does.
 
 Not run here. It is a context ramp, which is a measurement that belongs
 in a benchmark kit rather than a research aside.
+
+
+## Goal 1 item 3 — the Qwen3.8 26624 window is our config, not the library
+
+Installed: **mlx-lm 0.31.3** (homebrew,
+`/opt/homebrew/Cellar/mlx-lm/0.31.3_2`), mlx 0.32.1.
+
+`mlx_lm.server` has **no context-window cap**. Reading its `server.py`
+(1904 lines) there is no `max_context`, no window enforcement, no
+prompt truncation against a declared limit. The server generates until
+memory or `max_tokens` stops it.
+
+So the 26624 comes from us. It is set in pi's own model entry:
+
+    "id": "mlx-community/Qwen3.8-27B-4bit",
+    "contextWindow": 26624,
+    "name": "Qwen3.8 27B (mlx_lm.server, 1x26K)",
+    "description": "... ceiling ~29K at iogpu 25000 ..."
+
+pi compacts against `contextWindow`, so 26624 decides when the harness
+compacts and has nothing to do with what the server would serve.
+
+**It is also a plausible number.** The entry's own description records
+a measured ceiling of ~29K at `iogpu.wired_limit_mb=25000`, and 26624
+sits below that with some margin. Nothing to fix. What was missing is
+the note saying where the number came from, which is now here.
+
+Two consequences worth carrying:
+
+- The wired limit is 24000 now, not the 25000 the ceiling was measured
+  at. The ~29K figure is from a more generous limit, so 26624 may no
+  longer sit 10% below the true ceiling. Re-probing the ceiling at 24000
+  would settle it.
+- bench7 recorded three premature length stops at 1 output token with a
+  16384 budget while prompt tokens were ~20318. That is 20318 + 16384 =
+  36702 against a declared 26624. The budget cannot fit, and the harness
+  is the only thing that knows the limit. This is a config arithmetic
+  problem, not a model failure: `maxTokens` 16384 and `contextWindow`
+  26624 are incompatible once a prompt passes ~10K.
+
+Not checked here: the upstream dead-thread issues and unmerged PRs named
+in the runbook. That needs the issue tracker, and the version to compare
+against is 0.31.3.

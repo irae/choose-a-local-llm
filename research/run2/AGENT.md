@@ -225,10 +225,26 @@ loop? Two layers are open: the sampler, and the harness.
 known negative and look wider:
 
 - `repeat_penalty` and `repeat_last_n` — llama.cpp only, and already
-  reported not to help the Gemma case. Confirm the scope: does
-  `mlx_lm.server` expose anything equivalent, or is this genuinely
-  llama-only? That gap would itself be a finding, because it would mean
-  MLX-served models have no sampler defence at all.
+  reported not to help the Gemma case.
+- **ANSWERED 2026-09-03 by run 1: `mlx_lm.server` has the penalties
+  too, and they are per-request.** Reading `server.py` in mlx-lm
+  0.31.3, the request body accepts `repetition_penalty`,
+  `presence_penalty`, `frequency_penalty`, each with its own
+  `*_context_size` window, plus `logit_bias`. **All three penalties
+  default to 0.0, which is off**, and `repetition_context_size`
+  defaults to 20 tokens.
+  Three things follow. MLX-served models are not defenceless, so that
+  gap does not exist. Nothing is currently defending them either, since
+  the defaults are off. And because the values are read from the
+  request body rather than server flags, a harness can set them per
+  request without restarting a server mid-run — which was the practical
+  blocker this item worried about.
+  What is still unknown: whether they work. `repeat_penalty` is already
+  a known negative against Gemma-4's collapse on llama.cpp, and a flat
+  token penalty is a poor match for a repeated multi-token tool call.
+  `repetition_context_size` of 20 tokens is far shorter than one
+  `bash` call, so the default window could not see a repeat even if the
+  penalty were on. Test with a window sized to several calls.
 - `frequency_penalty` and `presence_penalty` — these ride the
   OpenAI-compatible API, so they may reach BOTH backends. Check whether
   llama-server and `mlx_lm.server` honour them or silently drop them.
