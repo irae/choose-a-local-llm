@@ -562,3 +562,15 @@ in after Block 0 before continuing.
   `thinking_level: "high"` matches the request — correct (this is a
   high run, not a low one, so the earlier structural low-thinking gap
   doesn't apply here). Watchdog running.
+- 04:29 local: run finished, `end_reason: complete`, 0 nudges — but
+  **only 1 of 8 libraries done** (chalk; 2 real commits). Evidence
+  pack confirms 22 stale requires, 17 stale package.json entries, and
+  `TASKS.md` shows ONLY the chalk task, fully checked, with no
+  mention of the other 7 libraries at all — unusual, since the
+  harness's own `end_reason` says the run ended normally, not on a
+  budget cap. Built the evidence pack; dispatched a Fable subagent to
+  investigate (whether TASKS.md was narrowed mid-run or always scoped
+  this way) and score.
+- Started item #12 (Bonsai-PrismML guided high) on the same server
+  while scoring runs — no GPU conflict. Verified `thinking_level:
+  "high"` correct. Watchdog running.
