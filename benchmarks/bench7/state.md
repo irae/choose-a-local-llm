@@ -240,3 +240,24 @@ Master's `AGENT.md` was consolidated 2026-09-03 with a new Block 0
 Merged master into `run7` to pick up the queue and standing rules;
 this session starts at Block 0 per the owner's instruction to check
 in after Block 0 before continuing.
+
+- 22:01 local: Step 1 machine check: all worktrees, tags, and
+  `iogpu.wired_limit_mb` (24000) already match the desired state. No
+  stray processes except one `llama-server` for `qwen3.6-35b-a3b`,
+  idle (a leftover from the prior session's block 4 run 1) — left
+  running since it is the exact model Block 1 needs next.
+- 22:01 local: Block 0 done. Pulled `origin/benchmark` (already
+  current). Found the missing qwen3.6-35b-a3b blind-high session log
+  in this Mac's `scratchpad/benchmark/runs/`
+  (`qwen3.6-35b-a3b-high-blind-session.jsonl`, session UUID
+  `01a06462-b2b1-71c8-8ab4-761271e5e838`, no home-path leaks). Copied
+  it to `benchmark/runs/qwen3.6-35b-a3b-high-issue-13-session.jsonl`,
+  added a row to `runs/SESSIONS.md`. No meta file exists in the
+  committed convention for pi runs (checked `SESSIONS.md` and
+  existing rows — only session `.jsonl` files are committed; metas
+  stay in `scratchpad/`, which is gitignored). Swept for other
+  local-only artifacts: none found (`git status` clean, no commits
+  ahead of `origin/benchmark`, no unpushed run branches). Committed
+  and pushed to mendel benchmark @866348a.
+- Checking in with the owner before starting Block 1 (Qwen3.6-35B-A3B
+  guided high) per their instruction.
