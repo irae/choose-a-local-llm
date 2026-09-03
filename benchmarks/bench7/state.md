@@ -537,3 +537,28 @@ in after Block 0 before continuing.
   @d3c6308.
 - Stopped the server and memwatch. GPU idle. Moving to item #11
   (Bonsai-PrismML blind high, PrismML fork).
+
+### Item #11 — Bonsai-PrismML blind high
+
+- `/tmp` was wiped since item #5's check (session boundary or a
+  system reboot/cleanup) — the K-cache mean-centering bias file
+  (`/tmp/Ternary-Bonsai-27B-kv-bias.gguf`) was gone, so the server
+  failed at load (`failed to load K-cache mean-centering bias file`).
+  Regenerated it per the report's note, using the vendor's
+  `~/prism-llama/Bonsai-demo/scripts/make_kv_bias.sh`: the script
+  expects the model and its own `llama-kv-mean-center`/`llama-server`
+  binaries inside its own directory layout
+  (`models/ternary-gguf/27B/`, `bin/mac/`), not the HF cache path or
+  `~/prism-llama/` directly. Rather than downloading anything,
+  symlinked the already-cached HF GGUF and the existing
+  `~/prism-llama/llama-kv-mean-center` /`llama-server` binaries into
+  the expected locations — no download happened. Ran the script with
+  its default built-in synthetic corpus (matches how the original
+  bias file was made). Copied the regenerated bias to
+  `/tmp/Ternary-Bonsai-27B-kv-bias.gguf`.
+- Server loaded and warmed up cleanly with the regenerated bias file.
+  Started scoped memwatch, launched
+  `./run-worker.sh bonsai-prism pi blind high`. Verified
+  `thinking_level: "high"` matches the request — correct (this is a
+  high run, not a low one, so the earlier structural low-thinking gap
+  doesn't apply here). Watchdog running.
