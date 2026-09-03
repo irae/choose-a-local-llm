@@ -4,6 +4,29 @@ Planned 2026-09-01. Mendel re-runs on the Mac: fresh blind v1.1 and
 guided v3.0 rows for all local models through `run-pi-rpc.mjs`.
 Runbook: `AGENT.md`. Note deviations here as they happen.
 
+## Reporting format the owner wants (2026-09-02)
+
+During an unattended overnight run, do not report the full run
+status on every heartbeat tick — only when something changed
+(finished, crashed, deviated). But when the owner asks for a status
+check, or when writing the wake-up report for the next session, use
+this shape:
+
+- `TASKS.md` top-level count: done vs. total (e.g. "6 of 8 done").
+- `TASKS.md` sub-task count for the finished top-level items (e.g.
+  "21 of 21 sub-tasks complete").
+- The current top-level item in progress (infer from the first
+  unchecked `TASKS.md` line plus the latest event).
+- Elapsed time: run start timestamp vs. now, in `Xh Ym` form.
+
+Read `TASKS.md` from the run's worker worktree
+(`../mendel-bench-<guided->-<model>-<thinking>/TASKS.md`), and the
+`start` field plus the last line of
+`scratchpad/benchmark/runs/<slug>-events.jsonl` for elapsed time.
+
+Any future coordinator/planning agent for a Mendel run: use this
+report shape when summarizing a run's progress.
+
 ## Run log
 
 ### Block 1 — Qwen3.8-27B-4bit, effort low

@@ -151,15 +151,38 @@ coordinator does it.
 
 ## The queue — priority order, do not reorder
 
-Consolidated 2026-09-03 after the owner's newer decisions. Done so
-far: Block 1 (both Qwen3.8 low runs, partial), the Bonsai mlx runs
-(kept as high — the low flag was not honored), Qwen3.6-35B-A3B blind
-high (re-scored on Fable; the row in `results.json` is the truth). A
-fully scored-and-pushed prefix is
-the goal; the tail can wait for another night.
+Consolidated 2026-09-03 after the owner's newer decisions, then
+reordered by the owner on 2026-09-02 evening to interleave the
+dagger sweeps: the Bonsai mlx dagger sweep now runs third (right
+after the Qwen3.6 dagger sweep, before any Bonsai-PrismML Mendel
+run), and the two Bonsai-PrismML high runs move to after the Gemma
+dagger sweep. Done so far: Block 1 (both Qwen3.8 low runs, partial),
+the Bonsai mlx runs (kept as high — the low flag was not honored),
+Qwen3.6-35B-A3B blind high (re-scored on Fable; the row in
+`results.json` is the truth). A fully scored-and-pushed prefix is the
+goal; the tail can wait for another night.
 
 Scoring reminder: score in a Fable subagent (`claude-fable-5`), never
 on a smaller model.
+
+Numbered order (supersedes the block grouping below where they
+conflict):
+
+1. Block 0 — push everything missing (see below).
+2. Qwen3.6-35B-A3B — guided high — Mendel run (Block 1).
+3. Qwen3.6-35B-A3B — dagger sweep (see "Dagger sweeps" below).
+4. Bonsai — dagger sweep, mlx stack (see "Dagger sweeps" below).
+5. Bonsai-PrismML — blind low — Mendel run (Block 2, item 1).
+6. Bonsai-PrismML — guided low — Mendel run (Block 2, item 2).
+7. Gemma-12B — blind high — Mendel run (Block 3, item 1).
+8. Gemma-12B — guided high — Mendel run (Block 3, item 2).
+9. Gemma-12B — guided low — Mendel run (Block 3, item 3).
+10. Gemma-12B — dagger sweep (see "Dagger sweeps" below).
+11. Bonsai-PrismML — blind high — Mendel run (Block 2, item 3).
+12. Bonsai-PrismML — guided high — Mendel run (Block 2, item 4).
+13. Qwen3.8-27B-4bit — guided xhigh — Mendel run, only if time
+    remains (Block 4).
+14. Qwen3.8-27B-4bit — dagger sweep, only if item 13 ran.
 
 ### Block 0 — push everything that is missing, FIRST
 
