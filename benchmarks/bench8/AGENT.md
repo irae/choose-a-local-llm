@@ -31,6 +31,10 @@ wired limit. The models are remote APIs that pi is already logged into
   stash list is shared and parallel agents clobber each other. Prefer
   a WIP commit on your run branch. If a stash is unavoidable: `git
   stash push -m "run8: <what>"` and pop by name only.
+- Out of credits is a PAUSE, never a teardown. On a billing/quota/
+  credit error: keep the run session and worktree alive, record the
+  time and last event, escalate to the owner, wait, and resume the
+  same run after the top-up. Only the owner declares such a run lost.
 - Work sits in two repos, and the main worktree of each stays with the
   coordinator — never work in it. Benchmark artifacts, scores,
   reports, run branches: the `../mendel-benchmark` worktree (branch

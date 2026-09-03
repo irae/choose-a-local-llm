@@ -122,6 +122,13 @@ Benchmark work:
   keeps only the branches. Never reuse an old worktree — gitignored
   artifacts stay behind in it. The merge of a run branch into `master`
   happens from the master worktree only (see the merge rule above).
+- **Out of credits is a pause, never a teardown.** When a run hits a
+  billing, quota, or credit-exhaustion error: keep everything alive —
+  the server, the worktree, the session. Record the time and the last
+  event, tell the owner at once (this is the one situation where you
+  interrupt with an escalation), and wait. Resume the SAME run when
+  credits return. Only the owner can declare a credit-interrupted run
+  lost. Tearing down throws away the tokens already spent.
 - **Scoring runs on Fable.** Scoring a benchmark run is LLM judgment
   (rubric calls, defect severity, cost-basis decisions). Do it in a
   subagent on the Fable model (`claude-fable-5`), never on a smaller

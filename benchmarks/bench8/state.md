@@ -606,3 +606,11 @@ blind high`, the owner's one granted Opus run. Recreated the worktree
   15. A future session resumes item 15 once the owner has cleared the
   usage gate; the run8 branch/worktree should be recreated fresh for
   that (per AGENT.md's ground rules), not resumed from here.
+
+## Owner note (2026-09-03)
+
+The claude-opus-5 blind run (item 15) stopped mid-run on credit
+exhaustion. The plan is topped off. New standing rule (AGENTS.md):
+out of credits is a pause, never a teardown — escalate and resume the
+same run. Check whether the interrupted Opus session can resume; if
+not, the retry counts as the run's one retry, not a new failure.

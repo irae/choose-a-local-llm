@@ -110,6 +110,9 @@ list`, and `ps aux | grep -iE 'mendel|mlx|llama'`, and record in
 - After EVERY run: stop the server, then `pkill -f "Mendel Daemon"`
   (never mid-run). Clean the worktree per PLAN.md "Cleanup"; keep the
   branch.
+- Out of credits (any metered API involved) is a PAUSE, never a
+  teardown: keep everything alive, escalate to the owner, resume the
+  same run after the top-up.
 - Never run Gemma-4-26B-A4B. It is parked.
 - Score in a subagent on the Fable model (`claude-fable-5`) — scoring
   is LLM judgment; a smaller model misjudges rubric calls and cost
@@ -158,7 +161,25 @@ the goal; the tail can wait for another night.
 Scoring reminder: score in a Fable subagent (`claude-fable-5`), never
 on a smaller model.
 
-### Block 1 — Qwen3.6-35B-A3B guided high (llama-server) — NEXT
+### Block 0 — push everything that is missing, FIRST
+
+Before any model run: get every artifact of already-scored runs off
+this machine and onto the correct branches, so the coordinator can
+re-score while long runs are in flight.
+
+1. `git -C ../mendel-benchmark pull origin benchmark` (the
+   coordinator re-scored Qwen3.6 blind high on Fable; do not redo it).
+2. Copy the Qwen3.6-35B-A3B blind-high session log and meta file into
+   `../mendel-benchmark/benchmark/runs/` and list them in SESSIONS.md
+   per PLAN.md — the re-score found neither committed.
+3. Sweep for anything else local-only: unpushed commits in
+   `../mendel-benchmark` or on run branches (`git status`, `git log
+   origin/benchmark..`), scored artifacts still only under
+   `scratchpad/`. Commit with `chore(benchmark)` and push the
+   `benchmark` branch.
+4. Only then start Block 1.
+
+### Block 1 — Qwen3.6-35B-A3B guided high (llama-server)
 
 The server for this model is already proven; finish its pair first.
 Serve with the exact config from its report page
