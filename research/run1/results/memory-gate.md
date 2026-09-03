@@ -225,10 +225,67 @@ The second is better if the numbers hold, because it answers "will
 this run fit" rather than "does this machine look clean". Neither is
 adopted. The owner decides.
 
-### Caveat
+### Caveat, since resolved
 
 One run, two probes, one ordering. Probe 2 always follows probe 1, so
-the ordering is not controlled. A rerun after a fresh reboot, and a
-reversed pairing, would separate "pressure helps" from "the second
-probe always wins". The effect is large enough (2x) that ordering
-alone is unlikely to explain it, but it is not ruled out.
+the ordering was not controlled. Finding 5 is the control run that
+resolves it: ordering is ruled out.
+
+
+## Finding 5 — control run: it is the state, not the ordering
+
+Finding 4 left one hole. Probe 2 always followed probe 1, so "pressure
+helps" and "the second probe always wins" were not separated.
+
+Re-ran the same script at 16:56, immediately after the first run, with
+the machine still in the post-pressure state. If ordering were the
+cause, this run's probe 1 should again reach only about half. It did
+not.
+
+Every probe run so far, ordered by how much free memory it started
+with:
+
+| Run and probe | free before | WIRED at peak |
+| --- | --- | --- |
+| run 1, probe 1 | 9634 MB | 12489 MB |
+| run 1, probe 2 | 22129 MB | 25285 MB |
+| run 2, probe 1 | 23151 MB | 24257 MB |
+| run 2, probe 2 | 25027 MB | 25295 MB |
+
+Run 2's probe 1 is a first probe and it wired 24257 MB. The ordering
+hypothesis is dead. Starting state is what decides how much of an
+allocation gets wired.
+
+### A usable rule falls out of this
+
+Wired at peak tracks free memory before, plus about 3 GB, until it
+saturates at the configured limit:
+
+* 9634 free gave 12489 wired, about 2.9 GB more than free
+* 22129 free gave 25285 wired, about 3.2 GB more, at the ceiling
+* 23151 free gave 24257 wired, at the ceiling
+* 25027 free gave 25295 wired, at the ceiling
+
+The extra 3 GB is what macOS will evict and compress on demand. Above
+that it cannot keep up with the allocation.
+
+So a pre-run gate can be arithmetic instead of a guess:
+
+    wirable ≈ min(free + 3000 MB, iogpu.wired_limit_mb + 1300 MB)
+
+A run needing more wired memory than that will be accepted by the
+loader and then fail inside Metal. This is testable against the models
+already measured, and it should be tested before it is trusted — four
+data points on one machine is not a law.
+
+### Two consequences for the checklist
+
+The 3 GB headroom is small. Free memory on this machine moves by more
+than 1 GB on its own (finding 3), which is a third of the entire
+eviction allowance. A run started at the wrong moment loses a third of
+its margin to a malware scan.
+
+The compressor held about 900 MB across every probe and never released
+it. Nothing ever swapped. The compressed pages are idle app memory that
+the owner is not using, and they stay compressed, so the balloon effect
+persists rather than decaying.

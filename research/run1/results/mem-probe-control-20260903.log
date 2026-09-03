@@ -1,0 +1,56 @@
+mem-probe — 2026-09-03 16:56:16
+iogpu.wired_limit_mb = 24000
+step 512 MB, cap 30000 MB
+
+=== probe 1, from current state ===
+  before                 free  23151 MB   active   2863 MB   wired  1576 MB
+                         compressor  845 MB   inactive   1924 MB   swap     0 MB
+  holding   4096 MB
+  holding   8192 MB
+  holding  12288 MB
+  holding  16384 MB
+  holding  20480 MB
+  holding  24576 MB
+  holding  28672 MB
+  CEILING 29696 MB
+  stopped by: reached the 30000 MB cap
+  at peak                free     78 MB   active   3311 MB   wired 24257 MB
+                         compressor  936 MB   inactive   3284 MB   swap     0 MB
+  after release          free  25360 MB   active   1946 MB   wired  1725 MB
+                         compressor  899 MB   inactive   1688 MB   swap     0 MB
+
+Settling for 60 seconds before the second probe.
+
+=== probe 2, after pressure ===
+  before                 free  25027 MB   active   2221 MB   wired  1574 MB
+                         compressor  836 MB   inactive   1835 MB   swap     0 MB
+  holding   4096 MB
+  holding   8192 MB
+  holding  12288 MB
+  holding  16384 MB
+  holding  20480 MB
+  holding  24576 MB
+  holding  28672 MB
+  CEILING 29696 MB
+  stopped by: reached the 30000 MB cap
+  at peak                free     84 MB   active   2797 MB   wired 25295 MB
+                         compressor  926 MB   inactive   2775 MB   swap     0 MB
+  after release          free  25521 MB   active   1861 MB   wired  1728 MB
+                         compressor  924 MB   inactive   1823 MB   swap     0 MB
+
+=== RESULT ===
+  probe 1 ceiling:  29696 MB
+  probe 2 ceiling:  29696 MB
+  delta:               +0 MB
+  Same ceiling. This alone says nothing — read wired below.
+
+  probe 1 wired at peak:  24257 MB
+  probe 2 wired at peak:  25295 MB
+  delta:                  +1038 MB
+  Pressure helped. The same allocation got more wired backing
+  the second time, so pre-warming buys real GPU memory.
+
+  free after probe 1 released:  25360 MB
+  free after probe 2 released:  25521 MB
+  compressor still held:          899 MB
+  Pages stayed compressed, so pressure did move idle memory out.
