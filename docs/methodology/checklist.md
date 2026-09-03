@@ -29,8 +29,28 @@ lives in [common rules](./common-rules.md) and
    'stash^{/run<N>}'`) — never `stash@{0}`.
 3. Check the GPU is free: `pgrep -fl "llama-server|mlx_lm"` and
    `~/.cache/lm-studio/bin/lms ps`. Stop leftovers.
+   **Unloading the model is not enough.** Quit the LM Studio app too
+   (`osascript -e 'quit app "LM Studio"'`), and confirm the menu bar
+   item is gone. The app keeps its MLX runtime host alive after `lms
+   unload`, so a leftover app puts an MLX process on the GPU during a
+   run you believe is pure llama.cpp.
 4. Check `sysctl iogpu.wired_limit_mb` is the documented limit (24000).
-5. Close background apps.
+   **It resets to 0 on every reboot**, and 0 means the system default,
+   not "no limit". Set it before you read any memory number, because
+   the ceiling you measure depends on it:
+   `sudo sysctl iogpu.wired_limit_mb=24000`.
+5. Close background apps, then check the machine has settled. Do not
+   trust one reading of free memory — it moves by more than a gigabyte
+   on an idle machine while scheduled work runs. Sample it more than
+   once and require the samples to agree. Read `Pages wired down` as
+   well: wired memory is never compressed and never swapped, so it is
+   the counter that tracks a GPU allocation honestly, while free and
+   active move for reasons that have nothing to do with the run.
+   Background work that can start on its own timetable and spike a run:
+   Time Machine (`backupd`), Spotlight (`mds_stores`), Photos analysis
+   (`photoanalysisd`, `mediaanalysisd`), iCloud sync (`bird`, `cloudd`),
+   the malware scan (`XProtect`), Mail (`maild`, `icloudmailagent` —
+   these stay resident after the app quits), and any backup agent.
 6. Do NOT download any model. All models are already in the cache, in
    the exact tested revision and quant. A missing model means STOP and
    ask the owner ([common rules](./common-rules.md)).
