@@ -163,3 +163,36 @@ Machine state: desktop widgets off. `iogpu.wired_limit_mb=24000`, which
 resets on the next reboot. 863 MB of swap in use from the probe, which
 will clear on its own or on reboot. `tools/mac-quiet.sh` has never been
 run. Nothing else changed.
+
+
+## Session 1, fourth pass — corrections applied, evidence given a home
+
+Owner rulings applied.
+
+- The two compaction corrections are DONE, not prepared. Applied to the
+  mendel repo, report regenerated, rebased over four concurrent commits
+  and pushed (`ce3a693..2cdb7ba`). The diff is two lines. First attempt
+  reformatted both files because `json.dump` escapes non-ASCII by
+  default; reverted and redone with `ensure_ascii=False`.
+- Session logs now have a home outside any gitignored scratch directory:
+  `tools/archive-evidence.sh`, storing under
+  `~/.local/share/choose-a-local-llm/evidence/`. Archived what survives
+  of Mendel run 7: 76 files of run output, plus 3 pi transcripts. Only
+  three `.pi-agent-*` directories still exist, which bounds the loss.
+- NOT the cache directory. A cache is defined as safe to delete and this
+  evidence is not; the XDG category for user data that must persist is
+  the data directory. Keep `~/.cache/choose-a-local-llm/` for things
+  that can be rebuilt.
+- `benchmarks/PLANNING.md` step 3 is new and carries three requirements
+  into every future run kit: log context at each compaction cycle so
+  `peak_context` can be recomputed rather than trusted, archive evidence
+  before the run closes, and do not count a split turn as a compaction.
+
+### For the planner to review
+
+`peak_context` remains unproven for every existing row. The audit could
+only show it is CONSISTENT with being a maximum, because the session log
+records that a compaction happened and not the context size at each one.
+PLANNING.md now asks new runs to log it. Someone should decide whether
+the existing rows carry a caveat, or whether the claim is dropped until
+a run produces the evidence.

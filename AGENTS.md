@@ -78,6 +78,13 @@ Benchmark work:
   login items off before a run and back on after. The script ships with
   no list; the README says how to build one. Read the README before you
   disable anything on the owner's Mac.
+- `tools/archive-evidence.sh` — copy a run's session logs somewhere they
+  survive. Run it before a run's worktree is removed. Evidence goes to
+  `~/.local/share/choose-a-local-llm/evidence/`, not a cache directory,
+  because losing it destroys the only proof behind a published number.
+- `tools/mem-probe.py` — measure what the machine will wire for an MLX
+  allocation. Investigation only; it is not part of run preparation.
+  Read `Pages wired down`, never the allocation total.
 - `HANDOFF.md` — the owner's working context for the next main-thread
   agent; read it first when starting a session. Not committed.
 
@@ -167,6 +174,12 @@ Benchmark work:
 - **Write prose in ASD-STE100 Simplified Technical English.** Short
   sentences, active voice, one idea per sentence.
 - **Do not write code comments** unless the owner asks for them.
+- **Three places for machine state, and they are not interchangeable.**
+  `~/.config/choose-a-local-llm/` holds configuration the owner edits.
+  `~/.local/share/choose-a-local-llm/` holds evidence that must survive,
+  because a cache is by definition safe to delete and a session log
+  behind a published measurement is not. `~/.cache/choose-a-local-llm/`
+  is for things that can be rebuilt. When in doubt it is not a cache.
 - **Never version the owner's machine.** This repo is public work about
   a method. A list of the owner's login items, a BTM dump, a process
   list, or any other inventory of their apps is personal data and does
