@@ -1,45 +1,11 @@
-:root {
-  --vp-layout-max-width: 1920px;
-}
-
-/* The theme's ≥1440px navbar rules compute widths from
-   (100% - --vp-layout-max-width), which our raised 1920px cap turns
-   negative on viewports under ~1856px — the title area collapses and
-   the search box slides over it. Floor them at their <1440px values. */
-@media (min-width: 1440px) {
-  .VPNavBar.has-sidebar .title {
-    width: max(
-      var(--vp-sidebar-width),
-      calc(
-        (100% - (var(--vp-layout-max-width) - 64px)) / 2 +
-          var(--vp-sidebar-width) - 32px
-      )
-    );
-  }
-  .VPNavBar.has-sidebar .content {
-    padding-right: max(
-      32px,
-      calc((100vw - var(--vp-layout-max-width)) / 2 + 32px)
-    );
-    padding-left: max(
-      var(--vp-sidebar-width),
-      calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width))
-    );
-  }
-  .VPNavBar.has-sidebar .divider {
-    padding-left: max(
-      var(--vp-sidebar-width),
-      calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width))
-    );
-  }
-  .VPSidebar {
-    width: max(
-      var(--vp-sidebar-width),
-      calc(
-        (100% - (var(--vp-layout-max-width) - 64px)) / 2 +
-          var(--vp-sidebar-width) - 32px
-      )
-    ) !important;
+/* Wide-monitor layout: the 1920px cap applies only where the theme's
+   >=1440px navbar/sidebar math stays non-negative (viewport >= cap - 64).
+   Below that the default 1440px cap keeps the vanilla auto-fit layout;
+   a global 1920px cap collapses the sidebar and title on mid-size
+   screens. */
+@media (min-width: 1856px) {
+  :root {
+    --vp-layout-max-width: 1920px;
   }
 }
 
@@ -137,12 +103,8 @@
 
 @media (min-width: 1440px) {
   .VPFooter.has-sidebar {
-    padding-left: max(
-      calc(var(--vp-sidebar-width) + 32px),
-      calc(
-        (100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width) +
-          32px
-      )
+    padding-left: calc(
+      (100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width) + 32px
     );
   }
 }
