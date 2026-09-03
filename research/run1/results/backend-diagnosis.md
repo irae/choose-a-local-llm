@@ -60,3 +60,58 @@ Not reproduced on purpose, and reproducing it deliberately costs a
 reboot each attempt. The cheap mitigation is the one already in the
 checklist: load a model once per session, and quit the LM Studio app
 rather than cycling it.
+
+
+## Goal 1 item 4 — the MTP drafter is not broken by the build
+
+The runbook describes the llama.cpp MTP drafter as broken: drafter
+allocation fails, `/health` stays green, every later request 500s. It
+asks whether the brew build predates llama.cpp PRs 23485 and 20817.
+
+**It works.** Measured 2026-09-03 on the same brew build, using the
+vetted command from `docs/setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md`
+with only the context lowered from 262144 to 8192:
+
+    llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
+      --alias gemma-4-12b-it --no-mmproj \
+      --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \
+      -ngl 999 -fa on -c 8192 \
+      --cache-type-k q8_0 --cache-type-v q8_0 \
+      --jinja --port 8081
+
+Server log during a live agent session:
+
+    slot print_timing: draft acceptance = 0.51471
+      (35 accepted / 68 generated), mean len = 3.06
+
+The drafter allocated, and speculative decoding is accepting drafts at
+51%. No 500s, no failed allocation.
+
+### What changed, and what it means
+
+Three things differ from the failing observation: the context is 8192
+instead of 262144, the machine was freshly rebooted and quiet, and no
+other model was resident.
+
+So the failure is **conditional, not a build defect**. The build is
+unchanged. That reframes item 4: the question is no longer "is the brew
+build too old for PRs 23485 and 20817", it is "at what context and what
+memory pressure does the drafter allocation start failing".
+
+That is also consistent with bench7 H2, which found that `-ngl 999`
+disables llama.cpp's automatic memory fitting. With fitting disabled the
+loader proceeds into the MTP draft-context init unconditionally and hits
+a real Metal allocation failure. At 8192 there is room, so it succeeds;
+at 262144 there is not, and the same code path fails hard because the
+safety net was switched off by the very flag the vetted config uses.
+
+### What would settle it
+
+A context ramp on a quiet machine with the drafter enabled: 8K, 32K,
+64K, 128K, 262K, recording at each step whether the drafter allocates
+and what free and wired memory are. The failure point is the answer. The
+same ramp with `-ngl` removed would show whether automatic fitting
+degrades gracefully instead of failing, which is the fix if it does.
+
+Not run here. It is a context ramp, which is a measurement that belongs
+in a benchmark kit rather than a research aside.
