@@ -1,5 +1,7 @@
 :root {
   --vp-layout-max-width: 1920px;
+  /* The default 272px clips the site title over the search box. */
+  --vp-sidebar-width: 310px;
 }
 
 /* Mobile: tables scroll sideways instead of truncating.
