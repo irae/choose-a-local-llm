@@ -322,3 +322,44 @@ in after Block 0 before continuing.
 - Queue item #2 done. Moving to item #3 (Qwen3.6-35B-A3B dagger
   sweep) before item #4 (Bonsai mlx dagger sweep) and item #5
   (Bonsai-PrismML blind low).
+
+### Item #3 — Qwen3.6-35B-A3B dagger sweep — BLOCKED, deferred
+
+- 23:44-23:52 local: served the exact daggered-row config from
+  `docs/setups/m1-max-32gb/models.json` (`qwen36-gguf-think`:
+  `llama-server ... --spec-type draft-mtp --spec-draft-n-max 3 -c
+  98304 ... --cache-type-k q8_0 --cache-type-v q8_0`) at the current
+  wired limit (24000, confirmed). Load succeeded (~25 GB wired,
+  matches the model's known footprint) but every warmup completion
+  request failed with a Metal `kIOGPUCommandBufferCallbackErrorOutOfMemory`
+  ("Compute error", `/health` still returned `ok` — the known
+  dead-but-alive pattern from `server-lore.md`). Killed, waited for
+  memory to settle, restarted once (retry budget from PLAN.md): same
+  failure, consistent, not transient.
+- This is the exact boundary case `docs/methodology/memory-ceiling.md`
+  warns about: "At ~24000 MB and above, physical RAM binds first...
+  the crash point stops responding to sysctl changes, and the machine
+  locks up." The report's own MTP config previously fit at 22.9 GB
+  RSS under this limit (`reports/qwen3.6-35b-a3b.md`, "Context ramp"
+  table) — something shifted since (system memory state, or the
+  report's number predates a `wired_limit_mb` change). Not
+  investigating further unattended: repeated OOM retries at this
+  regime risk a full system lockup per the doc's own warning, and
+  this is a non-priority sweep, not a Mendel run.
+- Stopped retrying. Killed the server, confirmed memory recovered
+  (2.8 GB unused, back to idle baseline) and the GPU is idle. **Not**
+  an owner-only stop condition (no unexplained commit, no missing
+  model, no credit exhaustion) — just deferring this item rather than
+  risking the machine. Owner should decide: lower `-c` for this sweep
+  specifically (deviates from the exact daggered config), raise the
+  wired limit for a dedicated sweep session, or investigate why this
+  config no longer fits.
+- Per AGENT.md, "Mendel runs keep priority: sweeps fill the gap...
+  never delay a Mendel run." Skipping item #4 (Bonsai mlx dagger
+  sweep, same OOM-probing risk profile) for the same reason, and
+  moving straight to item #5 (Bonsai-PrismML blind low) — the next
+  Mendel run in the reordered queue. Made a small tooling change
+  along the way: added a `STEP_PAUSE_S`-controlled 25 s pause between
+  depth steps in `tools/sweeps/llama_sweep.py`, per the "creep
+  slowly" rule in `context-creep.md` (the script had no pause
+  before).
