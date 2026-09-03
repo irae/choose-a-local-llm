@@ -29,7 +29,10 @@ and the methodology pages the runbook points to.
    runbook's first instruction is its step 1: create the run worktree
    and move into it before any other action. Runners skip this when
    the runbook only implies it — spell out the exact `git worktree
-   add` command with the run's number.
+   add` command with the run's number. A benchmark runbook says bash
+   and `cd`. A research or planning kit says `EnterWorktree` with
+   `path` instead, because that work is interactive and the owner's
+   HUD reads the session directory. See `AGENTS.md`, standing rules.
 3. State the execution rules the runner must not relearn: local run
    branch in a fresh sibling worktree (the main worktree stays with the
    coordinator), no bare `git stash` — named stashes only, applied by

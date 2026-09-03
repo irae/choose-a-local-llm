@@ -6,6 +6,17 @@ Simplified Technical English. `AGENTS.md` ground rules apply:
 worktree-first, no bare stash, no model downloads, no pushes without
 owner request.
 
+This run is research, so it is interactive. Enter the worktree with
+the tool, not with `cd`:
+
+1. `git worktree add ../choose-a-local-llm-research1 -b research1`
+2. `EnterWorktree` with `path:
+   /Users/irae/code/choose-a-local-llm-research1`
+3. Leave with `ExitWorktree`, `action: "keep"`.
+
+The owner's HUD reads the session working directory. The tool call is
+what makes the branch visible to them.
+
 Every goal below is RESEARCH. The wording gives starting points, not
 finished procedures: expand each goal where the evidence leads, add
 alternatives the coordinator did not think of, and bring findings and

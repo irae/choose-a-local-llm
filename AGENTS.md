@@ -74,6 +74,10 @@ Benchmark work:
   `run-humaneval.sh`, `run_codegen_wrapper.py` (patched EvalPlus
   client), `calibrate.py`, `mem-watch.sh`, `calibration-*.json`.
 - `tools/sweeps/` — depth-sweep scripts and fast memory watcher.
+- `tools/mac-quiet.sh` + `tools/README-mac-quiet.md` — turn background
+  login items off before a run and back on after. The script ships with
+  no list; the README says how to build one. Read the README before you
+  disable anything on the owner's Mac.
 - `HANDOFF.md` — the owner's working context for the next main-thread
   agent; read it first when starting a session. Not committed.
 
@@ -115,7 +119,19 @@ Benchmark work:
   in the main worktree of this repo or of `../mendel`. The runner
   creates a fresh sibling worktree for its run branch (for example
   `git worktree add ../choose-a-local-llm-run<N> -b run<N>`) and works
-  only there. Mendel runs use two mendel worktrees: the benchmark
+  only there.
+- **How you enter the worktree depends on the work.**
+  - *Research and planning* — interactive, the owner watches. Create
+    the sibling worktree with `git worktree add`, then enter it with
+    the `EnterWorktree` tool and its `path` argument. The owner's HUD
+    reads the session working directory, so the tool call is what makes
+    the branch visible to them. Leave with `ExitWorktree`,
+    `action: "keep"` — never `remove`, the branch must survive to be
+    merged. Do not call `EnterWorktree` with `name`: it builds under
+    `.claude/worktrees/` off `origin/master` and breaks the sibling
+    convention.
+  - *Benchmark runs* — long and unattended. Stay with `git worktree
+    add` plus `cd` in bash. No tool call, nothing to watch. Mendel runs use two mendel worktrees: the benchmark
   branch checkout (`../mendel-benchmark`) and the per-model worktrees
   that `run-worker.sh` creates. When the run closes, the runner removes
   its worktrees (`git worktree remove`, then `git worktree prune`) and
@@ -151,6 +167,32 @@ Benchmark work:
 - **Write prose in ASD-STE100 Simplified Technical English.** Short
   sentences, active voice, one idea per sentence.
 - **Do not write code comments** unless the owner asks for them.
+- **Never version the owner's machine.** This repo is public work about
+  a method. A list of the owner's login items, a BTM dump, a process
+  list, or any other inventory of their apps is personal data and does
+  not belong in git — not in a run folder, not as "raw output". Write
+  the method into the repo and keep the machine's own state in
+  `~/.config/choose-a-local-llm/`. A tool reads its list from there and
+  ships with none. If you have already committed such a file, say so
+  and rewrite the branch before it is pushed.
+- **A script that changes the owner's Mac is read before it is run.**
+  This is their main laptop and it cannot give them surprises. Optimize
+  the script for a human reading it top to bottom, not for length. Few
+  commands, not few lines.
+  - Put the data first: named lists of what the script acts on, one
+    item per line, grouped by why the item is in the list.
+  - One small function per action, named for the action.
+  - No `&&` chains and no one-liners. One command per line.
+  - Print what happened per item, including what was skipped. Silence
+    hides a wrong label.
+  - Every change is reversible, and the reverse reads a state file the
+    script itself wrote. Never reverse from a hardcoded list — that
+    would undo the owner's own settings.
+  - Guard both directions, and say what to do instead when refusing.
+  - Header comment: what it does, both directions, and any step the
+    owner must take (for example a reboot). This is the exception to
+    the no-comments rule above, plus the group labels on the lists.
+  `tools/mac-quiet.sh` is the reference shape.
 - **Commit before you ask for review.**
 - **Verify before you claim.** Run `npm run verify` and quote the result.
 - Run kits live in `benchmarks/bench<N>/`; shared run tools in

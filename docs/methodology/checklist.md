@@ -13,6 +13,10 @@ lives in [common rules](./common-rules.md) and
    2. `cd ../choose-a-local-llm-run<N>`
    3. Verify: `git worktree list` shows your new worktree, and `pwd`
       is inside it. Every later command of the run happens there.
+   Bash and `cd` are correct here. A benchmark run is long and
+   unattended, so nothing needs to watch it. Research and planning
+   work is the opposite case and uses the `EnterWorktree` tool
+   instead — see `AGENTS.md`, standing rules.
    The main worktree stays with the coordinator. Never reuse an old
    worktree. Never push the run branch. When the owner asks to stop
    and merge, follow the stop-and-sync steps in `AGENTS.md`: merge to
