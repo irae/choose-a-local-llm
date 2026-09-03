@@ -1,4 +1,4 @@
-# Research run 1 — backend failure diagnosis (Mac)
+# Research run 1 — backend reliability research (Mac)
 
 You are a research agent, not a benchmark runner. Read this file,
 then `state.md` (keep it current). Write all prose in ASD-STE100
@@ -6,94 +6,106 @@ Simplified Technical English. `AGENTS.md` ground rules apply:
 worktree-first, no bare stash, no model downloads, no pushes without
 owner request.
 
-The scoring-policy work that used to be goals 1-2 of this run was
-done by the coordinator (see `results/scoring-penalty.md` and
-`results/invalid-runs.md` — proposals awaiting the owner's pick).
-Your single goal is the diagnosis only a Mac-local agent can do. Your
-findings feed `../run2/` (runtime improvements).
+Every goal below is RESEARCH. The wording gives starting points, not
+finished procedures: expand each goal where the evidence leads, add
+alternatives the coordinator did not think of, and bring findings and
+options to the owner rather than assuming one path. When a goal says
+"maybe", it means maybe.
 
-## Goal 0 — clean-memory gate (TOP PRIORITY: confirm, test, settle
-this before anything else)
+The scoring-policy proposals that used to live here were done by the
+coordinator (`results/scoring-penalty.md`, `results/invalid-runs.md`
+— shipped). Your findings feed `../run2/` (runtime improvements).
 
-OOM runs likely shared the machine with leftover apps (a browser was
-probably open during at least one). MLX suffers most (hard wired
-ceilings); GGUF is also affected. Draft protocol to test and refine —
-the owner confirms the final version before it enters the checklist:
+## Goal 0 — clean-memory research (FIRST)
 
-1. Baseline: measure the machine's true idle memory after a fresh
-   reboot with login items pruned. Record it (free MB, wired MB,
-   swap 0) as THE baseline number in `results/`.
-2. Pre-run gate, before any server load or sweep:
-   - `vm_stat` free+inactive within an agreed margin of baseline;
-     swap-ins near zero over a 60 s window.
-   - No disallowed process: browsers, Electron apps, Docker, media —
-     build a denylist by scanning `ps aux` on a dirty vs clean boot.
-   - WARN and list offenders; BAIL if killing them does not restore
-     the margin. Never start a run on a dirty machine.
-3. Reset procedure when dirty: quit offenders; if memory does not
-   recover to baseline (macOS hoards compressed memory), REBOOT —
-   test whether reboot-to-baseline is faster and more reliable than
-   waiting. Evaluate trimming login items / launch agents that eat
-   memory at startup (list them for the owner first).
-4. Deliver: a `tools/` script proposal (check + warn/bail, callable
-   from the checklist and run-worker) and the measured thresholds.
-   Wire into `docs/methodology/checklist.md` only after the owner
-   confirms.
+Some OOM runs likely shared the machine with leftover apps (a browser
+was probably open during at least one). MLX suffers most (hard wired
+ceilings); GGUF is also affected. Research questions, open-ended:
 
-## Goal 1 — backend failure deep-dive (diagnose, do not fix)
+- What does this machine's memory look like truly idle? Measure after
+  different states (fresh reboot, after quitting apps, after a big
+  server dies) and learn how free/inactive/compressed/swap behave.
+- What actually frees memory fastest and most reliably — quitting
+  apps, waiting, purging, or a reboot? A reboot is one option to
+  evaluate ("maybe reboot"), not the answer.
+- What runs at startup and what could be disabled? The owner USES
+  this Mac daily — disable nothing; inventory login items and launch
+  agents with their memory cost and present the list with trade-offs.
+  The owner decides.
+- What would a useful pre-run gate look like? Sketch options: warn
+  and list offender processes, bail thresholds, a denylist learned
+  from clean-vs-dirty boots, and what margin MLX needs vs GGUF.
 
-1. **Memory recovery after server death** (the dagger-sweep OOM,
-   hypotheses in `benchmarks/bench7/state.md`): after stopping a big
-   server, poll `vmmap --summary` AND `vm_stat` side by side; measure
-   how long real recovery to the idle baseline takes; check whether
-   the two accountings disagree (hypothesis H4).
-2. **Gemma-12B newline flood**: read the three session logs, find the
-   exact first divergence (failed edit → which token pattern), and
-   record which stop/sampler/template settings the harness sent.
-   Compare with the upstream reports in
+Deliver findings, measured numbers, and one or more proposed gate and
+reset designs with trade-offs. Nothing enters the checklist until the
+owner picks one.
+
+## Goal 1 — backend failure deep-dive (diagnose, then prove and fix)
+
+Diagnose first; when a diagnosis is solid, confirm it with a repro,
+prove the fix, and apply it — a proven fix is a deliverable, not a
+detour. Config changes that alter published measurements still go
+through the owner. Starting points, expand as needed:
+
+1. Memory recovery after server death (the dagger-sweep OOM,
+   hypotheses in `benchmarks/bench7/state.md`): poll `vmmap
+   --summary` and `vm_stat` side by side; how long does real recovery
+   take; do the accountings disagree (H4)? This overlaps goal 0 —
+   merge the evidence.
+2. The Gemma-12B newline flood: find the exact first divergence in
+   the three session logs and which stop/sampler/template settings
+   the harness sent. Compare with the upstream reports in
    `../run2/results/web-serving-failures.md`.
-3. **mlx-lm state**: record the installed mlx-lm/mlx versions; check
-   them against the open dead-thread issues and unmerged PRs listed
-   in run 2's research; confirm whether the Qwen3.8 26624 window is
-   our config or the library.
-4. **llama.cpp MTP drafter breakage**: capture the exact brew build
-   and a minimal pinned repro command line (drafter alloc fails,
-   /health stays green, every later request 500s) — the input for an
-   upstream issue. Check whether the build predates llama.cpp PR
-   23485 and PR 20817.
+3. mlx-lm state: installed versions vs the open dead-thread issues
+   and unmerged PRs; is the Qwen3.8 26624 window our config or the
+   library? If a config fix exists, prove it.
+4. The llama.cpp MTP drafter breakage: exact brew build, minimal
+   pinned repro (drafter alloc fails, /health stays green, every
+   later request 500s), whether the build predates llama.cpp PRs
+   23485 and 20817. Updating the build is a candidate fix — test it
+   if cheap.
 
 ## Goal 2 — audit run labels against session logs
 
 Two measurement errors are confirmed; audit EVERY current-version row
 for both, from the session logs:
 
-1. **Thinking level.** A run that asked for low but recorded only
-   `thinkingLevel: high` ran at high — that is OUR benchmark error,
-   not a model anomaly. Policy (owner, 2026-09-03): re-label the row
-   as high. When a model then has two valid runs of the same config
-   and level, keep the BEST as the row, mark it `best_of: <n>`, and
-   put the low run back on the queue — pending a diagnosed way to
-   actually run low (run 2's job). If low is unreachable on a
-   harness, low is not offered for that model.
-2. **Compactions.** pi writes a "split turn / No prior history"
-   marker that is NOT a context compaction; two rows (qwen3.6,
-   deepseek-v4-pro v1.1) had it miscounted and are fixed. Check every
-   row's compaction count against real compaction events, and check
-   that `peak_context` is the maximum across ALL compaction cycles,
-   not the post-compaction value.
+1. Thinking level: a run that asked for low but recorded only
+   `thinkingLevel: high` ran at high — OUR benchmark error, not a
+   model anomaly. Re-label the row as high. Two valid runs of the
+   same config and level: keep the BEST as the row, mark it
+   `best_of: <n>`, requeue the intended level — pending a diagnosed
+   way to actually reach it. If a level is unreachable on a harness,
+   it is not offered for that model.
+2. Compactions: pi's "split turn / No prior history" marker is NOT a
+   compaction; two rows were miscounted and are fixed — check the
+   rest. Also check `peak_context` is the maximum across ALL
+   compaction cycles, not the post-compaction value.
 
-## Goal 3 — trial the tool-call rules (unscored)
+## Goal 3 — trial the tool-call rules (unscored, two models only)
 
 `results/agents-global-trial.md` holds a draft "Tool calls" section
-for `agents-global.md` and three trial designs. Pick the cheapest
-design with the owner, run it OUTSIDE the scored benchmark (never as
-a bench row, never by editing the frozen v1.0 file), and report
-whether the rules change the failure patterns. The owner decides
-adoption from your results.
+and trial designs. Scope, so the trial does not eat the machine:
+
+- Models: exactly TWO. First: `bonsai-prism` — its ~100-call ls loop
+  on a typo'd path inspired the rules. Second: pick the remaining
+  model with the worst tool-call failure record in the session logs
+  (the mlx Bonsai parser crash and the Qwen3.8 runs are candidates).
+- Task: ONE Mendel item only, handed directly — give the model a
+  single dependency to replace, not the GitHub issue fetch. Unscored.
+- Compare with vs without the rules (pi `--append-system-prompt` or a
+  skill): loop counts, tool errors, parser crashes from the session
+  logs. The question is "how much better does it get", not a score.
+- Never edit the frozen `agents-global.md` v1.0; the owner decides
+  adoption from your comparison.
 
 ## Deliverables
 
 - `state.md`: running log + handing-over section.
-- `results/backend-diagnosis.md`: one section per item above, with
-  log excerpts, versions, and repro commands.
-- No fixes, no config changes, no downloads, no pushes.
+- `results/memory-gate.md`: goal-0 findings and proposed designs.
+- `results/backend-diagnosis.md`: goal-1 findings with log excerpts,
+  versions, repro commands — and the proven fixes applied.
+- `results/label-audit.md` plus the corrected rows (goal 2).
+- `results/tool-call-trial.md`: the goal-3 comparison.
+- No model downloads; no pushes without owner request; config changes
+  that alter published measurements go through the owner first.
