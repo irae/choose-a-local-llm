@@ -629,3 +629,61 @@ always required.
 Owner added "extra usage" budget at claude.ai/settings/usage, clearing
 the gate that blocked both prior attempts. Retrying item 15 now in a
 fresh `run8` worktree per the note above.
+
+- Sanity check first, per the standing rule: `pi --provider anthropic
+  --model claude-opus-5 --no-tools --no-session -p "Reply with
+  exactly: OK"` returned "OK". Budget gate is clear, proceeded to the
+  real run.
+- Ran `./run-worker.sh anthropic/claude-opus-5 pi blind high` via the
+  harness's `run_in_background` mode (not bare `nohup`, per the first
+  attempt's lesson). Worker exited clean in 21.4 min, `end_reason:
+  complete`, 17 commits landed on branch
+  `anthropic-claude-opus-5-high-issue-13`. Real work this time, not
+  another budget failure.
+- Scored on Fable per PLAN.md: **90.5/100**. All 8 libraries replaced,
+  trap A correct (`Array.fromAsync(fs.promises.glob(...))`, confirmed
+  by the runtime repro: `SYNC OK, pending= 1`), trap B found and fixed
+  (`mendel-requirify` rimraf refs), trap C avoided (no exit hook in
+  `validate-manifest.js`). Chalk correct for v1.1 (Node defaults,
+  colour follows the stream). Prettier and ESLint clean, self-run 18
+  times. All test suites pass (only the documented `mendel-requirify`
+  baseline fails). Zero nudges, zero self-repair commits, `node:`
+  lint trap hit once and recovered before the first commit. Deductions:
+  node_modules 7/8 (lockfile-only install, hand-checked, no real
+  `pnpm install`); commit craft 6/12 (16 of 17 commits typed `refactor`
+  not `chore`, `git add -A` on every commit, though split-per-package
+  and hygiene otherwise clean); task list 1.5/4 (built upfront from one
+  grep sweep, ticked off in two bulk batches, never committed). No
+  critical or medium defects. Wall clock 21.4 min, cost $5.16 metered
+  (no plan involved — same as the item-14 Anthropic session).
+- Committed the row to `results.json`/`results.csv` and regenerated
+  `report.html`. This landed inside a concurrent peer commit
+  (`c9e1476`, "add the Bonsai guided v3.0 row to the CSV export") —
+  `../mendel-benchmark` is a shared working directory across sessions,
+  and a peer's `git commit` there swept up this session's staged
+  changes to `results.json`/`results.csv`/`report.html` along with
+  its own unrelated Bonsai work. The row content is correct and
+  already pushed; only the commit message and pairing are messy. Flag
+  for the coordinator: shared worktrees across parallel sessions risk
+  this kind of commit-mixing — worth a ground-rule follow-up in
+  `AGENT.md` if it keeps happening. Committed and pushed the session
+  log and `SESSIONS.md` entry separately (`16d004e`).
+- `pkill -f "Mendel Daemon"` after the run (no stray process found).
+  Cleanup per PLAN.md: deleted the `node_modules` symlink, killed any
+  process rooted in the worktree (none found), `git worktree remove
+  --force ../mendel-bench-anthropic-claude-opus-5-high`, `git
+  worktree prune`. `git -C ../mendel worktree list` shows only the
+  main worktree.
+
+## Handing over (fourth close)
+
+Item 15 (Opus, 90.5/100) is done, scored, committed, and pushed. This
+was the last item in `AGENT.md`'s queue — the queue is now fully
+done. No stray processes or worktrees in either repo. One open note
+for the coordinator: the shared-worktree commit-mixing above, and the
+still-unreviewed stash left in `../mendel-benchmark` from the second
+close (pre-existing `generate-report.mjs`/template changes, unrelated
+to any run since). `run8`'s history (this file and `AGENT.md`) is
+about to be merged into `master` and the branch/worktree retired, per
+`AGENT.md`'s "Closing" section and this repo's `AGENTS.md`
+stop-and-sync steps.
