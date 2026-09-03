@@ -374,3 +374,49 @@ allocates the way a model does, and a check against a model with a known
 footprint. `tools/mem-probe.py` is not that yet. It allocates one flat
 array; a server allocates weights once and then a KV cache that grows
 with the run. Those are different shapes and probably different answers.
+
+
+## Finding 7 — pressure evicts the system's own caches, and they stay evicted
+
+A wakeup scheduled before the probe work fired at 17:06 to collect the
+post-reboot idle baseline. By then the machine was no longer idle in
+the sense that request meant, because the probe had put 8 GB through
+swap. Recording what it found anyway, because the contrast is the
+point.
+
+| | at 16:42, before the probes | at 17:06, after them |
+| --- | --- | --- |
+| free | 12415 MB | 25219 MB |
+| active | 8814 MB | 1874 MB |
+| inactive | 5038 MB | 432 MB |
+| `mds_stores` | 345 MB | 51 MB |
+| `corespotlightd` | 240 MB | 4 MB |
+| swap used | 0 MB | 791 MB |
+
+Spotlight's two processes fell from 585 MB to 55 MB combined and stayed
+there. The probe did not target them. They were simply idle, so the
+system took their memory back under pressure and they have not asked
+for it again.
+
+This is the balloon effect reaching further than expected. It is not
+only the owner's apps that give memory back. macOS gives up its own
+caches too, and a cache that nobody is reading does not repopulate on
+its own.
+
+Two consequences.
+
+The gain is real but it is borrowed. Spotlight will rebuild those
+caches the next time it indexes, and the first search after a run will
+be slower. That is a fair trade for a benchmark and a bad one for a
+working day, which is another reason a pre-run reset belongs behind a
+switch the owner throws, not in the run itself.
+
+It also means an idle baseline is not repeatable. This machine has now
+been measured at 12415 MB and 25219 MB free, both times idle, both
+times with the same applications not running. Which number a run sees
+depends on what happened before it. Finding 3 called the baseline a
+band; this widens the band to more than 12 GB and makes the case that a
+gate must measure state rather than compare against a remembered
+number.
+
+The 791 MB of swap is left over from the probe. It clears on reboot.
