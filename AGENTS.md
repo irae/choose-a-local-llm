@@ -122,6 +122,11 @@ Benchmark work:
   keeps only the branches. Never reuse an old worktree — gitignored
   artifacts stay behind in it. The merge of a run branch into `master`
   happens from the master worktree only (see the merge rule above).
+- **Scoring runs on Fable.** Scoring a benchmark run is LLM judgment
+  (rubric calls, defect severity, cost-basis decisions). Do it in a
+  subagent on the Fable model (`claude-fable-5`), never on a smaller
+  model. Mechanical steps — recompute, mirror, regenerate tables — may
+  use any model.
 - **Never download a model.** Every model in the cache was chosen,
   downloaded, and tested by the owner; results depend on those exact
   files, revisions, and quants. A missing model means STOP and ask the

@@ -111,6 +111,9 @@ list`, and `ps aux | grep -iE 'mendel|mlx|llama'`, and record in
   (never mid-run). Clean the worktree per PLAN.md "Cleanup"; keep the
   branch.
 - Never run Gemma-4-26B-A4B. It is parked.
+- Score in a subagent on the Fable model (`claude-fable-5`) — scoring
+  is LLM judgment; a smaller model misjudges rubric calls and cost
+  bases.
 - Never trust the model under test. Score only from the verification
   battery (`node ../mendel-benchmark/benchmark/score.mjs` plus the
   rubric).

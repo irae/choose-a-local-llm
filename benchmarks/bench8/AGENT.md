@@ -90,6 +90,8 @@ input goes into a run; the runner's nudge policy is the only voice.
 
 ## After each run — score and record
 
+Score in a subagent on the Fable model (`claude-fable-5`) — scoring is
+LLM judgment; a smaller model misjudges rubric calls and cost bases.
 Follow `../mendel-benchmark/benchmark/PLAN.md` "How to score a run"
 exactly:
 evidence pack with `score.mjs`, your judgement only where the rubric

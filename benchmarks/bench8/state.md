@@ -553,3 +553,13 @@ pushed. One open item for a future session: the stash left in
 file and `AGENT.md`) is about to be merged into `master` again and the
 branch/worktree retired, per `AGENT.md`'s "Closing" section and this
 repo's `AGENTS.md` stop-and-sync steps.
+
+## Correction (2026-09-02, coordinator)
+
+The item-5 note "xai login is not on a plan" was wrong. run-worker.sh
+matched plan providers only on provider-prefixed model ids; bare-name
+runs (grok-4.6, gpt-5.6-*) probed as `none` and were recorded as
+metered. The worker patterns are fixed. The grok v1.1 row is corrected
+to plan share (the run used the SuperGrok OAuth login; no xai API key
+or credits exist). The codex v1.1/v3.0 rows (luna, sol) are still
+recorded as metered and wait for the owner's estimator choice.
