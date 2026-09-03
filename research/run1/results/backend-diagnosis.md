@@ -160,3 +160,46 @@ Two consequences worth carrying:
 Not checked here: the upstream dead-thread issues and unmerged PRs named
 in the runbook. That needs the issue tracker, and the version to compare
 against is 0.31.3.
+
+
+## Reproduction attempt — INCOMPLETE, not a result
+
+2026-09-03. Replayed the exact 3909-character prompt from the failing
+`google-gemma-4-12b-low-guided` session against the same model, same
+backend (LM Studio), same context (158464, chosen by its auto-fit), on
+mendel branch `repro-gemma-4-12b-low-guided-issue-13` at the failing
+run's own base commit `86935f4`. Evidence in
+`~/.local/share/choose-a-local-llm/evidence/repro-gemma-4-12b-low-guided/`.
+
+The one variable moved: the machine was freshly rebooted and quiet.
+
+**It did not finish.** A 30-minute cap cut it off after 18 tool calls;
+the last record is a tool result, not a conclusion. The original ran to
+130 calls. At the observed rate, matching that needs about 3.5 hours.
+
+At the point reached:
+
+| | original | attempt |
+| --- | --- | --- |
+| tool calls | 130 | 18 (cut off) |
+| distinct | 30 | 15 |
+| longest identical run | 72 | 2 |
+| most repeated call | 88 | 3 |
+
+The original had three identical calls in a row by call 11. The attempt
+passed call 18 with a longest run of 2. The same call family appeared —
+`grep -r "require('uuid')"`, three times — so the tendency is present
+and did not escalate.
+
+**What this does and does not support.** It is weak evidence that the
+loop is condition-dependent, because the attempt passed the point where
+the original was already repeating. It is not a negative result: an
+incomplete run cannot show that a late-escalating failure is absent.
+
+**The instrument is still uncalibrated.** Nothing today has produced a
+loop, so no "no loop" measurement in this run has a known sensitivity.
+Every loop-related number here should be read with that attached.
+
+To settle it, the replay needs to run to the original's length or to its
+`end_reason`. That is a multi-hour unattended run, which is a benchmark
+job rather than a research aside.
