@@ -156,15 +156,29 @@ Serve: `mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit
 1. `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi blind low`
 2. `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi guided low`
 
-### Block 2 — Ternary Bonsai-27B 2-bit (mlx), four runs
+### Block 2 — Ternary Bonsai-27B on the PrismML fork, low first
 
-Serve: `mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit
---prompt-cache-size 2 --port 8081`
+The mlx runs of this block are DONE and stay in the data: both ran at
+high because mlx did not honor the low flag (see the rows'
+`config_note`). The remaining Bonsai runs use the PrismML llama.cpp
+fork — the owner wants the fork scored, and wants LOW first.
 
-1. `./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi blind low`
-2. `./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi guided low`
-3. `./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi blind high`
-4. `./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi guided high`
+Serve with the exact `bonsai-prism` config from the report page
+(`docs/setups/m1-max-32gb/reports/bonsai-27b.md`):
+`~/prism-llama/llama-server`, ternary Q2_g64 GGUF. Add a pi model
+entry per PLAN.md model-config rules if one is missing. These are NEW
+rows (new serving stack), not replacements of the mlx rows.
+
+1. `./run-worker.sh bonsai-prism pi blind low`
+2. `./run-worker.sh bonsai-prism pi guided low`
+3. `./run-worker.sh bonsai-prism pi blind high`
+4. `./run-worker.sh bonsai-prism pi guided high`
+
+**Verify the thinking level right after each run starts:** the session
+log's `thinking_level_change` event must say the requested level. Both
+mlx runs silently ran at high. If the level is wrong, stop the run at
+once, note it in `state.md`, and continue with the next item — do not
+burn wall clock on a wrong config.
 
 Budget one retry per run (PLAN.md retry rules).
 

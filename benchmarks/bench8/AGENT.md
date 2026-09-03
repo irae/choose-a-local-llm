@@ -123,6 +123,9 @@ last (quiet-account window).
 12. `./run-worker.sh accounts/fireworks/models/glm-5p3-flash pi blind high`
 13. `./run-worker.sh accounts/fireworks/models/glm-5p3-flash pi guided high`
 14. `./run-worker.sh anthropic/claude-sonnet-4-5 pi guided high`
+15. `./run-worker.sh anthropic/claude-opus-5 pi blind high` — the
+    owner granted budget for one Opus run (flagship, for
+    completeness). Blind only, per the strong-API-models policy.
 
 If a fireworks model id is rejected, list the store
 (`~/.pi/agent/models-store.json`) and use the exact id from there;
