@@ -7,13 +7,17 @@
 # of four full Mendel runs. If the rules do not move the numbers here,
 # the full runs are not worth the machine time.
 #
-# The rules under test are the draft's first two paragraphs only. The
-# third told the model to consult pi's offline docs, and pi has no
-# user-facing tool reference: the seven doc files that mention tools all
-# describe how to BUILD them (custom-provider, extensions, sdk, rpc,
-# session-format, json, tui). `pi --help` lists CLI flags a running
-# agent cannot change. Sending a stuck 12B model into thirty developer
-# documents spends context and teaches it nothing, so it is cut.
+# Three arms, not two.
+#   no-rules     the current agents-global v1.0 behaviour
+#   with-rules   the draft's two behavioural paragraphs
+#   with-example the same, plus one correctly formed tool call that
+#                resolves pi's docs path
+#
+# The third arm exists because the example does two jobs at once. It
+# resolves the docs location, which the draft only described, and it
+# shows the exact JSON shape a tool call takes. That second job can
+# plausibly move the parser-crash count, so it is worth a measurement
+# rather than an opinion. See results/tool-call-trial.md.
 #
 # Situation A, the loop: the task names a path that does not exist. The
 #   question is how many times the model repeats the identical failing
@@ -34,6 +38,7 @@ TAG="${2:?usage: replay-probe.sh <pi-model-id> <tag>}"
 OUT="/tmp/toolcall-trial"
 WORK="$OUT/work-$TAG"
 RULES="$OUT/rules.txt"
+RULES_PLUS="$OUT/rules-plus-example.txt"
 
 mkdir -p "$OUT"
 
@@ -52,6 +57,21 @@ Prefer several small edits over one large edit. Do not put long
 multi-line text with embedded quotes into tool-call arguments; write
 a file instead of editing when the change is large.
 RULESEOF
+
+    cp "$RULES" "$RULES_PLUS"
+    cat >> "$RULES_PLUS" <<'PLUSEOF'
+
+Your harness (pi) ships its documentation offline. This is a
+correctly formed tool call that lists it:
+
+{"type":"toolCall","name":"bash","arguments":{"command":"ls \"$(npm root -g)/@earendil-works/pi-coding-agent/docs\""}}
+
+Every tool call takes that shape: a name, and an arguments object
+whose keys the tool defines. The docs it lists describe harness
+behaviour — sessions, compaction, skills, models. They do not
+describe the tools, so for a failing tool call read the error
+instead.
+PLUSEOF
 }
 
 
@@ -112,6 +132,12 @@ run_one() {
             --session-dir "$session_dir" \
             --append-system-prompt "$RULES" \
             "$prompt") > "$OUT/out-$TAG-$situation-$arm.txt" 2>&1
+    elif [ "$arm" = "with-example" ]; then
+        (cd "$WORK" && timeout 900 pi --print \
+            --model "$MODEL" \
+            --session-dir "$session_dir" \
+            --append-system-prompt "$RULES_PLUS" \
+            "$prompt") > "$OUT/out-$TAG-$situation-$arm.txt" 2>&1
     else
         (cd "$WORK" && timeout 900 pi --print \
             --model "$MODEL" \
@@ -137,7 +163,7 @@ echo "Output: $OUT"
 echo
 
 for situation in loop parser; do
-    for arm in no-rules with-rules; do
+    for arm in no-rules with-rules with-example; do
         build_workdir
         if [ "$situation" = "loop" ]; then
             run_one "$situation" "$arm" "$PROMPT_LOOP"

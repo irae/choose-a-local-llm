@@ -111,31 +111,28 @@ def main():
     print('=== arm comparison ===')
     seen = set()
     for label in rows:
-        if label.endswith('-no-rules'):
-            base = label[:-len('-no-rules')]
-        elif label.endswith('-with-rules'):
-            base = label[:-len('-with-rules')]
-        else:
+        base = None
+        for suffix in ('-no-rules', '-with-rules', '-with-example'):
+            if label.endswith(suffix):
+                base = label[:-len(suffix)]
+                break
+        if base is None:
             continue
         if base in seen:
             continue
         seen.add(base)
 
-        a = rows.get(base + '-no-rules')
-        b = rows.get(base + '-with-rules')
-        if not a or not b:
+        arms = [(name, rows.get(base + '-' + name)) for name in
+                ('no-rules', 'with-rules', 'with-example')]
+        arms = [(n, m) for n, m in arms if m]
+        if len(arms) < 2:
             continue
 
         print('%s' % base)
-        print('  longest identical run : %d without -> %d with  (%+d)' % (
-            a['longest_run'], b['longest_run'],
-            b['longest_run'] - a['longest_run']))
-        print('  total calls           : %d without -> %d with  (%+d)' % (
-            a['calls'], b['calls'], b['calls'] - a['calls']))
-        if a['calls'] and b['calls']:
-            ra = a['distinct'] / a['calls']
-            rb = b['distinct'] / b['calls']
-            print('  distinct fraction     : %.2f without -> %.2f with' % (ra, rb))
+        for name, m in arms:
+            fraction = (m['distinct'] / m['calls']) if m['calls'] else 0.0
+            print('  %-13s calls %3d  distinct %3d (%.2f)  longest run %3d' % (
+                name, m['calls'], m['distinct'], fraction, m['longest_run']))
 
     return 0
 

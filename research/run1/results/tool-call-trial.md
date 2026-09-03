@@ -116,3 +116,50 @@ not worth the machine time.
 1. Keep `bonsai-prism` as mandated, swap it for `gemma-4-12b`, or run
    all three.
 2. Confirm which Mendel dependency is the single handed task.
+
+
+## The third rule: resolved, not invented, and not trialled
+
+The draft's third paragraph read:
+
+> Your harness (pi) documents itself offline: `pi --help`, and the
+> docs directory next to the pi binary. Consult them when a tool
+> behaves in a way you do not expect.
+
+Two problems. "The docs directory next to the pi binary" is not a path
+a model can act on — `pi` is a symlink into a global npm tree, so the
+docs are three levels up from the resolved target. And the docs do not
+document the tools. The seven files that mention tools describe how to
+BUILD them: `custom-provider`, `extensions`, `sdk`, `rpc`,
+`session-format`, `json`, `tui`. There is no user-facing tool
+reference. `pi --help` lists CLI flags a running agent cannot change.
+
+The path resolves with one line, verified on this machine:
+
+    ls "$(npm root -g)/@earendil-works/pi-coding-agent/docs"
+
+The `readlink` form also works but depends on the nvm layout:
+`ls "$(dirname "$(readlink -f "$(which pi)")")/../../docs"`.
+
+So the paragraph should ship as:
+
+> Your harness (pi) ships its documentation offline. List it with
+> `ls "$(npm root -g)/@earendil-works/pi-coding-agent/docs"`. It
+> describes harness behaviour — sessions, compaction, skills, models —
+> not the tool schemas. For a failing tool call, read the error.
+
+That is honest about what is there, gives a command instead of a
+description, and stops a model spending context looking for a tool
+reference that does not exist.
+
+**It is not in the trial.** Advice about consulting documentation cannot
+move the loop length or the parser-crash count, which are the two things
+these situations measure. Including it would add a variable with no
+route to the outcome. The trial trials the two behavioural rules; this
+paragraph is a documentation fix that ships or does not on its own
+merits.
+
+If the owner wants it tested, the honest experiment is different: give
+the model a task that needs a harness behaviour it does not know, and
+see whether the line makes it look. That is a third situation, not a
+variant of these two.
