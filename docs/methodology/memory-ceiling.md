@@ -62,3 +62,63 @@ LM Studio ignores `-c` for some MLX models and computes the window
 itself from the wired limit — for those configs there is no allocation
 probe to run; use the compression-onset criterion from
 [context creep](./context-creep.md) instead.
+
+
+## Why the cold-start sequence exists
+
+The [checklist](./checklist.md) step 4 gives the sequence. This is what
+it is for.
+
+**There is no idle baseline on this machine.** Measured idle, with the
+same applications not running, it has read 12415 MB free and 25219 MB
+free. Free memory moves by more than a gigabyte on its own while
+scheduled work runs, and it moves by twelve after something has applied
+pressure. A gate that compares against a remembered number is comparing
+against noise.
+
+So the sequence does not chase a clean machine. It aims to put the
+machine in the SAME state before every run. Reproducibility, not
+accuracy. Two runs prepared this way can be compared with each other,
+which is what a benchmark needs.
+
+**Why the reboot.** A disabled login item that is already running keeps
+running, so disabling without rebooting changes nothing. The reboot also
+clears swap, and swap left over from a previous run silently changes the
+next one.
+
+**Why the model is the balloon.** Pressure has to come from somewhere,
+and it may as well come from the thing being measured. A synthetic
+balloon is the wrong shape: it allocates one flat block, while a server
+allocates weights once and then grows a KV cache. Loading the real model
+and walking its context up does the same five jobs at once — applies the
+pressure, warms the model, proves the config instead of assuming it,
+yields the ceiling for that exact config, and fails early if it is going
+to fail at all.
+
+The synthetic probe (`tools/mem-probe.py`) stays for investigating the
+machine's behaviour. It is not part of run preparation.
+
+**Why slowly.** Rate changes the ceiling; see the rate rule above. A
+fast walk drives the machine into swap and reports a number no real
+session would meet.
+
+**Why swap must be 0 before starting.** macOS does not refuse an
+impossible request. It compresses, then swaps, then keeps going. A run
+that begins with swap in use can complete and report throughput that
+measures the swap file. A failed allocation is easy to spot; a slow one
+is not.
+
+**Why wired is the counter to read.** Wired pages are never compressed
+and never swapped. Everything else can mislead: free and active move for
+unrelated reasons, and the compressor can inflate an allocation total
+until it is fiction. An early version of the probe filled blocks with a
+repeated value and "allocated" 35840 MB on a 32 GB machine, because the
+compressor squeezed the blocks to nothing. Wired never lied.
+
+**What the sequence costs.** A reboot per session, and a few minutes of
+slow loading per config. Reboot once per session rather than once per
+model; the model-as-balloon step re-establishes the state between
+models. The background items stay disabled until `tools/mac-quiet.sh on`
+runs, so the owner gets their machine back when the session ends.
+
+Full measurements behind this: `research/run1/results/memory-gate.md`.

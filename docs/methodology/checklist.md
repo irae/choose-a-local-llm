@@ -34,37 +34,53 @@ lives in [common rules](./common-rules.md) and
    item is gone. The app keeps its MLX runtime host alive after `lms
    unload`, so a leftover app puts an MLX process on the GPU during a
    run you believe is pure llama.cpp.
-4. Check `sysctl iogpu.wired_limit_mb` is the documented limit (24000).
-   **It resets to 0 on every reboot**, and 0 means the system default,
-   not "no limit". Set it before you read any memory number, because
-   the ceiling you measure depends on it:
-   `sudo sysctl iogpu.wired_limit_mb=24000`.
-5. Close background apps, then check the machine has settled. Do not
-   trust one reading of free memory — it moves by more than a gigabyte
-   on an idle machine while scheduled work runs. Sample it more than
-   once and require the samples to agree. Read `Pages wired down` as
-   well: wired memory is never compressed and never swapped, so it is
-   the counter that tracks a GPU allocation honestly, while free and
-   active move for reasons that have nothing to do with the run.
-   Background work that can start on its own timetable and spike a run:
-   Time Machine (`backupd`), Spotlight (`mds_stores`), Photos analysis
-   (`photoanalysisd`, `mediaanalysisd`), iCloud sync (`bird`, `cloudd`),
-   the malware scan (`XProtect`), Mail (`maild`, `icloudmailagent` —
-   these stay resident after the app quits), and any backup agent.
-6. Do NOT download any model. All models are already in the cache, in
+4. **Run the cold-start sequence, in this order.** This is the whole
+   of run preparation. It does not aim at a clean machine, which does
+   not exist — it aims at the SAME machine every time. Read
+   [memory ceiling](./memory-ceiling.md) for why each step is here.
+   1. `tools/mac-quiet.sh off` — disables the background login items
+      listed in the owner's config. Needs the config in
+      `~/.config/choose-a-local-llm/`; see `tools/README-mac-quiet.md`.
+   2. **Reboot.** A disabled item that is already running keeps
+      running, so nothing in step 1 takes effect without this. The
+      reboot is also what clears leftover swap.
+   3. `sudo sysctl iogpu.wired_limit_mb=24000`. It resets to 0 on
+      every reboot, and 0 means the system default, not "no limit".
+      Every ceiling depends on it, so set it before reading any memory
+      number.
+   4. **Load the model under test and use it as the balloon.** Do not
+      use a synthetic one. Load the real weights, then drive the
+      context up SLOWLY towards the configured maximum. This single
+      step does five jobs: it applies the memory pressure that makes
+      the machine yield, it warms the model, it proves the config
+      loads instead of assuming it, it produces the ceiling for this
+      exact config, and it surfaces a failure now rather than two
+      hours into a run.
+      Go slowly. Rate changes the answer — see the rate rule in
+      [memory ceiling](./memory-ceiling.md). A fast walk drives the
+      machine into swap and reports a ceiling no real session would
+      hit.
+   5. Verify with a memory probe before starting: `vm_stat` for
+      `Pages wired down`, and `sysctl -n vm.swapusage`. **Swap must be
+      0.** Any swap means the balloon overshot; recover before
+      continuing. Wired is the counter to trust — free and active move
+      for reasons unrelated to the run, and the compressor can inflate
+      an allocation total until it is meaningless.
+   6. Only now start the real benchmark.
+5. Do NOT download any model. All models are already in the cache, in
    the exact tested revision and quant. A missing model means STOP and
    ask the owner ([common rules](./common-rules.md)).
-7. Start the server for ONE config. Verify it serves (warmup request).
+6. Start the server for ONE config. Verify it serves (warmup request).
    LM Studio: load explicitly with `lms load`, verify with `lms ps` —
    never trust JIT ([server lore](./server-lore.md)).
-8. Start the memory watcher, scoped to this run only:
+7. Start the memory watcher, scoped to this run only:
    `MEMWATCH_LOG=/tmp/<run>-memwatch.log MEMWATCH_INTERVAL=20
    bash tools/sweeps/mem-watch-fast.sh &` (or `benchmarks/mem-watch.sh`
    for long scoring runs). A run without the watcher is invalid.
 
 ## During the run
 
-9. **Set the idle/silent-crash monitor.** Schedule a wakeup ≤20 minutes
+8. **Set the idle/silent-crash monitor.** Schedule a wakeup ≤20 minutes
    after starting any block. At every wakeup verify REAL output growth
    (result-file line count, not process liveness) — servers can die or
    hang while the process lives and `/health` returns 200. If output
@@ -72,29 +88,29 @@ lives in [common rules](./common-rules.md) and
    the model, restart, resume. Every wakeup ends with a new wakeup or
    with the shutdown steps below. The GPU never sits idle between
    blocks.
-10. Heartbeat format: "Block N (model): done X/Y, [num]h[num]min left."
-11. Note deviations in the run's `state.md` AS THEY HAPPEN, not at the
+9. Heartbeat format: "Block N (model): done X/Y, [num]h[num]min left."
+10. Note deviations in the run's `state.md` AS THEY HAPPEN, not at the
    end. Smallest fix, fairness first, suspect the harness before the
    model.
 
 ## After the run
 
-12. Stop the watcher immediately. Stop one-shot monitors as soon as
+11. Stop the watcher immediately. Stop one-shot monitors as soon as
     they fire — never leave them running.
-13. Record the result on EVERY surface in the same pass
+12. Record the result on EVERY surface in the same pass
     ([common rules](./common-rules.md), rule "record everywhere"):
     benchmarks page, report page (including its summary line),
     `comparison.md`, `models.json` + `node tools/gen-tables.mjs`,
     harness config. Update `benchmarks/bench<N>/results.md` and
     `state.md`.
-14. Commit before moving to the next block.
-15. After stopping any server above ~15 GB RSS, wait for memory to
+13. Commit before moving to the next block.
+14. After stopping any server above ~15 GB RSS, wait for memory to
     RECOVER before loading the next model or starting a sweep: poll
     `vm_stat` (or the memwatch log) until free memory returns to the
     idle baseline. Process death is not memory recovery — a sweep
     started ~3 min after killing a 23 GB server ran the whole window
     with 60-220 MB free and continuous swap-ins, and OOMed
     ([server lore](./server-lore.md)).
-16. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
+15. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
     no background task holding the GPU. End the session with the
     machine idle.

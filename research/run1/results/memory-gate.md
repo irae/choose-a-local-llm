@@ -1,6 +1,7 @@
 # Goal 0 — clean-memory research
 
-Status: in progress. This file holds measured results only.
+Status: CLOSED 2026-09-03. This file holds measured results only.
+The conclusion is at the end, under "Goal 0 closed".
 Machine: M1 Max, 32 GB, macOS 15.7.7 (24G720).
 
 ## Finding 1 — INVALID, must be redone
@@ -420,3 +421,52 @@ gate must measure state rather than compare against a remembered
 number.
 
 The 791 MB of swap is left over from the probe. It clears on reboot.
+
+
+## Goal 0 closed — reproducibility instead of a baseline
+
+The owner closed goal 0 on 2026-09-03 with a decision: stop chasing a
+clean machine, and put the machine in the same state before every run.
+
+The sequence is now `docs/methodology/checklist.md` step 4, with the
+reasoning in `docs/methodology/memory-ceiling.md`:
+
+1. `tools/mac-quiet.sh off`
+2. reboot
+3. `sudo sysctl iogpu.wired_limit_mb=24000`
+4. load the model under test and walk its context up slowly, using the
+   real model as the balloon
+5. verify with a memory probe, swap must be 0
+6. run the benchmark
+
+Step 4 is the owner's, and it answers the objection this file raised
+against the synthetic probe. A flat array is the wrong shape; a server
+allocates weights once and then grows a KV cache. The real model has the
+right shape by definition, and it warms the model, proves the config,
+yields that config's ceiling, and fails early if it is going to fail.
+
+The gate formula in finding 5 is NOT adopted. It stays a hypothesis. The
+sequence replaces it: the machine is prepared the same way every time
+rather than tested against a predicted number.
+
+What goal 0 established, in order of confidence:
+
+* Wired is the only counter that cannot be inflated. Free, active and
+  the allocation total can all mislead.
+* There is no idle baseline. The same idle machine measured 12415 MB
+  and 25219 MB free.
+* Starting state changes what an identical request receives.
+* Rate changes the outcome, and asking too fast degrades the machine
+  rather than failing it.
+* Pressure reclaims the system's own caches, not only user apps, and
+  they stay reclaimed.
+* Background login items are worth about 910 MB, which is not what
+  causes an OOM. They matter for the variance they cause mid-run.
+
+Left open, for whoever picks this up:
+
+* The desktop widget question. The reboot proved the toggle does not
+  stop the extensions loading, so only stopping `chronod` remains
+  untested. Needs the owner's approval.
+* Testing the finding 5 formula against a model with a known footprint,
+  if anyone still wants a predictive gate.
