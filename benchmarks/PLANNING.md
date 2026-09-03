@@ -25,9 +25,17 @@ and the methodology pages the runbook points to.
 2. Open with the reading list: the run's `state.md` history, the
    relevant `docs/methodology/` pages, and any forensics file that
    overrides older lore. Point, do not paste — the runbook stays short.
+   `docs/methodology/checklist.md` is ALWAYS on the list, and the
+   runbook's first instruction is its step 1: create the run worktree
+   and move into it before any other action. Runners skip this when
+   the runbook only implies it — spell out the exact `git worktree
+   add` command with the run's number.
 3. State the execution rules the runner must not relearn: local run
    branch in a fresh sibling worktree (the main worktree stays with the
-   coordinator), the stop-and-sync procedure from `AGENTS.md` standing
+   coordinator), no bare `git stash` — named stashes only, applied by
+   name (see `AGENTS.md` standing rules), scoring in a subagent on the
+   Fable model (`claude-fable-5`) — never a smaller model — because
+   scoring is LLM judgment, the stop-and-sync procedure from `AGENTS.md` standing
    rules when the owner asks to stop (merge to `master`, push `master`,
    delete the branch, remove the worktree — that one push is required),
    one model on the GPU at a time, port, heartbeat cadence, the scoped

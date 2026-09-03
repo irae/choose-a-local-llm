@@ -122,6 +122,28 @@ Benchmark work:
   keeps only the branches. Never reuse an old worktree — gitignored
   artifacts stay behind in it. The merge of a run branch into `master`
   happens from the master worktree only (see the merge rule above).
+- **Out of credits is a pause, never a teardown.** When a run hits a
+  billing, quota, or credit-exhaustion error: keep everything alive —
+  the server, the worktree, the session. Record the time and the last
+  event, tell the owner at once (this is the one situation where you
+  interrupt with an escalation), and wait. Resume the SAME run when
+  credits return. Only the owner can declare a credit-interrupted run
+  lost. Tearing down throws away the tokens already spent.
+- **Scoring runs on Fable.** Scoring a benchmark run is LLM judgment
+  (rubric calls, defect severity, cost-basis decisions). Do it in a
+  subagent on the Fable model (`claude-fable-5`), never on a smaller
+  model. Mechanical steps — recompute, mirror, regenerate tables — may
+  use any model.
+- **Never download a model.** Every model in the cache was chosen,
+  downloaded, and tested by the owner; results depend on those exact
+  files, revisions, and quants. A missing model means STOP and ask the
+  owner — never pull it yourself. See `docs/methodology/common-rules.md`.
+- **Never run a bare `git stash`.** The stash list lives in the shared
+  `.git` directory, not per-worktree, so parallel agents clobber or
+  cross-apply each other's stashes. Save work in progress as a WIP
+  commit on your own branch instead. If a stash is unavoidable, name it
+  (`git stash push -m "<agent/run>: <what>"`) and apply or pop it by
+  that name only (`git stash pop 'stash^{/<name>}'`) — never by index.
 - **No superseded number on a current page.** Not in a table, not in prose.
   Old figures move to the setup's `historical.md`, which opens with a red
   warning telling readers not to use them. Only the `benchmarks/*.md` pages

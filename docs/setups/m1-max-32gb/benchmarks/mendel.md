@@ -34,7 +34,8 @@ scoreboard per version.
 | model | serving | score | worst defect |
 |---|---|--:|---|
 | [Qwen3.8-27B (mlx, low)](../reports/qwen3.8-27b.md) | mlx_lm.server | **67.5/100** (partial) | minor |
-| [Ternary-Bonsai-27B (mlx, low)](../reports/bonsai-27b.md) | mlx_lm.server | **55/100** (partial) | medium |
+| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **63/100** | critical |
+| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **55/100** (partial) | medium |
 <!-- gen:mendel-local:end -->
 
 Run notes for the two partials are in the
@@ -49,9 +50,13 @@ on the rubric.
 |---|---|--:|
 | kimi-k3 | pi | **93.5/100** |
 | grok-4.6 | pi | **92.5/100** |
+| gpt-5.6-sol | pi | **92/100** |
 | deepseek-v4-flash-0731 | pi | **84.5/100** |
 | gpt-5.6-luna | pi | **83.5/100** |
 | deepseek-v4-pro-0813 | pi | **79/100** |
+| glm-5p3-flash | pi | **75/100** |
+| Claude Sonnet 4.5 | pi | **43.5/100** |
+| claude-haiku-4.5 | pi | **34/100** |
 <!-- gen:mendel-cloud:end -->
 
 ## Guided test
@@ -63,7 +68,10 @@ same frozen prompt; a blind-guided pair can land at different times.
 <!-- gen:mendel-guided:start -->
 | model | harness | score |
 |---|---|--:|
+| glm-5p3-flash | pi | **98/100** |
 | deepseek-v4-flash-0731 | pi | **97/100** |
 | gpt-5.6-luna | pi | **88.5/100** |
+| claude-sonnet-4.5 | pi | **88/100** |
+| Claude Haiku 4.5 | pi | **76/100** |
 | [Qwen3.8-27B-4bit](../reports/qwen3.8-27b.md) | pi | **34/100** (partial) |
 <!-- gen:mendel-guided:end -->

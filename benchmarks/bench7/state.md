@@ -202,3 +202,41 @@ into local `master` now (not pushed).
   Machine idle. Owner asked to hold — not starting the next block yet
   (block 4 run 2, guided high, is next in queue; Gemma-12B/LM Studio
   block 3 was requested to run after block 4).
+
+## Coordinator recap (2026-09-03)
+
+Written on `master` while block 4 (this section's log above) was
+in flight, so it does not yet know block 4 run 1 finished. Kept for
+the standing rules and Block 2 details it adds; the resume point is
+superseded by the log above — block 4 run 1 (blind high) is done,
+scored, and pushed, so the next step is block 4 run 2 (guided high).
+
+Done so far in run 7 (all scored, pushed, merged), per the
+coordinator's view at the time of writing:
+- Block 1: Qwen3.8-27B-4bit low, blind (67.5, partial) and guided
+  (34, partial). Both hit the small mlx context window.
+- Bonsai mlx runs: blind (55, partial) and guided v3.0 (59, partial).
+  BOTH ran at high — mlx did not honor the low flag; the rows are
+  renamed/annotated. No more Bonsai runs on mlx.
+- Qwen3.6-35B-A3B blind high: scored and pushed; the coordinator
+  re-scored it on Fable (the row in `results.json` is the truth).
+
+New standing rules since the last session (all in `AGENT.md` ground
+rules and `AGENTS.md`): score in a Fable subagent only; never
+download a model; never bare `git stash` (named stashes only); first
+action is the run7 worktree (reuse `../choose-a-local-llm-run7` if it
+exists with the `run7` branch, else create it fresh).
+
+Pending item: the Qwen3.6-35B-A3B blind-high session log and meta
+file were never committed into `benchmark/runs/` (the Fable re-score
+found neither on the Linux box). Copy them from the Mac per PLAN.md
+and list them in SESSIONS.md. This is Block 0 in the current
+`AGENT.md` queue.
+
+## Session — resuming per merged AGENT.md (Block 0 first)
+
+Master's `AGENT.md` was consolidated 2026-09-03 with a new Block 0
+(push everything missing) ahead of Block 1 (Qwen3.6 guided high).
+Merged master into `run7` to pick up the queue and standing rules;
+this session starts at Block 0 per the owner's instruction to check
+in after Block 0 before continuing.

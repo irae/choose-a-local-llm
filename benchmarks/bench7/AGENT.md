@@ -74,6 +74,15 @@ list`, and `ps aux | grep -iE 'mendel|mlx|llama'`, and record in
 
 ## Ground rules
 
+- **FIRST ACTION, before you read further or touch any file:**
+  `git worktree add ../choose-a-local-llm-run7 -b run7` (or `cd` into
+  it if it exists), then `cd ../choose-a-local-llm-run7`. Verify with
+  `pwd` and `git worktree list`. Every command of this run happens
+  there — never in `~/code/choose-a-local-llm`.
+- Never run a bare `git stash` in any worktree of either repo — the
+  stash list is shared and parallel agents clobber each other. Prefer
+  a WIP commit on your run branch. If a stash is unavoidable: `git
+  stash push -m "run7: <what>"` and pop by name only.
 - Work sits in two repos, and the main worktree of each stays with the
   coordinator — never work in it. Benchmark artifacts, scores,
   reports, run branches: the `../mendel-benchmark` worktree (branch
@@ -87,6 +96,9 @@ list`, and `ps aux | grep -iE 'mendel|mlx|llama'`, and record in
   the stop-and-sync steps in `AGENTS.md` (merge to `master`, push
   `master`, delete the branch, remove the worktree — that one push is
   required).
+- Never download a model. Every model is already in the cache, in the
+  exact tested revision and quant. If one is missing, STOP and ask the
+  owner.
 - One model on the GPU at a time. Port 8081. No parallel workers.
 - Before the first run: step 1 above, confirm the GPU is
   idle, confirm `sysctl iogpu.wired_limit_mb` is 24000.
@@ -98,7 +110,13 @@ list`, and `ps aux | grep -iE 'mendel|mlx|llama'`, and record in
 - After EVERY run: stop the server, then `pkill -f "Mendel Daemon"`
   (never mid-run). Clean the worktree per PLAN.md "Cleanup"; keep the
   branch.
+- Out of credits (any metered API involved) is a PAUSE, never a
+  teardown: keep everything alive, escalate to the owner, resume the
+  same run after the top-up.
 - Never run Gemma-4-26B-A4B. It is parked.
+- Score in a subagent on the Fable model (`claude-fable-5`) — scoring
+  is LLM judgment; a smaller model misjudges rubric calls and cost
+  bases.
 - Never trust the model under test. Score only from the verification
   battery (`node ../mendel-benchmark/benchmark/score.mjs` plus the
   rubric).
@@ -133,26 +151,66 @@ coordinator does it.
 
 ## The queue — priority order, do not reorder
 
-A fully scored-and-pushed prefix is the goal; the tail can wait for
-another night.
+Consolidated 2026-09-03 after the owner's newer decisions. Done so
+far: Block 1 (both Qwen3.8 low runs, partial), the Bonsai mlx runs
+(kept as high — the low flag was not honored), Qwen3.6-35B-A3B blind
+high (re-scored on Fable; the row in `results.json` is the truth). A
+fully scored-and-pushed prefix is
+the goal; the tail can wait for another night.
 
-### Block 1 — Qwen3.8-27B-4bit, effort low (mlx)
+Scoring reminder: score in a Fable subagent (`claude-fable-5`), never
+on a smaller model.
 
-Serve: `mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit
---prompt-cache-size 2 --port 8081`
+### Block 0 — push everything that is missing, FIRST
 
-1. `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi blind low`
-2. `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi guided low`
+Before any model run: get every artifact of already-scored runs off
+this machine and onto the correct branches, so the coordinator can
+re-score while long runs are in flight.
 
-### Block 2 — Ternary Bonsai-27B 2-bit (mlx), four runs
+1. `git -C ../mendel-benchmark pull origin benchmark` (the
+   coordinator re-scored Qwen3.6 blind high on Fable; do not redo it).
+2. Copy the Qwen3.6-35B-A3B blind-high session log and meta file into
+   `../mendel-benchmark/benchmark/runs/` and list them in SESSIONS.md
+   per PLAN.md — the re-score found neither committed.
+3. Sweep for anything else local-only: unpushed commits in
+   `../mendel-benchmark` or on run branches (`git status`, `git log
+   origin/benchmark..`), scored artifacts still only under
+   `scratchpad/`. Commit with `chore(benchmark)` and push the
+   `benchmark` branch.
+4. Only then start Block 1.
 
-Serve: `mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit
---prompt-cache-size 2 --port 8081`
+### Block 1 — Qwen3.6-35B-A3B guided high (llama-server)
 
-1. `./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi blind low`
-2. `./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi guided low`
-3. `./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi blind high`
-4. `./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi guided high`
+The server for this model is already proven; finish its pair first.
+Serve with the exact config from its report page
+(`docs/setups/m1-max-32gb/`). No MTP drafter flags. Model id
+`qwen3.6-35b-a3b`.
+
+1. `./run-worker.sh qwen3.6-35b-a3b pi guided high`
+
+### Block 2 — Ternary Bonsai-27B on the PrismML fork, low first
+
+The mlx runs of this block are DONE and stay in the data: both ran at
+high because mlx did not honor the low flag (see the rows'
+`config_note`). The remaining Bonsai runs use the PrismML llama.cpp
+fork — the owner wants the fork scored, and wants LOW first.
+
+Serve with the exact `bonsai-prism` config from the report page
+(`docs/setups/m1-max-32gb/reports/bonsai-27b.md`):
+`~/prism-llama/llama-server`, ternary Q2_g64 GGUF. Add a pi model
+entry per PLAN.md model-config rules if one is missing. These are NEW
+rows (new serving stack), not replacements of the mlx rows.
+
+1. `./run-worker.sh bonsai-prism pi blind low`
+2. `./run-worker.sh bonsai-prism pi guided low`
+3. `./run-worker.sh bonsai-prism pi blind high`
+4. `./run-worker.sh bonsai-prism pi guided high`
+
+**Verify the thinking level right after each run starts:** the session
+log's `thinking_level_change` event must say the requested level. Both
+mlx runs silently ran at high. If the level is wrong, stop the run at
+once, note it in `state.md`, and continue with the next item — do not
+burn wall clock on a wrong config.
 
 Budget one retry per run (PLAN.md retry rules).
 
@@ -167,16 +225,7 @@ is missing, add it per PLAN.md model-config rules before the run.
 2. guided `high`
 3. guided `low`
 
-### Block 4 — Qwen3.6-35B-A3B (llama-server)
-
-Serve with the exact config from its report page
-(`docs/setups/m1-max-32gb/`). Do NOT pass any MTP drafter flags; they
-break this brew build. Use the pi model id `qwen3.6-35b-a3b`.
-
-1. `./run-worker.sh qwen3.6-35b-a3b pi blind high`
-2. `./run-worker.sh qwen3.6-35b-a3b pi guided high`
-
-### Block 5 — only if time remains
+### Block 4 — only if time remains
 
 `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi guided xhigh`
 (guided only, no blind pair).
