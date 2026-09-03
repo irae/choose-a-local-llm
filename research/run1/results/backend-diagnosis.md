@@ -203,3 +203,61 @@ Every loop-related number here should be read with that attached.
 To settle it, the replay needs to run to the original's length or to its
 `end_reason`. That is a multi-hour unattended run, which is a benchmark
 job rather than a research aside.
+
+
+## Goal 1 item 2 — the Gemma-12B newline flood, first divergence found
+
+All three Gemma-12B session logs contain one degenerate block. Measured
+2026-09-03 from the logs, no model run needed.
+
+| Run | flood length | non-blank content inside it | what came immediately before |
+| --- | --- | --- | --- |
+| high blind | 5473 chars | `<\|channel>` twice | failed `edit` tool result |
+| high guided | 5461 chars | `<\|channel>` once | failed `edit` tool result |
+| low guided | 5548 chars | two ordinary sentences | an assistant message |
+
+### Three things this settles
+
+**It is a broken control token, not prose.** Two of the three floods
+contain nothing but newlines and the string `<|channel>`. That is a
+malformed special token: the real marker is `<|channel|>`, with a
+closing pipe. The model emitted a control token, got it wrong, and the
+rest of the block is newlines. This is a tokenizer or chat-template
+fault, not a model "repetition collapse" in the ordinary sense.
+
+**Two of three floods follow a failed edit, not all three.** The trial
+draft says the flood comes right after the first failed edit in 3/3
+runs. The logs say 2/3. The two that do:
+
+- high blind, after: `Could not find the exact text in
+  examples/planout-example/package.json. The old text must match exactly
+  including all whitespace and newlines.`
+- high guided, after: `Validation failed for tool "edit":
+  edits.1.oldText: must have required properties oldText`
+
+The third, low guided, floods after an ordinary assistant message with
+no tool error in front of it, and its flood contains normal sentences
+rather than the broken token. It may be a different failure wearing the
+same shape.
+
+**The lengths are suspiciously uniform.** 5473, 5461, 5548 characters
+across three independent runs. Random degeneration does not land within
+1.6% three times. Something is capping the block — a budget, a stop
+condition, or a buffer — and finding what caps it would say more about
+the mechanism than the flood itself does.
+
+### An uncomfortable detail
+
+The high-blind error text reads `must match exactly including all
+whitespace and newlines`, and the model answers with 5473 characters of
+newlines. Run 2 section D already lists sanitizing failed-edit error
+text as an alternative, on the theory that its structure seeds the loop.
+This is not proof — the high-guided error mentions no newlines and
+floods anyway — but the pairing is worth a look.
+
+### What is still open
+
+Whether `<|channel>` reaches the model from LM Studio's bundled Gemma-4
+template, which run 2 section D records as crashing on tool calls.
+Testing that needs the template, not the logs, so it belongs with
+section D.
