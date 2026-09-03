@@ -89,9 +89,11 @@ The drafter allocated, and speculative decoding is accepting drafts at
 
 ### What changed, and what it means
 
-Three things differ from the failing observation: the context is 8192
-instead of 262144, the machine was freshly rebooted and quiet, and no
-other model was resident.
+There is only one machine — every local measurement in this project runs
+on this Mac — so nothing here compares hardware. What differs from the
+failing observation is the machine's STATE and the config:
+the context is 8192 instead of 262144, the Mac had just rebooted and was
+quiet, and no other model was resident.
 
 So the failure is **conditional, not a build defect**. The build is
 unchanged. That reframes item 4: the question is no longer "is the brew
