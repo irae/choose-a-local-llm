@@ -316,3 +316,61 @@ This is a good argument for the rule the owner already set: read the
 counter that cannot lie. Free and active moved for reasons that had
 nothing to do with the run, and the allocation total was inflated by
 the compressor. Wired was right the whole time.
+
+
+## Finding 6 — a fast walk degrades the machine instead of failing it
+
+Ran the fixed probe (incompressible fill) fast, no pause, cap 36000 MB,
+from a clean machine with 24152 MB free.
+
+It never failed. At peak it held 35840 MB with 436 MB free, 27270 MB
+occupied by the compressor, and **8192 MB of swap in use**. Swap had
+been 0 for every earlier measurement today.
+
+macOS does not answer an impossible request with an error. It compresses,
+then it swaps, then it keeps going. The owner's point about rate is
+visible here as the mechanism: a fast asker gets a degraded machine, not
+a refusal. The run continues, slowly, on swap.
+
+That is worse than a clean failure for a benchmark. A sweep that keeps
+running while the machine swaps produces tokens per second that measure
+the swap file, not the model.
+
+Stopped the run before the second probe rather than thrash further. The
+machine recovered on its own: 26412 MB free, compressor back to 208 MB,
+863 MB of swap left behind.
+
+## The probe is not yet trustworthy for absolute numbers
+
+Two fills gave results that cannot both be right.
+
+* `mx.ones`, clean machine: 25295 MB wired at peak, swap 0, compressor
+  about 920 MB.
+* `mx.random.uniform`, clean machine: 3079 MB wired at peak, swap 8192
+  MB, compressor 27270 MB.
+
+Same script, same machine, same cap, minutes apart. The difference is
+the regime. The `mx.ones` runs never reached real scarcity, because the
+blocks compressed away, so the GPU kept its wired pages. The random run
+drove the system into extremis, and under that pressure macOS unwired
+GPU memory to survive. The 3079 MB is what was left after eviction, not
+what MLX obtained.
+
+So the two sets are not comparable, and **findings 4 and 5 should not be
+read as model-sized predictions**. What they compare is one fill against
+itself, dirty versus clean, and that relationship is probably sound. The
+absolute megabytes are from a regime a real model will not be in.
+
+What survives without qualification:
+
+* Wired is the counter that cannot be inflated by the compressor.
+  Everything else moved for reasons unrelated to the allocation.
+* Starting state changes what an identical request receives.
+* Rate changes the outcome, and the outcome of asking too fast is
+  degradation rather than an error.
+
+What the gate formula needs before anyone trusts it: a probe that
+allocates the way a model does, and a check against a model with a known
+footprint. `tools/mem-probe.py` is not that yet. It allocates one flat
+array; a server allocates weights once and then a KV cache that grows
+with the run. Those are different shapes and probably different answers.

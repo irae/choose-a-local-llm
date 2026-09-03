@@ -102,3 +102,64 @@ Open, in the order that matters:
 Machine state left behind: desktop widgets off, `StandardHideWidgets =
 1`. `iogpu.wired_limit_mb=24000`, which will reset on the next reboot.
 Nothing else changed. `tools/mac-quiet.sh` has never been run.
+
+
+## Session 1, third pass — the rate question, and a probe that is not ready
+
+The owner asked whether the balloon was fast or slow, and said the
+choice must be slow by design: agent work stops constantly for tool
+calls, tests and web requests, and every gap lets macOS compact. A
+benchmark that allocates in a tight loop OOMs earlier than the workload
+it stands for.
+
+That was right, and checking it exposed two faults in my own work.
+
+- 17:01 the probe filled blocks with `mx.ones`. A repeated value
+  compresses to almost nothing, so the walk reported 35840 MB allocated
+  on a 32 GB machine. Every allocation ceiling in findings 4 and 5 is
+  void. Fill is now `mx.random.uniform`.
+- 17:03 reran fast with incompressible data. It still did not fail. At
+  peak: 436 MB free, 27270 MB compressor, 8192 MB swap, where swap had
+  been 0 all day. macOS degrades instead of refusing. Finding 6.
+- Stopped the run before the second probe rather than thrash the
+  machine. It recovered to 26412 MB free on its own, leaving 863 MB of
+  swap.
+- Compared the two fills and found they are not comparable: `mx.ones`
+  gave 25295 MB wired at peak with swap 0, random gave 3079 MB wired
+  with 8 GB of swap. Different regimes. Under real scarcity macOS
+  unwires GPU memory, so the second number is what survived eviction,
+  not what MLX got.
+
+`docs/methodology/memory-ceiling.md` now carries the rate rule: record
+the rate with every ceiling, never compare across rates, and treat a
+benchmark OOM as pessimistic about real agent use.
+
+### Handing over, third pass
+
+Do not build on the probe's absolute numbers. It allocates one flat
+array. A server allocates weights once and then grows a KV cache, which
+is a different shape and probably a different answer. The gate formula
+in finding 5 is a hypothesis from four points in a regime a model will
+not be in.
+
+What is safe to carry forward:
+
+1. Wired is the honest counter. The compressor can inflate everything
+   else, including a total that looked like an allocation ceiling.
+2. Starting state changes what an identical request receives.
+3. Asking too fast degrades the machine rather than failing it, so a
+   sweep can keep running on swap and report throughput that measures
+   the swap file.
+
+Next, in order:
+
+1. Rebuild the probe to allocate like a server: a fixed block for
+   weights, then a slowly growing second allocation for KV. Compare
+   against a model with a known footprint before trusting any formula.
+2. Only then revisit the gate.
+3. Goals 1, 2 and 3 remain untouched.
+
+Machine state: desktop widgets off. `iogpu.wired_limit_mb=24000`, which
+resets on the next reboot. 863 MB of swap in use from the probe, which
+will clear on its own or on reboot. `tools/mac-quiet.sh` has never been
+run. Nothing else changed.
