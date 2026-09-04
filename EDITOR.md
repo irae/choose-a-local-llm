@@ -110,6 +110,12 @@ These rules bind every `reports/<model>.md` page:
   param-change instruction; a different set of params is a different
   row). `hidden: true` removes the row from every table AND its config
   block on the next `docs:tables` run — use it instead of deleting.
+  A `retired` block (`date`, `reason`, `details`) hides the row the same
+  way and also strips it to a bare record: use `hidden` when a config
+  keeps its numbers and waits for a re-measurement, and `retired` when
+  the config itself is withdrawn and its numbers must leave the data;
+  the model's report page then carries one "Retired entries" line under
+  its table, pointing at the evidence.
 - **The Configs section is generated** between
   `<!-- gen:model-configs:... -->` markers: one `#N — config` block per
   visible row, with its exact startup command. Never hand-edit inside;
