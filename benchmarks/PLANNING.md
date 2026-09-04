@@ -39,10 +39,15 @@ and the methodology pages the runbook points to.
 1. Create the next `benchmarks/bench<N>/` folder with the standard kit
    shape (`AGENT.md`, `state.md`, `results.md`, `results/` — see
    `AGENTS.md`, standing rules).
-2. Open with the reading list: the run's `state.md` history, the
-   relevant `docs/methodology/` pages, and any forensics file that
-   overrides older lore. Point, do not paste — the runbook stays short.
-   `docs/methodology/checklist.md` is ALWAYS on the list, and the
+2. Open with one short essentials section: the run's `state.md`
+   history, the worktree command, and the rules that apply to every
+   block. Do not front-load a reading list. Each block names the
+   documents it needs at its own start, and the runner reads them
+   there. Reason: a fresh, small context gets more attention from an
+   agent than a page read an hour earlier; the runbook is already in
+   the right order, so the right file gets read at the right time.
+   Point, do not paste — the runbook stays short.
+   `docs/methodology/checklist.md` is still the first block's reading, and the
    runbook's first instruction is its step 1: create the run worktree
    and move into it before any other action. Runners skip this when
    the runbook only implies it — spell out the exact `git worktree
@@ -67,7 +72,12 @@ and the methodology pages the runbook points to.
      record for both. The split turn carries a summary beginning
      `No prior history`. Counting it inflates the number; it did, twice,
      in run 7.
-4. State the execution rules the runner must not relearn: local run
+4. Never write a `sudo` command into a runbook. The runner verifies
+   the machine read-only (`sysctl -n iogpu.wired_limit_mb`, `pgrep`,
+   `vm_stat`) and, only when a value is wrong, reports it and shows the
+   owner the command to run. The owner's Mac is not the runner's to
+   change.
+5. State the execution rules the runner must not relearn: local run
    branch in a fresh sibling worktree (the main worktree stays with the
    coordinator), no bare `git stash` — named stashes only, applied by
    name (see `AGENTS.md` standing rules), scoring in a subagent on the
@@ -78,19 +88,19 @@ and the methodology pages the runbook points to.
    one model on the GPU at a time, port, heartbeat cadence, the scoped
    memory watcher on every run, commit as results land, never push a
    run branch, never publish.
-5. Write the blocks in priority order. Each block gives: the exact
+6. Write the blocks in priority order. Each block gives: the exact
    serving command, the exact run command (with every env var), where
    results land, what "done" means, and what to update when it is done
    (tables, `results.md`, `state.md`, commit).
-6. Make every condition executable. "If promising" is a coordinator
+7. Make every condition executable. "If promising" is a coordinator
    judgment — either resolve it while planning, or spell out the test
    the runner applies and what to do on each outcome.
-7. Bake in the failure paths so the GPU never sits idle: what to check
+8. Bake in the failure paths so the GPU never sits idle: what to check
    when output stops growing (server log first — see
    `docs/methodology/server-lore.md`), how to resume each block, and
    the order to start the next block the moment one ends. No approval
    gates.
-8. Close the loop: when the run ends, the runner updates `state.md`
+9. Close the loop: when the run ends, the runner updates `state.md`
    with a clean handing-over section, and the coordinator adds the
    run's findings to `benchmarks/INDEX.md`.
 
