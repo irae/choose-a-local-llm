@@ -124,9 +124,9 @@ lives in [common rules](./common-rules.md) and
    the model, restart, resume. Every wakeup ends with a new wakeup or
    with the shutdown steps below. The GPU never sits idle between
    blocks. A depth sweep carries this signal itself: it greps the server
-   log for the death signature, probes one real completion after a
-   stall, and exits 42 on a dead server. There the wakeup only checks
-   that the sweep's output file still grows.
+   log for the death signature, probes a real completion when a step
+   goes silent, and exits 42 on a dead server. There the wakeup only
+   checks that the sweep's output file still grows.
 9. Heartbeat format: "Block N (model): done X/Y, [num]h[num]min left."
 10. Note deviations in the run's `state.md` AS THEY HAPPEN, not at the
    end. Smallest fix, fairness first, suspect the harness before the

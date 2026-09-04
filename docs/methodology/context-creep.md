@@ -65,7 +65,7 @@ The verdict, from the last line:
 | `STOP: swap grew N MB ...` | 42 | **mem**. Every number past the last good row times the swap file |
 | `STOP: N or more pages compressed ...` | 42 | **mem**. Compaction onset; the last clean row carries the tok/s |
 | `STOP: generation thread died in <log>` | 42 | Dead server, not a ceiling. Restart and run it again |
-| `STOP: server dead. One real completion ...` | 42 | The same, found by the probe instead of the log |
+| `STOP: server dead. The step gave nothing ...` | 42 | The same, found by the probes instead of the log |
 | `no ceiling found up to D` | 0 | **window**, or no ceiling in the swept range |
 
 The site publishes the stable value only: the deepest depth that still
@@ -93,15 +93,35 @@ as [the checklist](./checklist.md) step 7 says.
 
 Liveness is one signal, not three. `/health` stays 200 after an
 `mlx_lm.server` generation thread dies, so no sweep tool reads it. The
-runner watches the server log for the backend's death signature, and,
-when a step gives no reply for `STALL_S` (default 600 s), it sends ONE
-real completion. A completion that comes back means the server lives and
-the step is slow; the runner says so and keeps waiting. One that does
-not come back ends the sweep with exit 42. The probe fires on suspicion,
-never on a timer, because these servers hold one slot and a timed probe
-would compete with the sweep. A probe that finds the server alive still
-takes a cache slot, so the runner warns that the next step can re-read
-its prompt and read slow.
+runner watches the server log for the backend's death signature, and it
+probes ONE real completion when a step goes SILENT for `STALL_S`
+(default 600 s).
+
+**Silence, not slowness, starts a probe.** The streaming backends
+(`mlx_lm.server` and LM Studio) beat a heartbeat into the runner for
+every chunk they send, so a step that still produces tokens never
+stalls. Only a silent phase can — a prefill, a full recompute, or a dead
+generation thread. The raw llama-server completion path does not stream,
+so there the whole step is silent and the clock runs from the start of
+the request.
+
+**One failed probe is a suspicion, not a verdict.** All three servers
+hold one slot, so a probe sent while a step is in flight queues behind
+it and times out exactly like a probe to a dead server. The runner
+therefore polls the step and the probe together, and it drops the probe
+the moment the step answers or sends a chunk again. It calls the server
+dead only after two probes fail, each after its own silent `STALL_S`. A
+silent step gets about `2 * (STALL_S + PROBE_TIMEOUT_S)` to prove it
+lives — 30 minutes on the defaults — and then the sweep exits 42.
+
+A probe that finds the server alive still takes a cache slot, so the
+runner warns that the next step can re-read its prompt and read slow.
+
+**The one case the probe cannot tell apart:** a prefill that sends
+nothing for longer than that whole window. The runner would call a live
+server dead. If a config prefills that slowly, raise `STALL_S` for it,
+and record the value you used beside the sweep — a ceiling measured with
+a changed `STALL_S` must say so.
 
 ## Steps
 
@@ -187,7 +207,8 @@ Stop conditions and their defaults, all overridable by environment
 variable: the floor (`FLOOR_TOKS`, 8 tok/s), swap growth above 1 MB,
 material compaction (`COMPACT_PAGES`, 200 pages) on three steps in a row
 without speed recovering, a silent halt, a failed request, and a dead
-server (`STALL_S` 600 s, `PROBE_TIMEOUT_S` 300 s).
+server (silence for `STALL_S`, 600 s, then a probe with
+`PROBE_TIMEOUT_S`, 300 s; two failed probes end the sweep).
 
 **Changed 2026-09-04.** The compaction stop used to fire on ANY
 decompression, however small, which is noise on a busy machine. It now
