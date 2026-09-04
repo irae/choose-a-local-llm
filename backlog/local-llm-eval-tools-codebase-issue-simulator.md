@@ -1,9 +1,33 @@
-# Extract the Mendel benchmark methodology into a generic framework repo
+# Extract the Mendel benchmark method into `local-llm-eval-tools/codebase-issue-simulator`
 
-Status: pending owner review. Draft filed 2026-09-04 at the owner's
-request. Name of the new repo undecided.
+Status: pending owner review; the owner reads this first, then says
+start. Nothing started.
+Filed: 2026-09-04 at the owner's request; repo and project names set by
+the owner the same day.
 Needs hardware: no for the extraction and the refactor; a smoke run
-against a real model at the end needs a machine with a served model.
+against a served model at the end.
+
+## The shape the owner decided
+
+- **One new repository, `local-llm-eval-tools`, holding several
+  projects.** Its README says these are the personal tools the owner
+  develops to choose a local model for their own hardware and for the
+  next hardware they buy, tells a little about this project
+  (choose-a-local-llm: the measurements and the site) and cross-links
+  it; this repository links back.
+- **First project: `codebase-issue-simulator`**, extracted from the
+  Mendel `benchmark` branch with its history. Description: have several
+  models produce competing implementations for an issue on a GitHub
+  repository, through the pi harness, and score the results.
+- **Second project later: `slow-context-creep`**, the depth-sweep
+  apparatus (`tools/sweeps/creep.py` and its backend files) once it is
+  stable. Not part of this item; the repo layout must leave room for it
+  (one folder per project, each with its own README, shared nothing at
+  the top level but the repo README and a licence).
+
+The extraction below therefore lands in `codebase-issue-simulator/`
+inside the new repository, not at its root. `git filter-repo` supports
+that with `--path-rename benchmark/:codebase-issue-simulator/`.
 
 ## What it is about
 
@@ -31,10 +55,11 @@ Work in a fresh clone; never in `../mendel` or `../mendel-benchmark`.
 1. `git clone --branch benchmark --single-branch <mendel remote> /tmp/mendel-extract`
 2. Install `git filter-repo` (the maintained successor of
    `filter-branch`; `brew install git-filter-repo` or pip).
-3. In the clone: `git filter-repo --path benchmark/ --path-rename benchmark/:`
+3. In the clone:
+   `git filter-repo --path benchmark/ --path-rename benchmark/:codebase-issue-simulator/`
    This keeps only the commits that touched `benchmark/`, drops every
    Mendel source file from every commit, and moves the folder's
-   contents to the repository root. Commit messages, authors and
+   contents under `codebase-issue-simulator/`. Commit messages, authors and
    dates survive. If some files that belong to the method live
    outside `benchmark/` (check `.gitignore`, `scratchpad/` rules,
    husky or commitlint config that the run scripts depend on), add
@@ -44,7 +69,9 @@ Work in a fresh clone; never in `../mendel` or `../mendel-benchmark`.
    `git -C ../mendel-benchmark log --oneline -- benchmark | wc -l`;
    `git ls-files` shows no Mendel source; the run scripts still
    reference only files that exist.
-5. Push to the new remote once the owner names it. The Mendel
+5. Push to `local-llm-eval-tools` once the owner creates it; the repo
+   README and the project README come in the first commit after the
+   extracted history. The Mendel
    `benchmark` branch stays as it is; results data (`results*.json`,
    `results*.csv`, `runs/`, the reports) stays in the extracted
    history but is Mendel's data, see step 2.
@@ -135,9 +162,8 @@ cheap model. Only then do new runs use the framework.
 
 ## Open for the owner
 
-- The repository name, and whether it lives under the same GitHub
-  account.
 - Whether Mendel's results data moves with the task definition or
   stays only in the Mendel branch and this project's mirror.
 - Whether the first refactor keeps bash plus node, or moves the
   worker to node too.
+- The licence of the new repository.
