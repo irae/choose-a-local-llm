@@ -166,3 +166,48 @@ Whatever value it takes, a run should treat "hit the output limit" as a
 run-level alarm rather than a routine retry — not because it always
 leads to a loop, which this arm shows it does not, but because it means
 the model just spent its entire output budget on something discarded.
+
+## Arm 3 closing numbers
+
+Ended 10:29:32Z on `wall_clock`, cleanup ran correctly.
+
+| | value |
+| --- | --- |
+| tool calls | 58, 51 distinct, longest identical run 1 |
+| worst collapse | 1133 shape-identical lines in one tool call |
+| time lost to it | 70 minutes, 08:29Z to 09:39Z |
+| recovery | yes, three minutes after the rejection |
+| commits | **0** |
+| working tree | 2 files uncommitted |
+| nudges / respawns / compactions | 0 / 0 / 0 |
+
+After recovering it worked steadily for the last 50 minutes and reached
+58 calls, more than arm 2's 40. It still committed nothing.
+
+## The three arms together
+
+| | Arm 1 post-fix | Arm 2 pre-fix | Arm 3 pre-fix + DRY |
+| --- | --- | --- | --- |
+| collapse | **none** | 498 thinking lines | 1133 tool-call lines |
+| shape-run, thinking | 2 | **498** | 7 |
+| shape-run, tool calls | 5 | 5 | **1133** |
+| tool calls | 75 | 40 | 58 |
+| distinct | 60 | 37 | 51 |
+| **commits** | **3** | 0 | 0 |
+| working tree | clean | 7 dirty | 2 dirty |
+| end reason | wall_clock | wall_clock | wall_clock |
+
+**Only the arm on the post-fix template produced committed work.** Both
+pre-fix arms collapsed and neither finished anything, whether or not a
+repetition penalty was on.
+
+DRY's effect, stated exactly: it moved the collapse out of the thinking
+channel and into a tool call, made each repeated line unique so that
+exact-match detection fails, and let the model recover afterwards. It
+did not prevent the collapse and it did not save the run.
+
+## Caveat that limits all of this
+
+One run per arm. The template result is a single comparison, and the
+recovery in arm 3 is a single observation. A repeat of arm 2 would be
+the cheapest way to strengthen it and is the obvious next GPU item.
