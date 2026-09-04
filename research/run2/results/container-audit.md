@@ -274,3 +274,24 @@ not name the field, and it is a different build.
 2. Does the missing generation prefix alone change behaviour? That is
    the arm-2 question, and it is running on llama-server where the
    argument shape is handled correctly either way.
+
+## Finding 1e — both arms proved from their own live servers
+
+`POST /apply-template` on each arm's server, same conversation, same
+request file. The renderings differ exactly where the fix does, and
+nowhere else:
+
+| Arm | Template served | Prompt ends with |
+| --- | --- | --- |
+| 1, `embedded` | GGUF's post-fix template | `<tool_response\|>` then the thought channel opened |
+| 2, `short` | pre-fix, forced with `--chat-template-file` | `<tool_response\|>` and nothing more |
+
+So `--chat-template-file` works on this build, and arm 2 really is
+running the pre-fix template.
+
+One useful consequence: **both arms render the tool call correctly**, as
+`bash{command:<|"|>ls<|"|>}`. llama-server deserializes
+`function.arguments` before rendering, so the silent corruption of
+finding 1d does not bite here. Arm 2 therefore isolates a single
+variable — the missing generation prefix after a tool response — and
+nothing else.
