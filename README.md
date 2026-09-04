@@ -16,7 +16,8 @@ npm run docs:dev
 
 Then open http://localhost:5173.
 
-Working on this repo? Start at [AGENTS.md](./AGENTS.md).
+Working on this repo? Start at [AGENTS.md](./AGENTS.md), then
+[CONVENTIONS.md](./CONVENTIONS.md) for how markdown and tooling are written.
 
 ## Map
 

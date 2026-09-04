@@ -27,6 +27,9 @@ If another agent is already serving on 5173, add a port:
 
 Site and process docs:
 
+- [CONVENTIONS.md](./CONVENTIONS.md) — before you write any markdown
+  or any script: which rules govern which kind of file, the shape of
+  a measurement tool, what every tool's header must say.
 - [EDITOR.md](./EDITOR.md) — before you change any page, wording, or
   layout. Page shape, vocabulary, where each file lives, how to record
   a measurement across every surface.
