@@ -227,3 +227,50 @@ way and stored beside this one.
 The request and the rendering are archived in
 `~/.local/share/choose-a-local-llm/evidence/run2-context-ramp/`
 as `apply-template.json` and `rendered-embedded.json`.
+
+## Finding 1d — the pre-fix template fails silently on OpenAI-shaped tool calls
+
+Rendering the same conversation four ways, with jinja2 directly, shows
+the two templates differ in two independent places. The second one was
+not expected.
+
+| Template | `arguments` shape | Rendered tool call | Prefix after tool response |
+| --- | --- | --- | --- |
+| pre-fix | JSON string (raw OpenAI) | `bash{{"command": "ls"}}` | none |
+| pre-fix | mapping | `bash{command:<|"|>ls<|"|>}` | none |
+| post-fix | JSON string (raw OpenAI) | refuses to render | — |
+| post-fix | mapping | `bash{command:<|"|>ls<|"|>}` | `<|channel>thought` opened |
+
+Two things follow.
+
+**1. The pre-fix template emits the wrong tool-call format when the
+caller hands it the OpenAI string, and says nothing.** Gemma is trained
+on the `key:<|"|>value<|"|>` form. The pre-fix template passes the raw
+JSON through instead. Every past tool call in the conversation would
+then come back to the model in a form it was never trained to read. A
+model that cannot recognise its own previous call is a model that can
+repeat it.
+
+The post-fix template refuses the same input with a clear message:
+*"tool_calls[].function.arguments must be a JSON object (mapping), not a
+string. Deserialize arguments before passing to the template."* That is
+the "input validation" named in the fix commit. Loud failure replaced
+silent corruption.
+
+**2. Whether this bites depends on the server, not the template alone.**
+Upstream `mlx_lm.server` 0.31.3 deserializes first — `server.py` line
+150 runs `json.loads` on `function.arguments` before
+`apply_chat_template`. So upstream mlx-lm on our containers gets the
+correct tool-call format, and only the missing generation prefix. What
+LM Studio's own MLX engine does is not established here; its binaries do
+not name the field, and it is a different build.
+
+### What this makes worth measuring, in order
+
+1. Does the LM Studio MLX engine deserialize? If it does not, our
+   Gemma-12B runs fed the model malformed copies of its own tool calls
+   for the whole conversation, and that is a complete explanation of the
+   failure family without any model defect.
+2. Does the missing generation prefix alone change behaviour? That is
+   the arm-2 question, and it is running on llama-server where the
+   argument shape is handled correctly either way.
