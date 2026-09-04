@@ -1,70 +1,84 @@
-# The newline flood, measured from the LM Studio server log
+# The newline flood, read from LM Studio's own server log
 
-Run 2, session 1, 2026-09-04. Section D. No GPU was used: this reads a
-log LM Studio already wrote.
+Run 2, session 1, 2026-09-04. Section D. No GPU was used: this reads
+logs LM Studio already wrote.
 
-`~/.cache/lm-studio/server-logs/2026-09/2026-09-03.1.log` is the server
-log from run 1's Gemma-12B replay day. It records the request bodies,
-which means it records the assistant messages the harness sent back —
-including their `reasoning_content`.
+## What is recoverable, and what is not
 
-## What it shows
+`~/.cache/lm-studio/server-logs/` keeps request bodies, so it keeps the
+assistant messages the harness sent back, including
+`reasoning_content`. Scanned every log from June to September 2026 for
+runs of 20 or more consecutive newlines.
 
-| Measurement | Value |
+**One flood is preserved. One.** It is in `2026-09-03.1.log`, run 1's
+replay day. No August log contains a flood at any threshold down to
+eight newlines, so run 7's three floods are not recoverable from this
+source. They lived in pi session logs, and nine of seventeen Mendel rows
+have no log left.
+
+### A counting trap, recorded so nobody repeats it
+
+The first scan reported **119 floods**. That number is wrong, and the
+way it is wrong matters for anyone counting anything from these logs.
+
+Every request body carries the whole conversation history. One flooded
+assistant message therefore reappears in every later request. Hashing
+the flood text shows **1 distinct text, 119 occurrences**. Occurrences
+in a server log count re-sends, not events. Deduplicate before
+reporting.
+
+## What the one preserved flood shows
+
+| Property | Value |
 | --- | --- |
-| Runs of 20 or more consecutive newlines | 119 |
-| Of those, runs ending in `<\|channel>` | **119** |
-| Log lines carrying a flood | 119 |
-| Longest visible run | 40 newlines |
+| Field it sits in | `reasoning_content`, never `content` |
+| How it ends | `<\|channel>` |
+| Longest visible newline run | 40 (the log's truncation limit, so a floor) |
+| Message immediately before it | the runner's model nudge |
 
-**Every single flood ends with `<|channel>`.** Not most: all 119.
+The message before it is not a tool response. It is
+`run-pi-rpc.mjs`'s MODEL nudge, verbatim:
 
-Every one sits in the `reasoning_content` field of an assistant message,
-never in `content`. A sample, with the log's own truncation marker:
+> "You are not done. Check TASKS.md for unchecked items and `git status`
+> for uncommitted work, then continue the workflow from where you
+> stopped."
 
-```
-"reasoning_content": "\n\nThe user wants me to continue the task of replac...
-    <Truncated in logs> ...\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<|channel>"
-```
+So in this one case the sequence is: the model stops on its own with
+work unfinished, the runner nudges it, and the model answers the nudge
+with newlines and a bare `<|channel>`.
 
-The 40-newline figure is the log's truncation limit, not the real length.
-Treat it as a floor.
+**n = 1.** That is enough to say the draft claim in run 1's notes — that
+the flood follows a failed edit — does not describe this instance. It is
+not enough to say the flood always follows a nudge. Both statements need
+more floods than the machine still has.
 
-## What it means
+## Why the ending token is the interesting part
 
-The flood is not random output. It is the model, **inside an open
-thought channel**, producing newlines and then emitting `<|channel>`
-again — trying to open a channel it is already inside. It never reaches
-`thought`, never closes with `<channel|>`, and never returns to content.
+`<|channel>` alone is not a valid channel opening. Gemma's format is
+`<|channel>thought` followed by content and `<channel|>`. The preserved
+flood opens nothing, closes nothing, and produces no content — it stalls
+at the channel-opening token after a run of newlines.
 
-That matches run 1's reading exactly and now has a count behind it. It
-also matches the template evidence in `container-audit.md`: after a tool
-response the model is handed a prompt that has already opened the
-thought channel, or, on the pre-fix template, handed no prefix at all
-and left to open it alone.
-
-## What it does not settle
-
-Which of the two template paths produced it, because the log does not
-record the rendered prompt — only the request bodies. Separating them
-needs the arm-2 comparison and the LM Studio probe below.
+That fits the template evidence in `container-audit.md`. After a plain
+user message with thinking on, the template emits `<|turn>model` and
+stops; the model must open its own thought channel. Here it failed to.
 
 ## The probe this leaves for the next LM Studio session
 
-One question, and it is cheap once a Gemma-12B is loaded there:
+One question, cheap once a Gemma-12B is loaded there:
 
 **Does the LM Studio MLX engine deserialize `function.arguments` before
 it renders the chat template?**
 
-Send one chat completion whose history contains an assistant tool call
-with `arguments` as a JSON string, the shape every OpenAI client sends,
-and read what comes back. If the engine passes the string through to the
-pre-fix template our containers ship, every past tool call reaches the
-model in a format it was never trained on, and that alone explains the
-failure family. `results/render-templates.py` prints both renderings, so
-the expected outputs are already written down.
+Send one chat completion whose history holds an assistant tool call with
+`arguments` as a JSON string, the shape every OpenAI client sends. If
+the engine passes the string through to the pre-fix template our
+containers ship, every past tool call reaches the model in a format it
+was never trained on. `results/render-templates.py` prints both
+renderings, so the two possible answers are already written down.
 
 Upstream `mlx_lm.server` deserializes (`server.py` line 150) and is not
 affected. LM Studio ships a different engine build.
 
-Evidence: `~/.local/share/choose-a-local-llm/evidence/run2-flood-shape/`.
+Evidence and the scan scripts:
+`~/.local/share/choose-a-local-llm/evidence/run2-flood-shape/`.
