@@ -16,10 +16,10 @@
 #             local chat_template.jinja still ships. It emits nothing
 #             after a tool response. See results/container-audit.md.
 #   short-repeat  the `short` arm again, unchanged, to get a second
-#             observation of the collapse. The template result rests on
+#             observation of the repetition loop. The template result rests on
 #             one run per arm and that is its weakest point.
 #   short-dry the `short` arm again, with DRY sampling ON at a window
-#             long enough to see a repeated line. `short` collapsed —
+#             long enough to see a repeated line. `short` looped —
 #             498 identical thinking lines in a row — so this is the
 #             first configuration on this machine where a repetition
 #             defence has a real repetition to defend against.

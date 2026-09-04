@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""measure-collapse.py — find repetition collapse in a model's thinking.
+"""measure-repeat-run.py — find repetition repetition loop in a model's thinking.
 
 Research run 2. `flood-check.py` looks for runs of newlines, which is
 the shape the Gemma-12B flood took. This looks for the other shape:
@@ -10,7 +10,7 @@ because the model keeps producing varied, well-formed text while saying
 one thing repeatedly inside the thought channel. It was found by hand on
 run 2 arm 2, where one line repeated 173 times in a row.
 
-Usage: measure-collapse.py <events.jsonl>
+Usage: measure-repeat-run.py <events.jsonl>
 """
 
 import json

@@ -111,9 +111,9 @@ because llama-server deserializes `function.arguments` first. So arm 2
 isolates exactly one variable: **the missing generation prefix after a
 tool response.**
 
-## The result: the pre-fix template collapses into repetition
+## The result: the pre-fix template falls into a repetition loop
 
-Measured with `measure-collapse.py` on both arms' thinking output.
+Measured with `measure-repeat-run.py` on both arms' thinking output.
 
 Both arms ran the full 150 minutes and ended on `wall_clock`.
 
@@ -121,7 +121,7 @@ Both arms ran the full 150 minutes and ended on `wall_clock`.
 | --- | --- | --- |
 | **longest identical consecutive thinking line** | **1** | **498** |
 | most repeated line | ` ```javascript `, 10 times | `Actually, I'll just use \`write\` for this file as well.` |
-| time in the collapse | none | **61 minutes**, 06:44Z to the 07:45Z wall |
+| time in the repetition loop | none | **61 minutes**, 06:44Z to the 07:45Z wall |
 | tool calls | 75 | 40 |
 | distinct calls | 60 | 37 |
 | thinking output | 18659 chars | **47231 chars** |
@@ -132,10 +132,10 @@ Both arms ran the full 150 minutes and ended on `wall_clock`.
 
 Arm 1 never repeated a single thinking line twice in a row across 150
 minutes. Arm 2 repeated one line **498 times in a row** and never
-recovered: the collapse began at 06:44Z and ran to the wall.
+recovered: the repetition loop started at 06:44Z and ran to the wall.
 
 **It cost the run its output.** Arm 2 spent 41 percent of its wall clock
-in the collapse, emitted two and a half times arm 1's thinking text, made
+in the repetition loop, emitted two and a half times arm 1's thinking text, made
 half the tool calls, and committed nothing. Arm 1 committed three
 dependency removals and left a clean tree. Neither arm ticked a box in
 `TASKS.md`.
@@ -151,19 +151,19 @@ longest identical run 2. The newline check reads it as clean: no run of
 eight newlines, no channel-open token. Both are correct and both are
 blind to this shape.
 
-The collapse is inside the thought channel, in well-formed prose, with
+The repetition loop is inside the thought channel, in well-formed prose, with
 no tool call emitted at all. From outside it looks like a model
 thinking hard. The only outward sign is that tool calls stop advancing
 while the event stream keeps growing — the same signature as a long
 tool call, which is why it needed a direct look at the text.
 
-`measure-collapse.py` now detects it, and it should run beside
+`measure-repeat-run.py` now detects it, and it should run beside
 `flood-check.py` on any Gemma-4 run.
 
 ## What this does and does not establish
 
 **Establishes:** the pre-fix chat template is sufficient, on its own, to
-produce a repetition collapse in Gemma-4-12B on llama-server. Nothing
+produce a repetition repetition loop in Gemma-4-12B on llama-server. Nothing
 about the MLX engine is needed to explain it.
 
 That matters directly, because **every Gemma-4 MLX container on this
@@ -172,7 +172,7 @@ machine serves that template** and `AutoTokenizer` resolves to it
 were measured on it.
 
 **Does not establish:** that it is the only cause, or that it explains
-the LM Studio tool-call loop specifically. Arm 2's collapse is in the
+the LM Studio tool-call loop specifically. Arm 2's repetition loop is in the
 thinking channel; the LM Studio failure repeated malformed tool calls.
 Those are two surfaces of the same family, not the same event. And each
 arm is n=1.
@@ -198,10 +198,10 @@ Evidence: `~/.local/share/choose-a-local-llm/evidence/run2-replay-short/`.
 | recovered | no | no | not applicable |
 | commits | 0 | 0 | 3 |
 
-Read the row backwards. The only configuration that did not collapse is
+Read the row backwards. The only configuration that did not repetition loop is
 the one running the template Google shipped after 2026-07-15. The two
-that collapsed both ran the pre-fix template, on two different backends,
-and they collapsed on different surfaces.
+that looped both ran the pre-fix template, on two different backends,
+and they looped on different surfaces.
 
 That is consistent with one cause and two symptoms. It is not proof of
 one cause: each cell is a single run, and the LM Studio column also
@@ -211,12 +211,12 @@ variable that has been isolated and shown to flip the outcome.
 
 ---
 
-# The repeat arm — the collapse reproduces, in a third shape
+# The repeat arm — the repetition loop reproduces, in a third shape
 
 Started 2026-09-04 10:32Z, 100-minute wall, identical to arm 2: pre-fix
 template, no DRY, same prompt, same base commit.
 
-**It collapsed.** So the template result is no longer n=1.
+**It looped.** So the template result is no longer n=1.
 
 The shape is new again. Not a run of one line, and not a counter — a
 short CYCLE:
@@ -247,7 +247,7 @@ which committed nothing, before degenerating late in the run.
 | 3 `short-dry` | a counter, 1133 unique lines | one tool call |
 | repeat | a two-line cycle, A A B | thinking |
 
-Every arm on the pre-fix template collapsed. The arm on the post-fix
+Every arm on the pre-fix template looped. The arm on the post-fix
 template did not. That is now **three out of three against one out of
 one**, and it is the strongest form the claim has.
 
@@ -258,23 +258,23 @@ defeats every consecutive-identity test, because identity breaks every
 second line, and it defeats a whole-run distinct count, because the
 run's earlier healthy work dilutes it.
 
-`collapse-check.py` replaces all three with one measure: **the ratio of
+`loop-check.py` replaces all three with one measure: **the ratio of
 distinct SHAPES to lines inside a sliding window**. Shape normalisation
 stops a counter hiding; the window stops early health masking a late
-collapse.
+repetition loop.
 
 Validated on all four arms:
 
 | Arm | worst ratio | verdict |
 | --- | --- | --- |
 | 1 `embedded`, post-fix | 0.20 thinking / 0.67 tool | **ok** |
-| 2 `short` | 0.02 | collapse |
-| 3 `short-dry` | 0.02 | collapse |
-| repeat | 0.03 | collapse |
+| 2 `short` | 0.02 | repetition loop |
+| 3 `short-dry` | 0.02 | repetition loop |
+| repeat | 0.03 | repetition loop |
 
 The threshold is **0.10**, and it was set by the clean arm rather than
 by taste. At 0.25 the clean arm fails, because a real run emits
 structurally repetitive text — a `package.json` dependency block reaches
-0.20. The three collapses sit an order of magnitude below that, so 0.10
+0.20. The three loops sit an order of magnitude below that, so 0.10
 falls in empty space. A detector that flags its own control is worthless,
 and the first version of this one did.

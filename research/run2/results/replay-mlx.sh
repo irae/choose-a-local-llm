@@ -4,7 +4,7 @@
 # llama.cpp onto the MLX path, which is where the published Gemma-12B
 # rows were actually measured.
 #
-# Last night's arms proved the pre-fix chat template collapses
+# Last night's arms proved the pre-fix chat template loops
 # Gemma-4-12B on llama-server. Our MLX containers ship that same pre-fix
 # template and `AutoTokenizer` resolves to it, so the published rows ran
 # on it. This asks the question directly on `mlx_lm.server`.
@@ -44,7 +44,7 @@ PORT=8081
 # Deliberately smaller than the 158464 the llama.cpp arms declared.
 # `mlx_lm.server` has no window of its own and dies with a Metal OOM at
 # its ceiling (see qwen38-ceiling.md), so a large declared window would
-# risk ending the arm on memory rather than on behaviour. Both collapses
+# risk ending the arm on memory rather than on behaviour. Both loops
 # measured so far began well under 32K of prompt, so this does not hide
 # the effect. Recorded as a deviation from the llama.cpp arms.
 DECLARED_CONTEXT=32768

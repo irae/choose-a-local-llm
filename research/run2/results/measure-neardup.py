@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""measure-neardup.py — find near-duplicate collapse in model output.
+"""measure-neardup.py — find near-duplicate repetition loop in model output.
 
 Research run 2. Three detectors exist in this folder and each catches a
 different shape:
 
 - `count-events.py`   identical tool calls in a row
-- `measure-collapse.py` identical lines in a row
+- `measure-repeat-run.py` identical lines in a row
 - this one            lines that are not identical but are the same thing
 
 The third shape is what a repetition penalty produces. Arm 3 ran DRY at
@@ -88,7 +88,7 @@ def main():
               % (kind, len(lines), len(set(lines)), prefix_run, shape_run))
         if shape_run >= SHAPE_THRESHOLD:
             sample = next((l for l in lines if shape(l) == shape_example), '')
-            print('                 COLLAPSE: %d lines of one shape, e.g. %r'
+            print('                 LOOP: %d lines of one shape, e.g. %r'
                   % (shape_run, sample[:70]))
 
     sys.exit(1 if worst_shape >= SHAPE_THRESHOLD else 0)

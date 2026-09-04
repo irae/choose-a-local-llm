@@ -1,4 +1,4 @@
-# T2.3b — DRY against the collapse (arm 3), interim
+# T2.3b — DRY against the repetition loop (arm 3), interim
 
 Run 2, session 1. Started 2026-09-04 07:59Z, 150-minute wall. Arm 2's
 exact configuration plus DRY sampling. Both variables verified on the
@@ -10,7 +10,7 @@ The window is deliberate. `sampler-defaults.md` showed the default
 `dry_penalty_last_n` of 64 tokens is shorter than one tool call, so it
 could not see a repeat even in principle. 2048 spans many.
 
-## DRY does not stop the collapse. It changes its shape.
+## DRY does not stop the repetition loop. It changes its shape.
 
 At 40 minutes in, arm 3 emitted a single tool call containing:
 
@@ -48,11 +48,11 @@ commands, every one of which would fail if run.
 | Detector | Reads arm 3 as |
 | --- | --- |
 | `count-events.py`, identical tool calls | healthy, longest run 1-2 |
-| `measure-collapse.py`, identical lines | **clean, longest run 1** |
+| `measure-repeat-run.py`, identical lines | **clean, longest run 1** |
 | `flood-check.py`, newline runs | clean |
 | the live monitor built on them | reported "longest identical consecutive line run: 1" for 40 minutes |
 
-Every one is correct and every one is blind. The collapse sits inside a
+Every one is correct and every one is blind. The repetition loop sits inside a
 single unfinished tool call, in lines that are never identical.
 
 `measure-neardup.py` detects it, but only after a second attempt. A
@@ -68,11 +68,11 @@ cleanly:
 | Arm | thinking shape-run | tool-call shape-run | verdict |
 | --- | --- | --- | --- |
 | 1, post-fix template | 2 | 5 | clean |
-| 2, pre-fix template | **498** | 5 | collapse |
-| 3, pre-fix + DRY | 7 | **485** | collapse |
+| 2, pre-fix template | **498** | 5 | repetition loop |
+| 3, pre-fix + DRY | 7 | **485** | repetition loop |
 
-Note where each collapse lands. Arm 2 collapsed in its THINKING; arm 3,
-with DRY on, collapsed in a TOOL CALL instead. DRY moved the failure
+Note where each repetition loop lands. Arm 2 looped in its THINKING; arm 3,
+with DRY on, looped in a TOOL CALL instead. DRY moved the failure
 from one channel to the other as well as changing its shape.
 
 ## What this means for section I
@@ -87,7 +87,7 @@ rather than a sampler fix. This supports that, and sharpens the reason:
   DRY is on, not more. `loop-stop.ts` would fire on arm 2 long before it
   fired on arm 3, even though arm 3 is producing worse output.
 - So DRY is not a defence to ship. It is an argument for detecting
-  collapse by near-duplication or by output quality, not by exact
+  repetition loop by near-duplication or by output quality, not by exact
   repetition.
 
 ## Status
@@ -97,7 +97,7 @@ recovered, go in the closing section.
 
 ## The chain, completed at 09:39Z
 
-The collapsed output was not many tool calls. It was **one**.
+The looped output was not many tool calls. It was **one**.
 
 | Time | Event |
 | --- | --- |
@@ -123,7 +123,7 @@ that pi rejected, and that the model then re-emitted the rejected call
 unchanged. This arm explains where such a call can come from:
 
 1. The pre-fix chat template gives no generation prefix after a tool
-   response, and the model collapses into repetition.
+   response, and the model falls into a repetition loop.
 2. With DRY on, the repetition moves into a tool call and varies one
    token per line, so no sampler and no exact-match detector stops it.
 3. The call grows past the output token limit.
@@ -146,7 +146,7 @@ The paths are still slightly damaged — `app_js`, `1app.js` — but the
 model recovered on its own and kept working.
 
 So this arm does NOT show a rejection turning into a loop. It shows a
-collapse that costs 70 minutes and one wasted call, after which the
+repetition loop that costs 70 minutes and one wasted call, after which the
 model recovers. Whether a rejection sometimes produces the run 1 loop
 instead remains open, and this run cannot answer it. An earlier draft of
 this file claimed the chain reached the loop; that was wrong, and the
@@ -160,7 +160,7 @@ counts calls cannot see a 70-minute one. The stop needs a second trigger:
 elapsed time or output size inside ONE call.
 
 **Proposal P1 gains a second reason.** The output token limit is what
-converts a collapse into a rejected call and a re-issue request. That
+converts a repetition loop into a rejected call and a re-issue request. That
 limit is `maxTokens`, the same number P1 proposes to change for Qwen3.8.
 Whatever value it takes, a run should treat "hit the output limit" as a
 run-level alarm rather than a routine retry — not because it always
@@ -174,7 +174,7 @@ Ended 10:29:32Z on `wall_clock`, cleanup ran correctly.
 | | value |
 | --- | --- |
 | tool calls | 58, 51 distinct, longest identical run 1 |
-| worst collapse | 1133 shape-identical lines in one tool call |
+| worst repetition loop | 1133 shape-identical lines in one tool call |
 | time lost to it | 70 minutes, 08:29Z to 09:39Z |
 | recovery | yes, three minutes after the rejection |
 | commits | **0** |
@@ -188,7 +188,7 @@ After recovering it worked steadily for the last 50 minutes and reached
 
 | | Arm 1 post-fix | Arm 2 pre-fix | Arm 3 pre-fix + DRY |
 | --- | --- | --- | --- |
-| collapse | **none** | 498 thinking lines | 1133 tool-call lines |
+| repetition loop | **none** | 498 thinking lines | 1133 tool-call lines |
 | shape-run, thinking | 2 | **498** | 7 |
 | shape-run, tool calls | 5 | 5 | **1133** |
 | tool calls | 75 | 40 | 58 |
@@ -198,13 +198,13 @@ After recovering it worked steadily for the last 50 minutes and reached
 | end reason | wall_clock | wall_clock | wall_clock |
 
 **Only the arm on the post-fix template produced committed work.** Both
-pre-fix arms collapsed and neither finished anything, whether or not a
+pre-fix arms looped and neither finished anything, whether or not a
 repetition penalty was on.
 
-DRY's effect, stated exactly: it moved the collapse out of the thinking
+DRY's effect, stated exactly: it moved the repetition loop out of the thinking
 channel and into a tool call, made each repeated line unique so that
 exact-match detection fails, and let the model recover afterwards. It
-did not prevent the collapse and it did not save the run.
+did not prevent the repetition loop and it did not save the run.
 
 ## Caveat that limits all of this
 

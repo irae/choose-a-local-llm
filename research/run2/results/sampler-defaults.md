@@ -44,7 +44,7 @@ instead, which is the wrong target: it makes the model word the same
 broken call differently rather than stop repeating it.
 
 This explains the known negative result cleanly. Section D records
-`repeat_penalty` failing against Gemma-4's collapse. That test says
+`repeat_penalty` failing against Gemma-4's repetition loop. That test says
 nothing about whether repetition penalties can work here, because at a
 64-token window the penalty never saw the repetition it was aimed at.
 

@@ -222,11 +222,11 @@ template, and that is now demonstrated rather than argued.**
 Three arms, everything held fixed but one variable each, each proved
 from its own live server with `POST /apply-template`:
 
-| Arm | Template | Sampler | Collapse |
+| Arm | Template | Sampler | Repetition loop |
 | --- | --- | --- | --- |
 | 1 `embedded` | post-fix (Google, after 2026-07-15) | defaults | **none**, shape-run 2 |
 | 2 `short` | pre-fix (Google `657684f`, 2026-06-03) | defaults | 498 identical thinking lines |
-| 3 `short-dry` | pre-fix | DRY 0.8, window 2048 | collapse moved into a tool call |
+| 3 `short-dry` | pre-fix | DRY 0.8, window 2048 | repetition loop moved into a tool call |
 
 Arm 1 committed three dependency removals and left a clean tree. Arm 2
 committed nothing. The container audit then showed why this matters
@@ -235,7 +235,7 @@ template**, and `AutoTokenizer` resolves to it, so the published
 Gemma-12B rows were measured on the failing configuration.
 
 The second result is about defences, not causes. DRY did not stop the
-collapse; it changed its shape and its channel. That is an argument
+repetition loop; it changed its shape and its channel. That is an argument
 against shipping a sampler fix and for the harness STOP the coordinator
 proposed — with the caveat that a STOP counting identical calls would
 fire later on arm 3 than on arm 2, though arm 3's output is worse.
@@ -243,7 +243,7 @@ fire later on arm 3 than on arm 2, though arm 3's output is worse.
 ### Instruments built, because each earlier one was blind
 
 `count-events.py` (identical calls), `flood-check.py` (newline runs),
-`measure-collapse.py` (identical lines) and `measure-neardup.py` (same
+`measure-repeat-run.py` (identical lines) and `measure-neardup.py` (same
 shape after normalising letters and digits). The last was needed twice
 over: a prefix comparison reported 10 where the truth was hundreds,
 because the model's own counter defeated it, exactly as it defeated DRY.
@@ -278,8 +278,8 @@ count.
   exact model's load and unload cycles with a client connecting. Not run
   while the owner sleeps. Five minutes with them present. **First item
   next session.** Static analysis was tried and cannot settle it.
-- **Firing `loop-stop.ts` at a real collapse.** It counts identical tool
-  calls; both collapses here are inside one unfinished call or in
+- **Firing `loop-stop.ts` at a real repetition loop.** It counts identical tool
+  calls; both loops here are inside one unfinished call or in
   thinking. A different design is needed.
 - **Re-quantization A/B.** Needs original weights, a large download.
 - **`npm run verify`.** Nothing under `docs/` changed and `node_modules`
