@@ -44,6 +44,13 @@ Run notes for the two partials are in the
 both closed early on `mlx_lm.server` failures or the time budget, not
 on the rubric.
 
+Three Gemma-4-12B runs are marked invalid and are not listed above.
+They ran the retired LM Studio entry `google/gemma-4-12b` with thinking
+on and its pre-fix chat template, fell into a repetition loop, and
+committed nothing. They measure that serving combination, not the
+model — the evidence is on
+[the Gemma-12B data page](./gemma-4-12b-it.md#the-retired-entry).
+
 ## Cloud reference — blind test
 
 <!-- gen:mendel-cloud:start -->

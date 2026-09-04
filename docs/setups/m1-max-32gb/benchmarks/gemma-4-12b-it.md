@@ -1,27 +1,33 @@
 # Gemma-4-12B-it Q4_K_XL on M1 Max 32 GB — llama-server benchmarks
 
 Build: llama-server 0.3.0 (build 10621, commit c1d0e7a00), Metal.
-Wired limit: `iogpu.wired_limit_mb=27000`.
 All runs: temperature 0, `n_predict` 256 unless noted. Fresh server start per config.
+Sections dated 2026-08 were measured at `iogpu.wired_limit_mb=27000`; sections dated 2026-09 at 24000. Each section states its own era.
 MTP works: the unsloth repo ships a separate draft model (`mtp-gemma-4-12b-it.gguf`) and llama-server loads it automatically with `--spec-type draft-mtp`.
 
-## Recommended configuration (result of all tests below)
+## Recommended configuration (2026-09-04, wired limit 24000)
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
-  --alias gemma-4-12b-it --no-mmproj \
-  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \
+  --alias gemma-4-12b --no-mmproj --parallel 1 \
   -ngl 999 -fa on -c 262144 \
-  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
 ```
 
-- `--spec-draft-n-max 4` is the peak (45.0 py / 31.3 js tok/s vs 22.3 without MTP, +102% / +41%).
-- q8_0 KV per the KV policy — every config uses it now. Note: f16 measured +5.5
-  py tok/s on this model, and the speed numbers below come from f16 runs. A
-  re-probe with q8 under the current wired limit is pending.
-- Context is **model-limited, not memory-limited**: 256K (the trained maximum) fits in ~14 GB RSS.
-- Sub-agent variant: `--parallel 2 -c 524288` gives 2×256K slots at 16.9 GB RSS — both slots at the model maximum.
+- **f16 KV.** At 16,411 used tokens f16 decodes 22.66 tok/s against q8_0's
+  6.53 — 3.2x, and q8_0 is already under the 8 tok/s floor there. The KV
+  policy makes q8_0 the default for the context it unlocks; on this model
+  f16 costs no context, because it holds 262,144 inside the wired limit.
+- **No MTP drafter.** The drafter buys short-prompt speed and costs depth:
+  dropping it gained 22% at 8K and 9% at 16K.
+- Context is **model-limited, not memory-limited**: 262,144 is the trained
+  maximum, and wired memory sits flat at 14,186 MB, 59% of the limit, from
+  load to the window.
+- Thinking off. Thinking on is a pitfall of this model on both backends —
+  see the retired-entry section below.
+- Sub-agent variant: `--parallel 2 -c 524288` gives 2×256K slots at 16.9 GB
+  RSS (measured 2026-08 at the retired 27000 limit).
 - Reasoning effort: not applicable — the chat template reports `supports_reasoning_effort: false`.
 
 Base startup command (flags that change per run are shown in each section):
@@ -176,7 +182,127 @@ and [#1902](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1902),
 open, unfixed, no workaround as of 2026-08). This model's own trained
 context is 262144 and the machine has memory to spare at 8.8 GB RSS — the
 170240 figure is an LM Studio limitation, not a measurement of this model
-or this machine. Quality unscored, pending.
+or this machine. This era is superseded by the 2026-09-04 sweeps below,
+which apply the compression-onset criterion at the current wired limit.
+
+## Depth sweeps, both backends (2026-09-04, wired limit 24000)
+
+House method: append-only prompt growth, 25 s pause per step, memory
+counters in every step row, machine clean with the other backend quit.
+llama-server on raw `/completion`, with `-c` always above the deepest
+step of the arm (139,264 for the shallow half, 262,144 for the deep
+half); LM Studio on the chat endpoint with `--parallel 4`, because its
+raw completions path is broken on this build. Thinking off everywhere.
+
+| used tokens | llama f16, no drafter | llama q8, no drafter | llama q8 + MTP | LM Studio MLX |
+|---|--:|--:|--:|--:|
+| 4,115 | 24.64 | 14.15 | 13.82 | 34.19 |
+| 8,235 | 24.05 | 10.64 | 8.74 | |
+| 16,411 | 22.66 | **7.12 — floor** | **6.53 — floor** | 32.05 |
+| 24,587 | 21.59 | | | |
+| 32,819 | 20.58 | | | 30.59 |
+| 49,159 | 18.75 | | | |
+| 65,551 | 17.42 | | | 27.08 |
+| 81,943 | 15.87 | | | |
+| 98,335 | 14.91 | | | 24.52 |
+| 114,726 | 13.94 | | | |
+| 131,118 | 13.04 | | | **23.23 — last stable** |
+| 163,858 | 11.30 | | | |
+| 180,238 | 10.72 | | | |
+| 196,618 | 10.24 | | | |
+| 212,998 | 9.69 | | | |
+| 229,378 | 9.24 | | | |
+| **245,810** | **8.86 — deepest step inside the trained window** | | | |
+
+**The two backends stop for different reasons.** llama-server allocates
+its KV from `-c`, so wired memory holds flat at 14,186 MB — 59% of the
+limit — from load to the window; the step past 262,144 is refused. The
+LM Studio engine grows into the cap: past the last stable step wired
+reaches 87% of the limit and the sweep stops on 69 MB of swap growth.
+
+**The chat path costs nothing on llama-server.** 24.68 tok/s against
+24.64 at 4,114 used tokens, and 22.59 against 22.66 at 16,386. The raw
+figures therefore transfer to harness use.
+
+**A control on the deep half.** The deep steps started from a prefill
+jump to 131,072 rather than a creep from 4K, so the first of them
+re-measured a depth the slow creep already had: 12.67 tok/s against
+13.04, 2.8% low. Arriving fast gives macOS less time to yield memory,
+which is the direction the pause rule predicts, so the deep half is
+marginally pessimistic.
+
+## The agent probe (2026-09-04)
+
+One short dependency-replacement task, the same base commit, thinking
+off on both arms, 25-minute cap.
+
+| | llama-server, f16 KV | LM Studio `gemma-4-12b-it-mlx` |
+|---|--:|--:|
+| tool calls | **42** | 5 |
+| distinct calls | **30** | 4 |
+| repetition loop | **none** | 2679 lines, `<channel\|><\|channel>thought` |
+| commits | **1** | **0** |
+
+Thinking off is enough for EvalPlus, which is single-turn. It is not
+enough for multi-turn tool work on the MLX path: the loop is on the
+thought channel, in `text_delta`, and no `enable_thinking` kwarg was
+sent — the same request shape as the 0.909 / 0.872 scoring run.
+
+## `google/gemma-4-12b`: the retired entry and the thinking-on pitfall {#the-retired-entry}
+
+Retired 2026-09-04. This LM Studio entry always thinks, is gone from the
+model store, and produced every failed Gemma-12B agent run on this
+machine. Its numbers are off the current pages; the superseded speed and
+ceiling readings are on [the historical page](../historical.md). The
+evidence is collected here so the report page stays clean.
+
+**The 0.622 / 0.610 score is a completion failure, not a quality drop.**
+61 of 164 problems came back empty. Of the 103 it answered, 102 passed —
+99.0%. Read together with the thinking-off row (0.909 / 0.872 at 164 of
+164 answered), thinking makes this model better at the problems it
+finishes and unable to finish 37% of them.
+
+**All three invalid Mendel rows ran this entry.** One run made 130 tool
+calls with only 30 distinct, and repeated a single invalid command 72
+times in a row. The runs also produced newline floods that sit in
+`reasoning_content`, end on a bare channel-open token, and never
+proceed; the flood follows the runner's model nudge, not a tool
+response. The rows stay in the data, marked invalid, because they
+measure this serving combination and not the model's coding.
+
+**The container ships Google's pre-fix chat template, and the standard
+loader picks it.** The LM Studio container carries two templates: the
+stale `chat_template.jinja` that Google replaced on 2026-07-15 to fix
+the thought loop, and a current inline copy in `tokenizer_config.json`.
+Transformers resolves to the stale file. The stale template, with
+thinking on, opens the thought channel after a tool response; with
+thinking off the two templates render byte-identical output.
+
+**The loop is not only the template, and not only MLX.** Replayed on
+llama-server with the same task and prompt, the pre-fix template looped
+in three of three arms and the post-fix template still looped in one of
+two. DRY sampling did not stop the loop, it hid it: 1133
+shape-identical lines inside one tool call, which every exact-match
+detector reads as clean.
+
+**The two entries behave in opposite ways.** Probed 2026-09-04 with the
+model loaded once: `gemma-4-12b-it-mlx` answers with thinking off and
+the API cannot turn it on, in all three request shapes;
+`google/gemma-4-12b` returns populated `reasoning_content` for a plain
+chat request and no toggle turns it off. Both ids resolve to the same
+container, so the difference is the entry, not the weights.
+
+**Upstream says the same.** Google reproduced the 12B thought loop at
+full precision and closed it as a weight-level attractor, pointing at
+the 2026-07-15 template fix; LM Studio bug 2013 records that Gemma-4's
+reasoning delimiters default to `<think>` instead of the documented
+`<|channel>thought` / `<channel|>` pair, so the parser needs a manual
+override. No fixed MLX container exists: the community Gemma-4 repos
+were last updated before the template fix.
+
+**The conclusion.** Thinking on is a pitfall of this model in our
+configurations, on both backends. Keep the model thinking off, where the
+template question is moot and the llama-server path works.
 
 ## Runtime lore for this model
 
@@ -190,9 +316,8 @@ below belong to this model on this machine.
   `iogpu.wired_limit_mb`: 158,464 tokens at a 24000 limit.
 - **Thinking depends on which model store entry you load.** The
   "thinking is always on" behavior was observed on the LM Studio entry
-  `google/gemma-4-12b`: a plain chat request returned populated
-  `reasoning_content`, and no toggle worked. That entry is retired and
-  is gone from the model store. The entry `gemma-4-12b-it-mlx` is
+  `google/gemma-4-12b`, which is retired and gone from the model store
+  (see [the retired entry](#the-retired-entry)). The entry `gemma-4-12b-it-mlx` is
   thinking OFF and cannot be turned on — all three request shapes return
   an empty `reasoning_content` (probed 2026-09-04,
   `research/run2/results/lmstudio-thinking-probe.md`).

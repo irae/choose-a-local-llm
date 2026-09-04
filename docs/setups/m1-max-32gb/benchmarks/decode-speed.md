@@ -27,8 +27,8 @@ Two rules to read the tables by:
 |---|---|--:|--:|---|
 | [Ternary-Bonsai-27B](./bonsai-27b.md) | MLX, bounded cache, thinking off | 24.5† → 17.3† | 58k† | mem |
 | [Ternary-Bonsai-27B](./bonsai-27b.md) | GGUF⁴, q4, 2 slots, thinking on | 14.9 → 7.8 | 2x48k | speed |
-| [Gemma-4-12B](./gemma-4-12b-it.md) | MLX³, thinking off | 35.4 → 29.29 | 158k* | mem |
-| [Gemma-4-12B](./gemma-4-12b-it.md) | GGUF, MTP q8, thinking off | 13.8 → 6.5 | 16k | speed |
+| [Gemma-4-12B](./gemma-4-12b-it.md) | MLX³, thinking off | 34.19 → 23.23 | 131k | mem |
+| [Gemma-4-12B](./gemma-4-12b-it.md) | GGUF, f16 KV, no drafter, thinking off | 24.64 → 8.86 | 245k | window |
 | [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | MLX | 51 → 12.8 | 70k | mem |
 | [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | GGUF, MTP q8 | 23.5† → 8† | 24k† | speed |
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | MLX, thinking on | 53.3 → 42.0 | 37k | mem |
@@ -46,27 +46,28 @@ without warning. The curve ends in a Metal OOM, never at the floor.
 
 | used tokens | Qwen3.6 MLX | Gemma-26B MLX | Gemma-12B LM Studio | Bonsai MLX | Qwen3.8 MLX |
 |--:|--:|--:|--:|--:|--:|
-| 4K | 53.3 | 51.1 | 36.7† | 24.5 | — |
+| 4K | 53.3 | 51.1 | 34.2 | 24.5 | — |
 | 8K | — | — | — | 24.2 | 17.1 |
-| 16K | 49.6 | 43.5 | 36.9† | 22.9 | 16.4 |
+| 16K | 49.6 | 43.5 | 32.1 | 22.9 | 16.4 |
 | 24-25K | — | 39.6 | — | 22.0 | 14.8 |
 | 28K | — | — | — | — | **15.3 — last stable** |
-| 32-33K | 42.2 | 35.6 | 34.8† | 20.5 | *OOM ~30K* |
+| 32-33K | 42.2 | 35.6 | 30.6 | 20.5 | *OOM ~30K* |
 | 37K | **42.0 — last stable** | — | — | — | |
-| 41-42K | *OOM ~41K* | — | 31.1 | 18.7 | |
-| 49K | | 28.8 | 30.3 | 18.4 | |
-| 57-58K | | — | 29.3 | **17.3 — last stable** | |
-| 65K | | — | **29.3 — last clean** | *OOM ~60K* | |
+| 41-42K | *OOM ~41K* | — | — | 18.7 | |
+| 49K | | 28.8 | — | 18.4 | |
+| 57-58K | | — | — | **17.3 — last stable** | |
+| 65K | | — | 27.1 | *OOM ~60K* | |
 | 70K | | **12.8 — last stable** | — | | |
-| 74K | | *OOM ~72K* | *27.9 — compression onset* | | |
+| 74K | | *OOM ~72K* | — | | |
+| 98K | | | 24.5 | | |
+| 131K | | | **23.2 — last stable** | | |
 
-† shallow rows from an earlier era; re-run pending.
-
-Gemma-12B is the outlier twice over: the flattest curve of the project
-(still 22.8 tok/s at 158K in an exploratory full-window pass), and the
-only MLX config that does not end in an OOM — its engine leans on macOS
-memory compression instead, so its ceiling is where compression starts
-(between 65K and 74K), not where the process dies.
+Gemma-12B is the outlier twice over: the flattest curve of the project,
+and the only MLX config that does not end in an OOM — its engine leans
+on macOS memory compression, so its ceiling is where the wired cap fills
+and swap starts, not where the process dies. It is also the only column
+here that a quality test rules out for tool work: it loops on the
+thought channel in multi-turn sessions, whatever the thinking setting.
 
 ## llama-side (GGUF): faster decay, but never an OOM
 
@@ -74,23 +75,29 @@ llama runtimes creep down steadily and cross the floor while memory
 stays comfortable. The curve ends at the floor or at the window — never
 in a crash.
 
-| used tokens | Qwen3.6 +MTP† | Gemma-26B +MTP† | Qwen3.8 +MTP† | Gemma-12B +MTP† | Bonsai fork q4† | Bonsai fork, 1 of 2 slots |
-|--:|--:|--:|--:|--:|--:|--:|
-| 4K | 44.5 | 23.5 | 14.1 | 14.0 | 14.6 | 14.9 |
-| 8K | — | — | 12.8 | 9.0 | — | 13.2 |
-| 16K | 30.1 | 11.2 | 8.6 | *6.8 — floor ~11K* | 10.6 | 10.8 |
-| 24-25K | — | *8.0 — floor ~24K* | *7.3 — floor ~19K* | | 9.0 | 9.2 |
-| 32-33K | 18.8 | | | | *7.8 — floor ~30K* | *7.9 — floor ~32K* |
-| 49K | 13.5 | | | | | |
-| 65K | 10.7 | | | | | |
-| 90K | **8.1 — window end** | | | | | |
+| used tokens | Qwen3.6 +MTP† | Gemma-26B +MTP† | Qwen3.8 +MTP† | Gemma-12B +MTP q8 | Gemma-12B f16, no drafter | Bonsai fork q4† | Bonsai fork, 1 of 2 slots |
+|--:|--:|--:|--:|--:|--:|--:|--:|
+| 4K | 44.5 | 23.5 | 14.1 | 13.8 | 24.6 | 14.6 | 14.9 |
+| 8K | — | — | 12.8 | 8.7 | 24.1 | — | 13.2 |
+| 16K | 30.1 | 11.2 | 8.6 | *6.5 — floor at 16K* | 22.7 | 10.6 | 10.8 |
+| 24-25K | — | *8.0 — floor ~24K* | *7.3 — floor ~19K* | | 21.6 | 9.0 | 9.2 |
+| 32-33K | 18.8 | | | | 20.6 | *7.8 — floor ~30K* | *7.9 — floor ~32K* |
+| 49K | 13.5 | | | | 18.8 | | |
+| 65K | 10.7 | | | | 17.4 | | |
+| 90K | **8.1 — window end** | | | | | | |
+| 98K | | | | | 14.9 | | |
+| 131K | | | | | 13.0 | | |
+| 180K | | | | | 10.7 | | |
+| 213K | | | | | 9.7 | | |
+| 245K | | | | | **8.9 — window end** | | |
 
 † measured at the retired 25000 wired limit; re-run pending.
 
-Qwen3.6 on llama is the only config measured that never crosses the
-floor inside its whole window — 96K of usable depth. At the other end,
-Gemma-12B on llama floors at ~11K, the shallowest point measured: all
-of that model's depth lives in its LM Studio engine.
+Two configs measured here never cross the floor inside their whole
+window: Qwen3.6 on llama, with 96K of usable depth, and Gemma-12B on
+llama with f16 KV and no drafter, which holds 8.9 tok/s at the model's
+own 245K. The same Gemma-12B server with q8_0 KV floors at 16K — a 3.2x
+gap at 16K between two KV types of one config.
 
 ## What this test caught
 
@@ -110,6 +117,11 @@ of that model's depth lives in its LM Studio engine.
   and a 7 tok/s crash at 98K on Gemma-12B both vanished on watched
   re-runs — transient system episodes. The sweep samples memory on every
   step for exactly this reason.
+- **The KV type can be the ceiling.** On Gemma-12B, q8_0 KV falls under
+  the floor by 16K while f16 holds to the model's window — 3.2x apart at
+  16K, and f16 still fits inside the wired limit. The KV policy's "~1%
+  speed edge" is model-dependent, and this model retired its own
+  published ceiling.
 
 ## Fast is a ticket, not a win
 
