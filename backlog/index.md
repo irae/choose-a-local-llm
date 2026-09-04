@@ -17,7 +17,6 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
-- [ ] peak_context is verifiable after all: recompute every pi row from per-turn usage, fix two compaction rows, narrow the caveat that landed today (peak-context-recompute-from-usage.md)
 - [a] Project non-goals: sweep the history, write a README section; owner reviews before it lands (project-non-goals-in-readme.md)
 - [ ] Runner alarms: count output-limit hits, optional per-turn stop, loop verdict at run close (runner-alarms-output-limit-and-loop-stop.md)
 - [ ] Worker-profile table: which config is the best thinking-off sub-agent (worker-profile-table.md)
@@ -27,6 +26,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Changelog
 
+- 2026-09-04 Mendel peak_context: rule stated, 21 rows recomputed from per-turn usage, two post-compaction values corrected, caveat narrowed to one retired harness (Mendel `fe6da234`)
 - 2026-09-04 Mendel telemetry: peak_context caveat on the reports, tool_calls counting rule on the method page, all 17 rows recounted and unchanged (Mendel `bec00354`)
 - 2026-09-04 EvalPlus smoke: four fixed problems, same budget both sides, level/better/worse; validation on the Mac pending (`benchmarks/evalplus-smoke.py`)
 - 2026-09-04 Method pages stop naming models; specifics moved to the setup pages (`a0c77df`)
