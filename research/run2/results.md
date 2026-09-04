@@ -37,6 +37,23 @@ LM Studio multi-turn rows are the SUSPECT ones. Every EvalPlus row is a
 keeper, on either backend.** Evidence and the strength of each verdict
 are in `results/row-verdicts.md`.
 
+## Gemma-12B is closed, 2026-09-04
+
+**Usable configuration for agent work: llama-server, f16 KV, no MTP,
+thinking off.** It reaches Gemma's own 262144 trained window still above
+the 8 tok/s floor, sits flat at 59% of the iogpu cap, and on the Mendel
+probe (xtend) it made 42 tool calls and committed working code.
+
+**Not usable for agent work: LM Studio / MLX, either thinking state.**
+Faster at every depth it survives (1.8x at 131K) but stops on swap growth
+at 147K with wired at 87% of the cap, and on the same probe with thinking
+OFF it looped 2679 lines on the thought channel and committed nothing.
+
+**The q8 KV default is what made this model look slow.** q8 falls through
+the floor by 16K; f16 holds to the window. Detail in
+`results/gemma12-depth.md`, `results/mendel-probe-xtend.md`, asks in
+`results/planner-notes.md`.
+
 ## Findings
 
 | # | Item | Status | Finding | Detail |
