@@ -12,7 +12,9 @@ requested through the chat template, because Gemma's template reads
 `enable_thinking` and nothing else.
 
 Usage: make-replay-models.py <output-path>
-Environment: MODEL_ID, DECLARED_CONTEXT, PORT
+Environment: MODEL_ID, DECLARED_CONTEXT, PORT, and optionally
+PROVIDER (default "llama") and SERVED_MODEL, the id the server itself
+answers to when it differs from the pi entry id.
 """
 
 import json
@@ -25,6 +27,8 @@ target = sys.argv[1]
 model_id = os.environ['MODEL_ID']
 declared_context = int(os.environ['DECLARED_CONTEXT'])
 port = os.environ['PORT']
+provider_name = os.environ.get('PROVIDER', 'llama')
+served_model = os.environ.get('SERVED_MODEL')
 
 config = json.load(open(source))
 
@@ -58,7 +62,11 @@ entry = {
     },
 }
 
-provider = config['providers']['llama']
+provider = config['providers'][provider_name]
+if served_model:
+    entry['id'] = served_model
+    entry['name'] = 'Gemma 4 12B MLX (research run 2 replay arm)'
+    model_id = served_model
 provider['baseUrl'] = 'http://127.0.0.1:%s/v1' % port
 provider['models'] = [m for m in provider['models'] if m['id'] != model_id]
 provider['models'].append(entry)
