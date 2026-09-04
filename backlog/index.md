@@ -17,7 +17,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
-- [ ] peak_context is verifiable after all: recompute every pi row from per-turn usage, fix two compaction rows, narrow the caveat that landed today (peak-context-recompute-from-usage.md)
+- [a] peak_context is verifiable after all: recompute every pi row from per-turn usage, fix two compaction rows, narrow the caveat that landed today (peak-context-recompute-from-usage.md)
 - [a] Project non-goals: sweep the history, write a README section; owner reviews before it lands (project-non-goals-in-readme.md)
 - [ ] Runner alarms: count output-limit hits, optional per-turn stop, loop verdict at run close (runner-alarms-output-limit-and-loop-stop.md)
 - [ ] Worker-profile table: which config is the best thinking-off sub-agent (worker-profile-table.md)
