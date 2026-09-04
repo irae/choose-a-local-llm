@@ -208,3 +208,69 @@ one cause: each cell is a single run, and the LM Studio column also
 differs in engine and in argument handling. What it does say is that the
 template is no longer a hypothesis worth deferring — it is the only
 variable that has been isolated and shown to flip the outcome.
+
+---
+
+# The repeat arm — the collapse reproduces, in a third shape
+
+Started 2026-09-04 10:32Z, 100-minute wall, identical to arm 2: pre-fix
+template, no DRY, same prompt, same base commit.
+
+**It collapsed.** So the template result is no longer n=1.
+
+The shape is new again. Not a run of one line, and not a counter — a
+short CYCLE:
+
+```
+Actually, I'll check if I should use `Buffer.from(treeHash.replace(...)`.
+Actually, I'll check if I should use `Buffer.from(treeHash.replace(...)`.
+I'll proceed.
+Actually, I'll check if I should use `Buffer.from(treeHash.replace(...)`.
+Actually, I'll check if I should use `Buffer.from(treeHash.replace(...)`.
+I'll proceed.
+```
+
+61 copies of the first line and 34 of "I'll proceed." in the last 120
+thinking lines. Total thinking lines 530, distinct 345 — and the
+distinct count stopped rising while the total kept climbing, which is
+the signature.
+
+## Three arms on the pre-fix template, three shapes
+
+| Arm | Shape | Where |
+| --- | --- | --- |
+| 2 `short` | one line, 498 times in a row | thinking |
+| 3 `short-dry` | a counter, 1133 unique lines | one tool call |
+| repeat | a two-line cycle, A A B | thinking |
+
+Every arm on the pre-fix template collapsed. The arm on the post-fix
+template did not. That is now **three out of three against one out of
+one**, and it is the strongest form the claim has.
+
+## The detector problem this exposed, and the fix
+
+Each shape defeated the detector built for the last one. The cycle
+defeats every consecutive-identity test, because identity breaks every
+second line, and it defeats a whole-run distinct count, because the
+run's earlier healthy work dilutes it.
+
+`collapse-check.py` replaces all three with one measure: **the ratio of
+distinct SHAPES to lines inside a sliding window**. Shape normalisation
+stops a counter hiding; the window stops early health masking a late
+collapse.
+
+Validated on all four arms:
+
+| Arm | worst ratio | verdict |
+| --- | --- | --- |
+| 1 `embedded`, post-fix | 0.20 thinking / 0.67 tool | **ok** |
+| 2 `short` | 0.02 | collapse |
+| 3 `short-dry` | 0.02 | collapse |
+| repeat | 0.03 | collapse |
+
+The threshold is **0.10**, and it was set by the clean arm rather than
+by taste. At 0.25 the clean arm fails, because a real run emits
+structurally repetitive text — a `package.json` dependency block reaches
+0.20. The three collapses sit an order of magnitude below that, so 0.10
+falls in empty space. A detector that flags its own control is worthless,
+and the first version of this one did.
