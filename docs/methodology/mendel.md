@@ -55,3 +55,16 @@ two tests.
   window or output budget that could not fit, a flag the serving stack
   ignored), the corrected re-run keeps the best row with no penalty.
   Mendel's `PLAN.md` holds the formula.
+- `tool_calls` counts one `toolCall` block inside one assistant
+  message of the run's session log. A call counts even when no result
+  came back. Tool results, user messages, and any session the row does
+  not score (a false start, a killed first attempt, or a tail after
+  mid-run human help) do not count. `benchmark/count-tool-calls.mjs`
+  in the Mendel repo prints the count for a log. Checked 2026-09-04:
+  all 17 local rows agree with their logs.
+- `peak_context` is not verifiable for a row scored before 2026-09-04.
+  The session log of such a row shows that a compaction happened, but
+  not the context size at each cycle, so the figure agrees with a
+  maximum and no log proves it. Runs from that date record the context
+  at every cycle. The two mirrored reports carry the same caveat on
+  the column.
