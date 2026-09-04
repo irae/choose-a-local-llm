@@ -50,18 +50,29 @@ wired limit 27000 versus 24000, build 10621 versus homebrew 0.3.0) are
 recorded there.
 
 **T0.1 and T0.2, the container audit — finished. See
-`results/container-audit.md`.** Two results.
+`results/container-audit.md`. This is the session's main result.**
 
-1. Two different Gemma-4 chat templates sit in the cache and they
-   disagree about what to emit after a tool response. The long one
-   (in the unsloth GGUF, and inside `tokenizer_config.json` of the
-   lmstudio-community MLX repo) opens a thought channel and does not
-   close it. The short one (every `chat_template.jinja`, including the
-   same LM Studio repo's own) emits nothing. One repo therefore ships
-   both, and which runs depends on which file the loader reads. The
-   dangling open matches the newline flood exactly. Which template is
-   newer cannot be read from the local files, so the direction became a
-   replay arm rather than a claim.
+1. **Our MLX Gemma-4 containers serve the chat template Google replaced
+   to fix the thought loop.** Proven, not inferred:
+   - Google's pre-fix revision `657684f` (2026-06-03) is 17466
+     characters and has no tool-response branch. The file after the fix
+     commit `711c136` (2026-07-15, "chat template — null handling,
+     reasoning preservation, turn-tag balance") is 18681 characters and
+     opens the thought channel after a tool response.
+   - Every local `chat_template.jinja` matches the PRE-FIX hash. The
+     `lmstudio-community` container carries both files: the stale jinja
+     and the current inline copy in `tokenizer_config.json`.
+   - `AutoTokenizer.from_pretrained` on the exact directory LM Studio
+     served resolves to the pre-fix template. mlx-lm loads its tokenizer
+     through transformers, so the MLX path runs the stale one while the
+     current one sits unused beside it.
+   - The unsloth GGUF that llama-server uses carries a post-fix
+     template.
+
+   So the dangling `<|channel>thought` is the FIX, and the newline flood
+   ran on a container Google had already corrected for that exact
+   failure. A one-file fix is written in `container-audit.md` and NOT
+   applied: it would change a container behind published rows.
 2. The quantized-PLE defect does not reproduce. Our Gemma-4 MLX quants
    contain no per-layer embedding tensor at all. What they do have is
    `embed_tokens` at 4 bits with no override, where the QAT OptiQ repo
@@ -85,23 +96,52 @@ instead of the LM Studio MLX path. Declared context 158464 to match the
 LM Studio arm's compaction point; the server serves 262144, which the
 ramp proved fits. Wall cap 150 minutes.
 
-Early reading at 4 tool calls: 4 distinct, longest identical run 1. The
-model recovered from its own failed grep by rewriting it, which is the
-opposite of the loop. Too early to mean anything — both measured LM
-Studio arms were already repeating by call 11-40.
+Reading at 24 tool calls: 21 distinct, longest identical run 1, zero
+swap, 90.8 percent prompt-cache share. Both measured LM Studio arms were
+already repeating by call 11-40, so this arm is inside the window where
+the failure appears and has not produced it. Not a result until the arm
+ends.
 
 The pi config is a pinned copy under `/tmp/run2/replay-embedded/pi-agent`
 built by `results/make-replay-models.py`. **The owner's
 `~/.pi/agent/models.json` was not touched.**
 
+Arm 2 is chained to start when arm 1 releases the GPU, so the machine
+does not idle. The template finding above changed what arm 2 means: it
+forces the same GGUF onto the PRE-FIX template, so the pair is a
+before-and-after of Google's fix on one backend.
+
+### Also done, no GPU
+
+- **T0.4, prompt-cache health** (`results/prompt-cache-telemetry.md`).
+  All three backends answer with the OpenAI `cached_tokens` field and pi
+  already records it per turn, so `cache-share.py` needed no server
+  work. Proposed alert: below 20 percent cache share after turn 3 is a
+  broken serving config.
+- **T2.4, the loop stop** (`results/loop-stop.ts`). Blocks the Nth
+  identical consecutive tool call and terminates the run. Never edits a
+  result. Loads only with `pi -e`, so a scored run cannot pick it up by
+  accident. **Not yet executed against anything.**
+- **T2.3 part 1, sampler facts** (`results/sampler-defaults.md`). Read
+  from the running server: DRY and XTC exist, every repetition defence
+  defaults to off, and `repeat_last_n` is 64 tokens. One bash tool call
+  is longer than that, so the known negative for `repeat_penalty` never
+  tested what it was aimed at.
+- **T3.4, candidate shortlist** (`results/model-candidates.md`). Ranked
+  by fit on this machine: Devstral Small 2 first. Nothing downloaded.
+- **Three config changes as diffs** (`results/config-proposals.md`),
+  none applied.
+
 ### Next, in order
 
-1. T1.1 arm 2, `replay-llama.sh short` — the same replay with
-   `--chat-template-file` pointing at the short template. Together the
-   two arms separate the backend from the template.
-2. T2.3, the sampler probe, on whichever server is up.
-3. T2.2, the Qwen3.8 window arithmetic and ceiling re-probe.
-4. T0.4 and T2.4, both code, no GPU.
+1. T1.1 arm 2, `replay-llama.sh short` — chained, starts by itself.
+2. T2.2, the Qwen3.8 ceiling re-probe. Needs the GPU, so it waits for
+   both arms.
+3. T2.3 part 2, whether DRY stops a loop. **Blocked by a dependency:**
+   DRY is llama-server only, and if the llama-server arm does not loop
+   there is nothing for DRY to act on. The only looping backend here is
+   the LM Studio MLX path, which has no DRY.
+4. T2.4 part 2, firing the loop stop on a real replay. Same dependency.
 
 ### Left on the machine
 
