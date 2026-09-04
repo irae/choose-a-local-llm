@@ -193,3 +193,37 @@ archived beside the ramp evidence.
 Anything measured after this change is a different configuration from
 every Gemma-4 row published so far. That is the owner's call, not this
 run's.
+
+## Finding 1c — what the template actually renders, from the live server
+
+`POST /apply-template` on the running llama-server renders a prompt
+without generating anything, so the template in effect can be read
+directly rather than argued about. The conversation used ends in a tool
+response, which is the situation the fix changed:
+
+```
+user:      list the files
+assistant: tool_call bash {"command": "ls"}
+tool:      error: invalid flag
+```
+
+With the GGUF's embedded post-fix template and `enable_thinking` true,
+the rendered prompt ends:
+
+```
+...<|tool_response>response:bash{value:<|"|>error: invalid flag<|"|>}<tool_response|><|channel>thought\n
+```
+
+**The prompt ends with the thought channel opened and not closed.** The
+model's first generated token continues inside a thought channel. That
+is Google's intended behaviour after the 2026-07-15 fix, and it is also
+the exact token the newline floods contain.
+
+With the pre-fix template the same conversation renders nothing after
+`<tool_response|>`: no generation prefix at all, so the model chooses
+what to open by itself. The arm-2 rendering will be captured the same
+way and stored beside this one.
+
+The request and the rendering are archived in
+`~/.local/share/choose-a-local-llm/evidence/run2-context-ramp/`
+as `apply-template.json` and `rendered-embedded.json`.
