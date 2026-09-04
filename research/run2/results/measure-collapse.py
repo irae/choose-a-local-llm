@@ -55,4 +55,8 @@ print('longest identical consecutive line run:', longest)
 if worst:
     print('  the line:', worst[:90])
 print('')
-print('first delta at', deltas[0][0], 'last at', deltas[-1][0])
+if deltas:
+    print('first delta at', deltas[0][0], 'last at', deltas[-1][0])
+
+THRESHOLD = 5
+sys.exit(1 if longest >= THRESHOLD else 0)
