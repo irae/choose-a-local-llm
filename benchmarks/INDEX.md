@@ -7,6 +7,50 @@ run's runbook (`AGENT.md`), log (`state.md`), results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## research run 1 — 2026-09-03 ([state](../research/run1/state.md), [results](../research/run1/results/))
+
+Research, not a benchmark: no scored rows produced. Runbook:
+[research/run1/AGENT.md](../research/run1/AGENT.md).
+
+- **There is no idle memory baseline.** The same idle Mac, same apps not
+  running, measured 12415 MB and 25219 MB free. A scheduled XProtect
+  scan took 1 GB of it unprompted. So a pre-run gate cannot compare
+  against a remembered number; it has to measure current state. Goal 0
+  closed with a cold-start sequence instead of a threshold.
+- **Wired is the only counter that cannot lie.** Free and active move
+  for reasons unrelated to a run, and the compressor can inflate an
+  allocation total until it is fiction — an early probe filled blocks
+  with a repeated value and "allocated" 35840 MB on a 32 GB machine.
+- **macOS degrades instead of failing.** Asked for memory too fast, it
+  compresses, then swaps, then keeps going: 27 GB compressor and 8 GB
+  swap with no error. A sweep can therefore keep running and report
+  throughput that measures the swap file.
+- **A kernel panic that was not an OOM.** `IOGPUMemory.cpp:492`,
+  `IOGPUFamily`, panicking task `node`, with the panic log's own
+  accounting showing memory fine. Check
+  `/Library/Logs/DiagnosticReports/*.panic` before calling any lost run
+  an OOM.
+- **The MTP drafter is not broken by the build.** Same brew build and
+  the vetted gemma command at 8192 context: drafter allocates, 51%
+  draft acceptance. The failure is conditional on context and pressure,
+  which fits `-ngl 999` disabling llama.cpp's memory fitting.
+- **The Gemma-12B newline flood is a broken control token.** Two of the
+  three floods contain only newlines and `<|channel>`, a malformed
+  marker. Not repetition collapse. Lengths land within 1.6% across three
+  runs, so something caps the block.
+- **The Qwen3.8 26624 window is ours.** `mlx_lm.server` has no context
+  cap at all; the number lives in pi's model entry. Its `maxTokens`
+  16384 cannot coexist with it past a ~10K prompt, which explains three
+  premature length stops.
+- **LM Studio cannot serve without Electron, and any `lms` command
+  revives the whole stack** — so a status check can put a second process
+  on the GPU during someone else's run.
+- **Two compaction counts were wrong** and are fixed in the mendel repo:
+  pi writes a `compaction` record for a split turn too.
+- **Nine of seventeen local Mendel rows have no session log.** They were
+  gitignored and went with their worktrees. Evidence now goes to
+  `~/.local/share/choose-a-local-llm/evidence/`.
+
 ## bench8 — 2026-09-02 ([state](bench8/state.md))
 
 - Runbook: [bench8/AGENT.md](bench8/AGENT.md). API-model Mendel re-runs
