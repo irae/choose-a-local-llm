@@ -68,3 +68,55 @@ Calibration is cheap if wanted: the recorded prompt replays, and the
 repetition appears by tool call 9 of the original session.
 
 For the planner: this is the acceptance question, not a scoring one.
+
+
+## CORRECTION 2026-09-04 — the loop reproduces on a quiet machine
+
+The evidence above pointed at a ceiling we set. A full-length replay
+says otherwise, and this correction supersedes it.
+
+Replayed the exact 3909-character prompt from the failing
+`google-gemma-4-12b-low-guided` run, same model, same LM Studio backend,
+same 158464 context, on the failing run's own base commit, on a machine
+freshly rebooted and quiet with zero swap.
+
+| | original | replay |
+| --- | --- | --- |
+| tool calls | 130 | 71 |
+| distinct calls | 30 | 30 |
+| longest identical run | 72 | 37 |
+| most repeated call | 88 | 40 |
+
+**It looped.** Thirty distinct calls in both runs, and a 37-call
+identical repeat where the original had 72. The quiet machine did not
+prevent it.
+
+The repeated call is `bash {"command": 4}` — the `command` argument is
+the integer 4 where a string belongs. A malformed tool call, emitted and
+then repeated. The original looped on `ls -F_r`, an invalid flag. Same
+family as the `<|channel>` flood: the model produces a broken call and
+cannot recover from it.
+
+### What this changes
+
+- **The earlier evidence in this file is superseded.** It rested on
+  short synthetic probes that never produced a loop, from an instrument
+  whose sensitivity was unknown. The instrument is now calibrated: with
+  the real prompt it reproduces the failure.
+- **The machine-state hypothesis is not supported.** Quiet, rebooted, no
+  swap, no thermal warnings recorded — and it looped anyway.
+- **The nine-run serving sweep still says only what it said**: a short
+  synthetic prompt does not loop on any backend. It does not say the
+  models are fine, because that prompt cannot produce the failure.
+
+### What it does not settle
+
+Whether the loop is the model, the LM Studio MLX path, or the template.
+The replay changed one variable and held the backend fixed, so it
+separates machine state from everything else and nothing more. Running
+the same replay against a different vetted gemma-12b backend would
+separate model from backend — that is a combination question and belongs
+with run 2 section D.
+
+**For the acceptance decision:** on this evidence the three Gemma-12B
+rows record a real failure, not a ceiling we set.
