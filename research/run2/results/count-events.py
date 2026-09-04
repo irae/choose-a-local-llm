@@ -6,16 +6,46 @@ Research run 2. Reads `<out>-events.jsonl` written by
 the Gemma-12B loop is measured by: total tool calls, distinct tool calls,
 and the longest run of identical calls in a row.
 
-Only `tool_execution_start` records count as a call. The stream also
-carries `tool_execution_update` and `tool_execution_end` for the same
-call, and counting those inflates every number.
+Two file shapes are read, so an events stream and an archived session
+log can be compared with one counter:
 
-Usage: count-events.py <events.jsonl> [...]
+- `<out>-events.jsonl` — only `tool_execution_start` counts. The stream
+  also carries `tool_execution_update` and `tool_execution_end` for the
+  same call, and counting those inflates every number.
+- a pi session log — `toolCall` parts inside `message` records.
+
+Usage: count-events.py <file.jsonl> [...]
 """
 
 import collections
 import json
 import sys
+
+
+def call_from_event(record):
+    if record.get('type') != 'tool_execution_start':
+        return None
+    name = (record.get('name')
+            or record.get('toolName')
+            or (record.get('tool') or {}).get('name')
+            or '?')
+    args = (record.get('arguments')
+            or record.get('args')
+            or record.get('input'))
+    return name, args
+
+
+def calls_from_message(record):
+    if record.get('type') != 'message':
+        return []
+    content = (record.get('message') or {}).get('content')
+    if not isinstance(content, list):
+        return []
+    found = []
+    for part in content:
+        if isinstance(part, dict) and part.get('type') == 'toolCall':
+            found.append((part.get('name') or '?', part.get('arguments')))
+    return found
 
 
 def read_calls(path):
@@ -28,17 +58,13 @@ def read_calls(path):
             record = json.loads(line)
         except ValueError:
             continue
-        if record.get('type') != 'tool_execution_start':
-            continue
-        name = (record.get('name')
-                or record.get('toolName')
-                or (record.get('tool') or {}).get('name')
-                or '?')
-        args = (record.get('arguments')
-                or record.get('args')
-                or record.get('input'))
-        text = json.dumps(args, sort_keys=True) if args is not None else ''
-        calls.append((name, text))
+        found = calls_from_message(record)
+        single = call_from_event(record)
+        if single:
+            found = [single]
+        for name, args in found:
+            text = json.dumps(args, sort_keys=True) if args is not None else ''
+            calls.append((name, text))
     return calls
 
 
