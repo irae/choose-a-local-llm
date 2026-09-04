@@ -20,3 +20,8 @@ Filed: 2026-09-04.
 - Bonsai fork q8_0 KV arm without the bias file, against the fork's q4
   plus bias row. Blocked on the same answer.
 - Any † row bench 9 leaves unmeasured.
+- EvalPlus smoke validation on the reference setup: one live run to
+  prove the imports and the padded evaluator, the same config twice
+  (must not read "worse" than itself), and the two Bonsai configs with
+  known differing scores. Steps 1 to 5 in the `benchmarks/evalplus-smoke.py`
+  landing note (backlog index changelog, 2026-09-04).
