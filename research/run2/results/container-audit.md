@@ -140,3 +140,56 @@ partly downloaded here: `config.json` and nothing else.
 `sysctl` on this Mac, and what our configs assume: recorded in
 `instruction-sets.md` when that check runs. Not complete in this
 session.
+
+## Finding 1b — the MLX path resolves to the stale template. Measured.
+
+The container LM Studio actually served Gemma-12B from is
+`~/.cache/lm-studio/models/lmstudio-community/gemma-4-12B-it-MLX-4bit/`.
+It holds both files:
+
+| File | Hash | Verdict |
+| --- | --- | --- |
+| `chat_template.jinja` | `a23ecdbb9d01` | pre-fix |
+| `tokenizer_config.json` inline template | `ac8703caf039` | current |
+
+Which one wins is not a guess. `AutoTokenizer.from_pretrained` on that
+directory, run with the homebrew mlx-lm 0.31.3 python, resolves to:
+
+```
+resolved template len=17466 sha=a23ecdbb9d01
+has tool_response branch: False
+```
+
+**The pre-fix template.** transformers prefers `chat_template.jinja`
+over the inline copy, and mlx-lm loads its tokenizer through
+transformers. So every mlx-lm serving of this container runs the
+template Google replaced on 2026-07-15 to fix the thought loop, while a
+current template sits unused in the same folder.
+
+LM Studio's MLX engine is a separate build
+(`llm_engine_mlx_amphibian.node`, backend 1.11.0) and its binaries do
+not name either file in their strings, so this measurement covers
+upstream mlx-lm directly and LM Studio only by strong inference.
+
+### Proposed fix — one file, no re-download
+
+**Do not apply without the owner.** It changes a model container behind
+published measurements.
+
+```
+cd ~/.cache/lm-studio/models/lmstudio-community/gemma-4-12B-it-MLX-4bit
+mv chat_template.jinja chat_template.jinja.pre-fix-20260603
+python3 -c "import json; open('chat_template.jinja','w').write(json.load(open('tokenizer_config.json'))['chat_template'])"
+```
+
+That makes the resolved template the current one the repo already ships.
+The same check and the same fix apply to
+`mlx-community/gemma-4-12B-it-4bit` and
+`mlx-community/gemma-4-26b-a4b-it-4bit`, except those two have no inline
+copy to restore from, so their replacement has to come from
+`google/gemma-4-12b-it` at revision `main`. Both fetched revisions are
+archived beside the ramp evidence.
+
+Anything measured after this change is a different configuration from
+every Gemma-4 row published so far. That is the owner's call, not this
+run's.
