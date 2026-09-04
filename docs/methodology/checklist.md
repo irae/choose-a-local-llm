@@ -100,10 +100,19 @@ lives in [common rules](./common-rules.md) and
    with `lms server start` if it is not. `lms load` does not start it
    and `lms ps` does not reveal it. Never trust JIT
    ([server lore](./server-lore.md)).
-7. Start the memory watcher, scoped to this run only:
-   `MEMWATCH_LOG=/tmp/<run>-memwatch.log MEMWATCH_INTERVAL=20
-   bash tools/sweeps/mem-watch-fast.sh &` (or `benchmarks/mem-watch.sh`
-   for long scoring runs). A run without the watcher is invalid.
+7. **Start the memory watcher only where nothing else samples memory.**
+   - **Scoring runs — required** (EvalPlus, Mendel, polyglot). The
+     harness samples no memory and the run lasts hours, so this log is
+     the only memory record. Scope it to this run:
+     `MEMWATCH_LOG=/tmp/<run>-memwatch.log MEMWATCH_INTERVAL=20 bash
+     benchmarks/mem-watch.sh &`. A scoring run without it is invalid.
+   - **Depth sweeps — not needed.** The runner samples memory itself and
+     writes wired, free, swap delta and the compressor page counts into
+     every step row, and it stops the sweep on swap growth, material
+     compaction, the floor, a silent halt and a dead server
+     ([context creep](./context-creep.md)). Send the sweep's output to a
+     file; that file is the whole record. Do not start a second monitor
+     beside it.
 
 ## During the run
 
@@ -114,7 +123,10 @@ lives in [common rules](./common-rules.md) and
    stopped: read the server log for the death signatures before blaming
    the model, restart, resume. Every wakeup ends with a new wakeup or
    with the shutdown steps below. The GPU never sits idle between
-   blocks.
+   blocks. A depth sweep carries this signal itself: it greps the server
+   log for the death signature, probes one real completion after a
+   stall, and exits 42 on a dead server. There the wakeup only checks
+   that the sweep's output file still grows.
 9. Heartbeat format: "Block N (model): done X/Y, [num]h[num]min left."
 10. Note deviations in the run's `state.md` AS THEY HAPPEN, not at the
    end. Smallest fix, fairness first, suspect the harness before the
@@ -122,8 +134,8 @@ lives in [common rules](./common-rules.md) and
 
 ## After the run
 
-11. Stop the watcher immediately. Stop one-shot monitors as soon as
-    they fire — never leave them running.
+11. Stop the memory watcher immediately, where one ran. Stop one-shot
+    monitors as soon as they fire — never leave them running.
 12. Record the result on EVERY surface in the same pass
     ([common rules](./common-rules.md), rule "record everywhere"):
     benchmarks page, report page (including its summary line),
@@ -133,7 +145,8 @@ lives in [common rules](./common-rules.md) and
 13. Commit before moving to the next block.
 14. After stopping any server above ~15 GB RSS, wait for memory to
     RECOVER before loading the next model or starting a sweep: poll
-    `Pages wired down` in `vm_stat` (or the memwatch log) until wired
+    `Pages wired down` in `vm_stat` (or the memwatch log, or a sweep's
+    `wired_mb` column) until wired
     memory returns to the value you recorded in step 4.6. Do NOT wait
     for free memory. The first load of a model keeps its weights in
     the page cache, so free memory stays lower by about the model's

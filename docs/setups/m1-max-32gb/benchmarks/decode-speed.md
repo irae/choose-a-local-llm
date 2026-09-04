@@ -108,8 +108,8 @@ of that model's depth lives in its LM Studio engine.
   ceilings (Gemma-26B 82K → 70K among them).
 - **Not every bad reading is real.** A 12 tok/s dip at 44-48K on Bonsai
   and a 7 tok/s crash at 98K on Gemma-12B both vanished on watched
-  re-runs — transient system episodes. The memory watcher is mandatory
-  for exactly this reason.
+  re-runs — transient system episodes. The sweep samples memory on every
+  step for exactly this reason.
 
 ## Fast is a ticket, not a win
 
@@ -125,9 +125,9 @@ wins seats.
 
 ## Method, in one breath
 
-Grow one prompt append-only, ~25 s pause per step, memory watcher
-running, read the server's own timings, stop only at the floor, an OOM,
-or the trained window. Full procedure:
+Grow one prompt append-only, ~25 s pause per step, memory counters read
+into every step row, read the server's own timings, stop only at the
+floor, an OOM, or the trained window. Full procedure:
 [context creep](../../../methodology/context-creep).
 
 ---

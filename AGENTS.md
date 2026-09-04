@@ -75,14 +75,24 @@ Benchmark work:
   work; it overrides older lore.
 - `benchmarks/` (root) — the shared tools every run uses:
   `run-humaneval.sh`, `run_codegen_wrapper.py` (patched EvalPlus
-  client), `calibrate.py`, `mem-watch.sh`, `calibration-*.json`,
+  client), `calibrate.py`, `mem-watch.sh` (memory log for a SCORING run;
+  `MEMWATCH_LOG` and `MEMWATCH_INTERVAL` scope it — a depth sweep needs
+  no watcher, because its runner samples memory itself),
+  `calibration-*.json`,
   `loop-check.py` (repetition-loop detector for a pi session log:
   distinct-shape ratio in a sliding window, threshold 0.10; catches
   identical lines, counters, and short cycles), `liveness-watch.sh`
-  (tells a stalled run from a dead server by probing ONE real
+  (tells a stalled SCORING run from a dead server by probing ONE real
   completion only after the output file stops growing — `/health`
-  stays 200 after the mlx_lm generation thread dies).
-- `tools/sweeps/` — depth-sweep scripts and fast memory watcher.
+  stays 200 after the mlx_lm generation thread dies; a depth sweep has
+  the same probe inside its runner).
+- `tools/sweeps/` — the depth-sweep apparatus. `creep.py` owns the
+  method (depth ladder, pause, stop conditions, memory columns,
+  liveness) and one `creep_<backend>.py` owns each backend. One command
+  per sweep and one output file; the runner is its own monitor, so
+  nothing else runs beside it (`docs/methodology/context-creep.md`).
+  `mem-watch-fast.sh` here only repeats `benchmarks/mem-watch.sh`; use
+  the one in `benchmarks/`.
 - `tools/mac-services.sh` + `tools/README-mac-services.md` — turn background
   login items off before a run and back on after. The script ships with
   no list; the README says how to build one. Read the README before you

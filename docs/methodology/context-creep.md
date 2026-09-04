@@ -7,16 +7,101 @@ config. Common rules and the run loop apply
 
 ## Requirements
 
-- The server for ONE config, warmed up.
-- The scoped memory watcher running from the first request.
+- The server for ONE config, warmed up, with its log in a file.
+- One command per sweep, and one output file. The runner samples memory
+  itself and watches liveness itself, so a sweep needs no second process
+  beside it — see [The monitor](#the-monitor) below.
 - Append-only prompt growth (prompt-cache rule) — the sweep scripts in
   `tools/sweeps/` already do this.
 - The pause rule: **creep slowly, ~25 s between depth steps.** The pause
   simulates real use — an agent's model waits on the user and on tool
   runs between requests — and it gives macOS time to compress other
   memory, which raises the measured ceiling (verified on the reference
-  setup: about 2K extra tokens on a 35B MoE MLX config). A no-pause sweep understates the
-  ceiling a real harness reaches.
+  setup: about 2K extra tokens on a 35B MoE MLX config). A no-pause sweep
+  understates the ceiling a real harness reaches.
+
+## How a sweep runs
+
+Read this once and the rest of the page is detail.
+
+1. Prepare the machine: [checklist](./checklist.md), "Before the run".
+2. Start the server for ONE config, and send its log to a file.
+3. Warm it up with one small request.
+4. Run the one command, and keep its whole output:
+
+```bash
+DEPTH_LIST=4096,8192,16384,24576,32768,49152,65536 \
+MODEL=<the id the server answers to> \
+SWEEP_BASE=http://127.0.0.1:8081 \
+python3 tools/sweeps/creep_llama.py > /tmp/<config>-creep.tsv 2>&1
+```
+
+   On `mlx_lm.server` add `SERVER_LOG=<the server log>`, so the runner
+   sees the death signature.
+5. Watch the file grow. Every line is one step row or one event.
+6. Read the verdict from the last line and the exit code.
+
+The columns, in order:
+
+| Column | What it says |
+| --- | --- |
+| `context` | Which round-robin context: A, B, ... |
+| `depth_tokens` | Used context at this step |
+| `decode_toks` | Decode speed. This is the published number |
+| `wired_mb` | Wired memory. The meter that cannot lie |
+| `free_mb` | Free memory. Read its shape, never its level |
+| `swap_delta_mb` | Swap used now, minus swap used at the start |
+| `compress_pages` | Pages compressed since the step before |
+| `decompress_pages` | Pages decompressed since the step before |
+| `step_seconds` | Wall time of the step |
+
+The verdict, from the last line:
+
+| Last line | Exit | Verdict |
+| --- | --- | --- |
+| `STOP: below N tok/s at depth D` | 0 | **speed**. The ceiling is the deepest row at or above the floor |
+| `STOP: request failed ...` | 42 | **OOM**, when the server was still fast. The ceiling is the last good row |
+| `STOP: silent halt, no tokens ...` | 42 | **OOM**. The server answered with nothing |
+| `STOP: swap grew N MB ...` | 42 | **mem**. Every number past the last good row times the swap file |
+| `STOP: N or more pages compressed ...` | 42 | **mem**. Compaction onset; the last clean row carries the tok/s |
+| `STOP: generation thread died in <log>` | 42 | Dead server, not a ceiling. Restart and run it again |
+| `STOP: server dead. One real completion ...` | 42 | The same, found by the probe instead of the log |
+| `no ceiling found up to D` | 0 | **window**, or no ceiling in the swept range |
+
+The site publishes the stable value only: the deepest depth that still
+served correctly, with its tok/s. The death point stays in the run log.
+
+## The monitor
+
+**A sweep needs no external memory watcher. A scoring run does.**
+
+The runner reads `vm_stat` and `vm.swapusage` after every step and
+writes what it read into the row. So the memory evidence sits beside the
+tok/s it explains, at the same instant, in one file. An external watcher
+samples on its own timer and writes a second file that somebody must
+line up by wall clock — which is the manual step this method used to
+ask for, and the step agents skipped.
+
+The runner also owns the stop conditions that watcher was there to
+serve: swap growth, sustained material compaction, the floor, a silent
+halt, a failed request, and a dead server.
+
+Keep the external watcher for **scoring runs** — EvalPlus, Mendel,
+polyglot. Those harnesses sample no memory at all and run for hours, so
+`benchmarks/mem-watch.sh` is the only memory record they get. Start it
+as [the checklist](./checklist.md) step 7 says.
+
+Liveness is one signal, not three. `/health` stays 200 after an
+`mlx_lm.server` generation thread dies, so no sweep tool reads it. The
+runner watches the server log for the backend's death signature, and,
+when a step gives no reply for `STALL_S` (default 600 s), it sends ONE
+real completion. A completion that comes back means the server lives and
+the step is slow; the runner says so and keeps waiting. One that does
+not come back ends the sweep with exit 42. The probe fires on suspicion,
+never on a timer, because these servers hold one slot and a timed probe
+would compete with the sweep. A probe that finds the server alive still
+takes a cache slot, so the runner warns that the next step can re-read
+its prompt and read slow.
 
 ## Steps
 
@@ -26,8 +111,10 @@ config. Common rules and the run loop apply
    creep is these same steps with `DEPTH_LIST="4096,8192,16384,24576,32768"`.
 1. Grow a prompt in steps: 4K, 8K, 16K, 24K, 32K, then 16K steps.
 2. Measure decode tok/s at each depth (server timings, or streamed
-   chunks where the server has none). With a drafter, record draft
-   acceptance beside every tok/s: a speculative-decoding number
+   chunks where the server has none). The runner writes one row per
+   step, with the memory counters of that same step beside the speed.
+   With a drafter, record draft acceptance beside every tok/s: a
+   speculative-decoding number
    without its acceptance rate cannot be compared with a later run
    (research run 2 could not reproduce a published 45.0 py tok/s for
    that reason alone).
@@ -36,11 +123,16 @@ config. Common rules and the run loop apply
    sweep that stops at an arbitrary depth has not found a ceiling — it
    has just stopped.** Record "no ceiling found up to `<max>`" only
    after the sweep actually reached that number.
-4. Check the watcher log per step for compression/swap events before
-   trusting a slow step.
+4. Read the memory columns of the same row before you trust a slow
+   step: `wired_mb` first, then `swap_delta_mb`, `compress_pages` and
+   `decompress_pages`. Free memory is the wrong meter (see the pitfalls
+   below). The runner stops by itself on swap growth and on material
+   compaction that speed does not recover from; a step that shows either
+   and keeps going is still a step to distrust.
 5. Verdict, one of: **speed** (drops under the floor), **OOM** (dies
    while still fast), **window** (the model's own limit arrives first),
-   or **mem** (LM Studio only, below).
+   or **mem** (the machine compacts or swaps before any of those
+   arrives; on LM Studio it is the criterion, below).
 6. Record on every surface; the floor — not the window — is where the
    harness compaction threshold belongs.
 
@@ -50,8 +142,10 @@ Context length cannot be pinned on LM Studio for some MLX models
 (auto-fit always wins — [server lore](./server-lore.md)), so the raw
 window is a loader estimate, not a measurement. For LM Studio configs:
 
-- **The ceiling is the FIRST depth step whose watcher log shows material
-  compression or swap** (hundreds of pages, not single digits).
+- **The ceiling is the FIRST depth step whose row shows material
+  compression or swap**: `compress_pages` plus `decompress_pages` at or
+  above `COMPACT_PAGES` (default 200 — hundreds of pages, not single
+  digits), or any growth in `swap_delta_mb`.
 - The reported tok/s comes from the last clean step before onset.
 - The context-window column keeps the auto-fit estimate, flagged as a
   loader estimate; the trained max goes in a footnote.
@@ -72,9 +166,13 @@ least as large as `N_CONTEXTS`.
 
 ## The scripts
 
-One per backend, all sharing `tools/sweeps/creep.py`, which owns the
-method: the 25-second pause as a DEFAULT, append-only growth,
-round-robin contexts, memory sampling, and the stop conditions.
+One command per backend, all sharing `tools/sweeps/creep.py`, which owns
+the method: the 25-second pause as a DEFAULT, append-only growth,
+round-robin contexts, memory sampling, liveness, and the stop
+conditions. Each backend file holds only its endpoint, its request
+shape, how it reads speed, and its two liveness parts. Every script
+prints its own header with `--help`, and every environment variable it
+reads is documented there.
 
 - `tools/sweeps/creep_llama.py` — llama-server. `ENDPOINT=completion`
   (default) is raw and comparable with every published number here;
@@ -84,6 +182,19 @@ round-robin contexts, memory sampling, and the stop conditions.
 - `tools/sweeps/creep_lmstudio.py` — LM Studio. Chat endpoint only.
 - `tools/sweeps/creep_mlx.py` — `mlx_lm.server`. Set `SERVER_LOG`; this
   backend's generation thread can die while `/health` stays green.
+
+Stop conditions and their defaults, all overridable by environment
+variable: the floor (`FLOOR_TOKS`, 8 tok/s), swap growth above 1 MB,
+material compaction (`COMPACT_PAGES`, 200 pages) on three steps in a row
+without speed recovering, a silent halt, a failed request, and a dead
+server (`STALL_S` 600 s, `PROBE_TIMEOUT_S` 300 s).
+
+**Changed 2026-09-04.** The compaction stop used to fire on ANY
+decompression, however small, which is noise on a busy machine. It now
+needs `COMPACT_PAGES` pages compressed or decompressed in one step, so
+it matches the compression-onset criterion this page already used for LM
+Studio. Nothing else about that stop changed: three steps in a row, and
+speed must fail to recover.
 
 ## Measured law so far
 

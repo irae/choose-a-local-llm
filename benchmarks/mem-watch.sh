@@ -1,8 +1,16 @@
 #!/bin/bash
-# Small memory probe: one line every 5 min with free RAM and deltas of
-# swap/compression counters, so slowdowns can be correlated with real
-# swap/compression events (not just steady-state pressure color).
-LOG="$(dirname "$0")/mem-watch.log"
+# Small memory probe for a SCORING run: one line per interval with free
+# RAM and deltas of the swap/compression counters, so a slowdown can be
+# matched to a real swap or compression event.
+#
+# Depth sweeps do not need this. `tools/sweeps/creep.py` samples memory
+# into every step row by itself — see docs/methodology/context-creep.md.
+#
+# MEMWATCH_LOG      where to write, default mem-watch.log beside this file
+# MEMWATCH_INTERVAL seconds between lines, default 300
+#
+# Reverse direction: stop it. It changes nothing on the machine.
+LOG="${MEMWATCH_LOG:-$(dirname "$0")/mem-watch.log}"
 PAGE=16384
 INTERVAL="${MEMWATCH_INTERVAL:-300}"
 prev_swapin=0; prev_swapout=0; prev_compress=0; prev_decompress=0; first=1

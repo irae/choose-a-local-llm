@@ -11,3 +11,4 @@ docs/public/
 *disabled-system*
 services-*.conf
 services-state
+__pycache__/
