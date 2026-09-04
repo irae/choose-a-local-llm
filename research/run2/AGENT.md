@@ -39,6 +39,16 @@ restart and keep working.
   `--chat-template-file` with community-fixed templates (Qwen 3.x
   think-tags; Gemma has no official tool role — see
   `results/web-quant-and-models.md`).
+- *Loose end, drop it freely.* Run 1 found that two of the three
+  Gemma-12B newline floods contain nothing but newlines and the string
+  `<|channel>` — a malformed marker, since the real one closes with a
+  pipe. A model emitting a broken control token is the kind of thing a
+  wrong template or a bad quant produces, so it MAY be the same root
+  cause as the two items above rather than a separate bug. If the
+  template check or the PLE check turns something up, it is worth seeing
+  whether `<|channel>` disappears with it. If they do not, ignore this —
+  it is a hunch from a log, not a lead. Detail in
+  `research/run1/results/backend-diagnosis.md`.
 - Check whether our Gemma-4 MLX quants have the confirmed
   quantized-PLE defect (all HF mlx-community Gemma-4 quants reported
   broken; a fix repo exists). Compare `config.json` quantization
