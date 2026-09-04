@@ -88,16 +88,26 @@ calibrated q4 KV (q4 KV silently drifts output — see the research),
 at reduced context if memory demands. Fix the MLX serving config too,
 not only the fork.
 
-### C. Re-quantization — make better local builds
+### C. Other quants — try builds that already exist
 
-- Re-quantize one model from original weights with
-  `mlx_lm.convert -q --q-bits 4 --q-group-size 32
-  --quant-predicate mixed_4_6` and A/B against the mlx-community
-  download (EvalPlus smoke + a short Mendel-style task).
-- Wilder: `mlx_lm.dwq` (distilled quantization, biggest reported
-  quality gain) on Bonsai or Qwen3.8.
-- A/B K-quant vs IQ-quant decode speed on the M1 Max GPU (IQ reported
-  3.5x slower on Apple GPUs).
+Owner ruling (2026-09-04): no weight transformation of our own.
+Trials of other PUBLISHED quants with good reported metrics are in
+scope. Downloads are allowed in this run, after the owner approves
+the shortlist; the "no model downloads" rule is for benchmark
+runners.
+
+- For each local model, list the alternative quants on Hugging Face
+  (mlx-community, unsloth, bartowski, prism-ml) with their reported
+  metrics, size, and revision. Shortlist for the owner.
+- A/B a shortlisted quant against the current one: EvalPlus smoke
+  plus a short Mendel-style task, same serving command otherwise.
+- A/B K-quant vs IQ-quant decode speed on the M1 Max GPU, published
+  builds only (IQ reported 3.5x slower on Apple GPUs).
+- Only if the owner asks for it: `mlx_lm.convert -q` is the
+  one-command CLI the mlx-community quants are made with, and could
+  produce a mixed 4/6-bit build. `mlx_lm.dwq` is out: it needs the
+  full-precision weights, which do not fit in 32 GB, and hours of
+  training.
 
 ### D. Gemma-12B newline flood (LM Studio MLX)
 
