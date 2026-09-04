@@ -1,11 +1,9 @@
 # Gemma-12B content sweep: retire `google/gemma-4-12b` everywhere, keep the two working containers in front
 
-Status: APPROVED by the owner, 2026-09-04. Blocked on one measurement:
-the working LM Studio config's own depth curve, ceiling and memory,
-which is bench 9 block A0 (first block of that run). Everything else
-can start; cells that wait on it read "pending" until the block
-reports. The GGUF quant's own EvalPlus (bench 9 block B1) does NOT
-block: the GGUF rows keep the shared score, marked pending.
+Status: APPROVED by the owner, 2026-09-04. UNBLOCKED: research run 2
+measured the LM Studio entry's own curve before it closed (see "Numbers
+that exist now" below). The GGUF quant's own EvalPlus (bench 9 block
+B1) does not block: the GGUF rows keep the shared score, marked pending.
 Filed: 2026-09-04. Origin: research run 2 found that the site treated
 two LM Studio entries as one model; the owner then ruled the failing
 entry out and asked for this sweep.
@@ -32,6 +30,39 @@ Yet almost every Gemma-12B speed and ceiling number on the site was
 measured on the retired entry and copied to the thinking-off row, and
 the report page says the good config "is not reproducible today",
 which run 2 disproved by probe. The sweep fixes that.
+
+## What run 2's close changed, read this before the steps
+
+1. **The LM Studio entry has its own curve now.** `gemma-4-12b-it-mlx`,
+   chat endpoint, thinking off, 25 s pause: 34.19 tok/s at 4K, 32.05 at
+   16K, 30.59 at 32K, 27.08 at 65K, 24.52 at 98K, 23.23 at 131K; the
+   147K step read 22.60 and stopped on 69 MB of swap growth with wired
+   at 87% of the 24000 cap. Under the compression-onset criterion the
+   ceiling is the 131K step at 23.23 tok/s, gated by memory. Source:
+   `research/run2/results/gemma12-depth.md` ("The full picture") and
+   `research/run2/results/lms-ramp.log`, `lms-ramp2.log`. So no cell
+   waits on bench 9; the "pending" fallback in the steps below no
+   longer applies to the LM Studio speed cells.
+2. **The LM Studio entry is an EvalPlus config, not an agent config.**
+   Run 2's closing Mendel probe (`research/run2/results/mendel-probe-xtend.md`)
+   ran the same short task on both backends with thinking off:
+   llama-server with f16 KV made 42 tool calls and committed working
+   code; `gemma-4-12b-it-mlx` looped 2679 lines on the thought channel
+   (`<channel|><|channel>thought` repeated) and committed nothing. The
+   main page must say this plainly: the LM Studio entry holds the best
+   single-turn score and the fastest curve, and it is not usable for
+   multi-turn tool work; the usable agent configuration is llama-server,
+   f16 KV, no MTP drafter, thinking off (run 2's verdict at the top of
+   `research/run2/results.md`).
+3. **The GGUF curve is complete to the trained window.** f16 KV, no
+   drafter, thinking off: 24.64 at 4K down to 8.86 at 245K, window at
+   262144, wired flat at 14186 MB. The chat path costs nothing (24.68
+   against 24.64 at 4K). The published GGUF row (q8 KV, MTP, floor at
+   16K) is correct for that config and is superseded as the recommended
+   config, not as a measurement: both belong on the page, with the f16
+   no-drafter config as the recommended one. Data in the same
+   `gemma12-depth.md`, logs `deep262.log`, `deep262-resume.log`,
+   `chatpath2.log`.
 
 ## What the sweep does
 
