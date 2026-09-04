@@ -88,6 +88,30 @@ Thermal state and stack overhead plausibly account for the rest. The
 shortcut is therefore trustworthy and marginally pessimistic, which is
 the safe direction for a ceiling claim.
 
+## One fluke, and it was the tool, not the run
+
+The sweep to the trained maximum stopped itself at 196618 with
+"memory compaction on 3 consecutive steps without speed recovering".
+**Nothing was wrong with the run.** Swap was zero throughout, wired sat
+flat at 14186 MB against a 24000 limit, and decompressions were at the
+machine's idle noise level of about 12 per tick.
+
+Two bugs in this run's own new stop rule caused it:
+
+- **No materiality threshold.** `context-creep.md` defines compaction as
+  "hundreds of pages, not single digits". The rule counted any non-zero
+  decompression, so idle noise read as compaction on every step.
+- **Recovery compared against the best step rather than the previous
+  one.** A depth sweep declines by design — that is the curve. Measuring
+  recovery against the best reading guarantees "not recovered" once
+  normal decay passes the threshold, so the counter could only ever go
+  up.
+
+Both are fixed in `tools/sweeps/creep.py`, with the reasoning written
+into the file so the thresholds are not quietly re-tightened later. The
+measurements taken before the stop are unaffected and are used as they
+stand; the sweep was resumed from 196608.
+
 ## A note on the tooling, because it changed what is visible
 
 These sweeps are the first run of `tools/sweeps/creep.py` and
