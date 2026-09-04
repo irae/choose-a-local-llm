@@ -9,6 +9,8 @@ Legend for the checkbox:
 - `[a]` approved: an agent may take it, in its own worktree
 - `[s]` soon: approved and wanted next
 - `[l]` later: read, parked
+- `[p]` pull request: the work is done on a branch and waits for the
+  owner's review before it merges; the line names the branch
 - `[x]` done: the work landed on `master`, the file is deleted in the
   same commit, and the line moves to the Changelog below with the date
 
@@ -18,7 +20,8 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 ## Open
 
 - [a] peak_context is verifiable after all: recompute every pi row from per-turn usage, fix two compaction rows, narrow the caveat that landed today (peak-context-recompute-from-usage.md)
-- [a] Project non-goals: sweep the history, write a README section; owner reviews before it lands (project-non-goals-in-readme.md)
+- [p] Project non-goals: README section and findings file, branch `backlog/non-goals`, worktree `../choose-a-local-llm-backlog-nongoals` (project-non-goals-in-readme.md)
+- [p] Unslop of the internal docs: AI-tell cleanup of AGENTS, CONVENTIONS, EDITOR, PLANNING, INDEX, runbooks; branch `unslop-internal-docs`, worktree `../choose-a-local-llm-unslop`; conflicts with master on EDITOR.md (no backlog file)
 - [ ] Runner alarms: count output-limit hits, optional per-turn stop, loop verdict at run close (runner-alarms-output-limit-and-loop-stop.md)
 - [ ] Worker-profile table: which config is the best thinking-off sub-agent (worker-profile-table.md)
 - [ ] Bench 10 candidates: the items deferred from bench 9 and the retries (bench-10-candidates.md)
