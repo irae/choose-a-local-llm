@@ -4,50 +4,46 @@ Backends: llama-server, LM Studio MLX engine · [GGUF on Hugging Face](https://h
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
-  <div class="kpi"><b>29.3 tok/s</b><span>at 65K used (LM Studio)</span></div>
-  <div class="kpi"><b>65-74K</b><span>ceiling: compression onset (LM Studio)</span></div>
+  <div class="kpi"><b>245K</b><span>llama f16 depth, 8.86 tok/s</span></div>
+  <div class="kpi"><b>131K</b><span>LM Studio ceiling, 23.23 tok/s</span></div>
   <div class="kpi"><b>0.909 / 0.872</b><span>EvalPlus, thinking off</span></div>
   <div class="kpi"><b>4×256K</b><span>llama q8 slots, 16.9 GB</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling re-measured 2026-08-30 under the compression-onset criterion; llama GGUF depth sweep re-confirmed 2026-09-03 under wired limit 24000.
+Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves re-measured 2026-09-04 at wired limit 24000; EvalPlus scored on the LM Studio MLX container, thinking off.
 
 ## Highlights
 
-- **The deepest and flattest usable curve of the whole project** (LM
-  Studio): 25.1 tok/s still at 147K used tokens, in the smallest
-  footprint of any usable config.
-- **Two ceiling readings, two uses.** Memory compression starts between
-  65K and 74K — the benchmark-grade ceiling. The engine stays functional
-  to ~150K, the safe practical limit for harness work. See "Two
-  ceilings" below.
+- **The usable agent configuration is llama-server, f16 KV, no MTP
+  drafter, thinking off.** It decodes 24.64 tok/s at 4K and 8.86 at
+  245K, so it reaches the model's own 262,144 window and stays above the
+  8 tok/s floor. Wired memory holds flat at 13.9 GB. On a multi-turn
+  tool task it made 42 tool calls and committed working code.
+- **The LM Studio entry holds the best single-turn score and the fastest
+  curve, and it is not usable for multi-turn tool work.** It scores
+  0.909 / 0.872 with all 164 answers delivered, and runs 34.19 tok/s at
+  4K down to 23.23 at 131K. On the same tool task, with thinking off, it
+  looped on the thought channel for 2679 lines and committed nothing.
+- **The KV type sets the depth on this model, not the weights.** With
+  q8_0 KV the same server drops under the 8 tok/s floor by 16K. With f16
+  KV it is 3.2x faster at 16K and stays usable eight times deeper.
 - **The best concurrency story.** Four 256K slots fit with q8_0 KV, in
-  16.9 GB (llama).
-- Weak point: on llama with q8 KV it floors at ~16K; with f16 KV the
-  same server is still at 13 tok/s at 131K (research run 2, re-run
-  pending on this page). Quality: 0.909/0.872 thinking off at 100%
-  completion; thinking on scores 0.622 only because 61 of 164 answers
-  never finished — 99% of the answers it gave pass.
-- **Two LM Studio entries, not one model.** The thinking-off score comes
-  from `gemma-4-12b-it-mlx`, which cannot think at all. The 0.622 score
-  and all three Mendel rows come from `google/gemma-4-12b`, which always
-  thinks, ships Google's pre-fix chat template, and is no longer in the
-  model store. Gemma-4-12B with thinking on is ruled out on MLX and LM
-  Studio for agent work (owner decision, 2026-09-04): its repetition
-  loop is model-level and reproduces on llama-server too.
+  16.9 GB.
 
 ## All configs — this model
 
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Gemma-4-12B, MLX³ | 158k* | mem | 35.4 → 29.29 | 8.1 GB | 0.622/0.610 |
-| 2 | Gemma-4-12B, MLX³, thinking off | 158k* | mem | 35.4 → 29.29 | 8.1 GB | 0.909/0.872 |
+| 1 | Gemma-4-12B, MLX³, thinking off | 131k | mem | 34.19 → 23.23 | pending | 0.909/0.872 |
+| 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | window | 24.64 → 8.86 | 13.9 GB | 0.909/0.872 |
 | 3 | Gemma-4-12B, GGUF, MTP q8, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.909/0.872 |
 | 4 | Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off | 4x256k† | speed | 33.7† → pending | 16.9 GB† | 0.909/0.872 |
 
 † from an earlier serving config or method; re-run pending.
+
+Retired entries: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on repetition loop; entry gone from the model store ([details](../benchmarks/gemma-4-12b-it.md#the-retired-entry)).
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -55,21 +51,24 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling r
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Gemma-4-12B, MLX³.** LM Studio entry `google/gemma-4-12b`: thinking on, cannot be turned off; context is auto-fit (158,464 at wired limit 24000). This entry is no longer in the model store. It is the entry behind the 0.622 score (61/164 empty) and all three Mendel rows; its container ships Google's pre-fix chat template (research run 2).
-
-```bash
-~/.cache/lm-studio/bin/lms server start --port 8081
-~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y
-```
-
-**#2 — Gemma-4-12B, MLX³, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking OFF by default and the API cannot turn it on (probed 2026-09-04). Reproducible. Never run on Mendel.
+**#1 — Gemma-4-12B, MLX³, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
 
 ```bash
 ~/.cache/lm-studio/bin/lms server start --port 8081
 ~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y
 ```
 
-**#3 — Gemma-4-12B, GGUF, MTP q8, thinking off.** pi id `gemma-4-12b`. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep.
+**#2 — Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off.** pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window.
+
+```bash
+llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
+  --alias gemma-4-12b --no-mmproj --parallel 1 \
+  -ngl 999 -fa on -c 262144 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
+```
+
+**#3 — Gemma-4-12B, GGUF, MTP q8, thinking off.** The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -94,138 +93,76 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
 
 ## Model details and findings
 
-**This model re-entered play because of the runtime, not the weights.**
-mlx-lm cannot serve it: it lacks the `gemma4_unified` model type. LM Studio's
-engine supports that type and implements its attention properly. That single
-fact turned a model that floors at 11K on llama into the deepest usable
-config in the project. Serving it from the `lms` CLI is an approved exception
-to the no-GUI rule — everything still runs command-line only, and the model
-store is shared with the app.
+**The runtime decides what this model can do.** mlx-lm cannot serve it:
+it lacks the `gemma4_unified` model type. LM Studio's engine supports
+that type and gives the flattest decode curve on this machine.
+llama-server serves the GGUF quant, and it is the only path that
+survives multi-turn tool work. Serving from the `lms` CLI is an approved
+exception to the no-GUI rule — every step runs command-line only, and
+the model store is shared with the app.
 
-**The draft depth optimum moves with thinking.** n-max 3 is best with
-thinking on, because thinking text drafts worse; n-max 4 is best with
-thinking off. For a mixed setup, use n=3 on a thinking main-agent server and
-n=4 on thinking-off sub-agent slots.
+**The two backends fail differently, and that decides the pick.**
+llama-server allocates its KV from `-c`, so wired memory stays flat at
+59% of the limit from load to the trained window; it runs out of model,
+not of machine. The LM Studio engine grows into the cap instead: wired
+reaches 87% of the limit past 131K, and the sweep stops on swap growth.
+So LM Studio is faster at every depth it survives — 1.4x at 4K, 1.8x at
+131K — and llama-server is the one that finishes.
 
-**The context ceiling is the model, not the machine.** GGUF metadata gives a
-trained context of 262,144, and a sliding window of 1024 on 5 of every 6
-layers, so KV grows only ~1 GB per 64K tokens. No Metal OOM appeared at any
-size tested. Context limits are mode-independent, since KV is preallocated by
-`-c`. Four 256K slots do hit Metal OOM with f16 — 3 is the f16 maximum at
-full window, while q8_0 reaches 4.
+**The chat path costs nothing on llama-server.** 24.68 tok/s against
+24.64 at 4K, and 22.59 against 22.66 at 16K. The raw-prompt curve below
+transfers to harness use.
 
-**The speed numbers here were measured with f16 KV.** On this model f16 beat
-q8_0 by +5.5 py tok/s, which is why it was used. q8_0 is now the default on
-every config, per the KV policy, so a re-probe under the current wired limit
-is pending. MTP uses the separate `mtp-gemma-4-12b-it.gguf` draft from the
-unsloth repo.
+**The context ceiling of the GGUF is the model, not the machine.** GGUF
+metadata gives a trained context of 262,144, and a sliding window of
+1024 on 5 of every 6 layers, so KV grows only ~1 GB per 64K tokens. No
+Metal OOM appeared at any size tested. Context limits are
+mode-independent, since KV is preallocated by `-c`. Four 256K slots do
+hit Metal OOM with f16 — 3 is the f16 maximum at full window, while
+q8_0 reaches 4.
 
-**Two ceilings: what the findings mean (2026-08-30).** The two
-context figures on this page describe two different limits, and both are
-real:
+**The context window cannot be pinned on the MLX path.** The engine
+ignores every context-length setting for this model: CLI flags, REST
+body, per-model config file, app default. Auto-fit computes the window
+from the GPU wired limit and gives 158,464 tokens at a 24000 limit.
+`--parallel` is the one load knob that works.
 
-- **~170K is the functional limit.** The engine serves requests to
-  ~158-170K used tokens (auto-fit window; the loader refuses beyond it).
-  The curve stays above 22 tok/s the whole way. This config "sort of
-  works": past ~74K the system leans on memory compression, and near the
-  window edge a request can force a full ~150K-token recompute when the
-  disk cache evicts. For harness use, stay near **~150K** to keep a
-  margin below the window edge.
-- **~65-74K is the clean limit.** Memory compression and swap start
-  inside the 74K step. Below it the system is free of memory pressure.
-  Benchmarks and depth sweeps use this reading, because they hold deep
-  contexts hot for hours. A harness does not hit the machine that hard —
-  occasional deep calls above the onset are fine.
-- The context column in the tables keeps the auto-fit estimate (158,464)
-  flagged as a loader estimate; the trained max is 262,144 and does not
-  fit on this machine.
-- None of this is tunable. The engine ignores every context-length
-  setting for this model (CLI flags, REST body, per-model config file,
-  app default). Auto-fit computes the window from the GPU wired limit.
-  `--parallel` is the one load knob that works.
+**Quality comes from the MLX container.** The GGUF quant has never been
+scored on its own; it carries the MLX score by the shared-score rule,
+and the two quantization schemes differ, so that number is a copy, not a
+measurement. A thinking-on score is pending: the earlier one was
+measured on a retired entry and moved to
+[the historical page](../historical.md).
 
-**Thinking is binary.** Gemma 4 has trained-in reasoning (`<|think|>`),
-toggled by `enable_thinking` — on/off, default off, no graded effort levels.
+**Thinking on is a pitfall of this model, on both backends.** The
+evidence, the retired LM Studio entry, and the chat-template history are
+on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 
-Quality: both LM Studio entries are scored (see the highlights); the
-GGUF quant has never been scored on its own and carries the MLX score
-by the shared-score rule.
+## Decode speed vs used context (2026-09-04, wired limit 24000)
 
-## Decode speed vs used context (depth sweeps, limit 25000)
+Thinking off on every column. llama-server: raw `/completion`,
+`-c 262144`. LM Studio: chat endpoint, `--parallel 4`. Pause 25 s per
+step.
 
-| depth | llama+MTP q8 | LM Studio MLX engine (lms CLI, port 1234) |
-|---|--:|--:|
-| 4K | 14.0 | 36.7 |
-| 8K | 9.0 | |
-| 16K | 6.8 — under the 8 tok/s floor | 36.9 |
-| 33K / 49K | | 34.8 / 33.1 |
-| 74K / 98K | | 30.8 / 28.6 |
-| 131K / 147K | | 26.1 / 25.1 |
-| **169.6K** | | **29.7 — deepest healthy point; 171K fails clean, LM Studio's loader caps it at 170K, not this model or this machine** |
+| used tokens | llama f16, no drafter | llama q8 + MTP | LM Studio MLX engine |
+|---|--:|--:|--:|
+| 4K | 24.64 | 13.82 | 34.19 |
+| 8K | 24.05 | 8.74 | |
+| 16K | 22.66 | **6.53 — under the 8 tok/s floor** | 32.05 |
+| 33K | 20.58 | | 30.59 |
+| 65K | 17.42 | | 27.08 |
+| 98K | 14.91 | | 24.52 |
+| 131K | 12.67 | | **23.23 — last stable; memory gates it here** |
+| 147K | 11.72 | | |
+| 180K | 10.72 | | |
+| 213K | 9.69 | | |
+| **245K** | **8.86 — deepest step inside the trained window** | | |
 
-**Ceiling, revised criterion (2026-08-30):** context length cannot be
-pinned for this model — the engine ignores every `-c`/`--context-length`
-path; auto-fit always gives 158,464 at wired limit 24000. The ceiling is
-now the onset of memory compression/swap, not the loader's raw context
-cap. Confirmation sweep (`--parallel 4`, watcher at 20 s interval):
-
-| depth | decode tok/s | watcher state |
-|---|--:|---|
-| 41,095 | 31.05 | clean |
-| 49,112 | 30.25 | clean |
-| 57,077 | 29.25 | clean |
-| **65,094** | **29.29 — last clean step** | clean |
-| 74,099 | 27.95 | compression/swap onset inside this step (d_compress up to 114,012 pages, d_swapout 128) |
-
-**Ceiling = onset between 65K and 74K, tok/s 29.29 at 65,094 tokens.**
-The 158,464 context-window figure is the loader's auto-fit estimate,
-not a true measured ceiling — the trained max is 262,144 (footnote).
-
-**Shallow confirmation sweep (2026-08-30):** `google/gemma-4-12b`,
-`--parallel 4`, watcher scoped to the run, `STEP_SLEEP=25`, no
-compression or swap through the whole range:
-
-| depth | decode tok/s |
-|---|--:|
-| 4,175 | 35.41 |
-| 8,292 | 34.89 |
-| 16,465 | 33.88 |
-| 24,638 | 33.08 |
-| 33,071 | 32.19 |
-
-RSS 8.1 GB at 33,071 tokens (llmworker process). Replaces the earlier
-unverified 37 tok/s shallow figure and the 8.8 GB memory figure — the
-new shallow reading is 35.41 tok/s, and memory stays flat and small
-through the tested range, consistent with the 65K/29.29-tok/s clean
-ceiling above.
-
-llama RSS at floor depth (11K, q8_0 KV, 16K alloc): 8.2 GB.
-
-## Context (n-max 4, f16 KV)
-
-| -c | slots | result | RSS |
-|---|---|---|--:|
-| 131,072 | 1 | OK | 10.4 GB |
-| **262,144** | **1** | **OK — trained maximum, validated with 4K-token prompt** | **12.4 GB** |
-| **524,288** | **2×256K** | **OK — MTP active on both slots** | **16.9 GB** |
-
-## MTP sweep — thinking ON
-
-Chat endpoint, `enable_thinking: true`, 1024 tokens.
-
-| --spec-draft-n-max | py tok/s | py accept | js tok/s | js accept |
-|---|--:|--:|--:|--:|
-| **3** | **35.00** | **70%** | **35.55** | **72%** |
-| 4 | 33.34 | 64% | 33.91 | 65% |
-| 6 | 26.80 | 55% | 25.92 | 53% |
-
-Thinking OFF (sub-agent / fast mode) peaks at **45.2 py / 31.3 js tok/s**, at
-n-max 4 with f16 KV — against 22.3 without MTP. Full thinking-off sweep and
-KV tables in [the benchmarks](../benchmarks/gemma-4-12b-it.md).
+Cells are blank past a column's cap.
 
 ---
 
 Method: fresh server start per configuration; identical curl per run;
-temperature 0. Full raw numbers in
-[the benchmarks](../benchmarks/gemma-4-12b-it.md). Cross-model picks on
-[the comparison page](../comparison.md).
+temperature 0. Full raw numbers, the MTP sweeps and the thinking-on
+evidence in [the benchmarks](../benchmarks/gemma-4-12b-it.md).
+Cross-model picks on [the comparison page](../comparison.md).

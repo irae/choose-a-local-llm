@@ -129,30 +129,39 @@
    "note": "pi id `gemma-4-26b-a4b-2x`."
   },
   {
-   "config": "Gemma-4-12B, MLX³",
-   "maxCtx": "158k*",
-   "gatedBy": "mem",
-   "tokShallow": "35.4",
-   "tokDeep": "29.29",
-   "memory": "8.1 GB",
-   "evalplus": "0.622/0.610",
    "id": "gemma12-lmstudio-think",
-   "hidden": false,
-   "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y",
-   "note": "LM Studio entry `google/gemma-4-12b`: thinking on, cannot be turned off; context is auto-fit (158,464 at wired limit 24000). This entry is no longer in the model store. It is the entry behind the 0.622 score (61/164 empty) and all three Mendel rows; its container ships Google's pre-fix chat template (research run 2)."
+   "config": "Gemma-4-12B, LM Studio entry google/gemma-4-12b",
+   "retired": {
+    "date": "2026-09-04",
+    "reason": "thinking-on repetition loop; entry gone from the model store",
+    "details": "../benchmarks/gemma-4-12b-it.md#the-retired-entry"
+   }
   },
   {
    "config": "Gemma-4-12B, MLX³, thinking off",
-   "maxCtx": "158k*",
+   "maxCtx": "131k",
    "gatedBy": "mem",
-   "tokShallow": "35.4",
-   "tokDeep": "29.29",
-   "memory": "8.1 GB",
+   "tokShallow": "34.19",
+   "tokDeep": "23.23",
+   "memory": "pending",
    "evalplus": "0.909/0.872",
    "id": "gemma12-lmstudio-off",
    "hidden": false,
    "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y",
-   "note": "LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking OFF by default and the API cannot turn it on (probed 2026-09-04). Reproducible. Never run on Mendel."
+   "note": "LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel."
+  },
+  {
+   "config": "Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off",
+   "maxCtx": "245k",
+   "gatedBy": "window",
+   "tokShallow": "24.64",
+   "tokDeep": "8.86",
+   "memory": "13.9 GB",
+   "evalplus": "0.909/0.872",
+   "id": "gemma12-gguf-f16",
+   "hidden": false,
+   "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+   "note": "pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window."
   },
   {
    "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
@@ -165,7 +174,7 @@
    "id": "gemma12-gguf-off",
    "hidden": false,
    "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-   "note": "pi id `gemma-4-12b`. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep."
+   "note": "The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep."
   },
   {
    "config": "Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off",
@@ -294,23 +303,31 @@
   "gemma-4-12b-it": {
    "rowMatch": "Gemma-4-12B",
    "kpis": [
-    "deepSpeed",
-    "onset",
+    "agentDepth",
+    "lmsCeiling",
     "evalplusOff",
     "slots"
    ],
    "stats": {
-    "deepSpeed": {
-     "value": "29.3 tok/s",
-     "label": "at 65K used (LM Studio)"
+    "agentDepth": {
+     "value": "245K",
+     "label": "llama f16 depth, 8.86 tok/s"
     },
-    "onset": {
-     "value": "65-74K",
-     "label": "ceiling: compression onset (LM Studio)"
+    "agentShallow": {
+     "value": "24.64 tok/s",
+     "label": "llama f16, shallow"
+    },
+    "lmsCeiling": {
+     "value": "131K",
+     "label": "LM Studio ceiling, 23.23 tok/s"
+    },
+    "lmsShallow": {
+     "value": "34.19 tok/s",
+     "label": "LM Studio, shallow"
     },
     "window": {
-     "value": "158K*",
-     "label": "loader auto-fit window estimate"
+     "value": "158,464",
+     "label": "LM Studio auto-fit window at wired 24000"
     },
     "evalplusOff": {
      "value": "0.909 / 0.872",
@@ -326,11 +343,11 @@
     },
     "shallowLlama": {
      "value": "35.6 tok/s",
-     "label": "llama MTP, shallow"
+     "label": "llama MTP, short prompt, f16 KV"
     },
     "offPeak": {
      "value": "45.2 tok/s",
-     "label": "thinking-off peak (llama MTP)"
+     "label": "llama MTP peak, short prompt, f16 KV"
     }
    }
   },
@@ -480,14 +497,6 @@
    "base": "0.909",
    "plus": "0.872",
    "empty": "0/164"
-  },
-  {
-   "slug": "gemma-4-12b-it",
-   "model": "Gemma-4-12B",
-   "mode": "thinking on (LM Studio `google/gemma-4-12b` entry)",
-   "base": "0.622",
-   "plus": "0.610",
-   "empty": "61/164"
   },
   {
    "slug": "gemma-4-26b-a4b",
