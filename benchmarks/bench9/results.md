@@ -85,3 +85,41 @@ Rule 6 step 4: "q8_0 when f16 does not fit at a useful context." f16
 fails to fit even at model load, so this is decisive without the
 arithmetic in step 3. Research (AGENT.md) already says Qwen3.6 stays
 near-lossless at q8_0, so quality is not a blocker.
+
+## Block A1 — Qwen3.8-27B GGUF (short creep, KV pick)
+
+Command: published qwen3.8-gguf command, `-c 40960`, ports/log per AGENT.md.
+
+### q8_0 arm
+
+`creep-qwen38-gguf-short-q8.tsv`, `server-qwen38-gguf-short-q8.log`
+
+| depth | decode tok/s | wired_mb |
+| --- | --- | --- |
+| 4114 | 16.71 | 21578 |
+| 8222 | 13.07 | 21576 |
+| 16386 | 9.37 | 21706 |
+| 24602 | 8.52 | 21728 |
+| 32818 | 7.13 | 21691 |
+
+Verdict: **speed** — `STOP: below 8 tok/s at depth 32818`.
+
+### f16 arm
+
+`creep-qwen38-gguf-short-f16.tsv`, `server-qwen38-gguf-short-f16.log`
+
+| depth | decode tok/s | wired_mb | draft acceptance |
+| --- | --- | --- | --- |
+| 4114 | 20.02 | 22879 | 1.00 (task 9) |
+| 8222 | 18.14 | 22878 | 0.94 (task 19) |
+| 16386 | 16.04 | 22877 | 0.85 (task 41) |
+| 24602 | 17.20 | 22874 | 1.00 (task 66) |
+| 32818 | 16.38 | 22874 | 1.00 (task 89) |
+
+Verdict: **window** — `no ceiling found up to 32768`.
+
+### Pick: f16
+
+Rule 6 step 4: f16 fits (wired steady ~22.9 GB, well under the 24000 MB
+limit) and is faster at 32K (16.38 vs 7.13 tok/s, more than 2x). f16
+wins outright, no arithmetic needed.
