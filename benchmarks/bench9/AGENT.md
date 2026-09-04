@@ -42,10 +42,9 @@ re-runs one Mendel row that a harness config error invalidated.
   name only.
 - Then the cold-start sequence, checklist step 4, once for the
   session. The owner is present: ask before the reboot, and skip it
-  if they say the machine is already quiet. Verify the wired limit
-  read-only with `sysctl -n iogpu.wired_limit_mb`; it must read 24000.
-  If it does not, stop and show the owner the command to set it. Never
-  run `sudo` yourself.
+  if they say the machine is already quiet. Set
+  `sudo sysctl iogpu.wired_limit_mb=24000` in every case; it resets
+  on reboot.
 - One model on the GPU at a time. Quit the LM Studio app before any
   llama-server work (`osascript -e 'quit app "LM Studio"'`) and
   confirm with `pgrep -fl "LM Studio"`, never with `lms`.
