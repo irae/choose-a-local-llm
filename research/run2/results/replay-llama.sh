@@ -11,6 +11,9 @@
 # Two arms, selected by the first argument:
 #   embedded  the GGUF's own chat template (the long one, which opens a
 #             thought channel after every tool response)
+#   embedded-repeat  the same again. The control side of the comparison
+#             was the weaker one: three pre-fix arms looped against a
+#             single clean post-fix arm.
 #   short     the same GGUF forced onto the PRE-FIX template, Google's
 #             revision 657684f of 2026-06-03, which is the file every
 #             local chat_template.jinja still ships. It emits nothing
@@ -70,13 +73,17 @@ SERVER_LOG="$OUT/llama-server.log"
 
 check_arm() {
     case "$ARM" in
-        embedded|short|short-repeat|short-dry) ;;
+        embedded|embedded-repeat|short|short-repeat|short-dry) ;;
         *)
             echo "abort: arm must be 'embedded' or 'short'" >&2
             exit 1
             ;;
     esac
-    if [ "$ARM" != "embedded" ] && [ ! -f "$SHORT_TEMPLATE" ]; then
+    case "$ARM" in
+        short*) needs_template=yes ;;
+        *) needs_template=no ;;
+    esac
+    if [ "$needs_template" = "yes" ] && [ ! -f "$SHORT_TEMPLATE" ]; then
         echo "abort: $SHORT_TEMPLATE is missing; run the container audit first" >&2
         exit 1
     fi
@@ -101,9 +108,9 @@ make_directories() {
 
 start_server() {
     local template_flag=""
-    if [ "$ARM" != "embedded" ]; then
-        template_flag="--chat-template-file $SHORT_TEMPLATE"
-    fi
+    case "$ARM" in
+        short*) template_flag="--chat-template-file $SHORT_TEMPLATE" ;;
+    esac
 
     # Defaults are multiplier 0.0, which is off, and a 64-token window.
     # The window has to span several copies of whatever repeats.
