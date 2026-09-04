@@ -19,7 +19,8 @@ and the methodology pages the runbook points to.
   not a prompt; the agent that takes it writes its own plan. An
   approved item is worked in its own sibling worktree and branch,
   reviewed by the coordinator (or the owner, when the owner asked for
-  it), and merged to `master` only when both agree. Everything else is
+  it), and merged to `master` only when both agree. When it lands, its
+  backlog file is deleted in the same commit. Everything else is
   planning and stays with the coordinator.
 
 ## The two roles
