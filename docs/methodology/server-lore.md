@@ -34,14 +34,15 @@ Use `tools/sweeps/creep_lmstudio.py` for LM Studio depth sweeps; set
 `N_CONTEXTS` for N alternating contexts. Full forensic record:
 `benchmarks/bench4/lmstudio-forensics.md`.
 
-- **Context length CANNOT be set for gemma4 MLX models.** Every path is
-  ignored — CLI `-c`/`--context-length`, the REST load body, the
-  per-model config file, the app default. Auto-fit always computes the
-  window from `iogpu.wired_limit_mb` (158,464 for Gemma-12B at 24000).
-  `--parallel` IS honored. `lms ps` shows the live values — check it,
-  never guess. Consequence: LM Studio ceilings use the
-  compression-onset criterion
-  ([context creep](./context-creep.md)).
+- **Some MLX architectures refuse a pinned context window, and auto-fit
+  wins.** Every path is ignored — CLI `-c`/`--context-length`, the REST
+  load body, the per-model config file, the app default. Auto-fit
+  computes the window from `iogpu.wired_limit_mb` instead. `--parallel`
+  IS honored. `lms ps` shows the live values — check it, never guess.
+  Consequence: LM Studio ceilings use the compression-onset criterion
+  ([context creep](./context-creep.md)). For the architecture and the
+  window measured on the reference setup, see its
+  [runtime lore for that model](../setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md#runtime-lore-for-this-model).
 - **`lms load --estimate-only` is untrustworthy**: it prices weights
   only ("Confidence: LOW") and ignores KV. Do not use it as a fit
   check. MLX allocates KV lazily, so a load that succeeds proves
@@ -106,20 +107,23 @@ Use `tools/sweeps/creep_lmstudio.py` for LM Studio depth sweeps; set
   recompute (`cached_tokens=0` with a huge uncached count) that
   inflates the step's wall time; the decode tok/s stays valid (measured
   from post-prefill streaming). Freeing disk raises the cap.
-- **Thinking is ALWAYS ON for `gemma4_unified`** (Gemma-12B): a plain
-  chat request returns populated `reasoning_content`, and no toggle
-  works — `chat_template_kwargs: {enable_thinking: false}` and every
-  other shape were tested under idle conditions and change nothing.
-  Do not trust `/api/v0/models`' `capabilities` list for reasoning
-  support; test the actual response.
+- **Test the real response for thinking; never trust the capabilities
+  list.** `/api/v0/models`' `capabilities` list does not tell you what a
+  model store entry does. One entry can return populated
+  `reasoning_content` for a plain chat request with no toggle that works
+  (`chat_template_kwargs: {enable_thinking: false}` and every other shape
+  change nothing), while another entry for the same weights answers with
+  thinking off and cannot turn it on. Probe each entry, and record the
+  entry name with the result. For the entries measured on the reference
+  setup, see its [runtime lore for that model](../setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md#runtime-lore-for-this-model).
 - **MLX multi-slot only works through LM Studio**, not plain
   `mlx_lm.server` (which needs a second full weight copy for concurrent
   decode). LM Studio's engine added continuous batching for text models
   in 0.4.2.
-- **A curated Hub identifier is not necessarily different weights** —
-  `google/gemma-4-12b` resolves to
-  `lmstudio-community/gemma-4-12B-it-MLX-4bit`. Check
-  `hub/models/<id>/manifest.json` before assuming.
+- **A curated Hub identifier is not necessarily different weights.** A
+  curated id can resolve to another repository's container. Check
+  `hub/models/<id>/manifest.json` before assuming. For the example
+  measured on the reference setup, see its [runtime lore for that model](../setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md#runtime-lore-for-this-model).
 
 ## The machine
 
