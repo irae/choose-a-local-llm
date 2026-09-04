@@ -134,6 +134,23 @@ before-and-after of Google's fix on one backend.
   by fit on this machine: Devstral Small 2 first. Nothing downloaded.
 - **Three config changes as diffs** (`results/config-proposals.md`),
   none applied.
+- **The flood, read from LM Studio's server logs**
+  (`results/flood-shape.md`). Only ONE flood survives in any log from
+  June to September; run 7's three are gone from this source. It sits in
+  `reasoning_content`, ends with a bare `<|channel>`, and follows the
+  runner's model nudge, not a tool response. n=1, labelled as such.
+  Records a counting trap: 119 "floods" were 119 re-sends of one
+  message, because every request body carries the whole history.
+- **The pre-fix template corrupts OpenAI-shaped tool calls**
+  (`results/container-audit.md`, finding 1d, tool
+  `results/render-templates.py`). Given `arguments` as a JSON string it
+  emits raw JSON where Gemma expects its own key-value form, and says
+  nothing. The post-fix template refuses that input instead. Upstream
+  `mlx_lm.server` deserializes first and escapes; what LM Studio's engine
+  does is the open question, and the probe is written down.
+- **IOAccelerator is the wrong meter for llama-server too**
+  (`results/context-ramp.md`), closing a run 1 open question. It read
+  9 MB while the server held 13.6 GB wired.
 
 ### Next, in order
 
