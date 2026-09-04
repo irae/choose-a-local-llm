@@ -140,9 +140,9 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 
 ## Decode speed vs used context (2026-09-04, wired limit 24000)
 
-Thinking off on every column. llama-server: raw `/completion`,
-`-c 262144`. LM Studio: chat endpoint, `--parallel 4`. Pause 25 s per
-step.
+Thinking off on every column. llama-server: raw `/completion`, with the
+allocation always above the deepest step measured. LM Studio: chat
+endpoint, `--parallel 4`. Pause 25 s per step.
 
 | used tokens | llama f16, no drafter | llama q8 + MTP | LM Studio MLX engine |
 |---|--:|--:|--:|

@@ -189,9 +189,10 @@ which apply the compression-onset criterion at the current wired limit.
 
 House method: append-only prompt growth, 25 s pause per step, memory
 counters in every step row, machine clean with the other backend quit.
-llama-server on raw `/completion` at `-c 262144`; LM Studio on the chat
-endpoint with `--parallel 4`, because its raw completions path is broken
-on this build. Thinking off everywhere.
+llama-server on raw `/completion`, with `-c` always above the deepest
+step of the arm (139,264 for the shallow half, 262,144 for the deep
+half); LM Studio on the chat endpoint with `--parallel 4`, because its
+raw completions path is broken on this build. Thinking off everywhere.
 
 | used tokens | llama f16, no drafter | llama q8, no drafter | llama q8 + MTP | LM Studio MLX |
 |---|--:|--:|--:|--:|
