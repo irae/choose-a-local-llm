@@ -111,3 +111,32 @@ The context ramp measured 27.3 tokens per second at every context from
 explanations are in `context-ramp.md`. The page already says a q8
 re-probe is pending; this is evidence that it matters more than the
 +5.5 tok/s the page expects.
+
+## P4 — a liveness watcher that probes a real completion (section E)
+
+**Where:** `results/liveness-watch.sh` in this run folder. **Not**
+promoted to `benchmarks/` or `tools/`, because a new shared tool is the
+owner's call, not a research run's.
+
+Section E asks for a watchdog that probes a REAL completion rather than
+`/health`, because `mlx_lm.server`'s generation thread can die while the
+process lives and `/health` keeps answering 200.
+
+The design question a timer-based probe cannot answer: these servers run
+one slot, so probing on a schedule competes with the run. This one
+probes **on suspicion** instead.
+
+1. Watch the run's own output file for growth.
+2. Only when growth has stopped for `STALL_SECONDS`, send one real
+   completion with a long timeout.
+3. A completion that returns means the server is alive and the model is
+   merely thinking. One that does not return means the server is dead,
+   whatever `/health` says. Exit 42 in that case.
+
+Smoke-tested against the live T1.1 server: it reported
+`STALL 30s: health=ok probe=alive 13s` and correctly declined to call it
+a failure. The probe queued behind the running generation and cost 13
+seconds and one token, which is the price of the design and is small.
+
+If the owner wants it, it belongs in `benchmarks/` beside `mem-watch.sh`
+and needs a line in the `AGENTS.md` index in the same commit.
