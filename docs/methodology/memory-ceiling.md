@@ -59,8 +59,9 @@ responding to sysctl changes, and the machine locks up and shows visual
 glitches. Ceilings measured in that regime are the machine's true
 maxima but cost system usability.
 
-Budget model for MLX (Qwen3.6-35B measured): weights + a ~1-2 GB
-transient prefill spike + ~115 KiB per token of KV.
+Budget model for MLX (measured on one 35B MoE 4-bit config; the KV cost
+per token is model-specific): weights + a ~1-2 GB transient prefill
+spike + ~115 KiB per token of KV.
 
 LM Studio ignores `-c` for some MLX models and computes the window
 itself from the wired limit — for those configs there is no allocation

@@ -3,8 +3,9 @@
 A repeatable process to answer, for one specific computer: **which local
 model, runtime, and configuration should I code with?**
 
-The content lives on the site built from `docs/`. Start at `docs/index.md`
-for the project intro, the goals, and a summary of each measured setup.
+**Results: <https://irae.github.io/choose-a-local-llm/>** — the site
+built from `docs/`. Start at `docs/index.md` for the project intro, the
+goals, and a summary of each measured setup.
 
 ## Read it locally
 
@@ -30,7 +31,13 @@ Working on this repo? Start at [AGENTS.md](./AGENTS.md).
 
 ## How to use this repo to run your benchmarks
 
-The process stands on its own; only the measurements are ours.
+The process stands on its own; only the measurements are ours. That
+split is a rule: **method pages never name a model.** Everything under
+`docs/methodology/` describes how to measure; the models, runtimes,
+commands and numbers of one machine live under `docs/setups/<setup>/`.
+A method page may say "one dense 12B model on the reference setup" and
+link the setup's report. If you find a model name in a method page,
+that is a bug.
 
 1. Read `AGENTS.md` (the index and the standing rules), then
    `docs/methodology.md` and its per-task pages — the flow is the law.
@@ -39,7 +46,8 @@ The process stands on its own; only the measurements are ours.
    runner agent executes it.
 3. Keep your own `HANDOFF.md` at the repo root for coordinator state.
    It is gitignored; start yours empty. The writing rules are in
-   `benchmarks/PLANNING.md`.
+   `benchmarks/PLANNING.md`. Work that needs no hardware and no
+   decision yet goes to `backlog/`, one file per item.
 4. Record results the way `EDITOR.md` and the methodology's
    record-everywhere rule demand, and add each run's findings to
    `benchmarks/INDEX.md`.

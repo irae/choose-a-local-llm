@@ -96,6 +96,11 @@ Benchmark work:
 
 ## Standing rules
 
+- **Method pages never name a model.** `docs/methodology/` is reusable
+  by anyone; models, runtimes, commands and numbers of one machine
+  live under `docs/setups/<setup>/`. Say "one dense 12B model on the
+  reference setup" and link the setup's report (README, "How to use
+  this repo").
 - **Push only on owner request.** Never push on your own initiative.
   When the owner asks for a push or for stop-and-sync, push `master` —
   and only `master`. Refusing a requested push loses data; do it.

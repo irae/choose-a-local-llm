@@ -32,7 +32,7 @@ survivors.
   Note: speculative decoding (MTP or draft-model) costs depth — the floor
   arrives shallower with a drafter; measure both.
 - **Take the newest strong models even if slow**; let the quality gate decide.
-- **One compressed-frontier experiment at a time** (ours: ternary Bonsai) —
+- **One compressed-frontier experiment at a time** (on the reference setup: a ternary 27B) —
   and read the vendor's serving docs before concluding anything; we missed
   their 4-bit-KV path and their layout migrations for a while.
 - **Use the most popular mainstream quant repos** (HF download counts);
@@ -41,7 +41,7 @@ survivors.
   not count: what you run is a quant. But narrow differences between
   runtimes' standard quants do not count either — score each model once
   per thinking mode and share that score across runtimes. Aggressive or
-  calibrated quants (for example the prism fork's q4 KV) are not narrow;
+  calibrated quants (for example a vendor-calibrated q4 KV) are not narrow;
   each passes the gate separately.
 
 ## How we learn a config's limits

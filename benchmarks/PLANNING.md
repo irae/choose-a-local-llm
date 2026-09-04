@@ -6,6 +6,22 @@ into a run kit that a smaller runner agent can execute with much less
 context. The runner never reads this page; it reads only its runbook
 and the methodology pages the runbook points to.
 
+## Three kinds of work, three places
+
+- `benchmarks/bench<N>/` — a bench run: hardware only, no judgment.
+  A small runner executes exact commands.
+- `research/run<N>/` — a research run: needs judgment and web access,
+  AND the benchmark machine.
+- `backlog/<mnemonic-name>.md` — one file per item, issue-tracker
+  style: things to do that need no benchmark hardware (tooling, method
+  pages, runner code, site restructures), not yet decided or scheduled,
+  and reviewed by the owner before any agent picks one up. An item is
+  not a prompt; the agent that takes it writes its own plan. An
+  approved item is worked in its own sibling worktree and branch,
+  reviewed by the coordinator (or the owner, when the owner asked for
+  it), and merged to `master` only when both agree. Everything else is
+  planning and stays with the coordinator.
+
 ## The two roles
 
 - **Coordinator** (strong model, full context): plans, investigates,

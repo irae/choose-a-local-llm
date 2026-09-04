@@ -27,23 +27,48 @@ the per-test pages; the run loop lives in
    before. llama-server reuses any longest common prefix;
    mlx_lm.server only reuses strict extensions. Verify reuse via llama's
    `.timings.prompt_n` (must be the delta, not the total).
-6. **KV cache policy: 8-bit (q8_0) is the default, and the KV type is
-   measured per model before a config is published.** q8 was verified
-   byte-identical to f16 at temperature 0 on one model; the context it
-   unlocks is why it is the default. **Its speed cost is
-   model-dependent and can be large.** On Gemma-4-12B (llama-server)
-   q8 decode falls under the floor by 16K used tokens while f16 is
-   3.2x faster there and still usable at 131K
-   (`research/run2/results/gemma12-depth.md`). So a llama-server config
-   runs f16 when a depth sweep shows f16 more than 20% faster at 16K
-   and f16 fits at the published context under the wired limit;
-   otherwise q8. Community KL measurements also report q8 KV costing
-   Gemma-4 models far more quality than Qwen; treat "near-lossless" as
-   per-model until the EvalPlus gate has confirmed it. q8 can also
-   lower MTP draft acceptance (Gemma-26B js: 81% → 68%). q4_0 is banned for quality —
-   with one exception: a vendor ships a per-model calibration for it
-   (PrismML's Bonsai bias); such a config must pass the
-   [EvalPlus gate](./evalplus.md) before serving.
+6. **KV cache type: decided per model, by research, then by a short
+   creep, before any full sweep.** Both f16 and q8_0 are candidates;
+   q4_0 is banned for quality, with one exception: a vendor ships a
+   per-model calibration for it (a vendor-shipped KV bias file), and such a
+   config must pass the [EvalPlus gate](./evalplus.md) before serving.
+   The procedure, in order:
+   1. **Research the cache quality first.** Look for measured evidence
+      that q8_0 KV is near-identical to f16 for THIS model: the quant
+      publisher's own grading (unsloth grades its weight quants with
+      KL-divergence graphs; cache-type graphs come from community
+      benchmarks such as the localbench KL study), or a KL or
+      benchmark comparison with the method shown. Trust it when the
+      proof is there. Record the source beside the config. Some model
+      families stay near-identical at q8_0 (KL under 0.04 in community
+      measurements); others lose far more, and their MoE variants lose
+      the most. Do not assume which group a model is in.
+   2. **Short creep, both types, to 32K.** Below 32K a config is not
+      useful, so 32K is the smallest depth that decides anything.
+      Same command, only the cache types change. Record decode tok/s
+      and wired memory at 4K and 32K for each type.
+   3. **Predict the fit.** KV cost per token is linear:
+      `kv_per_token = (wired_32k - wired_4k) / 28672`. A type fits at
+      a target context when
+      `wired_4k + kv_per_token × (target - 4096) + 1500 MB ≤ iogpu.wired_limit_mb`.
+      The target is the model's trained window or the depth the
+      short creep already shows is the speed floor, whichever is
+      smaller.
+   4. **Pick.** f16 when it fits at a useful context AND is faster at
+      32K, or when step 1 says q8_0 costs this model quality. q8_0
+      when f16 does not fit at a useful context; a slower cache that
+      holds the context beats a faster one that does not. When the
+      two curves are within 10% at 32K and both fit, q8_0.
+   5. **Full creep on the pick.** When the prediction is not decisive
+      (the fit is within the margin, or the curves cross), run the
+      full creep on both; a creep is cheap next to a wrong published
+      row. Publish the pick, and note the other type's 32K numbers.
+   Measured on the reference setup: one dense 12B model at q8_0 fell
+   under the floor by 16K while f16 was 3.2x faster there, still usable
+   at 131K, and fit at the model's full window; see that setup's
+   report. q8_0 can also lower MTP draft acceptance (one MoE model:
+   81% → 68%). Every existing q8_0 row is re-decided by this rule as
+   its sweep is re-run.
 7. **API-or-nothing.** A config qualifies only if it serves an HTTP API
    a harness can use. CLI-only inference paths are disqualified.
 8. **Keep thinking-on AND thinking-off data, both labeled — never

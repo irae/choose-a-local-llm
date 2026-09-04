@@ -14,12 +14,16 @@ config. Common rules and the run loop apply
 - The pause rule: **creep slowly, ~25 s between depth steps.** The pause
   simulates real use — an agent's model waits on the user and on tool
   runs between requests — and it gives macOS time to compress other
-  memory, which raises the measured ceiling (verified: ~2K extra tokens
-  on Qwen3.6-35B MLX at limit 24000). A no-pause sweep understates the
+  memory, which raises the measured ceiling (verified on the reference
+  setup: about 2K extra tokens on a 35B MoE MLX config). A no-pause sweep understates the
   ceiling a real harness reaches.
 
 ## Steps
 
+0. On llama-server, decide the KV cache type first: research, a short
+   creep of both types to 32K, the fit prediction, then the full creep
+   on the pick — [common rules](./common-rules.md), rule 6. The short
+   creep is these same steps with `DEPTH_LIST="4096,8192,16384,24576,32768"`.
 1. Grow a prompt in steps: 4K, 8K, 16K, 24K, 32K, then 16K steps.
 2. Measure decode tok/s at each depth (server timings, or streamed
    chunks where the server has none). With a drafter, record draft
@@ -87,11 +91,12 @@ MLX runtimes barely creep but hit hard memory ceilings; llama runtimes
 creep faster but never OOM inside their window. Speculative decoding
 costs depth — the floor arrives shallower with a drafter; measure both.
 
-**The KV cache type can dominate everything else.** On Gemma-4-12B,
-q8_0 KV falls through the 8 tok/s floor by 16K used tokens while f16 is
-still at 13.0 tok/s at 131K — a 3.2x gap at 16K. Measure the KV type per
-model before trusting a depth curve; see
-`research/run2/results/gemma12-depth.md`.
+**The KV cache type can dominate everything else.** On one dense 12B
+model on the reference setup, q8_0 KV falls through the 8 tok/s floor
+by 16K used tokens while f16 is still at 13.0 tok/s at 131K — a 3.2x
+gap at 16K. Decide the KV type per model before trusting a depth curve
+([common rules](./common-rules.md), rule 6); the evidence is in that
+setup's report.
 
 ## Do not try these — see git history
 
