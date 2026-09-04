@@ -94,3 +94,55 @@ rather than a sampler fix. This supports that, and sharpens the reason:
 
 Interim. The arm runs to about 10:29Z. Its final counts, and whether it
 recovered, go in the closing section.
+
+## The chain, completed at 09:39Z
+
+The collapsed output was not many tool calls. It was **one**.
+
+| Time | Event |
+| --- | --- |
+| 08:29:26Z | call 37, `ls -d examples/planout-*`, normal, executed |
+| 08:29 to 09:39 | **70 minutes generating a single tool call** |
+| 09:39:11Z | call 38 emitted: one `bash` command holding 1133 corrupted `ls -d` lines |
+| 09:39:11Z | pi **rejects it** |
+| 09:41Z | the model is thinking again |
+
+pi's rejection, verbatim:
+
+> Tool call "bash" was not executed: the response hit the output token
+> limit, so its arguments may be truncated. Re-issue the tool call with
+> complete arguments.
+
+So the call never ran. The model spent 70 minutes producing something
+the harness threw away, and was then asked to produce it again.
+
+### This is the missing link to the tool-call loop
+
+Run 1 established that both reproduced loops began with a malformed call
+that pi rejected, and that the model then re-emitted the rejected call
+unchanged. Until now the origin of that first malformed call was
+unexplained. The chain is now visible end to end:
+
+1. The pre-fix chat template gives no generation prefix after a tool
+   response, and the model collapses into repetition.
+2. With DRY on, the repetition moves into a tool call and varies one
+   token per line, so no sampler and no exact-match detector stops it.
+3. The call grows past the output token limit.
+4. **pi rejects it and asks the model to re-issue it.**
+5. Re-issuing reproduces the same collapse. That is the loop.
+
+Every step is measured here except step 5, which the arm's remaining
+wall may or may not reach.
+
+### Two consequences worth carrying
+
+**`loop-stop.ts` would not fire on this.** It counts identical
+consecutive tool calls, and this is a single call. A stop that only
+counts calls cannot see a 70-minute one. The stop needs a second trigger:
+elapsed time or output size inside ONE call.
+
+**Proposal P1 gains a second reason.** The output token limit is what
+converts a collapse into a rejected call and a re-issue request. That
+limit is `maxTokens`, the same number P1 proposes to change for Qwen3.8.
+Whatever value it takes, a run should treat "hit the output limit" as a
+run-level alarm, not a routine retry.
