@@ -1,7 +1,11 @@
 # Gemma-4-12B — what the community already knows, and what to do
 
-Run 2, 2026-09-04. Written after the owner asked whether this model is
-worth more time. Research, not a measurement. **Proposal, not applied.**
+Run 2, 2026-09-04. **Owner decision, taken 2026-09-04.** The reasoning
+and sources below are the proof behind it.
+
+**The ruling: Gemma-4-12B on MLX or LM Studio is ruled out for
+thinking-on agentic work, and no further item in this run chases that
+combination.** GGUF Gemma-12B stays in scope.
 
 ## The two things I verified locally
 
@@ -45,9 +49,10 @@ model is concerned.
   were updated in June 2026, before the 15 July template fix. That
   matches the pre-fix hash measured in our cache.
 
-## Recommendation
+## The decision, and why
 
-**Rule out Gemma-4-12B on MLX for thinking-on agentic work.**
+**Ruled out: Gemma-4-12B on MLX or LM Studio for thinking-on agentic
+work. No further item chases that combination.**
 
 Not because the template cannot be patched — it can, in one file — but
 because the loop survives full precision. A patched template would
@@ -62,6 +67,34 @@ This frees the run's remaining time for the quant shortlist
 (`quant-survey.md`) and the coding candidates
 (`model-candidates.md`), which is where the daily-driver question is
 actually decided.
+
+## For the planner — every Gemma-12B Mendel row is MLX
+
+Checked in `benchmarks/mendel/results*.csv`. All three Gemma-4-12B rows
+ran on the `lmstudio` provider:
+
+| Row | provider | backend |
+| --- | --- | --- |
+| `google-gemma-4-12b-high-guided-v3-issue-13` | lmstudio | lm-studio |
+| `google-gemma-4-12b-low-guided-v3-issue-13` | lmstudio | lm-studio |
+| `google-gemma-4-12b-high-issue-13` | lmstudio | lm-studio |
+| `gemma-4-26b-a4b-issue-13` | llama | llama-server |
+
+So **there is no scored GGUF Gemma-12B agent run at all**, and every
+scored Gemma-12B agent number sits on the ruled-out combination.
+
+**Request to the planner: queue a GGUF Gemma-12B Mendel run.** This run
+is research and does not schedule scored benchmarks. The case for
+queueing it is that the unscored replays here already show that path
+working — the post-fix template arms ran 150 and 100 minutes without a
+repetition loop, one of them committing three dependency removals with a
+clean tree, where the LM Studio arm committed nothing. A scored row would
+turn that into a comparable number and would give the model a fair
+result on the backend that is not ruled out.
+
+The vetted command is in
+`docs/setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md`, and the pi entry
+`gemma-4-12b` on the `llama` provider already exists.
 
 ## What this does NOT change
 

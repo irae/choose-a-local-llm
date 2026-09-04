@@ -7,6 +7,18 @@ Summary table. Detail is in `results/`, the running log is in
 Session 1: 2026-09-04, night, unattended. Machine rebooted before it
 started, `iogpu.wired_limit_mb=24000`, zero swap for the whole session.
 
+## Owner decision, 2026-09-04
+
+**Gemma-4-12B on MLX or LM Studio is ruled out for thinking-on agentic
+work.** No further item in this run chases that combination. GGUF
+Gemma-12B stays in scope. Reasoning and sources in
+`results/gemma12-verdict.md`.
+
+Consequence for the planner: **all three Gemma-4-12B Mendel rows are
+LM Studio**, so every scored Gemma-12B agent number sits on the ruled-out
+combination, and no GGUF Gemma-12B agent row exists. A GGUF Mendel run is
+requested — this run does not schedule scored benchmarks.
+
 ## For the planner, first
 
 **GGUF / llama-server rows are KEEPERS on template grounds. MLX /
