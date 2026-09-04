@@ -109,6 +109,14 @@ and the instruction to keep working until every block is done or truly
 blocked. Pass the STE prose rule on. Do not paste findings or history
 into the prompt — that is what the files are for.
 
+## When the owner asks what is pending
+
+List software, bench and project items: things that produce an
+artifact (a page, a tool, a run, a decision recorded in a file). Do not
+list transient workflow state: what is pushed, what is staged, which
+agent is running, which window to use. That belongs in the handoff's
+current-state section, not in an answer.
+
 ## The handoff file
 
 `HANDOFF.md` at the repo root is the coordinator's working state: what
