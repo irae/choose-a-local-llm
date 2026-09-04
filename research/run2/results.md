@@ -7,6 +7,17 @@ Summary table. Detail is in `results/`, the running log is in
 Session 1: 2026-09-04, night, unattended. Machine rebooted before it
 started, `iogpu.wired_limit_mb=24000`, zero swap for the whole session.
 
+## ATTENTION, coordinator — read `results/two-gemma-entries.md` first
+
+Two different LM Studio entries were treated as one model. The best
+Gemma-12B score (0.909/0.872, 100% completion) comes from
+`gemma-4-12b-it-mlx`, where thinking is off and cannot be turned on. The
+0.622 row and **all three Mendel rows** come from `google/gemma-4-12b`,
+which is not in the model store today. Two config blocks in the report
+say the good config is not reproducible; a probe on 2026-09-04 shows it
+is. The owner asked for the planner's full attention on this before the
+site settles anything about Gemma-12B.
+
 ## Owner decision, 2026-09-04
 
 **Gemma-4-12B on MLX or LM Studio is ruled out for thinking-on agentic

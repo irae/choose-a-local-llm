@@ -70,3 +70,30 @@ synthetic data. Four files still carry the old word and are listed in
   template.** Row 3 claims a 16k ceiling gated by speed, while this run
   served 262144 with 13.6 GB wired. Row 4 already carries the
   "re-run pending" dagger. See `context-ramp.md` and `kv-speed.md`.
+
+## 5. Two LM Studio Gemma entries, treated as one model
+
+Highest-attention item, at the owner's request. Full detail in
+`two-gemma-entries.md`. In one line: the best Gemma-12B score and the
+three failed Mendel rows come from **different LM Studio entries**, and
+the report's claim that the good one is irreproducible has been
+disproved by probe.
+
+## 6. A depth sweep was invalidated by a resident LM Studio, and how
+
+Recorded as a method warning. A first depth sweep of GGUF Gemma-12B read
+13.83, 8.80 and 6.60 tok/s and looked like a clean confirmation of the
+published row. The memory watcher showed **free memory at 55 MB with
+active decompression**, and `ps` showed **LM Studio still resident** —
+`lms server stop` and `lms unload --all` had run, but the app itself had
+not been quit, so its Electron and GPU helpers were still on the machine.
+
+`docs/methodology/checklist.md` step 3 already says to quit the app with
+`osascript -e 'quit app "LM Studio"'` and confirm the menu bar item is
+gone. That step was skipped here. The sweep was discarded and re-run
+after quitting the app, which returned free memory from 55 MB to 6.2 GB.
+
+Worth considering for the checklist: the probe script that leaves the app
+resident is the same shape any future LM Studio work will take, so a
+"quit the app" step belongs at the END of an LM Studio probe as well as
+before a llama.cpp run.
