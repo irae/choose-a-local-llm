@@ -221,3 +221,48 @@ no correction needed here.
 
 Published row: **f16 KV, `-c 32768` (matches published), no ceiling
 found to the window, 16.39 tok/s at 32818.**
+
+## Block A1b — Gemma-4-26B-A4B GGUF full creep (pick: f16)
+
+Published `-c 262144` OOMs immediately: the first depth step (4114)
+returns HTTP 500, and the log shows `Insufficient Memory` even before
+that request (wired already 25048 MB at start, over the 24000 MB limit
+before any KV growth) — `server-gemma26-gguf-full-f16.log`. `-c 131072`
+loads and serves cleanly — `server-gemma26-gguf-full-f16-c131072.log`.
+The full creep ran at **`-c 131072`**, not the published 262144.
+
+`creep-gemma26-gguf-full-f16-c131072.tsv`
+
+| depth | decode tok/s | wired_mb | draft acceptance |
+| --- | --- | --- | --- |
+| 4114 | 61.25 | 23170 | — |
+| 8222 | 64.95 | 23186 | — |
+| 16386 | 56.65 | 23186 | — |
+| 24602 | 52.72 | 23195 | — |
+| 32818 | 46.46 | 23195 | 0.87 (task 160) |
+| 49198 | 41.04 | 23195 | — |
+| 65578 | 36.22 | 23194 | 0.87 (task 195) |
+| 81958 | 33.25 | 23210 | — |
+| 98338 | 28.73 | 23186 | 0.93 (task 230) |
+| 114718 | 26.25 | 23180 | 0.93 (task 265) / 0.89 (task 299) |
+
+Verdict: **window**, not mem. `STOP: request failed at depth 131098:
+HTTP Error 400` — the server log says
+`request (136781 tokens) exceeds the available context size (131072
+tokens)`, a clean context-boundary message, not the `Compute error` /
+`Insufficient Memory` signature used elsewhere in this run for a real
+OOM. Checked for a compacting streak (three consecutive rows ≥200
+pages moved with speed not recovering, the correction applied to
+Qwen3.6): none found — every compaction spike is followed by tok/s
+still ≥85% of the previous step, so the streak counter never reaches 3.
+No correction needed; the runner's own last good row is the ceiling.
+
+Published row: **f16 KV, `-c 131072` (not 262144 — published `-c` OOMs
+at load), ceiling 114718 tokens at 26.25 tok/s.**
+
+Block A1b closed. Full-creep rows: Qwen3.6 q8_0 at `-c 49152` (not
+98304), ceiling 8222/43.80 tok/s. Qwen3.8 f16 at published `-c 32768`,
+window, 16.39 tok/s at 32818. Gemma-26B f16 at `-c 131072` (not
+262144), window, 26.25 tok/s at 114718. All three daggered rows need a
+`-c` correction on the published pages independent of the KV-type
+question this run set out to answer.
