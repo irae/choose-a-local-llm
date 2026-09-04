@@ -122,7 +122,8 @@ by itself).
 Test: ran problems HumanEval/0-15 through `google/gemma-4-12b` on LM
 Studio (0.4.23, mlx-engine 1.10.1) with thinking confirmed active
 (`reasoning_content` populated, budget 16384,
-`tools/sweeps/lmstudio_evalplus_smoke.py`, results at
+`tools/sweeps/lmstudio_evalplus_smoke.py`, retired on 2026-09-04 and
+replaced by `benchmarks/evalplus-smoke.py`; results at
 `/tmp/gemma12-lmstudio-thinking-smoke/c1_think-omit.jsonl` and
 `.stats.jsonl`, not committed — exploration only). Compared against the
 archived run's own per-problem results on the same 16 problems, from
