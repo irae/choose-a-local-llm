@@ -97,3 +97,85 @@ Worth considering for the checklist: the probe script that leaves the app
 resident is the same shape any future LM Studio work will take, so a
 "quit the app" step belongs at the END of an LM Studio probe as well as
 before a llama.cpp run.
+
+## 7. Score the GGUF quant, and revisit the q8 KV default for Gemma-12B
+
+Two asks that came out of the same measurement. The reasoning matters
+more than the asks, so it is written out.
+
+### The measurement
+
+Depth sweeps of Gemma-12B on llama-server, raw `/completion`, house
+method, 25 s pause, watcher running, machine clean:
+
+| used tokens | q8 KV + MTP | q8 KV, no MTP | **f16 KV, no MTP** |
+| --- | --- | --- | --- |
+| 4115 | 13.82 | 14.15 | **24.64** |
+| 8235 | 8.74 | 10.64 | **24.05** |
+| 16411 | 6.53 → floor | 7.12 → floor | **22.66** |
+| 32819 | — | — | **20.58** |
+| 49159 | — | — | **18.75** |
+| 65551 | — | — | **17.42** |
+
+The q8 columns confirm the published row exactly — 13.8 → 6.5, ceiling
+16k, gated by speed. **That row is correct and not stale.**
+
+Two levers were tested. Dropping the MTP drafter helps modestly
+(+22% at 8K). Switching KV from q8 to f16 is the large one: it turns a
+config that falls through the 8 tok/s floor by 16K into one still doing
+17.4 tok/s at 65K.
+
+### Ask 1 — the GGUF quant has never been scored
+
+`models.json` gives the two GGUF Gemma-12B rows an EvalPlus of
+0.909/0.872. That number was measured on
+`lmstudio-community/gemma-4-12B-it-MLX-4bit` and copied across.
+
+The copy policy is deliberate and sound: at temperature 0, configs
+matching on model, thinking, quant and kv-quant should produce the same
+answers. But **the quant axis does not match here.** MLX 4-bit and
+unsloth Q4_K_XL are different quantisation schemes, not two spellings of
+"4-bit". So the GGUF rows carry a score no GGUF run has produced.
+
+**Ask: run EvalPlus on Gemma-12B, llama-server, thinking off.** It scores
+the GGUF quant for the first time, and it either confirms the copy or
+shows the two quants differ — which would matter well beyond this model,
+since the same copy applies elsewhere.
+
+Note on which KV to use for it: by `common-rules.md` rule 6, q8 is
+"verified byte-identical to f16 at temperature 0", so the KV type should
+not move the score. If that holds, run it on whichever config would
+actually ship. If it does NOT hold, that is itself a finding worth
+having.
+
+### Ask 2 — the q8 default rests on a premise this model breaks
+
+Rule 6 says q8 is the default because "the context it unlocks overrules
+f16's **~1% speed edge**". On Gemma-12B the edge is not 1%. At 16K used
+tokens f16 is **3.2x** faster, and q8 is below the usability floor while
+f16 is not.
+
+The rule already anticipates this — it carries a caveat to measure q8's
+decode cost per model, citing Gemma-26B losing MTP acceptance. This is
+that caveat firing far harder than the headline figure suggests.
+
+The trade also inverts on this model. q8 is preferred for the context it
+unlocks, but f16 KV at 262144 measured 15.8 GB wired, inside the 24000
+limit — so f16 does not cost the context here. It costs about 2 GB of
+headroom and buys a usable deep curve.
+
+**Ask: decide whether Gemma-12B's published config moves to f16 KV**, and
+whether rule 6's "~1%" needs re-wording to say the edge is model-
+dependent and can be large. This run proposes nothing to the site.
+
+### What is not yet measured
+
+- **The chat path.** These are raw `/completion` numbers, comparable
+  with every published row but not what pi uses. The chat path adds a
+  system turn and the tool definitions to every request, so real use
+  reaches a given depth sooner. A chat reading at the chosen config is
+  queued.
+- **LM Studio re-ramped.** Its table row (35.4 → 29.3 at 147K) was not
+  re-measured today and is still the faster curve on paper. A fair
+  head-to-head needs the llama chat number, because LM Studio's sweep
+  must use chat — its raw completions endpoint is broken on this build.
