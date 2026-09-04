@@ -278,3 +278,67 @@ structurally repetitive text — a `package.json` dependency block reaches
 0.20. The three loops sit an order of magnitude below that, so 0.10
 falls in empty space. A detector that flags its own control is worthless,
 and the first version of this one did.
+
+---
+
+# CORRECTION — the post-fix template does not prevent the loop
+
+Second control arm, `embedded-repeat`, started 12:31Z. Same GGUF, same
+task, same harness as arm 1, post-fix template **verified in effect on
+the live server** with `/apply-template` before the run and again after
+the loop appeared.
+
+**It looped.** Distinct-shape ratio 0.03, the same two-line cycle shape
+the pre-fix repeat produced:
+
+```
+Wait, I'll just write the test.
+Actually, I'll write the test.
+```
+
+Thinking lines climbed from 495 to 685 while tool calls stayed at 12.
+
+## The corrected score
+
+| Template | arms | looped |
+| --- | --- | --- |
+| pre-fix | 3 | **3** |
+| post-fix | 2 | **1** |
+
+## What is now dead, and what survives
+
+**Dead: "the post-fix template prevents the loop."** One clean control
+carried that claim and the second control broke it. Any earlier text in
+this file implying the fix is sufficient is wrong and this section
+supersedes it.
+
+**Survives, weakly:** the pre-fix template may make the loop more likely
+or faster. Three of three against one of two is not a rate, and with
+these numbers no honest figure can be quoted. Establishing one needs
+many more arms than this run has time for, on a model the owner has
+already ruled out.
+
+**Consistent with the upstream reports.** HF discussion 41 states the
+loop reproduces at F16, so it is a model-level attractor. A template
+change modulates it at most. That report was in this run's own source
+material from the start and was under-weighted here in favour of the
+local A/B.
+
+## What it does to the rest of the run
+
+- The **row verdicts stand unchanged**. They rest on which template each
+  container ships and on the rendering proof for EvalPlus, neither of
+  which depends on this arm.
+- The **owner's ruling on Gemma-12B is strengthened**. If the corrected
+  template loops on the good backend too, the model is a poor daily
+  driver whichever path it runs on.
+- The **DRY finding stands**: a sampler converted the loop into varied
+  corruption rather than removing it. That was never a claim about the
+  template.
+
+## Method note
+
+This arm existed only because the control side was the weaker one — three
+pre-fix arms against a single clean post-fix arm. It was run to
+strengthen the claim and it refuted it instead. The claim was published
+in this run's own notes for several hours before this arm reported.
