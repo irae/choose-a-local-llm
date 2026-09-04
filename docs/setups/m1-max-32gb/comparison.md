@@ -145,8 +145,9 @@ the task that got done (`min(raw, 100 × done/8)`). A partial run that
 the model itself spoiled can run again, but the new row loses 10
 points for each earlier valid attempt — the Bonsai-27B PrismML blind
 row below will score that way after its retry. When our own harness
-caused the stop, as the 26624-token window did to the Qwen3.8-27B
-blind row, the corrected re-run carries no penalty. Runs where a
+caused the stop, as the 16384-token output budget inside a 26624-token
+window did to the Qwen3.8-27B blind row, the corrected re-run carries
+no penalty. Runs where a
 serving failure prevented any real work are invalid and not listed
 here; the hosted reports show them dimmed, with reasons.
 
