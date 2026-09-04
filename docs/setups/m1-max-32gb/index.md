@@ -35,6 +35,23 @@ instead when you also use the machine — see
   slow model on a healthy machine means depth physics. Tell them apart before
   acting, with `vm_stat`, `sysctl vm.swapusage`, or the memory probe.
 
+## Runtimes on this machine
+
+Four runtimes are in play. The method rules for them are in
+[the methodology](../../methodology.md#runtimes).
+
+- **llama-server** (llama.cpp, brew stable).
+- **mlx_lm.server** (mlx-lm, brew).
+- **LM Studio via the `lms` CLI** — the GUI-bundled runtime, driven
+  CLI-only (`lms get/load/server`); the model store is shared with the
+  app. Its engine supports the `gemma4_unified` model type that mlx-lm
+  lacks, and implements its attention properly.
+- **PrismML llama.cpp fork** — the only backend for ternary GGUFs
+  (Q2_g64), q4-KV with calibration, and the DSpark drafter. Side-by-side
+  install in `~/prism-llama/` (`prism-llama` alias; `install-latest.sh`
+  overwrites with the newest build — one version only). Results are
+  labeled with the fork build.
+
 ## Models under test
 
 | model | files | reports |

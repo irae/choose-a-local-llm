@@ -177,3 +177,27 @@ open, unfixed, no workaround as of 2026-08). This model's own trained
 context is 262144 and the machine has memory to spare at 8.8 GB RSS — the
 170240 figure is an LM Studio limitation, not a measurement of this model
 or this machine. Quality unscored, pending.
+
+## Runtime lore for this model
+
+The general lessons behind these three items are in
+[the server lore](../../../methodology/server-lore.md). The specifics
+below belong to this model on this machine.
+
+- **The context window cannot be pinned on the MLX path.** This model's
+  architecture is `gemma4_unified`. Every path to set the window is
+  ignored, and LM Studio's auto-fit computes it from
+  `iogpu.wired_limit_mb`: 158,464 tokens at a 24000 limit.
+- **Thinking depends on which model store entry you load.** The
+  "thinking is always on" behavior was observed on the LM Studio entry
+  `google/gemma-4-12b`: a plain chat request returned populated
+  `reasoning_content`, and no toggle worked. That entry is retired and
+  is gone from the model store. The entry `gemma-4-12b-it-mlx` is
+  thinking OFF and cannot be turned on — all three request shapes return
+  an empty `reasoning_content` (probed 2026-09-04,
+  `research/run2/results/lmstudio-thinking-probe.md`).
+- **A curated Hub id resolved to another repository's weights.** The
+  entry `google/gemma-4-12b` resolves to
+  `lmstudio-community/gemma-4-12B-it-MLX-4bit`. Check
+  `hub/models/<id>/manifest.json` before you assume two ids are two sets
+  of weights.

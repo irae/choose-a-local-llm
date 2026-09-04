@@ -63,17 +63,20 @@ Three measurements bound every config; each has its own page above:
   share one weight copy; MTP speculative decoding.
 - **mlx_lm.server** (mlx-lm, brew). Often faster decode and flatter depth
   curves, but no slots, f16 KV only, and hard memory ceilings.
-- **LM Studio via the `lms` CLI** (approved exception to the no-GUI rule:
-  everything runs CLI-only — `lms get/load/server`; the model store is
-  shared with the app). Its engine supports model types mlx-lm lacks
-  (`gemma4_unified`) and implements their attention properly. Read
-  [the server lore](./methodology/server-lore.md) before touching it.
-- **PrismML llama.cpp fork** (approved exception to the no-forks rule,
-  vendor's own): the only backend for ternary GGUFs (Q2_g64), q4-KV with
-  calibration, and the DSpark drafter. Side-by-side install in
-  `~/prism-llama/` (`prism-llama` alias; `install-latest.sh` overwrites with
-  the newest build — one version only). Results labeled with the fork build.
+- **A GUI-bundled runtime driven only through its CLI** is an approved
+  exception to the no-GUI rule, when every step runs CLI-only (get, load,
+  serve) and the model store stays shared with the app. Such an engine can
+  support MLX architectures that mlx-lm lacks and implement their attention
+  properly. Read [the server lore](./methodology/server-lore.md) before
+  touching it.
+- **One vendor fork is allowed** when it is the only backend for a model
+  family — a ternary quant, a calibrated q4 KV, a matching drafter — and
+  the vendor maintains it. Install it side by side, keep one build at a
+  time, and label every result with the fork build.
 - Default remains: no other forks, no `--HEAD` builds.
+
+The reference setup names the runtimes it runs, with install paths and
+aliases: [runtimes on this machine](./setups/m1-max-32gb/index.md#runtimes-on-this-machine).
 
 ## Where runs live
 
