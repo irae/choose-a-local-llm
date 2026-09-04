@@ -1,0 +1,8 @@
+llama-server, endpoint=completion thinking=n/a (no template) contexts=1 pause=25s
+context	depth_tokens	decode_toks	free_mb	swap_delta_mb	step_seconds
+A	131098	12.67	1810	0	1197
+A	147478	11.72	1575	0	259
+A	163858	11.30	1162	0	283
+A	180238	10.72	807	0	305
+A	196618	10.21	230	0	329
+STOP: memory compaction on 3 consecutive steps without speed recovering, by depth 196618

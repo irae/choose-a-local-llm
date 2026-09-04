@@ -1,0 +1,4 @@
+llama-server, endpoint=chat thinking=off contexts=1 pause=25s
+context	depth_tokens	decode_toks	free_mb	swap_delta_mb	step_seconds
+A	4114	24.68	70	0	3
+A	16386	22.59	64	0	56

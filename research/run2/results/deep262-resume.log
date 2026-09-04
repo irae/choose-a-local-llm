@@ -1,0 +1,7 @@
+llama-server, endpoint=completion thinking=n/a (no template) contexts=1 pause=25s
+context	depth_tokens	decode_toks	free_mb	swap_delta_mb	step_seconds
+A	196618	10.24	279	0	1169
+A	212998	9.69	391	0	353
+A	229378	9.24	664	0	375
+A	245810	8.86	663	0	400
+STOP: request failed at depth 262190 on context A: HTTP Error 400: Bad Request

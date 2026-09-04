@@ -1,0 +1,4 @@
+LM Studio, chat endpoint, contexts=1 pause=25s
+context	depth_tokens	decode_toks	free_mb	swap_delta_mb	step_seconds
+A	147478	22.60	3161	69	1217
+STOP: swap grew 69 MB by depth 147478; the machine is timing the swap file, not the model.

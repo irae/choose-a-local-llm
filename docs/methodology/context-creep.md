@@ -211,11 +211,14 @@ server (silence for `STALL_S`, 600 s, then a probe with
 `PROBE_TIMEOUT_S`, 300 s; two failed probes end the sweep).
 
 **Changed 2026-09-04.** The compaction stop used to fire on ANY
-decompression, however small, which is noise on a busy machine. It now
-needs `COMPACT_PAGES` pages compressed or decompressed in one step, so
-it matches the compression-onset criterion this page already used for LM
-Studio. Nothing else about that stop changed: three steps in a row, and
-speed must fail to recover.
+decompression, however small, which is noise on a busy machine (about
+12 decompressions per tick at idle). It now needs `COMPACT_PAGES` pages
+compressed or decompressed in one step, so it matches the
+compression-onset criterion this page already used for LM Studio. And
+"speed did not recover" is now judged against the previous step, not the
+best step of the run: a depth sweep declines by design, so the old
+comparison could never be met and truncated a healthy sweep at 196618.
+Three steps in a row is unchanged.
 
 ## Measured law so far
 

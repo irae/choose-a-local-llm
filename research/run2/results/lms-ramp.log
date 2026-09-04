@@ -1,0 +1,9 @@
+LM Studio, chat endpoint, contexts=1 pause=25s
+context	depth_tokens	decode_toks	free_mb	swap_delta_mb	step_seconds
+A	4114	34.19	335	0	33
+A	16386	32.05	731	0	74
+A	32818	30.59	1017	0	106
+A	65578	27.08	3319	0	236
+A	98338	24.52	60	0	287
+A	131098	23.23	4893	0	337
+no ceiling found up to 131072
