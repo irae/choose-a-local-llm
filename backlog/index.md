@@ -18,7 +18,6 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 ## Open
 
 - [a] Mendel telemetry: caveat the peak_context column, document and recount tool_calls (mendel-telemetry-audit-followups.md)
-- [a] EvalPlus smoke: a fixed fast subset and one tool for research trials (evalplus-smoke-subset.md)
 - [a] Project non-goals: sweep the history, write a README section; owner reviews before it lands (project-non-goals-in-readme.md)
 - [ ] Runner alarms: count output-limit hits, optional per-turn stop, loop verdict at run close (runner-alarms-output-limit-and-loop-stop.md)
 - [ ] Worker-profile table: which config is the best thinking-off sub-agent (worker-profile-table.md)
@@ -28,6 +27,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Changelog
 
+- 2026-09-04 EvalPlus smoke: four fixed problems, same budget both sides, level/better/worse; validation on the Mac pending (`benchmarks/evalplus-smoke.py`)
 - 2026-09-04 Method pages stop naming models; specifics moved to the setup pages (`a0c77df`)
 - 2026-09-04 One creep apparatus, one monitor: the sweep runner samples memory and liveness itself (`f5b764a`, `6effada`)
 - 2026-09-04 Mendel retry rule: points off when the model failed, no penalty when the harness did (`c089dc5`, Mendel `0b0e1a24`)
