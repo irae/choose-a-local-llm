@@ -40,6 +40,13 @@ is faster than published while our py is 29 percent slower.
 
 So the difference is not general speed. It is specific to the py prompt.
 
+**And the build is not a candidate at all.** `/props` on the running
+server reports `build_info: b10621-c1d0e7a00`. The published page cites
+"build 10621, commit c1d0e7a00". They are the same build. Homebrew
+`llama.cpp` 0.3.0 IS build 10621. That removes one of the three
+candidate explanations outright and leaves the wired limit and the
+drafter.
+
 ## What it most likely is, stated as a hypothesis
 
 Draft acceptance. This configuration's speed comes from the MTP drafter,

@@ -62,13 +62,16 @@ tokens per second of prompt evaluation. The published
 `gemma-4-12b-it.md` records 45.0 py tokens per second for this
 configuration.
 
-Three things differ from that measurement and any of them could carry
-it: the published run used f16 KV (the page says f16 measured +5.5 py
-tok/s over q8_0, which does not cover a 40% gap), the published wired
-limit was 27000 rather than 24000, and the build was 10621 / commit
-c1d0e7a00 rather than the current homebrew 0.3.0. The page already
-carries a note that a q8 re-probe under the current wired limit is
-pending.
+Two things differ from that measurement: the published run used f16 KV
+(the page says f16 measured +5.5 py tok/s over q8_0, which does not
+cover a 40% gap), and the published wired limit was 27000 rather than
+24000. The page already carries a note that a q8 re-probe under the
+current wired limit is pending.
+
+**The build is NOT one of them.** `/props` reports
+`build_info: b10621-c1d0e7a00`, which is exactly the build the published
+page cites. Homebrew `llama.cpp` 0.3.0 is build 10621. An earlier draft
+of this file listed the build as a candidate; that was wrong.
 
 This is not a correction. It is one prompt, 200 tokens, measured for a
 different purpose. It says a re-probe is worth doing before the 45.0
