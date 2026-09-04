@@ -91,8 +91,6 @@ Benchmark work:
   liveness) and one `creep_<backend>.py` owns each backend. One command
   per sweep and one output file; the runner is its own monitor, so
   nothing else runs beside it (`docs/methodology/context-creep.md`).
-  `mem-watch-fast.sh` here only repeats `benchmarks/mem-watch.sh`; use
-  the one in `benchmarks/`.
 - `tools/mac-services.sh` + `tools/README-mac-services.md` — turn background
   login items off before a run and back on after. The script ships with
   no list; the README says how to build one. Read the README before you

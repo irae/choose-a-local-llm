@@ -21,12 +21,14 @@ stall. Everything here was hit at least once.
   Restart the server and resume.
 - **Check the server log before blaming the model** when a run stalls
   far longer than its budget allows.
-- For short runs, depth sweeps, or runs expected to end in OOM, run the
-  memory probe (`benchmarks/mem-watch.sh` or
-  `tools/sweeps/mem-watch-fast.sh`) at a 20-30 s interval so the final
-  pre-OOM samples exist; it separates swap/compression events from
-  compute slowdowns. Thermal vs memory-pressure for long-run slowdowns
-  is an OPEN question — evidence exists for both.
+- For scoring runs, or any run expected to end in OOM where nothing
+  else samples memory, run `benchmarks/mem-watch.sh` at a 20-30 s
+  interval so the final pre-OOM samples exist; it separates
+  swap/compression events from compute slowdowns. A depth sweep needs
+  no watcher: its runner writes the memory counters into every step
+  row ([context creep](./context-creep.md)). Thermal vs
+  memory-pressure for long-run slowdowns is an OPEN question —
+  evidence exists for both.
 
 ## LM Studio (verified 2026-08-29/30, LM Studio 0.4.23 / mlx-engine 1.10.1)
 
