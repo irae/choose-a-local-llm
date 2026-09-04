@@ -43,7 +43,7 @@ started, `iogpu.wired_limit_mb=24000`, zero swap for the whole session.
 | The LM Studio engine probe | Needs a Gemma-12B loaded in LM Studio. Run 1's kernel panic came from that model's load and unload cycles with a client connecting, so it is not run unattended. Five minutes with the owner present. First item next session. |
 | ~~DRY against a real loop (T2.3 part 2)~~ | **UNBLOCKED by arm 2.** llama-server does collapse, on the pre-fix template, and DRY exists there. Arm 3 (`short-dry`) is queued: arm 2's exact configuration with `--dry-multiplier 0.8` and a 2048-token window, against the 64-token default that could never see a repeat. |
 | Firing the loop stop (T2.4 part 2) | Still blocked, but for a narrower reason. The collapse is inside the thought channel, not in tool calls, and `loop-stop.ts` counts identical tool calls. It would not fire on arm 2. A thinking-channel stop is a different design. |
-| Re-quantization A/B (T3.3) | Needs original weights, which is a large download. Owner's call. |
+| ~~Re-quantization A/B (T3.3)~~ | **Rescoped by the owner on 2026-09-04** (master `8314735`): no weight transformation of our own. Section C is now a survey of PUBLISHED quants, shortlisted for approval, with downloads allowed in this run. Survey in `results/quant-survey.md`. |
 
 ## Changes proposed, none applied
 
