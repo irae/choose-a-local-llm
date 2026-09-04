@@ -204,3 +204,95 @@ would mean an install competing with the GPU run for CPU and network.
   `run2-replay-embedded-issue-13`, holding the replay.
 - Run 1 also left `../mendel-bench-repro-gemma-4-12b-low-guided` and
   `../choose-a-local-llm-research1`.
+
+
+---
+
+## Session 1 close — 2026-09-04
+
+Ran unattended through the night on the owner's standing orders: keep
+the GPU busy, never halt, commit blocks and move on, ask nothing.
+
+### What the session was for, and what it found
+
+The run's central question was section D: does the Gemma-12B failure
+belong to the model or to the serving path. **It belongs to the chat
+template, and that is now demonstrated rather than argued.**
+
+Three arms, everything held fixed but one variable each, each proved
+from its own live server with `POST /apply-template`:
+
+| Arm | Template | Sampler | Collapse |
+| --- | --- | --- | --- |
+| 1 `embedded` | post-fix (Google, after 2026-07-15) | defaults | **none**, shape-run 2 |
+| 2 `short` | pre-fix (Google `657684f`, 2026-06-03) | defaults | 498 identical thinking lines |
+| 3 `short-dry` | pre-fix | DRY 0.8, window 2048 | collapse moved into a tool call |
+
+Arm 1 committed three dependency removals and left a clean tree. Arm 2
+committed nothing. The container audit then showed why this matters
+here: **every Gemma-4 MLX container on this machine ships the pre-fix
+template**, and `AutoTokenizer` resolves to it, so the published
+Gemma-12B rows were measured on the failing configuration.
+
+The second result is about defences, not causes. DRY did not stop the
+collapse; it changed its shape and its channel. That is an argument
+against shipping a sampler fix and for the harness STOP the coordinator
+proposed — with the caveat that a STOP counting identical calls would
+fire later on arm 3 than on arm 2, though arm 3's output is worse.
+
+### Instruments built, because each earlier one was blind
+
+`count-events.py` (identical calls), `flood-check.py` (newline runs),
+`measure-collapse.py` (identical lines) and `measure-neardup.py` (same
+shape after normalising letters and digits). The last was needed twice
+over: a prefix comparison reported 10 where the truth was hundreds,
+because the model's own counter defeated it, exactly as it defeated DRY.
+`count-events.py` reproduces run 1's published numbers on run 1's
+archived session, so the family is calibrated against an independent
+count.
+
+### Errors made in this session, recorded
+
+- A shell script was edited while bash was still reading it. Arm 1's
+  cleanup aborted at end of file; the server was left up and the
+  evidence unarchived, both fixed by hand within a minute. No
+  measurement was affected. **Never edit a running script.**
+- A monitor's own command text contained `llama-server`, so the chain's
+  `pgrep -f llama-server` matched the monitor and would have waited
+  forever for a server that was already dead. Caught before it cost the
+  night. All monitors now use bracketed patterns.
+- The first flood detector fired on HTML that `curl` fetched into a tool
+  result. Tool results are not model output.
+- The llama.cpp build was named as a candidate for the speed gap. It is
+  not: `/props` reports `b10621-c1d0e7a00`, exactly the build the
+  published page cites. Corrected in two files.
+- "119 floods" in an LM Studio log were 119 re-sends of one message,
+  because every request body carries the whole history. Corrected.
+
+### Not done, and why
+
+- **The LM Studio engine probe.** The highest-value question left: does
+  its MLX engine read the stale `chat_template.jinja`, and does it
+  deserialize `function.arguments` before rendering. It needs a
+  Gemma-12B loaded in LM Studio, and run 1's kernel panic came from that
+  exact model's load and unload cycles with a client connecting. Not run
+  while the owner sleeps. Five minutes with them present. **First item
+  next session.** Static analysis was tried and cannot settle it.
+- **Firing `loop-stop.ts` at a real collapse.** It counts identical tool
+  calls; both collapses here are inside one unfinished call or in
+  thinking. A different design is needed.
+- **Re-quantization A/B.** Needs original weights, a large download.
+- **`npm run verify`.** Nothing under `docs/` changed and `node_modules`
+  is absent here. Run it before this branch merges.
+
+### Left on the machine
+
+- `iogpu.wired_limit_mb=24000`, set by the owner. Resets on reboot.
+- Desktop widgets still OFF from run 1. Restore command in
+  `../run1/results/restore.md`.
+- Three mendel worktrees and branches, all holding replay evidence:
+  `run2-replay-embedded`, `run2-replay-short`, `run2-replay-short-dry`.
+- Run 1's leftovers: `../mendel-bench-repro-gemma-4-12b-low-guided` and
+  `../choose-a-local-llm-research1`.
+- This worktree, `../choose-a-local-llm-research2`, branch `research2`.
+- Evidence in `~/.local/share/choose-a-local-llm/evidence/run2-*`.
