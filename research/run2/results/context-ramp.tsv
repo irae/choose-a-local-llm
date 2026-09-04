@@ -1,0 +1,11 @@
+mode	context	load_ok	drafter_loaded	wired_before_mb	wired_after_mb	wired_peak_mb	swap_used_mb	gen_ok	tok_s	draft_acceptance	cached_tokens	load_seconds	note
+ngl	8192	yes	yes	1544	10022	10028	0.00	yes	per	0	0	3	
+ngl	32768	yes	yes	1544	10339	10345	0.00	yes	per	0	0	3	
+ngl	65536	yes	yes	1544	10822	10822	0.00	yes	per	0	0	3	
+ngl	131072	yes	yes	1548	11738	11744	0.00	yes	per	0	0	3	
+ngl	262144	yes	yes	1551	13598	13604	0.00	yes	per	0	0	3	
+fit	8192	yes	yes	1655	10148	10055	0.00	yes	per	0	0	3	
+fit	32768	yes	yes	1583	10379	10358	0.00	yes	per	0	0	3	
+fit	65536	yes	yes	1557	10817	10822	0.00	yes	per	0	0	3	
+fit	131072	yes	yes	1459	11648	11653	0.00	yes	per	0	0	3	
+fit	262144	yes	yes	1460	13506	13511	0.00	yes	per	0	0	3	
