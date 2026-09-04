@@ -74,6 +74,13 @@ This is not a correction. It is one prompt, 200 tokens, measured for a
 different purpose. It says a re-probe is worth doing before the 45.0
 number is quoted again, and it is a proposal for the owner, not a change.
 
+**Superseded on the same day, by `kv-speed.md`.** The re-probe ran. The
+KV type is worth 4.6 tok/s, exactly the +5.5 the page estimates, and it
+does not carry the gap. The js figure reproduces and slightly exceeds
+the published one; only py is short. So the difference is specific to
+one prompt, and the likely cause is MTP draft acceptance rather than the
+build or the wired limit. Read `kv-speed.md` instead of this section.
+
 ## What the ramp does not answer
 
 Whether the drafter fails under memory pressure — the condition run 1
