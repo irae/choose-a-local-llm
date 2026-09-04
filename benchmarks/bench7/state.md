@@ -695,6 +695,11 @@ record. Exact penalty mechanism (points off, a note field, a
 `config_note` annotation, or keeping both rows) is the coordinator's
 call — not decided here, just flagged so it isn't missed.
 
+- 2026-09-04: The owner set the mechanism, and Mendel's `PLAN.md` now
+  holds it. A retry after a model failure costs 10 points for each
+  earlier valid attempt; a re-run after a benchmark failure costs
+  nothing.
+
 ## Item #12 (Bonsai-PrismML guided high) — ABORTED, not scored, owner ran out of time
 
 Stopped by the owner mid-run (~08:44 local, ~94 min in) — not enough

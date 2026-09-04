@@ -49,3 +49,9 @@ two tests.
   capital D: `pkill -f "Mendel Daemon"`.
 - Never trust the benchmarked model's own claims; score only from the
   verification battery.
+- A valid but partial run can run again. If the model caused the
+  failure, the retry replaces the row and loses a fixed number of
+  points for each earlier valid attempt. If our harness caused it (a
+  window or output budget that could not fit, a flag the serving stack
+  ignored), the corrected re-run keeps the best row with no penalty.
+  Mendel's `PLAN.md` holds the formula.
