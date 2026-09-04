@@ -68,6 +68,12 @@ Command: published qwen3.6-gguf command, `-c 40960`, ports/log per AGENT.md.
 Verdict: **mem** — `STOP: 200 or more pages compressed or decompressed on 3
 steps in a row, and speed did not come back, by depth 32818`.
 
+Per the mem-verdict reporting rule ("the last clean row carries the
+tok/s" — context-creep.md), the compacting streak is depths 16386,
+24602, 32818 (each ≥200 pages moved, each below 0.85× the previous
+step's speed). The last clean row is **8222, 43.91 tok/s** — that is
+the number to publish for this arm, not the STOP-line row.
+
 ### f16 arm
 
 `server-qwen36-gguf-short-f16.log`
@@ -166,3 +172,31 @@ mem/OOM stop through 32818) and is also faster (45.89 vs 6.33 tok/s at
 
 Block A1 closed. Picks: Qwen3.6 GGUF = q8_0, Qwen3.8 GGUF = f16,
 Gemma-26B GGUF = f16.
+
+## Block A1b — Qwen3.6-35B-A3B GGUF full creep (pick: q8_0)
+
+Published `-c` is 98304. It OOMs at model load (Metal
+`Insufficient Memory`, before any request) — `server-qwen36-gguf-full-q8.log`.
+`-c 65536` OOMs the same way — `server-qwen36-gguf-full-q8-c65536.log`.
+`-c 49152` loads and serves — `server-qwen36-gguf-full-q8-c49152.log`.
+The full creep ran at **`-c 49152`**, not the published 98304.
+
+`creep-qwen36-gguf-full-q8.tsv`
+
+| depth | decode tok/s | wired_mb | draft acceptance |
+| --- | --- | --- | --- |
+| 4114 | 36.35 | 25062 | 0.26 (task 0, warming) |
+| 8222 | 43.80 | 25055 | 0.52 (task 9) |
+| 16386 | 31.01 | 25051 | 1.00 (task 39) |
+| 24602 | 24.04 | 25047 | 1.00 (task 60) |
+| 32818 | 19.56 | 25047 | 1.00 (task 83) |
+
+Verdict: **mem** — same STOP as the short creep, at depth 32818. The
+compacting streak (≥200 pages moved, speed not recovering) starts at
+16386. Last clean row: **8222, 43.80 tok/s**.
+
+Published row: **q8_0 KV, `-c 49152` (not 98304 — published `-c` OOMs
+at load), ceiling 8222 tokens at 43.80 tok/s.** This is far shallower
+than the published context suggested; the daily-driver row needs a
+`-c` correction independent of the KV-type question this run set out
+to answer.
