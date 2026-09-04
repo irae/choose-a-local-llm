@@ -7,6 +7,13 @@ Summary table. Detail is in `results/`, the running log is in
 Session 1: 2026-09-04, night, unattended. Machine rebooted before it
 started, `iogpu.wired_limit_mb=24000`, zero swap for the whole session.
 
+## For the planner, first
+
+**GGUF / llama-server rows are KEEPERS on template grounds. MLX /
+LM Studio multi-turn rows are the SUSPECT ones. Every EvalPlus row is a
+keeper, on either backend.** Evidence and the strength of each verdict
+are in `results/row-verdicts.md`.
+
 ## Findings
 
 | # | Item | Status | Finding | Detail |
