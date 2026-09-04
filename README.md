@@ -3,7 +3,7 @@
 A repeatable process to answer, for one specific computer: **which local
 model, runtime, and configuration should I code with?**
 
-**Results: <https://irae.github.io/choose-a-local-llm/>** — the site
+**Results: <https://irae.github.io/choose-a-local-llm/>**, the site
 built from `docs/`. Start at `docs/index.md` for the project intro, the
 goals, and a summary of each measured setup.
 
@@ -21,27 +21,26 @@ Working on this repo? Start at [AGENTS.md](./AGENTS.md), then
 
 ## Map
 
-- `docs/index.md` — project intro, goals, per-setup summaries.
-- `docs/methodology.md` — the flow: measurement rules, runtime policy,
-  model-selection reasoning, the quality gate, bench-run rules. The flow is
-  the law; read it before running anything.
-- `docs/setups/<setup>/` — one directory per measured machine: setup
+- `docs/index.md`: project intro, goals, per-setup summaries.
+- `docs/methodology.md`: the flow. Measurement rules, runtime policy,
+  model-selection reasoning, the quality gate, bench-run rules. Read it
+  before you run anything.
+- `docs/setups/<setup>/`: one directory per measured machine. Setup
   overview, comparison, per-model reports, raw benchmark data.
-- `benchmarks/bench<N>/` — unattended-run kits: runbook (`AGENT.md`), state,
-  results, scripts. Not part of the site.
+- `benchmarks/bench<N>/`: unattended-run kits. Runbook (`AGENT.md`),
+  state, results, scripts. Not part of the site.
 
 ## How to use this repo to run your benchmarks
 
 The process stands on its own; only the measurements are ours. That
 split is a rule: **method pages never name a model.** Everything under
-`docs/methodology/` describes how to measure; the models, runtimes,
+`docs/methodology/` describes how to measure. The models, runtimes,
 commands and numbers of one machine live under `docs/setups/<setup>/`.
 A method page may say "one dense 12B model on the reference setup" and
-link the setup's report. If you find a model name in a method page,
-that is a bug.
+link the setup's report. A model name in a method page is a bug.
 
 1. Read `AGENTS.md` (the index and the standing rules), then
-   `docs/methodology.md` and its per-task pages — the flow is the law.
+   `docs/methodology.md` and its per-task pages. The flow is binding.
 2. Plan a run per [benchmarks/PLANNING.md](./benchmarks/PLANNING.md):
    a coordinator agent writes `benchmarks/bench<N>/AGENT.md`, a smaller
    runner agent executes it.
