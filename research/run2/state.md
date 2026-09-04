@@ -186,6 +186,15 @@ before-and-after of Google's fix on one backend.
    the LM Studio MLX path, which has no DRY.
 4. T2.4 part 2, firing the loop stop on a real replay. Same dependency.
 
+### Verification note
+
+`npm run verify` was NOT run in this session. Two reasons, both
+checkable: this branch changes 27 files and every one is under
+`research/`, with nothing under `docs/`, so the site build cannot be
+affected; and `node_modules` is absent in this worktree, so verifying
+would mean an install competing with the GPU run for CPU and network.
+**Run it before this branch merges to master.**
+
 ### Left on the machine
 
 - `iogpu.wired_limit_mb=24000`, set by the owner. Resets on reboot.
