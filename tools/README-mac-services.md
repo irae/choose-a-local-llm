@@ -1,6 +1,6 @@
-# mac-quiet.sh — how to decide what to disable
+# mac-services.sh — how to decide what to disable
 
-`tools/mac-quiet.sh` turns background items off before a run and puts them
+`tools/mac-services.sh` turns background items off before a run and puts them
 back after. It ships with no list. A list of login items describes one
 person's Mac, so it stays out of this repo.
 
@@ -9,9 +9,9 @@ Build your own list once, then the script reads it every run.
 ## Where your files go
 
     ~/.config/choose-a-local-llm/
-      quiet-user-agents.conf      labels to disable, one per line
-      quiet-system-daemons.conf   labels that need sudo, one per line
-      quiet-state                 written by "off", read by "on"
+      services-user-agents.conf      labels to disable, one per line
+      services-system-daemons.conf   labels that need sudo, one per line
+      services-state                 written by "off", read by "on"
       baselines/                  the dumps you took before any change
 
 Blank lines and `#` comments are ignored, so you can annotate a label with
@@ -79,10 +79,10 @@ only real after a reboot.
 1. Record both stores.
 2. Reboot. Wait a fixed settle time. Record `vm_stat` and the process
    list. That is baseline A.
-3. `mac-quiet.sh off`.
+3. `mac-services.sh turn-off`.
 4. Reboot. Same settle time. Record the same two. Baseline B.
 5. The delta between A and B is the true saving.
-6. `mac-quiet.sh on` when the run is done.
+6. `mac-services.sh restore` when the run is done.
 
 Judge the delta against what you are trying to fix. Background login
 items are measured in hundreds of megabytes. If your failure is a model
@@ -91,7 +91,7 @@ cause and turning it off will not help.
 
 ## Reversing
 
-`on` reads `quiet-state`, which `off` wrote. It re-enables exactly the
+`on` reads `services-state`, which `off` wrote. It re-enables exactly the
 labels it disabled and nothing else, so it cannot undo a toggle you set
 by hand.
 

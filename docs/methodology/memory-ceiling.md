@@ -133,7 +133,7 @@ compressor squeezed the blocks to nothing. Wired never lied.
 **What the sequence costs.** One reboot per session, and a few minutes
 of slow loading per config when the balloon is needed at all. Reboot
 once per session, never once per model; when the machine is doing
-nothing but benchmarks, one reboot can cover several days. The background items stay disabled until `tools/mac-quiet.sh on`
+nothing but benchmarks, one reboot can cover several days. The background items stay disabled until `tools/mac-services.sh restore`
 runs, so the owner gets their machine back when the session ends.
 
 Full measurements behind this: `research/run1/results/memory-gate.md`.

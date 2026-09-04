@@ -5,7 +5,7 @@ the owner's apps, so it lives in
 `~/.config/choose-a-local-llm/boot-inventory.md`, with the raw dumps in
 `~/.config/choose-a-local-llm/baselines/`.
 
-The method is in `tools/README-mac-quiet.md`. What follows is what the
+The method is in `tools/README-mac-services.md`. What follows is what the
 audit taught, not what it found on one Mac.
 
 ## Two stores disagree, and only one is the switch the owner used

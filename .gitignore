@@ -9,5 +9,5 @@ docs/public/
 *btm-dump*
 *disabled-gui*
 *disabled-system*
-quiet-*.conf
-quiet-state
+services-*.conf
+services-state

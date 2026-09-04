@@ -30,10 +30,10 @@ Worktree `../choose-a-local-llm-research1`, branch `research1`.
 The owner ruled that their machine's own state must not be versioned.
 Moved out of the repo and into `~/.config/choose-a-local-llm/`: the BTM
 dump, both `print-disabled` baselines, the machine's boot inventory, and
-the two label lists `mac-quiet.sh` used to hardcode.
+the two label lists `mac-services.sh` used to hardcode.
 
-The repo now carries the method only. `tools/README-mac-quiet.md` says
-how to decide what to disable. `tools/mac-quiet.sh` ships with no list
+The repo now carries the method only. `tools/README-mac-services.md` says
+how to decide what to disable. `tools/mac-services.sh` ships with no list
 and reads the config directory. `results/boot-audit.md` keeps what the
 audit taught, without naming apps.
 
@@ -101,7 +101,7 @@ Open, in the order that matters:
 
 Machine state left behind: desktop widgets off, `StandardHideWidgets =
 1`. `iogpu.wired_limit_mb=24000`, which will reset on the next reboot.
-Nothing else changed. `tools/mac-quiet.sh` has never been run.
+Nothing else changed. `tools/mac-services.sh` has never been run.
 
 
 ## Session 1, third pass — the rate question, and a probe that is not ready
@@ -161,7 +161,7 @@ Next, in order:
 
 Machine state: desktop widgets off. `iogpu.wired_limit_mb=24000`, which
 resets on the next reboot. 863 MB of swap in use from the probe, which
-will clear on its own or on reboot. `tools/mac-quiet.sh` has never been
+will clear on its own or on reboot. `tools/mac-services.sh` has never been
 run. Nothing else changed.
 
 
@@ -240,7 +240,7 @@ check has been reading the wrong meter.
 - Desktop widgets OFF (`StandardHideWidgets = 1`). Restore command in
   `results/restore.md`.
 - `iogpu.wired_limit_mb=24000`, which resets on the next reboot.
-- `tools/mac-quiet.sh` has never been run; no login item was disabled.
+- `tools/mac-services.sh` has never been run; no login item was disabled.
 - LM Studio may be resident: it revives whenever any `lms` command runs.
 - Two extra worktrees to remove when done:
   `../mendel-bench-repro-gemma-4-12b-low-guided` and this one.
@@ -307,7 +307,7 @@ of a session. Read wired.
 
 - Desktop widgets OFF. Restore command in `results/restore.md`.
 - `iogpu.wired_limit_mb=24000`, resets on next reboot.
-- `tools/mac-quiet.sh` was never run; no login item was disabled.
+- `tools/mac-services.sh` was never run; no login item was disabled.
 - GPU clear, no server resident.
 
 ### Left in git, for the owner to remove when ready

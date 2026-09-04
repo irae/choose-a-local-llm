@@ -74,7 +74,7 @@ Benchmark work:
   `run-humaneval.sh`, `run_codegen_wrapper.py` (patched EvalPlus
   client), `calibrate.py`, `mem-watch.sh`, `calibration-*.json`.
 - `tools/sweeps/` — depth-sweep scripts and fast memory watcher.
-- `tools/mac-quiet.sh` + `tools/README-mac-quiet.md` — turn background
+- `tools/mac-services.sh` + `tools/README-mac-services.md` — turn background
   login items off before a run and back on after. The script ships with
   no list; the README says how to build one. Read the README before you
   disable anything on the owner's Mac.
@@ -205,7 +205,7 @@ Benchmark work:
   - Header comment: what it does, both directions, and any step the
     owner must take (for example a reboot). This is the exception to
     the no-comments rule above, plus the group labels on the lists.
-  `tools/mac-quiet.sh` is the reference shape.
+  `tools/mac-services.sh` is the reference shape.
 - **Commit before you ask for review.**
 - **Verify before you claim.** Run `npm run verify` and quote the result.
 - Run kits live in `benchmarks/bench<N>/`; shared run tools in

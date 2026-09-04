@@ -47,9 +47,9 @@ lives in [common rules](./common-rules.md) and
       `fetch failed`, which looks like a broken API key or a dead
       network and is neither. An absent tray icon means no Agent, not
       no filter.
-   2. `tools/mac-quiet.sh off` — disables the background login items
+   2. `tools/mac-services.sh turn-off` — disables the background login items
       listed in the owner's config. Needs the config in
-      `~/.config/choose-a-local-llm/`; see `tools/README-mac-quiet.md`.
+      `~/.config/choose-a-local-llm/`; see `tools/README-mac-services.md`.
    3. **Reboot.** A disabled item that is already running keeps
       running, so nothing in step 1 takes effect without this.
       Once per SESSION, not once per model. When the machine is doing

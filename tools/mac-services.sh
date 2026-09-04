@@ -1,7 +1,11 @@
 #!/bin/bash
 #
-# mac-quiet.sh off  — disable background login items before a benchmark run.
-# mac-quiet.sh on   — put back exactly what "off" disabled.
+# mac-services.sh turn-off  — disable background services before a run.
+# mac-services.sh restore   — put them back.
+#
+# The verbs say what happens to the SERVICES. An earlier version used
+# "off" and "on", which read as a mode: "quiet mode on" sounded like it
+# would switch things on, when it switches them off.
 #
 # The lists of what to disable are NOT in this repo. They describe one
 # person's Mac. They live in the config directory below. Read
@@ -15,9 +19,9 @@
 set -u
 
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/choose-a-local-llm"
-USER_AGENTS_FILE="$CONFIG_DIR/quiet-user-agents.conf"
-SYSTEM_DAEMONS_FILE="$CONFIG_DIR/quiet-system-daemons.conf"
-STATE_FILE="$CONFIG_DIR/quiet-state"
+USER_AGENTS_FILE="$CONFIG_DIR/services-user-agents.conf"
+SYSTEM_DAEMONS_FILE="$CONFIG_DIR/services-system-daemons.conf"
+STATE_FILE="$CONFIG_DIR/services-state"
 
 
 # Strips comments and blank lines. Prints one label per line.
@@ -42,7 +46,7 @@ require_config() {
     fi
 
     echo "No config found in $CONFIG_DIR"
-    echo "Expected quiet-user-agents.conf or quiet-system-daemons.conf."
+    echo "Expected services-user-agents.conf or services-system-daemons.conf."
     echo "See tools/README-mac-quiet.md for how to build them."
     exit 1
 }
@@ -90,17 +94,44 @@ enable_one() {
 }
 
 
+# Desktop widgets only: com.apple.WindowManager StandardHideWidgets.
+# Both directions work headlessly, which is the bar for anything in this
+# script — a setting it can turn off but not turn back on would leave the
+# machine worse than it found it.
+#
+# iPhone widgets are deliberately NOT touched: they can be switched off
+# from a script but only switched back on from System Settings, and a
+# one-way setting does not belong here.
+#
+# This never writes the widget LAYOUT, which lives in the chronod
+# database.
 hide_widgets() {
     defaults write com.apple.WindowManager StandardHideWidgets -bool true
     killall WindowManager
-    echo "  widgets hidden"
+    echo "  desktop widgets hidden"
 }
 
 
-show_widgets() {
+restore_widgets() {
     defaults write com.apple.WindowManager StandardHideWidgets -bool false
     killall WindowManager
-    echo "  widgets shown"
+    echo "  desktop widgets shown"
+}
+
+
+# Called when "restore" has no state file. Says what the widget setting is
+# and how to change it, instead of exiting with nothing done — it can be
+# changed by hand, and then this script has no record.
+report_widget_state() {
+    local desktop_hidden
+    desktop_hidden=$(defaults read com.apple.WindowManager StandardHideWidgets 2>/dev/null || echo 0)
+
+    if [ "$desktop_hidden" = "1" ]; then
+        echo "  desktop widgets are HIDDEN. To show them:"
+        echo "    defaults write com.apple.WindowManager StandardHideWidgets -bool false && killall WindowManager"
+    else
+        echo "  desktop widgets are shown"
+    fi
 }
 
 
@@ -108,7 +139,7 @@ turn_off() {
     require_config
 
     if [ -s "$STATE_FILE" ]; then
-        echo "Already off. Run '$0 on' first."
+        echo "Already turned off. Run '$0 restore' first."
         exit 1
     fi
 
@@ -134,17 +165,22 @@ turn_off() {
 
 turn_on() {
     if [ ! -s "$STATE_FILE" ]; then
-        echo "Nothing to restore. $STATE_FILE is empty or missing."
-        exit 1
+        echo "No state file, so this script disabled no launchd items."
+        echo "Widgets can be changed outside this script, so checking them:"
+        report_widget_state
+        exit 0
     fi
 
     echo "Restoring:"
     while read -r target; do
+        case "$target" in
+            widget:*) continue ;;
+        esac
         enable_one "$target"
     done < "$STATE_FILE"
 
     echo "Widgets:"
-    show_widgets
+    restore_widgets
 
     rm "$STATE_FILE"
 
@@ -154,14 +190,14 @@ turn_on() {
 
 
 case "${1:-}" in
-    off)
+    turn-off)
         turn_off
         ;;
-    on)
+    restore)
         turn_on
         ;;
     *)
-        echo "usage: $0 off|on"
+        echo "usage: $0 turn-off|restore"
         echo "config: $CONFIG_DIR"
         exit 1
         ;;

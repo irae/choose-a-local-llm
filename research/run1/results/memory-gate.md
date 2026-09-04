@@ -96,7 +96,7 @@ idle baseline and wait for recovery. Design options are still open.
 ## Next
 
 - `boot-audit.md` holds what the login-item audit taught.
-  `tools/README-mac-quiet.md` holds the method. The machine's own list
+  `tools/README-mac-services.md` holds the method. The machine's own list
   is in `~/.config/choose-a-local-llm/`.
 - The widget test must be redone from a confirmed start state, with a
   reboot between arms.
@@ -431,7 +431,7 @@ clean machine, and put the machine in the same state before every run.
 The sequence is now `docs/methodology/checklist.md` step 4, with the
 reasoning in `docs/methodology/memory-ceiling.md`:
 
-1. `tools/mac-quiet.sh off`
+1. `tools/mac-services.sh turn-off`
 2. reboot
 3. `sudo sysctl iogpu.wired_limit_mb=24000`
 4. load the model under test and walk its context up slowly, using the

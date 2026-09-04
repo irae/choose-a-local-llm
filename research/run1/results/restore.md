@@ -22,10 +22,10 @@ agent touches it.
 
 ## launchd items
 
-* script: `tools/mac-quiet.sh off` and `tools/mac-quiet.sh on`
-* method: `tools/README-mac-quiet.md`
-* lists: `~/.config/choose-a-local-llm/quiet-*.conf`
-* state file: `~/.config/choose-a-local-llm/quiet-state`, written by
+* script: `tools/mac-services.sh turn-off` and `tools/mac-services.sh restore`
+* method: `tools/README-mac-services.md`
+* lists: `~/.config/choose-a-local-llm/services-*.conf`
+* state file: `~/.config/choose-a-local-llm/services-state`, written by
   `off`, read by `on`
 * scope: `on` restores only what `off` disabled, nothing else
 * effect: needs a reboot both ways
