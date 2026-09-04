@@ -150,7 +150,7 @@ here; the hosted reports show them dimmed, with reasons.
 | Qwen3.6-35B-A3B | guided | llama-server, thinking high, `pi` harness | **83/100** | complete — all 8 libraries |
 | Qwen3.6-35B-A3B | blind | llama-server, thinking high, `pi` harness | **63/100** | complete — all 8 libraries; one critical runtime defect (trap A) |
 | Ternary Bonsai-27B | blind | mlx 2-bit, thinking high, `pi` harness | **37.5/100** (raw 55) | partial — 300-min wall clock at 3/8 libraries, `rimraf` partial |
-| Qwen3.8-27B | blind | mlx 4-bit, effort low, `pi` harness | **12.5/100** (raw 67.5) | partial — tooling-nudge budget hit at 1/8 libraries; the mlx entry's fixed 26624-token window forced repeated premature stops (serving limit, not the model) |
+| Qwen3.8-27B | blind | mlx 4-bit, effort low, `pi` harness | **12.5/100** (raw 67.5) | partial — tooling-nudge budget hit at 1/8 libraries; the harness entry's 26624-token window plus a 16384-token output budget forced repeated premature stops (our config arithmetic, not the model) |
 | Ternary Bonsai-27B | guided | mlx 2-bit, thinking high, `pi` harness | **12.5/100** (raw 59) | partial — 300-min wall clock at 1/8 libraries |
 | Ternary Bonsai-27B | blind | PrismML GGUF fork, thinking high, `pi` harness | **12.5/100** (raw 60.5) | 1/8 libraries — typoed the repo path, self-scoped to chalk; a penalized retry is pending |
 

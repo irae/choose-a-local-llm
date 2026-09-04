@@ -133,11 +133,17 @@ lives in [common rules](./common-rules.md) and
 13. Commit before moving to the next block.
 14. After stopping any server above ~15 GB RSS, wait for memory to
     RECOVER before loading the next model or starting a sweep: poll
-    `vm_stat` (or the memwatch log) until free memory returns to the
-    idle baseline. Process death is not memory recovery — a sweep
-    started ~3 min after killing a 23 GB server ran the whole window
-    with 60-220 MB free and continuous swap-ins, and OOMed
-    ([server lore](./server-lore.md)).
+    `Pages wired down` in `vm_stat` (or the memwatch log) until wired
+    memory returns to the value you recorded in step 4.6. Do NOT wait
+    for free memory. The first load of a model keeps its weights in
+    the page cache, so free memory stays lower by about the model's
+    size for the rest of the session and never returns to the start
+    value. Wired is the counter that answers "has the GPU let go"; it
+    returned to baseline within five seconds of a kill when measured
+    (`research/run1/results/backend-diagnosis.md`). Process death is
+    not memory recovery — a sweep started ~3 min after killing a 23 GB
+    server ran the whole window with 60-220 MB free and continuous
+    swap-ins, and OOMed ([server lore](./server-lore.md)).
 15. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
     no background task holding the GPU. End the session with the
     machine idle.

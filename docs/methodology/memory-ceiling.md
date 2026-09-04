@@ -49,7 +49,11 @@ Below ~24000 MB on a 32 GB machine, `iogpu.wired_limit_mb` gates
 cleanly: the process's `IOAccelerator (graphics)` resident memory
 (per-process view: `vmmap --summary <pid>`) hits the sysctl value
 exactly and the process gets the Metal OOM while the system stays
-healthy. At ~24000 MB and above, physical RAM binds first: free RAM
+healthy. That per-process view is not universal: `mlx_lm.server` holding
+8.5 GB read 1.7 MB in `IOAccelerator`, so for MLX servers read `Pages
+wired down` in `vm_stat` instead
+(`research/run1/results/backend-diagnosis.md`).
+At ~24000 MB and above, physical RAM binds first: free RAM
 runs to near zero before the sysctl matters, the crash point stops
 responding to sysctl changes, and the machine locks up and shows visual
 glitches. Ceilings measured in that regime are the machine's true
