@@ -58,26 +58,53 @@ channel that opens and never proceeds. The draft notes say it appears
 right after a failed-edit turn — that is, right after a tool response.
 The long template's extra branch produces exactly that opening.
 
-### What this does NOT yet prove
+### Which one is newer — settled, and it is the opposite of the guess
 
-Which template is the newer one. The local files cannot say. The
-snapshot dates are download dates: the GGUF landed 2026-08-25 and the
-MLX repos 2026-08-28 and 2026-08-29, all after the Google chat-template
-fix of 2026-07-15, so the dates separate nothing. The long template also
-carries a comment about avoiding an "O(n) backward scan", which reads
-like a later refactor, not an older file. So the extra branch may be the
-fix rather than the defect: after a tool response the model turn is
-still open, and re-opening `<|turn>model` would be wrong.
+Fetched from `google/gemma-4-12b-it` and hashed the same way:
 
-The direction is a measurement, not an opinion. It is testable with the
-containers already on the machine, and the test is cheap: serve the same
-GGUF twice, once on the embedded template and once with
-`--chat-template-file` pointing at the short template, and replay the
-same failing conversation. That arm is now added to T1.1.
+| Revision | Length | Hash | Has the tool-response branch |
+| --- | --- | --- | --- |
+| `657684f`, 2026-06-03, before the fix | 17466 | `a23ecdbb9d01` | no |
+| `main`, after commit `711c136` of 2026-07-15 | 18681 | `ac8703caf039` | **yes** |
 
-Both template texts are archived in
-`~/.local/share/choose-a-local-llm/evidence/run2-context-ramp/` beside
-the ramp logs.
+That commit is the one Google closed the thought-loop discussion with:
+*"fix: chat template — null handling, reasoning preservation, turn-tag
+balance, input validation (#35)"*.
+
+So the extra branch is **the fix, not the defect**. Opening the thought
+channel after a tool response is the reasoning-preservation behaviour
+Google added. And the short template — the one every local
+`chat_template.jinja` ships — is the pre-fix file.
+
+### The consequence: our MLX containers carry the stale template
+
+Line the hashes up against what is on the machine:
+
+| File on this Mac | Hash | Verdict |
+| --- | --- | --- |
+| `mlx-community/gemma-4-12B-it-4bit` `chat_template.jinja` | `a23ecdbb9d01` | **pre-fix** |
+| `mlx-community/gemma-4-26b-a4b-it-4bit` `chat_template.jinja` | `a23ecdbb9d01` | **pre-fix** |
+| `lmstudio-community/gemma-4-12B-it-MLX-4bit` `chat_template.jinja` | `a23ecdbb9d01` | **pre-fix** |
+| `lmstudio-community/gemma-4-12B-it-MLX-4bit` `tokenizer_config.json` | `ac8703caf039` | current |
+| `unsloth/gemma-4-12b-it-GGUF` embedded | `e78e690d773f` | post-fix base, plus unsloth's own edits |
+
+**Every MLX Gemma-4 container on this machine ships the chat template
+Google replaced to fix the thought loop.** The LM Studio repo carries
+both: a current template in `tokenizer_config.json` and a stale one in
+`chat_template.jinja`. Which of the two ran depends on which file the LM
+Studio MLX engine prefers, and that is now the single most valuable
+thing to check about the LM Studio path.
+
+This does not yet prove the stale template caused the flood. It proves
+the flood ran on a container whose template Google had already fixed for
+that exact failure, and it turns the T1.1 arms into a clean before/after:
+
+- arm `embedded` — the GGUF's own post-fix template
+- arm `short` — the same GGUF forced onto the pre-fix template with
+  `--chat-template-file`
+
+All five template texts, including both fetched revisions, are archived
+in `~/.local/share/choose-a-local-llm/evidence/run2-context-ramp/`.
 
 ## Finding 2 — the quantized-PLE claim does not reproduce on our containers
 
