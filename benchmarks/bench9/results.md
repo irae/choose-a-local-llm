@@ -123,3 +123,46 @@ Verdict: **window** — `no ceiling found up to 32768`.
 Rule 6 step 4: f16 fits (wired steady ~22.9 GB, well under the 24000 MB
 limit) and is faster at 32K (16.38 vs 7.13 tok/s, more than 2x). f16
 wins outright, no arithmetic needed.
+
+## Block A1 — Gemma-4-26B-A4B GGUF (short creep, KV pick)
+
+Command: published gemma26-gguf command, `-c 40960`, ports/log per AGENT.md.
+
+### q8_0 arm
+
+`creep-gemma26-gguf-short-q8.tsv`, `server-gemma26-gguf-short-q8.log`
+
+| depth | decode tok/s | wired_mb | draft acceptance |
+| --- | --- | --- | --- |
+| 4114 | 24.85 | 19964 | 0.78 (task 8) |
+| 8222 | 17.14 | 19964 | 0.79 (task 38) |
+| 16386 | 10.24 | 19961 | 0.74 (task 68) |
+| 24602 | 8.08 | 19959 | 0.87 (task 101) |
+| 32818 | 6.33 | 19957 | 0.87 (task 132) |
+
+Verdict: **speed** — `STOP: below 8 tok/s at depth 32818`.
+
+### f16 arm
+
+`creep-gemma26-gguf-short-f16.tsv`, `server-gemma26-gguf-short-f16.log`
+
+| depth | decode tok/s | wired_mb | draft acceptance |
+| --- | --- | --- | --- |
+| 4114 | 60.31 | 20398 | 0.73 (task 9) |
+| 8222 | 64.19 | 20395 | 0.87 (task 40) |
+| 16386 | 56.48 | 20393 | 0.85 (task 68) |
+| 24602 | 52.22 | 20394 | 0.87 (task 99) |
+| 32818 | 45.89 | 20396 | 0.83 (task 129) |
+
+Verdict: **window** — `no ceiling found up to 32768`.
+
+### Pick: f16
+
+Rule 6 step 1: Gemma-26B loses quality at q8_0 (research already in
+AGENT.md). AGENT.md pick rule, second bullet: f16 wins if it fits at
+32K or more, regardless of speed. f16 fits (wired steady ~20.4 GB, no
+mem/OOM stop through 32818) and is also faster (45.89 vs 6.33 tok/s at
+32K) — both reasons agree.
+
+Block A1 closed. Picks: Qwen3.6 GGUF = q8_0, Qwen3.8 GGUF = f16,
+Gemma-26B GGUF = f16.
