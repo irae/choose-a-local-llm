@@ -4,3 +4,52 @@ Created 2026-09-04 by the coordinator. No sessions yet.
 
 Start here: read `AGENT.md`. Log every session below with a
 handing-over section at the end.
+
+## Session 1 — 2026-09-04
+
+### For the planner: a docs gap in block A1b / context-creep.md
+
+Block A1b's instruction is "the published command (its published `-c`)
+with the picked cache type." When the published `-c` OOMs (as it does
+on all three block A1 models under this run's `iogpu.wired_limit_mb`),
+the natural read is "lower `-c` to whatever loads, run the creep, done."
+That is wrong: a context creep exists to FIND the model's ceiling, so
+its target is the model's real trained context (GGUF
+`<arch>.context_length`, or the setup report's own trained-window note
+— e.g. Gemma-26B's report already says "full 256K trained window"),
+not the previously published serving `-c`. A creep that stops at
+"window" only because the chosen `-c` was too small is not a finding;
+it is the test not having run far enough. A creep that stops on a real
+condition (floor, OOM, or memory compaction) below the published `-c`
+IS a valid, complete result — no rework needed there.
+
+The fix that already exists and is proven: **the prefill jump**
+(`research/run2/results/gemma12-depth.md`, "The prefill shortcut, and
+why it is trustworthy"). Instead of re-creeping from 4K after raising
+`-c`, start `DEPTH_LIST` at the last previously-verified depth (a
+control point, to catch any surprise) plus the new deeper target(s);
+the runner grows the prompt to that depth in one jump and continues
+normally. Measured deviation from a full slow creep: 2.8%, on the
+pessimistic side (arriving fast gives macOS less time to yield memory,
+so it is a safe, conservative shortcut). Up to 5% deviation is
+acceptable by this project's own standard.
+
+Suggested doc fix: `context-creep.md` step 0 / block A1b in a future
+run's AGENT.md should say explicitly: "when the published `-c` fails to
+load or produces only a window verdict, binary-search upward toward
+the model's real trained context (check GGUF metadata or the setup
+report), and use a prefill-jump `DEPTH_LIST` (last good depth + new
+target(s)) rather than re-running the full curve."
+
+### Correction made mid-run-9
+
+Block A1b's Qwen3.8 and Gemma-26B full creeps were first run at their
+published `-c` (32768 and 262144) and, for Gemma-26B, a first fallback
+`-c` (131072) chosen ad hoc rather than toward the trained max. Both
+produced a "window" verdict — an artifact of an undersized `-c`, not a
+real ceiling. Qwen3.6's mem-stop result at `-c 49152` is unaffected and
+stays as published (a real stop condition, reached well under its
+`-c`). Redoing Qwen3.8 and Gemma-26B: binary-search the largest
+loadable `-c` toward each model's 262144 trained context, then a
+prefill-jump creep from the last verified depth to find where a real
+stop condition (floor/OOM/mem) actually triggers.
