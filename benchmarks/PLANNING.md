@@ -20,8 +20,10 @@ and the methodology pages the runbook points to.
   approved item is worked in its own sibling worktree and branch,
   reviewed by the coordinator (or the owner, when the owner asked for
   it), and merged to `master` only when both agree. When it lands, its
-  backlog file is deleted in the same commit. Everything else is
-  planning and stays with the coordinator.
+  backlog file is deleted in the same commit and its line moves to the
+  Changelog in `backlog/index.md`, which lists every item in priority
+  order with the owner's checkbox mark. Everything else is planning and
+  stays with the coordinator.
 
 ## The two roles
 

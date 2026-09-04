@@ -15,7 +15,7 @@ Which file governs which kind of page:
 | Method pages (`docs/methodology/`) | how to measure | `EDITOR.md`, plus: **never name a model, vendor fork or Hub repo**. Say "one dense 12B model on the reference setup" and link the setup page. The models of one machine live under `docs/setups/<setup>/`. |
 | Run kits (`benchmarks/bench<N>/`) | `AGENT.md`, `state.md`, `results.md`, `results/` | `benchmarks/PLANNING.md`: exact commands, executable conditions, failure paths, no approval gates; `AGENTS.md` standing rules for the kit shape |
 | Research kits (`research/run<N>/`) | same shape, goals not blocks | `benchmarks/PLANNING.md`; a research run brings findings and options, not decisions |
-| Backlog (`backlog/<mnemonic>.md`) | one item per file | opens with status, filing date, origin, and whether it needs hardware; restates the situation so nobody digs old runs; lists entry points and evidence files; is not a prompt. When the work lands on `master`, the file is deleted in the same commit; the commit message is the record |
+| Backlog (`backlog/<mnemonic>.md`) | one item per file | opens with status, filing date, origin, and whether it needs hardware; restates the situation so nobody digs old runs; lists entry points and evidence files; is not a prompt. `backlog/index.md` lists every item in priority order with a checkbox the owner marks (legend in that file). When the work lands on `master`, the file is deleted in the same commit and its line moves to the index's Changelog |
 | `HANDOFF.md` | coordinator state, gitignored | `benchmarks/PLANNING.md`: small, pointers only, desired next state |
 
 Rules that apply to every markdown file:
