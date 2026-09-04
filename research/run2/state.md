@@ -152,6 +152,29 @@ before-and-after of Google's fix on one backend.
   (`results/context-ramp.md`), closing a run 1 open question. It read
   9 MB while the server held 13.6 GB wired.
 
+### Blocked, with the reason
+
+- **The LM Studio probe is NOT run tonight, on purpose.** The question
+  it answers is the highest-value one left: does the LM Studio MLX
+  engine read the stale `chat_template.jinja` or the current inline
+  template, and does it deserialize `function.arguments` before
+  rendering. It needs a Gemma-12B loaded in LM Studio. Run 1's kernel
+  panic came from LM Studio load and unload cycles of that exact model
+  with a client connecting, and a panic while the owner sleeps would
+  reboot their Mac and end the night. It is a five-minute check with the
+  owner present. It is the first item for the next session.
+  Static analysis was tried and does not settle it: the LM Studio main
+  bundle references BOTH `chat_template.jinja` and the inline
+  `chat_template`, so both readers exist, but the bundle is minified with
+  a string table and the precedence cannot be read out of it. The MLX
+  engine native module is stripped and names neither.
+
+- **T2.3 part 2 and T2.4 part 2 are blocked by their own dependency.**
+  DRY is llama-server only, and arm 1 shows llama-server does not loop,
+  so there is nothing on that backend for a sampler or a loop stop to
+  act on. Both tools are built and one is load-tested; neither can be
+  fired at a real loop until a looping backend is available.
+
 ### Next, in order
 
 1. T1.1 arm 2, `replay-llama.sh short` — chained, starts by itself.
