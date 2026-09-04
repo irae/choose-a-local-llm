@@ -179,3 +179,23 @@ dependent and can be large. This run proposes nothing to the site.
   re-measured today and is still the faster curve on paper. A fair
   head-to-head needs the llama chat number, because LM Studio's sweep
   must use chat — its raw completions endpoint is broken on this build.
+
+## 8. Rolls over to research 3
+
+Gemma-12B is closed. These are open and were not started:
+
+- **Quant downloads** — the OptiQ shortlist in `quant-survey.md`, ranked,
+  awaiting approval. Gemma-12B QAT OptiQ first.
+- **The Bonsai kv-bias corpus question** — blocks section B's q8_0 arm.
+  See `bonsai-kv-bias-missing.md`.
+- **Coding-model candidates** — Devstral Small 2 first, see
+  `model-candidates.md`. Nothing downloaded.
+- **Section G prompt-cache alerting** — the reader exists
+  (`cache-share.py`); wiring it into runs is not done.
+- **The loop stop as a shipped feature** — `loop-stop.ts` loads and is
+  unfired. It counts identical consecutive tool calls and would not
+  catch a single long looping call or a thinking-channel loop, both of
+  which this run measured. It needs a second trigger.
+- **The sweep tooling rollout** — `creep.py` and its three backend files
+  replaced six scripts and have now run all of this run's sweeps, but
+  round-robin (`N_CONTEXTS` > 1) has never been exercised.
