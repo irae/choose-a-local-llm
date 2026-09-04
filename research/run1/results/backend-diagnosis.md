@@ -261,3 +261,86 @@ Whether `<|channel>` reaches the model from LM Studio's bundled Gemma-4
 template, which run 2 section D records as crashing on tool calls.
 Testing that needs the template, not the logs, so it belongs with
 section D.
+
+
+## Goal 1 item 1 — H4 tested. Both of its premises are wrong.
+
+Run 7 guessed that after a big server dies, `vm_stat` reports memory
+free before the GPU has released it, and that `vmmap --summary`
+IOAccelerator would show the truth. Measured 2026-09-04 with
+`results/h4-memory-recovery.sh`: the Bonsai on its vetted
+`mlx_lm.server` command, warmed, then killed, with both meters sampled
+every 5 s for 3 minutes.
+
+| sample | free MB | wired MB | IOAccelerator MB |
+| --- | --- | --- | --- |
+| idle before | 13738 | 1718 | – |
+| loaded and warm | 4549 | 10271 | **1.7** |
+| kill + 5 s | 13625 | 1728 | 0 |
+| kill + 180 s | 13315 | 1729 | 0 |
+
+### Wrong premise 1 — there is no lag
+
+Wired fell from 10271 MB to 1728 MB **within five seconds** of the kill,
+and stayed flat for three minutes. Free recovered in the same five
+seconds. Nothing was held back. The window H4 imagined does not exist,
+at least for `mlx_lm.server`.
+
+### Wrong premise 2 — IOAccelerator is the wrong meter for MLX
+
+The raw line, captured so the parse could be checked:
+
+    IOAccelerator   1696K   1696K   1696K   0K   0K   0K   0K   36
+
+**1.7 MB, while the process held about 8.5 GB.** Wired rose by 8553 MB
+on load. So `mlx_lm.server` does not carry its weights in IOAccelerator
+regions, and polling that region — the fix H4 proposed — would report
+nothing at all.
+
+A first attempt at this test parsed the wrong column and printed 1 MB,
+which happened to be close to the truth for the wrong reason. The script
+now writes the raw vmmap line beside every sample so a bad parse is
+visible rather than plausible.
+
+### What the test found instead
+
+Compare the two runs. The first, on a machine where this model had never
+been loaded:
+
+| sample | free MB |
+| --- | --- |
+| idle before | 21482 |
+| loaded | 5015 |
+| kill + 5 s | 14152 |
+| kill + 180 s | 14137 |
+
+**7.3 GB never came back**, and was still missing after three minutes.
+The second run, minutes later, started at 13738 MB and returned to
+13625 MB — full recovery.
+
+The difference is the model file in the page cache. The FIRST load of a
+model lowers free memory by roughly the model's size and keeps it
+lowered; later loads of the same model return to the new level. Nothing
+is leaking — the pages are reclaimable — but they are not counted free.
+
+### Why this matters more than H4 did
+
+The bench7 runbook proposed waiting for `vm_stat` free pages to "return
+to the session's idle baseline" before starting the next server. On this
+evidence that condition can never be met after the first model of a
+session, because the baseline itself has moved down by the size of the
+weights.
+
+A gate written that way would wait forever, or its author would widen
+the tolerance until it passed everything.
+
+**Read wired instead.** It tracked the allocation to within 20 MB in
+both directions and returned to baseline in five seconds. That is the
+counter that answers "has the GPU let go".
+
+### Limits
+
+Measured on `mlx_lm.server` only. llama-server may hold GPU memory in
+IOAccelerator regions where MLX does not, so the same test on a
+llama-server model would say whether that meter is useless in general or
+only for MLX. Two runs, one machine, no reboot between them.
