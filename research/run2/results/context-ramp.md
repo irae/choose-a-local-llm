@@ -81,9 +81,27 @@ inferred. The ramp deliberately ran on a quiet machine. Reproducing the
 original failure needs a second model resident or the wired limit low,
 which is a different experiment and a riskier one.
 
-## Meter note for section F
+## Meter note — the IOAccelerator question is closed
 
-`vmmap --summary` on llama-server was not sampled in this ramp: the
-script tracked `Pages wired down`, which run 1 established as the meter
-that answers "has the GPU let go". The IOAccelerator question stays
-open and is cheap to add to any later llama-server arm.
+Run 1 found `vmmap --summary` IOAccelerator reading 1.7 MB while an
+`mlx_lm.server` process held 8.5 GB, and left an open question: is that
+meter useless in general, or only for MLX?
+
+**In general.** Sampled on the live llama-server during the T1.1 replay,
+while the model and its KV cache held about 13.6 GB of wired memory:
+
+```
+Physical footprint:         3.4G
+IOAccelerator                64K
+IOAccelerator (graphics)   9152K
+```
+
+IOAccelerator reads about 9 MB. `Physical footprint` reads 3.4 GB, also
+far under the wired cost, because Metal buffers do not land in the
+process footprint. Two different backends, the same answer.
+
+So `Pages wired down` is the only meter that answers "how much memory
+does this model hold". Neither IOAccelerator nor physical footprint may
+be used for a memory-fit decision on this machine. The same sample also
+shows `vmmap` reporting 478.6 MB swapped out in writable regions while
+`sysctl vm.swapusage` reports zero swap used; trust the system counter.
