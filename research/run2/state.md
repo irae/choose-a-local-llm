@@ -121,7 +121,10 @@ before-and-after of Google's fix on one backend.
 - **T2.4, the loop stop** (`results/loop-stop.ts`). Blocks the Nth
   identical consecutive tool call and terminates the run. Never edits a
   result. Loads only with `pi -e`, so a scored run cannot pick it up by
-  accident. **Not yet executed against anything.**
+  accident. **It loads.** `pi --mode rpc -e loop-stop.ts` exits 0 with
+  no error on pi 0.84.3; the same command with a deliberately broken
+  extension exits 1 and names the failure, so the check can tell the two
+  apart. It has **not** been fired against a real loop yet.
 - **T2.3 part 1, sampler facts** (`results/sampler-defaults.md`). Read
   from the running server: DRY and XTC exist, every repetition defence
   defaults to off, and `repeat_last_n` is 64 tokens. One bash tool call
