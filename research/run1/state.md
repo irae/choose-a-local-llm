@@ -256,3 +256,72 @@ check has been reading the wrong meter.
 - A context ramp with the MTP drafter enabled would settle item 4, and a
   second ramp without `-ngl 999` would show whether automatic fitting
   degrades instead of failing. Both are benchmark measurements.
+
+
+## Session close — 2026-09-04
+
+Two conclusions from the end of the session reverse things written
+earlier in this file. The later text wins.
+
+### The Gemma-12B loop reproduces. It is not our ceiling.
+
+The full-length replay looped: 71 calls, 30 distinct, 37 identical in a
+row, against the original's 130 / 30 / 72. Same distinct-call count. On a
+freshly rebooted quiet machine, zero swap, no thermal warnings recorded,
+same 158464 context.
+
+The repeated call was `bash {"command": 4}` — an integer where a string
+belongs. The original looped on `ls -F_r`, an invalid flag. Both are
+malformed tool calls the model could not recover from, the same family as
+the `<|channel>` newline flood.
+
+This supersedes the earlier evidence in `results/invalid-runs.md`
+suggesting those rows recorded a ceiling we set. **They record a real
+failure.** The acceptance decision is the planner's, but the evidence now
+points the other way.
+
+It also calibrated the instrument. Every "no loop" result earlier in this
+run came from a 150-character synthetic prompt now shown incapable of
+producing the failure. The nine-run serving sweep says only that a short
+prompt does not loop.
+
+### H4 is tested and both its premises are wrong.
+
+No lag: wired fell 10271 to 1728 MB within five seconds of the kill.
+IOAccelerator is the wrong meter for MLX: it read 1.7 MB while the
+process held 8.5 GB.
+
+What it found instead: the first load of a model lowers free memory by
+roughly the weights' size and keeps it lowered, because the file stays in
+the page cache. So bench7's proposed fix — wait for free pages to return
+to the session's idle baseline — can never succeed after the first model
+of a session. Read wired.
+
+### Goals at close
+
+- Goal 0 CLOSED. Goal 2 DONE, fix pushed to mendel.
+- Goal 3 CLOSED by owner decision; loop work moved to run 2 item I.
+- Goal 1: items 1, 2, 3 and 4 all answered. Nothing outstanding.
+
+### Left on the machine
+
+- Desktop widgets OFF. Restore command in `results/restore.md`.
+- `iogpu.wired_limit_mb=24000`, resets on next reboot.
+- `tools/mac-quiet.sh` was never run; no login item was disabled.
+- GPU clear, no server resident.
+
+### Left in git, for the owner to remove when ready
+
+- worktree `../choose-a-local-llm-research1`, branch `research1`
+- worktree `../mendel-bench-repro-gemma-4-12b-low-guided` and mendel
+  branch `repro-gemma-4-12b-low-guided-issue-13`, holding the replay that
+  reproduced the loop
+
+### Open questions, none blocking
+
+- Whether the loop is the model, the LM Studio MLX path, or the template.
+  The replay held the backend fixed. Separating them means the same
+  replay on a different vetted gemma-12b backend — run 2 section D.
+- Whether IOAccelerator is useless as a meter in general or only for MLX.
+  The same H4 test on a llama-server model would say.
+- `peak_context` remains unproven for every existing row.
