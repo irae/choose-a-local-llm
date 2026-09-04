@@ -266,3 +266,54 @@ window, 16.39 tok/s at 32818. Gemma-26B f16 at `-c 131072` (not
 262144), window, 26.25 tok/s at 114718. All three daggered rows need a
 `-c` correction on the published pages independent of the KV-type
 question this run set out to answer.
+
+## Block A1b — Qwen3.8-27B GGUF full creep, CORRECTED (supersedes the
+## entry above that used published `-c 32768`)
+
+The earlier entry above ("no ceiling found up to 32768") stopped
+because `-c 32768` was too small, not because the model hit a real
+limit — the GGUF metadata says `qwen35.context_length` = 262144 (256K
+trained), and a window verdict caused only by an undersized `-c` is
+not a finding (methodology correction, this session). Redone here by
+binary-searching the largest loadable `-c` toward the trained max, then
+a prefill-jump creep (`research/run2/results/gemma12-depth.md`) from
+the last verified depth instead of re-creeping from 4K.
+
+### `-c` search (f16 KV)
+
+| `-c` tried | result | log |
+| --- | --- | --- |
+| 262144 (trained max) | OOM at load | `server-qwen38-gguf-full-f16-c262144.log` |
+| 131072 | OOM at load | `server-qwen38-gguf-full-f16-c131072.log` |
+| 65536 | OOM at load | `server-qwen38-gguf-full-f16-c65536.log` |
+| 49152 | loads, serves | `server-qwen38-gguf-full-f16-c49152.log` |
+
+All three failures show `Insufficient Memory
+(kIOGPUCommandBufferCallbackErrorOutOfMemory)` before any request
+completes. **49152 is the real hardware ceiling for this model at f16
+KV under `iogpu.wired_limit_mb=24000`** — not a convenient stopping
+point, the largest `-c` this machine can load for this config.
+
+### Prefill-jump creep at `-c 49152`
+
+`creep-qwen38-gguf-full-f16-c49152.tsv`, DEPTH_LIST jumped straight to
+`32768,49152` (32768 as a control point, re-measuring a depth already
+seen at `-c 32768`).
+
+| depth | decode tok/s | wired_mb | draft acceptance |
+| --- | --- | --- | --- |
+| 32818 | 16.42 | 23571 | 0.25 (task 0, warming) |
+| 49198 | 14.98 | 23489 | 1.00 (task 12) |
+
+Control check: 16.42 tok/s here vs 16.39 tok/s measured the slow way
+at the same depth in the published-`-c` run — 0.2% apart, well inside
+the 2.8%/5% tolerance the prefill-jump method carries. The jump is
+valid.
+
+Verdict: **window**, but now a real one — `-c` cannot go higher on this
+hardware (the search above), so 49152 is the ceiling, not an artifact.
+
+**Corrected published row: f16 KV, `-c 49152` (not the published
+32768, and not the model's 262144 trained window — hardware-limited),
+14.98 tok/s at 49198, no floor/OOM/mem hit within the reachable
+window.**
