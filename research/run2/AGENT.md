@@ -39,16 +39,17 @@ restart and keep working.
   `--chat-template-file` with community-fixed templates (Qwen 3.x
   think-tags; Gemma has no official tool role — see
   `results/web-quant-and-models.md`).
-- *Loose end, drop it freely.* Run 1 found that two of the three
-  Gemma-12B newline floods contain nothing but newlines and the string
-  `<|channel>` — a malformed marker, since the real one closes with a
-  pipe. A model emitting a broken control token is the kind of thing a
-  wrong template or a bad quant produces, so it MAY be the same root
-  cause as the two items above rather than a separate bug. If the
-  template check or the PLE check turns something up, it is worth seeing
-  whether `<|channel>` disappears with it. If they do not, ignore this —
-  it is a hunch from a log, not a lead. Detail in
-  `research/run1/results/backend-diagnosis.md`.
+- *Template date check.* Two of the three Gemma-12B newline floods
+  contain only newlines and `<|channel>`. That token is correct: it
+  opens Gemma 4's thought channel and should be followed by `thought`.
+  So the flood is a thought channel that opens and never proceeds,
+  which is the upstream Gemma-4-12B thought-loop (HF discussion 41,
+  closed by Google with a chat-template fix merged 2026-07-15, and
+  llama.cpp PR 21343 of 2026-04-03 fixing Gemma 4 newline
+  tokenization). Check the template and conversion dates of every
+  local Gemma-4 container against those two dates. Detail in
+  `research/run1/results/backend-diagnosis.md` and
+  `results/web-upstream-status.md`.
 - Check whether our Gemma-4 MLX quants have the confirmed
   quantized-PLE defect (all HF mlx-community Gemma-4 quants reported
   broken; a fix repo exists). Compare `config.json` quantization

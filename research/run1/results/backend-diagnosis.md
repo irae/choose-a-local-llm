@@ -218,12 +218,20 @@ All three Gemma-12B session logs contain one degenerate block. Measured
 
 ### Three things this settles
 
-**It is a broken control token, not prose.** Two of the three floods
-contain nothing but newlines and the string `<|channel>`. That is a
-malformed special token: the real marker is `<|channel|>`, with a
-closing pipe. The model emitted a control token, got it wrong, and the
-rest of the block is newlines. This is a tokenizer or chat-template
-fault, not a model "repetition collapse" in the ordinary sense.
+**It is the thought channel opening and then flooding newlines.**
+Two of the three floods contain nothing but newlines and the string
+`<|channel>`.
+
+*Correction 2026-09-04 (coordinator).* The first version of this note
+called `<|channel>` a malformed token and named `<|channel|>` as the
+real one. That was wrong. Google's Gemma 4 prompt-format page defines
+`<|channel>` as the opening token and `<channel|>` as the closing one,
+and says `<|channel>` is always followed by the word `thought`. So the
+token is correct. The model opens its thought channel, never writes
+`thought`, and floods newlines instead. That matches the upstream
+reports of a Gemma-4-12B thought-loop (HF discussion 41, LM Studio
+mlx-engine issue 337). Sources in
+`research/run2/results/web-upstream-status.md`.
 
 **Two of three floods follow a failed edit, not all three.** The trial
 draft says the flood comes right after the first failed edit in 3/3
@@ -257,8 +265,9 @@ floods anyway — but the pairing is worth a look.
 
 ### What is still open
 
-Whether `<|channel>` reaches the model from LM Studio's bundled Gemma-4
-template, which run 2 section D records as crashing on tool calls.
+Whether LM Studio's bundled Gemma-4 template (which run 2 section D
+records as crashing on tool calls) predates Google's template fix of
+2026-07-15, and whether the fix changes the flood.
 Testing that needs the template, not the logs, so it belongs with
 section D.
 
