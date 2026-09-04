@@ -66,6 +66,45 @@ speed, citing Gemma-26B. This is that caveat firing far harder than the
 headline number suggests. The ask is in `planner-notes.md`; nothing here
 changes a published page.
 
+## The full picture, both backends, thinking off
+
+| used tokens | llama f16, raw | llama f16, chat | LM Studio MLX, chat |
+| --- | --- | --- | --- |
+| 4 115 | 24.64 | 24.68 | **34.19** |
+| 16 386 | 22.66 | 22.59 | **32.05** |
+| 32 818 | 20.58 | — | **30.59** |
+| 65 578 | 17.42 | — | **27.08** |
+| 98 338 | 14.91 | — | **24.52** |
+| 131 098 | 12.67 | — | **23.23** |
+| 147 478 | 11.72 | — | 22.60, then **swap** |
+| 180 238 | 10.72 | — | — |
+| 212 998 | 9.69 | — | — |
+| 245 810 | 8.86 | — | — |
+| 262 144 | **window** | — | — |
+
+**The chat path costs nothing.** 24.68 against 24.64 at 4K and 22.59
+against 22.66 at 16K. The number a harness sees is the number the raw
+sweep reports, so the published raw figures transfer to real use.
+
+**The two backends fail differently, and that decides the choice.**
+
+- **llama-server pre-allocates its KV from `-c`.** Wired sat flat at
+  14186 MB, 59% of the 24000 limit, from load to the trained window. It
+  cannot creep into an OOM; it ran out of MODEL, not machine. Verdict:
+  **window**.
+- **LM Studio grows into the cap.** Wired reached 87% by 147K and the
+  sweep stopped on **69 MB of swap growth**. Verdict: **memory**.
+
+So LM Studio is faster at every depth it survives — 1.4x at 4K widening
+to 1.8x at 131K — and llama-server is the one that reaches the model's
+own limit. For a long-context daily driver the trade is speed against
+finishing.
+
+**And the agent probe breaks the tie.** With thinking off on the same
+task, llama-server made 42 tool calls and committed working code, while
+LM Studio looped 2679 lines on the thought channel and committed nothing
+(`mendel-probe-xtend.md`). Speed does not help a backend that loops.
+
 ## The prefill shortcut, and why it is trustworthy
 
 Finishing the curve to 262144 by creeping from 4K again would have cost
