@@ -36,3 +36,13 @@ Filed: 2026-09-04; the smoke step set by the owner the same day.
   `reruns: 1`. Blocked on the KV bias corpus answer.
 - Bonsai fork q8_0 KV arm without the bias file, against the fork's q4
   plus bias row. Blocked on the same answer.
+
+## Housekeeping on the Mac, first session
+
+- An orphan Bonsai MLX blind session (started 2026-09-02 22:44, 52
+  tool calls) sits in the Mendel scratch runs with no branch, no result
+  row, and no archive entry. It is not a row and not invalid; it is an
+  abandoned attempt. Copy its log into `benchmark/runs/` and add a
+  `SESSIONS.md` line "abandoned attempt; no branch, no result row", the
+  way the aborted Qwen3.8 medium session is recorded. Then archive with
+  `tools/archive-evidence.sh`.
