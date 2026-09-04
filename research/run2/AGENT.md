@@ -3,7 +3,8 @@
 You are a research-and-experiment agent on the Mac. Read this file,
 `state.md`, `../run1/` (its diagnoses feed this run), then
 `results/*.md` — three web-research reports gathered by the
-coordinator (2026-09-03), with sources. Write all prose in ASD-STE100
+coordinator (2026-09-03) and `results/web-upstream-status.md`, the
+version and issue-status check of 2026-09-04. All with sources. Write all prose in ASD-STE100
 Simplified Technical English. `AGENTS.md` ground rules apply, plus:
 NO model downloads and NO destructive config changes until the owner
 approves a filtered experiment list. Your first deliverable is that
@@ -24,8 +25,20 @@ restart and keep working.
 1. Verify locally what the web reports claim (versions, templates,
    configs) — the reports are leads, not truth. Add your own research.
 2. Merge with `../run1/results/` diagnoses (session-log evidence).
+   Read `../run1/state.md` to its end: its session close reverses two
+   earlier conclusions, and the later text wins.
 3. Propose a ranked experiment list to the owner. Iterate: agree,
    test, evaluate, record. Only then change published configs.
+4. Prepare the machine with the cold-start sequence in
+   `docs/methodology/checklist.md` step 4. Wired memory is the meter;
+   free memory drops by the model's size on first load and stays
+   there. Load each model ONCE per session and quit the LM Studio app
+   between models: repeated load/unload churn kernel-panicked the Mac
+   in run 1. After any lost run, check
+   `/Library/Logs/DiagnosticReports/*.panic` before calling it an OOM.
+5. Archive every session log with `tools/archive-evidence.sh` before
+   a session closes. Nine of seventeen Mendel rows have no log left;
+   do not add to that number.
 
 ## Threads and starting alternatives (err wild; filter later)
 
@@ -93,20 +106,45 @@ collapse (44-60% repro on long agent prompts, present in F16 —
 repeat_penalty does not help); LM Studio's bundled Gemma-4 template
 crashes on tool calls (fix macro in their tracker #2012); the MLX
 engine ignores `enable_thinking:false`, the set context length, and
-mishandles stop sequences. Alternatives, ranked by the researcher:
+mishandles stop sequences. Alternatives, re-ranked by the
+coordinator on 2026-09-04 after run 1 closed:
 
-1. Disable thinking in the LM Studio UI (not the API) and re-test.
-2. A/B the same model as GGUF (two of the bugs are MLX-engine-only).
-3. Apply the template fix macro; watch server logs for the Jinja
+1. **A/B the same replay on llama-server (GGUF).** Run 1 proved the
+   vetted llama-server Gemma-12B command serves with the MTP drafter
+   at 8192, and its replay kit (`../run1/results/replay-probe.sh`,
+   `count-replay.py`, the archived 3909-character prompt) reproduces
+   the loop on LM Studio by call 11-40. One replay per backend
+   separates model from MLX path. Do this first; everything else in
+   this section depends on the answer.
+2. **Date-check the containers.** Google closed the 12B thought-loop
+   discussion with a chat-template fix merged 2026-07-15, and llama.cpp
+   PR 21343 (2026-04-03) fixed Gemma 4 newline tokenization. Compare
+   the local GGUF conversion date and both templates (GGUF embedded,
+   LM Studio bundled) against those dates. See section A.
+3. Disable thinking in the LM Studio UI (not the API) and re-test.
+   `docs/methodology/server-lore.md` says thinking is always on for
+   `gemma4_unified`; this tests whether the UI switch reaches it.
+4. Apply the template fix macro; watch server logs for the Jinja
    error right after a failed-edit turn.
-4. Harness-side hard stop on N repeated tokens (do not trust the
-   engine's stop handling).
-5. Trim tool-schema verbosity; sanitize failed-edit error text before
+5. Harness-side stop on repeated calls — section I owns this.
+6. Trim tool-schema verbosity; sanitize failed-edit error text before
    feeding it back (its repeated structure may seed the loop).
-6. Compare LM Studio's MLX wrapper against upstream `mlx_lm.server`
-   to isolate the owning layer.
+7. Compare LM Studio's MLX engine against upstream `mlx_lm.server`.
+   They are not the same build: LM Studio pins mlx 0.32.0 and an
+   unreleased mlx-lm commit 13 ahead of v0.31.3, so a difference can
+   be the engine version, not the wrapper.
 If nothing works, propose marking the Gemma-12B x LM Studio x agent
 combination unsupported (feeds run 1 goal 2).
+
+**Settled by run 1 (2026-09-04).** The loop is NOT machine state. A
+full-length replay on a freshly rebooted, quiet, zero-swap machine
+looped: 71 calls, 30 distinct, 37 identical in a row, against the
+original 130 / 30 / 72. The repeated call was `bash {"command": 4}`,
+an integer where a string belongs; the original looped on `ls -F_r`.
+Both are malformed calls the model re-emits after pi rejects them.
+The floods are the thought channel opening (`<|channel>` is the
+correct token) and never proceeding. Detail in
+`../run1/results/invalid-runs.md` and `backend-diagnosis.md`.
 
 **Run 1 findings that bear on this section (all committed to master).**
 Run 1 hit LM Studio hard while setting up its goal-3 trial and stopped,
@@ -160,21 +198,42 @@ probes a REAL completion, not /health (our monitors already check
 output growth — unify); cherry-pick the unmerged PRs locally; a
 `threading.excepthook` → `os._exit()` wrapper so the process dies
 honestly; periodic `mx.clear_cache()`; `--max-kv-size` is in the
-library but not exposed by the server (could patch); check if a newer
-mlx-lm fixes the Qwen3.8 26624 window pinning.
+library but not exposed by the server (could patch).
+
+**Status 2026-09-04.** mlx-lm 0.31.3 is still the latest release;
+issues 1505/1390/854 are open and PRs 1513/1514/1791 are unmerged, so
+no upgrade fixes the green-health dead thread. The 26624 window is
+OURS: it is `contextWindow` in pi's model entry, not a server limit
+(`../run1/results/backend-diagnosis.md`, item 3). Two experiments
+follow. First, re-probe the Qwen3.8 ceiling at the current
+`iogpu.wired_limit_mb=24000`; the ~29K figure was measured at 25000.
+Second, fix the arithmetic: `maxTokens` 16384 plus `contextWindow`
+26624 cannot fit once a prompt passes ~10K, which caused three
+premature length stops in run 7. Propose the values as a diff; it
+alters a published measurement, so the owner applies it.
 
 ### F. llama.cpp memory fit and the MTP drafter
 
-Upstream: `--fit` exists but UMA accounting is admittedly broken;
-`-fit on` ignoring the drafter's memory was fixed by PR 23485 —
-check our brew build's vintage. Our exact symptom (drafter alloc
-fails, /health green, all requests 500) is NOT confirmed upstream:
-run 1's minimal repro on a pinned commit is the input for filing it.
-Alternatives: update the build; replace `-ngl 999` with `--fit on`
-or a measured `-ngl` minus 15-20% margin; skip MTP entirely on 32 GB
-(spec-decode gives ~zero gain on Apple Silicon per the video
-research); harness-side relaunch-without-drafter fallback; match
-drafter and main context sizes.
+**The build is not the problem (run 1, 2026-09-03).** The drafter
+allocates and accepts 51% of drafts on the SAME brew build at context
+8192 on a quiet machine. PRs 23485 and 20817 are both merged and both
+sit inside homebrew `llama.cpp` 0.3.0 (tag v0.3.0, 2026-08-25);
+confirm with `brew info llama.cpp`. The failure is conditional: at
+262144 with `-ngl 999`, llama.cpp's automatic fitting is disabled
+(bench7 H2) and the drafter init hits a real Metal allocation
+failure. There is nothing to file upstream.
+
+The experiment is a context ramp with the drafter enabled: 8K, 32K,
+64K, 128K, 262K, recording at each step whether the drafter
+allocates, and wired memory before and after. Then the same ramp with
+`-ngl 999` replaced by `--fit on`, to see whether fitting degrades
+instead of failing. Also sample `vmmap --summary` IOAccelerator on
+llama-server once: run 1 found it reads ~0 for `mlx_lm.server`, and
+the same test on llama-server says whether that meter is useless in
+general. Other options stay: a measured `-ngl` minus 15-20% margin;
+skip MTP on 32 GB (spec-decode gives ~zero gain on Apple Silicon per
+the video research); harness-side relaunch-without-drafter fallback;
+match drafter and main context sizes.
 
 ### G. Prompt-cache hit monitoring (config health, not scoring)
 
@@ -198,6 +257,17 @@ LM Studio trials for existing models: Qwen3.8-27B first (its mlx
 it a far larger window), then other models where the mlx path is the
 blocker — with the known LM Studio MLX-engine bugs (stop sequences,
 thinking flag, templates) watched in the session logs.
+
+Cautions from 2026-09-04. LM Studio 0.4.23 is current and every bug
+above is still open. Its MLX engine is a different build from
+homebrew mlx-lm, so a result on one does not transfer to the other.
+Auto-fit is a cost as well as a gift: pi compacts against
+`contextWindow`, so an auto-fit window the harness does not know about
+buys nothing, and the 158464 window it chose for Gemma-12B ate memory.
+An "MLX context AutoFit load toggle" landed on mlx-engine main on
+2026-07-31; check whether 0.4.23 exposes it, because that would make
+the context settable again. The 26624 window itself is a harness
+number, see section E, so fix that before crediting LM Studio.
 
 New model candidates — CODING-FOCUSED only (owner cut Muse Glimmer:
 weak coding scores; re-filter every candidate for coding/agentic
@@ -284,6 +354,32 @@ loop detector is implementable without touching any prompt:
 change, works on both backends or is honestly documented as
 backend-specific, and either does not alter what is measured or is
 declared loudly where it does.
+
+**Coordinator position, 2026-09-04.** Both reproduced loops began with
+a malformed call that pi rejected, and the model re-emitted the
+rejected call unchanged. So the detection rule is "N identical
+consecutive tool calls", and it is known to fire early (call 11-40).
+Build it as a STOP that ends the run with its own `end_reason`, not
+as a rescue that continues it; a rescue changes what the benchmark
+measures. Measure the stop unscored on the replay kit first.
+Sampler facts verified upstream: llama-server exposes DRY
+(`dry_multiplier`, `dry_base`, `dry_allowed_length`,
+`dry_penalty_last_n`, `dry_sequence_breakers`) and XTC per request;
+both servers honour `frequency_penalty` and `presence_penalty` per
+request; `mlx_lm.server` has no DRY. Sources in
+`results/web-upstream-status.md`.
+
+## Parked for research run 3 — owner decisions, do not act
+
+- Whether existing rows carry a `peak_context` caveat or drop the
+  claim (no per-cycle context in the logs).
+- The `tool_calls` gap in two rows (qwen3.6 guided high: 251 in the
+  row, 285 in the log); needs the harness counting rule first.
+- Whether the three Gemma-12B rows stay invalid once section D
+  separates model from backend.
+- Whether the Qwen3.8 harness arithmetic fix (section E) is applied
+  before or after the next scored run.
+- Anthropic budget for sonnet-5/opus-5 re-runs; Aider polyglot models.
 
 ## Deliverables
 
