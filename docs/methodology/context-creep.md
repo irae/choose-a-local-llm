@@ -22,7 +22,11 @@ config. Common rules and the run loop apply
 
 1. Grow a prompt in steps: 4K, 8K, 16K, 24K, 32K, then 16K steps.
 2. Measure decode tok/s at each depth (server timings, or streamed
-   chunks where the server has none).
+   chunks where the server has none). With a drafter, record draft
+   acceptance beside every tok/s: a speculative-decoding number
+   without its acceptance rate cannot be compared with a later run
+   (research run 2 could not reproduce a published 45.0 py tok/s for
+   that reason alone).
 3. Stop at the first reading under the usability floor (ours: 8 tok/s),
    at OOM, or at the model's trained/max context — never earlier. **A
    sweep that stops at an arbitrary depth has not found a ceiling — it

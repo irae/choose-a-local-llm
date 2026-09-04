@@ -139,7 +139,7 @@
    "id": "gemma12-lmstudio-think",
    "hidden": false,
    "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y",
-   "note": "Thinking is always on with this engine; context is auto-fit (158,464 at wired limit 24000)."
+   "note": "LM Studio entry `google/gemma-4-12b`: thinking on, cannot be turned off; context is auto-fit (158,464 at wired limit 24000). This entry is no longer in the model store. It is the entry behind the 0.622 score (61/164 empty) and all three Mendel rows; its container ships Google's pre-fix chat template (research run 2)."
   },
   {
    "config": "Gemma-4-12B, MLX³, thinking off",
@@ -151,8 +151,8 @@
    "evalplus": "0.909/0.872",
    "id": "gemma12-lmstudio-off",
    "hidden": false,
-   "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y",
-   "note": "Archived score: current engine builds always think, so this config is not reproducible today."
+   "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y",
+   "note": "LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking OFF by default and the API cannot turn it on (probed 2026-09-04). Reproducible. Never run on Mendel."
   },
   {
    "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
@@ -228,7 +228,7 @@
    "id": "bonsai-fork-single",
    "hidden": false,
    "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
-   "note": "The scored config. Regenerate the bias file with the vendor's `make_kv_bias.sh` if `/tmp` was wiped — see [the benchmarks](../benchmarks/bonsai-27b.md)."
+   "note": "The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus (research run 2, `bonsai-kv-bias-missing.md`). Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/` — see [the benchmarks](../benchmarks/bonsai-27b.md)."
   },
   {
    "config": "Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on",
@@ -484,10 +484,10 @@
   {
    "slug": "gemma-4-12b-it",
    "model": "Gemma-4-12B",
-   "mode": "thinking on",
-   "base": "pending",
-   "plus": "pending",
-   "empty": "—"
+   "mode": "thinking on (LM Studio `google/gemma-4-12b` entry)",
+   "base": "0.622",
+   "plus": "0.610",
+   "empty": "61/164"
   },
   {
    "slug": "gemma-4-26b-a4b",

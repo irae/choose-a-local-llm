@@ -112,7 +112,7 @@ runners.
 ### D. Gemma-12B newline flood (LM Studio MLX)
 
 Upstream facts: Gemma-4 has a confirmed model-level repetition
-collapse (44-60% repro on long agent prompts, present in F16 —
+loop (44-60% repro on long agent prompts, present in F16 —
 repeat_penalty does not help); LM Studio's bundled Gemma-4 template
 crashes on tool calls (fix macro in their tracker #2012); the MLX
 engine ignores `enable_thinking:false`, the set context length, and
@@ -303,7 +303,7 @@ The failures are real and unaddressed:
   distinct.
 - `prism-ml/Ternary-Bonsai-27B-mlx-2bit` repeated the same `ls` 30 times
   in a row on a path it had typed wrong itself.
-- Gemma-4's model-level repetition collapse (see section D) is the same
+- Gemma-4's model-level repetition loop (see section D) is the same
   shape one layer down.
 
 Measurements in `research/run1/results/tool-call-trial.md`.
@@ -312,7 +312,7 @@ Measurements in `research/run1/results/tool-call-trial.md`.
 loop? Two layers are open: the sampler, and the harness.
 
 **Sampler side, starting points.** Note that section D already records
-`repeat_penalty` failing against Gemma-4's collapse, so treat that as a
+`repeat_penalty` failing against Gemma-4's repetition loop, so treat that as a
 known negative and look wider:
 
 - `repeat_penalty` and `repeat_last_n` — llama.cpp only, and already
@@ -331,7 +331,7 @@ known negative and look wider:
   request without restarting a server mid-run — which was the practical
   blocker this item worried about.
   What is still unknown: whether they work. `repeat_penalty` is already
-  a known negative against Gemma-4's collapse on llama.cpp, and a flat
+  a known negative against Gemma-4's repetition loop on llama.cpp, and a flat
   token penalty is a poor match for a repeated multi-token tool call.
   `repetition_context_size` of 20 tokens is far shorter than one
   `bash` call, so the default window could not see a repeat even if the

@@ -72,7 +72,13 @@ Benchmark work:
   work; it overrides older lore.
 - `benchmarks/` (root) — the shared tools every run uses:
   `run-humaneval.sh`, `run_codegen_wrapper.py` (patched EvalPlus
-  client), `calibrate.py`, `mem-watch.sh`, `calibration-*.json`.
+  client), `calibrate.py`, `mem-watch.sh`, `calibration-*.json`,
+  `loop-check.py` (repetition-loop detector for a pi session log:
+  distinct-shape ratio in a sliding window, threshold 0.10; catches
+  identical lines, counters, and short cycles), `liveness-watch.sh`
+  (tells a stalled run from a dead server by probing ONE real
+  completion only after the output file stops growing — `/health`
+  stays 200 after the mlx_lm generation thread dies).
 - `tools/sweeps/` — depth-sweep scripts and fast memory watcher.
 - `tools/mac-services.sh` + `tools/README-mac-services.md` — turn background
   login items off before a run and back on after. The script ships with

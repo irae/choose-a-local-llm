@@ -155,7 +155,7 @@ here; the hosted reports show them dimmed, with reasons.
 | Ternary Bonsai-27B | blind | PrismML GGUF fork, thinking high, `pi` harness | **12.5/100** (raw 60.5) | 1/8 libraries — typoed the repo path, self-scoped to chalk; a penalized retry is pending |
 
 Invalid, not scored as model quality: three Gemma-4-12B runs (LM
-Studio MLX newline-flood collapse, zero commits) and the Qwen3.8-27B
+Studio MLX, thinking-on entry, repetition loop, zero commits) and the Qwen3.8-27B
 guided run (three Metal OOM server crashes, zero commits).
 
 Full tables for both Mendel tests are on the

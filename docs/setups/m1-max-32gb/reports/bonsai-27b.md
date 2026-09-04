@@ -59,7 +59,7 @@ mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#3 — Ternary-Bonsai-27B, GGUF⁴, q4, thinking on.** The scored config. Regenerate the bias file with the vendor's `make_kv_bias.sh` if `/tmp` was wiped — see [the benchmarks](../benchmarks/bonsai-27b.md).
+**#3 — Ternary-Bonsai-27B, GGUF⁴, q4, thinking on.** The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus (research run 2, `bonsai-kv-bias-missing.md`). Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/` — see [the benchmarks](../benchmarks/bonsai-27b.md).
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \

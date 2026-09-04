@@ -24,9 +24,18 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling r
   ceilings" below.
 - **The best concurrency story.** Four 256K slots fit with q8_0 KV, in
   16.9 GB (llama).
-- Weak point: on llama it floors at ~16K — the depth belongs to LM
-  Studio. Quality: 0.909/0.872 thinking off; thinking on is pending, and
-  its thinking fails to converge more often than the larger 26B.
+- Weak point: on llama with q8 KV it floors at ~16K; with f16 KV the
+  same server is still at 13 tok/s at 131K (research run 2, re-run
+  pending on this page). Quality: 0.909/0.872 thinking off at 100%
+  completion; thinking on scores 0.622 only because 61 of 164 answers
+  never finished — 99% of the answers it gave pass.
+- **Two LM Studio entries, not one model.** The thinking-off score comes
+  from `gemma-4-12b-it-mlx`, which cannot think at all. The 0.622 score
+  and all three Mendel rows come from `google/gemma-4-12b`, which always
+  thinks, ships Google's pre-fix chat template, and is no longer in the
+  model store. Gemma-4-12B with thinking on is ruled out on MLX and LM
+  Studio for agent work (owner decision, 2026-09-04): its repetition
+  loop is model-level and reproduces on llama-server too.
 
 ## All configs — this model
 
@@ -46,18 +55,18 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); LM Studio ceiling r
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Gemma-4-12B, MLX³.** Thinking is always on with this engine; context is auto-fit (158,464 at wired limit 24000).
+**#1 — Gemma-4-12B, MLX³.** LM Studio entry `google/gemma-4-12b`: thinking on, cannot be turned off; context is auto-fit (158,464 at wired limit 24000). This entry is no longer in the model store. It is the entry behind the 0.622 score (61/164 empty) and all three Mendel rows; its container ships Google's pre-fix chat template (research run 2).
 
 ```bash
 ~/.cache/lm-studio/bin/lms server start --port 8081
 ~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y
 ```
 
-**#2 — Gemma-4-12B, MLX³, thinking off.** Archived score: current engine builds always think, so this config is not reproducible today.
+**#2 — Gemma-4-12B, MLX³, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking OFF by default and the API cannot turn it on (probed 2026-09-04). Reproducible. Never run on Mendel.
 
 ```bash
 ~/.cache/lm-studio/bin/lms server start --port 8081
-~/.cache/lm-studio/bin/lms load google/gemma-4-12b --parallel 4 --gpu max -y
+~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y
 ```
 
 **#3 — Gemma-4-12B, GGUF, MTP q8, thinking off.** pi id `gemma-4-12b`. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep.
@@ -138,8 +147,9 @@ real:
 **Thinking is binary.** Gemma 4 has trained-in reasoning (`<|think|>`),
 toggled by `enable_thinking` — on/off, default off, no graded effort levels.
 
-Quality is unscored; the EvalPlus gate for the LM Studio config is
-pending.
+Quality: both LM Studio entries are scored (see the highlights); the
+GGUF quant has never been scored on its own and carries the MLX score
+by the shared-score rule.
 
 ## Decode speed vs used context (depth sweeps, limit 25000)
 

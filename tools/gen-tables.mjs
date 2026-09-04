@@ -222,11 +222,15 @@ function renderModelConfigs(data, model) {
 
 function renderEvalplusTable(data) {
   const header = [
-    '| model | mode | pass@1 base | pass@1 plus | empty |',
-    '|---|---|--:|--:|--:|',
+    '| model | mode | pass@1 base | pass@1 plus | empty | completion |',
+    '|---|---|--:|--:|--:|--:|',
   ]
+  const completion = (empty) => {
+    const m = /^(\d+)\/(\d+)$/.exec(empty || '')
+    return m ? `${(((m[2] - m[1]) / m[2]) * 100).toFixed(1)}%` : '—'
+  }
   const body = (data.evalplusRuns || []).map(
-    (r) => `| [${r.model}](./${r.slug}.md) | ${r.mode} | ${r.base} | ${r.plus} | ${r.empty} |`,
+    (r) => `| [${r.model}](./${r.slug}.md) | ${r.mode} | ${r.base} | ${r.plus} | ${r.empty} | ${completion(r.empty)} |`,
   )
   return [...header, ...body].join('\n')
 }

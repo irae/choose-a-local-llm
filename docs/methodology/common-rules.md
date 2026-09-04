@@ -27,12 +27,20 @@ the per-test pages; the run loop lives in
    before. llama-server reuses any longest common prefix;
    mlx_lm.server only reuses strict extensions. Verify reuse via llama's
    `.timings.prompt_n` (must be the delta, not the total).
-6. **KV cache policy: 8-bit (q8_0) is the default.** Near-lossless
-   (verified byte-identical outputs vs f16 at temperature 0); the
-   context it unlocks overrules f16's ~1% speed edge. Every published
-   config uses q8 — no exceptions, even trained-window-limited configs.
-   Caveat to measure per model: q8 can lower MTP draft acceptance and
-   decode speed (Gemma-26B js: 81% → 68%). q4_0 is banned for quality —
+6. **KV cache policy: 8-bit (q8_0) is the default, and the KV type is
+   measured per model before a config is published.** q8 was verified
+   byte-identical to f16 at temperature 0 on one model; the context it
+   unlocks is why it is the default. **Its speed cost is
+   model-dependent and can be large.** On Gemma-4-12B (llama-server)
+   q8 decode falls under the floor by 16K used tokens while f16 is
+   3.2x faster there and still usable at 131K
+   (`research/run2/results/gemma12-depth.md`). So a llama-server config
+   runs f16 when a depth sweep shows f16 more than 20% faster at 16K
+   and f16 fits at the published context under the wired limit;
+   otherwise q8. Community KL measurements also report q8 KV costing
+   Gemma-4 models far more quality than Qwen; treat "near-lossless" as
+   per-model until the EvalPlus gate has confirmed it. q8 can also
+   lower MTP draft acceptance (Gemma-26B js: 81% → 68%). q4_0 is banned for quality —
    with one exception: a vendor ships a per-model calibration for it
    (PrismML's Bonsai bias); such a config must pass the
    [EvalPlus gate](./evalplus.md) before serving.
