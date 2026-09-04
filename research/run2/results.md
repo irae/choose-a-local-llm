@@ -30,8 +30,8 @@ are in `results/row-verdicts.md`.
 
 | # | Item | Status | Finding | Detail |
 | --- | --- | --- | --- | --- |
-| T1.1 | Gemma-12B replay on llama-server, arm 1 | done | **The loop does not appear on llama-server.** 75 calls / 60 distinct / longest identical run 2, against the LM Studio arm's 71 / 30 / 37. Zero nudges, zero compactions, three commits, clean tree. | `results/replay-llama.md` |
-| T1.1 | Same replay forced onto the pre-fix template, arm 2 | done | **The pre-fix template loops the model into repetition.** 498 identical thinking lines in a row, 61 minutes, never recovered, zero commits. Arm 1 on the post-fix template never repeated a line twice. The template is the only difference. | `results/replay-llama.md` |
+| T1.1 | Gemma-12B replay on llama-server, five arms | done | **CORRECTED.** Pre-fix template looped 3 of 3; post-fix looped **1 of 2**. The fixed template does NOT prevent the loop — the second control refuted the claim the first control carried. Matches HF discussion 41, which reports the loop at F16 and so model-level. | `results/replay-llama.md` |
+| T1.1 | Pre-fix template arms | done | Both looped: 498 identical thinking lines in one, a two-line cycle in the other. Zero and one commits. | `results/replay-llama.md` |
 | T0.1 | Gemma-4 chat templates | done | **Every local MLX container ships the template Google replaced on 2026-07-15 to fix the thought loop.** The LM Studio container carries the stale jinja file AND the current inline copy; transformers resolves to the stale one. | `results/container-audit.md` |
 | T0.1b | Pre-fix template and OpenAI tool calls | done | The pre-fix template silently renders raw JSON where Gemma expects its own key-value form. The post-fix template refuses that input instead. llama-server deserializes first and escapes it; LM Studio's engine is unverified. | `results/container-audit.md` |
 | T0.2 | Quantized-PLE defect | done | **Does not reproduce.** Our Gemma-4 MLX quants hold no per-layer embedding tensor at all. They do keep `embed_tokens` at 4 bits where the QAT repo protects it at 8. | `results/container-audit.md` |
