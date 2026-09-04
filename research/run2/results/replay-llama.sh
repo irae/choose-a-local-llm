@@ -15,6 +15,9 @@
 #             revision 657684f of 2026-06-03, which is the file every
 #             local chat_template.jinja still ships. It emits nothing
 #             after a tool response. See results/container-audit.md.
+#   short-repeat  the `short` arm again, unchanged, to get a second
+#             observation of the collapse. The template result rests on
+#             one run per arm and that is its weakest point.
 #   short-dry the `short` arm again, with DRY sampling ON at a window
 #             long enough to see a repeated line. `short` collapsed —
 #             498 identical thinking lines in a row — so this is the
@@ -67,7 +70,7 @@ SERVER_LOG="$OUT/llama-server.log"
 
 check_arm() {
     case "$ARM" in
-        embedded|short|short-dry) ;;
+        embedded|short|short-repeat|short-dry) ;;
         *)
             echo "abort: arm must be 'embedded' or 'short'" >&2
             exit 1

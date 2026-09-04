@@ -59,15 +59,39 @@ on js**. The published run must have had far higher acceptance on py to
 reach 45.0 from 22.3, because 45.0 is 2.02 times the baseline while our
 py reaches only 1.44 times it.
 
-That is consistent and it is not proved. Two things would settle it, and
-neither was run here:
+**Measurement 1 ran, and it confirms the hypothesis.**
+`mtp-baseline.sh`, same command with `--spec-type none`, f16 KV, context
+262144:
 
-1. Measure this build with `--spec-type none` and compare against the
-   published 22.3 no-MTP baseline. If the baseline also matches, the
-   whole difference is drafter acceptance.
-2. Record acceptance per prompt in any future speed row. The published
-   table does not carry it, which is why this took a re-measurement to
-   notice.
+| | published no-MTP | measured no-MTP |
+| --- | --- | --- |
+| py | 22.3 | **26.15** |
+| js | 22.3 | **26.17** |
+
+**Without the drafter this machine is 17 percent FASTER than the
+published baseline.** So the machine, the build and the wired limit are
+all cleared: none of them can explain a shortfall, because without the
+drafter there is no shortfall at all.
+
+The whole difference is what the drafter adds:
+
+| | published speed-up | measured speed-up |
+| --- | --- | --- |
+| py | 45.0 / 22.3 = **2.02x** | 32.0 / 26.2 = **1.22x** |
+| js | 31.3 / 22.3 = 1.40x | 32.8 / 26.2 = 1.25x |
+
+Our drafter gives 1.22-1.25x where the published run recorded 1.40-2.02x,
+and our measured acceptance is 0.58-0.61. The py figure of 45.0 needs an
+acceptance far above that.
+
+So all three original candidates are eliminated. The KV type is worth
+4.6 tok/s and is not it; the build is identical; and the machine is
+faster than the published baseline. **What differs is the MTP drafter's
+effectiveness, and nothing in the published table records it.**
+
+Still not settled: WHY acceptance differs. The draft model file, its
+revision, and the `--spec-draft-n-max` value are all candidates and none
+was varied here.
 
 ## Proposal, replacing the earlier one
 
