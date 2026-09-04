@@ -115,15 +115,30 @@ tool response.**
 
 Measured with `measure-collapse.py` on both arms' thinking output.
 
+Both arms ran the full 150 minutes and ended on `wall_clock`.
+
 | | Arm 1, post-fix template | Arm 2, pre-fix template |
 | --- | --- | --- |
-| thinking lines | 351, 305 distinct | 514, 294 distinct |
-| **longest identical consecutive line run** | **1** | **173** |
-| most repeated line | ` ```javascript `, 10 times | `Actually, I'll just use \`write\` for this file as well.`, **176 times** |
-| time in the collapse | — | 22 minutes and counting, 06:44Z to 07:06Z |
+| **longest identical consecutive thinking line** | **1** | **498** |
+| most repeated line | ` ```javascript `, 10 times | `Actually, I'll just use \`write\` for this file as well.` |
+| time in the collapse | none | **61 minutes**, 06:44Z to the 07:45Z wall |
+| tool calls | 75 | 40 |
+| distinct calls | 60 | 37 |
+| thinking output | 18659 chars | **47231 chars** |
+| commits produced | **3** | **0** |
+| working tree at the end | clean | 7 files uncommitted |
+| nudges / respawns / compactions | 0 / 0 / 0 | 0 / 0 / 0 |
+| prompt-cache share | 97.7% | 96.4% |
 
 Arm 1 never repeated a single thinking line twice in a row across 150
-minutes. Arm 2 repeated one line 173 times in a row.
+minutes. Arm 2 repeated one line **498 times in a row** and never
+recovered: the collapse began at 06:44Z and ran to the wall.
+
+**It cost the run its output.** Arm 2 spent 41 percent of its wall clock
+in the collapse, emitted two and a half times arm 1's thinking text, made
+half the tool calls, and committed nothing. Arm 1 committed three
+dependency removals and left a clean tree. Neither arm ticked a box in
+`TASKS.md`.
 
 Same weights, same backend, same build, same task, same prompt, same
 harness, same thinking level, same quiet machine, same wired limit. The
@@ -165,3 +180,31 @@ arm is n=1.
 **Does not establish** a fix for the published rows either. Replacing
 the template changes the configuration those rows were measured on.
 That is the owner's decision, written up in `container-audit.md`.
+
+## Arm 2 closing note
+
+The arm ended at 07:45:47Z on `wall_clock`, and its own cleanup ran
+correctly this time: the server was stopped and the evidence archived by
+the script, because the script was not edited while it was running.
+
+Evidence: `~/.local/share/choose-a-local-llm/evidence/run2-replay-short/`.
+
+## The three-way picture
+
+| | LM Studio MLX, pre-fix template | llama-server, pre-fix template | llama-server, post-fix template |
+| --- | --- | --- | --- |
+| repetition | 37 identical tool calls in a row | 498 identical thinking lines in a row | none |
+| where it showed | tool calls | thought channel | — |
+| recovered | no | no | not applicable |
+| commits | 0 | 0 | 3 |
+
+Read the row backwards. The only configuration that did not collapse is
+the one running the template Google shipped after 2026-07-15. The two
+that collapsed both ran the pre-fix template, on two different backends,
+and they collapsed on different surfaces.
+
+That is consistent with one cause and two symptoms. It is not proof of
+one cause: each cell is a single run, and the LM Studio column also
+differs in engine and in argument handling. What it does say is that the
+template is no longer a hypothesis worth deferring — it is the only
+variable that has been isolated and shown to flip the outcome.
