@@ -15,9 +15,16 @@
 #             revision 657684f of 2026-06-03, which is the file every
 #             local chat_template.jinja still ships. It emits nothing
 #             after a tool response. See results/container-audit.md.
+#   short-dry the `short` arm again, with DRY sampling ON at a window
+#             long enough to see a repeated line. `short` collapsed —
+#             498 identical thinking lines in a row — so this is the
+#             first configuration on this machine where a repetition
+#             defence has a real repetition to defend against.
 #
-# So the pair is a before-and-after of Google's 2026-07-15 chat-template
-# fix, on one backend, with everything else held fixed.
+# `embedded` against `short` is a before-and-after of Google's
+# 2026-07-15 chat-template fix, on one backend, everything else fixed.
+# `short` against `short-dry` then asks whether a sampler can rescue the
+# broken one.
 #
 # What it changes on the Mac: nothing outside /tmp, the evidence
 # directory, and a fresh mendel worktree it creates itself. It does NOT
@@ -60,13 +67,13 @@ SERVER_LOG="$OUT/llama-server.log"
 
 check_arm() {
     case "$ARM" in
-        embedded|short) ;;
+        embedded|short|short-dry) ;;
         *)
             echo "abort: arm must be 'embedded' or 'short'" >&2
             exit 1
             ;;
     esac
-    if [ "$ARM" = "short" ] && [ ! -f "$SHORT_TEMPLATE" ]; then
+    if [ "$ARM" != "embedded" ] && [ ! -f "$SHORT_TEMPLATE" ]; then
         echo "abort: $SHORT_TEMPLATE is missing; run the container audit first" >&2
         exit 1
     fi
@@ -91,8 +98,15 @@ make_directories() {
 
 start_server() {
     local template_flag=""
-    if [ "$ARM" = "short" ]; then
+    if [ "$ARM" != "embedded" ]; then
         template_flag="--chat-template-file $SHORT_TEMPLATE"
+    fi
+
+    # Defaults are multiplier 0.0, which is off, and a 64-token window.
+    # The window has to span several copies of whatever repeats.
+    local dry_flags=""
+    if [ "$ARM" = "short-dry" ]; then
+        dry_flags="--dry-multiplier 0.8 --dry-base 1.75 --dry-allowed-length 2 --dry-penalty-last-n 2048"
     fi
 
     llama-server \
@@ -109,6 +123,7 @@ start_server() {
         --cache-type-v q8_0 \
         --jinja \
         $template_flag \
+        $dry_flags \
         --offline \
         --port "$PORT" \
         > "$SERVER_LOG" 2>&1 &

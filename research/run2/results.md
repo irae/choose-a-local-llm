@@ -22,6 +22,7 @@ started, `iogpu.wired_limit_mb=24000`, zero swap for the whole session.
 | T2.1b | IOAccelerator as a memory meter | done | **Useless for llama-server too**, closing a run 1 question. It read 9 MB while the server held 13.6 GB wired. | `results/context-ramp.md` |
 | T2.2 | Qwen3.8 window arithmetic | proposed | `maxTokens` 16384 and `contextWindow` 26624 cannot both hold past a 10240-token prompt. Diff proposes 8192. | `results/config-proposals.md` |
 | T2.2b | Qwen3.8 ceiling re-probe | running | Started automatically at 07:47Z when arm 2 released the GPU. | `results/qwen38-ceiling.sh` |
+| T2.3b | DRY against the collapse, arm 3 | queued | Chained last. The first configuration here with a reproducible repetition for a repetition defence to act on. | `results/replay-llama.sh short-dry` |
 | P3 | KV type speed A/B | queued | Chained after the ceiling probe. Settles one of three candidate causes of the 27.3 against 45.0 tok/s gap. | `results/kv-speed.sh` |
 | — | Repetition collapse detector | built | Finds the shape the newline check and the tool-call counter both miss: well-formed prose repeated inside the thought channel. Exits non-zero at five identical lines. | `results/measure-collapse.py` |
 | T2.3 | Sampler defaults | done | DRY and XTC exist on this build; every repetition defence is off; `repeat_last_n` is 64 tokens, shorter than one tool call. So the known negative for `repeat_penalty` never tested what it aimed at. | `results/sampler-defaults.md` |
@@ -37,8 +38,8 @@ started, `iogpu.wired_limit_mb=24000`, zero swap for the whole session.
 | Item | Why |
 | --- | --- |
 | The LM Studio engine probe | Needs a Gemma-12B loaded in LM Studio. Run 1's kernel panic came from that model's load and unload cycles with a client connecting, so it is not run unattended. Five minutes with the owner present. First item next session. |
-| DRY against a real loop (T2.3 part 2) | DRY is llama-server only, and llama-server does not loop. Nothing to act on. |
-| Firing the loop stop (T2.4 part 2) | Same dependency. |
+| ~~DRY against a real loop (T2.3 part 2)~~ | **UNBLOCKED by arm 2.** llama-server does collapse, on the pre-fix template, and DRY exists there. Arm 3 (`short-dry`) is queued: arm 2's exact configuration with `--dry-multiplier 0.8` and a 2048-token window, against the 64-token default that could never see a repeat. |
+| Firing the loop stop (T2.4 part 2) | Still blocked, but for a narrower reason. The collapse is inside the thought channel, not in tool calls, and `loop-stop.ts` counts identical tool calls. It would not fire on arm 2. A thinking-channel stop is a different design. |
 | Re-quantization A/B (T3.3) | Needs original weights, which is a large download. Owner's call. |
 
 ## Changes proposed, none applied
