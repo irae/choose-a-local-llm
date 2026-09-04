@@ -2,8 +2,10 @@
 """
 Applies the two compaction corrections found by the goal-2 label audit.
 
-Run it from a mendel worktree, not from this repo. It edits the benchmark
-result files in place, so the owner reviews and commits there.
+It edits the benchmark result files in place. Check the diff afterwards:
+only the two compaction values should move. ensure_ascii=False matters —
+without it every non-ASCII character in the file is re-escaped and the
+diff becomes unreviewable.
 
     python3 apply-compaction-fix.py --check    # show what would change
     python3 apply-compaction-fix.py --apply    # write the change
@@ -105,7 +107,7 @@ def main():
             telemetry['compactions'] = c['should_be']
             row['telemetry'] = telemetry
             with open(path, 'w') as handle:
-                json.dump(data, handle, indent=2)
+                json.dump(data, handle, indent=2, ensure_ascii=False)
                 handle.write('\n')
 
     if problems:

@@ -1,8 +1,8 @@
 # Goal 3 — the tool-call rules trial
 
-Status: baseline measured, models chosen, trial NOT yet run. The A/B
-needs the machine and the cold-start sequence. Everything below comes
-from the session logs already on disk.
+Status: CLOSED 2026-09-03 by owner decision. The A/B was never run and
+will not be. See "Outcome" at the end. What follows is the measurement
+and reasoning that led there.
 
 ## The runbook's premise for model 1 does not hold
 
@@ -116,3 +116,114 @@ not worth the machine time.
 1. Keep `bonsai-prism` as mandated, swap it for `gemma-4-12b`, or run
    all three.
 2. Confirm which Mendel dependency is the single handed task.
+
+
+## The third rule is redundant — CUT IT
+
+The draft's third paragraph told the model to consult pi's offline
+documentation. Measured 2026-09-03: **pi already does this, better.**
+
+### Evidence 1 — the docs path is in the system prompt
+
+Asked directly, `prism-ml/Ternary-Bonsai-27B-mlx-2bit` quoted this back
+from its own system prompt:
+
+> Pi documentation (read only when the user asks about pi itself, its
+> SDK, extensions, themes, skills, prompt templates, TUI):
+> - Main documentation: `<abs path>/README.md`
+> - Additional docs: `<abs path>/docs`
+> - Examples: `<abs path>/examples`
+> - When asked about: extensions (docs/extensions.md), themes
+>   (docs/themes.md), skills (docs/skills.md), ... environment
+>   variables (docs/environment-variables.md)
+
+Absolute paths, already resolved, plus a topic-to-file map. That is
+strictly more than the draft paragraph offered.
+
+### Evidence 2 — the probe cannot discriminate, and shows why
+
+The docs probe asked for the default of `PI_TUI_ESC_TIMEOUT`, a value
+that exists only in the docs. Two arms: bare, and with the rule.
+
+| Model | bare | with rule | calls, bare arm |
+| --- | --- | --- | --- |
+| prism-ml/Ternary-Bonsai-27B-mlx-2bit | 2/2 correct | 2/2 correct | 1 |
+| deepseek-v4-flash-0731 | 2/2 correct | 2/2 correct | 1-2 |
+
+In the BARE arm the Bonsai went straight to the absolute path of
+`environment-variables.md` in a single call. It did not list the
+directory or search. The system prompt's topic map took it there.
+
+### Evidence 3 — the tool half was already redundant
+
+pi's system prompt also carries `.activeTools` and `.toolSnippets`,
+"one-line descriptions for each tool" (`docs/extensions.md:543`), and
+the API sends the full tool schemas separately. A model cannot learn
+anything about its tools from documentation that does not describe
+them, when it already holds the schemas.
+
+### Recommendation
+
+**Cut the paragraph.** Both halves are redundant: the tool half against
+the schemas in context, the docs half against pi's own system prompt.
+Shipping it would add tokens to every turn of every run and buy nothing
+measurable.
+
+The owner earlier chose to reframe it to harness behaviour rather than
+cut it. That choice was made before this evidence. The reframed version
+is redundant too, because the system prompt's topic map already covers
+exactly those subjects — sessions, compaction, skills, settings.
+
+What ships is then the two behavioural rules only: do not repeat a
+failed call unchanged, and prefer small edits over one large edit with
+embedded quotes. Those target observed failures and nothing in pi's
+prompt already says them.
+
+### What this cost, and the lesson
+
+Three redesigns of the same paragraph — vague path, resolved path,
+worked example — before checking whether the harness already did the
+job. The check was one question to a running model and took 30 seconds.
+Ask what the harness already sends before writing a rule that tells a
+model something.
+
+
+## Outcome — closed without running the A/B
+
+The owner decided on 2026-09-03 that `agents-global.md` stays frozen at
+v1.0, because changing it invalidates every scored row. That closes the
+prompt layer entirely, so there is nothing for an A/B to inform. The
+trial is closed without being run.
+
+This is the right call on the evidence. Of the draft's three paragraphs,
+one was already measured as redundant — pi's own system prompt supplies
+the docs path and a topic map, and the tool schemas are in context. The
+remaining two are plausible but unproven, and proving them would cost
+machine time on a change that cannot ship.
+
+**What the work produced anyway**, and what survives the closure:
+
+- The runbook's premise for model 1 was wrong. `bonsai-prism` has no
+  loop; the 30-call typo'd-path loop belongs to
+  `prism-ml/Ternary-Bonsai-27B-mlx-2bit`, a different row on a different
+  runtime. Anyone citing that loop should cite the MLX row.
+- The worst tool-call record is `google/gemma-4-12b` at 70.5% errors,
+  with one invalid command repeated 72 times consecutively. The two
+  models the runbook proposed as candidates are among the cleanest.
+- pi hands the model its tool schemas and its documentation index, so
+  prompt rules telling a model either of those things are wasted tokens.
+- A kernel panic in `IOGPUFamily`, found while setting this up, which
+  matters far beyond this goal.
+
+**Where the problem goes.** The loops are real and now unaddressed at
+the prompt layer, so the question moves to the sampler and the harness:
+`research/run2/AGENT.md` section I, "Stopping loops without touching the
+prompt". It carries the measurements above as its motivation, notes that
+`repeat_penalty` is already a known negative for the Gemma case, and
+flags the design question that matters most — a harness that rescues a
+looping model changes what the benchmark reports, so it may belong as a
+stop rather than a fix.
+
+The tooling built here stays usable: `replay-probe.sh` and
+`count-replay.py` measure loop length and distinct-call fraction from
+any pi session, which is how section I would evaluate a sampler setting.

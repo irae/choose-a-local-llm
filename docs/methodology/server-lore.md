@@ -53,6 +53,39 @@ sweeps. Full forensic record:
   explicitly with `lms load` and verify with `lms ps` before starting.
   Loading while another instance is resident creates a duplicate
   (`:2`) instance — unload first.
+- **A lost run may be a kernel panic, not an OOM.** This Mac panicked
+  in `IOGPUFamily` on 2026-09-03: `"completeMemory() prepare count
+  underflow" @IOGPUMemory.cpp:492`, panicking task `node`. The panic
+  log's own accounting showed memory was FINE (compressor at 3%, swap
+  OK), so it was not memory exhaustion — it is a reference-counting
+  fault in Apple's GPU memory manager, reachable from ordinary GPU
+  work. A panic takes the whole machine, so it leaves the same evidence
+  as a silent death: no server log, no session log, no row. Before
+  calling any lost run an OOM, check
+  `ls -t /Library/Logs/DiagnosticReports/*.panic | head`. Suspected
+  trigger, unproven: repeated load/unload churn in LM Studio with a
+  client connecting between cycles. Mitigation is already the rule —
+  load once per session, quit the app rather than cycling it.
+- **LM Studio cannot serve without Electron, and any `lms` command
+  revives it.** `LM Studio --run-as-service` is the headless mode: no
+  menubar, but it still runs the Electron Framework, an Electron GPU
+  helper, and `~/.cache/lm-studio/.internal/utils/node`. The engine is
+  Electron-hosted and `lms server start` only toggles the HTTP listener
+  inside it. So quitting the app does NOT keep it gone — a later
+  `lms ps` prints "Waking up LM Studio service..." and brings the whole
+  stack back, GPU helper included. After quitting, verify with
+  `pgrep -fl "LM Studio"`, never with `lms`. This matters because the
+  2026-09-03 kernel panic named `node` with 40 threads, which fits that
+  internal node helper.
+- **`lms load` does not start the HTTP server, and `lms ps` will not
+  tell you.** A loaded model shows `IDLE` with its context and parallel
+  slots in `lms ps` whether or not anything can reach it. Every client
+  request then fails with a bare `Connection error.` — no hint that the
+  server is the problem. Check `lms server status` and start it with
+  `lms server start`. Verify the endpoint itself before a run:
+  `curl -s http://127.0.0.1:1234/v1/models`. Two commands, because the
+  two states are independent: the model is loaded, and the server is
+  listening.
 - **`/v1/completions` (raw prompt, no chat) is broken on this build.**
   It returns garbage text and streams in one sub-5 ms burst; any tok/s
   computed from it is nonsense. Use `/v1/chat/completions`, growing a

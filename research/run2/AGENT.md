@@ -97,6 +97,49 @@ mishandles stop sequences. Alternatives, ranked by the researcher:
 If nothing works, propose marking the Gemma-12B x LM Studio x agent
 combination unsupported (feeds run 1 goal 2).
 
+**Run 1 findings that bear on this section (all committed to master).**
+Run 1 hit LM Studio hard while setting up its goal-3 trial and stopped,
+handing the parameter question here. What it established:
+
+- **The Mac kernel-panicked, and it was not an OOM.**
+  `"completeMemory() prepare count underflow" @IOGPUMemory.cpp:492`,
+  kext `com.apple.iokit.IOGPUFamily`, panicking task `node`. The panic
+  log's own accounting shows memory was fine: compressor at 3%, swap
+  OK. Context was repeated LM Studio load/unload of
+  `google/gemma-4-12b` with a client connecting between cycles. Not
+  reproduced on purpose. See `research/run1/results/backend-diagnosis.md`
+  and `docs/methodology/server-lore.md`.
+- **LM Studio cannot serve without Electron.** `--run-as-service` is
+  the headless mode and still runs the Electron Framework, an Electron
+  GPU helper, and `~/.cache/lm-studio/.internal/utils/node`. The
+  panicking task was `node` with 40 threads, which fits that internal
+  helper. This matters for alternative 6, comparing LM Studio's MLX
+  wrapper against upstream `mlx_lm.server`: the wrapper is not a thin
+  layer, it is a separate process tree.
+- **Any `lms` command revives the whole stack.** Quitting the app is
+  not enough; a later `lms ps` prints a waking-up message and restarts
+  Electron and the GPU helper. Verify with `pgrep -fl "LM Studio"`,
+  never with `lms`. A status check during a run can put a second
+  process on the GPU.
+- **`lms load` does not start the HTTP server, and `lms ps` does not
+  reveal it.** A loaded model reads `IDLE` with context and slots while
+  nothing can reach it; clients get a bare `Connection error.` Check
+  `lms server status` and curl `/v1/models`.
+- **Gemma-12B's tool-call record, from the session logs.** 117 errors
+  in 166 calls across three runs, 70.5%, the worst of any local model.
+  Its low-guided run made 130 calls with only 30 distinct, including
+  one invalid command (`ls -F_r`) repeated 72 times consecutively and
+  88 times in total. That is the same failure family as the newline
+  flood: the model emits a broken thing and then repeats it. See
+  `research/run1/results/tool-call-trial.md`.
+- **The MLX Bonsai on upstream `mlx_lm.server` was clean** on the same
+  short probes run minutes later: 4/4 correct, one tool call each, no
+  swap growth, no crash. That is a data point for alternative 6 —
+  upstream MLX behaved where the LM Studio path did not.
+
+Run 1 owns none of this section. It is blocked here and will not retry
+the Gemma-12B x LM Studio combination.
+
 ### E. mlx_lm.server dead thread and OOM
 
 Upstream: confirmed open bug — /health never checks the generation
@@ -152,6 +195,84 @@ same active class as Qwen3.6), Poolside Laguna XS 2.1 (33.4B/3B MoE —
 check llama.cpp support), Mistral Devstral Small 2 (24B dense, leaves
 context headroom). Downloads only after the owner approves the
 shortlist.
+
+### I. Stopping loops without touching the prompt
+
+New item, filed by run 1 on 2026-09-03. Research only, not for this
+run's execution unless it turns out cheap.
+
+**Why it is here.** Run 1 measured what a prompt rule could do about
+tool-call loops and the answer is: we cannot use one. `agents-global.md`
+is frozen at v1.0 because changing it invalidates every scored row, and
+the owner has decided it stays frozen. So the prompt layer is closed.
+The failures are real and unaddressed:
+
+- `google/gemma-4-12b` repeated one invalid command (`ls -F_r`) 72 times
+  in a row, 88 times in total, out of 130 tool calls with only 30
+  distinct.
+- `prism-ml/Ternary-Bonsai-27B-mlx-2bit` repeated the same `ls` 30 times
+  in a row on a path it had typed wrong itself.
+- Gemma-4's model-level repetition collapse (see section D) is the same
+  shape one layer down.
+
+Measurements in `research/run1/results/tool-call-trial.md`.
+
+**The question.** If the prompt cannot be changed, what else stops a
+loop? Two layers are open: the sampler, and the harness.
+
+**Sampler side, starting points.** Note that section D already records
+`repeat_penalty` failing against Gemma-4's collapse, so treat that as a
+known negative and look wider:
+
+- `repeat_penalty` and `repeat_last_n` — llama.cpp only, and already
+  reported not to help the Gemma case.
+- **ANSWERED 2026-09-03 by run 1: `mlx_lm.server` has the penalties
+  too, and they are per-request.** Reading `server.py` in mlx-lm
+  0.31.3, the request body accepts `repetition_penalty`,
+  `presence_penalty`, `frequency_penalty`, each with its own
+  `*_context_size` window, plus `logit_bias`. **All three penalties
+  default to 0.0, which is off**, and `repetition_context_size`
+  defaults to 20 tokens.
+  Three things follow. MLX-served models are not defenceless, so that
+  gap does not exist. Nothing is currently defending them either, since
+  the defaults are off. And because the values are read from the
+  request body rather than server flags, a harness can set them per
+  request without restarting a server mid-run — which was the practical
+  blocker this item worried about.
+  What is still unknown: whether they work. `repeat_penalty` is already
+  a known negative against Gemma-4's collapse on llama.cpp, and a flat
+  token penalty is a poor match for a repeated multi-token tool call.
+  `repetition_context_size` of 20 tokens is far shorter than one
+  `bash` call, so the default window could not see a repeat even if the
+  penalty were on. Test with a window sized to several calls.
+- `frequency_penalty` and `presence_penalty` — these ride the
+  OpenAI-compatible API, so they may reach BOTH backends. Check whether
+  llama-server and `mlx_lm.server` honour them or silently drop them.
+  Silently dropped parameters are this project's recurring trap.
+- DRY and XTC samplers in llama.cpp — DRY targets repeated sequences
+  specifically, which is closer to the failure than a flat penalty.
+- Whether any of these can be set per-request by the harness rather
+  than at server start, since a benchmark cannot restart a server
+  mid-run.
+
+**Harness side, starting points.** pi supports extensions
+(`docs/extensions.md`) with `tool_call` and `tool_result` events, so a
+loop detector is implementable without touching any prompt:
+
+- Count identical consecutive tool calls; after N, inject a tool result
+  that says so rather than the same error again.
+- The existing telemetry already computes the signal — distinct calls
+  as a fraction of total calls — so the detection rule is known to work
+  offline. The question is only whether it can act in time.
+- Decide whether a harness that intervenes is still measuring the model.
+  This is the important one: a detector that rescues a looping model
+  changes what the benchmark reports. It may belong in the runner as a
+  safety stop that ENDS the run, rather than a fix that continues it.
+
+**What would make this shippable.** A defence that needs no prompt
+change, works on both backends or is honestly documented as
+backend-specific, and either does not alter what is measured or is
+declared loudly where it does.
 
 ## Deliverables
 

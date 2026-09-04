@@ -33,7 +33,24 @@ and the methodology pages the runbook points to.
    and `cd`. A research or planning kit says `EnterWorktree` with
    `path` instead, because that work is interactive and the owner's
    HUD reads the session directory. See `AGENTS.md`, standing rules.
-3. State the execution rules the runner must not relearn: local run
+3. Require the run to record its own evidence, and say where.
+   - **Context per compaction cycle.** `peak_context` claims to be the
+     maximum across all cycles, and today that cannot be checked: the
+     session log records that a compaction happened but not the context
+     size at each one. Have the run log the context reading at every
+     cycle, so the maximum can be recomputed instead of trusted.
+   - **Session logs must leave the scratch directory.** Mendel run 7
+     produced 17 local rows and only 8 surviving session logs. The rest
+     lived under a gitignored `scratchpad/` and went away with their
+     worktrees, so those rows cannot be audited, defended or reproduced.
+     End every run by archiving its evidence:
+     `tools/archive-evidence.sh <runs-dir> <run-slug>`, which copies to
+     `~/.local/share/choose-a-local-llm/evidence/`.
+   - **A split turn is not a compaction.** pi writes a `compaction`
+     record for both. The split turn carries a summary beginning
+     `No prior history`. Counting it inflates the number; it did, twice,
+     in run 7.
+4. State the execution rules the runner must not relearn: local run
    branch in a fresh sibling worktree (the main worktree stays with the
    coordinator), no bare `git stash` — named stashes only, applied by
    name (see `AGENTS.md` standing rules), scoring in a subagent on the
@@ -44,19 +61,19 @@ and the methodology pages the runbook points to.
    one model on the GPU at a time, port, heartbeat cadence, the scoped
    memory watcher on every run, commit as results land, never push a
    run branch, never publish.
-4. Write the blocks in priority order. Each block gives: the exact
+5. Write the blocks in priority order. Each block gives: the exact
    serving command, the exact run command (with every env var), where
    results land, what "done" means, and what to update when it is done
    (tables, `results.md`, `state.md`, commit).
-5. Make every condition executable. "If promising" is a coordinator
+6. Make every condition executable. "If promising" is a coordinator
    judgment — either resolve it while planning, or spell out the test
    the runner applies and what to do on each outcome.
-6. Bake in the failure paths so the GPU never sits idle: what to check
+7. Bake in the failure paths so the GPU never sits idle: what to check
    when output stops growing (server log first — see
    `docs/methodology/server-lore.md`), how to resume each block, and
    the order to start the next block the moment one ends. No approval
    gates.
-7. Close the loop: when the run ends, the runner updates `state.md`
+8. Close the loop: when the run ends, the runner updates `state.md`
    with a clean handing-over section, and the coordinator adds the
    run's findings to `benchmarks/INDEX.md`.
 

@@ -163,3 +163,96 @@ Machine state: desktop widgets off. `iogpu.wired_limit_mb=24000`, which
 resets on the next reboot. 863 MB of swap in use from the probe, which
 will clear on its own or on reboot. `tools/mac-quiet.sh` has never been
 run. Nothing else changed.
+
+
+## Session 1, fourth pass — corrections applied, evidence given a home
+
+Owner rulings applied.
+
+- The two compaction corrections are DONE, not prepared. Applied to the
+  mendel repo, report regenerated, rebased over four concurrent commits
+  and pushed (`ce3a693..2cdb7ba`). The diff is two lines. First attempt
+  reformatted both files because `json.dump` escapes non-ASCII by
+  default; reverted and redone with `ensure_ascii=False`.
+- Session logs now have a home outside any gitignored scratch directory:
+  `tools/archive-evidence.sh`, storing under
+  `~/.local/share/choose-a-local-llm/evidence/`. Archived what survives
+  of Mendel run 7: 76 files of run output, plus 3 pi transcripts. Only
+  three `.pi-agent-*` directories still exist, which bounds the loss.
+- NOT the cache directory. A cache is defined as safe to delete and this
+  evidence is not; the XDG category for user data that must persist is
+  the data directory. Keep `~/.cache/choose-a-local-llm/` for things
+  that can be rebuilt.
+- `benchmarks/PLANNING.md` step 3 is new and carries three requirements
+  into every future run kit: log context at each compaction cycle so
+  `peak_context` can be recomputed rather than trusted, archive evidence
+  before the run closes, and do not count a split turn as a compaction.
+
+### For the planner to review
+
+`peak_context` remains unproven for every existing row. The audit could
+only show it is CONSISTENT with being a maximum, because the session log
+records that a compaction happened and not the context size at each one.
+PLANNING.md now asks new runs to log it. Someone should decide whether
+the existing rows carry a caveat, or whether the claim is dropped until
+a run produces the evidence.
+
+
+## Handing over — 2026-09-03, end of session
+
+### Goals
+
+- **Goal 0 CLOSED.** No idle baseline exists; the cold-start sequence in
+  `docs/methodology/checklist.md` step 4 replaces the threshold gate.
+- **Goal 1 PARTIAL.** Items 2 and 4 answered, item 3 answered, item 1
+  (H4) not run — see below.
+- **Goal 2 DONE.** Two compaction counts corrected and pushed to the
+  mendel repo. No new thinking-level mislabels. `peak_context` cannot be
+  proved from the logs and is flagged for the planner.
+- **Goal 3 CLOSED** by owner decision: `agents-global.md` stays frozen,
+  so the A/B has nothing to inform. Loop work moved to
+  `research/run2/AGENT.md` item I.
+
+### Running when this was written
+
+A full-length replay of the failing `google-gemma-4-12b-low-guided` run,
+on branch `repro-gemma-4-12b-low-guided-issue-13`, worktree
+`../mendel-bench-repro-gemma-4-12b-low-guided`, evidence in
+`~/.local/share/choose-a-local-llm/evidence/repro-gemma-4-12b-low-guided-full/`.
+Five-hour cap. It answers one question: does the 72-call loop appear at
+all when the machine is quiet.
+
+**Until it does, every "no loop" number in this run is uncalibrated.**
+Nothing here has produced a loop, so no negative result has a known
+sensitivity. That caveat is attached wherever those numbers appear.
+
+### Approved and not yet run
+
+Goal 1 item 1, the H4 check. After the replay: load a large model on the
+vetted `mlx_lm.server` Bonsai command purely to kill it, then poll
+`vm_stat` free and `vmmap --summary <pid>` IOAccelerator side by side
+every few seconds. The question is whether free memory reports recovery
+before the GPU accounting does, and by how long. If it does, the pre-run
+check has been reading the wrong meter.
+
+### Machine state left behind
+
+- Desktop widgets OFF (`StandardHideWidgets = 1`). Restore command in
+  `results/restore.md`.
+- `iogpu.wired_limit_mb=24000`, which resets on the next reboot.
+- `tools/mac-quiet.sh` has never been run; no login item was disabled.
+- LM Studio may be resident: it revives whenever any `lms` command runs.
+- Two extra worktrees to remove when done:
+  `../mendel-bench-repro-gemma-4-12b-low-guided` and this one.
+
+### For the planner
+
+- `peak_context` is unproven for every existing row. `benchmarks/PLANNING.md`
+  step 3 now asks new runs to log context per compaction cycle. Someone
+  must decide whether existing rows carry a caveat or drop the claim.
+- The three Gemma-12B rows may be a ceiling we set, not the model.
+  Evidence is in `results/invalid-runs.md`. That is an acceptance
+  question, not a scoring one.
+- A context ramp with the MTP drafter enabled would settle item 4, and a
+  second ramp without `-ngl 999` would show whether automatic fitting
+  degrades instead of failing. Both are benchmark measurements.
