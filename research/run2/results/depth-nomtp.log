@@ -1,0 +1,5 @@
+depth_tokens	decode_toks	pp_delta	step_seconds
+4115	14.15	4116	20
+8235	10.64	4057	22
+16411	7.12	8113	45
+stop: below 8 tok/s at depth 16411
