@@ -6,11 +6,11 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 
 - **Best quality:** Qwen3.8-27B on MLX — 0.982 / 0.939 EvalPlus. Send hard
   problems here.
-- **Best depth:** Gemma-12B on the LM Studio engine — 29.29 tok/s at 65,094
-  used tokens, in 8.8 GB, before memory compression/swap onset (between 65K
-  and 74K). Context length cannot be pinned on this model; LM Studio's
-  auto-fit always gives 158,464 at the current wired limit — a loader
-  estimate, not the model's trained max of 262,144.
+- **Best depth:** Gemma-12B on llama-server with f16 KV and no drafter —
+  24.64 tok/s at 4K and still 8.86 at 245K, so it reaches the model's own
+  262,144 window above the floor, in 13.9 GB. The LM Studio engine is
+  faster at every depth it survives (34.19 at 4K, 23.23 at 131K) but stops
+  on memory, and it loops in multi-turn tool work.
 - **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, still 12.8 at
   70K (ceiling), in 20.0 GB.
 - **Best big window, and the best all-round config:** Qwen3.6-35B on llama —
@@ -46,8 +46,9 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->
 
-¹ Whichever limit hits first: the max memory a config fits in, or the max
-context that stays usable — usable meaning at or above the 8 tok/s floor.
+¹ Whichever limit hits first: the max memory a config fits in, the max
+context that stays usable — usable meaning at or above the 8 tok/s floor —
+or the model's own trained window, when neither of the other two arrives.
 "tok/s (shallow → deep)" is that same decode speed, near an empty context
 then at max ctx.
 
@@ -89,8 +90,10 @@ Compaction thresholds come from the floor table below, not from the window.
 ## Decode speed vs used context — the 8 tok/s usability floor
 
 Measured at wired limit 24000. All MLX ceiling rows (Gemma-26B, Qwen3.6-35B,
-Bonsai, Qwen3.8) are slow-creep re-tests (2026-08-29); llama rows are
-speed-floored, not memory-gated, so the fast 2026-08-28 sweep still applies.
+Bonsai, Qwen3.8) are slow-creep re-tests (2026-08-29); the three Gemma-12B rows
+are slow-creep sweeps of 2026-09-03 and 2026-09-04; the remaining llama rows
+are speed-floored, not memory-gated, so the fast 2026-08-28 sweep still
+applies.
 
 | model / runtime | tok/s @ 4K | @ 16K | @ 32-33K | @ 49K | @ 74-90K | capped by | EvalPlus (base/plus) |
 |---|--:|--:|--:|--:|--:|---|--:|
@@ -102,17 +105,20 @@ speed-floored, not memory-gated, so the fast 2026-08-28 sweep still applies.
 | Gemma-26B llama (q8, MTP) | 23.5 | 11.2 | | | | speed — under 8 tok/s at ~24K | 0.713/0.701 |
 | Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 7.9 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890 |
 | Qwen3.8 llama (q8, MTP) | 14.1 | 8.6 | | | | speed — under 8 tok/s at ~19K | pending |
-| Gemma-12B llama (q8, MTP) | 14.0 | | | | | speed — under 8 tok/s at ~11K | pending |
-| **Gemma-12B MLX (LM Studio engine, CLI)** | 36.7 | 36.9 | 34.8 | 30.25 (49K) | 29.29 (65K) | mem — compression onset 65-74K, 29.29 tok/s at 65K² | pending |
+| Gemma-12B llama (q8, MTP) | 13.8 | 6.5 | | | | speed — under 8 tok/s at 16K | 0.909/0.872 |
+| **Gemma-12B llama (f16, no drafter)** | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | window — 8.86 tok/s at 245K, where the trained window ends² | 0.909/0.872 |
+| **Gemma-12B MLX (LM Studio engine, CLI)** | 34.2 | 32.1 | 30.6 | | 23.2 (131K) | mem — last stable 131K, 23.23 tok/s there² | 0.909/0.872 |
 
-Cells are blank past a config's cap.
+Cells are blank past a config's cap, or where no step was measured at that depth.
 
 \*8K value.
 
-² Compression/swap onset between 65K and 74K used tokens (last clean:
-65,094 @ 29.29 tok/s). Context length cannot be pinned; LM Studio
-auto-fits to 158,464 (loader estimate, trained max 262,144). Served
-via the lms CLI, 8.8 GB RSS at 74K.
+² Both Gemma-12B curves were measured 2026-09-04, thinking off. The
+llama f16 curve ends where the model's trained window ends, with wired
+memory flat at 13.9 GB. The LM Studio curve ends on memory: past its
+last stable step the engine grows into the wired cap and swap starts.
+Context length cannot be pinned on the LM Studio path; the loader
+auto-fits it.
 
 ## Code quality — EvalPlus HumanEval+
 
@@ -122,7 +128,7 @@ via the lms CLI, 8.8 GB RSS at 74K.
 | **Ternary Bonsai-27B** | mlx 2-bit, thinking on, budget 10240 | **0.915** | **0.884** | 5/164 empty is a real model ceiling |
 | **Qwen3.6-35B-A3B (MoE)** | llama+MTP, thinking on, budget 26624 | **0.939** | **0.921** | 5/164 empty is a real model ceiling |
 | **Gemma-4-26B-A4B** | mlx 4-bit, thinking on, budget 30000 | **0.713** | **0.701** | 46/164 (~28%) empty is a real model ceiling — the thinking-convergence problem |
-| Gemma-4-12B | calibrated only (budget 30000) | – | – | pending — 4/10 sample problems hit the cap, worse than the 26B |
+| **Gemma-4-12B** | MLX 4-bit, thinking off, budget 30000 | **0.909** | **0.872** | 0 empty; the GGUF quant carries this score by the shared-score rule and has not been scored itself |
 
 ## Mendel — agentic quality (issue-13 bake-off)
 
@@ -159,9 +165,10 @@ here; the hosted reports show them dimmed, with reasons.
 | Ternary Bonsai-27B | guided | mlx 2-bit, thinking high, `pi` harness | **12.5/100** (raw 59) | partial — 300-min wall clock at 1/8 libraries |
 | Ternary Bonsai-27B | blind | PrismML GGUF fork, thinking high, `pi` harness | **12.5/100** (raw 60.5) | 1/8 libraries — typoed the repo path, self-scoped to chalk; a penalized retry is pending |
 
-Invalid, not scored as model quality: three Gemma-4-12B runs (LM
-Studio MLX, thinking-on entry, repetition loop, zero commits) and the Qwen3.8-27B
-guided run (three Metal OOM server crashes, zero commits).
+Invalid, not scored as model quality: three Gemma-4-12B runs (the
+retired LM Studio entry `google/gemma-4-12b`, thinking on, pre-fix chat
+template, repetition loop, zero commits) and the Qwen3.8-27B guided run
+(three Metal OOM server crashes, zero commits).
 
 Full tables for both Mendel tests are on the
 [Mendel page](./benchmarks/mendel.md), and the complete reports are
@@ -196,11 +203,15 @@ drafter flags, which loads and generates normally. The site's own
 `14.1/8.6 tok/s` decode figures for this config need a re-check against
 the current brew build before the next depth sweep.
 
-**The three Gemma-12B rows measure a harness failure, not the model's
-coding.** On LM Studio + `pi`, Gemma-12B collapsed into a newline
-flood after its first failed edit in all three runs, at every thinking
-level, and landed zero commits. Read the ~30 scores as "this serving
-combination cannot run the task", not as Gemma's agentic quality.
+**The three Gemma-12B rows measure a serving failure, not the model's
+coding.** All three ran the retired LM Studio entry, which always
+thinks: the model fell into a repetition loop after its first failed
+edit in every run and landed zero commits. Read the ~30 scores as "this
+serving combination cannot run the task", not as Gemma's agentic
+quality. On llama-server with thinking off the same short task produced
+42 tool calls and a working commit; a scored GGUF run is pending. The
+evidence is on
+[the Gemma-12B data page](./benchmarks/gemma-4-12b-it.md#the-retired-entry).
 
 **Both Bonsai mlx rows ran at thinking high, not the requested low.**
 The runner asked for low, but the session logs record high — the flag
@@ -217,8 +228,9 @@ on the 300-minute wall clock, not on the rubric.
 
 ## Open questions
 
-- EvalPlus for Gemma-12B (MLX and LM Studio), the Bonsai prism-fork
-  q4 pick, and a Bonsai thinking-off pass.
+- EvalPlus for the Gemma-12B GGUF quant, a thinking-on score for it,
+  and a Mendel run on llama-server. The Bonsai prism-fork q4 pick and a
+  Bonsai thinking-off pass.
 - Memory ceilings for the MLX configs that never hit the speed floor.
 - Aider polyglot (tier 2) for gate survivors — driven from another computer;
   docker does not fit beside a loaded model here.

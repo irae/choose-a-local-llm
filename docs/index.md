@@ -48,8 +48,9 @@ slow down faster but never OOM inside their window.
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->
 
-¹ Whichever limit hits first: the max memory a config fits in, or the max
-context that stays usable — usable meaning at or above the 8 tok/s floor.
+¹ Whichever limit hits first: the max memory a config fits in, the max
+context that stays usable — usable meaning at or above the 8 tok/s floor —
+or the model's own trained window, when neither of the other two arrives.
 "tok/s (shallow → deep)" is that same decode speed, near an empty context
 then at max ctx.
 
@@ -64,10 +65,8 @@ see the setup's comparison page.
 
 ⁴ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
 
-*Italic* values are fast-sweep ceilings from before the slow-creep rule;
-a re-test comes soon and their memory figures are suspect. See
-[the measurement rules](./methodology/context-creep) for why the slow creep
-is more realistic.
+See [the measurement rules](./methodology/context-creep) for why a slow
+creep is more realistic than a fast sweep.
 
 "Memory (at max ctx)" is the wired GPU memory the config holds at max ctx.
 

@@ -71,15 +71,17 @@ scope.
 
 As of 2026-08-29, after the slow-creep re-test.
 
-- Best curves, all quality-unscored: Gemma-12B on LM Studio is flattest at
-  30.8 tok/s at 74K in 8.8 GB; Gemma-26B MLX runs 51→12.8 to a 70K ceiling
-  in 20.0 GB; Qwen3.6 llama never floors inside 96K; Qwen3.6 MLX holds 42
-  tok/s at 33K.
+- Best curves: Gemma-12B on llama-server with f16 KV reaches its own 245K
+  window at 8.9 tok/s in 13.9 GB, and on LM Studio it is the flattest
+  curve on the machine to a 131K memory ceiling; Gemma-26B MLX runs
+  51→12.8 to a 70K ceiling in 20.0 GB; Qwen3.6 llama never floors inside
+  96K; Qwen3.6 MLX holds 42 tok/s at 33K.
 - Fair EvalPlus scores: Qwen3.8-mlx-medium **0.982/0.939**,
   Qwen3.6-llama-think **0.939/0.921**, Bonsai-mlx-f16 **0.915/0.884**,
   Gemma-26B-mlx-think **0.713/0.701** (46/164 empty — its thinking mode
-  converges only ~72% of the time). Gemma-12B is still unscored; its
-  smaller size makes it converge even less often than the 26B.
+  converges only ~72% of the time), Gemma-12B-mlx-off **0.909/0.872**
+  (all 164 answered). Gemma-12B has no thinking-on score today, and its
+  GGUF quant has not been scored on its own.
 - Bonsai extras: the PrismML fork is installed at `~/prism-llama/`. Its
   desktop profile holds q4 KV at 9.8 GB flat with a ~30K floor, and serves
   2×48K slots at 9.8 tok/s each concurrently — 3×48K gives 7.6 each. The
@@ -90,13 +92,15 @@ As of 2026-08-29, after the slow-creep re-test.
   bonsai-prism entry, and the main-agent seat now that Gemma-26B's score
   (0.713/0.701, 28% empty) is in.
 - Seat sketch: main and deep go to Gemma-26B MLX or Qwen3.6; hard problems
-  go to Qwen3.8-MLX at 26K; all-day and swarm go to Bonsai. Gemma-12B
-  re-entered play through LM Studio.
+  go to Qwen3.8-MLX at 26K; all-day and swarm go to Bonsai. Gemma-12B holds
+  the deepest window on llama-server; its LM Studio configuration is
+  single-turn work only.
 
 ## Open work
 
-- Gemma scores, including the MLX and LM Studio variants, the bonsai-prism
-  q4 A/B, and a Bonsai thinking-off pass. Each block waits for a go-ahead.
+- Gemma-12B on the GGUF quant: its own EvalPlus score, a thinking-on
+  score, and an agentic run on llama-server. The bonsai-prism q4 A/B and
+  a Bonsai thinking-off pass. Each block waits for a go-ahead.
 - Ceiling brackets for the MLX configs that never floored.
 - Aider tier 2, driven from another computer. Docker does not fit here.
 - Watch list and owner context: `HANDOFF.md`, not committed.

@@ -18,7 +18,9 @@ across serving configs when thinking mode, effort, and quant match.
 An empty completion is reasoning that exhausted the output budget; a
 high empty rate is a real model limit, not a harness bug. Completion
 is the share of the 164 problems that got an answer at all. Read the
-two columns together: Gemma-4-12B thinking on scores 0.622 because 37%
-of its answers are missing, and 99% of the answers it did give pass. Raw runs and
-per-problem results live in the repo's `benchmarks/` run kits; each
-model's data page (first column) carries its scoring notes.
+two columns together: a low score with a low completion rate measures
+delivery, not code quality — the withdrawn Gemma-4-12B thinking-on row
+passed 99% of the answers it gave and never answered 37% of the
+problems ([historical](../historical.md)). Raw runs and per-problem
+results live in the repo's `benchmarks/` run kits; each model's data
+page (first column) carries its scoring notes.
