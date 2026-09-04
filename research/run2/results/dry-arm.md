@@ -116,12 +116,11 @@ pi's rejection, verbatim:
 So the call never ran. The model spent 70 minutes producing something
 the harness threw away, and was then asked to produce it again.
 
-### This is the missing link to the tool-call loop
+### How far this goes toward the tool-call loop, and where it stops
 
 Run 1 established that both reproduced loops began with a malformed call
 that pi rejected, and that the model then re-emitted the rejected call
-unchanged. Until now the origin of that first malformed call was
-unexplained. The chain is now visible end to end:
+unchanged. This arm explains where such a call can come from:
 
 1. The pre-fix chat template gives no generation prefix after a tool
    response, and the model collapses into repetition.
@@ -129,10 +128,29 @@ unexplained. The chain is now visible end to end:
    token per line, so no sampler and no exact-match detector stops it.
 3. The call grows past the output token limit.
 4. **pi rejects it and asks the model to re-issue it.**
-5. Re-issuing reproduces the same collapse. That is the loop.
 
-Every step is measured here except step 5, which the arm's remaining
-wall may or may not reach.
+Steps 1 to 4 are measured. **Step 5 did not happen.** The model did not
+re-issue. Within three minutes of the rejection it made six varied,
+sensible calls:
+
+```
+09:42:32  bash  ls -R examples/planout-example
+09:43:29  read  examples/planout-example/app_js
+09:43:59  bash  ls examples/planout-example
+09:44:37  read  examples/planout-example/1app.js
+09:45:16  bash  cat examples/planout-example/app.js
+09:49:49  bash  ls -R test/
+```
+
+The paths are still slightly damaged — `app_js`, `1app.js` — but the
+model recovered on its own and kept working.
+
+So this arm does NOT show a rejection turning into a loop. It shows a
+collapse that costs 70 minutes and one wasted call, after which the
+model recovers. Whether a rejection sometimes produces the run 1 loop
+instead remains open, and this run cannot answer it. An earlier draft of
+this file claimed the chain reached the loop; that was wrong, and the
+run's own next reading disproved it.
 
 ### Two consequences worth carrying
 
@@ -145,4 +163,6 @@ elapsed time or output size inside ONE call.
 converts a collapse into a rejected call and a re-issue request. That
 limit is `maxTokens`, the same number P1 proposes to change for Qwen3.8.
 Whatever value it takes, a run should treat "hit the output limit" as a
-run-level alarm, not a routine retry.
+run-level alarm rather than a routine retry — not because it always
+leads to a loop, which this arm shows it does not, but because it means
+the model just spent its entire output budget on something discarded.
