@@ -27,7 +27,11 @@ Raw logs beside this file: `depth-sweep.log` (q8 + MTP),
 
 Floor is 8 tok/s. Both q8 arms stop there by 16K. **The f16 arm never
 reaches it** — it was still at 13.04 tok/s at 131118 used tokens, where
-the sweep's depth list ended. **No ceiling was found up to 131K.**
+the sweep's depth list ended.
+
+**This is half a curve.** Gemma-4-12B's trained maximum is 262144, and
+the sweep stopped at 131118 because of how it was set up, not because
+anything gave way. See the limits section.
 
 ## What this settles
 
@@ -67,9 +71,19 @@ changes a published page.
 - **Raw `/completion`, not chat.** Comparable with every published row,
   but not the path pi uses. The chat path adds a system turn and tool
   definitions to every request, so real use reaches a given depth sooner.
-- **No ceiling was found.** 131118 is where the depth list stopped, not
-  where the model or machine gave up. The true ceiling is higher and
-  unmeasured.
+- **The sweep stopped early, and that is a method violation.**
+  `context-creep.md` says to stop at the floor, at OOM, or at the
+  model's trained maximum, "never earlier", and that "a sweep that stops
+  at an arbitrary depth has not found a ceiling — it has just stopped".
+  This one stopped at 131118 for two reasons, both mine: the server was
+  started at `-c 139264` to save memory, and the depth list ended at
+  131072.
+
+  **Gemma-4-12B's trained maximum is 262144.** The curve is therefore
+  half-finished. Completing it needs a server at `-c 262144` — f16 KV
+  measured 15.8 GB wired there, inside the 24000 limit, so it fits — and
+  depths continuing 147456, 163840, 180224, 196608, 212992, 229376,
+  245760, 262144. **This is the first GPU item to run next.**
 - **Quality is assumed, not measured, for f16.** Rule 6 states q8 is
   byte-identical to f16 at temperature 0, so the KV type should not move
   a score. No EvalPlus run has tested that on this model — and the GGUF

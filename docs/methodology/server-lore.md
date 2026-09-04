@@ -30,9 +30,8 @@ stall. Everything here was hit at least once.
 
 ## LM Studio (verified 2026-08-29/30, LM Studio 0.4.23 / mlx-engine 1.10.1)
 
-Use `tools/sweeps/lmstudio_sweep.py` (single context) and
-`lmstudio_sweep_alt.py` (N alternating contexts) for LM Studio depth
-sweeps. Full forensic record:
+Use `tools/sweeps/creep_lmstudio.py` for LM Studio depth sweeps; set
+`N_CONTEXTS` for N alternating contexts. Full forensic record:
 `benchmarks/bench4/lmstudio-forensics.md`.
 
 - **Context length CANNOT be set for gemma4 MLX models.** Every path is
