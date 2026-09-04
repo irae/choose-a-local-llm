@@ -11,9 +11,13 @@
 # Two arms, selected by the first argument:
 #   embedded  the GGUF's own chat template (the long one, which opens a
 #             thought channel after every tool response)
-#   short     the same GGUF with --chat-template-file pointing at the
-#             mlx-community template (the short one, which emits nothing
-#             after a tool response). See results/container-audit.md.
+#   short     the same GGUF forced onto the PRE-FIX template, Google's
+#             revision 657684f of 2026-06-03, which is the file every
+#             local chat_template.jinja still ships. It emits nothing
+#             after a tool response. See results/container-audit.md.
+#
+# So the pair is a before-and-after of Google's 2026-07-15 chat-template
+# fix, on one backend, with everything else held fixed.
 #
 # What it changes on the Mac: nothing outside /tmp, the evidence
 # directory, and a fresh mendel worktree it creates itself. It does NOT
@@ -34,7 +38,7 @@ WALL_MIN="${2:-150}"
 MENDEL="$HOME/code/mendel"
 BENCH="$HOME/code/mendel-benchmark/benchmark"
 PROMPT="$HOME/.local/share/choose-a-local-llm/evidence/repro-gemma-4-12b-low-guided-full/prompt.txt"
-SHORT_TEMPLATE="/tmp/run2/templates/google-upstream.jinja"
+SHORT_TEMPLATE="/tmp/run2/templates/hf-google-prefix.jinja"
 
 MODEL_REPO="unsloth/gemma-4-12b-it-GGUF:Q4_K_XL"
 MODEL_ID="gemma-4-12b-replay"
