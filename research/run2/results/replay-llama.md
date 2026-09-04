@@ -235,6 +235,10 @@ thinking lines. Total thinking lines 530, distinct 345 — and the
 distinct count stopped rising while the total kept climbing, which is
 the signature.
 
+Closing numbers: ended 12:12Z on `wall_clock`, 49 tool calls, **1
+commit**, 5 files uncommitted, zero nudges. It got further than arm 2,
+which committed nothing, before degenerating late in the run.
+
 ## Three arms on the pre-fix template, three shapes
 
 | Arm | Shape | Where |
