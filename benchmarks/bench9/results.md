@@ -4,11 +4,6 @@ One table per block, filled by the runner as results land. Every number
 carries the exact command that produced it. The coordinator publishes
 from here.
 
-## Block A0 — `gemma-4-12b-it-mlx` depth sweep (LM Studio)
-
-| depth | tok/s | watcher state | wired |
-| --- | --- | --- | --- |
-
 ## Block A1 — short creeps, both KV types (one table per model)
 
 | model | depth | q8_0 tok/s | f16 tok/s | wired q8 / f16 | acceptance q8 / f16 |

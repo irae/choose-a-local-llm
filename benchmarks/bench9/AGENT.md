@@ -67,19 +67,6 @@ re-runs one Mendel row that a harness config error invalidated.
   into `results.md` with the exact command that produced it. The
   coordinator publishes.
 
-## Block A0 — done by research run 2, copy the numbers
-
-Run 2 swept `gemma-4-12b-it-mlx` on LM Studio (chat endpoint, 25 s
-pause) before it closed: 34.19 tok/s at 4K, 32.05 at 16K, 30.59 at 32K,
-27.08 at 65K, 24.52 at 98K, 23.23 at 131K, then 22.60 at 147K where the
-sweep stopped on 69 MB of swap growth with wired at 87% of the cap.
-Verdict under the compression-onset criterion: ceiling at the 131K
-step, 23.23 tok/s; gated by memory. Source:
-`research/run2/results/gemma12-depth.md` and `results/lms-ramp*.log`.
-Copy those rows into `results.md` under block A0 and do not sweep
-again. Run 2 also finished the GGUF f16 curve to the 262144 window
-(`deep262*.log`), so block A3 is done as well.
-
 ## Block A1 — short creep, both KV types, every daggered GGUF
 
 Rule 6 (common rules) decides the KV type per model: research, a short
@@ -336,9 +323,9 @@ Expected cost: up to 5 hours.
 
 ## Order
 
-1. Block A0 is done by run 2; copy its numbers. Then the creep runs:
-   A1 the six short creeps, A1b the full creep on each pick (Qwen3.6
-   first). A1 plus the Qwen3.6 full creep fit one working day.
+1. Block A, the creep runs: A1 the six short creeps, A1b the full
+   creep on each pick (Qwen3.6 first). A1 plus the Qwen3.6 full creep
+   fit one working day.
 2. Block B, the Gemma-12B items: B1 EvalPlus (day), then B3 (night).
    B2 is dropped.
 3. Block C, Bonsai Mendel off (nights).
