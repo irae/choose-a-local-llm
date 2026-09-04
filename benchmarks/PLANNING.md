@@ -58,11 +58,12 @@ and the methodology pages the runbook points to.
    `path` instead, because that work is interactive and the owner's
    HUD reads the session directory. See `AGENTS.md`, standing rules.
 3. Require the run to record its own evidence, and say where.
-   - **Context per compaction cycle.** `peak_context` claims to be the
-     maximum across all cycles, and today that cannot be checked: the
-     session log records that a compaction happened but not the context
-     size at each one. Have the run log the context reading at every
-     cycle, so the maximum can be recomputed instead of trusted.
+   - **Verify `peak_context` with the counter before you commit a row.**
+     The context of every turn is already in the session log: each
+     assistant message carries its own usage block. The maximum over
+     those messages is the peak, across all compaction cycles.
+     `benchmark/count-tool-calls.mjs` in the Mendel repo prints it. Make
+     the run print it and compare it with the row.
    - **Session logs must leave the scratch directory.** Mendel run 7
      produced 17 local rows and only 8 surviving session logs. The rest
      lived under a gitignored `scratchpad/` and went away with their
