@@ -14,7 +14,8 @@
 # reports a ceiling no real session would hit.
 #
 # What it changes on the Mac: nothing. One server, started and stopped
-# by this script. No download. No setting is touched.
+# by this script. No download: HF_HUB_OFFLINE=1 forces the cache, the
+# same guard llama-server gets from --offline. No setting is touched.
 #
 # Reverse direction: `pkill -f mlx_lm`. Nothing else is left behind.
 #
@@ -59,6 +60,7 @@ record_start() {
 }
 
 start_server() {
+    HF_HUB_OFFLINE=1 \
     mlx_lm.server \
         --model "$MODEL" \
         --prompt-cache-size 2 \
