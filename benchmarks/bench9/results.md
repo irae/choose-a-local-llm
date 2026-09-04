@@ -200,3 +200,24 @@ at load), ceiling 8222 tokens at 43.80 tok/s.** This is far shallower
 than the published context suggested; the daily-driver row needs a
 `-c` correction independent of the KV-type question this run set out
 to answer.
+
+## Block A1b — Qwen3.8-27B GGUF full creep (pick: f16)
+
+Published `-c 32768` loads and serves fine — no deviation needed.
+
+`creep-qwen38-gguf-full-f16.tsv`, `server-qwen38-gguf-full-f16.log`
+
+| depth | decode tok/s | wired_mb | draft acceptance |
+| --- | --- | --- | --- |
+| 4114 | 20.02 | 22242 | 1.00 (task 9) |
+| 8222 | 18.14 | 22241 | 0.94 (task 19) |
+| 16386 | 16.05 | 22226 | 0.85 (task 41) |
+| 24602 | 17.21 | 22229 | 1.00 (task 66) |
+| 32818 | 16.39 | 22226 | 1.00 (task 89) |
+
+Verdict: **window** — `no ceiling found up to 32768`. No compacting
+streak (only one row crosses 200 pages moved, not three in a row), so
+no correction needed here.
+
+Published row: **f16 KV, `-c 32768` (matches published), no ceiling
+found to the window, 16.39 tok/s at 32818.**
