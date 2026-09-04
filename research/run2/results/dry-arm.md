@@ -14,8 +14,10 @@ could not see a repeat even in principle. 2048 spans many.
 
 At 40 minutes in, arm 3 emitted a single tool call containing:
 
-- **231 consecutive lines** of the form `ls -d examples/<path>/*`
-- **229 of them distinct**
+- **231 consecutive lines** of the form `ls -d examples/<path>/*`,
+  grown to **485** by 09:30Z and still running
+- **229 of them distinct** at the first measurement, 663 distinct
+  tool-call lines overall
 - **231 of 231 with a corrupted path.** Not one is the real
   `examples/planout-example`.
 
@@ -53,10 +55,25 @@ commands, every one of which would fail if run.
 Every one is correct and every one is blind. The collapse sits inside a
 single unfinished tool call, in lines that are never identical.
 
-`measure-neardup.py` detects it by comparing line prefixes rather than
-whole lines. Even that needed care: at a 20-character prefix the
-incrementing counter still breaks the run, so the shape only appears at
-a shorter prefix or with a targeted pattern.
+`measure-neardup.py` detects it, but only after a second attempt. A
+prefix comparison is not enough: at a 20-character prefix the
+incrementing counter still breaks the run, and it reported 10.
+
+What works is a SHAPE comparison — replace every letter run with `W` and
+every digit run with `N`, then count identical shapes in a row.
+`bk-in_southple` and `bl-in_southple` have the same shape, so a counter
+cannot hide behind it. One detector then separates all three arms
+cleanly:
+
+| Arm | thinking shape-run | tool-call shape-run | verdict |
+| --- | --- | --- | --- |
+| 1, post-fix template | 2 | 5 | clean |
+| 2, pre-fix template | **498** | 5 | collapse |
+| 3, pre-fix + DRY | 7 | **485** | collapse |
+
+Note where each collapse lands. Arm 2 collapsed in its THINKING; arm 3,
+with DRY on, collapsed in a TOOL CALL instead. DRY moved the failure
+from one channel to the other as well as changing its shape.
 
 ## What this means for section I
 
