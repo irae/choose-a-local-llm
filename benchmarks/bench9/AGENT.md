@@ -238,54 +238,6 @@ clean per PLAN.md "Cleanup", keep the branch.
 Expected cost: up to 5 hours per run. Start only if the owner says
 the machine is free for the night.
 
-## Block D — Gemma-26B GGUF thinking off, EvalPlus at q8_0 and f16
-
-Two thinking-off rows that do not exist yet, and a direct test of
-whether the KV type moves a score. Thinking off keeps the run short:
-no reasoning, no empty completions from an exhausted budget.
-
-Server (q8_0 arm; the f16 arm replaces both `q8_0` with `f16`):
-
-```bash
-llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
-  --alias gemma-4-26b-a4b --no-mmproj \
-  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \
-  -ngl 999 -fa on -c 32768 \
-  --cache-type-k q8_0 --cache-type-v q8_0 \
-  --jinja --port 8081 --offline 2>&1 | tee benchmarks/bench9/results/server-gemma26-gguf-off-q8.log
-```
-
-The window is 32768 on purpose: EvalPlus prompts are tiny and a
-262144 window costs memory for nothing.
-
-1. Calibrate once, on the q8_0 arm (evalplus method, "Calibrate the
-   output budget FIRST"):
-   ```bash
-   python3 benchmarks/calibrate.py gemma26-gguf-off gemma-4-26b-a4b \
-     '{"chat_template_kwargs":{"enable_thinking":false}}'
-   ```
-   Budget = observed max completion × 1.5, floor 8192. Write the
-   budget and the ten observations into `results/calibration-gemma26-gguf-off.md`.
-2. Score, same budget for both arms:
-   ```bash
-   RESULTS_BASE=benchmarks/bench9/results \
-   EVALPLUS_MAX_NEW_TOKENS=<budget> \
-   benchmarks/run-humaneval.sh gemma26-gguf-off-q8 gemma-4-26b-a4b \
-     '{"chat_template_kwargs":{"enable_thinking":false}}'
-   ```
-   Then the f16 arm: restart the server with `f16`, run name
-   `gemma26-gguf-off-f16`.
-3. Record pass@1 base and plus, the empty count, and the wall time of
-   each arm in `results.md`.
-
-Reading the result: the two arms share weights, prompt, budget and
-temperature 0. If base or plus differ by more than 0.012 (two
-problems), the KV type moves this model's score, and rule 6's
-"near-lossless" premise fails for it. Write that sentence in
-`results.md` either way, with the numbers.
-
-Expected cost: about 1 hour per arm plus calibration.
-
 ## Block E — Qwen3.8 MLX, the harness fix and the invalid guided row
 
 Run 7's Qwen3.8 guided low row is invalid: three Metal OOM crashes,
@@ -329,12 +281,18 @@ Expected cost: up to 5 hours.
 2. Block B, the Gemma-12B items: B1 EvalPlus (day), then B3 (night).
    B2 is dropped.
 3. Block C, Bonsai Mendel off (nights).
-4. Block D, Gemma-26B thinking off (day), and block E, Qwen3.8 guided
-   low (night), last.
+4. Block E, Qwen3.8 guided low (night), last.
 
 Blocks depend on nothing but the GPU. If one is blocked, write why in
 `state.md`, commit, and start the next. Mendel runs are one at a time
 and never beside a sweep.
+
+## Deferred to bench 10
+
+- Gemma-26B GGUF EvalPlus with thinking off, at the one KV type the
+  short creep picks for that model. One arm, not two: the KV pick is
+  made in block A1 by the rule, and a quality A/B of the two types is a
+  research question, not a bench item.
 
 ## After the run
 

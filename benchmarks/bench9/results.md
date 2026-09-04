@@ -48,8 +48,3 @@ Prediction and pick per model:
 
 | block | model / entry | test | thinking | score | libraries | end reason |
 | --- | --- | --- | --- | --- | --- | --- |
-
-## Block D — Gemma-26B GGUF thinking off, EvalPlus
-
-| arm | budget | base | plus | empty | wall |
-| --- | --- | --- | --- | --- | --- |
