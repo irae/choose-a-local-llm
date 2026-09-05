@@ -38,6 +38,7 @@ export default defineConfig({
           { text: 'Mendel', link: '/methodology/mendel' },
           { text: 'Polyglot', link: '/methodology/polyglot' },
           { text: 'Server lore', link: '/methodology/server-lore' },
+          { text: 'Status lines', link: '/methodology/status-lines' },
         ],
       },
       {

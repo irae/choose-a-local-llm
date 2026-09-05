@@ -101,8 +101,11 @@ and the methodology pages the runbook points to.
    `AGENTS.md` standing rules when the owner asks to stop (merge to
    `master`, push `master`, delete the branch, remove the worktree;
    that one push is required); one model on the GPU at a time; port;
-   heartbeat cadence; the scoped memory watcher on every run; commit
-   as results land; never push a run branch; never publish.
+   heartbeat cadence and the status-line templates
+   (`docs/methodology/status-lines.md`: one line in chat, the medium
+   form in `state.md`, the site comparison in `results.md`); the scoped
+   memory watcher on every run; commit as results land; never push a
+   run branch; never publish.
 7. Write the blocks in priority order. Each block gives: the exact
    serving command, the exact run command (with every env var), where
    results land, what "done" means, and what to update when it is done
@@ -129,7 +132,8 @@ links them at the exact step where they apply.
 
 Give the runner a short prompt: the reading list (its `AGENT.md` first),
 the standing prohibitions (push only on owner request, and then only
-`master`; no publish), the heartbeat format, and the instruction to
+`master`; no publish), the heartbeat format
+(`docs/methodology/status-lines.md`), and the instruction to
 keep working until every block is done or truly blocked. Pass the STE
 prose rule on. Do not paste findings or history into the prompt; that
 is what the files are for.

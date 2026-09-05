@@ -63,6 +63,10 @@ Site and process docs:
   - `docs/methodology/polyglot.md`. Before an Aider polyglot run.
   - `docs/methodology/server-lore.md`. Before you touch any server,
     and first when a run stalls or a number looks impossible.
+  - `docs/methodology/status-lines.md`. Before you report a run's
+    progress. One template per update type, in three sizes: one line
+    in chat, the medium form in `state.md`, the site comparison in
+    `results.md`. It also carries the run's context-budget rules.
 - [docs/website-plan.md](./docs/website-plan.md). Before you change
   the site structure or the deploy. Not needed for content work.
 
