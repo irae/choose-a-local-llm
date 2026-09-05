@@ -123,7 +123,8 @@ Benchmark work:
   live under `docs/setups/<setup>/`. Say "one dense 12B model on the
   reference setup" and link the setup's report (README, "How to use
   this repo").
-- **Push only on owner request.** Never push on your own initiative.
+- **Push only on owner request.** Never push on your own initiative,
+  and never offer to publish. The owner asks when they want it.
   When the owner asks for a push or for stop-and-sync, push `master`
   and only `master`. Refusing a requested push loses data; do it.
 - **Only the agent whose worktree has master checked out may merge into
@@ -196,6 +197,13 @@ Benchmark work:
   every model in the cache; results depend on those exact files,
   revisions, and quants. A missing model means stop and ask the owner.
   Never pull it yourself. See `docs/methodology/common-rules.md`.
+- **Never edit a shell script while it runs.** The shell reads the file
+  as it executes, so an edit changes the running program. Wait for the
+  run to end, or write a new file.
+- **A harness stops a run; it never rescues it.** When a model falls
+  into a repetition loop, record the stop and report it. Do not add a
+  prompt-layer instruction or a sampler trick to keep the run going;
+  that hides the defect instead of measuring it.
 - **Never run a bare `git stash`.** The stash list lives in the shared
   `.git` directory, not per worktree, so parallel agents clobber or
   cross-apply each other's stashes. Save work in progress as a WIP
@@ -208,6 +216,9 @@ Benchmark work:
   `benchmarks/*.md` pages keep the full archive. See EDITOR.md.
 - **Write prose in ASD-STE100 Simplified Technical English.** Short
   sentences, active voice, one idea per sentence.
+- **Terminology follows the community.** Repetition loop, degeneration,
+  tool-call loop. Never "collapse" for repetition
+  (`research/run2/results/terminology.md`).
 - **Do not write code comments** unless the owner asks for them.
 - **Three places for machine state, and they are not interchangeable.**
   `~/.config/choose-a-local-llm/` holds configuration the owner edits.

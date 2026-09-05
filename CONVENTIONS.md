@@ -26,9 +26,6 @@ Rules that apply to every markdown file:
   A number without them is not comparable and does not get published.
 - Later text wins. A correction is a dated section that says what it
   supersedes. The old text stays, marked.
-- Terminology follows the community: repetition loop, degeneration,
-  tool-call loop. Never "collapse" for repetition
-  (`research/run2/results/terminology.md`).
 - No planning mechanics in commit messages or docs (no "step 3 of
   phase 2"). Say what was done.
 
