@@ -117,10 +117,12 @@ The runner also owns the stop conditions that watcher was there to
 serve: swap growth, sustained material compaction, the floor, a silent
 halt, a failed request, and a dead server.
 
-Keep the external watcher for **scoring runs** — EvalPlus, Mendel,
-polyglot. Those harnesses sample no memory at all and run for hours, so
-`benchmarks/mem-watch.sh` is the only memory record they get. Start it
-as [the checklist](./checklist.md) step 6 says.
+**Scoring runs** (EvalPlus, Mendel, polyglot) are the other case.
+Those harnesses sample no memory and run for hours, so
+`benchmarks/run-watch.sh` is their one watcher: it writes the memory
+record and it exits 42 on a dead server. Start it as
+[the checklist](./checklist.md) step 6 says. A sweep watches itself; a
+scoring run has exactly one watcher.
 
 Liveness is one signal, not three. `/health` stays 200 after an
 `mlx_lm.server` generation thread dies, so no sweep tool reads it. The

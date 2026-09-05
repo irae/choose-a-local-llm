@@ -37,8 +37,10 @@ score as failures (up to 38% of scores lost before this was found).
 ## Steps
 
 1. Calibrate (above). Calibration files: `benchmarks/calibration-*.json`.
-2. Start the config's server on port 8081, warm up, start the watcher
-   (`benchmarks/mem-watch.sh` for a run this long).
+2. Start the config's server on port 8081, warm up, start the run
+   watcher (`benchmarks/run-watch.sh`, [checklist](./checklist.md)
+   step 6: the memory record and the crash signal, exit 42 on a dead
+   server).
 3. Run the scoring script (`RESULTS_BASE` chooses the run dir; the
    extra body carries `chat_template_kwargs` for thinking toggles):
    ```bash

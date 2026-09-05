@@ -78,27 +78,24 @@ Benchmark work:
   work; it overrides older lore.
 - `benchmarks/` (root). The shared tools every run uses:
   `run-humaneval.sh`, `run_codegen_wrapper.py` (patched EvalPlus
-  client), `calibrate.py`, `mem-watch.sh` (memory log for a scoring
-  run; `MEMWATCH_LOG` and `MEMWATCH_INTERVAL` scope it; a depth sweep
-  needs no watcher, because its runner samples memory itself),
-  `calibration-*.json`, `evalplus-smoke.py` (the fast fixed
+  client), `calibrate.py`, `run-watch.sh` (the one watcher of a
+  scoring run: writes the memory log, tails the server log for the
+  death signatures, probes one real completion after the output file
+  goes silent, exits 42 with the reason on stdout when the server is
+  dead. Start it as a background task so the crash interrupts the
+  coordinator; `--help` lists its `RUNWATCH_*` variables. It restarts
+  nothing. A depth sweep needs no watcher, because its runner samples
+  memory and liveness itself), `calibration-*.json`, `evalplus-smoke.py` (the fast fixed
   four-problem EvalPlus subset for a research trial. Not a score,
   never published. Same budget on both sides, read as level, better or
   worse; `docs/methodology/evalplus.md`. It replaced the older LM
-  Studio concurrency smoke, now retired), `crash-watch.sh` (live crash
-  watcher for a scoring run: tails the server log for the death
-  signatures, probes one real completion after the output file goes
-  silent, exits 42 with the reason on stdout the moment the server is
-  dead. Start it as a background task so the crash interrupts the
-  coordinator; `--help` lists its `CRASHWATCH_*` variables. It
-  restarts nothing), `loop-check.py` (repetition-loop detector for
+  Studio concurrency smoke, now retired), `loop-check.py` (repetition-loop detector for
   a pi session log: distinct-shape ratio in a sliding window,
   threshold 0.10; catches identical lines, counters, and short
-  cycles), `liveness-watch.sh` (tells a stalled scoring run from a
-  dead server. It probes one real completion, only after the output
-  file stops growing, because `/health` stays 200 after the mlx_lm
-  generation thread dies. A depth sweep has the same probe inside its
-  runner).
+  cycles).
+- `sunset/`. Scripts on their way out. They run beside their
+  replacement for one run, then the directory is deleted. Its README
+  says which run and what replaced them.
 - `tools/sweeps/`. The depth-sweep tools. `creep.py` owns the method
   (depth ladder, pause, stop conditions, memory columns, liveness) and
   one `creep_<backend>.py` owns each backend. One command per sweep
