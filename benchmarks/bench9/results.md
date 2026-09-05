@@ -423,3 +423,23 @@ runs at 46/164 (~28%) empty on the full gate for exactly this reason
 (thinking non-convergence) — a nonzero empty count on this pair is
 expected, not a bug; the comparison is f16's empty count against
 q8_0's at the same 30000 budget, not against zero.
+
+```
+SMOKE label=gemma26-gguf-f16 problems=4 passed=3 empty=1 completion_tokens=32002 max_tokens=30000 wall_s=680.1
+SMOKE label=gemma26-gguf-q8  problems=4 passed=3 empty=1 completion_tokens=31842 max_tokens=30000 wall_s=2372.4
+```
+
+Both sides fail the same problem the same way: HumanEval/129,
+`finish_reason=length` at the full 30000-token budget, thinking never
+converges. This is the model's known behavior (the published full-gate
+score already carries 46/164 ≈28% empty for this exact reason), not
+new — the smoke reproduces it on both KV types identically.
+
+Verdict: **f16 level with q8_0** (same `passed`=3, same `empty`=1).
+Notable aside, not part of the verdict: q8_0 took 2372s wall to hit the
+same 30000-token wall that f16 hit in 680s — q8_0 is far slower at this
+depth, consistent with the A1b full-creep findings (17.30 tok/s f16 vs
+q8_0's speed stop well below 8 tok/s at a fraction of this depth).
+
+Block B0 closed. Five `SMOKE` lines, three verdicts, all level — no
+config was dropped or found broken. Moving to B1.
