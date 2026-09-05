@@ -25,16 +25,33 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
   llama at f16 KV now holds 15 tok/s to 49K, the largest context this
   machine loads for it (run 9).
 
+## Can it finish engineering tasks? Not yet
+
+Every Mendel run of this model is partial, and the last one is invalid.
+Blind at effort medium scored 80 partial; blind at low 67.5 partial;
+guided at low 84 partial on the first prompt version and 34 on the
+current one, with three server crashes; the run 9 retry at low ended
+invalid after three attempts, two of them real Metal OOM crashes when
+the context grew past the 26624-token MLX window in agentic use. The
+best single-turn score on this hardware has never delivered a complete
+multi-file task through the harness.
+
+So this page reads as a caution. Either the model does not fit this
+machine for agent work, or the right configuration is not found yet.
+The llama-server row at f16 KV, 15 tok/s to 49K, is untested on Mendel
+and gets the smoke first in run 10. Research looks at community builds,
+a smaller window with earlier compaction, and 3-bit weights that buy
+context. If none of that produces a completed run, the model retires
+from the daily-driver question and keeps its single-turn score.
+
 ## All configs — this model
 
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
-| 2 | Qwen3.8-27B, MLX, effort low | 28k† | mem | 17† → 15.3† | 22.0 GB† | 0.976/0.927 |
+| 2 | Qwen3.8-27B, MLX, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927 |
 | 3 | Qwen3.8-27B, GGUF, MTP f16, effort medium | 49k | OOM | 20.0 → 15.0 | 23.5 GB | 0.982/0.939 |
-
-† from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -49,7 +66,7 @@ mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --reasoning-effort medium --port 8081
 ```
 
-**#2 — Qwen3.8-27B, MLX, effort low.** Speed/memory copied from qwen38-mlx-medium; no depth sweep for this config yet.
+**#2 — Qwen3.8-27B, MLX, effort low.** Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \

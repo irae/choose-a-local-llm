@@ -20,7 +20,6 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 ## Open
 
 - [ ] One folder per machine: move bench and research runs under hardware/<id>/{benchmarks,research}; method pages already read the machine file (hardware-folders-per-machine.md)
-- [ ] Bench 10 candidates: the items deferred from bench 9 and the retries (bench-10-candidates.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
 - [ ] Faster crash detection while babysitting a live run: a live tail+Monitor watcher instead of the 15-25 min ScheduleWakeup blind spot that missed two mlx_lm.server Metal OOM crashes in bench 9 block E (live-crash-detection-during-a-run.md)
 

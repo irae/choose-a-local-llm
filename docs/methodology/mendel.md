@@ -22,6 +22,22 @@ test"): strong API models run blind only; local and weak models run
 both, so each pair shows the lift. Never compare a score across the
 two tests.
 
+## The smoke
+
+One handed task before the full run: replace one dependency that spans
+two files (`xtend` with `Object.assign`, the task research run 1 built
+and run 2 used, `research/run2/results/mendel-probe-xtend.md`), same
+base commit, thinking as the config will run, a 25-minute cap, unscored.
+It answers one question: can this config do agent work at all. Pass is
+one commit with a clean working tree, no repetition loop, inside the
+cap. A fail means no full run for that config; the smoke line goes in
+the results and the config is dropped or sent back to research.
+
+It gates lists the way the EvalPlus smoke does: several candidates get
+the smoke in one session, and only the passes go on to a full run of
+several hours each. It never produces a score and never reaches the
+site.
+
 ## Where things live
 
 - **The instructions live in the Mendel repo** (`benchmark` branch:

@@ -76,14 +76,19 @@ its page above.
     the first `maxTokens`; the creep gave the window. Only now does a
     model get a pi entry ([Mendel](./methodology/mendel.md) holds
     the rule).
-11. **Mendel**, the agentic benchmark, blind and guided per its plan.
+11. **Mendel smoke**, one handed task, 25 minutes, unscored. A config
+    that cannot commit a two-file dependency swap does not get a
+    five-hour run. This is a gate too: smoke every candidate, run the
+    passes.
+12. **Mendel**, the agentic benchmark, blind and guided per its plan.
     The plan sends very weak models to guided only and very strong
     ones to blind only.
-12. **Aider polyglot** for the survivors, hours per model.
-13. **Record every surface, commit, publish.**
+13. **Aider polyglot** for the survivors, hours per model.
+14. **Record every surface, commit, publish.**
 
-Steps 3 to 8 are HTTP against the server and need no harness. Steps 10
-to 12 go through pi.
+Steps 3 to 9 are HTTP against the server and need no harness. Steps 10
+to 13 go through pi. A runner drops a model at a gate on its own and
+writes why in the run's state; it does not wait for the owner.
 
 ## Runtimes
 
