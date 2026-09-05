@@ -19,7 +19,6 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
-- [p] Project non-goals: README section and findings file, branch `backlog/non-goals`, worktree `../choose-a-local-llm-backlog-nongoals` (project-non-goals-in-readme.md)
 - [ ] Runner alarms: decided 2026-09-05 (maxTokens rule, 25-minute turn cap, at-budget pair stop, loop flag); runner code, PLAN.md sentences and the Mac config edits pending (runner-alarms-output-limit-and-loop-stop.md, summary.html beside it, report in `benchmarks/history/`)
 - [ ] Worker-profile table: which config is the best thinking-off sub-agent (worker-profile-table.md)
 - [ ] Bench 10 candidates: the items deferred from bench 9 and the retries (bench-10-candidates.md)
@@ -28,6 +27,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Changelog
 
+- 2026-09-05 README says what the project does not measure, five items with the owner's reasons; agent rules moved to AGENTS.md, "collapse" term out of CONVENTIONS.md (`backlog/non-goals` merge)
 - 2026-09-05 Unslop of the internal docs: em dashes, "the law", daggers and capitals replaced across AGENTS, CONVENTIONS, EDITOR, PLANNING, INDEX, READMEs and the research runbooks (`128858c`)
 - 2026-09-04 Mendel peak_context: rule stated, 21 rows recomputed from per-turn usage, two post-compaction values corrected, caveat narrowed to one retired harness (Mendel `fe6da234`)
 - 2026-09-04 Mendel telemetry: peak_context caveat on the reports, tool_calls counting rule on the method page, all 17 rows recounted and unchanged (Mendel `bec00354`)
