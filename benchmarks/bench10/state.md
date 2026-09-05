@@ -20,3 +20,25 @@ speed number from Block A carries this as a recorded deviation; watch
 for swap growth during the sweeps as the invalidating signal.
 
 Starting Block A.
+
+### Block A1 — gemma-4-12b-4x, f16
+
+`-c` search (published 1048576 does not load): 524288 loads, 786432
+OOMs at load ("model loaded" but `Insufficient Memory` in the log),
+655360 loads, 720896 OOMs, 688128 loads clean, 704512 OOMs. Settled at
+**-c 688128** (172032/slot), the largest that loads at this bisection
+resolution (4096/slot). Verified each loading candidate with one real
+chat completion.
+
+Deviation: the trivial warmup completion (22-token prompt) was not
+enough to catch a real ceiling. `-c 688128` loaded clean and served a
+trivial completion, then OOM'd on compute buffers at the sweep's first
+real depth (4114 tokens, `ggml_metal_synchronize` /
+`Insufficient Memory`). Re-verified with a realistic 4096-token
+completion instead of a trivial one before committing to a value.
+`655360` (163840/slot) passed the 4096-token check cleanly (327 tok/s
+prefill) and is the config used for the full creep. `688128` and above
+are dropped as candidates.
+
+Full creep running on this slot: `creep-gemma12-gguf-4x-f16.tsv`,
+depths 4096..163840.
