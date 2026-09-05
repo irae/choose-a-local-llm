@@ -29,7 +29,7 @@ stall. Everything here was hit at least once.
 
 Use `tools/sweeps/creep_lmstudio.py` for LM Studio depth sweeps; set
 `N_CONTEXTS` for N alternating contexts. Full forensic record:
-`benchmarks/bench4/lmstudio-forensics.md`.
+`hardware/m1-max-32gb/benchmarks/bench4/lmstudio-forensics.md`.
 
 - **Some MLX architectures refuse a pinned context window, and auto-fit
   wins.** Every path is ignored — CLI `-c`/`--context-length`, the REST

@@ -113,7 +113,7 @@ aliases: [runtimes on this machine](./setups/m1-max-32gb/index.md#runtimes-on-th
 
 ## Where runs live
 
-Run kits are in `benchmarks/bench<N>/` (runbook `AGENT.md`, log
+Run kits are in `hardware/m1-max-32gb/benchmarks/bench<N>/` (runbook `AGENT.md`, log
 `state.md`, results). Shared tools and calibrations sit in
-`benchmarks/`. The findings index is `benchmarks/INDEX.md`. Nothing
+`benchmarks/`. The findings index is `hardware/m1-max-32gb/benchmarks/INDEX.md`. Nothing
 outside `docs/` reaches the published site.

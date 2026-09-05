@@ -193,7 +193,7 @@ Research, not a benchmark: no scored rows produced. Runbook:
   (chat endpoint only); the disk-backed prompt cache can force silent
   full recomputes at depth.
 
-## bench2, 2026-08-28 ([state](bench2/state.md), [results](bench2/results.md), [calibration](calibration.md))
+## bench2, 2026-08-28 ([state](bench2/state.md), [results](bench2/results.md), [calibration](../../../benchmarks/calibration.md))
 
 - **The budget-calibration method** (10 fixed problems, 30K cap, budget
   = observed max × 1.5): qwen38-mlx-medium rose 0.970→**0.982** with 0

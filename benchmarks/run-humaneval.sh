@@ -1,17 +1,17 @@
 #!/bin/bash
 # General codegen/evaluate flow. Writes results under RESULTS_BASE
-# (default: benchmarks/bench5/results; set it to resume an older bench's
+# (default: hardware/m1-max-32gb/benchmarks/bench5/results; set it to resume an older bench's
 # results dir). Reuses benchmarks/run_codegen_wrapper.py unchanged
 # (EVALPLUS_MAX_NEW_TOKENS, EVALPLUS_EXTRA_BODY). Run from the repo root.
 #
-# Usage: [RESULTS_BASE=benchmarks/benchN/results] \
+# Usage: [RESULTS_BASE=hardware/m1-max-32gb/benchmarks/benchN/results] \
 #   benchmarks/run-humaneval.sh <run-name> <model-id-as-served> [extra-body-json]
 set -e
 set -o pipefail
 NAME="$1"; MODEL="$2"; EXTRA_BODY="$3"
 [ -z "$NAME" ] || [ -z "$MODEL" ] && { echo "usage: $0 <run-name> <model-id> [extra-body-json]"; exit 2; }
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-DIR="$ROOT/${RESULTS_BASE:-benchmarks/bench5/results}/$NAME"
+DIR="$ROOT/${RESULTS_BASE:-hardware/m1-max-32gb/benchmarks/bench5/results}/$NAME"
 mkdir -p "$DIR"
 export OPENAI_API_KEY=none
 [ -n "$EXTRA_BODY" ] && export EVALPLUS_EXTRA_BODY="$EXTRA_BODY"

@@ -6,9 +6,9 @@
 #
 # 3072 was found too low on night 1 (blocks 1, 2, and 3 all show empty completions
 # from reasoning exhausting the token budget: 2%, 38%, and ~30-40%). Night 1 kept
-# 3072 on purpose so its three blocks stayed apples-to-apples (see benchmarks/bench1/state.md).
+# 3072 on purpose so its three blocks stayed apples-to-apples (see hardware/m1-max-32gb/benchmarks/bench1/state.md).
 # Night 2 sets a calibrated per-model budget via the EVALPLUS_MAX_NEW_TOKENS env
-# var (see benchmarks/bench2/AGENT.md); without it the flawed 3072 default still applies.
+# var (see hardware/m1-max-32gb/benchmarks/bench2/AGENT.md); without it the flawed 3072 default still applies.
 #
 # It also has no way to send extra JSON body fields (e.g. mlx_lm.server's
 # chat_template_kwargs for reasoning_effort). Set EVALPLUS_EXTRA_BODY to a JSON

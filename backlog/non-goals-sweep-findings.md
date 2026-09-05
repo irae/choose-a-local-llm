@@ -43,9 +43,9 @@ Model-scoped decisions. True for one model, not for a contributor's
 hardware:
 
 - No thinking-on agent work on Gemma-4-12B over MLX or LM Studio. Stays
-  in `research/run2/results/gemma12-verdict.md`.
+  in `hardware/m1-max-32gb/research/run2/results/gemma12-verdict.md`.
 - The DRY sampler does not stop that model's repetition loop. Stays in
-  `research/run2/results/dry-arm.md`.
+  `hardware/m1-max-32gb/research/run2/results/dry-arm.md`.
 
 Terms. Vocabulary, not scope:
 
@@ -75,7 +75,7 @@ which the sweep added or strengthened:
 3. **Never edit a shell script while it runs.** The owner repeated it
    in every unattended run 2 prompt; no file held it.
 4. **A harness stops a run; it never rescues it.** It was a coordinator
-   position in `research/run2/AGENT.md` only. It covers both the
+   position in `hardware/m1-max-32gb/research/run2/AGENT.md` only. It covers both the
    prompt-layer fix and the sampler trick.
 
 ## Open, for the owner

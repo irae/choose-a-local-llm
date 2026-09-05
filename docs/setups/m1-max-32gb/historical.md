@@ -47,7 +47,7 @@ published `-c` values OOM at load under the 24000 limit.
 The Qwen3.6 change is not a KV change. f16 does not load for it, so
 q8_0 stays; the slow creep's memory columns showed compaction from 16K
 that the fast sweep could not see, and the published `-c` never loaded.
-Evidence: `benchmarks/bench9/results.md`.
+Evidence: `hardware/m1-max-32gb/benchmarks/bench9/results.md`.
 
 ## Gemma-4-12B figures measured on the retired LM Studio entry (superseded 2026-09-04)
 

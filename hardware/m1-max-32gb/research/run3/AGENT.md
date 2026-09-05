@@ -2,7 +2,7 @@
 
 Coordinator draft, 2026-09-04, revised twice after the owner's
 criteria. The measurements that need no more thinking moved to
-`benchmarks/bench9/`. This run keeps one goal: try candidate containers
+`hardware/m1-max-32gb/benchmarks/bench9/`. This run keeps one goal: try candidate containers
 and say whether they look better, with three quick checks and no
 published numbers. Gemma-12B is closed: run 2 finishes its bench work.
 
@@ -50,7 +50,7 @@ A candidate container enters a trial only if ALL hold:
   24000 MB wired limit at the model's KV cost (bench 9 for llama-server;
   measured ceiling for MLX).
 - The HF revision is pinned at download time and added to
-  `research/run2/results/model-pins.md`.
+  `hardware/m1-max-32gb/research/run2/results/model-pins.md`.
 - K-quants only on llama-server; IQ quants are reported 3.5x slower on
   Apple GPUs, so a decode check comes before any IQ trial.
 
@@ -61,7 +61,7 @@ run today for that model or class:
    exist), with the creep runner. The ceiling and the curve decide
    whether the container is worth the next two checks.
 2. **Mendel smoke**: one handed task, wall-capped, unscored, using run
-   2's replay kit (`research/run2/results/replay-llama.sh` and the
+   2's replay kit (`hardware/m1-max-32gb/research/run2/results/replay-llama.sh` and the
    counters beside it). Compared against the same smoke on the config
    we run today.
 3. **EvalPlus smoke**: the fixed subset defined in

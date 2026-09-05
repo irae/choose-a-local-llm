@@ -320,7 +320,7 @@ below belong to this model on this machine.
   (see [the retired entry](#the-retired-entry)). The entry `gemma-4-12b-it-mlx` is
   thinking OFF and cannot be turned on — all three request shapes return
   an empty `reasoning_content` (probed 2026-09-04,
-  `research/run2/results/lmstudio-thinking-probe.md`).
+  `hardware/m1-max-32gb/research/run2/results/lmstudio-thinking-probe.md`).
 - **A curated Hub id resolved to another repository's weights.** The
   entry `google/gemma-4-12b` resolves to
   `lmstudio-community/gemma-4-12B-it-MLX-4bit`. Check

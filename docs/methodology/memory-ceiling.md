@@ -48,7 +48,7 @@ exactly and the process gets the Metal OOM while the system stays
 healthy. That per-process view is not universal: `mlx_lm.server` holding
 8.5 GB read 1.7 MB in `IOAccelerator`, so for MLX servers read `Pages
 wired down` in `vm_stat` instead
-(`research/run1/results/backend-diagnosis.md`).
+(`hardware/m1-max-32gb/research/run1/results/backend-diagnosis.md`).
 Near the physical RAM, it binds first: free RAM runs to near zero
 before the sysctl matters, the crash point stops responding to sysctl
 changes, and the machine locks up and shows visual glitches. Ceilings
@@ -145,4 +145,4 @@ needed at all. The background items stay disabled until
 `tools/mac-services.sh restore` runs, so the owner gets their machine
 back when the session ends.
 
-Full measurements behind this: `research/run1/results/memory-gate.md`.
+Full measurements behind this: `hardware/m1-max-32gb/research/run1/results/memory-gate.md`.

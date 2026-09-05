@@ -19,11 +19,11 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
-- [ ] One folder per machine: move bench and research runs under hardware/<id>/{benchmarks,research}; method pages already read the machine file (hardware-folders-per-machine.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
 
 ## Changelog
 
+- 2026-09-05 One folder per machine: `benchmarks/bench1`-`bench10`, `benchmarks/INDEX.md` and `research/run1`-`run3` moved under `hardware/m1-max-32gb/`; shared scripts, calibrations, `history/` and `mendel/` stay at `benchmarks/`; run branches commit inside their own run folder only (branch `hardware-folders`)
 - 2026-09-05 Live crash watcher for scoring runs: `benchmarks/crash-watch.sh` tails the server log for the death signatures, probes one real completion on silence, exits 42 with the reason; checklist step 7 starts it beside every scoring run. The Mendel runner's `/slots`-only stall watchdog stays as it is: the runner never learns the server log path (branch `backlog/live-crash-detection`)
 - 2026-09-05 Run 9 closed: KV picks, real `-c` ceilings, Gemma-12B GGUF scored; site, historical page and findings index updated; bench 10 draft de-duplicated
 - 2026-09-05 Runner alarms landed: output-limit counters, 25-minute turn cap, at-budget pair stop, loop flag beside every row with a log, maxTokens rule in PLAN.md (Mendel `a41170a4`, site `4b3eb67`); Mac models.json edits still to apply after bench 9. Qwen3.8 budget item closed by the same rule

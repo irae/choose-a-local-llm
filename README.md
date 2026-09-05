@@ -28,11 +28,13 @@ link the setup's report. A model name in a method page is a bug.
    the expensive tests run on the survivors only. Each test has its
    own page.
 4. Plan a run per [benchmarks/PLANNING.md](./benchmarks/PLANNING.md):
-   a coordinator agent writes `benchmarks/bench<N>/AGENT.md`, a runner
+   a coordinator agent writes the runbook
+   `hardware/m1-max-32gb/benchmarks/bench<N>/AGENT.md`, a runner
    agent executes it unattended. `AGENTS.md` holds the rules for both.
 5. Record results the way `EDITOR.md` and the methodology's
    record-everywhere rule demand, and add each run's findings to
-   `benchmarks/INDEX.md`. Contribute the setup folder back.
+   `hardware/m1-max-32gb/benchmarks/INDEX.md`. Contribute the setup
+   folder back.
 
 ## What this project does not measure
 
@@ -79,5 +81,9 @@ Working on this repo? Start at [AGENTS.md](./AGENTS.md), then
   before you run anything.
 - `docs/setups/<setup>/`: one directory per measured machine. Setup
   overview, comparison, per-model reports, raw benchmark data.
-- `benchmarks/bench<N>/`: unattended-run kits. Runbook (`AGENT.md`),
-  state, results, scripts. Not part of the site.
+- `hardware/<hardware-id>/`: everything that belongs to one machine.
+  `<hardware-id>` is the same id as the setup under `docs/setups/`.
+  `benchmarks/bench<N>/` holds the unattended-run kits: runbook
+  (`AGENT.md`), state, results, scripts. `research/run<N>/` holds the
+  research runs. `benchmarks/INDEX.md` is the findings index. Not part
+  of the site.

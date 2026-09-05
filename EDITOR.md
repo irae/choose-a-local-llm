@@ -65,11 +65,13 @@ Highlights is the two-line details line.
 - Write all prose in ASD-STE100 Simplified Technical English: short
   sentences, active voice, one idea per sentence, one word for one meaning.
 
-Run kits live in `benchmarks/bench<N>/` (runbook `AGENT.md`, log
-`state.md`, results). Shared run tools sit in `benchmarks/`.
-`benchmarks/INDEX.md` is the per-run findings index; add each run's
-most interesting findings there when the run closes. None of it is site
-content.
+Run kits live in `hardware/<hardware-id>/benchmarks/bench<N>/` (runbook
+`AGENT.md`, log `state.md`, results), research kits in
+`hardware/<hardware-id>/research/run<N>/`. `<hardware-id>` is the setup
+id under `docs/setups/`. Shared run tools sit in `benchmarks/`.
+`hardware/<hardware-id>/benchmarks/INDEX.md` is the per-run findings
+index; add each run's most interesting findings there when the run
+closes. None of it is site content.
 
 ## Format
 

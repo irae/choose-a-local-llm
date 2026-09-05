@@ -6,7 +6,7 @@ ASD-STE100 Simplified Technical English.
 
 ## Essentials
 
-- `benchmarks/bench10/state.md` holds what earlier sessions of this run
+- `hardware/m1-max-32gb/benchmarks/bench10/state.md` holds what earlier sessions of this run
   did. Resume where its handing-over section says.
 - **FIRST ACTION, before anything else:**
   `git worktree add ../choose-a-local-llm-run10 -b run10` (or `cd`
@@ -53,7 +53,7 @@ ASD-STE100 Simplified Technical English.
   into `results.md` with the exact command that produced it. The
   coordinator publishes.
 - Archive evidence before the session closes:
-  `tools/archive-evidence.sh benchmarks/bench10/results run10`.
+  `tools/archive-evidence.sh hardware/m1-max-32gb/benchmarks/bench10/results run10`.
 
 ## Block A — the curves still missing
 
@@ -73,7 +73,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \
   -ngl 999 -fa on -c <largest that loads> \
   --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081 --offline 2>&1 | tee benchmarks/bench10/results/server-gemma12-gguf-4x-f16.log
+  --jinja --port 8081 --offline 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench10/results/server-gemma12-gguf-4x-f16.log
 
 # A2 gemma26-gguf-2x, f16, published -c 376832 (will not load; the single slot loads 212992)
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
@@ -81,7 +81,7 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \
   -ngl 999 -fa on -c <largest that loads> \
   --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081 --offline 2>&1 | tee benchmarks/bench10/results/server-gemma26-gguf-2x-f16.log
+  --jinja --port 8081 --offline 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench10/results/server-gemma26-gguf-2x-f16.log
 ```
 
 For A1 and A2, the full creep on one slot:
@@ -89,7 +89,7 @@ For A1 and A2, the full creep on one slot:
 ```bash
 DEPTH_LIST="4096,8192,16384,24576,32768,49152,65536,81920,98304,114688,131072,147456,163840,180224,196608,212992,229376,245760,262144" \
 MODEL=<alias> python3 tools/sweeps/creep_llama.py \
-  | tee benchmarks/bench10/results/creep-<slug>-f16.tsv
+  | tee hardware/m1-max-32gb/benchmarks/bench10/results/creep-<slug>-f16.tsv
 ```
 
 A3, LM Studio `gemma-4-12b-it-mlx`: the row reads `pending` for memory.
@@ -121,7 +121,7 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
   --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
   -ngl 999 -fa on -c 49152 \
   --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081 --offline 2>&1 | tee benchmarks/bench10/results/server-qwen38-gguf-f16-smoke.log
+  --jinja --port 8081 --offline 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench10/results/server-qwen38-gguf-f16-smoke.log
 ```
 
 Check `~/.pi/agent/models.json` entry `qwen3.8-27b` reads
@@ -129,7 +129,7 @@ Check `~/.pi/agent/models.json` entry `qwen3.8-27b` reads
 edit it. Then:
 
 ```bash
-benchmarks/mendel-smoke.sh qwen3.8-27b medium 2>&1 | tee benchmarks/bench10/results/mendel-smoke-qwen38-gguf-medium.log
+benchmarks/mendel-smoke.sh qwen3.8-27b medium 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench10/results/mendel-smoke-qwen38-gguf-medium.log
 ```
 
 Gate: `pass` sends the row to block E. `fail` drops Qwen3.8 GGUF from
@@ -159,7 +159,7 @@ whatever the new calibration says, so the two scores compare; record
 the new calibration beside it.
 
 ```bash
-RESULTS_BASE=benchmarks/bench10/results \
+RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench10/results \
 EVALPLUS_MAX_NEW_TOKENS=30000 \
 benchmarks/run-humaneval.sh gemma26-gguf-think gemma-4-26b-a4b \
   '{"chat_template_kwargs":{"enable_thinking":true}}'
@@ -268,4 +268,4 @@ two items below, which are not in it.
 Update `state.md` with a handing-over section: what ran, what a gate
 dropped and why, machine state left behind (wired limit, LM Studio,
 worktrees), the watcher comparison verdict, evidence archived. The
-coordinator adds the findings to `benchmarks/INDEX.md` and publishes.
+coordinator adds the findings to `hardware/m1-max-32gb/benchmarks/INDEX.md` and publishes.

@@ -8,10 +8,11 @@ and the methodology pages the runbook points to.
 
 ## Three kinds of work, three places
 
-- `benchmarks/bench<N>/`: a bench run. Hardware only, no judgment.
-  A small runner executes exact commands.
-- `research/run<N>/`: a research run. Needs judgment and web access,
-  and the benchmark machine.
+- `hardware/<hardware-id>/benchmarks/bench<N>/`: a bench run. Hardware
+  only, no judgment. A small runner executes exact commands.
+- `hardware/<hardware-id>/research/run<N>/`: a research run. Needs
+  judgment and web access, and the benchmark machine.
+  `<hardware-id>` is the machine's setup id under `docs/setups/`.
 - `backlog/<mnemonic-name>.md`: one file per item, issue-tracker
   style. Things to do that need no benchmark hardware (tooling, method
   pages, runner code, site restructures), not yet decided or scheduled,
@@ -32,15 +33,15 @@ and the methodology pages the runbook points to.
   results. Its working state lives in `HANDOFF.md` (local, gitignored;
   see "The handoff file" below).
 - **Runner** (smaller model, minimal context). Executes
-  `benchmarks/bench<N>/AGENT.md` block by block. It gets everything it
-  needs from that file and the pages it links. If the runner has to
-  guess, the runbook failed.
+  `hardware/<hardware-id>/benchmarks/bench<N>/AGENT.md` block by block.
+  It gets everything it needs from that file and the pages it links.
+  If the runner has to guess, the runbook failed.
 
 ## How to write `bench<N>/AGENT.md`
 
-1. Create the next `benchmarks/bench<N>/` folder with the standard kit
-   shape (`AGENT.md`, `state.md`, `results.md`, `results/`; see
-   `AGENTS.md`, standing rules).
+1. Create the next `hardware/<hardware-id>/benchmarks/bench<N>/` folder
+   with the standard kit shape (`AGENT.md`, `state.md`, `results.md`,
+   `results/`; see `AGENTS.md`, standing rules).
 2. Open with one short essentials section: the run's `state.md`
    history, the worktree command, and the rules that apply to every
    block. Do not front-load a reading list. Each block names the
@@ -109,7 +110,7 @@ and the methodology pages the runbook points to.
    gates.
 10. Close the loop: when the run ends, the runner updates `state.md`
    with a clean handing-over section, and the coordinator adds the
-   run's findings to `benchmarks/INDEX.md`.
+   run's findings to `hardware/<hardware-id>/benchmarks/INDEX.md`.
 
 The methodology carries the "how to not make mistakes":
 `docs/methodology/checklist.md` is the run loop, `common-rules.md` the

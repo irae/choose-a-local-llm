@@ -130,7 +130,7 @@ idle with runnable queued work because one item is stuck or ambiguous.
     ([common rules](./common-rules.md), the record-everywhere rule):
     benchmarks page, report page (including its summary line),
     `comparison.md`, `models.json` + `node tools/gen-tables.mjs`,
-    harness config. Update `benchmarks/bench<N>/results.md` and
+    harness config. Update `hardware/m1-max-32gb/benchmarks/bench<N>/results.md` and
     `state.md`.
 12. Commit before moving to the next block.
 13. After stopping any large server (the machine file names the

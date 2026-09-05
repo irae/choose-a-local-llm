@@ -111,5 +111,5 @@ llama floor ~24K (speed), RSS 15.4 GB there. MLX stays fast through ~68K,
 then swings between ~13 and ~24 tok/s at 62-70K, then OOMs at ~72K (limit
 24000; gfx-resident 20.0 GB at the last stable depth).
 Quality on MLX is unscored (the EvalPlus history is llama-side; thinking-mode
-convergence issues noted in `benchmarks/bench2/calibration.md` apply to the model, not
+convergence issues noted in `benchmarks/calibration.md` apply to the model, not
 the runtime).

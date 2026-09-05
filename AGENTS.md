@@ -68,14 +68,19 @@ Benchmark work:
   `bench<N>/AGENT.md`. The coordinator/runner role split and the
   HANDOFF writing rules live here. Coordinators read it; runners never
   do.
-- `benchmarks/INDEX.md`. Start here to learn what each run found. It
-  links every run's state and results.
-- `benchmarks/bench<N>/AGENT.md`. The runbook for run N. Read the
-  newest one before any benchmark work.
-- `benchmarks/bench<N>/state.md`. The run's log. Read it before you
-  resume or touch anything that run left behind.
-- `benchmarks/bench4/lmstudio-forensics.md`. Before any LM Studio
-  work; it overrides older lore.
+- `hardware/<hardware-id>/`. Everything that belongs to one machine.
+  `<hardware-id>` is the same id the site uses for the setup under
+  `docs/setups/`; today the only one is `m1-max-32gb`.
+- `hardware/<hardware-id>/benchmarks/INDEX.md`. Start here to learn
+  what each run found. It links every run's state and results.
+- `hardware/<hardware-id>/benchmarks/bench<N>/AGENT.md`. The runbook
+  for run N. Read the newest one before any benchmark work.
+- `hardware/<hardware-id>/benchmarks/bench<N>/state.md`. The run's log.
+  Read it before you resume or touch anything that run left behind.
+- `hardware/<hardware-id>/benchmarks/bench4/lmstudio-forensics.md`.
+  Before any LM Studio work; it overrides older lore.
+- `hardware/<hardware-id>/research/run<N>/`. The research runs of that
+  machine. Same kit shape as a bench run.
 - `benchmarks/` (root). The shared tools every run uses:
   `run-humaneval.sh`, `run_codegen_wrapper.py` (patched EvalPlus
   client), `calibrate.py`, `run-watch.sh` (the one watcher of a
@@ -249,7 +254,7 @@ Benchmark work:
   sentences, active voice, one idea per sentence.
 - **Terminology follows the community.** Repetition loop, degeneration,
   tool-call loop. Never "collapse" for repetition
-  (`research/run2/results/terminology.md`).
+  (`hardware/m1-max-32gb/research/run2/results/terminology.md`).
 - **Do not write code comments** unless the owner asks for them.
 - **Three places for machine state, and they are not interchangeable.**
   `~/.config/choose-a-local-llm/` holds configuration the owner edits.
@@ -285,10 +290,22 @@ Benchmark work:
   `tools/mac-services.sh` is the reference shape.
 - **Commit before you ask for review.**
 - **Verify before you claim.** Run `npm run verify` and quote the result.
-- Run kits live in `benchmarks/bench<N>/`; shared run tools in
-  `benchmarks/`. Site prose calls them **benchmark runs**, numbered,
-  never "night runs". When a run closes, add its findings to
-  `benchmarks/INDEX.md`.
+- Run kits live in `hardware/<hardware-id>/benchmarks/bench<N>/`;
+  research kits in `hardware/<hardware-id>/research/run<N>/`; shared run
+  tools in `benchmarks/`. Site prose calls them **benchmark runs**,
+  numbered, never "night runs". When a run closes, add its findings to
+  `hardware/<hardware-id>/benchmarks/INDEX.md`.
+- **A run branch commits inside its own run folder only.** That is
+  `hardware/<hardware-id>/benchmarks/bench<N>/` or
+  `hardware/<hardware-id>/research/run<N>/`, plus the Mendel kit's own
+  repository for Mendel rows. A run branch never edits `models.json`,
+  the site pages, the method pages, or any other shared file. Scoring,
+  publishing and every shared-file change happen on `master` after the
+  merge.
+- **When master moves a run folder, rename it on the run branch first.**
+  On the run branch, `git mv` the run folder to the same new path,
+  commit, then merge `master`. Both sides renamed the same path, so the
+  merge is clean.
 - **Every run kit has the same shape**: `AGENT.md` (the runbook),
   `state.md` (the log, deviations noted as they happen), `results.md`
   (the summary table), `results/` (raw output). Do not invent other

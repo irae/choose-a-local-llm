@@ -25,7 +25,7 @@ passes them, so a failure there means something changed. The fourth is
 long reasoning: half of the scored configs return nothing for it. It is
 in the subset so the smoke also sees the completion failure mode, not
 only the wrong-answer one. Picked from the per-problem raw results and
-`_eval_results.json` files under `benchmarks/bench*/results/`, across
+`_eval_results.json` files under `hardware/m1-max-32gb/benchmarks/bench*/results/`, across
 the twelve configs with a complete scored run.
 
 THE BUDGET RULE. Both sides of a comparison use the SAME `max_tokens`,
@@ -90,7 +90,7 @@ samples file carries the four real answers plus a `raise
 NotImplementedError` stub for the other 160 problems. The pass@1 the
 evaluator prints is therefore meaningless and this tool ignores it; the
 verdict comes from the per-problem statuses. The same padding produced
-`benchmarks/bench3/results/gemma12-lmstudio-thinking-smoke/`.
+`hardware/m1-max-32gb/benchmarks/bench3/results/gemma12-lmstudio-thinking-smoke/`.
 
 VALIDATION. Replaces `tools/sweeps/lmstudio_evalplus_smoke.py`, whose
 concurrency and reasoning-token capture live on here. Validate it, as
