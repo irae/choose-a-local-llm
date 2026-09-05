@@ -81,3 +81,50 @@ Backed up `~/.pi/agent/models.json` to
 `mlx-community-Qwen3.8-27B-4bit-low-guided-v3-issue-13` →
 `...-attempt1` in `~/code/mendel`. Starting
 `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi guided low`.
+
+## Handing over — run9 close
+
+Blocks run, in order:
+- **A / A1b** (KV-cache creep, three models): all three closed, real
+  hardware ceilings found (not the published `-c` values, which all
+  OOM). Qwen3.6 = q8_0 @ `-c 49152`; Qwen3.8 = f16 @ `-c 49152`;
+  Gemma-26B = f16 @ `-c 212992`. See `results.md` for the full tables
+  and the corrections mid-run (an earlier version of this run wrongly
+  accepted an undersized `-c` as a ceiling; that mistake and its fix
+  are documented in `results.md` and a fix note is now in
+  `docs/methodology/checklist.md`).
+- **B0** (EvalPlus smoke, the two f16 picks): closed. Qwen3.8 f16
+  level with q8_0. Gemma-26B f16 level with q8_0 (both fail the same
+  known-hard problem identically).
+- **B1** (Gemma-12B GGUF EvalPlus, thinking off): closed. 0.976/0.939,
+  0 empty — beats the published MLX score (0.909/0.872) by 0.067,
+  needs its own row (quants don't share a score here).
+- **B3** (Mendel guided, Gemma-12B GGUF, thinking off, f16, no MTP):
+  closed. Partial, 3/8, raw 58 / capped 37.5, `model_budget_exhausted`.
+  Block B3's own text was self-contradictory on the drafter (title/note
+  said "no drafter", body said "keep the drafter") — followed the
+  title/note; flag for the coordinator to fix the text.
+- **E** (Qwen3.8 MLX harness fix + guided-low retry): closed as
+  invalid after three attempts. The harness fix (`maxTokens` 8192)
+  works, but a separate, still-open issue remains: real Metal OOM
+  crashes from the context growing past the configured 26624-token
+  window during agentic use. See `results.md` for the full account.
+  Branch chain: `...-attempt1` (run-7's original bug), `...-attempt2`
+  (this run, no server started), `...-attempt3` (this run, two real
+  OOM crashes, zero commits).
+- **C** (Bonsai MLX, guided + blind, thinking off): **not run — the
+  owner deferred it to run10.**
+
+Machine state left behind: `iogpu.wired_limit_mb` is 24000 (resets to
+0 on next reboot, per the cold-start sequence). No `llama-server` or
+`mlx_lm` process running. No memory watcher running. LM Studio was
+quit at session start and never reopened. All run worktrees (Mendel
+side) removed; only the `mendel-bench-repro-gemma-4-12b-low-guided`
+worktree remains, pre-existing and untouched by this session. Evidence
+(`benchmarks/bench9/results/`) is committed on `run9`, not yet
+archived via `tools/archive-evidence.sh` — the coordinator should run
+that after the merge if the run's evidence needs archiving per the
+usual close-out.
+
+This closes run9. Merging into `master` now per the owner's explicit
+instruction.

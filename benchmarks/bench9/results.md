@@ -506,3 +506,59 @@ first scored attempt at this exact config. Row committed to the
 pushed to origin, session log redacted and listed in `SESSIONS.md`.
 
 Block B3 closed.
+
+## Block E — Qwen3.8 MLX, harness fix and invalid guided-low row
+
+Step 1 (harness fix): backed up `~/.pi/agent/models.json` to
+`~/.config/choose-a-local-llm/models.json.bak-20260905`. Edited entry
+`mlx-community/Qwen3.8-27B-4bit`: `maxTokens` 16384 → 8192,
+`contextWindow` unchanged at 26624.
+
+Step 2 (freed the invalid run-7 branch's slot): renamed
+`mlx-community-Qwen3.8-27B-4bit-low-guided-v3-issue-13` →
+`...-attempt1` (zero commits, three Metal OOM crashes, run 7).
+
+Step 3 (retry): `./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi
+guided low`.
+
+- **First attempt**: invalid immediately — no `mlx_lm.server` was
+  running (this block's server is not auto-started by the worker,
+  unlike block C's provider). Zero commits, 10 tooling nudges of pure
+  connection errors. Renamed to `...-attempt2`.
+- **Second attempt**: server started properly this time
+  (`mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit
+  --chat-template-args '{"reasoning_effort":"low"}' --prompt-cache-size 2
+  --port 8081`, verified with a real completion first). Ran ~3.5
+  hours. Two distinct behaviors observed:
+  1. A recurring single-token reasoning stall (`stop=length`,
+     1 output token, e.g. `thinking: "I"`) — 8 occurrences, each
+     recovered by the harness's own "Continue from where you stopped"
+     nudge. Real work happened between stalls (file reads, a baseline
+     `pnpm run unit` check, 260/260 green).
+  2. **Two real Metal OOM crashes** (`RuntimeError: [METAL] Command
+     buffer execution failed: Insufficient Memory`) — the generation
+     thread died while the process stayed up and `/health` kept
+     returning 200 (server-lore.md's dead-thread trap), on prompts of
+     22892 and 27969 tokens, the second past the 26624-token
+     configured window. The harness's stall watchdog has no
+     `serverBusy()` signal for mlx (`/slots` is llama.cpp-only), so
+     every silence — OOM or otherwise — is generically classified as
+     a stall after the same watchdog window; killing it manually here
+     only preempted that generic recovery by a few minutes, it did
+     not bypass a working mechanism.
+  Terminated manually after the second crash rather than let a third
+  attempt run into the same wall: **zero commits, invalid**.
+  Renamed to `...-attempt3`, pushed to origin.
+
+**Finding**: the run-7 harness fix (`maxTokens` 16384 → 8192) works as
+intended — no OOM this run came from budget/window mismatch at
+request-construction time. But it did not fix the underlying issue:
+this model, at reasoning effort **low**, still grows its context past
+the configured 26624-token window during real agentic use and crashes
+Metal, independent of the token-budget question. That is a different,
+still-open problem the coordinator should scope separately (a smaller
+`contextWindow`, an earlier compaction trigger, or dropping
+`--prompt-cache-size 2`). No score recorded; no `reruns` penalty (an
+invalid run is never an attempt).
+
+Block E closed as invalid, three attempts, root cause identified.
