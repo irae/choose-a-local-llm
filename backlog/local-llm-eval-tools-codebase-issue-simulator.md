@@ -167,3 +167,13 @@ cheap model. Only then do new runs use the framework.
 - Whether the first refactor keeps bash plus node, or moves the
   worker to node too.
 - The licence of the new repository.
+
+## Files that must move together
+
+The runner alarms (`backlog/runner-alarms-output-limit-and-loop-stop.md`)
+split across the two repos. The counters, the turn cap, the pair stop
+and the loop flag at run close live in the Mendel kit
+(`run-pi-rpc.mjs`, `run-worker.sh`, `PLAN.md`). The loop verdict itself
+is `benchmarks/loop-check.py` in this repo, and `run-worker.sh` calls
+it by path. When the kit moves into the new repo, `loop-check.py` moves
+with it, and the path in `run-worker.sh` changes in the same commit.

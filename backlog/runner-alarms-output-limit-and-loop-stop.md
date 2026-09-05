@@ -31,6 +31,10 @@ fire.
    its worst ratio and kind, never a stop, after the one-line newline
    fix in `benchmarks/loop-check.py`.
 
+Split across repos: the runner code lands in the Mendel kit; the loop
+verdict script stays here in `benchmarks/loop-check.py` and the kit
+calls it by path. The extraction item lists both as one move.
+
 Not done yet: the runner code for 2 to 5, the two `PLAN.md`
 sentences, the Mac `models.json` and `settings.json` edits, and the
 hand check of the eleven LOOP rows.
