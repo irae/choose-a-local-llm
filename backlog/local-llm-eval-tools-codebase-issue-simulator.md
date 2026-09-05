@@ -43,12 +43,12 @@ invalid rows, score-line categories). All of that is tied to one task
 the Mendel repo, so nobody can reuse it on another codebase.
 
 The goal: a new repository that carries that method as a formal
-framework, agnostic of Mendel, tailored to do exactly what it does
-today: benchmark any code repository task with pi, with the same rigour.
-Its history must be the real history of the `benchmark/` folder, not a
+framework, agnostic of Mendel, that does exactly what it does today:
+benchmark any code repository task with pi, with the same rigour. Its
+history must be the real history of the `benchmark/` folder, not a
 fresh copy, so every rule keeps the commit that explains it.
 
-## Step 1 — extract the folder with its history
+## Step 1: extract the folder with its history
 
 Work in a fresh clone; never in `../mendel` or `../mendel-benchmark`.
 
@@ -71,31 +71,31 @@ Work in a fresh clone; never in `../mendel` or `../mendel-benchmark`.
    reference only files that exist.
 5. Push to `local-llm-eval-tools` once the owner creates it; the repo
    README and the project README come in the first commit after the
-   extracted history. The Mendel
-   `benchmark` branch stays as it is; results data (`results*.json`,
+   extracted history. The Mendel `benchmark` branch stays as it is.
+   Results data (`results*.json`,
    `results*.csv`, `runs/`, the reports) stays in the extracted
    history but is Mendel's data, see step 2.
 
-## Step 2 — separate the generic method from the Mendel task
+## Step 2: separate the generic method from the Mendel task
 
 Inventory of `benchmark/` as of 2026-09-04, sorted by what it is:
 
 Generic (becomes the framework):
 
-- `run-worker.sh` — worktree per run, branch naming with bench and
+- `run-worker.sh`: worktree per run, branch naming with bench and
   thinking-level suffixes, abort on an existing branch, plan probes
   before and after, evidence under `scratchpad/`, per-run pi config
   directory, worker JSON record.
-- `run-pi-rpc.mjs` — the pi RPC runner: nudge policy (model nudge on
+- `run-pi-rpc.mjs`: the pi RPC runner. Nudge policy (model nudge on
   unchecked task items, tooling nudge), wall-clock and tooling
   budgets, telemetry (tokens, cache reads, compactions, tool calls
   and errors, peak context), session log.
-- `score.mjs` — the evidence pack; `generate-report.mjs` and the two
-  report templates — the completion cap, invalid and dimmed rows,
-  score-line priority, null-cell gate; `probe-plan.mjs` and
-  `estimate-plan-share.mjs` — plan accounting for subscription
-  providers; `agents-global.md` v1.0 — the frozen agent rules.
-- `PLAN.md` — the law: run procedure, scoring procedure, results
+- `score.mjs`: the evidence pack. `generate-report.mjs` and the two
+  report templates: the completion cap, invalid and dimmed rows,
+  score-line priority, null-cell gate. `probe-plan.mjs` and
+  `estimate-plan-share.mjs`: plan accounting for subscription
+  providers. `agents-global.md` v1.0: the frozen agent rules.
+- `PLAN.md`: the rules. Run procedure, scoring procedure, results
   shape, redaction, plan accounting, invalid-run criteria, best-of and
   re-run categories, credit exhaustion.
 
@@ -115,7 +115,7 @@ worked example):
   Mendel task definition or with this project's `benchmarks/mendel/`
   mirror, not in the framework core.
 
-## Step 3 — the framework shape (proposal, owner decides)
+## Step 3: the framework shape (proposal, owner decides)
 
 - A **task definition** is a folder: target repository and base ref,
   the issue text, one or more prompt variants with versions, the
@@ -127,7 +127,7 @@ worked example):
   artifacts as today: worker record, session log, runner log,
   telemetry, plan probes, archived evidence.
 - The **scorer** produces the evidence pack from the battery, and a
-  scoring guide that a strong model applies with the rubric; the
+  scoring guide that a strong model applies with the rubric. The
   results file shape stays the one `PLAN.md` documents, with
   `prompt_version`, `invalid`, `best_of`, `reruns`, the raw and
   capped totals.
@@ -135,11 +135,11 @@ worked example):
   same policies. The site in this repository keeps reading
   `results.json` and `results.csv` by the same field names.
 - The **rules** (`PLAN.md`, `agents-global.md`) split into the
-  framework's law and the task's law. `agents-global.md` stays
+  framework's rules and the task's rules. `agents-global.md` stays
   frozen at v1.0 for every existing row; a new version is a new
   results epoch.
 
-## Step 4 — prove it on Mendel
+## Step 4: prove it on Mendel
 
 The Mendel task, expressed in the new format, must reproduce one
 existing row: same worker command shape, same telemetry fields, same

@@ -1,10 +1,10 @@
-# mac-services.sh — how to decide what to disable
+# Deciding what mac-services.sh disables
 
 `tools/mac-services.sh` turns background items off before a run and puts them
 back after. It ships with no list. A list of login items describes one
 person's Mac, so it stays out of this repo.
 
-Build your own list once, then the script reads it every run.
+Build your own list once. The script reads it every run.
 
 ## Where your files go
 
@@ -14,12 +14,12 @@ Build your own list once, then the script reads it every run.
       services-state                 written by "off", read by "on"
       baselines/                  the dumps you took before any change
 
-Blank lines and `#` comments are ignored, so you can annotate a label with
+Blank lines and `#` comments are ignored. You can annotate a label with
 why it is there, or comment one out to keep it running.
 
-`$XDG_CONFIG_HOME` is used when set.
+The script uses `$XDG_CONFIG_HOME` when it is set.
 
-## Step 1 — take the baselines first
+## Step 1: take the baselines first
 
 You cannot restore what you did not record. Take all three:
 
@@ -30,39 +30,39 @@ You cannot restore what you did not record. Take all three:
 `sfltool` needs root, and a terminal it can prompt in. An agent shell has
 no TTY, so run this one yourself.
 
-## Step 2 — know that two stores disagree
+## Step 2: know that two stores disagree
 
 `sfltool dumpbtm` reads Background Task Management. That is the store
 behind System Settings > General > Login Items & Extensions. It is what
 you see and toggle.
 
-`launchctl print-disabled` reads launchd's own store. Different store.
+`launchctl print-disabled` reads launchd's own store. A different store.
 
 An item can read `enabled` in one and `disabled` in the other. Trust BTM
 for "is it on", because that is the switch you used. Use launchd for
-items BTM does not list at all — older installs that never registered
+items BTM does not list at all: older installs that never registered
 with `SMAppService` are invisible in Settings, and `launchctl disable` is
 the only way to reach them.
 
 Read the BTM dump per UID. It covers UID 0, UID -2, and one section per
 user account. Work in your own section.
 
-## Step 3 — find the orphaned helpers
+## Step 3: find the orphaned helpers
 
-This is the case that pays. Turning off an app in Settings stops the app
-auto-starting. It does not touch that app's separate helper agent, which
-keeps loading at every boot.
+This is the case that gives results. Turning off an app in Settings
+stops the app auto-starting. It does not touch that app's separate
+helper agent, which keeps loading at every boot.
 
 Look for an app record with `Disposition: [disabled ...]` whose vendor
 also has a `login item` or `legacy agent` record still marked `enabled`.
 Those helpers are the first thing on your list. Disabling them only
 finishes a decision you already made.
 
-## Step 4 — sort what is left into three groups
+## Step 4: sort what is left into three groups
 
 - **Disable for a run.** Updaters, sync clients, menu bar extras, backup
   agents. Nothing a benchmark needs. This is the list you write.
-- **You decide.** Anything with a cost you will feel — a password manager
+- **You decide.** Anything with a cost you will feel: a password manager
   helper, an audio driver stack. Keep these commented out with the cost
   written next to them.
 - **Cannot be disabled this way.** Network system extensions. Check with
@@ -71,7 +71,7 @@ finishes a decision you already made.
   Extensions. Disabling the vendor's launch agent does not unload the
   extension.
 
-## Step 5 — measure, do not assume
+## Step 5: measure, do not assume
 
 A disabled item that is already running keeps running, so a saving is
 only real after a reboot.
@@ -97,5 +97,5 @@ by hand.
 
 Settings toggles cannot be scripted at all. `sfltool` has `dumpbtm` and
 `resetbtm` only, with no way to enable one item. Flip those back by hand,
-using your BTM baseline as the record. Never run `resetbtm` — it wipes
+using your BTM baseline as the record. Never run `resetbtm`; it wipes
 the whole list.

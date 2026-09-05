@@ -3,15 +3,15 @@
 Source of truth: the `benchmark` branch of the open-source
 [Mendel](https://github.com/irae/mendel/tree/benchmark) repo
 (`../mendel` on this machine). This folder mirrors the four artifacts
-the site needs. We host them here because it is us who benchmarks the
-local models.
+the site needs. We host them here because we benchmark the local
+models.
 
-- `results.csv` — the blind test (terse prompt, base: tag
+- `results.csv`: the blind test (terse prompt, base: tag
   `benchmark-blind-base`).
-- `results-guided.csv` — the guided test (structured prompt with the
-  traps disclosed, base: tag `benchmark-guided-base`). Which test a
-  model runs is set by the Mendel `PLAN.md`.
-- `report.html` / `report-guided.html` — the self-contained reports.
+- `results-guided.csv`: the guided test (structured prompt with the
+  traps disclosed, base: tag `benchmark-guided-base`). The Mendel
+  `PLAN.md` sets which test a model runs.
+- `report.html` / `report-guided.html`: the self-contained reports.
   Served verbatim at `/mendel/report.html` and
   `/mendel/report-guided.html` (`tools/sync-static.mjs` copies them to
   `docs/public/` on dev and build; `docs/public/` is gitignored).

@@ -1,19 +1,19 @@
 # Planning a benchmark run
 
-This page is for the coordinator agent — the one that does repo design,
+This page is for the coordinator agent, the one that does repo design,
 research, debugging, and planning. It explains how to turn open work
 into a run kit that a smaller runner agent can execute with much less
-context. The runner never reads this page; it reads only its runbook
+context. The runner never reads this page. It reads only its runbook
 and the methodology pages the runbook points to.
 
 ## Three kinds of work, three places
 
-- `benchmarks/bench<N>/` — a bench run: hardware only, no judgment.
+- `benchmarks/bench<N>/`: a bench run. Hardware only, no judgment.
   A small runner executes exact commands.
-- `research/run<N>/` — a research run: needs judgment and web access,
-  AND the benchmark machine.
-- `backlog/<mnemonic-name>.md` — one file per item, issue-tracker
-  style: things to do that need no benchmark hardware (tooling, method
+- `research/run<N>/`: a research run. Needs judgment and web access,
+  and the benchmark machine.
+- `backlog/<mnemonic-name>.md`: one file per item, issue-tracker
+  style. Things to do that need no benchmark hardware (tooling, method
   pages, runner code, site restructures), not yet decided or scheduled,
   and reviewed by the owner before any agent picks one up. An item is
   not a prompt; the agent that takes it writes its own plan. An
@@ -27,11 +27,11 @@ and the methodology pages the runbook points to.
 
 ## The two roles
 
-- **Coordinator** (strong model, full context): plans, investigates,
+- **Coordinator** (strong model, full context). Plans, investigates,
   fixes the harness, writes the runbook, spawns the runner, judges the
-  results. Its working state lives in `HANDOFF.md` (local, gitignored —
+  results. Its working state lives in `HANDOFF.md` (local, gitignored;
   see "The handoff file" below).
-- **Runner** (smaller model, minimal context): executes
+- **Runner** (smaller model, minimal context). Executes
   `benchmarks/bench<N>/AGENT.md` block by block. It gets everything it
   needs from that file and the pages it links. If the runner has to
   guess, the runbook failed.
@@ -39,7 +39,7 @@ and the methodology pages the runbook points to.
 ## How to write `bench<N>/AGENT.md`
 
 1. Create the next `benchmarks/bench<N>/` folder with the standard kit
-   shape (`AGENT.md`, `state.md`, `results.md`, `results/` — see
+   shape (`AGENT.md`, `state.md`, `results.md`, `results/`; see
    `AGENTS.md`, standing rules).
 2. Open with one short essentials section: the run's `state.md`
    history, the worktree command, and the rules that apply to every
@@ -48,11 +48,11 @@ and the methodology pages the runbook points to.
    there. Reason: a fresh, small context gets more attention from an
    agent than a page read an hour earlier; the runbook is already in
    the right order, so the right file gets read at the right time.
-   Point, do not paste — the runbook stays short.
+   Point, do not paste; the runbook stays short.
    `docs/methodology/checklist.md` is still the first block's reading, and the
    runbook's first instruction is its step 1: create the run worktree
    and move into it before any other action. Runners skip this when
-   the runbook only implies it — spell out the exact `git worktree
+   the runbook only implies it, so spell out the exact `git worktree
    add` command with the run's number. A benchmark runbook says bash
    and `cd`. A research or planning kit says `EnterWorktree` with
    `path` instead, because that work is interactive and the owner's
@@ -72,7 +72,7 @@ and the methodology pages the runbook points to.
      `tools/archive-evidence.sh <runs-dir> <run-slug>`, which copies to
      `~/.local/share/choose-a-local-llm/evidence/`.
    - **A split turn is not a compaction.** pi writes a `compaction`
-     record for both. The split turn carries a summary beginning
+     record for both. The split turn carries a summary that begins
      `No prior history`. Counting it inflates the number; it did, twice,
      in run 7.
 4. Never write a `sudo` command into a runbook. The runner verifies
@@ -82,24 +82,24 @@ and the methodology pages the runbook points to.
    change.
 5. State the execution rules the runner must not relearn: local run
    branch in a fresh sibling worktree (the main worktree stays with the
-   coordinator), no bare `git stash` — named stashes only, applied by
-   name (see `AGENTS.md` standing rules), scoring in a subagent on the
-   Fable model (`claude-fable-5`) — never a smaller model — because
-   scoring is LLM judgment, the stop-and-sync procedure from `AGENTS.md` standing
-   rules when the owner asks to stop (merge to `master`, push `master`,
-   delete the branch, remove the worktree — that one push is required),
-   one model on the GPU at a time, port, heartbeat cadence, the scoped
-   memory watcher on every run, commit as results land, never push a
-   run branch, never publish.
+   coordinator); no bare `git stash`, named stashes only, applied by
+   name (see `AGENTS.md` standing rules); scoring in a subagent on the
+   Fable model (`claude-fable-5`), never a smaller model, because
+   scoring is LLM judgment; the stop-and-sync procedure from
+   `AGENTS.md` standing rules when the owner asks to stop (merge to
+   `master`, push `master`, delete the branch, remove the worktree;
+   that one push is required); one model on the GPU at a time; port;
+   heartbeat cadence; the scoped memory watcher on every run; commit
+   as results land; never push a run branch; never publish.
 6. Write the blocks in priority order. Each block gives: the exact
    serving command, the exact run command (with every env var), where
    results land, what "done" means, and what to update when it is done
    (tables, `results.md`, `state.md`, commit).
 7. Make every condition executable. "If promising" is a coordinator
-   judgment — either resolve it while planning, or spell out the test
-   the runner applies and what to do on each outcome.
+   judgment. Resolve it while planning, or spell out the test the
+   runner applies and what to do on each outcome.
 8. Bake in the failure paths so the GPU never sits idle: what to check
-   when output stops growing (server log first — see
+   when output stops growing (server log first; see
    `docs/methodology/server-lore.md`), how to resume each block, and
    the order to start the next block the moment one ends. No approval
    gates.
@@ -109,18 +109,18 @@ and the methodology pages the runbook points to.
 
 The methodology carries the "how to not make mistakes":
 `docs/methodology/checklist.md` is the run loop, `common-rules.md` the
-measurement law, the per-test pages the specific steps, and
+measurement rules, the per-test pages the specific steps, and
 `server-lore.md` the debugging lore. A runbook never restates them; it
 links them at the exact step where they apply.
 
 ## Spawning the runner
 
 Give the runner a short prompt: the reading list (its `AGENT.md` first),
-the standing prohibitions (push only on owner request — and then only
-`master` — no publish), the heartbeat format,
-and the instruction to keep working until every block is done or truly
-blocked. Pass the STE prose rule on. Do not paste findings or history
-into the prompt — that is what the files are for.
+the standing prohibitions (push only on owner request, and then only
+`master`; no publish), the heartbeat format, and the instruction to
+keep working until every block is done or truly blocked. Pass the STE
+prose rule on. Do not paste findings or history into the prompt; that
+is what the files are for.
 
 ## When the owner asks what is pending
 
@@ -134,23 +134,23 @@ current-state section, not in an answer.
 
 `HANDOFF.md` at the repo root is the coordinator's working state: what
 is mid-flight, what was decided and not yet written anywhere else, what
-the next coordinator session must know. It is gitignored on purpose —
-it is one person's current state, not repo content. Each repo user
-starts with an empty one.
+the next coordinator session must know. It is gitignored on purpose. It
+is one person's current state, not repo content. Each repo user starts
+with an empty one.
 
 Rules for writing it:
 
-- It is NOT for the benchmark runner. Runners read their
-  `bench<N>/AGENT.md`; pointing a runner at the handoff leaks
+- It is not for the benchmark runner. Runners read their
+  `bench<N>/AGENT.md`. Pointing a runner at the handoff leaks
   coordinator context and stale state into a run.
-- State the desired next state, never what "is running" — the next
+- State the desired next state, never what "is running". The next
   session starts at an unknown time, and claims about live state go
   stale.
 - Keep only what the next coordinator session needs and no other file
   holds. When something belongs to a run, move it to the run kit; when
   it is a durable rule, move it to the methodology or `AGENTS.md`.
-- Keep it SMALL (owner rule, 2026-09-03). The handoff exists to pick
-  up where things are and to say WHERE the detail lives. Committed
+- Keep it small (owner rule, 2026-09-03). The handoff exists to pick
+  up where things are and to say where the detail lives. Committed
   content gets a pointer, never a summary. Only uncommitted state,
   open decisions, and in-flight work earn sentences. The handoff
   itself opens with a "Handoff guidelines" section that carries these
