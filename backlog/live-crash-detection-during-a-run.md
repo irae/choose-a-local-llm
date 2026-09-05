@@ -10,16 +10,20 @@ hardware: no to design the approach; a live run to validate it.
   log for the death signatures (the `creep_mlx.py` list plus the LM
   Studio list from server lore), and after `CRASHWATCH_SILENCE`
   seconds without growth of the output file it sends one real
-  completion, never `/health`. Exit 42 with a one-line reason on
-  stdout. Configuration through `CRASHWATCH_*` variables, `--help`
+  completion, never `/health`. One failed probe is a suspicion (a
+  one-slot server queues it behind a live turn); growth during the
+  probe means alive, and only a second failed probe after another
+  silence window means dead, as in `creep.py`. Exit 42 with a one-line
+  reason on stdout. Configuration through `CRASHWATCH_*` variables, `--help`
   lists them. It restarts nothing.
 - `docs/methodology/checklist.md` step 7 starts it beside every
   scoring run and says how to read exit 42. `AGENTS.md` indexes it.
 - Verified without a GPU: a fake log that grows the Metal OOM line
   (exit 42 within one poll), a fake server that answers `/health` 200
-  and hangs the completion (exit 42 after the silence and probe
-  timeout), a healthy log (quiet), a silent output file with a live
-  server (the probe answers, the watcher keeps waiting).
+  and hangs the completion through two silence windows (exit 42), a
+  healthy log (quiet), a silent output file with a live server (the
+  probe answers, the watcher keeps waiting), and a hung probe while
+  the output grows (alive, probe dropped).
 - Not done: the runner-side `serverBusy()` path for `mlx_lm.server`
   and LM Studio. `run-worker.sh` does not start the server, the
   coordinator does, so the runner has no server log path to grep. The

@@ -13,8 +13,14 @@
 #      and docs/methodology/server-lore.md).
 #   2. When the run's output file stops growing for SILENCE seconds, it
 #      sends ONE real completion with a long timeout. A completion that
-#      returns means the server is alive and the run is thinking. One
-#      that does not return means the server is dead.
+#      returns means the server is alive and the run is thinking.
+#      Every server here holds one slot, so a probe queued behind a
+#      long turn times out exactly like a probe to a dead server. So
+#      one failed probe is a suspicion: if the output file grew while
+#      the probe waited, the server is alive and the silence clock
+#      resets. Only a second failed probe, after another full silence
+#      window with no growth, calls the server dead. The same rule as
+#      tools/sweeps/creep.py.
 #
 # It restarts nothing. It reports, the coordinator decides.
 #
@@ -23,7 +29,7 @@
 #             the run ends.
 #
 # What it changes on the Mac: nothing. It reads two files and sends at
-# most one tiny request per silence. Reverse direction: stop it.
+# most one tiny request per silence window. Reverse direction: stop it.
 #
 # Usage: crash-watch.sh            (configuration through the environment)
 #        crash-watch.sh --help
@@ -43,8 +49,9 @@
 # At least one of CRASHWATCH_SERVER_LOG and CRASHWATCH_OUTPUT is required.
 #
 # Validated 2026-09-05 against a fake log that grows a death signature
-# and a fake server that stops answering (both exit 42 with the reason)
-# and a healthy log (stays quiet).
+# (exit 42), a fake server that stops answering through two silence
+# windows (exit 42), a healthy log (stays quiet), and a fake server that
+# hangs the probe while the output file grows (alive, keeps watching).
 
 set -u
 
@@ -107,6 +114,7 @@ if [ -n "$OUTPUT_FILE" ]; then
     output_seen=$(file_size "$OUTPUT_FILE")
 fi
 silent_for=0
+failed_probes=0
 
 while true; do
     sleep "$POLL"
@@ -133,6 +141,7 @@ while true; do
     if [ "$output_now" -ne "$output_seen" ]; then
         output_seen="$output_now"
         silent_for=0
+        failed_probes=0
         continue
     fi
 
@@ -145,8 +154,22 @@ while true; do
     if probe_real_completion; then
         echo "  probe answered: server alive, the run is thinking"
         silent_for=0
+        failed_probes=0
         continue
     fi
-    echo "SERVER DEAD: no output for ${silent_for}s and a real completion did not return within ${PROBE_TIMEOUT}s"
+    silent_for=0
+    output_now=$(file_size "$OUTPUT_FILE")
+    if [ "$output_now" -ne "$output_seen" ]; then
+        output_seen="$output_now"
+        failed_probes=0
+        echo "  probe did not return, but the output grew while it waited: server alive, probe dropped"
+        continue
+    fi
+    failed_probes=$(( failed_probes + 1 ))
+    if [ "$failed_probes" -lt 2 ]; then
+        echo "  probe 1 of 2 did not return within ${PROBE_TIMEOUT}s. A probe queued behind a live turn fails the same way; waiting ${SILENCE}s more"
+        continue
+    fi
+    echo "SERVER DEAD: two probes did not return, each after ${SILENCE}s without output growth on $OUTPUT_FILE"
     exit 42
 done

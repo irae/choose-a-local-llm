@@ -95,8 +95,11 @@ idle with runnable queued work because one item is stuck or ambiguous.
    or under `Monitor`). It tails the server log for the death
    signatures and probes one real completion after
    `CRASHWATCH_SILENCE` seconds without output growth (default 600).
-   It exits 42 the moment the server is dead, and its last stdout line
-   says why; the background-task notification carries that line. Read
+   One failed probe is a suspicion, because a probe queued behind a
+   long turn on a one-slot server fails the same way; it exits 42 on
+   a death signature, or when two probes fail, each after a full
+   silence window with no growth. Its last stdout line says why; the
+   background-task notification carries that line. Read
    exit 42 as: kill the server, restart it, resume the block, start a
    new watcher. Any other exit is not a verdict. It never restarts
    anything. Then schedule a wakeup ≤20 minutes
