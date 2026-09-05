@@ -476,3 +476,33 @@ Per AGENT.md, the shared-score rule now needs a quant condition for
 this model; the coordinator decides the row.
 
 Block B1 closed.
+
+## Block B3 — Mendel guided on Gemma-12B GGUF, thinking off, f16 KV, no MTP
+
+Block text was self-contradictory on the drafter (see `state.md`);
+followed the title/row-note (no drafter) over the body. Server:
+`gemma-4-12b`, f16 both cache types, `-c 262144`, no
+`--spec-type`/`--spec-draft-n-max` flags — loads clean, no OOM (12B is
+much smaller than the 26B model that OOM'd at this `-c`).
+
+```
+cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-12b pi guided off
+```
+
+Scored per `PLAN.md` "How to score a run" in a Fable subagent, applying
+`RUBRIC.md` unchanged. `count-tool-calls.mjs` confirms telemetry:
+tool_calls=132, peak_context=125135 (47.7% of the 262144 window).
+
+| model | config | libraries | end reason | raw | capped |
+| --- | --- | --- | --- | --- | --- |
+| Gemma-4-12B (llama.cpp, off) | f16 KV, no MTP | 3/8 | model_budget_exhausted (3 model nudges) | 58 | 37.5 |
+
+Same failure signature (`model_budget_exhausted`, 3 nudges, 16384-token
+budget) as `google-gemma-4-12b-high-guided`, while Qwen3.6 and Bonsai
+complete cleanly at the same budget — read as a Gemma-12B-family
+characteristic, not a harness misconfiguration. No `reruns` penalty:
+first scored attempt at this exact config. Row committed to the
+`benchmark` branch (`b4e0933`), run branch `gemma-4-12b-off-guided-v3-issue-13`
+pushed to origin, session log redacted and listed in `SESSIONS.md`.
+
+Block B3 closed.
