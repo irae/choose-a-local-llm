@@ -98,6 +98,9 @@ Benchmark work:
   a pi session log: distinct-shape ratio in a sliding window,
   threshold 0.10; catches identical lines, counters, and short
   cycles).
+- `tests/`. The tests for the shared tools in `benchmarks/`. One
+  command, `tests/run.sh`, and `tests/fixtures/README.md` says where
+  every fixture came from.
 - `sunset/`. Scripts on their way out. They run beside their
   replacement for one run, then the directory is deleted. Its README
   says which run and what replaced them.
@@ -223,6 +226,8 @@ Benchmark work:
 - **Run the exact files the runbook names.** A missing or different
   file is stop-and-ask. Downloading is a planning decision written into
   the runbook (`docs/methodology/common-rules.md`, rule 8).
+- **Run `tests/run.sh` after you touch any script under
+  `benchmarks/`.** It is one command and it needs no server.
 - **Never edit a shell script while it runs.** The shell reads the file
   as it executes, so an edit changes the running program. Wait for the
   run to end, or write a new file.

@@ -1,0 +1,11 @@
+#!/bin/bash
+# Prints the captured vm_stat fixtures in order: sample 1, then sample 2
+# for every later call.
+count_file="${FAKE_VM_STAT_COUNT:?}"
+n=$(cat "$count_file" 2>/dev/null || echo 0)
+echo $(( n + 1 )) > "$count_file"
+if [ "$n" = "0" ]; then
+    cat "${FAKE_VM_STAT_DIR:?}/vm_stat-1.txt"
+else
+    cat "${FAKE_VM_STAT_DIR:?}/vm_stat-2.txt"
+fi

@@ -1,0 +1,28 @@
+[2026-09-04 10:24:55][DEBUG][context_fit][INFO]: Model context auto-fit: family=gemma4 max=262,144 fitted=158,464 working_set=23.44GiB reserve=3.00GiB safe_ceiling=20.44GiB baseline=6.28GiB full_kv=16384B/token prompt_inputs=7680B/token attention=65536B/token rotating_peak=0.94GiB fixed_ssm=0.00GiB estimated_peak=20.44GiB
+[cache_store][INFO]: VLM prompt cache context target: configured=8,192 fitted=158,464 effective=158,464
+[2026-09-04 10:24:55][INFO][gemma-4-12b-it-mlx] Running chat completion on conversation with 1 messages.
+[2026-09-04 10:24:55][DEBUG][coordinator][INFO]: Prompt cache restore: cached_tokens=0 uncached_tokens=23 lifetime_efficiency=0.00%
+[2026-09-04 10:24:55][INFO][gemma-4-12b-it-mlx] Prompt processing progress: 0.0%
+[2026-09-04 10:24:55][INFO][gemma-4-12b-it-mlx] Prompt processing progress: 100.0%
+[2026-09-04 10:25:02][DEBUG][cache_store][INFO]: VLM prompt cache disk usage: used_mib=84.0 cap_mib=14692.0 lifetime_evicted_mib=0.0 records=2 lifetime=model_load
+[2026-09-04 10:25:13][DEBUG][disk_budget][INFO]: VLM prompt cache disk budget: stage=final target_tokens=158,464 desired_gib=50.78 cap_gib=14.31 limiter=free_disk_space
+[2026-09-04 10:25:13][INFO][gemma-4-12b-it-mlx] Model generated tool calls: []
+[2026-09-04 10:25:13][INFO][gemma-4-12b-it-mlx] Generated prediction: {
+  "id": "chatcmpl-voozejz2kubqxyinocqb5",
+[2026-09-04 13:17:20][INFO][gemma-4-12b-it-mlx] Running chat completion on conversation with 1 messages.
+[2026-09-04 13:17:20][INFO][gemma-4-12b-it-mlx] Streaming response...
+[2026-09-04 13:17:20][DEBUG][coordinator][INFO]: Prompt cache restore: cached_tokens=0 uncached_tokens=4284 lifetime_efficiency=0.00%
+[2026-09-04 13:17:20][INFO][gemma-4-12b-it-mlx] Prompt processing progress: 0.0%
+[2026-09-04 13:17:30][INFO][gemma-4-12b-it-mlx] Prompt processing progress: 47.8%
+[2026-09-04 13:17:30][DEBUG][cache_store][INFO]: VLM prompt cache disk usage: used_mib=84.0 cap_mib=14699.9 lifetime_evicted_mib=0.0 records=2 lifetime=model_load
+[2026-09-04 13:17:41][INFO][gemma-4-12b-it-mlx] Prompt processing progress: 95.6%
+[2026-09-04 13:17:41][INFO][gemma-4-12b-it-mlx] Prompt processing progress: 100.0%
+[2026-09-04 13:17:44][DEBUG][disk_budget][INFO]: VLM prompt cache disk budget: stage=final target_tokens=158,464 desired_gib=50.78 cap_gib=14.03 limiter=free_disk_space
+[2026-09-04 13:17:44][INFO][gemma-4-12b-it-mlx] Finished streaming response
+[2026-09-04 13:18:09][DEBUG] Received request: POST to /v1/chat/completions with body {
+  "model": "gemma-4-12b-it-mlx",
+  "messages": [
+[2026-09-04 14:34:34][DEBUG][LMSAuthenticator][Client=lms-cli] Client disconnected.
+[2026-09-04 14:34:47][DEBUG] Received request: GET to /props
+[2026-09-04 14:34:47][ERROR] Unexpected endpoint or method. (GET /props). Returning 200 anyway
+[2026-09-04 14:34:47][DEBUG] Received request: GET to /api/v0/models

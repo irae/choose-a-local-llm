@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/server.py", line 853, in _generate
+    prompt_responses, gen_responses = batch_generator.next()
+                                      ~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/generate.py", line 1855, in next
+    return self._next()
+           ~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/generate.py", line 1841, in _next
+    self._prompt_batch.prompt(prompts)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/generate.py", line 1161, in prompt
+    mx.eval([c.state for c in self.prompt_cache])
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [METAL] Command buffer execution failed: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory).

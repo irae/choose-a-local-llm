@@ -18,7 +18,9 @@
 # Two liveness signals, never /health:
 #   1. It tails the server log and matches every new line against the
 #      backend death signatures (the same list as tools/sweeps/creep_*.py
-#      and docs/methodology/server-lore.md).
+#      and docs/methodology/server-lore.md). It reads whole lines only,
+#      so a signature written in two pieces is still matched; a last
+#      line that never gets its newline waits for the silence probe.
 #   2. When the run's output file stops growing for SILENCE seconds, it
 #      sends ONE real completion with a long timeout. A completion that
 #      returns means the server is alive and the run is thinking.
@@ -54,7 +56,12 @@
 #   RUNWATCH_PROBE_TIMEOUT seconds to wait for the probe, default 300
 #   RUNWATCH_POLL          seconds between checks, default 10
 #   RUNWATCH_SIGNATURES    extended regex of death signatures, default
-#                          the union of the mlx_lm and LM Studio lists
+#                          the mlx_lm list plus the strings a crash of
+#                          any backend prints. A bare `[ERROR]` is NOT
+#                          in it: LM Studio logs a routine client
+#                          mistake at that level ("Unexpected endpoint
+#                          or method. (GET /props). Returning 200
+#                          anyway"), so it would kill a healthy run.
 #   RUNWATCH_MEM_LOG       memory log, default run-watch-mem.log beside
 #                          this script. Scope it to the run.
 #   RUNWATCH_MEM_INTERVAL  seconds between memory lines, default 20.
@@ -68,6 +75,8 @@
 # keeps watching).
 
 set -u
+export LC_ALL=C
+NEWLINE=$'\n'
 
 SERVER_LOG="${RUNWATCH_SERVER_LOG:-}"
 OUTPUT_FILE="${RUNWATCH_OUTPUT:-}"
@@ -79,7 +88,7 @@ POLL="${RUNWATCH_POLL:-10}"
 MEM_LOG="${RUNWATCH_MEM_LOG:-$(dirname "$0")/run-watch-mem.log}"
 MEM_INTERVAL="${RUNWATCH_MEM_INTERVAL:-20}"
 PAGE_BYTES=16384
-SIGNATURES="${RUNWATCH_SIGNATURES:-Insufficient Memory|Command buffer execution failed|Traceback \(most recent call last\)|Resource limit|OutOfMemory|\[ERROR\]|crashed}"
+SIGNATURES="${RUNWATCH_SIGNATURES:-Insufficient Memory|Command buffer execution failed|Traceback \(most recent call last\)|Resource limit|OutOfMemory|crashed}"
 
 if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
     sed -n '2,/^$/p' "$0" | sed 's/^# \{0,1\}//'
@@ -100,14 +109,34 @@ file_size() {
     wc -c < "$1" | tr -d ' '
 }
 
-death_line_in_new_log_bytes() {
+new_log_bytes() {
     local from="$1"
     local to="$2"
     if [ "$to" -le "$from" ]; then
-        return 1
+        return
     fi
-    tail -c +"$(( from + 1 ))" "$SERVER_LOG" | head -c "$(( to - from ))" \
-        | grep -m1 -E "$SIGNATURES"
+    tail -c +"$(( from + 1 ))" "$SERVER_LOG" | head -c "$(( to - from ))"
+}
+
+last_complete_line_end() {
+    local from="$1"
+    local to="$2"
+    local chunk
+    chunk="$(new_log_bytes "$from" "$to"; printf X)"
+    chunk="${chunk%X}"
+    case "$chunk" in
+        *"$NEWLINE"*)
+            chunk="${chunk%"$NEWLINE"*}$NEWLINE"
+            echo "$(( from + ${#chunk} ))"
+            ;;
+        *)
+            echo "$from"
+            ;;
+    esac
+}
+
+death_line_in_new_log_bytes() {
+    new_log_bytes "$1" "$2" | grep -m1 -E "$SIGNATURES"
 }
 
 prev_swapin=0
@@ -193,12 +222,13 @@ while true; do
             echo "server log shrank (rotated or truncated); reading from its start"
             log_seen=0
         fi
-        line=$(death_line_in_new_log_bytes "$log_seen" "$log_now")
+        log_end=$(last_complete_line_end "$log_seen" "$log_now")
+        line=$(death_line_in_new_log_bytes "$log_seen" "$log_end")
         if [ -n "$line" ]; then
             echo "SERVER DEAD: death signature in $SERVER_LOG: ${line:0:200}"
             exit 42
         fi
-        log_seen="$log_now"
+        log_seen="$log_end"
     fi
 
     if [ -z "$OUTPUT_FILE" ]; then
