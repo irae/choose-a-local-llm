@@ -387,3 +387,39 @@ Block A1b closed (corrected). Final full-creep rows:
 All three daggered rows need a `-c` correction in `models.json`
 independent of the KV-type question this run set out to answer — see
 the planner note in `state.md`.
+
+## Block B0 — EvalPlus smoke on the two f16 picks
+
+Budget for the Qwen3.8 pair: `benchmarks/calibration-qwen38-mlx-medium.json`
+(MLX effort-medium baseline, converged, observed max 2604 → budget
+8192, same on every side). Same extra body on every side:
+`{"chat_template_kwargs":{"reasoning_effort":"medium"}}`.
+
+### Qwen3.8-27B GGUF: self-check, then f16 vs q8_0
+
+Server f16: qwen38-gguf command, `-c 49152`, both cache types f16
+(the corrected A1b ceiling). Server q8_0: same command, `-c 32768`
+(published), both cache types q8_0.
+
+```
+SMOKE label=qwen38-gguf-f16-a problems=4 passed=4 empty=0 completion_tokens=3506 max_tokens=8192 wall_s=284.7
+SMOKE label=qwen38-gguf-f16-b problems=4 passed=4 empty=0 completion_tokens=3464 max_tokens=8192 wall_s=283.4
+SMOKE label=qwen38-gguf-q8    problems=4 passed=4 empty=0 completion_tokens=3186 max_tokens=8192 wall_s=282.6
+```
+
+Self-check (a vs b): identical `passed`/`empty` — **level**, the tool
+passes its own check. All three runs land comfortably under budget
+(max single completion 2957/8192, ~36%), so none of these results are
+budget-limited — a 0-empty reading here is not a calibration artifact.
+
+Verdict: **f16 level with q8_0** (same `passed`=4, same `empty`=0).
+
+### Gemma-4-26B-A4B GGUF: f16 vs q8_0, thinking on
+
+`benchmarks/calibration-gemma26-think.json` has two `length` stops (does
+not converge), so the budget is set by hand per AGENT.md:
+`SMOKE_MAX_TOKENS=30000` on both sides. The published baseline itself
+runs at 46/164 (~28%) empty on the full gate for exactly this reason
+(thinking non-convergence) — a nonzero empty count on this pair is
+expected, not a bug; the comparison is f16's empty count against
+q8_0's at the same 30000 budget, not against zero.

@@ -1,0 +1,14 @@
+event	budget	source=benchmarks/calibration-qwen38-mlx-medium.json	observed_max=2604	max_tokens=8192
+event	start	label=qwen38-gguf-q8	model=qwen3.8-27b	base=http://127.0.0.1:8081	out=benchmarks/bench9/results/smoke-qwen38-gguf-q8
+event	generated	HumanEval/53	empty=false	completion_tokens=103	finish_reason=stop	wall_s=7.3
+event	generated	HumanEval/45	empty=false	completion_tokens=148	finish_reason=stop	wall_s=9.1
+event	generated	HumanEval/34	empty=false	completion_tokens=291	finish_reason=stop	wall_s=18.4
+event	generated	HumanEval/129	empty=false	completion_tokens=2644	finish_reason=stop	wall_s=166.6
+event	evaluating	benchmarks/bench9/results/smoke-qwen38-gguf-q8/qwen38-gguf-q8.smoke.jsonl
+task_id	base	plus	empty	completion_tokens	reasoning_tokens	finish_reason	wall_s
+HumanEval/53	pass	pass	false	103	-1	stop	7.3
+HumanEval/45	pass	pass	false	148	-1	stop	9.1
+HumanEval/34	pass	pass	false	291	-1	stop	18.4
+HumanEval/129	pass	pass	false	2644	-1	stop	166.6
+SMOKE	label=qwen38-gguf-q8	problems=4	passed=4	empty=0	completion_tokens=3186	max_tokens=8192	wall_s=282.6	out=benchmarks/bench9/results/smoke-qwen38-gguf-q8
+event	read	compare this SMOKE line with the other side's line at the same max_tokens: level (same passed, same empty), better (passed higher, empty not higher), worse (passed lower, or passed equal and empty higher), otherwise no verdict
