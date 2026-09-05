@@ -70,3 +70,14 @@ leftover from the block A1/B1 server commands, which all keep the
 drafter. Started the server WITHOUT `--spec-type draft-mtp
 --spec-draft-n-max 4`, f16 both cache types, `-c 262144`. Flag for the
 coordinator to fix the block text.
+
+### Block E — harness fix applied
+
+Backed up `~/.pi/agent/models.json` to
+`~/.config/choose-a-local-llm/models.json.bak-20260905`. Edited entry
+`mlx-community/Qwen3.8-27B-4bit`: `maxTokens` 16384 → 8192.
+`contextWindow` unchanged at 26624. Renamed the invalid run's branch
+(zero commits, three Metal OOM crashes) to keep the slot free:
+`mlx-community-Qwen3.8-27B-4bit-low-guided-v3-issue-13` →
+`...-attempt1` in `~/code/mendel`. Starting
+`./run-worker.sh mlx-community/Qwen3.8-27B-4bit pi guided low`.
