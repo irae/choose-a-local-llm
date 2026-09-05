@@ -15,16 +15,16 @@ against OpenAI-compatible servers that a coding harness can actually use.
 - **Quality per quantization.** Published scores cover full-precision
   models. What you run is a quant. One score per model and thinking
   mode; runtimes at standard quants share it.
-- **Role assignment, not a single winner.** A thinking main agent, fast
-  sub-agents, an all-day background agent, and multi-agent slots — each seat
-  can go to a different model and runtime.
+- **A pick per use, not a single winner.** Models are used in more
+  than one way, and the data is kept so each use can be read from it.
 
-Every config gets a decode-vs-used-context sweep and an honest "capped by"
-verdict: speed floor, memory OOM, or model window. The usability floor here
-is 8 tok/s. EvalPlus gates every config; Aider polyglot ranks the survivors.
+Every config gets a KV cache pick, a decode-vs-used-context sweep and an
+honest "capped by" verdict: speed floor, memory OOM, or model window. The
+usability floor here is 8 tok/s. EvalPlus gates every config; Mendel and
+Aider polyglot rank the survivors.
 
-Read [the methodology](./methodology.md) before running anything. The flow is
-the law.
+Read [the methodology](./methodology.md) before running anything. The
+flow is binding.
 
 ## Setups
 

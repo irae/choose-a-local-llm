@@ -51,50 +51,6 @@ apply on top of them.
   depth per model AND per mode: the optimum shifts with output style
   (thinking on/off) and with depth.
 
-## The KV cache type decision
-
-Decided per model, by research, then by a short creep, before any full
-sweep. The policy (which types are candidates) is
-[common rules](./common-rules.md), rule 4. The procedure, in order:
-
-1. **Research the cache quality first.** Look for measured evidence
-   that q8_0 KV is near-identical to f16 for THIS model: the quant
-   publisher's own grading (unsloth grades its weight quants with
-   KL-divergence graphs; cache-type graphs come from community
-   benchmarks such as the localbench KL study), or a KL or
-   benchmark comparison with the method shown. Trust it when the
-   proof is there. Record the source beside the config. Some model
-   families stay near-identical at q8_0 (KL under 0.04 in community
-   measurements); others lose far more, and their MoE variants lose
-   the most. Do not assume which group a model is in.
-2. **Short creep, both types, to 32K.** Below 32K a config is not
-   useful, so 32K is the smallest depth that decides anything.
-   Same command, only the cache types change. Record decode tok/s
-   and wired memory at 4K and 32K for each type. The short creep is
-   the steps below with `DEPTH_LIST="4096,8192,16384,24576,32768"`.
-3. **Predict the fit.** KV cost per token is linear:
-   `kv_per_token = (wired_32k - wired_4k) / 28672`. A type fits at
-   a target context when
-   `wired_4k + kv_per_token × (target - 4096) + 1500 MB ≤ iogpu.wired_limit_mb`.
-   The target is the model's trained window or the depth the
-   short creep already shows is the speed floor, whichever is
-   smaller.
-4. **Pick.** f16 when it fits at a useful context AND is faster at
-   32K, or when step 1 says q8_0 costs this model quality. q8_0
-   when f16 does not fit at a useful context; a slower cache that
-   holds the context beats a faster one that does not. When the
-   two curves are within 10% at 32K and both fit, q8_0.
-5. **Full creep on the pick.** When the prediction is not decisive
-   (the fit is within the margin, or the curves cross), run the
-   full creep on both; a creep is cheap next to a wrong published
-   row. Publish the pick, and note the other type's 32K numbers.
-
-The type can dominate everything else: on one dense 12B model on the
-reference setup, q8_0 fell under the floor by 16K while f16 was 3.2x
-faster there, still usable at 131K, and fit at the model's full
-window. q8_0 can also lower MTP draft acceptance (one MoE model: 81% →
-68%). The evidence is in that setup's report.
-
 ## How a sweep runs
 
 Read this once and the rest of the page is detail.
@@ -200,18 +156,32 @@ a changed `STALL_S` must say so.
 
 ## Steps
 
-0. On llama-server, decide the KV cache type first
-   ([the decision](#the-kv-cache-type-decision)).
-1. Grow a prompt in steps: 4K, 8K, 16K, 24K, 32K, then 16K steps.
+0. The cache type is already picked ([KV cache pick](./kv-cache-pick.md)).
+   The full creep runs at that type only.
+1. Set `-c` to the model's trained context (GGUF metadata
+   `<arch>.context_length`, or the vendor card). When that does not
+   load, binary-search the largest `-c` that does, toward the trained
+   value, and verify each candidate with one real completion: a server
+   can report "loaded" and still answer every request with a 500 and
+   "Insufficient Memory" in its log. The largest `-c` that loads is a
+   hardware ceiling and is recorded as one. Grow a prompt in steps:
+   4K, 8K, 16K, 24K, 32K, then 16K steps.
 2. Measure decode tok/s at each depth (server timings, or streamed
    chunks where the server has none). The runner writes one row per
    step, with the memory counters of that same step beside the speed.
    With a drafter, record draft acceptance beside every tok/s.
 3. Stop at the first reading under the usability floor (ours: 8 tok/s),
-   at OOM, or at the model's trained/max context — never earlier. **A
+   at OOM, or at the model's trained context — never earlier. **A
    sweep that stops at an arbitrary depth has not found a ceiling — it
-   has just stopped.** Record "no ceiling found up to `<max>`" only
-   after the sweep actually reached that number.
+   has just stopped.** A "window" verdict at a `-c` below the trained
+   context is that mistake; raise `-c` and continue. Record "no ceiling
+   found up to `<max>`" only after the sweep actually reached that
+   number. To continue a sweep after raising `-c`, do not restart from
+   4K: set `DEPTH_LIST` to the last verified depth (a control point,
+   which must land within 5% of its earlier reading) plus the new
+   targets. The runner grows the prompt to the control point in one
+   jump. Measured deviation from a slow re-creep: under 3%, on the
+   pessimistic side.
 4. Read the memory columns of the same row before you trust a slow
    step: `wired_mb` first, then `swap_delta_mb`, `compress_pages` and
    `decompress_pages`. Free memory is the wrong meter (see the pitfalls

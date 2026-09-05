@@ -73,7 +73,7 @@ both. The two fastest depth curves measured are MoE on MLX. The KV
 cache type can dominate everything else: on Gemma-4-12B, q8_0 KV falls
 through the 8 tok/s floor by 16K used tokens while f16 is still at 13.0
 tok/s at 131K, a 3.2x gap at 16K
-([the decision rule](../../methodology/context-creep.md#the-kv-cache-type-decision)).
+([the KV cache pick](../../methodology/kv-cache-pick.md)).
 
 ## Models under test
 

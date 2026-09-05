@@ -11,8 +11,8 @@ the run loop apply ([common rules](./common-rules.md),
 - Temperature 0, pass@1, small prompt context (problems are tiny —
   prompt context does not affect scores).
 - Serve through the config you will actually run.
-- Score thinking-on for comparability with published numbers; add
-  thinking-off passes where sub-agent use is planned.
+- Which thinking modes and reasoning levels to score is a planning
+  decision per model, from the vendor's documentation and the owner.
 - Speculative decoding never changes outputs at temperature 0, so score
   without a drafter and serve with one freely.
 - Timing of runs is a secondary signal; never chase precision. pass@1
@@ -53,10 +53,12 @@ score as failures (up to 38% of scores lost before this was found).
 6. Evaluate runs automatically at the end. Record pass@1 base/plus AND
    the empty count, honestly, on every surface.
 
-## The smoke: a fast fixed subset for a research trial
+## The smoke
 
-A research run tries a candidate container. It must not run this gate:
-that is bench work and costs an hour or more per config. It runs
+A fast fixed subset, for two uses: the [KV cache pick](./kv-cache-pick.md)
+confirms its candidate with it, and a research run tries a candidate
+container with it. Neither runs this gate: that is bench work and
+costs an hour or more per config. They run
 `benchmarks/evalplus-smoke.py` instead — four fixed HumanEval+ problems,
 the same output budget on both sides, once against the config we run
 today and once against the candidate.

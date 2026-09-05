@@ -16,10 +16,10 @@ timings, prompt-cache reuse, the KV type decision) live in
    q8_0 are the candidates. q4_0 is banned for quality, with one
    exception: a vendor ships a per-model calibration for it (a KV bias
    file), and such a config must pass the [EvalPlus gate](./evalplus.md)
-   before serving. The decision procedure is the short creep in
-   [context creep](./context-creep.md#the-kv-cache-type-decision).
-   Every existing q8_0 row is re-decided by that procedure as its sweep
-   is re-run.
+   before serving. The decision is its own test,
+   [KV cache pick](./kv-cache-pick.md), and it runs before any other
+   measurement of the model. Rows measured at the other type before a
+   pick existed are hidden until re-measured.
 5. **API-or-nothing.** A config qualifies only if it serves an HTTP API
    a harness can use. CLI-only inference paths are disqualified.
 6. **Keep thinking-on AND thinking-off data, both labeled — never

@@ -16,18 +16,23 @@ commands and numbers of one machine live under `docs/setups/<setup>/`.
 A method page may say "one dense 12B model on the reference setup" and
 link the setup's report. A model name in a method page is a bug.
 
-1. Read `AGENTS.md` (the index and the standing rules), then
-   `docs/methodology.md` and its per-task pages. The flow is binding.
-2. Plan a run per [benchmarks/PLANNING.md](./benchmarks/PLANNING.md):
-   a coordinator agent writes `benchmarks/bench<N>/AGENT.md`, a smaller
-   runner agent executes it.
-3. Keep your own `HANDOFF.md` at the repo root for coordinator state.
-   It is gitignored; start yours empty. The writing rules are in
-   `benchmarks/PLANNING.md`. Work that needs no hardware and no
-   decision yet goes to `backlog/`, one file per item.
-4. Record results the way `EDITOR.md` and the methodology's
+1. Describe your machine once, outside the repo:
+   `~/.config/choose-a-local-llm/machine.md` holds the apps to handle
+   before a run, the memory limits, ports and paths
+   ([how to write it](./tools/README-mac-services.md)). The method
+   pages read their values from it and never hardcode them.
+2. Create `docs/setups/<your-setup-id>/` in the shape of the existing
+   one. Your models, commands and numbers go there and nowhere else.
+3. Read `docs/methodology.md`. Its flow is a list of candidate models
+   going through cheap tests first, with gates that drop models, so
+   the expensive tests run on the survivors only. Each test has its
+   own page.
+4. Plan a run per [benchmarks/PLANNING.md](./benchmarks/PLANNING.md):
+   a coordinator agent writes `benchmarks/bench<N>/AGENT.md`, a runner
+   agent executes it unattended. `AGENTS.md` holds the rules for both.
+5. Record results the way `EDITOR.md` and the methodology's
    record-everywhere rule demand, and add each run's findings to
-   `benchmarks/INDEX.md`.
+   `benchmarks/INDEX.md`. Contribute the setup folder back.
 
 ## What this project does not measure
 

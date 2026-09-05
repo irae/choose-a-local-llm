@@ -7,6 +7,7 @@ split by task — read the page for the task you are about to do:
 |---|---|
 | Start ANY benchmark or sweep | [The bench run checklist](./methodology/checklist.md) |
 | Write or run any measurement script | [Common rules](./methodology/common-rules.md) |
+| Measure a new model at all | [KV cache pick](./methodology/kv-cache-pick.md) |
 | Run a depth / context-creep sweep | [Context creep](./methodology/context-creep.md) |
 | Probe a memory ceiling | [Memory ceiling](./methodology/memory-ceiling.md) |
 | Run an EvalPlus scoring pass | [EvalPlus](./methodology/evalplus.md) |
@@ -42,18 +43,47 @@ survivors.
   calibrated quants (for example a vendor-calibrated q4 KV) are not narrow;
   each passes the gate separately.
 
-## How we learn a config's limits
+## The flow, per model, with gates
 
-Three measurements bound every config; each has its own page above:
+A run usually starts with several candidate models and ends with one.
+The cheap tests come first, and after each group of them the list is
+cut: a model that already lost is dropped, or parked with its numbers
+so far. The expensive tests run on the survivors only. Each step has
+its page above.
 
-1. **Memory ceiling** — how much context the machine can allocate
-   ([method](./methodology/memory-ceiling.md)).
-2. **Depth curve** — decode speed against *used* context, down to the
-   8 tok/s floor ([method](./methodology/context-creep.md)). Every
-   config gets a "capped by" verdict: **speed**, **OOM**, **window**,
-   or — on LM Studio — **mem** (compression/swap onset).
-3. **Quality** — EvalPlus gate, then Mendel, then polyglot for
-   survivors ([gate](./methodology/evalplus.md)).
+1. **Name the models and their exact files.** Planning decides this,
+   and whether the run may download anything.
+2. **Cold start.** The checklist, with the machine file's values.
+3. **KV cache pick**, every model: research, short creep of both
+   types to 32K, fit prediction, candidate pick.
+4. **EvalPlus smoke on the candidate pick.** LEVEL or BETTER confirms
+   it. This is minutes per side and it kills a broken config before
+   an hour is spent on it.
+5. **Gate.** Every model has a cache type, a 32K speed reading, and a
+   smoke line. Drop what already lost on speed or fit. Tell the owner
+   if reachable; proceed on the survivors if not.
+6. **Memory ceiling** at the picked type.
+7. **Full context creep** at the picked type, to a real stop
+   condition: the floor, an OOM, memory onset, or the trained window.
+   Every config gets a "capped by" verdict.
+8. **Gate.** Same as before, now with the depth curve. Most of the cut
+   happens here: a model under the floor at the depth the owner works
+   at is out.
+9. **EvalPlus**, the quality gate: calibrate the budget, then the full
+   run. Planning says which thinking modes and reasoning levels,
+   from the vendor's documentation and the owner.
+10. **Output probe and the harness entry.** Three single calls give
+    the first `maxTokens`; the creep gave the window. Only now does a
+    model get a pi entry ([Mendel](./methodology/mendel.md) holds
+    the rule).
+11. **Mendel**, the agentic benchmark, blind and guided per its plan.
+    The plan sends very weak models to guided only and very strong
+    ones to blind only.
+12. **Aider polyglot** for the survivors, hours per model.
+13. **Record every surface, commit, publish.**
+
+Steps 3 to 8 are HTTP against the server and need no harness. Steps 10
+to 12 go through pi.
 
 ## Runtimes
 
