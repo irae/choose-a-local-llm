@@ -80,7 +80,10 @@ and the methodology pages the runbook points to.
    `vm_stat`) and, only when a value is wrong, reports it and shows the
    owner the command to run. The owner's Mac is not the runner's to
    change.
-5. State the execution rules the runner must not relearn: local run
+5. Name the exact model files, revision and quant each block serves,
+   and say whether the run may download anything and what. Silence
+   means no download; the runner then stops and asks on a missing file.
+6. State the execution rules the runner must not relearn: local run
    branch in a fresh sibling worktree (the main worktree stays with the
    coordinator); no bare `git stash`, named stashes only, applied by
    name (see `AGENTS.md` standing rules); scoring in a subagent on the
@@ -91,19 +94,19 @@ and the methodology pages the runbook points to.
    that one push is required); one model on the GPU at a time; port;
    heartbeat cadence; the scoped memory watcher on every run; commit
    as results land; never push a run branch; never publish.
-6. Write the blocks in priority order. Each block gives: the exact
+7. Write the blocks in priority order. Each block gives: the exact
    serving command, the exact run command (with every env var), where
    results land, what "done" means, and what to update when it is done
    (tables, `results.md`, `state.md`, commit).
-7. Make every condition executable. "If promising" is a coordinator
+8. Make every condition executable. "If promising" is a coordinator
    judgment. Resolve it while planning, or spell out the test the
    runner applies and what to do on each outcome.
-8. Bake in the failure paths so the GPU never sits idle: what to check
+9. Bake in the failure paths so the GPU never sits idle: what to check
    when output stops growing (server log first; see
    `docs/methodology/server-lore.md`), how to resume each block, and
    the order to start the next block the moment one ends. No approval
    gates.
-9. Close the loop: when the run ends, the runner updates `state.md`
+10. Close the loop: when the run ends, the runner updates `state.md`
    with a clean handing-over section, and the coordinator adds the
    run's findings to `benchmarks/INDEX.md`.
 

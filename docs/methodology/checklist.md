@@ -51,9 +51,8 @@ lives in [common rules](./common-rules.md) and
       invalidates a speed or ceiling number and is a recorded
       deviation on a judged score.
    7. Only now start the real benchmark.
-4. Do NOT download any model. All models are already in the cache, in
-   the exact tested revision and quant. A missing model means STOP and
-   ask the owner ([common rules](./common-rules.md)).
+4. Serve the exact files the runbook names. A missing file is STOP and
+   ask, unless the runbook says this run may download it.
 5. Start the server for ONE config. Verify it serves (warmup request).
    LM Studio: load explicitly with `lms load`, verify with `lms ps`,
    then check the SERVER is up with `lms server status` and start it

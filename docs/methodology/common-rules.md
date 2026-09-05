@@ -38,18 +38,11 @@ timings, prompt-cache reuse, the KV type decision) live in
    measured under the CURRENT wired limit; superseded measurements move
    to the setup's `historical.md` (benchmarks pages keep the full
    archive).
-8. **Never download a model on your own.** Every benchmarked model was
-   chosen, downloaded, and tested by the owner; the cache holds the
-   exact files and quants the results depend on. If a model or file is
-   missing from the cache, STOP and ask the owner — a fresh download
-   can silently pull a different revision or quant and invalidate the
-   run. Downloads happen only on an explicit owner request, and then:
-   **sequential, one at a time** on slow connections,
-   needed-first order, never during meetings (parallel only when the
-   user says so). Download only the exact files needed (`--hf-file` /
-   `hf_hub_download`) — repos bundle huge F16 siblings and trap-named
-   variants; verify file lists and `model_type`/layout compatibility
-   before pulling.
+8. **Run the exact files the runbook names**, at the revision and quant
+   it names. A missing or different file is stop-and-ask, never a
+   substitute. Whether a run may download, and what, is decided when the
+   run is planned and written into its runbook; a runbook that says
+   nothing means no download.
 9. **After tests, check for leftovers and clean up** (the checklist has
    the commands). Do not delete model files or tools early — keep
    variants for debugging until many successes.

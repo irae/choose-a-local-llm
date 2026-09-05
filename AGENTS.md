@@ -193,10 +193,9 @@ Benchmark work:
   subagent on the Fable model (`claude-fable-5`), never on a smaller
   model. Mechanical steps (recompute, mirror, regenerate tables) may
   use any model.
-- **Never download a model.** The owner chose, downloaded, and tested
-  every model in the cache; results depend on those exact files,
-  revisions, and quants. A missing model means stop and ask the owner.
-  Never pull it yourself. See `docs/methodology/common-rules.md`.
+- **Run the exact files the runbook names.** A missing or different
+  file is stop-and-ask. Downloading is a planning decision written into
+  the runbook (`docs/methodology/common-rules.md`, rule 8).
 - **Never edit a shell script while it runs.** The shell reads the file
   as it executes, so an edit changes the running program. Wait for the
   run to end, or write a new file.

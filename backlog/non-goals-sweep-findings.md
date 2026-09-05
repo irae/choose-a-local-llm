@@ -53,7 +53,7 @@ Terms. Vocabulary, not scope:
 
 Agent rules. Useful to an agent, not to a reader choosing a model:
 
-- Never download a model.
+- Run the exact files the runbook names; downloading is a planning decision.
 - Push and publish only on owner request.
 - No superseded number on a current page.
 - No unit tests unless the owner asks.
