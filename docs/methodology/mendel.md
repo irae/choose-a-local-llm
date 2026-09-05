@@ -70,6 +70,11 @@ two tests.
   if healthy output comes near the line. Evidence and the per-model
   values as of 2026-09-05:
   `/history/runner-alarms-output-limit-and-loop-stop.html`.
+- **Repetition-loop flag.** At run close the Mendel worker runs
+  `benchmarks/loop-check.py` on the session log, and the verdict, its
+  worst ratio, and its kind land beside the row as
+  `telemetry.loop_flag`, `loop_ratio` and `loop_kind`. It is a flag,
+  never a stop.
 - `tool_calls` counts one `toolCall` block inside one assistant
   message of the run's session log. A call counts even when no result
   came back. Tool results, user messages, and any session the row does
