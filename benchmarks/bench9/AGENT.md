@@ -163,6 +163,99 @@ window), all in `results.md`, committed.
 
 Expected cost: 1 to 1.5 hours per full creep.
 
+## Block B0 — EvalPlus smoke on the two f16 picks (day, before B1)
+
+This block was added on 2026-09-05 after block A1b closed. Before you
+start it: `git pull` on `run9` (this branch now carries master as of
+2026-09-04), and `git pull` on `benchmark` in `~/code/mendel-benchmark`
+(commit `fe6da234`, peak context recomputed; the scorer for blocks B3,
+C and E reads it). New material that the rest of this run must follow:
+
+- `benchmarks/evalplus-smoke.py` and the "The smoke" section of
+  `docs/methodology/evalplus.md`: the tool this block uses.
+- `docs/methodology/mendel.md`: how `tool_calls` and `peak_context`
+  are counted, and `benchmark/count-tool-calls.mjs` in the Mendel repo
+  that checks a row against its log before commit. Apply it to every
+  Mendel row of blocks B3, C and E.
+- `AGENTS.md` (root): the smoke tool is listed under the tools; the
+  rules you already follow did not change.
+- `benchmarks/bench9/results/b1-gemma12-gguf-off.log` and the B1
+  calibration file are on this branch from the interrupted run; B1
+  starts fresh, as the queue says.
+
+Block A1b moved Qwen3.8 GGUF and Gemma-26B GGUF to f16 KV and to a new
+`-c`. Their EvalPlus cells still carry numbers scored at q8_0 KV. The
+full re-score is bench 10 work. This block is the gate before it: it
+kills a broken f16 config now, or it shows the f16 config is level
+with q8_0 on four problems, so the carried number stays honest until
+bench 10. Read `docs/methodology/evalplus.md`, section "The smoke",
+and the header of `benchmarks/evalplus-smoke.py` first. This is the
+first real use of the tool. If it does not work as written, fix it,
+keep the four-problem subset and the reading rule, and record every
+change in `state.md`.
+
+Rules for every smoke run in this block:
+
+- One server at a time, port 8081, warm up with one real completion
+  before the first smoke. Wait for wired memory recovery between
+  servers (`vm_stat` `Pages wired down` at or under 112000).
+- Same budget on both sides of a pair. Never calibrate the candidate.
+- `SMOKE_OUT=benchmarks/bench9/results/smoke-<label>` for every run,
+  so the samples land in evidence.
+- Write every `SMOKE` line and the verdict (level, better, worse, no
+  verdict) into `results.md` under a "Block B0" heading, with the
+  exact command. A difference of one problem is one problem out of
+  four; never a percentage.
+
+### Qwen3.8-27B GGUF: f16 twice, then q8_0
+
+The GGUF row has no EvalPlus of its own; the site carries the MLX
+effort-medium number. The budget comes from that calibration,
+`benchmarks/calibration-qwen38-mlx-medium.json` (same model, same
+effort; it converged, max 2604 tokens, so the tool computes 8192).
+Pass the same effort control the MLX full runs used, as the tool's
+extra-body argument:
+`'{"chat_template_kwargs":{"reasoning_effort":"medium"}}'`
+(the low run in `benchmarks/bench6/results.md` shows the shape). Both
+sides get the same extra body, so the pair is fair even if
+llama-server ignores it. Note in `results.md` whether the completion
+token counts show the effort control took.
+
+1. Server: the qwen38-gguf command from block A1 with `f16` in both
+   cache types and `-c 49152` (the corrected A1b ceiling). Run the
+   smoke twice, labels `qwen38-gguf-f16-a` and `qwen38-gguf-f16-b`.
+   This is the tool's self-check: the two lines must not read "worse"
+   than each other. If they do, stop this block, write what differed,
+   and go on to B1.
+2. Server: the same command with `q8_0` in both cache types and the
+   published `-c 32768`. One smoke, label `qwen38-gguf-q8`.
+3. Verdict: f16 (either run) against q8_0.
+
+### Gemma-4-26B-A4B GGUF: f16 against q8_0, thinking on
+
+The published score (0.713/0.701) is thinking on, so this pair is
+thinking on too. Its calibration
+(`benchmarks/calibration-gemma26-think.json`) has two `length` stops,
+so the tool refuses to compute a budget. Pass the full run's budget by
+hand: `SMOKE_MAX_TOKENS=30000` on both sides. Problem 129 with
+thinking on can run for many minutes per side; that is expected, let
+it finish.
+
+1. Server: the gemma26-gguf command from block A1 with `f16` in both
+   cache types and `-c 212992` (the corrected A1b ceiling). One
+   smoke, label `gemma26-gguf-f16`.
+2. Server: the same command with `q8_0` and the published
+   `-c 262144`. One smoke, label `gemma26-gguf-q8`.
+3. Verdict: f16 against q8_0.
+
+Done means: five `SMOKE` lines in `results.md`, three verdicts, the
+tool fixes (if any) in `state.md`, everything committed on `run9`.
+A "worse" verdict for an f16 side is a finding, not a stop: write it,
+commit, and go on to B1. The coordinator decides the row.
+
+Expected cost: about 40 minutes plus the Gemma thinking time on
+problem 129.
+
 ## Block B1 — Gemma-12B GGUF thinking off, EvalPlus (first score of the GGUF quant)
 
 The GGUF rows carry the MLX score by the shared-score rule, but MLX
@@ -278,10 +371,11 @@ Expected cost: up to 5 hours.
 1. Block A, the creep runs: A1 the six short creeps, A1b the full
    creep on each pick (Qwen3.6 first). A1 plus the Qwen3.6 full creep
    fit one working day.
-2. Block B, the Gemma-12B items: B1 EvalPlus (day), then B3 (night).
+2. Block B0, the EvalPlus smoke on the two f16 picks (day, short).
+3. Block B, the Gemma-12B items: B1 EvalPlus (day), then B3 (night).
    B2 is dropped.
-3. Block C, Bonsai Mendel off (nights).
-4. Block E, Qwen3.8 guided low (night), last.
+4. Block C, Bonsai Mendel off (nights).
+5. Block E, Qwen3.8 guided low (night), last.
 
 Blocks depend on nothing but the GPU. If one is blocked, write why in
 `state.md`, commit, and start the next. Mendel runs are one at a time
