@@ -94,9 +94,11 @@ Use `tools/sweeps/creep_lmstudio.py` for LM Studio depth sweeps; set
   (latest file in the glob) has per-request `Prompt cache restore:
   cached_tokens=... uncached_tokens=...`, `Prompt processing progress`
   ticks, and on load a `context_fit` line with the full memory-budget
-  math. The sweep scripts tail it for a crash-signature watchdog
-  (`[ERROR]`, `OutOfMemory`, `crashed`, `Traceback` — widen the list
-  the first time a real crash shows a different string).
+  math. The run watcher tails it for the death signatures
+  (`OutOfMemory`, `crashed`, `Traceback`; widen the list the first
+  time a real crash shows a different string). A bare `[ERROR]` is
+  not one: the server logs a routine client mistake at that level and
+  answers 200 anyway.
 - **The disk-backed prompt cache** (separate from GPU memory) caps at
   ~25% of free disk and evicts constantly once full (`VLM prompt cache
   disk usage: ... lifetime_evicted_mib=...`). Within a sweep, restores
