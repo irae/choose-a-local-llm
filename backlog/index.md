@@ -19,14 +19,13 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
-- [ ] Runner alarms: decided 2026-09-05 (maxTokens rule, 25-minute turn cap, at-budget pair stop, loop flag); runner code, PLAN.md sentences and the Mac config edits pending (runner-alarms-output-limit-and-loop-stop.md, summary.html beside it, report in `benchmarks/history/`)
 - [ ] Worker-profile table: which config is the best thinking-off sub-agent (worker-profile-table.md)
 - [ ] Bench 10 candidates: the items deferred from bench 9 and the retries (bench-10-candidates.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
-- [l] Qwen3.8 MLX output budget versus window; superseded by the runner-alarms maxTokens rule, dynamic cap stays a framework candidate (qwen38-mlx-output-budget-and-window.md)
 
 ## Changelog
 
+- 2026-09-05 Runner alarms landed: output-limit counters, 25-minute turn cap, at-budget pair stop, loop flag beside every row with a log, maxTokens rule in PLAN.md (Mendel `a41170a4`, site `4b3eb67`); Mac models.json edits still to apply after bench 9. Qwen3.8 budget item closed by the same rule
 - 2026-09-05 README says what the project does not measure, five items with the owner's reasons; agent rules moved to AGENTS.md, "collapse" term out of CONVENTIONS.md (`backlog/non-goals` merge)
 - 2026-09-05 Unslop of the internal docs: em dashes, "the law", daggers and capitals replaced across AGENTS, CONVENTIONS, EDITOR, PLANNING, INDEX, READMEs and the research runbooks (`128858c`)
 - 2026-09-04 Mendel peak_context: rule stated, 21 rows recomputed from per-turn usage, two post-compaction values corrected, caveat narrowed to one retired harness (Mendel `fe6da234`)

@@ -35,9 +35,11 @@ Split across repos: the runner code lands in the Mendel kit; the loop
 verdict script stays here in `benchmarks/loop-check.py` and the kit
 calls it by path. The extraction item lists both as one move.
 
-Not done yet: the runner code for 2 to 5, the two `PLAN.md`
-sentences, the Mac `models.json` and `settings.json` edits, and the
-hand check of the eleven LOOP rows.
+Landed 2026-09-05: runner code, `PLAN.md`, the loop-check fix, and
+the retroactive loop flags (Mendel `a41170a4`, site `4b3eb67`). Still
+to do by hand: the Mac `models.json` and `settings.json` edits after
+bench 9 (the table is in the history report, section 7), and a hand
+check of the LOOP rows.
 
 ## The original item, as filed
 
