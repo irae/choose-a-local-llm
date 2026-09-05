@@ -71,48 +71,43 @@ idle with runnable queued work because one item is stuck or ambiguous.
    with `lms server start` if it is not. `lms load` does not start it
    and `lms ps` does not reveal it. Never trust JIT
    ([server lore](./server-lore.md)).
-6. **Start the memory watcher only where nothing else samples memory.**
-   - **Scoring runs — required** (EvalPlus, Mendel, polyglot). The
-     harness samples no memory and the run lasts hours, so this log is
-     the only memory record. Scope it to this run:
-     `MEMWATCH_LOG=/tmp/<run>-memwatch.log MEMWATCH_INTERVAL=20 bash
-     benchmarks/mem-watch.sh &`. A scoring run without it is invalid.
-   - **Depth sweeps — not needed.** The runner samples memory itself and
-     writes wired, free, swap delta and the compressor page counts into
-     every step row, and it stops the sweep on swap growth, material
-     compaction, the floor, a silent halt and a dead server
-     ([context creep](./context-creep.md)). Send the sweep's output to a
-     file; that file is the whole record. Do not start a second monitor
-     beside it.
+6. **Start the run watcher before the block, read exit 42, stop it
+   after.** A sweep watches itself; a scoring run has exactly one
+   watcher. For every scoring run (EvalPlus, Mendel, polyglot) start
+   `benchmarks/run-watch.sh` as a background task (`run_in_background`,
+   or under `Monitor`) right after the warmup request:
+   `RUNWATCH_SERVER_LOG=<server log> RUNWATCH_OUTPUT=<result file>
+   RUNWATCH_BASE_URL=<base url> RUNWATCH_MODEL=<model id>
+   RUNWATCH_MEM_LOG=/tmp/<run>-mem.log bash benchmarks/run-watch.sh`.
+   It writes the run's only memory record (one line per
+   `RUNWATCH_MEM_INTERVAL` seconds, default 20), tails the server log
+   for the death signatures, and after `RUNWATCH_SILENCE` seconds
+   (default 600) without output growth probes one real completion,
+   never `/health`. One failed probe is a suspicion, because a probe
+   queued behind a long turn on a one-slot server fails the same way.
+   It exits 42 on a death signature, or when two probes fail, each
+   after a full silence window with no growth; its last stdout line
+   says why, and the background-task notification carries that line.
+   Read exit 42 as: kill the server, restart it, resume the block,
+   start a new watcher. Any other exit is not a verdict. It restarts
+   nothing. A scoring run without it is invalid. Stop it when the
+   block ends; never leave it running.
+   **Depth sweeps start no watcher.** The runner samples memory into
+   every step row, greps the server log for the death signature,
+   probes a real completion when a step goes silent, and exits 42 on
+   a dead server ([context creep](./context-creep.md)). Send the
+   sweep's output to a file; that file is the whole record.
 
 ## During the run
 
-7. **Set the idle/silent-crash monitor.** Start the crash watcher in
-   the background beside every scoring run, before the wakeup loop:
-   `CRASHWATCH_SERVER_LOG=<server log> CRASHWATCH_OUTPUT=<result file>
-   CRASHWATCH_BASE_URL=<base url> CRASHWATCH_MODEL=<model id> bash
-   benchmarks/crash-watch.sh` as a background task (`run_in_background`,
-   or under `Monitor`). It tails the server log for the death
-   signatures and probes one real completion after
-   `CRASHWATCH_SILENCE` seconds without output growth (default 600).
-   One failed probe is a suspicion, because a probe queued behind a
-   long turn on a one-slot server fails the same way; it exits 42 on
-   a death signature, or when two probes fail, each after a full
-   silence window with no growth. Its last stdout line says why; the
-   background-task notification carries that line. Read
-   exit 42 as: kill the server, restart it, resume the block, start a
-   new watcher. Any other exit is not a verdict. It never restarts
-   anything. Then schedule a wakeup ≤20 minutes
-   after starting any block. At every wakeup verify REAL output growth
-   (result-file line count, not process liveness) — servers can die or
-   hang while the process lives and `/health` returns 200. If output
-   stopped: read the server log for the death signatures before blaming
-   the model, restart, resume. Every wakeup ends with a new wakeup or
-   with the shutdown steps below. The GPU never sits idle between
-   blocks. A depth sweep carries this signal itself: it greps the server
-   log for the death signature, probes a real completion when a step
-   goes silent, and exits 42 on a dead server. There the wakeup only
-   checks that the sweep's output file still grows.
+7. **Keep the idle monitor.** Schedule a wakeup ≤20 minutes after
+   starting any block. At every wakeup verify REAL output growth
+   (result-file line count, not process liveness), because a server
+   can die or hang while the process lives and `/health` returns 200.
+   If output stopped: read the server log for the death signatures
+   before blaming the model, restart, resume. Every wakeup ends with a
+   new wakeup or with the shutdown steps below. The GPU never sits
+   idle between blocks.
 8. **Reinforcing rule 1: this covers QUEUED blocks, not only mid-block.**
    When one block finishes, start the next queued block in the same
    wakeup. A block simply being scored, long, or run at night is not a
@@ -125,19 +120,17 @@ idle with runnable queued work because one item is stuck or ambiguous.
 
 ## After the run
 
-11. Stop the memory watcher immediately, where one ran. Stop one-shot
-    monitors as soon as they fire — never leave them running.
-12. Record the result on EVERY surface in the same pass
+11. Record the result on EVERY surface in the same pass
     ([common rules](./common-rules.md), the record-everywhere rule):
     benchmarks page, report page (including its summary line),
     `comparison.md`, `models.json` + `node tools/gen-tables.mjs`,
     harness config. Update `benchmarks/bench<N>/results.md` and
     `state.md`.
-13. Commit before moving to the next block.
-14. After stopping any large server (the machine file names the
+12. Commit before moving to the next block.
+13. After stopping any large server (the machine file names the
     size), wait for memory to
     RECOVER before loading the next model or starting a sweep: poll
-    `Pages wired down` in `vm_stat` (or the memwatch log, or a sweep's
+    `Pages wired down` in `vm_stat` (or the run watcher's memory log, or a sweep's
     `wired_mb` column) until wired
     memory returns to the value you recorded in step 3.6. Do NOT wait
     for free memory. The first load of a model keeps its weights in
@@ -149,7 +142,7 @@ idle with runnable queued work because one item is stuck or ambiguous.
     not memory recovery — a sweep started ~3 min after killing a 23 GB
     server ran the whole window with 60-220 MB free and continuous
     swap-ins, and OOMed ([server lore](./server-lore.md)).
-15. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
+14. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
     no background task holding the GPU. End the session with the
     machine idle.
 

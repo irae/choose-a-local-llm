@@ -21,6 +21,17 @@ stop-and-ask lines pause the run.
   25-minute cap, the counters (tool calls, distinct, loop ratio,
   commits, clean tree). Research run 2 ran it by hand; this run writes
   it as a script in the Mendel kit and records what it wrote.
+- The run watcher is on trial. On every scoring block start
+  `benchmarks/run-watch.sh` as the checklist says, and start the
+  `sunset/` scripts beside it (`sunset/mem-watch.sh` and
+  `sunset/liveness-watch.sh`, their own log files). At block close
+  compare what each saw: memory lines against memory lines, and every
+  stall or death verdict against the other's, in `state.md`. A bug
+  found in `run-watch.sh` during the run goes to a subagent on the
+  best available model, dispatched by the runner at once; the run
+  does not wait for it. When the new watcher matches the old ones over
+  the whole run, delete `sunset/` at run close, in the same commit as
+  the closing `state.md`.
 
 ## Blocks, in order
 
