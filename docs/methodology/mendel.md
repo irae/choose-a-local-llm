@@ -28,6 +28,7 @@ One handed task before the full run: replace one dependency that spans
 two files (`xtend` with `Object.assign`, the task research run 1 built
 and run 2 used, `research/run2/results/mendel-probe-xtend.md`), same
 base commit, thinking as the config will run, a 25-minute cap, unscored.
+The tool is `benchmarks/mendel-smoke.sh <pi-model-id> <thinking-level>`.
 It answers one question: can this config do agent work at all. Pass is
 one commit with a clean working tree, no repetition loop, inside the
 cap. A fail means no full run for that config; the smoke line goes in
