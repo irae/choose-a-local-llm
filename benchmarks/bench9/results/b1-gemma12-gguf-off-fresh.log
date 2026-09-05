@@ -1,0 +1,183 @@
+Greedy decoding ON (--greedy): setting bs=1, n_samples=1, temperature=0
+Initializing a decoder model: gemma-4-12b ...
+Sanitized code outputs will be saved to /Users/irae/code/choose-a-local-llm-run9/benchmarks/bench9/results/gemma12-gguf-off/humaneval/gemma-4-12b_openai_temp_0.0.jsonl
+Raw outputs will be saved to /Users/irae/code/choose-a-local-llm-run9/benchmarks/bench9/results/gemma12-gguf-off/humaneval/gemma-4-12b_openai_temp_0.0.raw.jsonl
+Codegen: HumanEval/0 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/1 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/2 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/3 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/4 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/5 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/6 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/7 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/8 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/9 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/10 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/11 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/12 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/13 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/14 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/15 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/16 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/17 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/18 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/19 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/20 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/21 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/22 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/23 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/24 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/25 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/26 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/27 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/28 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/29 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/30 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/31 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/32 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/33 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/34 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/35 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/36 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/37 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/38 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/39 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/40 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/41 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/42 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/43 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/44 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/45 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/46 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/47 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/48 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/49 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/50 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/51 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/52 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/53 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/54 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/55 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/56 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/57 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/58 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/59 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/60 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/61 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/62 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/63 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/64 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/65 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/66 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/67 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/68 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/69 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/70 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/71 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/72 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/73 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/74 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/75 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/76 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/77 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/78 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/79 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/80 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/81 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/82 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/83 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/84 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/85 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/86 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/87 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/88 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/89 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/90 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/91 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/92 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/93 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/94 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/95 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/96 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/97 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/98 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/99 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/100 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/101 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/102 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/103 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/104 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/105 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/106 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/107 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/108 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/109 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/110 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/111 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/112 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/113 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/114 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/115 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/116 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/117 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/118 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/119 @ gemma-4-12b (resuming from 1)
+Codegen: HumanEval/120 @ gemma-4-12b
+Codegen: HumanEval/121 @ gemma-4-12b
+Codegen: HumanEval/122 @ gemma-4-12b
+Codegen: HumanEval/123 @ gemma-4-12b
+Codegen: HumanEval/124 @ gemma-4-12b
+Codegen: HumanEval/125 @ gemma-4-12b
+Codegen: HumanEval/126 @ gemma-4-12b
+Codegen: HumanEval/127 @ gemma-4-12b
+Codegen: HumanEval/128 @ gemma-4-12b
+Codegen: HumanEval/129 @ gemma-4-12b
+Codegen: HumanEval/130 @ gemma-4-12b
+Codegen: HumanEval/131 @ gemma-4-12b
+Codegen: HumanEval/132 @ gemma-4-12b
+Codegen: HumanEval/133 @ gemma-4-12b
+Codegen: HumanEval/134 @ gemma-4-12b
+Codegen: HumanEval/135 @ gemma-4-12b
+Codegen: HumanEval/136 @ gemma-4-12b
+Codegen: HumanEval/137 @ gemma-4-12b
+Codegen: HumanEval/138 @ gemma-4-12b
+Codegen: HumanEval/139 @ gemma-4-12b
+Codegen: HumanEval/140 @ gemma-4-12b
+Codegen: HumanEval/141 @ gemma-4-12b
+Codegen: HumanEval/142 @ gemma-4-12b
+Codegen: HumanEval/143 @ gemma-4-12b
+Codegen: HumanEval/144 @ gemma-4-12b
+Codegen: HumanEval/145 @ gemma-4-12b
+Codegen: HumanEval/146 @ gemma-4-12b
+Codegen: HumanEval/147 @ gemma-4-12b
+Codegen: HumanEval/148 @ gemma-4-12b
+Codegen: HumanEval/149 @ gemma-4-12b
+Codegen: HumanEval/150 @ gemma-4-12b
+Codegen: HumanEval/151 @ gemma-4-12b
+Codegen: HumanEval/152 @ gemma-4-12b
+Codegen: HumanEval/153 @ gemma-4-12b
+Codegen: HumanEval/154 @ gemma-4-12b
+Codegen: HumanEval/155 @ gemma-4-12b
+Codegen: HumanEval/156 @ gemma-4-12b
+Codegen: HumanEval/157 @ gemma-4-12b
+Codegen: HumanEval/158 @ gemma-4-12b
+Codegen: HumanEval/159 @ gemma-4-12b
+Codegen: HumanEval/160 @ gemma-4-12b
+Codegen: HumanEval/161 @ gemma-4-12b
+Codegen: HumanEval/162 @ gemma-4-12b
+Codegen: HumanEval/163 @ gemma-4-12b
+humaneval •100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 164/164 • 0:10:37
+/Users/irae/code/choose-a-local-llm-run9/benchmarks/bench9/results/gemma12-gguf-off/humaneval/gemma-4-12b_openai_temp_0.0.jsonl
+Load from ground-truth from /Users/irae/Library/Caches/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl
+Reading samples...
+0it [00:00, ?it/s]164it [00:00, 4504.63it/s]
+  0%|          | 0/164 [00:00<?, ?it/s]  1%|          | 1/164 [00:02<06:41,  2.46s/it]  4%|▎         | 6/164 [00:04<01:36,  1.64it/s]  5%|▌         | 9/164 [00:04<00:56,  2.74it/s]  7%|▋         | 11/164 [00:06<01:16,  1.99it/s]  9%|▊         | 14/164 [00:06<00:48,  3.07it/s] 10%|▉         | 16/164 [00:07<01:08,  2.15it/s] 12%|█▏        | 19/164 [00:07<00:44,  3.25it/s] 13%|█▎        | 21/164 [00:09<01:04,  2.23it/s] 15%|█▍        | 24/164 [00:09<00:42,  3.29it/s] 16%|█▌        | 26/164 [00:11<01:00,  2.29it/s] 17%|█▋        | 28/164 [00:11<00:45,  2.96it/s] 18%|█▊        | 30/164 [00:13<01:01,  2.16it/s] 20%|█▉        | 32/164 [00:13<00:46,  2.84it/s] 21%|██▏       | 35/164 [00:14<00:55,  2.34it/s] 23%|██▎       | 37/164 [00:15<00:41,  3.04it/s] 24%|██▍       | 39/164 [00:15<00:38,  3.22it/s] 24%|██▍       | 40/164 [00:16<00:54,  2.26it/s] 26%|██▌       | 42/164 [00:16<00:39,  3.07it/s] 26%|██▌       | 43/164 [00:17<00:41,  2.89it/s] 27%|██▋       | 44/164 [00:17<00:44,  2.71it/s] 27%|██▋       | 45/164 [00:18<00:52,  2.28it/s] 28%|██▊       | 46/164 [00:18<00:42,  2.76it/s] 29%|██▉       | 48/164 [00:18<00:35,  3.24it/s] 30%|██▉       | 49/164 [00:19<00:41,  2.79it/s] 30%|███       | 50/164 [00:20<00:49,  2.29it/s] 32%|███▏      | 52/164 [00:20<00:33,  3.35it/s] 32%|███▏      | 53/164 [00:20<00:33,  3.27it/s] 33%|███▎      | 54/164 [00:21<00:40,  2.69it/s] 34%|███▎      | 55/164 [00:21<00:49,  2.21it/s] 35%|███▍      | 57/164 [00:22<00:31,  3.43it/s] 35%|███▌      | 58/164 [00:22<00:31,  3.31it/s] 36%|███▌      | 59/164 [00:23<00:38,  2.72it/s] 37%|███▋      | 60/164 [00:23<00:48,  2.14it/s] 38%|███▊      | 62/164 [00:23<00:29,  3.45it/s] 38%|███▊      | 63/164 [00:24<00:29,  3.38it/s] 39%|███▉      | 64/164 [00:24<00:36,  2.71it/s] 40%|███▉      | 65/164 [00:25<00:47,  2.09it/s] 41%|████▏     | 68/164 [00:25<00:28,  3.38it/s] 42%|████▏     | 69/164 [00:26<00:32,  2.88it/s] 43%|████▎     | 70/164 [00:27<00:43,  2.18it/s] 45%|████▍     | 73/164 [00:27<00:26,  3.46it/s] 45%|████▌     | 74/164 [00:28<00:31,  2.82it/s] 46%|████▌     | 75/164 [00:29<00:39,  2.24it/s] 48%|████▊     | 78/164 [00:29<00:24,  3.52it/s] 48%|████▊     | 79/164 [00:30<00:30,  2.82it/s] 49%|████▉     | 80/164 [00:30<00:35,  2.36it/s] 49%|████▉     | 81/164 [00:31<00:31,  2.67it/s] 51%|█████     | 83/164 [00:31<00:21,  3.78it/s] 51%|█████     | 84/164 [00:32<00:39,  2.04it/s] 52%|█████▏    | 85/164 [00:32<00:33,  2.39it/s] 53%|█████▎    | 87/164 [00:32<00:22,  3.48it/s] 54%|█████▎    | 88/164 [00:34<00:39,  1.92it/s] 54%|█████▍    | 89/164 [00:34<00:33,  2.26it/s] 55%|█████▌    | 91/164 [00:34<00:21,  3.40it/s] 56%|█████▌    | 92/164 [00:35<00:38,  1.88it/s] 57%|█████▋    | 93/164 [00:36<00:32,  2.19it/s] 58%|█████▊    | 95/164 [00:37<00:34,  2.00it/s] 59%|█████▊    | 96/164 [00:37<00:33,  2.02it/s] 60%|█████▉    | 98/164 [00:37<00:22,  3.00it/s] 60%|██████    | 99/164 [00:38<00:18,  3.45it/s] 61%|██████    | 100/164 [00:39<00:29,  2.19it/s] 62%|██████▏   | 101/164 [00:39<00:29,  2.14it/s] 63%|██████▎   | 103/164 [00:39<00:18,  3.33it/s] 63%|██████▎   | 104/164 [00:39<00:15,  3.78it/s] 64%|██████▍   | 105/164 [00:40<00:26,  2.25it/s] 65%|██████▍   | 106/164 [00:41<00:26,  2.21it/s] 65%|██████▌   | 107/164 [00:41<00:20,  2.74it/s] 66%|██████▋   | 109/164 [00:41<00:13,  4.06it/s] 67%|██████▋   | 110/164 [00:42<00:22,  2.40it/s] 68%|██████▊   | 111/164 [00:42<00:22,  2.37it/s] 68%|██████▊   | 112/164 [00:43<00:19,  2.73it/s] 70%|██████▉   | 114/164 [00:43<00:12,  4.09it/s] 70%|███████   | 115/164 [00:44<00:20,  2.43it/s] 71%|███████   | 116/164 [00:44<00:19,  2.42it/s] 71%|███████▏  | 117/164 [00:44<00:16,  2.77it/s] 73%|███████▎  | 119/164 [00:45<00:10,  4.28it/s] 73%|███████▎  | 120/164 [00:46<00:17,  2.45it/s] 74%|███████▍  | 121/164 [00:46<00:18,  2.39it/s] 74%|███████▍  | 122/164 [00:46<00:15,  2.77it/s] 76%|███████▌  | 124/164 [00:46<00:09,  4.20it/s] 76%|███████▌  | 125/164 [00:47<00:15,  2.47it/s] 77%|███████▋  | 126/164 [00:48<00:15,  2.39it/s] 77%|███████▋  | 127/164 [00:48<00:13,  2.75it/s] 79%|███████▊  | 129/164 [00:48<00:08,  4.10it/s] 79%|███████▉  | 130/164 [00:49<00:13,  2.52it/s] 80%|███████▉  | 131/164 [00:50<00:15,  2.09it/s] 81%|████████  | 133/164 [00:50<00:09,  3.22it/s] 82%|████████▏ | 134/164 [00:51<00:13,  2.27it/s] 82%|████████▏ | 135/164 [00:51<00:14,  2.00it/s] 84%|████████▎ | 137/164 [00:52<00:09,  2.98it/s] 84%|████████▍ | 138/164 [00:52<00:08,  3.15it/s] 85%|████████▍ | 139/164 [00:53<00:09,  2.56it/s] 85%|████████▌ | 140/164 [00:53<00:11,  2.15it/s] 86%|████████▌ | 141/164 [00:53<00:09,  2.54it/s] 87%|████████▋ | 142/164 [00:54<00:08,  2.68it/s] 87%|████████▋ | 143/164 [00:54<00:08,  2.37it/s] 88%|████████▊ | 144/164 [00:55<00:09,  2.05it/s] 88%|████████▊ | 145/164 [00:55<00:07,  2.44it/s] 89%|████████▉ | 146/164 [00:55<00:06,  2.65it/s] 90%|████████▉ | 147/164 [00:56<00:07,  2.34it/s] 90%|█████████ | 148/164 [00:57<00:07,  2.01it/s] 91%|█████████ | 149/164 [00:57<00:06,  2.42it/s] 91%|█████████▏| 150/164 [00:57<00:05,  2.63it/s] 92%|█████████▏| 151/164 [00:58<00:05,  2.31it/s] 93%|█████████▎| 152/164 [00:58<00:05,  2.02it/s] 93%|█████████▎| 153/164 [00:59<00:04,  2.38it/s] 94%|█████████▍| 154/164 [00:59<00:03,  2.67it/s] 95%|█████████▍| 155/164 [00:59<00:02,  3.02it/s] 95%|█████████▌| 156/164 [01:00<00:02,  2.85it/s] 96%|█████████▌| 157/164 [01:00<00:02,  2.34it/s] 96%|█████████▋| 158/164 [01:00<00:02,  2.57it/s] 97%|█████████▋| 159/164 [01:01<00:01,  3.03it/s] 98%|█████████▊| 160/164 [01:01<00:01,  3.19it/s] 98%|█████████▊| 161/164 [01:01<00:01,  2.94it/s] 99%|█████████▉| 162/164 [01:02<00:00,  2.43it/s] 99%|█████████▉| 163/164 [01:02<00:00,  2.69it/s]100%|██████████| 164/164 [01:03<00:00,  1.62it/s]100%|██████████| 164/164 [01:03<00:00,  2.57it/s]
+humaneval (base tests)
+pass@1:	0.976
+humaneval+ (base + extra tests)
+pass@1:	0.939
+=== done: gemma12-gguf-off ===
+humaneval (base tests)
+pass@1:	0.976
+humaneval+ (base + extra tests)
+pass@1:	0.939

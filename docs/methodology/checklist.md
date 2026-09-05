@@ -3,7 +3,19 @@
 Follow this loop for EVERY benchmark, sweep, or scoring run. Agents skip
 steps when the procedure is prose; this page is the checklist. The "why"
 lives in [common rules](./common-rules.md) and
-[server lore](./server-lore.md) — do not re-derive it here.
+[server lore](./server-lore.md) — do not re-derive it here. **The goal
+of this whole loop is a GPU that never sits idle while there is
+runnable work queued** — every step below exists to get back to that
+state safely and quickly, not to slow it down.
+
+**Rule 1, above every numbered step below: the GPU does not sit idle.**
+Finish one block, start the next in the same wakeup — do not stop and
+ask the owner whether to proceed. Ask only when the block's own text
+carries an explicit stop-and-ask condition, or the owner has directly
+asked to pause, wait, or hold. **The only idle scenario is one the
+owner asked for.** A blocked block gets skipped, with the reason
+written to `state.md`, and the next one starts — never leave the GPU
+idle with runnable queued work because one item is stuck or ambiguous.
 
 ## Before the run
 
@@ -86,23 +98,28 @@ lives in [common rules](./common-rules.md) and
    log for the death signature, probes a real completion when a step
    goes silent, and exits 42 on a dead server. There the wakeup only
    checks that the sweep's output file still grows.
-8. Heartbeat format: "Block N (model): done X/Y, [num]h[num]min left."
-9. Note deviations in the run's `state.md` AS THEY HAPPEN, not at the
+8. **Reinforcing rule 1: this covers QUEUED blocks, not only mid-block.**
+   When one block finishes, start the next queued block in the same
+   wakeup. A block simply being scored, long, or run at night is not a
+   stop-and-ask condition on its own — only the block's own text saying
+   so, or the owner asking to pause, is.
+9. Heartbeat format: "Block N (model): done X/Y, [num]h[num]min left."
+10. Note deviations in the run's `state.md` AS THEY HAPPEN, not at the
    end. Smallest fix, fairness first, suspect the harness before the
    model.
 
 ## After the run
 
-10. Stop the memory watcher immediately, where one ran. Stop one-shot
+11. Stop the memory watcher immediately, where one ran. Stop one-shot
     monitors as soon as they fire — never leave them running.
-11. Record the result on EVERY surface in the same pass
+12. Record the result on EVERY surface in the same pass
     ([common rules](./common-rules.md), the record-everywhere rule):
     benchmarks page, report page (including its summary line),
     `comparison.md`, `models.json` + `node tools/gen-tables.mjs`,
     harness config. Update `benchmarks/bench<N>/results.md` and
     `state.md`.
-12. Commit before moving to the next block.
-13. After stopping any large server (the machine file names the
+13. Commit before moving to the next block.
+14. After stopping any large server (the machine file names the
     size), wait for memory to
     RECOVER before loading the next model or starting a sweep: poll
     `Pages wired down` in `vm_stat` (or the memwatch log, or a sweep's
@@ -117,6 +134,16 @@ lives in [common rules](./common-rules.md) and
     not memory recovery — a sweep started ~3 min after killing a 23 GB
     server ran the whole window with 60-220 MB free and continuous
     swap-ins, and OOMed ([server lore](./server-lore.md)).
-14. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
+15. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
     no background task holding the GPU. End the session with the
     machine idle.
+
+## One more time: the GPU does not sit idle
+
+Rule 1 again, because it is the rule agents drift from most: while
+this checklist runs, the GPU does not sit idle with runnable work
+still queued. Finishing a block is not a stopping point — starting the
+next one is part of finishing it. The only idle scenario is one the
+owner asked for: a direct request to pause, wait, or hold. "This is a
+scoring run," "this is a long block," and "this runs at night" are not
+that request.
