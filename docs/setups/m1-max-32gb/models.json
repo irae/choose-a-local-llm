@@ -119,7 +119,7 @@
       "gatedBy": "mem",
       "tokShallow": "34.19",
       "tokDeep": "23.23",
-      "memory": "pending",
+      "memory": "17.2 GB",
       "evalplus": "0.909/0.872",
       "id": "gemma12-lmstudio-off",
       "hidden": false,
@@ -303,8 +303,8 @@
           "label": "EvalPlus, thinking on"
         },
         "slots": {
-          "value": "4×256K",
-          "label": "llama q8 slots, 16.9 GB"
+          "value": "4×49K",
+          "label": "llama f16 slots, one swept, 25.1 GB"
         },
         "shallowLlama": {
           "value": "35.6 tok/s",
