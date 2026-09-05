@@ -2,6 +2,7 @@
 #
 # mac-services.sh turn-off  — disable background services before a run.
 # mac-services.sh restore   — put them back.
+# mac-services.sh status    — read only. Says what is off already.
 #
 # The verbs say what happens to the SERVICES. An earlier version used
 # "off" and "on", which read as a mode: "quiet mode on" sounded like it
@@ -15,6 +16,10 @@
 # that file, so it can never re-enable something you disabled by hand.
 #
 # Both directions need a reboot to take effect.
+#
+# "status" changes nothing. It prints the launchd state of every label in
+# the config files and ends with one summary line that tools/preflight.sh
+# reads.
 
 set -u
 
@@ -135,6 +140,75 @@ report_widget_state() {
 }
 
 
+# Read only. Prints the launchd state of every configured label, the
+# widget setting, and one "summary:" line for tools/preflight.sh.
+# "state=done" means turn-off already ran, so a run must not run it again.
+label_state() {
+    local target="$1"
+    local line
+
+    line=$(launchctl print-disabled "${target%/*}" 2>/dev/null | grep "\"${target##*/}\" =>")
+
+    case "$line" in
+        *disabled*) echo "disabled" ;;
+        *enabled*)  echo "enabled" ;;
+        *)          echo "unknown" ;;
+    esac
+}
+
+
+status() {
+    local recorded=0
+    local drifted=0
+    local drifted_labels=""
+    local state
+    local target
+
+    echo "User agents:"
+    for label in $(read_labels "$USER_AGENTS_FILE"); do
+        echo "  $(label_state "gui/$UID/$label")  $label"
+    done
+
+    echo "System daemons:"
+    for label in $(read_labels "$SYSTEM_DAEMONS_FILE"); do
+        echo "  $(label_state "system/$label")  $label"
+    done
+
+    echo "Widgets:"
+    report_widget_state
+
+    echo "State file:"
+    if [ -s "$STATE_FILE" ]; then
+        recorded=$(grep -c . "$STATE_FILE")
+        echo "  $STATE_FILE records $recorded items"
+    else
+        echo "  no state file, so this script disabled nothing"
+    fi
+
+    if [ -s "$STATE_FILE" ]; then
+        while read -r target; do
+            state=$(label_state "$target")
+
+            if [ "$state" = "disabled" ]; then
+                continue
+            fi
+
+            drifted=$((drifted + 1))
+            drifted_labels="$drifted_labels ${target##*/}"
+        done < "$STATE_FILE"
+    fi
+
+    echo
+    if [ -s "$STATE_FILE" ]; then
+        echo "summary: state=done recorded=$recorded drifted=$drifted$drifted_labels"
+        exit 0
+    fi
+
+    echo "summary: state=not-done recorded=0 drifted=0"
+    exit 1
+}
+
+
 turn_off() {
     require_config
 
@@ -196,8 +270,11 @@ case "${1:-}" in
     restore)
         turn_on
         ;;
+    status)
+        status
+        ;;
     *)
-        echo "usage: $0 turn-off|restore"
+        echo "usage: $0 turn-off|restore|status"
         echo "config: $CONFIG_DIR"
         exit 1
         ;;

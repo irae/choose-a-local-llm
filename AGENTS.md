@@ -106,6 +106,14 @@ Benchmark work:
   one `creep_<backend>.py` owns each backend. One command per sweep
   and one output file. The runner is its own monitor, so nothing else
   runs beside it (`docs/methodology/context-creep.md`).
+- `tools/preflight.sh`. Run it FIRST in every run session. It reads
+  the machine against `~/.config/choose-a-local-llm/machine.md` and
+  prints one line per check (`ok`, `fix`, `ask`): GPU free, login
+  items, firewall, wired limit, the starting memory numbers, and
+  whether a reboot condition holds. It changes nothing and needs no
+  sudo. All `ok` means the run starts with no question and no
+  `turn-off`. `--help` lists the checks and the environment overrides
+  (`docs/methodology/checklist.md`, "Before the run").
 - `tools/mac-services.sh` and `tools/README-mac-services.md`. Turn
   background login items off before a run and back on after. The
   script ships with no list; the README says how to build one. Read

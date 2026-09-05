@@ -26,43 +26,49 @@ idle with runnable queued work because one item is stuck or ambiguous.
    later command of the run happens there. Never push the run branch.
    Never run a bare `git stash`. The reasons and the stop-and-sync
    steps are `AGENTS.md`, standing rules.
-2. Check the GPU is free: `pgrep -fl "llama-server|mlx_lm"` and
-   `lms ps` (the machine file says where `lms` lives). Stop leftovers.
-   **Unloading the model is not enough.** Quit the LM Studio app too
-   (`osascript -e 'quit app "LM Studio"'`), and confirm the menu bar
-   item is gone. The app keeps its MLX runtime host alive after `lms
-   unload`, so a leftover app puts an MLX process on the GPU during a
-   run you believe is pure llama.cpp.
-3. **Run the cold-start sequence, in this order.** It aims at the SAME
-   machine every time, not a clean one. Every "why" is in
-   [memory ceiling](./memory-ceiling.md). The machine's own values
-   (apps, thresholds, ports, paths) are in its machine file,
+2. **Run `tools/preflight.sh` first.** It reads the machine and prints
+   one line per check: `ok`, `fix`, or `ask`. It changes nothing, it
+   needs no sudo, and it takes its values from the machine file,
    `~/.config/choose-a-local-llm/machine.md`
-   (`tools/README-mac-services.md` says how to write one). Method
-   pages never carry them.
-   1. Handle the apps listed in the machine file, in its order. Some
-      must be set before anything else (a firewall that denies new
-      binaries in silence), some must be quit and confirmed gone.
-   2. `tools/mac-services.sh turn-off` (lists beside the machine file).
-   3. Reboot when any of these holds; otherwise skip it:
-      - step 2 disabled an item that is still running (a disabled item
-        keeps running until the next boot);
-      - swap is in use at the start and the run measures speed or a
-        ceiling;
-      - the previous run left wired memory above its start value, or
-        the machine panicked or locked up.
-   4. `sudo sysctl iogpu.wired_limit_mb=<the machine file's value>`.
-      It resets to 0 on every reboot, and 0 means the system default.
-   5. Probe free memory. Above the machine file's balloon threshold,
-      skip the balloon. Below it, load the model under test and drive
-      its context up SLOWLY towards the configured maximum. Never a
-      synthetic balloon.
-   6. Record the starting numbers: `Pages wired down` from `vm_stat`,
-      and `sysctl -n vm.swapusage`. Swap is judged by the delta, never
-      by the level: watch for an INCREASE during the run. Growth
+   (`tools/README-mac-services.md` says how to write one). `--help`
+   lists the checks. Exit 0 means every line is `ok`.
+   **All `ok` starts the run at once**: no app to quit, no
+   `mac-services.sh turn-off`, no reboot, and no question to the
+   owner. A ready machine is a silent machine.
+3. **Act only on the lines that say `fix` or `ask`**, in the order
+   below. Every "why" is in [memory ceiling](./memory-ceiling.md). A
+   step whose line already said `ok` is done; do not repeat it.
+   1. `fix gpu-free`: quit what the line names. `lms unload` is not
+      enough for LM Studio; quit the app
+      (`osascript -e 'quit app "LM Studio"'`) and confirm with
+      `pgrep -fl "LM Studio"`. The app keeps its MLX runtime host
+      alive, so a leftover app puts an MLX process on the GPU during a
+      run you believe is pure llama.cpp.
+   2. `ask little-snitch`: the probe could not reach the run port from
+      a fresh binary path. Set the firewall the way the machine file
+      says, then run preflight again.
+   3. `fix login-items`: `tools/mac-services.sh turn-off`. Never run it
+      when the line says `ok`; the items are off already.
+   4. `fix reboot`: reboot, then run preflight again. The line says
+      which condition holds (a disabled item still running, wired above
+      the recorded start value, a panic or a lockup since the last
+      start). Swap in use at the start is not a condition: swap is
+      judged by its growth during the run, never by its level.
+      preflight never reboots.
+   5. `fix wired-limit`: the line carries the exact
+      `sudo sysctl iogpu.wired_limit_mb=<value>` command. The value
+      resets to 0 on every reboot, and 0 means the system default.
+      preflight never runs sudo.
+   6. Read the balloon verdict on the `memory` line. "No balloon"
+      needs no action. "Balloon needed" means: load the model under
+      test and drive its context up SLOWLY towards the configured
+      maximum. Never a synthetic balloon.
+   7. Record the starting numbers the `memory` line printed (wired,
+      free, swap used) in `state.md`. Swap is judged by the delta,
+      never by the level: watch for an INCREASE during the run. Growth
       invalidates a speed or ceiling number and is a recorded
       deviation on a judged score.
-   7. Only now start the real benchmark.
+   8. Only now start the real benchmark.
 4. Serve the exact files the runbook names. A missing file is STOP and
    ask, unless the runbook says this run may download it.
 5. Start the server for ONE config. Verify it serves (warmup request).
@@ -132,7 +138,7 @@ idle with runnable queued work because one item is stuck or ambiguous.
     RECOVER before loading the next model or starting a sweep: poll
     `Pages wired down` in `vm_stat` (or the run watcher's memory log, or a sweep's
     `wired_mb` column) until wired
-    memory returns to the value you recorded in step 3.6. Do NOT wait
+    memory returns to the start value you recorded from preflight. Do NOT wait
     for free memory. The first load of a model keeps its weights in
     the page cache, so free memory stays lower by about the model's
     size for the rest of the session and never returns to the start

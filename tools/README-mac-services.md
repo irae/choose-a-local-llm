@@ -15,7 +15,8 @@ Build your own list once. The script reads it every run.
       services-state                 written by "off", read by "on"
       baselines/                  the dumps you took before any change
 
-`machine.md` is the file the method pages point at for every value
+`machine.md` is also the file `tools/preflight.sh` reads. See "What
+preflight reads" below. It is the file the method pages point at for every value
 that belongs to one machine and not to the method: the apps to handle
 before a run and how (a firewall to set, an app to quit), the wired
 limit, the free-memory threshold that skips the balloon, the server
@@ -29,6 +30,53 @@ Blank lines and `#` comments are ignored. You can annotate a label with
 why it is there, or comment one out to keep it running.
 
 The script uses `$XDG_CONFIG_HOME` when it is set.
+
+## What preflight reads
+
+`tools/preflight.sh` checks the machine against this directory before a
+run. It changes nothing and it needs no sudo. It reads:
+
+- `machine.md`, "Apps to handle before a run". It takes the App column
+  only. An app it has no check for becomes an `ask` line, so a new row
+  never passes in silence.
+- `machine.md`, "Thresholds". It takes the Setting cell of the
+  `iogpu.wired_limit_mb` row and of the "Skip the balloon above" row,
+  and reads the numbers out of it. A cell with two numbers ("24000
+  unattended, 22000 when the owner also uses the machine") accepts
+  both.
+- `services-state`, through `mac-services.sh status`.
+- `last-start-wired-mb`, when it exists: the wired MB value the last
+  run recorded at its start. preflight compares the current wired
+  value against it for the reboot check, and says nothing when the
+  file is absent.
+
+The table shape it expects is the one this page describes: a `## `
+heading, then rows `| key | setting | note |`. Backticks around a key
+are ignored. Every value has an environment override; `preflight.sh
+--help` and its header list them.
+
+The Little Snitch mode is not readable from userland on macOS: the
+configuration is root-only and encrypted, and the `littlesnitch` tool
+refuses to run without root. So preflight probes the outcome the mode
+controls. It copies `node` (or `python3`) to a fresh path and connects
+to the run port from there. An unapproved binary that reaches the port
+is the "silently allow" outcome. This probe covers loopback traffic,
+which is what a run makes; it says nothing about a download from the
+internet.
+
+## Reading the state, without changing it
+
+    mac-services.sh status
+
+`status` writes nothing. It prints the launchd state of every label in
+the two `.conf` files, the widget setting, and the state file. Its last
+line is for `preflight.sh`:
+
+    summary: state=done recorded=21 drifted=1 com.docker.helper
+
+`state=done` means `turn-off` already ran, so a run must not run it
+again. `drifted` counts labels that `turn-off` disabled and that read
+`enabled` again now.
 
 ## Step 1: take the baselines first
 
