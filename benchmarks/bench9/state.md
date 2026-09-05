@@ -53,3 +53,20 @@ stays as published (a real stop condition, reached well under its
 loadable `-c` toward each model's 262144 trained context, then a
 prefill-jump creep from the last verified depth to find where a real
 stop condition (floor/OOM/mem) actually triggers.
+
+### Deviation: block B3 text contradicts itself on the drafter
+
+Block B3's title is "Mendel guided on Gemma-12B GGUF, thinking off,
+f16 KV, no drafter" and its row-note requirement says the config note
+must read "f16 KV, no MTP". But the body's server instruction says
+"Start the published `gemma-4-12b` command with `f16` in both cache
+types (keep `-c 262144` **and the drafter at n-max 4**)" — the
+opposite of the title.
+
+Followed the title and the row-note (two mentions, no drafter) over
+the body's one mention, on the read that "keep -c 262144" was the
+actual instruction and "and the drafter at n-max 4" is a copy-paste
+leftover from the block A1/B1 server commands, which all keep the
+drafter. Started the server WITHOUT `--spec-type draft-mtp
+--spec-draft-n-max 4`, f16 both cache types, `-c 262144`. Flag for the
+coordinator to fix the block text.
