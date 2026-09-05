@@ -42,3 +42,16 @@ are dropped as candidates.
 
 Full creep running on this slot: `creep-gemma12-gguf-4x-f16.tsv`,
 depths 4096..163840.
+
+### Coordinator note, mid-session
+
+The coordinator sent word (via a peer session) that the checklist's
+cold-start steps changed: `master` has `tools/preflight.sh` at commit
+`0778404` or later. Next session: `git merge master` into `run10`
+first, then run `preflight.sh` instead of the old manual app-quit /
+`mac-services.sh turn-off` / reboot-ask sequence. Act only on its
+`fix`/`ask` lines. Swap in use at start is a number to record, not a
+reboot reason — only swap growth during a run matters. Keep every
+commit inside `benchmarks/bench10/` and the Mendel kit; site pages and
+`models.json` stay the coordinator's after the merge. Not acted on
+mid-block; applies from the next cold-start.

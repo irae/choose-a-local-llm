@@ -1,3 +1,9 @@
 llama-server, endpoint=completion thinking=n/a (no template) contexts=1 pause=25s
 start: wired 24628 MB, free 1746 MB, swap used 819 MB
 context	depth_tokens	decode_toks	wired_mb	free_mb	swap_delta_mb	compress_pages	decompress_pages	step_seconds
+A	4114	42.86	25144	94	0	7356	209	17
+A	8222	23.75	25144	89	0	122025	12391	19
+A	16386	37.13	25160	64	0	44186	6739	38
+A	24602	34.20	25157	60	0	24370	2221	45
+A	32818	31.53	25159	63	0	28411	11576	51
+A	49198	27.65	25137	62	0	107607	32332	118
