@@ -1,0 +1,4 @@
+llama-server, endpoint=completion thinking=n/a (no template) contexts=1 pause=25s
+start: wired 25048 MB, free 66 MB, swap used 69 MB
+context	depth_tokens	decode_toks	wired_mb	free_mb	swap_delta_mb	compress_pages	decompress_pages	step_seconds
+STOP: request failed at depth 4114 on context A: HTTP Error 500: Internal Server Error
