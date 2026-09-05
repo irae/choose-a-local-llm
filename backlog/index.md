@@ -19,7 +19,6 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
-- [ ] Worker-profile table: which config is the best thinking-off sub-agent (worker-profile-table.md)
 - [ ] Bench 10 candidates: the items deferred from bench 9 and the retries (bench-10-candidates.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
 

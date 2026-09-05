@@ -17,8 +17,8 @@ Filed: 2026-09-04; the smoke step set by the owner the same day.
    and records what it changed; the first pass also runs the same config
    twice (must not read "worse" than itself) and the two Bonsai configs
    with known differing scores.
-3. **Full EvalPlus** only where the smoke passed, thinking off for the
-   worker seat and thinking on where the model offers it.
+3. **Full EvalPlus** only where the smoke passed, thinking off, and
+   thinking on where the model offers it.
 
 ## Candidates for the steps above
 
