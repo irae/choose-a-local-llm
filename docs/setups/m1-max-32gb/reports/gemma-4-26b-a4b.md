@@ -18,8 +18,10 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 - **The fastest depth curve measured on this machine**, now on llama at
   f16 KV: 60.3 tok/s at 4K, still 17.3 at 197K, the largest context this
   machine loads for it (run 9). MLX: 51 tok/s at 4K, 12.8 at 70K.
-- **The full 256K trained window fits on one slot** (19.3 GB), and two
-  agents get 184K each on one weight copy — llama only.
+- **Two slots at f16 KV hold 101K each** (run 10): 66.6 tok/s at 4K and
+  33.6 at 82K on one slot with the other idle, in 25.3 GB wired, no
+  speed or memory stop before the slot window. The old "two agents get
+  184K each" was an allocation at q8_0, not a measured depth.
 - Weak point: wired memory sits at 25.6 GB on that config, above the
   24000 limit, flat but with no headroom for anything beside it.
 - Weak point: EvalPlus 0.713/0.701 with 46/164 (~28%) empty — its thinking
@@ -32,7 +34,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
 | 2 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
-| 3 | Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots | 2x184k | speed | pending → pending | pending | 0.713/0.701 |
+| 3 | Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.713/0.701 |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -58,14 +60,14 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#3 — Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots.** pi id `gemma-4-26b-a4b-2x`. Still the q8_0 command; nothing measured. The two-slot config follows the f16 pick when it is re-planned.
+**#3 — Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots.** pi id `gemma-4-26b-a4b-2x`. Measured 2026-09-05 (run 10) at f16 KV: 202752 is the largest `-c` that serves a real 4096-token completion (208896 and above fail on compute buffers or at load), 101376 per slot. One slot swept with the other loaded and idle: no speed or memory stop before the slot window; the deepest row is 82K at 33.6 tok/s. The EvalPlus score was measured at q8_0 KV on the single-slot config.
 
 ```bash
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --alias gemma-4-26b-a4b-2x --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \
-  -ngl 999 -fa on -c 376832 \
-  --cache-type-k q8_0 --cache-type-v q8_0 \
+  -ngl 999 -fa on -c 202752 \
+  --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
 ```
 <!-- gen:model-configs:end -->
@@ -119,7 +121,7 @@ A deep-fill decode check on the llama config is still pending.
 |---|---|--:|--:|
 | **Max context** | llama-server + MTP n=2, f16 KV, `-c 212992`, 1 slot | 60.3 at 4K, 17.3 at 197K | 197K measured (run 9) |
 | **Max js speed** | f16 KV at small context (32K) | 74.8 / 71.6 | 32K |
-| **Two agents** | `--parallel 2 -c 376832`, q8_0 KV | 58.4 / 56.5 single-stream | 2×184K |
+| **Two agents** | `--parallel 2 -c 202752`, f16 KV | 66.6 at 4K, 33.6 at 82K, one slot | 2×101K allocated, 82K measured (run 10) |
 
 ## Quality — EvalPlus HumanEval+
 

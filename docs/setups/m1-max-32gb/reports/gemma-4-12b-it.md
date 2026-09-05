@@ -30,8 +30,10 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 - **The KV type sets the depth on this model, not the weights.** With
   q8_0 KV the same server drops under the 8 tok/s floor by 16K. With f16
   KV it is 3.2x faster at 16K and stays usable eight times deeper.
-- **The best concurrency story.** Four 256K slots fit with q8_0 KV, in
-  16.9 GB.
+- **Four slots at f16 KV hold 49K each** (run 10): 42.9 tok/s at 4K and
+  27.7 at 49K on one slot with the other three idle, in 25.1 GB wired,
+  before swap growth ended the sweep. The old "four 256K slots in
+  16.9 GB" was an allocation at q8_0, not a measured depth.
 
 ## All configs — this model
 
@@ -41,9 +43,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 | 1 | Gemma-4-12B, MLX³, thinking off | 131k | mem | 34.19 → 23.23 | pending | 0.909/0.872 |
 | 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939 |
 | 3 | Gemma-4-12B, GGUF, MTP q8, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939 |
-| 4 | Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off | 4x256k† | speed | 33.7† → pending | 16.9 GB† | 0.976/0.939 |
-
-† from an earlier serving config or method; re-run pending.
+| 4 | Gemma-4-12B, GGUF, MTP f16, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939 |
 
 Retired entries: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on repetition loop; entry gone from the model store ([details](../benchmarks/gemma-4-12b-it.md#the-retired-entry)).
 <!-- gen:model-table:end -->
@@ -81,14 +81,14 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#4 — Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off.** pi id `gemma-4-12b-4x`.
+**#4 — Gemma-4-12B, GGUF, MTP f16, 4 slots, thinking off.** pi id `gemma-4-12b-4x`. Measured 2026-09-05 (run 10) at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --alias gemma-4-12b-4x --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \
-  -ngl 999 -fa on -c 1048576 \
-  --cache-type-k q8_0 --cache-type-v q8_0 \
+  -ngl 999 -fa on -c 655360 \
+  --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
 ```
 <!-- gen:model-configs:end -->

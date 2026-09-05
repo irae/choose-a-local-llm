@@ -30,6 +30,21 @@ For numbers you can act on, go to [the comparison page](./comparison.md).
 Full raw archives, with their eras labeled, live in the benchmarks pages.
 :::
 
+## Two slot rows at q8_0 KV, allocation only (superseded 2026-09-05, run 10)
+
+Both rows carried an allocation as their context and no measured depth.
+Run 10 measured one slot of each at f16 KV, with the other slots loaded
+and idle, at the largest `-c` that serves a real completion.
+
+| row | old | now |
+| --- | --- | --- |
+| Gemma-4-12B GGUF MTP, 4 slots, thinking off | q8_0 KV, `-c 1048576`, 4x256k, 33.7 tok/s shallow, 16.9 GB | f16 KV, `-c 655360`, 4x49k gated by mem, 42.9 to 27.7 tok/s, 25.1 GB |
+| Gemma-4-26B-A4B GGUF MTP, 2 slots | q8_0 KV, `-c 376832`, 2x184k, nothing measured | f16 KV, `-c 202752`, 2x82k gated by mem, 66.6 to 33.6 tok/s, 25.3 GB |
+
+The Gemma-12B sweep ran with free memory near zero and swap already in
+use at session start; the row says so.
+Evidence: `hardware/m1-max-32gb/benchmarks/bench10/results.md`.
+
 ## Three GGUF rows at the fast sweep and the old KV type (superseded 2026-09-05, run 9)
 
 Run 9 picked the KV cache type per model with a short creep of both

@@ -92,17 +92,17 @@
       "note": "pi id `gemma-4-26b-a4b`. Re-measured 2026-09-05 at f16 KV, the run 9 pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. The EvalPlus score was measured at q8_0 KV; the f16 re-score is a run 10 item."
     },
     {
-      "config": "Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots",
-      "maxCtx": "2x184k",
-      "gatedBy": "speed",
-      "tokShallow": "pending",
-      "tokDeep": "pending",
-      "memory": "pending",
+      "config": "Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots",
+      "maxCtx": "2x82k",
+      "gatedBy": "mem",
+      "tokShallow": "66.6",
+      "tokDeep": "33.6",
+      "memory": "25.3 GB",
       "evalplus": "0.713/0.701",
       "id": "gemma26-gguf-2x",
       "hidden": false,
-      "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 376832 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-26b-a4b-2x`. Still the q8_0 command; nothing measured. The two-slot config follows the f16 pick when it is re-planned."
+      "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 202752 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-26b-a4b-2x`. Measured 2026-09-05 (run 10) at f16 KV: 202752 is the largest `-c` that serves a real 4096-token completion (208896 and above fail on compute buffers or at load), 101376 per slot. One slot swept with the other loaded and idle: no speed or memory stop before the slot window; the deepest row is 82K at 33.6 tok/s. The EvalPlus score was measured at q8_0 KV on the single-slot config."
     },
     {
       "id": "gemma12-lmstudio-think",
@@ -153,22 +153,17 @@
       "note": "The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep."
     },
     {
-      "config": "Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off",
-      "maxCtx": "4x256k",
-      "gatedBy": "speed",
-      "tokShallow": "33.7",
-      "tokDeep": "pending",
-      "memory": "16.9 GB",
+      "config": "Gemma-4-12B, GGUF, MTP f16, 4 slots, thinking off",
+      "maxCtx": "4x49k",
+      "gatedBy": "mem",
+      "tokShallow": "42.9",
+      "tokDeep": "27.7",
+      "memory": "25.1 GB",
       "evalplus": "0.976/0.939",
       "id": "gemma12-gguf-4x",
       "hidden": false,
-      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-4x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \\\n  -ngl 999 -fa on -c 1048576 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-12b-4x`.",
-      "stale": [
-        "maxCtx",
-        "tokShallow",
-        "memory"
-      ]
+      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-4x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \\\n  -ngl 999 -fa on -c 655360 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-12b-4x`. Measured 2026-09-05 (run 10) at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper."
     },
     {
       "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking on",
