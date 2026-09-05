@@ -27,8 +27,6 @@
 #                            skipped (default: the machine file's row)
 #   PREFLIGHT_PROBE_PORT     loopback port for the network probe
 #                            (default 8081, the run port)
-#   PREFLIGHT_MEASURES       speed|score. "speed" makes swap in use a
-#                            reboot reason (default speed)
 #   PREFLIGHT_START_WIRED_FILE  file holding the last recorded start
 #                            value of wired MB (default
 #                            $XDG_CONFIG_HOME/choose-a-local-llm/last-start-wired-mb)
@@ -41,7 +39,6 @@ STATE_FILE="$CONFIG_DIR/services-state"
 START_WIRED_FILE="${PREFLIGHT_START_WIRED_FILE:-$CONFIG_DIR/last-start-wired-mb}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROBE_PORT="${PREFLIGHT_PROBE_PORT:-8081}"
-MEASURES="${PREFLIGHT_MEASURES:-speed}"
 
 # App rows of the machine file this script knows how to check. An app
 # row it does not know becomes an "ask" line.
@@ -378,10 +375,6 @@ check_memory() {
         report ok memory "free is above the ${balloon_mb} MB threshold: no balloon"
     else
         report ok memory "free is below the ${balloon_mb} MB threshold: balloon needed"
-    fi
-
-    if [ "$swap_used_mb" -gt 0 ] && [ "$MEASURES" = "speed" ]; then
-        add_reboot_reason "swap is in use (${swap_used_mb} MB) and this run measures speed or a ceiling"
     fi
 
     if [ -f "$START_WIRED_FILE" ]; then

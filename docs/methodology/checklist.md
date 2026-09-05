@@ -50,9 +50,11 @@ idle with runnable queued work because one item is stuck or ambiguous.
    3. `fix login-items`: `tools/mac-services.sh turn-off`. Never run it
       when the line says `ok`; the items are off already.
    4. `fix reboot`: reboot, then run preflight again. The line says
-      which condition holds (a disabled item still running, swap in use
-      before a speed or ceiling run, wired above the recorded start
-      value). preflight never reboots.
+      which condition holds (a disabled item still running, wired above
+      the recorded start value, a panic or a lockup since the last
+      start). Swap in use at the start is not a condition: swap is
+      judged by its growth during the run, never by its level.
+      preflight never reboots.
    5. `fix wired-limit`: the line carries the exact
       `sudo sysctl iogpu.wired_limit_mb=<value>` command. The value
       resets to 0 on every reboot, and 0 means the system default.
