@@ -270,6 +270,11 @@ and does not count.
   2026-09-04.
 - **`sweep-one.sh` and `ceilings.sh`.** Both hardcoded a scratchpad path
   from a long-dead session and could not run. Deleted 2026-09-04.
+- **A per-process graphics-resident watcher.** `proc-mem-watch.sh`
+  sampled one PID's `vmmap` IOAccelerator line. That counter reads near
+  zero for an MLX server holding gigabytes, so it answered one question
+  on one day and nothing since. Wired pages are the meter. Deleted
+  2026-09-05.
 - **LM Studio's `/v1/completions`.** Returns garbage on this build and
   streams the whole reply in one burst with no per-token pacing —
   verified 2026-08-29. Use chat completions there.
