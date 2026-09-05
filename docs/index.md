@@ -39,11 +39,11 @@ slow down faster but never OOM inside their window.
 <!-- gen:models-evaluated:start -->
 | # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.8-27B | 49k | OOM | 20.0 → 15.0 | 23.5 GB | 0.982/0.939 |
-| 2 | Gemma-4-12B | 245k | window | 24.64 → 8.86 | 13.9 GB | 0.976/0.939 |
+| 1 | Qwen3.8-27B | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939 |
+| 2 | Gemma-4-12B | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939 |
 | 3 | Qwen3.6-35B-A3B | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921 |
 | 4 | Ternary-Bonsai-27B | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902 |
-| 5 | Gemma-4-26B-A4B | 197k | OOM | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
+| 5 | Gemma-4-26B-A4B | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
 <!-- gen:models-evaluated:end -->
 
 ¹ Whichever limit hits first: the max memory a config fits in, the max

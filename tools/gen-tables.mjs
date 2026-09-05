@@ -124,6 +124,17 @@ function sortRows(rows) {
   })
 }
 
+const GATED_BY = new Set(['mem', 'speed'])
+
+function checkRows(rows, setup) {
+  for (const r of rows) {
+    if (r.retired) continue
+    if (!GATED_BY.has(r.gatedBy)) {
+      throw new Error(`${setup}: row ${r.id} has gatedBy "${r.gatedBy}"; allowed: ${[...GATED_BY].join(', ')}`)
+    }
+  }
+}
+
 function hasPending(r) {
   return ['maxCtx', 'gatedBy', 'tokShallow', 'tokDeep', 'memory', 'evalplus'].some(
     (k) => String(r[k]).includes('pending'),
@@ -293,6 +304,7 @@ let drift = false
 for (const dataFile of dataFiles) {
   const setupDir = dataFile.replace(/\/models\.json$/, '')
   const data = JSON.parse(readFileSync(dataFile, 'utf8'))
+  checkRows(data.rows, data.setup)
   const visible = data.rows.filter((r) => !r.hidden && !r.retired)
   const comparisonTable = renderTable(visible.filter((r) => !hasPending(r)))
   const homeTable = renderHomeTable({ ...data, rows: visible })

@@ -31,7 +31,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
-| 2 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | OOM | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
+| 2 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
 | 3 | Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots | 2x184k | speed | pending → pending | pending | 0.713/0.701 |
 <!-- gen:model-table:end -->
 

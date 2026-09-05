@@ -31,7 +31,7 @@
     {
       "config": "Qwen3.8-27B, GGUF, MTP f16, effort medium",
       "maxCtx": "49k",
-      "gatedBy": "OOM",
+      "gatedBy": "mem",
       "tokShallow": "20.0",
       "tokDeep": "15.0",
       "memory": "23.5 GB",
@@ -81,7 +81,7 @@
     {
       "config": "Gemma-4-26B-A4B, GGUF, MTP f16",
       "maxCtx": "197k",
-      "gatedBy": "OOM",
+      "gatedBy": "mem",
       "tokShallow": "60.3",
       "tokDeep": "17.3",
       "memory": "25.6 GB",
@@ -129,7 +129,7 @@
     {
       "config": "Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off",
       "maxCtx": "245k",
-      "gatedBy": "window",
+      "gatedBy": "mem",
       "tokShallow": "24.64",
       "tokDeep": "8.86",
       "memory": "13.9 GB",
@@ -137,7 +137,7 @@
       "id": "gemma12-gguf-f16",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window."
+      "note": "pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor."
     },
     {
       "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",

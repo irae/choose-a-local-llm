@@ -40,8 +40,8 @@ published `-c` values OOM at load under the 24000 limit.
 
 | row | old | now |
 | --- | --- | --- |
-| Qwen3.8-27B GGUF MTP, effort medium | q8_0 KV, `-c 32768`, 19k gated by speed, 14.1 to 8 tok/s, 18.9 GB | f16 KV, `-c 49152`, 49k gated by OOM at load, 20.0 to 15.0 tok/s, 23.5 GB |
-| Gemma-4-26B-A4B GGUF MTP | q8_0 KV, `-c 262144`, 24k gated by speed, 23.5 to 8 tok/s, 15.4 GB | f16 KV, `-c 212992`, 197k gated by OOM at load, 60.3 to 17.3 tok/s, 25.6 GB |
+| Qwen3.8-27B GGUF MTP, effort medium | q8_0 KV, `-c 32768`, 19k gated by speed, 14.1 to 8 tok/s, 18.9 GB | f16 KV, `-c 49152`, 49k gated by mem (OOM at load above it), 20.0 to 15.0 tok/s, 23.5 GB |
+| Gemma-4-26B-A4B GGUF MTP | q8_0 KV, `-c 262144`, 24k gated by speed, 23.5 to 8 tok/s, 15.4 GB | f16 KV, `-c 212992`, 197k gated by mem (OOM at load above it), 60.3 to 17.3 tok/s, 25.6 GB |
 | Qwen3.6-35B-A3B GGUF MTP, thinking on | q8_0 KV, `-c 98304`, 90k gated by speed, 44 to 8.1 tok/s, 22.8 GB | q8_0 KV, `-c 49152`, 8k gated by mem, 36.4 to 43.8 tok/s, 25.0 GB |
 
 The Qwen3.6 change is not a KV change. f16 does not load for it, so

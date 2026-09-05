@@ -39,7 +39,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Gemma-4-12B, MLX³, thinking off | 131k | mem | 34.19 → 23.23 | pending | 0.909/0.872 |
-| 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | window | 24.64 → 8.86 | 13.9 GB | 0.976/0.939 |
+| 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939 |
 | 3 | Gemma-4-12B, GGUF, MTP q8, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939 |
 | 4 | Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off | 4x256k† | speed | 33.7† → pending | 16.9 GB† | 0.976/0.939 |
 
@@ -60,7 +60,7 @@ Each table row above is one config; start it with its block below.
 ~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y
 ```
 
-**#2 — Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off.** pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window.
+**#2 — Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off.** pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \

@@ -51,7 +51,7 @@ from the daily-driver question and keeps its single-turn score.
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
 | 2 | Qwen3.8-27B, MLX, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927 |
-| 3 | Qwen3.8-27B, GGUF, MTP f16, effort medium | 49k | OOM | 20.0 → 15.0 | 23.5 GB | 0.982/0.939 |
+| 3 | Qwen3.8-27B, GGUF, MTP f16, effort medium | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939 |
 <!-- gen:model-table:end -->
 
 ## Configs

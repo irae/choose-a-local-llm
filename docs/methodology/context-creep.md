@@ -188,10 +188,13 @@ a changed `STALL_S` must say so.
    below). The runner stops by itself on swap growth and on material
    compaction that speed does not recover from; a step that shows either
    and keeps going is still a step to distrust.
-5. Verdict, one of: **speed** (drops under the floor), **OOM** (dies
-   while still fast), **window** (the model's own limit arrives first),
-   or **mem** (the machine compacts or swaps before any of those
-   arrives; on LM Studio it is the criterion, below).
+5. Verdict. The site publishes two values: **speed** (decode dropped
+   under the floor while memory still had room) and **mem** (memory
+   ended the curve). The run log keeps the finer stop reason behind a
+   mem verdict: a larger `-c` did not load, the server died in flight,
+   compaction or swap onset, or the model's own trained window arrived
+   first. The row note names it. `tools/gen-tables.mjs` refuses any
+   other value.
 6. Record on every surface; the floor — not the window — is where the
    harness compaction threshold belongs.
 

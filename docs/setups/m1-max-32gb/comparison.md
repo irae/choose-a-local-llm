@@ -13,25 +13,30 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
   on memory, and it loops in multi-turn tool work.
 - **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, still 12.8 at
   70K (ceiling), in 20.0 GB.
-- **Best big window, and the best all-round config:** Qwen3.6-35B on llama —
-  never crosses the 8 tok/s floor inside its whole 96K window, and now scores
-  0.939 / 0.921.
+- **Best big window:** Gemma-26B on llama-server with f16 KV — 60.3 tok/s
+  at 4K and 17.3 at 197K, the largest context this machine loads for it
+  (run 9). Its quality score is the open question of run 10.
+- **Best all-round config, with a caveat:** Qwen3.6-35B on llama — the
+  fastest shallow decode and 0.939 / 0.921, but the slow creep of run 9
+  shows memory compaction from 16K at the only `-c` that loads; the
+  clean depth is 8K.
 - **Best all-day agent:** Ternary Bonsai-27B — 27B-class quality from 8 GB of
   weights, and the flattest curve of any model.
 - **Best multi-agent:** Bonsai on the prism fork — 2×48K slots at 9.8 tok/s
   each, in 10.0 GB. The only setup that leaves the machine free.
-- **The law that decides everything:** MLX runtimes barely slow down but hit
-  hard memory ceilings. llama runtimes slow down faster but never OOM inside
-  their window.
+- **The rule that decides everything:** MLX runtimes barely slow down but
+  hit hard memory ceilings. llama runtimes hold their speed deeper at f16
+  KV, and their ceiling is the largest `-c` that loads; a published `-c`
+  that OOMs at load is not a window.
 
 ## Models evaluated
 
 <!-- gen:models-evaluated:start -->
 | # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.8-27B, GGUF, MTP f16, effort medium | 49k | OOM | 20.0 → 15.0 | 23.5 GB | 0.982/0.939 |
+| 1 | Qwen3.8-27B, GGUF, MTP f16, effort medium | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939 |
 | 2 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
-| 3 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | window | 24.64 → 8.86 | 13.9 GB | 0.976/0.939 |
+| 3 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939 |
 | 4 | Qwen3.8-27B, MLX, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927 |
 | 5 | Gemma-4-12B, GGUF, MTP q8, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939 |
 | 6 | Qwen3.6-35B-A3B, MLX, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921 |
@@ -40,13 +45,15 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 | 9 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890 |
 | 10 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890 |
 | 11 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
-| 12 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | OOM | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
+| 12 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
 | 13 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
 <!-- gen:models-evaluated:end -->
 
-¹ Whichever limit hits first: the max memory a config fits in, the max
-context that stays usable — usable meaning at or above the 8 tok/s floor —
-or the model's own trained window, when neither of the other two arrives.
+¹ Two values. **mem**: memory ended the curve, whether the server did
+not load a larger context, died in flight, compacted or swapped, or the
+model's own trained window arrived first; the row note says which.
+**speed**: decode fell under the 8 tok/s floor while memory still had
+room.
 "tok/s (shallow → deep)" is that same decode speed, near an empty context
 then at max ctx.
 
@@ -75,7 +82,7 @@ Compaction thresholds come from the floor table below, not from the window.
 ## Per-model reports
 
 - [Gemma-4-26B-A4B](./reports/gemma-4-26b-a4b.md) —
-  MoE+MTP: fastest Python, full 256K window (q8 KV), 2×184K slots
+  MoE+MTP: fastest Python, 197K at f16 KV on one slot
 - [Qwen3.6-35B-A3B](./reports/qwen3.6-35b-a3b.md) —
   MoE+MTP: fastest JS, strongest base benchmarks; 96K context at the current
   wired limit
@@ -102,11 +109,11 @@ applies.
 | Qwen3.6-35B llama (q8, MTP, `-c 49152`) | 36.4 | 31.0 | 19.6 | | | mem — compaction from 16K at 25 GB wired; last clean row 8K, 43.8 tok/s (run 9) | 0.939/0.921 |
 | Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 17.3 (58K) | mem — stable to 58K, 17.3 tok/s there | 0.915/0.884 |
 | Qwen3.8 MLX | 17.1* | 16.4 | | | 15.3 (28K) | mem — stable to 28K, 15.3 tok/s there | 0.982/0.939 |
-| **Gemma-26B llama (f16, MTP, `-c 212992`)** | 60.3 | 56.5 | 45.9 | 45.9 | 26.4 (115K), 17.3 (197K) | OOM — 212992 is the largest `-c` that loads; 17.3 tok/s at 197K (run 9) | 0.713/0.701 at q8_0 |
+| **Gemma-26B llama (f16, MTP, `-c 212992`)** | 60.3 | 56.5 | 45.9 | 45.9 | 26.4 (115K), 17.3 (197K) | mem — 212992 is the largest `-c` that loads; 17.3 tok/s at 197K (run 9) | 0.713/0.701 at q8_0 |
 | Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 7.9 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890 |
-| **Qwen3.8 llama (f16, MTP, `-c 49152`)** | 20.0 | 16.0 | 16.4 | 15.0 | | OOM — 49152 is the largest `-c` that loads; 15.0 tok/s at 49K (run 9) | 0.982/0.939 (MLX score) |
+| **Qwen3.8 llama (f16, MTP, `-c 49152`)** | 20.0 | 16.0 | 16.4 | 15.0 | | mem — 49152 is the largest `-c` that loads; 15.0 tok/s at 49K (run 9) | 0.982/0.939 (MLX score) |
 | Gemma-12B llama (q8, MTP) | 13.8 | 6.5 | | | | speed — under 8 tok/s at 16K | 0.909/0.872 |
-| **Gemma-12B llama (f16, no drafter)** | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | window — 8.86 tok/s at 245K, where the trained window ends² | 0.909/0.872 |
+| **Gemma-12B llama (f16, no drafter)** | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | mem — 8.86 tok/s at 245K, where the trained window ends² | 0.909/0.872 |
 | **Gemma-12B MLX (LM Studio engine, CLI)** | 34.2 | 32.1 | 30.6 | | 23.2 (131K) | mem — last stable 131K, 23.23 tok/s there² | 0.909/0.872 |
 
 Cells are blank past a config's cap, or where no step was measured at that depth.

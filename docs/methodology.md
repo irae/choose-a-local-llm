@@ -65,7 +65,7 @@ its page above.
 6. **Memory ceiling** at the picked type.
 7. **Full context creep** at the picked type, to a real stop
    condition: the floor, an OOM, memory onset, or the trained window.
-   Every config gets a "capped by" verdict.
+   Every config gets a "gated by" verdict, speed or mem.
 8. **Gate.** Same as before, now with the depth curve. Most of the cut
    happens here: a model under the floor at the depth the owner works
    at is out.

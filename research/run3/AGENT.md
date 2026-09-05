@@ -88,6 +88,38 @@ then the three quick checks, then the keep verdict with the numbers
 beside it. Judgment is in reading a borderline result and in stopping
 a trial early when the sweep already says no.
 
+## Goal 2 — Qwen3.8-27B: find a configuration that finishes agent work
+
+The best single-turn score on this hardware has never completed a
+Mendel run (five attempts, four partial, one invalid; the report page
+opens with it). Run 9 gave its llama row f16 KV and 49K. Before the
+model retires from the daily-driver question, this run tries, in
+order, and stops at the first that yields a completed Mendel smoke:
+
+1. **Vision off.** A video on this model
+   (https://www.youtube.com/watch?v=0xUxO_9zqTU, diagrams only, read
+   the transcript) says dropping the vision tower frees memory. Our
+   llama command already passes `--no-mmproj`; check whether the MLX
+   container and LM Studio still load the tower, and what the GGUF
+   saves with and without it at the same `-c`.
+2. **Alternative quants, GGUF first.** GGUF takes every flag we use
+   (KV type, drafter, slots, no vision); MLX takes none of them. List
+   community GGUF builds of this model at 3-bit and at other 4-bit
+   recipes, with their proof, and compute the context each buys from
+   run 9's KV cost per token. A 3-bit build that reaches 96K at 12
+   tok/s beats a 4-bit build at 49K for agent work.
+3. **The OOM-at-load threshold.** A GGUF served right should die at
+   speed, not at load: run 9 found every published `-c` OOMs at load
+   under the 24000 limit, and the fit prediction's margin in the
+   machine file did not predict it. Find the llama-server settings
+   that make an oversized `-c` fail its fit check instead of loading
+   and then failing (the memory fitting that `-ngl 999` bypasses,
+   `--no-kv-offload`, unified KV), and re-derive the margin from run
+   9's wired readings so the KV pick's prediction matches what loads.
+
+Each candidate goes through the Mendel smoke on the llama row; a pass
+becomes a bench item. Research publishes no number.
+
 ## Not in this run
 
 - LM Studio engine template probe, Gemma-4 MLX container patches, more
