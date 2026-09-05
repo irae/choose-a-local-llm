@@ -196,11 +196,22 @@ Benchmark work:
   interrupt with an escalation), and wait. Resume the same run when
   credits return. Only the owner can declare a credit-interrupted run
   lost. A teardown throws away the tokens already spent.
-- **Scoring runs on Fable.** Scoring a benchmark run is LLM judgment
-  (rubric calls, defect severity, cost-basis decisions). Do it in a
-  subagent on the Fable model (`claude-fable-5`), never on a smaller
-  model. Mechanical steps (recompute, mirror, regenerate tables) may
-  use any model.
+- **Model tiers, never model names.** Permanent docs say which tier
+  of model a job needs, not which vendor or model: **cheap** for
+  scouting and mechanical steps, **average** for most agent work,
+  **standard** for planning and review, **best** for judgment. Which
+  model fills a tier is the owner's choice and lives outside the repo.
+  Runbooks of a run in progress may name a model; permanent docs never
+  do.
+- **Scoring runs on the best tier.** Scoring a benchmark run is LLM
+  judgment (rubric calls, defect severity, cost-basis decisions). Do
+  it in a subagent on the best available model, never on a smaller
+  one. Mechanical steps (recompute, mirror, regenerate tables) may use
+  any tier.
+- **Bug fixes during a run use the best tier.** When a run tool
+  breaks while the run is going and the owner is away, the runner
+  dispatches a subagent on the best available model to fix it and
+  continues; the run does not wait.
 - **Run the exact files the runbook names.** A missing or different
   file is stop-and-ask. Downloading is a planning decision written into
   the runbook (`docs/methodology/common-rules.md`, rule 8).

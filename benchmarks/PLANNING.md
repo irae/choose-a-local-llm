@@ -87,8 +87,9 @@ and the methodology pages the runbook points to.
    branch in a fresh sibling worktree (the main worktree stays with the
    coordinator); no bare `git stash`, named stashes only, applied by
    name (see `AGENTS.md` standing rules); scoring in a subagent on the
-   Fable model (`claude-fable-5`), never a smaller model, because
-   scoring is LLM judgment; the stop-and-sync procedure from
+   best available model, never a smaller one, because scoring is LLM
+   judgment; bug fixes of run tools during the run on the best model
+   too; the stop-and-sync procedure from
    `AGENTS.md` standing rules when the owner asks to stop (merge to
    `master`, push `master`, delete the branch, remove the worktree;
    that one push is required); one model on the GPU at a time; port;
