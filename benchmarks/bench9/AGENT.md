@@ -19,7 +19,7 @@ re-runs one Mendel row that a harness config error invalidated.
 1. `benchmarks/bench9/state.md` — what earlier sessions of this run
    did. Resume where its handing-over section says.
 2. `docs/methodology/checklist.md` — the run loop. Step 4 is the
-   cold-start sequence; step 14 says wired memory is the recovery
+   cold-start sequence; step 15 says wired memory is the recovery
    meter.
 3. `docs/methodology/context-creep.md` — the depth-sweep method and
    the scripts.

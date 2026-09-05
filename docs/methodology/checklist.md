@@ -127,23 +127,33 @@ lives in [common rules](./common-rules.md) and
    log for the death signature, probes a real completion when a step
    goes silent, and exits 42 on a dead server. There the wakeup only
    checks that the sweep's output file still grows.
-9. Heartbeat format: "Block N (model): done X/Y, [num]h[num]min left."
-10. Note deviations in the run's `state.md` AS THEY HAPPEN, not at the
+9. **"The GPU never sits idle between blocks" means between QUEUED
+   blocks too, not only mid-block.** When one block finishes, start the
+   next queued block in the same wakeup — do not stop and ask the owner
+   whether to proceed. Ask only when the block's own text carries an
+   explicit stop-and-ask condition (for example "start only if the
+   owner says the machine is free for the night"); a block simply being
+   scored, long, or run at night is not such a condition on its own. A
+   blocked block gets skipped, with the reason written to `state.md`,
+   and the next one starts — never leave the GPU idle with runnable
+   queued work because one item is stuck or ambiguous.
+10. Heartbeat format: "Block N (model): done X/Y, [num]h[num]min left."
+11. Note deviations in the run's `state.md` AS THEY HAPPEN, not at the
    end. Smallest fix, fairness first, suspect the harness before the
    model.
 
 ## After the run
 
-11. Stop the memory watcher immediately, where one ran. Stop one-shot
+12. Stop the memory watcher immediately, where one ran. Stop one-shot
     monitors as soon as they fire — never leave them running.
-12. Record the result on EVERY surface in the same pass
+13. Record the result on EVERY surface in the same pass
     ([common rules](./common-rules.md), rule "record everywhere"):
     benchmarks page, report page (including its summary line),
     `comparison.md`, `models.json` + `node tools/gen-tables.mjs`,
     harness config. Update `benchmarks/bench<N>/results.md` and
     `state.md`.
-13. Commit before moving to the next block.
-14. After stopping any server above ~15 GB RSS, wait for memory to
+14. Commit before moving to the next block.
+15. After stopping any server above ~15 GB RSS, wait for memory to
     RECOVER before loading the next model or starting a sweep: poll
     `Pages wired down` in `vm_stat` (or the memwatch log, or a sweep's
     `wired_mb` column) until wired
@@ -157,6 +167,6 @@ lives in [common rules](./common-rules.md) and
     not memory recovery — a sweep started ~3 min after killing a 23 GB
     server ran the whole window with 60-220 MB free and continuous
     swap-ins, and OOMed ([server lore](./server-lore.md)).
-15. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
+16. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
     no background task holding the GPU. End the session with the
     machine idle.
