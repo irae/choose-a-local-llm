@@ -30,6 +30,31 @@ Working on this repo? Start at [AGENTS.md](./AGENTS.md), then
 - `benchmarks/bench<N>/`: unattended-run kits. Runbook (`AGENT.md`),
   state, results, scripts. Not part of the site.
 
+## What this project does not measure
+
+These questions do not help one person choose a coding model for one
+machine. Other projects answer them.
+
+- **Power and energy use.** It does not tell you which model codes
+  faster or answers better on your hardware. It is a goal for
+  datacenters and larger home builds.
+- **Throughput under concurrent load.** One person runs one agent at a
+  time. Sub-agents hold their own context, but they rarely decode
+  together, so we measure one stream and round-robin use, never all
+  slots at once. Aggregate throughput is a goal for a multi-user
+  server.
+- **A quality score per runtime.** Two runtimes that serve the same
+  standard quant differ too little to change your choice. We score a
+  model once per thinking mode and spend the time on another model.
+- **Our own quantization of weights.** Making a quant and proving it is
+  a separate craft. We measure published community builds that carry
+  their own evidence. New quant methods are a goal for the people who
+  publish them.
+- **A large model catalogue.** We do not add a model to grow the table,
+  and we do not test an old model that already scores below the models
+  here. The answer is one daily driver and a few work seats, not a
+  leaderboard.
+
 ## How to use this repo to run your benchmarks
 
 The process stands on its own; only the measurements are ours. That
