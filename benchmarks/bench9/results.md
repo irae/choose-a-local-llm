@@ -317,3 +317,73 @@ hardware (the search above), so 49152 is the ceiling, not an artifact.
 32768, and not the model's 262144 trained window — hardware-limited),
 14.98 tok/s at 49198, no floor/OOM/mem hit within the reachable
 window.**
+
+## Block A1b — Gemma-4-26B-A4B GGUF full creep, CORRECTED (supersedes
+## the `-c 131072` entry above)
+
+The `-c 131072` entry above stopped on the `-c` boundary, not a real
+limit — same artifact as Qwen3.8's. Redone by binary-searching higher
+toward the model's 262144 trained window, then a prefill-jump creep
+from the last verified depth.
+
+### `-c` search (f16 KV)
+
+| `-c` tried | result | log |
+| --- | --- | --- |
+| 262144 (trained max) | OOM at load | `server-gemma26-gguf-full-f16.log` |
+| 229376 | OOM at load | `server-gemma26-gguf-full-f16-c229376.log` |
+| 212992 | loads, serves | `server-gemma26-gguf-full-f16-c212992.log` |
+
+(131072 also loads, established earlier.) 212992 is the largest `-c`
+found; 229376 fails the same way as 262144 (`Insufficient Memory` at
+load, before any request).
+
+### Prefill-jump creep at `-c 212992`
+
+`creep-gemma26-gguf-full-f16-c212992.tsv`, DEPTH_LIST jumped to
+`114688,131072,147456,163840,180224,196608,212992` (114688 is a control
+point re-measuring the previously-verified 114718/26.25 tok/s row).
+
+| depth | decode tok/s | wired_mb | draft acceptance |
+| --- | --- | --- | --- |
+| 114718 | 26.38 | 25590 | 0.82 (task 0, warming) |
+| 131098 | 25.17 | 25590 | 0.89 (task 9) |
+| 147478 | 22.07 | 25573 | 0.95 (task 93) |
+| 163858 | 21.25 | 25567 | 0.89 (task 127) |
+| 180238 | 20.73 | 25557 | 0.93 (task 162) |
+| 196618 | 17.30 | 25549 | 1.00 (task 196) |
+
+Control check: 26.38 tok/s here vs 26.25 tok/s measured the slow way
+at the same depth — 0.5% apart, well inside the 2.8%/5% prefill-jump
+tolerance. Wired sits at ~25.5-25.6 GB throughout, over the 24000 MB
+limit but stable (not escalating) — the machine is running this config
+under pressure but not compacting: checked for a 3-consecutive-step
+compacting streak (≥200 pages moved and speed below 0.85× the previous
+step) and found none; every step that shows heavy paging still recovers
+above that threshold next step. No last-clean-row correction needed.
+
+Verdict: **window**, and real this time — `STOP: request failed at
+depth 212998: HTTP Error 400`, log says `request (221575 tokens)
+exceeds the available context size (212992 tokens)`, the same
+clean context-boundary message as Qwen3.8's, not a Metal OOM. `-c`
+cannot go higher (229376 OOMs at load), so 196618 is the deepest
+depth actually measured.
+
+**Corrected published row: f16 KV, `-c 212992` (not the published
+262144, and not the earlier fallback 131072 — both wrong), 17.30
+tok/s at 196618, no floor/OOM/mem hit within the reachable window.**
+
+Block A1b closed (corrected). Final full-creep rows:
+- Qwen3.6 GGUF q8_0, `-c 49152` (not 98304): mem stop, ceiling 8222
+  tokens at 43.80 tok/s. Unaffected by this session's correction — a
+  real stop condition reached well under its `-c`.
+- Qwen3.8 GGUF f16, `-c 49152` (not 32768): real hardware ceiling
+  (65536/131072/262144 all OOM at load), 14.98 tok/s at 49198, no
+  floor/OOM/mem hit.
+- Gemma-26B GGUF f16, `-c 212992` (not 262144): real hardware ceiling
+  (229376/262144 OOM at load), 17.30 tok/s at 196618, no floor/OOM/mem
+  hit.
+
+All three daggered rows need a `-c` correction in `models.json`
+independent of the KV-type question this run set out to answer — see
+the planner note in `state.md`.
