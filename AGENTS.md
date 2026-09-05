@@ -106,6 +106,9 @@ Benchmark work:
 - `tools/mem-probe.py` — measure what the machine will wire for an MLX
   allocation. Investigation only; it is not part of run preparation.
   Read `Pages wired down`, never the allocation total.
+- `benchmarks/history/` — finished reports the backlog decided on, kept
+  whole. `tools/sync-static.mjs` serves them at `/history/<file>`, so a
+  backlog item or a rule can link one as its evidence.
 - `HANDOFF.md` — the owner's working context for the next main-thread
   agent; read it first when starting a session. Not committed.
 

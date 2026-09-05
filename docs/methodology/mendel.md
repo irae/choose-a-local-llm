@@ -55,6 +55,21 @@ two tests.
   window or output budget that could not fit, a flag the serving stack
   ignored), the corrected re-run keeps the best row with no penalty.
   Mendel's `PLAN.md` holds the formula.
+- **Output budget.** `maxTokens` in a pi entry caps one response. It
+  is not a context size and it is not a loop detector. Set it with
+  `min(max(8192, pow2ceil(2 x L)), contextWindow / 4)`, where L is the
+  longest healthy output the model has produced (a turn that ended on
+  `toolUse` or `stop`). Set pi `reserveTokens` to the same value, or
+  compaction keeps 16384 tokens of window free for an answer that
+  cannot be that long. For a new model, a ten-minute probe gives the
+  first L: one prompt at 60 percent of the window for fit, one request
+  for a complete 400-line file with thinking on and the cap at 16384,
+  one failing edit followed by its retry. Any `length` stop in the
+  probe is a failure sign, not a value. The first scored run then
+  confirms the value from its output-limit counters, and corrects it
+  if healthy output comes near the line. Evidence and the per-model
+  values as of 2026-09-05:
+  `/history/runner-alarms-output-limit-and-loop-stop.html`.
 - `tool_calls` counts one `toolCall` block inside one assistant
   message of the run's session log. A call counts even when no result
   came back. Tool results, user messages, and any session the row does

@@ -21,11 +21,11 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 - [p] Project non-goals: README section and findings file, branch `backlog/non-goals`, worktree `../choose-a-local-llm-backlog-nongoals` (project-non-goals-in-readme.md)
 - [p] Unslop of the internal docs: AI-tell cleanup of AGENTS, CONVENTIONS, EDITOR, PLANNING, INDEX, runbooks; branch `unslop-internal-docs`, worktree `../choose-a-local-llm-unslop`; conflicts with master on EDITOR.md (no backlog file)
-- [ ] Runner alarms: count output-limit hits, optional per-turn stop, loop verdict at run close (runner-alarms-output-limit-and-loop-stop.md)
+- [ ] Runner alarms: decided 2026-09-05 (maxTokens rule, 25-minute turn cap, at-budget pair stop, loop flag); runner code, PLAN.md sentences and the Mac config edits pending (runner-alarms-output-limit-and-loop-stop.md, summary.html beside it, report in `benchmarks/history/`)
 - [ ] Worker-profile table: which config is the best thinking-off sub-agent (worker-profile-table.md)
 - [ ] Bench 10 candidates: the items deferred from bench 9 and the retries (bench-10-candidates.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
-- [l] Qwen3.8 MLX output budget versus window; parked until bench 9 reports (qwen38-mlx-output-budget-and-window.md)
+- [l] Qwen3.8 MLX output budget versus window; superseded by the runner-alarms maxTokens rule, dynamic cap stays a framework candidate (qwen38-mlx-output-budget-and-window.md)
 
 ## Changelog
 

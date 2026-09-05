@@ -6,6 +6,7 @@ import { basename } from 'node:path'
 
 const JOBS = [
   { from: 'benchmarks/mendel/*.html', to: 'docs/public/mendel' },
+  { from: 'benchmarks/history/*.html', to: 'docs/public/history' },
 ]
 
 for (const { from, to } of JOBS) {

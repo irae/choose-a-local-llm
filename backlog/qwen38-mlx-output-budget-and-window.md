@@ -1,6 +1,9 @@
 # Qwen3.8 27B on MLX: output budget versus window, and what a cap costs
 
-Status: parked 2026-09-04. Bench 9 runs with the 8192 budget as
+Status: superseded 2026-09-05 by the `maxTokens` rule in
+`runner-alarms-output-limit-and-loop-stop.md`: 6656 for this entry,
+`reserveTokens` the same, the dynamic cap kept as a framework item.
+Was: parked 2026-09-04. Bench 9 runs with the 8192 budget as
 written; the owner judges by its results and re-runs later if that was
 wrong. The dynamic cap (option 3) stays a framework candidate.
 Filed: 2026-09-04, from research runs 1 and 2.

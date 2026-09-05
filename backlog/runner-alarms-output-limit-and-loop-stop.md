@@ -1,10 +1,41 @@
 # Runner alarms: output-limit hits, one long call, and the loop verdict
 
-Status: draft. The owner picks among the three pieces when reviewing
-this item; recommendation is piece 1 first.
+Status: decided 2026-09-05. The owner accepted the scouting report and
+its follow-ups. The decisions are below; the evidence is the report
+in `benchmarks/history/runner-alarms-output-limit-and-loop-stop.html`
+(served at `/history/runner-alarms-output-limit-and-loop-stop.html`),
+and `runner-alarms-output-limit-and-loop-stop-summary.html` beside
+this file states each decision with a link into the report.
 Filed: 2026-09-04, from research run 2.
 Needs hardware: no for the runner change; one unscored replay to see it
 fire.
+
+## Decisions
+
+1. `maxTokens` per local model follows
+   `min(max(8192, pow2ceil(2 x L)), contextWindow / 4)`, L the longest
+   healthy output in the model's logs. Today that is 8192 for every
+   local entry and 6656 for Qwen3.8 MLX. pi `reserveTokens` takes the
+   same value. The rule and the new-model probe are in
+   `docs/methodology/mendel.md`.
+2. Piece 1, count and log, first. Two counters, `output_limit_hits`
+   and `reissue_msgs`, one alarm line per event.
+3. Piece 2, per-turn wall-clock cap, 25 minutes, runner flag
+   `--turn-min`, end reason `turn_timeout`, clock from the stream's
+   `message_start`. The 20 in the text below was the first proposal.
+4. Piece 3 fires on two consecutive at-budget stops (output at 80
+   percent or more of `maxTokens`), not on tool calls. End reason
+   `output_limit`. Valid only while `maxTokens` is at least 2 x L,
+   which decision 1 guarantees; that is the law sentence.
+5. The loop verdict runs at run close as a flag beside the row with
+   its worst ratio and kind, never a stop, after the one-line newline
+   fix in `benchmarks/loop-check.py`.
+
+Not done yet: the runner code for 2 to 5, the two `PLAN.md`
+sentences, the Mac `models.json` and `settings.json` edits, and the
+hand check of the eleven LOOP rows.
+
+## The original item, as filed
 
 ## What it is about, in plain words
 
