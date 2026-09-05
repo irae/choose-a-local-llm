@@ -11,16 +11,17 @@ Backends: llama-server, mlx-lm · [GGUF on Hugging Face](https://huggingface.co/
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired limit 24000); EvalPlus scored 2026-08-29. **Parked 2026-08-30 — no further benchmarks scheduled.**
+Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired limit 24000); EvalPlus scored 2026-08-29 at q8_0 KV; GGUF re-measured at f16 KV 2026-09-05 (run 9). The f16 re-score is a run 10 item.
 
 ## Highlights
 
-- **The fastest depth curve measured on this machine**, on MLX: 51 tok/s at
-  4K, still 12.8 at 70K (ceiling), in 20.0 GB.
+- **The fastest depth curve measured on this machine**, now on llama at
+  f16 KV: 60.3 tok/s at 4K, still 17.3 at 197K, the largest context this
+  machine loads for it (run 9). MLX: 51 tok/s at 4K, 12.8 at 70K.
 - **The full 256K trained window fits on one slot** (19.3 GB), and two
   agents get 184K each on one weight copy — llama only.
-- Weak point: on llama it crosses the 8 tok/s floor at ~24K. The depth
-  belongs to its MLX build, not its llama build.
+- Weak point: wired memory sits at 25.6 GB on that config, above the
+  24000 limit, flat but with no headroom for anything beside it.
 - Weak point: EvalPlus 0.713/0.701 with 46/164 (~28%) empty — its thinking
   often never converges, the worst convergence rate of any scored model.
 
@@ -30,10 +31,8 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
-| 2 | Gemma-4-26B-A4B, GGUF, MTP q8 | 24k† | speed | 23.5† → 8† | 15.4 GB† | 0.713/0.701 |
+| 2 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | OOM | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
 | 3 | Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots | 2x184k | speed | pending → pending | pending | 0.713/0.701 |
-
-† from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -48,18 +47,18 @@ mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#2 — Gemma-4-26B-A4B, GGUF, MTP q8.** pi id `gemma-4-26b-a4b`.
+**#2 — Gemma-4-26B-A4B, GGUF, MTP f16.** pi id `gemma-4-26b-a4b`. Re-measured 2026-09-05 at f16 KV, the run 9 pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. The EvalPlus score was measured at q8_0 KV; the f16 re-score is a run 10 item.
 
 ```bash
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --alias gemma-4-26b-a4b --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \
-  -ngl 999 -fa on -c 262144 \
-  --cache-type-k q8_0 --cache-type-v q8_0 \
+  -ngl 999 -fa on -c 212992 \
+  --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
 ```
 
-**#3 — Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots.** pi id `gemma-4-26b-a4b-2x`.
+**#3 — Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots.** pi id `gemma-4-26b-a4b-2x`. Still the q8_0 command; nothing measured. The two-slot config follows the f16 pick when it is re-planned.
 
 ```bash
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
@@ -73,27 +72,30 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
 
 ## Model details and findings
 
-**Parked (2026-08-30).** The quality gate ended this model's campaign:
-EvalPlus 0.713/0.701 with a 28% empty rate, and the agentic benchmark
-run had to be stopped in a thinking loop. That is not a good use of
-this hardware while stronger models fit the same seat. It does not go
-to polyglot. It can return later as a grunt-work config — fast tokens,
-low reasoning — if a task appears that fits that shape.
+**Back in the running as a secondary model (run 9).** The model was
+parked on 2026-08-30 after the quality gate: 28% empty completions and
+an agentic run stopped in a thinking loop. Run 9 changed its llama row
+from 23.5 to 8 tok/s gated by speed at 24K to 60.3 to 17.3 tok/s at
+197K, by moving the KV cache to f16. Served at 128K on purpose it keeps
+the machine usable and finishes simple tasks faster than a smarter,
+slower model. The EvalPlus score on this page was measured at q8_0 KV.
+Run 10 re-scores it at f16, thinking on; a base pass@1 at or above
+0.800 sends it to Mendel blind in the same run.
 
-**q8_0 KV is now mandatory, and it costs JavaScript speed.** Under the
-current 24000 wired limit, f16 KV no longer fits the full window at all. q8
-lowers js draft acceptance from 81% to 68%, so js decodes at ~53 tok/s while
-py keeps 62-68. The retired 27000 limit allowed more on both counts; those
-figures are on
-[the historical page](../historical.md).
+**f16 KV is the pick, and q8_0 was the speed problem.** The run 9 short
+creep read 6.3 tok/s at 32K for q8_0 against 45.9 for f16, at almost the
+same wired memory. The full f16 creep then held above 17 tok/s to
+197K; 212992 is the largest `-c` that loads, 229376 and 262144 OOM at
+load. The four-problem smoke read level between the two types, both
+failing the same hard problem the same way. The older claim that f16
+did not fit came from the published `-c 262144`, which does not load
+at either type. q8_0 also lowered js draft acceptance from 81% to 68%.
 
-**llama is capped by speed; MLX is capped by memory.** The llama build floors
-at ~24K, which makes its 256K window mostly storage. The MLX build stays fast
-the whole way to ~68K, then swings between ~13 and ~24 tok/s at 62-70K before
-OOMing at ~72K (limit 24000, slow-creep sweep, 2026-08-29; 20.0 GB gfx-resident
-at the last stable depth). For actual deep work, MLX is the config that
-matters; the llama window is what you use when you need to *hold* a lot of
-context rather than decode quickly through it.
+**llama is now the deep config; MLX the small one.** The MLX build
+stays fast to about 68K, then swings between 13 and 24 tok/s at 62-70K
+before OOMing at about 72K (limit 24000, slow creep, 2026-08-29; 20.0 GB
+gfx-resident at the last stable depth), in 20 GB. llama at f16 holds
+three times that depth in 25.6 GB wired, flat.
 
 **Thinking is binary here.** Gemma 4 has trained-in reasoning
 (`<|think|>`) toggled by `enable_thinking` in the chat template. It is
@@ -115,7 +117,7 @@ A deep-fill decode check on the llama config is still pending.
 
 | need | config | tok/s | context |
 |---|---|--:|--:|
-| **Max context** | llama-server + MTP n=2, q8_0 KV, 1 slot | 62.4 / 53.3 | 256K |
+| **Max context** | llama-server + MTP n=2, f16 KV, `-c 212992`, 1 slot | 60.3 at 4K, 17.3 at 197K | 197K measured (run 9) |
 | **Max js speed** | f16 KV at small context (32K) | 74.8 / 71.6 | 32K |
 | **Two agents** | `--parallel 2 -c 376832`, q8_0 KV | 58.4 / 56.5 single-stream | 2×184K |
 
@@ -147,7 +149,7 @@ same weights).
 
 llama RSS at floor depth (24.5K, q8_0 KV, 32K alloc): 15.4 GB.
 
-## Context (n-max 2, q8_0 KV, limit 24000 — current)
+## Context (n-max 2, q8_0 KV, limit 24000 — superseded by the f16 creep of run 9)
 
 | -c | slots | result | RSS |
 |---|---|---|--:|

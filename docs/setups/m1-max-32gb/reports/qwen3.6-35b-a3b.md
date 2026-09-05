@@ -6,18 +6,21 @@ Backends: llama-server, mlx-lm · [Qwen3.6-35B-A3B-MTP GGUF on Hugging Face](htt
 <div class="kpis">
   <div class="kpi"><b>53.3 tok/s</b><span>decode, shallow (MLX)</span></div>
   <div class="kpi"><b>0.939 / 0.921</b><span>EvalPlus, thinking on</span></div>
-  <div class="kpi"><b>90K</b><span>GGUF depth to the 8 tok/s floor</span></div>
+  <div class="kpi"><b>8K</b><span>GGUF clean depth before memory compaction (q8_0, -c 49152)</span></div>
   <div class="kpi"><b>37K</b><span>MLX last stable depth (OOM ~41K)</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wired limit 24000); EvalPlus corrected 2026-08-29.
+Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wired limit 24000); EvalPlus corrected 2026-08-29; GGUF re-measured with the slow creep 2026-09-04 (run 9).
 
 ## Highlights
 
 - **The speed king: 68 py / 74 js tok/s.** 1.5× Gemma-12B, 4× dense Qwen3.8.
-- **The deep-context king.** llama never crosses the 8 tok/s floor inside its
-  whole 96K window — still 8.1 tok/s at 90K.
+- **The deep-context claim did not survive the slow creep (run 9).** The
+  published `-c 98304` OOMs at load under the 24000 limit; 49152 loads
+  with wired memory at 25 GB, and macOS compacts from 16K on without
+  recovering. The last clean row is 8K at 43.8 tok/s. The old 90K
+  figure came from the fast sweep and is on the historical page.
 - **Second-best quality measured here: 0.939 / 0.921 EvalPlus.** Only
   Qwen3.8 scores higher, and Qwen3.8 is four times slower.
 - Weak point: decode falls to ~17 tok/s past ~30K used, and there is no
@@ -29,9 +32,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Qwen3.6-35B-A3B, MLX, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921 |
-| 2 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k† | speed | 44† → 8.1† | 22.8 GB† | 0.939/0.921 |
-
-† from an earlier serving config or method; re-run pending.
+| 2 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921 |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -46,13 +47,13 @@ mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#2 — Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on.** pi id `qwen3.6-35b-a3b`.
+**#2 — Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on.** pi id `qwen3.6-35b-a3b`. Re-measured 2026-09-04 (run 9): q8_0 KV stays, because f16 does not load even at 40960. The published `-c 98304` and 65536 OOM at load; 49152 loads. Wired sits at 25 GB, over the limit, and memory compaction starts by 16K without recovering, so the last clean row is 8K. That row is faster than 4K because the MTP drafter warms up over the first rows.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --alias qwen3.6-35b-a3b --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
-  -ngl 999 -fa on -c 98304 \
+  -ngl 999 -fa on -c 49152 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
@@ -102,7 +103,7 @@ MTP numbers there read below the py/js bench.
 
 | need | config | tok/s (py/js) | context |
 |---|---|--:|--:|
-| **Max context** | llama-server + MTP n=3, q8_0 KV, 1 slot | 62.0 / 67.7 | 96K |
+| **Max context** | llama-server + MTP n=3, q8_0 KV, `-c 49152`, 1 slot | 36.4 at 4K, 43.8 at 8K | 8K clean; compaction past it (run 9) |
 | **Max speed** | same config (near-empty context) | 68 / 74 | same |
 | **Multi-agent** | untested at limit 25000 (at 24000: OOM even at 2×20K) | – | – |
 

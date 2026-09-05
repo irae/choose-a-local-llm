@@ -26,6 +26,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Changelog
 
+- 2026-09-05 Run 9 closed: KV picks, real `-c` ceilings, Gemma-12B GGUF scored; site, historical page and findings index updated; bench 10 draft de-duplicated
 - 2026-09-05 Runner alarms landed: output-limit counters, 25-minute turn cap, at-budget pair stop, loop flag beside every row with a log, maxTokens rule in PLAN.md (Mendel `a41170a4`, site `4b3eb67`); Mac models.json edits still to apply after bench 9. Qwen3.8 budget item closed by the same rule
 - 2026-09-05 README says what the project does not measure, five items with the owner's reasons; agent rules moved to AGENTS.md, "collapse" term out of CONVENTIONS.md (`backlog/non-goals` merge)
 - 2026-09-05 Unslop of the internal docs: em dashes, "the law", daggers and capitals replaced across AGENTS, CONVENTIONS, EDITOR, PLANNING, INDEX, READMEs and the research runbooks (`128858c`)

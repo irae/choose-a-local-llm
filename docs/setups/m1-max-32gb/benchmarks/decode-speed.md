@@ -30,11 +30,11 @@ Two rules to read the tables by:
 | [Gemma-4-12B](./gemma-4-12b-it.md) | MLX³, thinking off | 34.19 → 23.23 | 131k | mem |
 | [Gemma-4-12B](./gemma-4-12b-it.md) | GGUF, f16 KV, no drafter, thinking off | 24.64 → 8.86 | 245k | window |
 | [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | MLX | 51 → 12.8 | 70k | mem |
-| [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | GGUF, MTP q8 | 23.5† → 8† | 24k† | speed |
+| [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | GGUF, MTP f16 | 60.3 → 17.3 | 197k | OOM |
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | MLX, thinking on | 53.3 → 42.0 | 37k | mem |
-| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | GGUF, MTP q8, thinking on | 44† → 8.1† | 90k† | speed |
+| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | GGUF, MTP q8, thinking on | 36.4 → 43.8 | 8k | mem |
 | [Qwen3.8-27B](./qwen3.8-27b.md) | MLX, compaction ~26k, effort medium | 17 → 15.3 | 28k | mem |
-| [Qwen3.8-27B](./qwen3.8-27b.md) | GGUF, MTP q8, effort medium | 14.1† → 8† | 19k† | speed |
+| [Qwen3.8-27B](./qwen3.8-27b.md) | GGUF, MTP f16, effort medium | 20.0 → 15.0 | 49k | OOM |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:decode-summary:end -->

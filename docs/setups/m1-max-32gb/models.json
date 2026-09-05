@@ -1,510 +1,500 @@
 {
- "setup": "m1-max-32gb",
- "wiredLimit": 24000,
- "rows": [
-  {
-   "config": "Qwen3.8-27B, MLX, compaction ~26k, effort medium",
-   "maxCtx": "28k",
-   "gatedBy": "mem",
-   "tokShallow": "17",
-   "tokDeep": "15.3",
-   "memory": "22.0 GB",
-   "evalplus": "0.982/0.939",
-   "id": "qwen38-mlx-medium",
-   "hidden": false,
-   "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --reasoning-effort medium --port 8081",
-   "note": "Set the harness compaction threshold at ~26K."
-  },
-  {
-   "config": "Qwen3.8-27B, MLX, effort low",
-   "maxCtx": "28k",
-   "gatedBy": "mem",
-   "tokShallow": "17",
-   "tokDeep": "15.3",
-   "memory": "22.0 GB",
-   "evalplus": "0.976/0.927",
-   "id": "qwen38-mlx-low",
-   "hidden": false,
-   "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --chat-template-args '{\"reasoning_effort\":\"low\"}' --prompt-cache-size 2 --port 8081",
-   "note": "Speed/memory copied from qwen38-mlx-medium; no depth sweep for this config yet.",
-   "stale": [
-    "maxCtx",
-    "tokShallow",
-    "tokDeep",
-    "memory"
-   ]
-  },
-  {
-   "config": "Qwen3.8-27B, GGUF, MTP q8, effort medium",
-   "maxCtx": "19k",
-   "gatedBy": "speed",
-   "tokShallow": "14.1",
-   "tokDeep": "8",
-   "memory": "18.9 GB",
-   "evalplus": "0.982/0.939",
-   "id": "qwen38-gguf-medium",
-   "hidden": false,
-   "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 32768 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-   "note": "pi id `qwen3.8-27b`.",
-   "stale": [
-    "maxCtx",
-    "tokShallow",
-    "tokDeep",
-    "memory"
-   ]
-  },
-  {
-   "config": "Qwen3.6-35B-A3B, MLX, thinking on",
-   "maxCtx": "37k",
-   "gatedBy": "mem",
-   "tokShallow": "53.3",
-   "tokDeep": "42.0",
-   "memory": "18.7 GB",
-   "evalplus": "0.939/0.921",
-   "id": "qwen36-mlx-think",
-   "hidden": false,
-   "command": "mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \\\n  --prompt-cache-size 2 --port 8081"
-  },
-  {
-   "config": "Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on",
-   "maxCtx": "90k",
-   "gatedBy": "speed",
-   "tokShallow": "44",
-   "tokDeep": "8.1",
-   "memory": "22.8 GB",
-   "evalplus": "0.939/0.921",
-   "id": "qwen36-gguf-think",
-   "hidden": false,
-   "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-   "note": "pi id `qwen3.6-35b-a3b`.",
-   "stale": [
-    "maxCtx",
-    "tokShallow",
-    "tokDeep",
-    "memory"
-   ]
-  },
-  {
-   "config": "Gemma-4-26B-A4B, MLX",
-   "maxCtx": "70k",
-   "gatedBy": "mem",
-   "tokShallow": "51",
-   "tokDeep": "12.8",
-   "memory": "20.0 GB",
-   "evalplus": "0.713/0.701",
-   "id": "gemma26-mlx",
-   "hidden": false,
-   "command": "mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \\\n  --prompt-cache-size 2 --port 8081"
-  },
-  {
-   "config": "Gemma-4-26B-A4B, GGUF, MTP q8",
-   "maxCtx": "24k",
-   "gatedBy": "speed",
-   "tokShallow": "23.5",
-   "tokDeep": "8",
-   "memory": "15.4 GB",
-   "evalplus": "0.713/0.701",
-   "id": "gemma26-gguf",
-   "hidden": false,
-   "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-   "note": "pi id `gemma-4-26b-a4b`.",
-   "stale": [
-    "maxCtx",
-    "tokShallow",
-    "tokDeep",
-    "memory"
-   ]
-  },
-  {
-   "config": "Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots",
-   "maxCtx": "2x184k",
-   "gatedBy": "speed",
-   "tokShallow": "pending",
-   "tokDeep": "pending",
-   "memory": "pending",
-   "evalplus": "0.713/0.701",
-   "id": "gemma26-gguf-2x",
-   "hidden": false,
-   "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 376832 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-   "note": "pi id `gemma-4-26b-a4b-2x`."
-  },
-  {
-   "id": "gemma12-lmstudio-think",
-   "config": "Gemma-4-12B, LM Studio entry google/gemma-4-12b",
-   "retired": {
-    "date": "2026-09-04",
-    "reason": "thinking-on repetition loop; entry gone from the model store",
-    "details": "../benchmarks/gemma-4-12b-it.md#the-retired-entry"
-   }
-  },
-  {
-   "config": "Gemma-4-12B, MLX³, thinking off",
-   "maxCtx": "131k",
-   "gatedBy": "mem",
-   "tokShallow": "34.19",
-   "tokDeep": "23.23",
-   "memory": "pending",
-   "evalplus": "0.909/0.872",
-   "id": "gemma12-lmstudio-off",
-   "hidden": false,
-   "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y",
-   "note": "LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel."
-  },
-  {
-   "config": "Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off",
-   "maxCtx": "245k",
-   "gatedBy": "window",
-   "tokShallow": "24.64",
-   "tokDeep": "8.86",
-   "memory": "13.9 GB",
-   "evalplus": "0.909/0.872",
-   "id": "gemma12-gguf-f16",
-   "hidden": false,
-   "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-   "note": "pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window."
-  },
-  {
-   "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
-   "maxCtx": "16k",
-   "gatedBy": "speed",
-   "tokShallow": "13.8",
-   "tokDeep": "6.5",
-   "memory": "10.5 GB",
-   "evalplus": "0.909/0.872",
-   "id": "gemma12-gguf-off",
-   "hidden": false,
-   "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-   "note": "The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep."
-  },
-  {
-   "config": "Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off",
-   "maxCtx": "4x256k",
-   "gatedBy": "speed",
-   "tokShallow": "33.7",
-   "tokDeep": "pending",
-   "memory": "16.9 GB",
-   "evalplus": "0.909/0.872",
-   "id": "gemma12-gguf-4x",
-   "hidden": false,
-   "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-4x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \\\n  -ngl 999 -fa on -c 1048576 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-   "note": "pi id `gemma-4-12b-4x`.",
-   "stale": [
-    "maxCtx",
-    "tokShallow",
-    "memory"
-   ]
-  },
-  {
-   "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking on",
-   "maxCtx": "58k",
-   "gatedBy": "mem",
-   "tokShallow": "24.5",
-   "tokDeep": "17.3",
-   "memory": "22.5 GB",
-   "evalplus": "0.915/0.884",
-   "id": "bonsai-mlx",
-   "hidden": false,
-   "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
-   "note": "Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak."
-  },
-  {
-   "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking off",
-   "maxCtx": "58k",
-   "gatedBy": "mem",
-   "tokShallow": "24.5",
-   "tokDeep": "17.3",
-   "memory": "22.5 GB",
-   "evalplus": "0.927/0.902",
-   "id": "bonsai-mlx-off",
-   "hidden": false,
-   "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
-   "note": "Extra body per request: `{\"chat_template_kwargs\":{\"enable_thinking\":false}}`. Speed/memory copied from bonsai-mlx; no depth sweep yet.",
-   "stale": [
-    "maxCtx",
-    "tokShallow",
-    "tokDeep",
-    "memory"
-   ]
-  },
-  {
-   "config": "Ternary-Bonsai-27B, GGUF⁴, q4, thinking on",
-   "maxCtx": "33k",
-   "gatedBy": "speed",
-   "tokShallow": "14.8",
-   "tokDeep": "7.9",
-   "memory": "9.6 GB",
-   "evalplus": "0.927/0.890",
-   "id": "bonsai-fork-single",
-   "hidden": false,
-   "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
-   "note": "The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus (research run 2, `bonsai-kv-bias-missing.md`). Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/` — see [the benchmarks](../benchmarks/bonsai-27b.md)."
-  },
-  {
-   "config": "Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on",
-   "maxCtx": "2x48k",
-   "gatedBy": "speed",
-   "tokShallow": "14.9",
-   "tokDeep": "7.8",
-   "memory": "10.9 GB",
-   "evalplus": "0.927/0.890",
-   "id": "bonsai-fork-2x",
-   "hidden": false,
-   "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism-2x \\\n  -ngl 999 -fa on -c 98304 --parallel 2 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081"
-  }
- ],
- "models": {
-  "bonsai-27b": {
-   "rowMatch": "Ternary-Bonsai-27B",
-   "kpis": [
-    "decodeShallow",
-    "maxDepth",
-    "evalplus",
-    "multiAgent"
-   ],
-   "stats": {
-    "decodeShallow": {
-     "value": "24.5 tok/s",
-     "label": "decode, shallow (MLX)"
+  "setup": "m1-max-32gb",
+  "wiredLimit": 24000,
+  "rows": [
+    {
+      "config": "Qwen3.8-27B, MLX, compaction ~26k, effort medium",
+      "maxCtx": "28k",
+      "gatedBy": "mem",
+      "tokShallow": "17",
+      "tokDeep": "15.3",
+      "memory": "22.0 GB",
+      "evalplus": "0.982/0.939",
+      "id": "qwen38-mlx-medium",
+      "hidden": false,
+      "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --reasoning-effort medium --port 8081",
+      "note": "Set the harness compaction threshold at ~26K."
     },
-    "maxDepth": {
-     "value": "58K",
-     "label": "max healthy depth, 17.3 tok/s (MLX)"
+    {
+      "config": "Qwen3.8-27B, MLX, effort low",
+      "maxCtx": "28k",
+      "gatedBy": "mem",
+      "tokShallow": "17",
+      "tokDeep": "15.3",
+      "memory": "22.0 GB",
+      "evalplus": "0.976/0.927",
+      "id": "qwen38-mlx-low",
+      "hidden": false,
+      "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --chat-template-args '{\"reasoning_effort\":\"low\"}' --prompt-cache-size 2 --port 8081",
+      "note": "Speed/memory copied from qwen38-mlx-medium; no depth sweep for this config yet.",
+      "stale": [
+        "maxCtx",
+        "tokShallow",
+        "tokDeep",
+        "memory"
+      ]
     },
-    "evalplus": {
-     "value": "0.927 / 0.890",
-     "label": "EvalPlus base/plus (fork, calibrated q4)"
+    {
+      "config": "Qwen3.8-27B, GGUF, MTP f16, effort medium",
+      "maxCtx": "49k",
+      "gatedBy": "OOM",
+      "tokShallow": "20.0",
+      "tokDeep": "15.0",
+      "memory": "23.5 GB",
+      "evalplus": "0.982/0.939",
+      "id": "qwen38-gguf-medium",
+      "hidden": false,
+      "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 49152 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.8-27b`. Re-measured 2026-09-05 at f16 KV, the run 9 pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant is not scored on its own yet."
     },
-    "evalplusMlx": {
-     "value": "0.915 / 0.884",
-     "label": "EvalPlus base/plus (MLX 2-bit)"
+    {
+      "config": "Qwen3.6-35B-A3B, MLX, thinking on",
+      "maxCtx": "37k",
+      "gatedBy": "mem",
+      "tokShallow": "53.3",
+      "tokDeep": "42.0",
+      "memory": "18.7 GB",
+      "evalplus": "0.939/0.921",
+      "id": "qwen36-mlx-think",
+      "hidden": false,
+      "command": "mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \\\n  --prompt-cache-size 2 --port 8081"
     },
-    "multiAgent": {
-     "value": "2×48K",
-     "label": "fork slots in 10.0 GB"
+    {
+      "config": "Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on",
+      "maxCtx": "8k",
+      "gatedBy": "mem",
+      "tokShallow": "36.4",
+      "tokDeep": "43.8",
+      "memory": "25.0 GB",
+      "evalplus": "0.939/0.921",
+      "id": "qwen36-gguf-think",
+      "hidden": false,
+      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 49152 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.6-35b-a3b`. Re-measured 2026-09-04 (run 9): q8_0 KV stays, because f16 does not load even at 40960. The published `-c 98304` and 65536 OOM at load; 49152 loads. Wired sits at 25 GB, over the limit, and memory compaction starts by 16K without recovering, so the last clean row is 8K. That row is faster than 4K because the MTP drafter warms up over the first rows."
     },
-    "weights": {
-     "value": "8 GB",
-     "label": "ternary 2-bit weights"
+    {
+      "config": "Gemma-4-26B-A4B, MLX",
+      "maxCtx": "70k",
+      "gatedBy": "mem",
+      "tokShallow": "51",
+      "tokDeep": "12.8",
+      "memory": "20.0 GB",
+      "evalplus": "0.713/0.701",
+      "id": "gemma26-mlx",
+      "hidden": false,
+      "command": "mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \\\n  --prompt-cache-size 2 --port 8081"
     },
-    "forkRss": {
-     "value": "9.8 GB",
-     "label": "fork RSS, flat"
+    {
+      "config": "Gemma-4-26B-A4B, GGUF, MTP f16",
+      "maxCtx": "197k",
+      "gatedBy": "OOM",
+      "tokShallow": "60.3",
+      "tokDeep": "17.3",
+      "memory": "25.6 GB",
+      "evalplus": "0.713/0.701",
+      "id": "gemma26-gguf",
+      "hidden": false,
+      "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 212992 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-26b-a4b`. Re-measured 2026-09-05 at f16 KV, the run 9 pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. The EvalPlus score was measured at q8_0 KV; the f16 re-score is a run 10 item."
     },
-    "forkFloor": {
-     "value": "~30K",
-     "label": "fork speed floor (plain-q4 proxy)"
+    {
+      "config": "Gemma-4-26B-A4B, GGUF, MTP q8, 2 slots",
+      "maxCtx": "2x184k",
+      "gatedBy": "speed",
+      "tokShallow": "pending",
+      "tokDeep": "pending",
+      "memory": "pending",
+      "evalplus": "0.713/0.701",
+      "id": "gemma26-gguf-2x",
+      "hidden": false,
+      "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 376832 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-26b-a4b-2x`. Still the q8_0 command; nothing measured. The two-slot config follows the f16 pick when it is re-planned."
     },
-    "empties": {
-     "value": "4/164",
-     "label": "empty completions at full budget"
+    {
+      "id": "gemma12-lmstudio-think",
+      "config": "Gemma-4-12B, LM Studio entry google/gemma-4-12b",
+      "retired": {
+        "date": "2026-09-04",
+        "reason": "thinking-on repetition loop; entry gone from the model store",
+        "details": "../benchmarks/gemma-4-12b-it.md#the-retired-entry"
+      }
+    },
+    {
+      "config": "Gemma-4-12B, MLX³, thinking off",
+      "maxCtx": "131k",
+      "gatedBy": "mem",
+      "tokShallow": "34.19",
+      "tokDeep": "23.23",
+      "memory": "pending",
+      "evalplus": "0.909/0.872",
+      "id": "gemma12-lmstudio-off",
+      "hidden": false,
+      "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y",
+      "note": "LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel."
+    },
+    {
+      "config": "Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off",
+      "maxCtx": "245k",
+      "gatedBy": "window",
+      "tokShallow": "24.64",
+      "tokDeep": "8.86",
+      "memory": "13.9 GB",
+      "evalplus": "0.976/0.939",
+      "id": "gemma12-gguf-f16",
+      "hidden": false,
+      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window."
+    },
+    {
+      "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
+      "maxCtx": "16k",
+      "gatedBy": "speed",
+      "tokShallow": "13.8",
+      "tokDeep": "6.5",
+      "memory": "10.5 GB",
+      "evalplus": "0.976/0.939",
+      "id": "gemma12-gguf-off",
+      "hidden": false,
+      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep."
+    },
+    {
+      "config": "Gemma-4-12B, GGUF, MTP q8, 4 slots, thinking off",
+      "maxCtx": "4x256k",
+      "gatedBy": "speed",
+      "tokShallow": "33.7",
+      "tokDeep": "pending",
+      "memory": "16.9 GB",
+      "evalplus": "0.976/0.939",
+      "id": "gemma12-gguf-4x",
+      "hidden": false,
+      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-4x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \\\n  -ngl 999 -fa on -c 1048576 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-12b-4x`.",
+      "stale": [
+        "maxCtx",
+        "tokShallow",
+        "memory"
+      ]
+    },
+    {
+      "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking on",
+      "maxCtx": "58k",
+      "gatedBy": "mem",
+      "tokShallow": "24.5",
+      "tokDeep": "17.3",
+      "memory": "22.5 GB",
+      "evalplus": "0.915/0.884",
+      "id": "bonsai-mlx",
+      "hidden": false,
+      "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
+      "note": "Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak."
+    },
+    {
+      "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking off",
+      "maxCtx": "58k",
+      "gatedBy": "mem",
+      "tokShallow": "24.5",
+      "tokDeep": "17.3",
+      "memory": "22.5 GB",
+      "evalplus": "0.927/0.902",
+      "id": "bonsai-mlx-off",
+      "hidden": false,
+      "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
+      "note": "Extra body per request: `{\"chat_template_kwargs\":{\"enable_thinking\":false}}`. Speed/memory copied from bonsai-mlx; no depth sweep yet.",
+      "stale": [
+        "maxCtx",
+        "tokShallow",
+        "tokDeep",
+        "memory"
+      ]
+    },
+    {
+      "config": "Ternary-Bonsai-27B, GGUF⁴, q4, thinking on",
+      "maxCtx": "33k",
+      "gatedBy": "speed",
+      "tokShallow": "14.8",
+      "tokDeep": "7.9",
+      "memory": "9.6 GB",
+      "evalplus": "0.927/0.890",
+      "id": "bonsai-fork-single",
+      "hidden": false,
+      "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
+      "note": "The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus (research run 2, `bonsai-kv-bias-missing.md`). Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/` — see [the benchmarks](../benchmarks/bonsai-27b.md)."
+    },
+    {
+      "config": "Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on",
+      "maxCtx": "2x48k",
+      "gatedBy": "speed",
+      "tokShallow": "14.9",
+      "tokDeep": "7.8",
+      "memory": "10.9 GB",
+      "evalplus": "0.927/0.890",
+      "id": "bonsai-fork-2x",
+      "hidden": false,
+      "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism-2x \\\n  -ngl 999 -fa on -c 98304 --parallel 2 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081"
     }
-   }
-  },
-  "gemma-4-12b-it": {
-   "rowMatch": "Gemma-4-12B",
-   "kpis": [
-    "agentDepth",
-    "lmsCeiling",
-    "evalplusOff",
-    "slots"
-   ],
-   "stats": {
-    "agentDepth": {
-     "value": "245K",
-     "label": "llama f16 depth, 8.86 tok/s"
+  ],
+  "models": {
+    "bonsai-27b": {
+      "rowMatch": "Ternary-Bonsai-27B",
+      "kpis": [
+        "decodeShallow",
+        "maxDepth",
+        "evalplus",
+        "multiAgent"
+      ],
+      "stats": {
+        "decodeShallow": {
+          "value": "24.5 tok/s",
+          "label": "decode, shallow (MLX)"
+        },
+        "maxDepth": {
+          "value": "58K",
+          "label": "max healthy depth, 17.3 tok/s (MLX)"
+        },
+        "evalplus": {
+          "value": "0.927 / 0.890",
+          "label": "EvalPlus base/plus (fork, calibrated q4)"
+        },
+        "evalplusMlx": {
+          "value": "0.915 / 0.884",
+          "label": "EvalPlus base/plus (MLX 2-bit)"
+        },
+        "multiAgent": {
+          "value": "2×48K",
+          "label": "fork slots in 10.0 GB"
+        },
+        "weights": {
+          "value": "8 GB",
+          "label": "ternary 2-bit weights"
+        },
+        "forkRss": {
+          "value": "9.8 GB",
+          "label": "fork RSS, flat"
+        },
+        "forkFloor": {
+          "value": "~30K",
+          "label": "fork speed floor (plain-q4 proxy)"
+        },
+        "empties": {
+          "value": "4/164",
+          "label": "empty completions at full budget"
+        }
+      }
     },
-    "agentShallow": {
-     "value": "24.64 tok/s",
-     "label": "llama f16, shallow"
+    "gemma-4-12b-it": {
+      "rowMatch": "Gemma-4-12B",
+      "kpis": [
+        "agentDepth",
+        "lmsCeiling",
+        "evalplusOff",
+        "slots"
+      ],
+      "stats": {
+        "agentDepth": {
+          "value": "245K",
+          "label": "llama f16 depth, 8.86 tok/s"
+        },
+        "agentShallow": {
+          "value": "24.64 tok/s",
+          "label": "llama f16, shallow"
+        },
+        "lmsCeiling": {
+          "value": "131K",
+          "label": "LM Studio ceiling, 23.23 tok/s"
+        },
+        "lmsShallow": {
+          "value": "34.19 tok/s",
+          "label": "LM Studio, shallow"
+        },
+        "window": {
+          "value": "158,464",
+          "label": "LM Studio auto-fit window at wired 24000"
+        },
+        "evalplusOff": {
+          "value": "0.976 / 0.939",
+          "label": "EvalPlus, thinking off (GGUF); LM Studio MLX 0.909 / 0.872"
+        },
+        "evalplusOn": {
+          "value": "pending",
+          "label": "EvalPlus, thinking on"
+        },
+        "slots": {
+          "value": "4×256K",
+          "label": "llama q8 slots, 16.9 GB"
+        },
+        "shallowLlama": {
+          "value": "35.6 tok/s",
+          "label": "llama MTP, short prompt, f16 KV"
+        },
+        "offPeak": {
+          "value": "45.2 tok/s",
+          "label": "llama MTP peak, short prompt, f16 KV"
+        }
+      }
     },
-    "lmsCeiling": {
-     "value": "131K",
-     "label": "LM Studio ceiling, 23.23 tok/s"
+    "gemma-4-26b-a4b": {
+      "rowMatch": "Gemma-4-26B-A4B",
+      "kpis": [
+        "shallow",
+        "depth",
+        "evalplus",
+        "empties"
+      ],
+      "stats": {
+        "shallow": {
+          "value": "51 tok/s",
+          "label": "decode, shallow (MLX)"
+        },
+        "depth": {
+          "value": "70K",
+          "label": "last stable depth, 12.8 tok/s (MLX)"
+        },
+        "evalplus": {
+          "value": "0.713 / 0.701",
+          "label": "EvalPlus, thinking on"
+        },
+        "empties": {
+          "value": "46/164",
+          "label": "empty: thinking non-convergence"
+        },
+        "memory": {
+          "value": "20.0 GB",
+          "label": "at max ctx (MLX)"
+        },
+        "ggufFloor": {
+          "value": "197K",
+          "label": "GGUF f16 KV ceiling, 17.3 tok/s there"
+        }
+      }
     },
-    "lmsShallow": {
-     "value": "34.19 tok/s",
-     "label": "LM Studio, shallow"
+    "qwen3.6-35b-a3b": {
+      "rowMatch": "Qwen3.6-35B-A3B",
+      "kpis": [
+        "shallow",
+        "evalplus",
+        "depthGguf",
+        "mlxCeiling"
+      ],
+      "stats": {
+        "shallow": {
+          "value": "53.3 tok/s",
+          "label": "decode, shallow (MLX)"
+        },
+        "evalplus": {
+          "value": "0.939 / 0.921",
+          "label": "EvalPlus, thinking on"
+        },
+        "depthGguf": {
+          "value": "8K",
+          "label": "GGUF clean depth before memory compaction (q8_0, -c 49152)"
+        },
+        "mlxCeiling": {
+          "value": "37K",
+          "label": "MLX last stable depth (OOM ~41K)"
+        },
+        "memory": {
+          "value": "18.7 GB",
+          "label": "at max ctx (MLX)"
+        },
+        "empties": {
+          "value": "5/164",
+          "label": "empty completions at full budget"
+        }
+      }
     },
-    "window": {
-     "value": "158,464",
-     "label": "LM Studio auto-fit window at wired 24000"
-    },
-    "evalplusOff": {
-     "value": "0.909 / 0.872",
-     "label": "EvalPlus, thinking off"
-    },
-    "evalplusOn": {
-     "value": "pending",
-     "label": "EvalPlus, thinking on"
-    },
-    "slots": {
-     "value": "4×256K",
-     "label": "llama q8 slots, 16.9 GB"
-    },
-    "shallowLlama": {
-     "value": "35.6 tok/s",
-     "label": "llama MTP, short prompt, f16 KV"
-    },
-    "offPeak": {
-     "value": "45.2 tok/s",
-     "label": "llama MTP peak, short prompt, f16 KV"
+    "qwen3.8-27b": {
+      "rowMatch": "Qwen3.8-27B",
+      "kpis": [
+        "evalplus",
+        "shallow",
+        "ceiling",
+        "compaction"
+      ],
+      "stats": {
+        "evalplus": {
+          "value": "0.982 / 0.939",
+          "label": "EvalPlus, effort medium — best score"
+        },
+        "shallow": {
+          "value": "17 tok/s",
+          "label": "decode, shallow (MLX)"
+        },
+        "ceiling": {
+          "value": "28K",
+          "label": "MLX memory ceiling"
+        },
+        "compaction": {
+          "value": "~26K",
+          "label": "pi compaction setting"
+        },
+        "ggufFloor": {
+          "value": "49K",
+          "label": "GGUF f16 KV ceiling, 15.0 tok/s there"
+        },
+        "empties": {
+          "value": "0/164",
+          "label": "empty completions at budget 8192"
+        }
+      }
     }
-   }
   },
-  "gemma-4-26b-a4b": {
-   "rowMatch": "Gemma-4-26B-A4B",
-   "kpis": [
-    "shallow",
-    "depth",
-    "evalplus",
-    "empties"
-   ],
-   "stats": {
-    "shallow": {
-     "value": "51 tok/s",
-     "label": "decode, shallow (MLX)"
+  "evalplusRuns": [
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B",
+      "mode": "effort medium",
+      "base": "0.982",
+      "plus": "0.939",
+      "empty": "0/164"
     },
-    "depth": {
-     "value": "70K",
-     "label": "last stable depth, 12.8 tok/s (MLX)"
+    {
+      "slug": "qwen3.6-35b-a3b",
+      "model": "Qwen3.6-35B-A3B",
+      "mode": "thinking on",
+      "base": "0.939",
+      "plus": "0.921",
+      "empty": "5/164"
     },
-    "evalplus": {
-     "value": "0.713 / 0.701",
-     "label": "EvalPlus, thinking on"
+    {
+      "slug": "bonsai-27b",
+      "model": "Ternary-Bonsai-27B (fork q4+bias)",
+      "mode": "thinking on",
+      "base": "0.927",
+      "plus": "0.890",
+      "empty": "4/164"
     },
-    "empties": {
-     "value": "46/164",
-     "label": "empty: thinking non-convergence"
+    {
+      "slug": "bonsai-27b",
+      "model": "Ternary-Bonsai-27B (MLX 2-bit)",
+      "mode": "thinking on",
+      "base": "0.915",
+      "plus": "0.884",
+      "empty": "5/164"
     },
-    "memory": {
-     "value": "20.0 GB",
-     "label": "at max ctx (MLX)"
+    {
+      "slug": "gemma-4-12b-it",
+      "model": "Gemma-4-12B (GGUF Q4_K_XL)",
+      "mode": "thinking off",
+      "base": "0.976",
+      "plus": "0.939",
+      "empty": "0/164"
     },
-    "ggufFloor": {
-     "value": "24K",
-     "label": "GGUF MTP speed floor"
+    {
+      "slug": "gemma-4-12b-it",
+      "model": "Gemma-4-12B (LM Studio MLX 4-bit)",
+      "mode": "thinking off",
+      "base": "0.909",
+      "plus": "0.872",
+      "empty": "0/164"
+    },
+    {
+      "slug": "gemma-4-26b-a4b",
+      "model": "Gemma-4-26B-A4B",
+      "mode": "thinking on",
+      "base": "0.713",
+      "plus": "0.701",
+      "empty": "46/164"
     }
-   }
-  },
-  "qwen3.6-35b-a3b": {
-   "rowMatch": "Qwen3.6-35B-A3B",
-   "kpis": [
-    "shallow",
-    "evalplus",
-    "depthGguf",
-    "mlxCeiling"
-   ],
-   "stats": {
-    "shallow": {
-     "value": "53.3 tok/s",
-     "label": "decode, shallow (MLX)"
-    },
-    "evalplus": {
-     "value": "0.939 / 0.921",
-     "label": "EvalPlus, thinking on"
-    },
-    "depthGguf": {
-     "value": "90K",
-     "label": "GGUF depth to the 8 tok/s floor"
-    },
-    "mlxCeiling": {
-     "value": "37K",
-     "label": "MLX last stable depth (OOM ~41K)"
-    },
-    "memory": {
-     "value": "18.7 GB",
-     "label": "at max ctx (MLX)"
-    },
-    "empties": {
-     "value": "5/164",
-     "label": "empty completions at full budget"
-    }
-   }
-  },
-  "qwen3.8-27b": {
-   "rowMatch": "Qwen3.8-27B",
-   "kpis": [
-    "evalplus",
-    "shallow",
-    "ceiling",
-    "compaction"
-   ],
-   "stats": {
-    "evalplus": {
-     "value": "0.982 / 0.939",
-     "label": "EvalPlus, effort medium — best score"
-    },
-    "shallow": {
-     "value": "17 tok/s",
-     "label": "decode, shallow (MLX)"
-    },
-    "ceiling": {
-     "value": "28K",
-     "label": "MLX memory ceiling"
-    },
-    "compaction": {
-     "value": "~26K",
-     "label": "pi compaction setting"
-    },
-    "ggufFloor": {
-     "value": "19K",
-     "label": "GGUF speed floor"
-    },
-    "empties": {
-     "value": "0/164",
-     "label": "empty completions at budget 8192"
-    }
-   }
-  }
- },
- "evalplusRuns": [
-  {
-   "slug": "qwen3.8-27b",
-   "model": "Qwen3.8-27B",
-   "mode": "effort medium",
-   "base": "0.982",
-   "plus": "0.939",
-   "empty": "0/164"
-  },
-  {
-   "slug": "qwen3.6-35b-a3b",
-   "model": "Qwen3.6-35B-A3B",
-   "mode": "thinking on",
-   "base": "0.939",
-   "plus": "0.921",
-   "empty": "5/164"
-  },
-  {
-   "slug": "bonsai-27b",
-   "model": "Ternary-Bonsai-27B (fork q4+bias)",
-   "mode": "thinking on",
-   "base": "0.927",
-   "plus": "0.890",
-   "empty": "4/164"
-  },
-  {
-   "slug": "bonsai-27b",
-   "model": "Ternary-Bonsai-27B (MLX 2-bit)",
-   "mode": "thinking on",
-   "base": "0.915",
-   "plus": "0.884",
-   "empty": "5/164"
-  },
-  {
-   "slug": "gemma-4-12b-it",
-   "model": "Gemma-4-12B",
-   "mode": "thinking off",
-   "base": "0.909",
-   "plus": "0.872",
-   "empty": "0/164"
-  },
-  {
-   "slug": "gemma-4-26b-a4b",
-   "model": "Gemma-4-26B-A4B",
-   "mode": "thinking on",
-   "base": "0.713",
-   "plus": "0.701",
-   "empty": "46/164"
-  }
- ]
+  ]
 }

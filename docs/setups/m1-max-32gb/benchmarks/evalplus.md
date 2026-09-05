@@ -11,7 +11,8 @@ across serving configs when thinking mode, effort, and quant match.
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | thinking on | 0.939 | 0.921 | 5/164 | 97.0% |
 | [Ternary-Bonsai-27B (fork q4+bias)](./bonsai-27b.md) | thinking on | 0.927 | 0.890 | 4/164 | 97.6% |
 | [Ternary-Bonsai-27B (MLX 2-bit)](./bonsai-27b.md) | thinking on | 0.915 | 0.884 | 5/164 | 97.0% |
-| [Gemma-4-12B](./gemma-4-12b-it.md) | thinking off | 0.909 | 0.872 | 0/164 | 100.0% |
+| [Gemma-4-12B (GGUF Q4_K_XL)](./gemma-4-12b-it.md) | thinking off | 0.976 | 0.939 | 0/164 | 100.0% |
+| [Gemma-4-12B (LM Studio MLX 4-bit)](./gemma-4-12b-it.md) | thinking off | 0.909 | 0.872 | 0/164 | 100.0% |
 | [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | thinking on | 0.713 | 0.701 | 46/164 | 72.0% |
 <!-- gen:evalplus-table:end -->
 

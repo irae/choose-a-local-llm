@@ -11,7 +11,7 @@ Backends: llama-server, mlx-lm · [Qwen3.8-27B MLX 4-bit on Hugging Face](https:
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort medium re-scored 2026-08-28 with the calibrated budget.
+Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort medium re-scored 2026-08-28 with the calibrated budget; GGUF re-measured at f16 KV 2026-09-05 (run 9).
 
 ## Highlights
 
@@ -21,7 +21,9 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
   slow inside the context it can hold.
 - Weak point: the slowest model on this hardware (19.7 tok/s ceiling),
   with poor prompt processing (~123 tok/s).
-- Weak point: a small window. MLX OOMs between 28K and 30K.
+- Weak point: a small window on MLX, which OOMs between 28K and 30K.
+  llama at f16 KV now holds 15 tok/s to 49K, the largest context this
+  machine loads for it (run 9).
 
 ## All configs — this model
 
@@ -30,7 +32,7 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
 | 2 | Qwen3.8-27B, MLX, effort low | 28k† | mem | 17† → 15.3† | 22.0 GB† | 0.976/0.927 |
-| 3 | Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k† | speed | 14.1† → 8† | 18.9 GB† | 0.982/0.939 |
+| 3 | Qwen3.8-27B, GGUF, MTP f16, effort medium | 49k | OOM | 20.0 → 15.0 | 23.5 GB | 0.982/0.939 |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
@@ -54,29 +56,28 @@ mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --chat-template-args '{"reasoning_effort":"low"}' --prompt-cache-size 2 --port 8081
 ```
 
-**#3 — Qwen3.8-27B, GGUF, MTP q8, effort medium.** pi id `qwen3.8-27b`.
+**#3 — Qwen3.8-27B, GGUF, MTP f16, effort medium.** pi id `qwen3.8-27b`. Re-measured 2026-09-05 at f16 KV, the run 9 pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant is not scored on its own yet.
 
 ```bash
 llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
   --alias qwen3.8-27b --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
-  -ngl 999 -fa on -c 32768 \
-  --cache-type-k q8_0 --cache-type-v q8_0 \
+  -ngl 999 -fa on -c 49152 \
+  --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
 ```
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
 
-**MLX wins this model's equilibrium, and that was not obvious.** MLX beats
-GGUF+MTP on decode because its Metal kernels handle this hybrid DeltaNet
-architecture better than llama.cpp's. But MLX loses on every other axis: max
-context measured 48K against llama-server's 96K, prompt processing at ~105
-tok/s is no faster than llama.cpp's 123, it serves one request at a time with
-no sub-agent slots, and multi-instance is impossible because two 15.5 GB
-weight copies exceed the wired limit. It still wins, because llama crosses
-the 8 tok/s floor at ~19K while MLX never drops below 14 inside its window.
-Speed you can actually use beats a window you cannot decode through.
+**The equilibrium moved to llama at f16 KV (run 9).** At q8_0 KV llama
+crossed the 8 tok/s floor at about 19K, so MLX won on usable speed. At
+f16 KV the same server decodes 20.0 tok/s at 4K and 15.0 at 49K, and
+49152 is the largest `-c` this machine loads for it (65536 and above
+OOM at load). That is the MLX speed with almost twice the MLX window,
+plus prompt caching and slots. The four-problem smoke read level with
+q8_0, so the cache type cost no answers. MLX keeps its place as the
+config with the lowest memory.
 
 **The quality score is fair, and it is the project's best.** The output
 budget was calibrated to 8192 — its longest observed reasoning was only
@@ -89,12 +90,12 @@ predicts medium-effort text better than xhigh-effort text, so acceptance
 climbs from 58–61% to 73–81%. That is where the ~21% per-token gain comes
 from.
 
-**q8_0 KV is free here.** It halves KV memory, unlocks 160K context — 176K
-OOMs — and produced byte-identical outputs to f16 in a deterministic temp-0
-comparison over 512 tokens and both prompts. f16 remains the secondary
-option: ~1% faster, capped at 96K. KV grows only ~0.8 GB per 16K tokens,
-because the hybrid DeltaNet layers keep no KV; only the full-attention layers
-do.
+**q8_0 KV was not free here.** It looked free in a 512-token output
+comparison at the retired 27000 limit, but the run 9 short creep showed
+it at 7.1 tok/s at 32K against 16.4 for f16, more than a 2x gap, at
+almost the same wired memory. The KV pick is f16. KV grows only about
+0.8 GB per 16K tokens, because the hybrid DeltaNet layers keep no KV;
+only the full-attention layers do, which is why f16 fits.
 
 **The n-max 3 result is real.** It repeated exactly on a second run (16.77).
 A second JS prompt — debounce, run twice — matched deep clone within 0.3
@@ -105,7 +106,7 @@ choice is the same for both languages.
 model was measured at the retired 27000 wired limit and awaits a re-probe at
 24000. Those tables are on
 [the historical page](../historical.md); do not use them.
-The depth floor at ~19K makes large allocations pointless here anyway.
+The f16 ceiling at 49K is a load limit, not a decode floor.
 [The benchmarks](../benchmarks/qwen3.8-27b.md) keep the labeled archive.
 MTP-on-MLX exists only as a CLI with no API, so it is disqualified for
 harness use; its raw numbers stay in the benchmarks too.
@@ -122,7 +123,7 @@ llama.cpp releases.
 | need | config | tok/s (py/js) | context |
 |---|---|--:|--:|
 | **Daily driver** | mlx_lm.server, compaction at ~26K | 14-17 across the window | to ~28K ceiling |
-| **llama alternative** | llama-server + MTP n=3, q8_0 KV | 14.1 shallow | floor ~19K; maxima pending re-probe |
+| **llama alternative** | llama-server + MTP n=3, f16 KV, `-c 49152` | 20.0 shallow, 15.0 at 49K | 49K, the largest `-c` that loads (run 9) |
 
 ## Quality — EvalPlus HumanEval+
 

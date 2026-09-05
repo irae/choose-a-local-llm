@@ -7,6 +7,44 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench9, 2026-09-04 to 2026-09-05 ([state](bench9/state.md), [results](bench9/results.md))
+
+- Runbook: [bench9/AGENT.md](bench9/AGENT.md). The KV cache type per
+  GGUF model, the slow creep at the pick, the first EvalPlus smoke as a
+  gate, the GGUF Gemma-12B scored, one Mendel row, one invalid block.
+- **The KV pick moved two models to f16 and left one at q8_0.** Qwen3.8
+  GGUF: q8_0 read 7.1 tok/s at 32K, f16 16.4, same memory. Gemma-26B
+  GGUF: q8_0 6.3, f16 45.9. Qwen3.6 GGUF: f16 does not load at 40960,
+  q8_0 stays.
+- **Every published `-c` OOMs at load under the 24000 limit.** The
+  largest `-c` that loads is a hardware ceiling and is recorded as one:
+  Qwen3.8 49152 (f16), Gemma-26B 212992 (f16), Qwen3.6 49152 (q8_0).
+  A server can report "loaded" and answer every request with a 500;
+  every `-c` candidate is verified with one real completion.
+- **A window verdict at an undersized `-c` is not a finding.** Two creeps
+  were redone toward the trained context with the prefill jump from a
+  control point; the control points landed within 0.2% and 0.5% of the
+  slow readings.
+- **Gemma-26B GGUF at f16 holds 17.3 tok/s at 197K**, from 8 tok/s at
+  24K before. Back in the running as a secondary model; the EvalPlus
+  re-score at f16 is a run 10 item.
+- **Qwen3.6 GGUF's deep-context claim did not survive the slow creep.**
+  At `-c 49152` wired sits at 25 GB and compaction starts by 16K; the
+  last clean row is 8K at 43.8 tok/s. The 90K figure was the fast sweep.
+- **The smoke passed its self-check and read LEVEL on both f16 picks.**
+  Gemma-26B fails the same hard problem at both types.
+- **Quants do not always share a score.** Gemma-12B GGUF Q4_K_XL thinking
+  off scored 0.976/0.939, 0 empty, against the LM Studio MLX 4-bit's
+  0.909/0.872. The shared-score rule now carries that exception.
+- **Gemma-12B GGUF f16, no drafter, Mendel guided thinking off:** 3 of 8
+  libraries, 37.5 capped, model budget exhausted after three nudges,
+  the same signature as the LM Studio entry's high run.
+- **Qwen3.8 MLX guided low is invalid after three attempts.** The
+  `maxTokens` fix works, but the context grows past the 26624 window
+  in agentic use and Metal OOMs the generation thread while `/health`
+  stays 200. Open problem: a smaller window or an earlier compaction.
+- **Bonsai Mendel thinking off (block C) was deferred to run 10.**
+
 ## research run 1, 2026-09-03 ([state](../research/run1/state.md), [results](../research/run1/results/))
 
 Research, not a benchmark: no scored rows produced. Runbook:
