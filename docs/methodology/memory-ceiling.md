@@ -67,8 +67,9 @@ probe to run; use the compression-onset criterion from
 
 ## Why the cold-start sequence exists
 
-The [checklist](./checklist.md) step 3 gives the sequence. This is what
-it is for.
+The [checklist](./checklist.md) gives the sequence, and
+`tools/preflight.sh` reads the machine and says which of its steps this
+machine still needs. This is what the sequence is for.
 
 **There is no idle baseline.** The same idle machine, with the same
 applications not running, has read free memory values twelve gigabytes
@@ -81,6 +82,11 @@ So the sequence does not chase a clean machine. It aims to put the
 machine in the SAME state before every run. Reproducibility, not
 accuracy. Two runs prepared this way can be compared with each other,
 which is what a benchmark needs.
+
+**Why a check, not a step.** Every step below is a change to the
+owner's machine, so a run must make it only when the machine needs it.
+`tools/preflight.sh` reads the state first and prints `ok`, `fix`, or
+`ask` per check. A ready machine gets no change and no question.
 
 **Why the reboot, and when.** A disabled login item that is already
 running keeps running, so disabling without rebooting changes nothing.
