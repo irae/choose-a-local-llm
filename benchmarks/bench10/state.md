@@ -70,3 +70,11 @@ Server killed, wired memory recovered to 90862 pages (below session
 baseline). Full numbers in `results.md`.
 
 Starting Block A3 (LM Studio, gemma-4-12b-it-mlx).
+
+Block A3 done: local key is `google/gemma-4-12b`, not
+`gemma-4-12b-it-mlx` (same file). Prefill jump 4096->131072 took 1013s
+(one queued stall probe failed while the step was still live, then it
+answered). Result: depth 131098, wired_mb 17249, but swap grew 443MB
+at this row — mem verdict right at the target depth. `wired_mb 17249`
+is the number this block asked for. LM Studio quit after. Block A
+closed.

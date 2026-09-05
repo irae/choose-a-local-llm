@@ -89,6 +89,31 @@ the deepest row inside the allocated window. This is a hardware
 ceiling (the model's trained window is far larger, but `-c 202752`
 could not load higher on this machine), not a "stopped early" mistake.
 
+### A3 — LM Studio, gemma-4-12b-it-mlx (row reads `pending` for memory)
+
+Deviation: the local LM Studio model key is `google/gemma-4-12b`, not
+`gemma-4-12b-it-mlx` — same local file, different registry key on this
+machine. Used the local key; no download happened.
+
+```
+lms load google/gemma-4-12b --parallel 4 --gpu max -y
+lms server start --port 8081
+DEPTH_LIST="4096,131072" MODEL=google/gemma-4-12b \
+  python3 tools/sweeps/creep_lmstudio.py
+```
+
+Prefill-jump creep, control point 4114 (35.49 tok/s, clean), jump to
+131072. The jump step took 1013 s wall time (a very slow prefill, not
+a dead server — two stall probes were queued behind the live step
+before it answered) and landed at depth 131098: 24.36 tok/s,
+**wired_mb 17249**, but swap grew 443 MB by this step.
+
+The requested number: **`wired_mb` at the 131072 row is 17249 MB**.
+Verdict on this row is mem (swap growth), so this number is the
+allocation right at the edge of swap onset, not a clean steady-state
+reading — noted per the row's own "pending" caveat in the runbook.
+LM Studio app quit after.
+
 ## Block B — Mendel smoke, Qwen3.8 GGUF f16
 
 ## Block C — Gemma-26B GGUF f16, EvalPlus thinking on
