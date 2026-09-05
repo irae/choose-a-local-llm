@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Runner alarms: summary</title>
+<style>
+:root{--bg:#fbfbf9;--fg:#1d1d1b;--mut:#5d5d58;--line:#d9d9d2;--head:#efefe9;--acc:#8a3b00;--warn:#b00020;--ok:#1f6b3a;--code:#f1f1ec}
+@media(prefers-color-scheme:dark){:root{--bg:#161615;--fg:#e7e7e2;--mut:#a3a39c;--line:#3a3a36;--head:#22221f;--acc:#f0a35e;--warn:#ff6b7a;--ok:#6fd39a;--code:#22221f}}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;padding:2rem 1.5rem 4rem;max-width:90ch;margin:auto}
+h1{font-size:1.5rem;margin:.2rem 0 .4rem}
+h2{font-size:1.15rem;margin:2rem 0 .5rem;border-bottom:1px solid var(--line);padding-bottom:.2rem}
+p.lead{color:var(--mut);margin:0 0 1.2rem}
+ol.recs{padding-left:1.4rem}
+ol.recs>li{margin:0 0 1rem}
+ol.recs b{display:block}
+ul{margin:.3rem 0 .3rem 1.1rem;padding:0}
+li{margin:.15rem 0}
+a.j{font-size:.9em;color:var(--acc);white-space:nowrap}
+code{background:var(--code);padding:0 .25em;border-radius:3px;font-size:.92em}
+table{border-collapse:collapse;margin:.6rem 0;font-size:.95em}
+th,td{border:1px solid var(--line);padding:.25rem .5rem;text-align:left;vertical-align:top}
+th{background:var(--head)}
+td.n{text-align:right;white-space:nowrap}
+.mut{color:var(--mut)}
+</style>
+</head>
+<body>
+<h1>Runner alarms: summary</h1>
+<p class="lead">Decisions only. The evidence, the per-model table, and the harness survey stay in the <a href="runner-alarms-output-limit-and-loop-stop.html">full report</a>. Base: 65 unique Mendel sessions, 5,751 assistant turns, both machines.</p>
+
+<h2>Recommendations</h2>
+<ol class="recs">
+<li><b>Piece 1, count and log. Do first. No behaviour change.</b>
+<ul>
+<li>Two telemetry counters, not one: <code>output_limit_hits</code> = every <code>stopReason: length</code>, with the block types of the truncated message; <code>reissue_msgs</code> = every pi tool result that says "hit the output token limit".</li>
+<li>Per hit, log: output token count, turn duration, and the runner's own <code>atBudget</code> verdict (output at 80 percent or more of <code>maxTokens</code>).</li>
+<li>One alarm line per event in the runner log.</li>
+<li>Observed: 61 length stops in 20 sessions; 4 re-issue messages in 4 sessions.</li>
+</ul>
+<a class="j" href="runner-alarms-output-limit-and-loop-stop.html#rec-piece-1">see justification</a></li>
+
+<li><b>Piece 2, per-turn wall-clock cap. N = 20 minutes. End reason <code>turn_timeout</code>.</b>
+<ul>
+<li>Cuts 10 of 5,751 turns (0.17 percent): six DeepSeek text loops (31 to 50 min), two runner aborts with no token returned (37, 62 min), the 70-minute discarded tool call, one healthy 21-minute call on a 1.8 tok/s research replay arm.</li>
+<li>Longest healthy call in a scored run: under 9 min. Longest healthy cloud call: 5 m 53 s. p99.5 of all turns: 8 m 53 s.</li>
+<li>N = 25 cuts zero healthy turns and still catches the 31-minute loop. Pick 25 only if a replay arm that slow must survive.</li>
+<li>N = 15 starts cutting healthy replay calls. N = 10 cuts the 10 to 11 minute thinking collapses, which are piece 3 territory.</li>
+<li>Clock rule: measure from <code>message_start</code> (or <code>turn_start</code>) in the RPC stream, not from the request timestamp. Otherwise a stall abort plus pi retries double-counts, up to 61 min in the replays. The events log already has both markers.</li>
+<li>Score the row as a stop, not a rescue. One sentence in <code>PLAN.md</code>.</li>
+</ul>
+<a class="j" href="runner-alarms-output-limit-and-loop-stop.html#rec-piece-2">see justification</a> · <a class="j" href="runner-alarms-output-limit-and-loop-stop.html#rec-clock">clock caveat</a> · <a class="j" href="runner-alarms-output-limit-and-loop-stop.html#sec-duration">distribution</a></li>
+
+<li><b>Piece 3, two consecutive output-limit hits. Change the condition from "on tool calls" to "at budget". End reason <code>output_limit</code>.</b>
+<ul>
+<li>As written ("on tool calls") the rule never fires in any log. The re-issue path recovered every time.</li>
+<li>"Any two consecutive length stops" fires in 8 sessions, and 2 of them are complete, scored runs (qwen3.6 context-overflow pairs, pi's below-budget recovery working). Rejected.</li>
+<li>"Two consecutive at-budget stops" (the runner's existing <code>atBudget</code> test) fires in 3 sessions, all gemma-4-12b, all 0 commits, at 28, 32 and 39 min into runs of 46, 49 and 99 min. Saves 95 machine minutes, changes no score.</li>
+<li>Below-budget pairs (1-token server stubs, context overflows) stay with pi's compact-and-retry and the runner's tooling budget, which already end them.</li>
+<li>Row records both output token counts.</li>
+</ul>
+<a class="j" href="runner-alarms-output-limit-and-loop-stop.html#rec-piece-3">see justification</a> · <a class="j" href="runner-alarms-output-limit-and-loop-stop.html#sec-patterns">the four hit patterns</a></li>
+
+<li><b>Loop verdict at run close. Wire <code>loop-check.py</code> in, and fix its events-log input first.</b>
+<ul>
+<li>Bug: on an events log, <code>read_lines</code> joins all tool-call deltas into one string, so repeated commands never enter the window. Fix: append a newline after each <code>toolcall_end</code> event. One line.</li>
+<li>On per-block input: 11 of 65 sessions read LOOP. The three DeepSeek cloud sessions among them are caught by no other piece before the 384k budget.</li>
+<li>The verdict runs on the finished log. It changes nothing the model did; it lands beside the row for the scorer.</li>
+</ul>
+<a class="j" href="runner-alarms-output-limit-and-loop-stop.html#rec-loop">see justification</a></li>
+
+<li><b>Not a runner alarm: the Qwen3.8 MLX 1-token stubs.</b>
+<ul>
+<li>mlx server at 88 percent of its window returns 1 output token with <code>finish_reason: length</code>, 11 and 16 times in two runs. Tooling failure. Fix is the window arithmetic in <code>backlog/qwen38-mlx-output-budget-and-window.md</code>.</li>
+</ul>
+<a class="j" href="runner-alarms-output-limit-and-loop-stop.html#sec-patterns">see justification</a></li>
+
+<li><b>rpiv-mono: not relevant.</b>
+<ul>
+<li><code>maxTokens</code> appears only in window arithmetic, a models.json example, and a telemetry span attribute (<code>turn.stop_reason = "max_tokens"</code>). No small-turn theory, no chosen value, no measurement. The span attribute is piece 1 under another name.</li>
+</ul>
+<a class="j" href="runner-alarms-output-limit-and-loop-stop.html#sec-rpiv">see justification</a></li>
+</ol>
+
+<h2>Numbers the decisions rest on</h2>
+<table>
+<tr><th>Fact</th><th>Value</th><th>Where</th></tr>
+<tr><td>Sessions parsed, unique</td><td class="n">71, 65</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#sec-appendix">appendix</a></td></tr>
+<tr><td>Assistant turns</td><td class="n">5,751</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#sec-duration">§2</a></td></tr>
+<tr><td>Median turn</td><td class="n">about 7 s</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#sec-duration">§2</a></td></tr>
+<tr><td>p99.5 turn</td><td class="n">8 m 53 s</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#sec-duration">§2</a></td></tr>
+<tr><td>Longest healthy call, scored run</td><td class="n">under 9 min</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#sec-longest">§2, 30 longest</a></td></tr>
+<tr><td>Longest healthy call, any log</td><td class="n">21 m 06 s (replay arm, 1.8 tok/s)</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#sec-longest">§2, 30 longest</a></td></tr>
+<tr><td>Length stops / sessions</td><td class="n">61 / 20</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#sec-length-stops">§3</a></td></tr>
+<tr><td>Re-issue messages / sessions</td><td class="n">4 / 4, never consecutive</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#sec-length-stops">§3</a></td></tr>
+<tr><td>Consecutive at-budget pairs</td><td class="n">3 sessions, all failed gemma-4-12b</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#rec-piece-3">§5</a></td></tr>
+<tr><td>Consecutive any-length pairs</td><td class="n">8 sessions, 2 scored complete</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#rec-piece-3">§5</a></td></tr>
+<tr><td>LOOP verdicts (per-block input)</td><td class="n">11 of 65</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#rec-loop">§5</a></td></tr>
+<tr><td>Harnesses surveyed</td><td class="n">11, plus rpiv-mono</td><td><a href="runner-alarms-output-limit-and-loop-stop.html#sec-harnesses">§4</a></td></tr>
+</table>
+
+<h2>Where to change</h2>
+<ul>
+<li><code>../mendel-benchmark/benchmark/run-pi-rpc.mjs</code>: pieces 1, 2, 3.</li>
+<li><code>../mendel-benchmark/benchmark/PLAN.md</code>: one sentence each for <code>turn_timeout</code> and <code>output_limit</code>.</li>
+<li><code>../mendel-benchmark/benchmark/run-worker.sh</code>: loop verdict at run close.</li>
+<li><code>benchmarks/loop-check.py</code>: the <code>read_lines</code> newline fix.</li>
+</ul>
+</body>
+</html>
