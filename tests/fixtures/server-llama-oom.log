@@ -1,0 +1,20 @@
+0.00.110.276 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.111.048 W srv  llama_server: -----------------
+0.00.111.050 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.111.050 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.111.050 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.111.050 W srv  llama_server: -----------------
+0.00.113.291 I srv    load_model: loading model 'bartowski/Qwen3.8-27B-GGUF:Q4_K_M'
+0.00.814.024 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 999, abort
+0.07.158.896 I cmn          init: llama threadpool init, n_threads = 8
+0.10.450.950 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.10.451.026 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.10.451.658 I common_speculative_init_result: creating MTP draft context against the target model '/Users/irae/.cache/huggingface/hub/models--bartowski--Qwen3.8-27B-GGUF/snapshots/f0eec4a4bb4975114a030d048952d83c0a53c034/Qwen3.8-27B-Q4_K_M.gguf'
+0.14.611.697 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.14.611.737 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.14.611.738 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.14.611.738 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.14.611.745 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.14.611.745 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.14.611.746 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.14.611.746 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
