@@ -83,7 +83,7 @@ Notes:
   phase 1; VitePress copies `docs/public/` verbatim.
 - After the moves, update every cross-reference (the same link classes as
   commit 5b98507: report↔benchmark↔comparison↔historical links, plus
-  `docs/methodology.md` rule 7 surface names and `README.md`'s map).
+  the methodology's record-everywhere rule surface names and `README.md`'s map).
 
 ## Phase 1 — structure + passthrough (no visual change to existing pages)
 
@@ -127,7 +127,7 @@ Convert, one page per commit, verifying rendering in `npm run docs:dev`:
    preserved); tables become Markdown tables.
 3. After each conversion: delete the HTML file from `public/`, update the
    sidebar entry to the extensionless link, and fix inbound links.
-4. Update `docs/methodology.md` rule 7 (the four-surface rule) to name the
+4. Update the methodology's record-everywhere rule to name the
    new surfaces: `benchmarks/*.md`, the report page, the comparison page,
    `~/.pi/agent/models.json`.
 

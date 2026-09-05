@@ -19,6 +19,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
+- [ ] One folder per machine: move bench and research runs under hardware/<id>/{benchmarks,research}; method pages already read the machine file (hardware-folders-per-machine.md)
 - [ ] Bench 10 candidates: the items deferred from bench 9 and the retries (bench-10-candidates.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
 

@@ -21,14 +21,9 @@ stall. Everything here was hit at least once.
   Restart the server and resume.
 - **Check the server log before blaming the model** when a run stalls
   far longer than its budget allows.
-- For scoring runs, or any run expected to end in OOM where nothing
-  else samples memory, run `benchmarks/mem-watch.sh` at a 20-30 s
-  interval so the final pre-OOM samples exist; it separates
-  swap/compression events from compute slowdowns. A depth sweep needs
-  no watcher: its runner writes the memory counters into every step
-  row ([context creep](./context-creep.md)). Thermal vs
-  memory-pressure for long-run slowdowns is an OPEN question —
-  evidence exists for both.
+- Thermal vs memory-pressure for long-run slowdowns is an OPEN
+  question — evidence exists for both. The memory record that decides
+  it is the watcher or the sweep row ([checklist](./checklist.md)).
 
 ## LM Studio (verified 2026-08-29/30, LM Studio 0.4.23 / mlx-engine 1.10.1)
 
@@ -55,8 +50,8 @@ Use `tools/sweeps/creep_lmstudio.py` for LM Studio depth sweeps; set
   explicitly with `lms load` and verify with `lms ps` before starting.
   Loading while another instance is resident creates a duplicate
   (`:2`) instance — unload first.
-- **A lost run may be a kernel panic, not an OOM.** This Mac panicked
-  in `IOGPUFamily` on 2026-09-03: `"completeMemory() prepare count
+- **A lost run may be a kernel panic, not an OOM.** One machine panicked
+  in `IOGPUFamily` (2026-09-03): `"completeMemory() prepare count
   underflow" @IOGPUMemory.cpp:492`, panicking task `node`. The panic
   log's own accounting showed memory was FINE (compressor at 3%, swap
   OK), so it was not memory exhaustion — it is a reference-counting
@@ -85,7 +80,7 @@ Use `tools/sweeps/creep_lmstudio.py` for LM Studio depth sweeps; set
   request then fails with a bare `Connection error.` — no hint that the
   server is the problem. Check `lms server status` and start it with
   `lms server start`. Verify the endpoint itself before a run:
-  `curl -s http://127.0.0.1:1234/v1/models`. Two commands, because the
+  `curl -s http://127.0.0.1:<LM Studio port>/v1/models`. Two commands, because the
   two states are independent: the model is loaded, and the server is
   listening.
 - **`/v1/completions` (raw prompt, no chat) is broken on this build.**
@@ -126,11 +121,3 @@ Use `tools/sweeps/creep_lmstudio.py` for LM Studio depth sweeps; set
   curated id can resolve to another repository's container. Check
   `hub/models/<id>/manifest.json` before assuming. For the example
   measured on the reference setup, see its [runtime lore for that model](../setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md#runtime-lore-for-this-model).
-
-## The machine
-
-- The owner's per-process firewall silently blocks new binaries'
-  network access — suspect it first for any fresh-process hang
-  (Node.js usually passes; Python often does not).
-- `lms` lives at `~/.cache/lm-studio/bin/lms`, not on `PATH`.
-- Server port for everything: 8081 (the harness scripts hardcode it).

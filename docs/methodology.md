@@ -1,6 +1,6 @@
-# Methodology — the flow
+# Methodology
 
-This is the law for every test cycle. Do not skip steps. The rules are
+This are stablished constraints for every test cycle. Do not skip steps. The rules are
 split by task — read the page for the task you are about to do:
 
 | Before you… | Read |
@@ -26,15 +26,13 @@ survivors.
 ## How we pick models (reasoning to reuse)
 
 - **Prefer MoE on bandwidth-limited hardware.** Decode scales with *active*
-  parameters — and on MLX the MoE advantage extends to depth (the two
-  fastest depth curves measured are MoE-on-MLX).
+  parameters.
 - **Prefer models with MTP support** — output-lossless free speed on llama.
   Note: speculative decoding (MTP or draft-model) costs depth — the floor
   arrives shallower with a drafter; measure both.
 - **Take the newest strong models even if slow**; let the quality gate decide.
-- **One compressed-frontier experiment at a time** (on the reference setup: a ternary 27B) —
-  and read the vendor's serving docs before concluding anything; we missed
-  their 4-bit-KV path and their layout migrations for a while.
+- **One compressed-frontier experiment at a time**, and read the
+  vendor's serving docs before concluding anything.
 - **Use the most popular mainstream quant repos** (HF download counts);
   verify exact file lists first.
 - **Score the quant, once per model.** Published full-precision scores do
@@ -59,9 +57,9 @@ Three measurements bound every config; each has its own page above:
 
 ## Runtimes
 
-- **llama-server** (llama.cpp, brew stable). The concurrency backbone: slots
+- **llama-server** (llama.cpp). The concurrency backbone: slots
   share one weight copy; MTP speculative decoding.
-- **mlx_lm.server** (mlx-lm, brew). Often faster decode and flatter depth
+- **mlx_lm.server** (mlx-lm). Often faster decode and flatter depth
   curves, but no slots, f16 KV only, and hard memory ceilings.
 - **A GUI-bundled runtime driven only through its CLI** is an approved
   exception to the no-GUI rule, when every step runs CLI-only (get, load,

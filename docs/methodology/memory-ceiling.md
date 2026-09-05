@@ -11,11 +11,8 @@ run loop apply ([common rules](./common-rules.md),
 3. Stop at the GPU OOM (`kIOGPUCommandBufferCallbackErrorOutOfMemory`
    on Metal). A config that loads but decodes degraded counts as
    failed.
-4. Speculative decoding: sweep the draft depth per model AND per mode —
-   the optimum shifts with output style (thinking on/off) and with
-   depth.
-5. Record on every surface, with the wired limit it was measured under.
-6. Record the allocation RATE too, and never compare a ceiling measured
+4. Record on every surface, with the wired limit it was measured under.
+5. Record the allocation RATE too, and never compare a ceiling measured
    at one rate with a ceiling measured at another.
 
 ## Rate changes the ceiling, so a benchmark OOMs early
@@ -45,19 +42,18 @@ approximates the gaps in agent work.
 
 ## Know which limit actually gates the OOM
 
-Below ~24000 MB on a 32 GB machine, `iogpu.wired_limit_mb` gates
-cleanly: the process's `IOAccelerator (graphics)` resident memory
+Well under the physical RAM, `iogpu.wired_limit_mb` gates cleanly: the process's `IOAccelerator (graphics)` resident memory
 (per-process view: `vmmap --summary <pid>`) hits the sysctl value
 exactly and the process gets the Metal OOM while the system stays
 healthy. That per-process view is not universal: `mlx_lm.server` holding
 8.5 GB read 1.7 MB in `IOAccelerator`, so for MLX servers read `Pages
 wired down` in `vm_stat` instead
 (`research/run1/results/backend-diagnosis.md`).
-At ~24000 MB and above, physical RAM binds first: free RAM
-runs to near zero before the sysctl matters, the crash point stops
-responding to sysctl changes, and the machine locks up and shows visual
-glitches. Ceilings measured in that regime are the machine's true
-maxima but cost system usability.
+Near the physical RAM, it binds first: free RAM runs to near zero
+before the sysctl matters, the crash point stops responding to sysctl
+changes, and the machine locks up and shows visual glitches. Ceilings
+measured in that regime are the machine's true maxima but cost system
+usability. Where that line sits is a value in the machine file.
 
 Budget model for MLX (measured on one 35B MoE 4-bit config; the KV cost
 per token is model-specific): weights + a ~1-2 GB transient prefill
@@ -71,14 +67,14 @@ probe to run; use the compression-onset criterion from
 
 ## Why the cold-start sequence exists
 
-The [checklist](./checklist.md) step 4 gives the sequence. This is what
+The [checklist](./checklist.md) step 3 gives the sequence. This is what
 it is for.
 
-**There is no idle baseline on this machine.** Measured idle, with the
-same applications not running, it has read 12415 MB free and 25219 MB
-free. Free memory moves by more than a gigabyte on its own while
-scheduled work runs, and it moves by twelve after something has applied
-pressure. A gate that compares against a remembered number is comparing
+**There is no idle baseline.** The same idle machine, with the same
+applications not running, has read free memory values twelve gigabytes
+apart (the setup page holds the readings). Free memory moves by more
+than a gigabyte on its own while scheduled work runs, and by far more
+after something has applied pressure. A gate that compares against a remembered number is comparing
 against noise.
 
 So the sequence does not chase a clean machine. It aims to put the
@@ -86,10 +82,12 @@ machine in the SAME state before every run. Reproducibility, not
 accuracy. Two runs prepared this way can be compared with each other,
 which is what a benchmark needs.
 
-**Why the reboot.** A disabled login item that is already running keeps
-running, so disabling without rebooting changes nothing. The reboot also
-clears swap, and swap left over from a previous run silently changes the
-next one.
+**Why the reboot, and when.** A disabled login item that is already
+running keeps running, so disabling without rebooting changes nothing.
+A reboot also clears swap, and swap growth during a speed or ceiling
+run invalidates the number. And it is the only recovery from a panic
+or a lockup. When none of those holds, the reboot buys nothing, so the
+checklist makes it conditional.
 
 **Why the model is the balloon.** Pressure has to come from somewhere,
 and it may as well come from the thing being measured. A synthetic
@@ -124,21 +122,21 @@ file, and the point where swap starts growing is the real ceiling. A
 judged score — Mendel, polyglot, EvalPlus — survives, because the
 answer is graded rather than timed; record it as a deviation.
 
-**Why the balloon is optional.** Above 25 GB free the machine has
-already yielded and pressure buys nothing. Probe first, balloon only
-below that.
+**Why the balloon is optional.** Above a threshold of free memory the
+machine has already yielded and pressure buys nothing. The threshold is
+a value in the machine file. Probe first, balloon only below it.
 
 **Why wired is the counter to read.** Wired pages are never compressed
 and never swapped. Everything else can mislead: free and active move for
 unrelated reasons, and the compressor can inflate an allocation total
 until it is fiction. An early version of the probe filled blocks with a
-repeated value and "allocated" 35840 MB on a 32 GB machine, because the
+repeated value and "allocated" more than the machine has, because the
 compressor squeezed the blocks to nothing. Wired never lied.
 
-**What the sequence costs.** One reboot per session, and a few minutes
-of slow loading per config when the balloon is needed at all. Reboot
-once per session, never once per model; when the machine is doing
-nothing but benchmarks, one reboot can cover several days. The background items stay disabled until `tools/mac-services.sh restore`
-runs, so the owner gets their machine back when the session ends.
+**What the sequence costs.** A reboot only when a condition calls for
+one, and a few minutes of slow loading per config when the balloon is
+needed at all. The background items stay disabled until
+`tools/mac-services.sh restore` runs, so the owner gets their machine
+back when the session ends.
 
 Full measurements behind this: `research/run1/results/memory-gate.md`.

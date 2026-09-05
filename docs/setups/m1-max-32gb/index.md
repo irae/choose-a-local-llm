@@ -30,6 +30,18 @@ instead when you also use the machine — see
   serves on 1234.
 - Harness: pi (`~/.pi/agent/models.json`). Pick a server by copy-pasting the
   command block from its report page. Aliases equal the pi model ids.
+- The machine file for runs is `~/.config/choose-a-local-llm/machine.md`
+  (apps to handle, thresholds, ports, paths). The published values:
+  balloon skipped above 25 GB free; wired recovery waited for after any
+  server above about 15 GB RSS; idle free memory has read 12415 MB and
+  25219 MB with the same apps not running.
+- `lms` lives at `~/.cache/lm-studio/bin/lms`, not on `PATH`.
+- The per-process firewall silently blocks new binaries' network
+  access. Suspect it first for any fresh-process hang (Node.js usually
+  passes; Python often does not). See the cold-start sequence in
+  [the checklist](../../methodology/checklist.md).
+- Docker does not fit beside a loaded model here. Aider polyglot runs
+  are driven from another computer against this machine's server.
 - Swap arithmetic: the server's RSS is wired, the kernel wires ~2-3 GB more,
   and all apps share the rest of 32 GB. Whole-machine slowness means swap. A
   slow model on a healthy machine means depth physics. Tell them apart before
@@ -51,6 +63,17 @@ Four runtimes are in play. The method rules for them are in
   install in `~/prism-llama/` (`prism-llama` alias; `install-latest.sh`
   overwrites with the newest build — one version only). Results are
   labeled with the fork build.
+
+## What the depth sweeps have shown here
+
+MLX runtimes barely creep but hit hard memory ceilings; llama runtimes
+creep faster but never OOM inside their window. Speculative decoding
+costs depth: the floor arrives shallower with a drafter, so measure
+both. The two fastest depth curves measured are MoE on MLX. The KV
+cache type can dominate everything else: on Gemma-4-12B, q8_0 KV falls
+through the 8 tok/s floor by 16K used tokens while f16 is still at 13.0
+tok/s at 131K, a 3.2x gap at 16K
+([the decision rule](../../methodology/context-creep.md#the-kv-cache-type-decision)).
 
 ## Models under test
 

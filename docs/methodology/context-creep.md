@@ -20,6 +20,81 @@ config. Common rules and the run loop apply
   setup: about 2K extra tokens on a 35B MoE MLX config). A no-pause sweep
   understates the ceiling a real harness reaches.
 
+## Speed measurement rules
+
+These rules belong to the speed test only. The common rules still
+apply on top of them.
+
+- **Fixed prompts**, temperature 0, fixed token count (we use 256),
+  identical across every model and config:
+  - py: `Write a Python function that parses ISO dates.`
+  - js: `Write a JavaScript function that deep clones an object.`
+  Two languages matter: speculative-decoding acceptance differs by
+  language, so a single-prompt benchmark can mislead.
+- **Read the server's own timings, not wall clocks**, where available.
+  llama-server: `.timings` from `/completion` (`prompt_per_second`,
+  `predicted_per_second`, `draft_n`, `draft_n_accepted`).
+  mlx_lm.server has no per-request timings — measure decode by
+  streaming and timing the token chunks. LM Studio: the server log is
+  ground truth ([server lore](./server-lore.md)).
+- **Reuse the server's prompt cache perfectly.** Grow prompts
+  append-only: each request's prompt = the previous prompt + the
+  server's own reply + the new text. Never insert before an existing
+  prefix, and never use a fixed suffix that later steps insert before.
+  llama-server reuses any longest common prefix; mlx_lm.server only
+  reuses strict extensions. Verify reuse via llama's
+  `.timings.prompt_n` (must be the delta, not the total).
+- **With a drafter, record draft acceptance beside every tok/s.** A
+  speculative-decoding number without its acceptance rate cannot be
+  compared with a later run (research run 2 could not reproduce a
+  published 45.0 py tok/s for that reason alone). Sweep the draft
+  depth per model AND per mode: the optimum shifts with output style
+  (thinking on/off) and with depth.
+
+## The KV cache type decision
+
+Decided per model, by research, then by a short creep, before any full
+sweep. The policy (which types are candidates) is
+[common rules](./common-rules.md), rule 4. The procedure, in order:
+
+1. **Research the cache quality first.** Look for measured evidence
+   that q8_0 KV is near-identical to f16 for THIS model: the quant
+   publisher's own grading (unsloth grades its weight quants with
+   KL-divergence graphs; cache-type graphs come from community
+   benchmarks such as the localbench KL study), or a KL or
+   benchmark comparison with the method shown. Trust it when the
+   proof is there. Record the source beside the config. Some model
+   families stay near-identical at q8_0 (KL under 0.04 in community
+   measurements); others lose far more, and their MoE variants lose
+   the most. Do not assume which group a model is in.
+2. **Short creep, both types, to 32K.** Below 32K a config is not
+   useful, so 32K is the smallest depth that decides anything.
+   Same command, only the cache types change. Record decode tok/s
+   and wired memory at 4K and 32K for each type. The short creep is
+   the steps below with `DEPTH_LIST="4096,8192,16384,24576,32768"`.
+3. **Predict the fit.** KV cost per token is linear:
+   `kv_per_token = (wired_32k - wired_4k) / 28672`. A type fits at
+   a target context when
+   `wired_4k + kv_per_token × (target - 4096) + 1500 MB ≤ iogpu.wired_limit_mb`.
+   The target is the model's trained window or the depth the
+   short creep already shows is the speed floor, whichever is
+   smaller.
+4. **Pick.** f16 when it fits at a useful context AND is faster at
+   32K, or when step 1 says q8_0 costs this model quality. q8_0
+   when f16 does not fit at a useful context; a slower cache that
+   holds the context beats a faster one that does not. When the
+   two curves are within 10% at 32K and both fit, q8_0.
+5. **Full creep on the pick.** When the prediction is not decisive
+   (the fit is within the margin, or the curves cross), run the
+   full creep on both; a creep is cheap next to a wrong published
+   row. Publish the pick, and note the other type's 32K numbers.
+
+The type can dominate everything else: on one dense 12B model on the
+reference setup, q8_0 fell under the floor by 16K while f16 was 3.2x
+faster there, still usable at 131K, and fit at the model's full
+window. q8_0 can also lower MTP draft acceptance (one MoE model: 81% →
+68%). The evidence is in that setup's report.
+
 ## How a sweep runs
 
 Read this once and the rest of the page is detail.
@@ -89,7 +164,7 @@ halt, a failed request, and a dead server.
 Keep the external watcher for **scoring runs** — EvalPlus, Mendel,
 polyglot. Those harnesses sample no memory at all and run for hours, so
 `benchmarks/mem-watch.sh` is the only memory record they get. Start it
-as [the checklist](./checklist.md) step 7 says.
+as [the checklist](./checklist.md) step 6 says.
 
 Liveness is one signal, not three. `/health` stays 200 after an
 `mlx_lm.server` generation thread dies, so no sweep tool reads it. The
@@ -125,19 +200,13 @@ a changed `STALL_S` must say so.
 
 ## Steps
 
-0. On llama-server, decide the KV cache type first: research, a short
-   creep of both types to 32K, the fit prediction, then the full creep
-   on the pick — [common rules](./common-rules.md), rule 6. The short
-   creep is these same steps with `DEPTH_LIST="4096,8192,16384,24576,32768"`.
+0. On llama-server, decide the KV cache type first
+   ([the decision](#the-kv-cache-type-decision)).
 1. Grow a prompt in steps: 4K, 8K, 16K, 24K, 32K, then 16K steps.
 2. Measure decode tok/s at each depth (server timings, or streamed
    chunks where the server has none). The runner writes one row per
    step, with the memory counters of that same step beside the speed.
-   With a drafter, record draft acceptance beside every tok/s: a
-   speculative-decoding number
-   without its acceptance rate cannot be compared with a later run
-   (research run 2 could not reproduce a published 45.0 py tok/s for
-   that reason alone).
+   With a drafter, record draft acceptance beside every tok/s.
 3. Stop at the first reading under the usability floor (ours: 8 tok/s),
    at OOM, or at the model's trained/max context — never earlier. **A
    sweep that stops at an arbitrary depth has not found a ceiling — it
@@ -206,32 +275,11 @@ reads is documented there.
 Stop conditions and their defaults, all overridable by environment
 variable: the floor (`FLOOR_TOKS`, 8 tok/s), swap growth above 1 MB,
 material compaction (`COMPACT_PAGES`, 200 pages) on three steps in a row
-without speed recovering, a silent halt, a failed request, and a dead
-server (silence for `STALL_S`, 600 s, then a probe with
-`PROBE_TIMEOUT_S`, 300 s; two failed probes end the sweep).
-
-**Changed 2026-09-04.** The compaction stop used to fire on ANY
-decompression, however small, which is noise on a busy machine (about
-12 decompressions per tick at idle). It now needs `COMPACT_PAGES` pages
-compressed or decompressed in one step, so it matches the
-compression-onset criterion this page already used for LM Studio. And
-"speed did not recover" is now judged against the previous step, not the
-best step of the run: a depth sweep declines by design, so the old
-comparison could never be met and truncated a healthy sweep at 196618.
-Three steps in a row is unchanged.
-
-## Measured law so far
-
-MLX runtimes barely creep but hit hard memory ceilings; llama runtimes
-creep faster but never OOM inside their window. Speculative decoding
-costs depth — the floor arrives shallower with a drafter; measure both.
-
-**The KV cache type can dominate everything else.** On one dense 12B
-model on the reference setup, q8_0 KV falls through the 8 tok/s floor
-by 16K used tokens while f16 is still at 13.0 tok/s at 131K — a 3.2x
-gap at 16K. Decide the KV type per model before trusting a depth curve
-([common rules](./common-rules.md), rule 6); the evidence is in that
-setup's report.
+without speed recovering against the previous step, a silent halt, a
+failed request, and a dead server (silence for `STALL_S`, 600 s, then a
+probe with `PROBE_TIMEOUT_S`, 300 s; two failed probes end the sweep).
+Compaction under `COMPACT_PAGES` in one step is noise on a busy machine
+and does not count.
 
 ## Do not try these — see git history
 
@@ -253,15 +301,10 @@ setup's report.
 
 ## Known pitfalls
 
-- **A resident LM Studio silently shares the GPU.** `lms server stop`
-  and `lms unload --all` leave the app, its Electron helpers and its GPU
-  helper running. Quit the app (`osascript -e 'quit app "LM Studio"'`)
-  and confirm. A sweep run beside it showed free memory at 55 MB.
 - **Allocation is not depth.** Serving `-c 262144` proves the KV fits;
   it says nothing about decode speed at 262144 USED tokens. Reading one
   as the other produced a wrong "this row is stale" claim in run 2.
 - **Allocating far more context than the sweep will reach** costs memory
   for nothing and can push the machine into compaction.
-- **Free memory is the wrong meter.** It stays low after the first model
-  load because the weights sit in the page cache. Read `Pages wired
-  down`; see `research/run1/results/backend-diagnosis.md`.
+- **Free memory is the wrong meter.** Read `wired_mb`
+  ([memory ceiling](./memory-ceiling.md) says why).

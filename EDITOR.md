@@ -267,7 +267,7 @@ logs. This holds for "Max ctx" cells, "capped by" cells, and prose.
 ## Historical figures
 
 **No superseded number appears on a current page.** Not in a table, not in
-prose. This is the owner's rule, and methodology rule 7 says the same.
+prose. This is the owner's rule, and the methodology's record-everywhere rule says the same.
 
 - A current page states the current number and, if the story needs it, says
   a correction happened, without repeating the old figure.
@@ -343,8 +343,8 @@ Anything outside `docs/` never reaches the site. That is where
 
 ## How to record a new measurement
 
-Methodology rule 7 binds you: a result is not recorded until every surface
-agrees. Change all of these in the same pass.
+The methodology's record-everywhere rule binds you: a result is not
+recorded until every surface agrees. Change all of these in the same pass.
 
 1. `docs/setups/<setup>/benchmarks/<model>.md`: the full data, including
    the runs that did not win.

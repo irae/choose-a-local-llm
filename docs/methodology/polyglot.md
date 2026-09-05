@@ -11,8 +11,9 @@ with test feedback, docker against your servers. Hours per model.
   send only the configs that do well on Mendel to polyglot, because
   polyglot costs hours per model. The owner can decide to run polyglot
   before Mendel is ready for a config, or for all gate survivors.
-- On this machine docker does not fit beside a loaded model: Aider runs
-  driven from another computer against the Mac's server.
+- Docker rarely fits beside a loaded model. Drive Aider from another
+  computer against the server when it does not; the setup page says
+  which.
 - Serve through the exact config from the model's report page (the
   copy-paste block). One model at a time.
 

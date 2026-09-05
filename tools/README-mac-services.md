@@ -9,10 +9,21 @@ Build your own list once. The script reads it every run.
 ## Where your files go
 
     ~/.config/choose-a-local-llm/
+      machine.md                     this machine's values (below)
       services-user-agents.conf      labels to disable, one per line
       services-system-daemons.conf   labels that need sudo, one per line
       services-state                 written by "off", read by "on"
       baselines/                  the dumps you took before any change
+
+`machine.md` is the file the method pages point at for every value
+that belongs to one machine and not to the method: the apps to handle
+before a run and how (a firewall to set, an app to quit), the wired
+limit, the free-memory threshold that skips the balloon, the server
+size that needs a wired-recovery wait, ports, tool paths, and what was
+observed on this machine (idle readings, a panic). Four sections:
+"Apps to handle before a run" (a table: app, what to do, why),
+"Thresholds", "Ports and paths", "Observed on this machine". Keep it
+short; the setup page on the site carries the published numbers.
 
 Blank lines and `#` comments are ignored. You can annotate a label with
 why it is there, or comment one out to keep it running.
