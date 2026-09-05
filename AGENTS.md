@@ -89,7 +89,12 @@ Benchmark work:
   four-problem EvalPlus subset for a research trial. Not a score,
   never published. Same budget on both sides, read as level, better or
   worse; `docs/methodology/evalplus.md`. It replaced the older LM
-  Studio concurrency smoke, now retired), `loop-check.py` (repetition-loop detector for
+  Studio concurrency smoke, now retired), `mendel-smoke.sh` (the
+  handed task that gates a full Mendel run: one dependency swap across
+  two files in a fixture it builds itself, one pi run under a
+  25-minute cap, one SMOKE-MENDEL line, pass or fail. Unscored, never
+  published; `--help` lists its `SMOKE_MENDEL_*` variables;
+  `docs/methodology/mendel.md`), `loop-check.py` (repetition-loop detector for
   a pi session log: distinct-shape ratio in a sliding window,
   threshold 0.10; catches identical lines, counters, and short
   cycles).
