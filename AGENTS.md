@@ -79,6 +79,10 @@ Benchmark work:
   `MEMWATCH_LOG` and `MEMWATCH_INTERVAL` scope it — a depth sweep needs
   no watcher, because its runner samples memory itself),
   `calibration-*.json`,
+  `evalplus-smoke.py` (the fast fixed four-problem EvalPlus subset for
+  a RESEARCH trial: not a score, never published; same budget on both
+  sides, read as level, better or worse — `docs/methodology/evalplus.md`.
+  It replaced the older LM Studio concurrency smoke, now retired),
   `loop-check.py` (repetition-loop detector for a pi session log:
   distinct-shape ratio in a sliding window, threshold 0.10; catches
   identical lines, counters, and short cycles), `liveness-watch.sh`

@@ -20,8 +20,10 @@ and the methodology pages the runbook points to.
   approved item is worked in its own sibling worktree and branch,
   reviewed by the coordinator (or the owner, when the owner asked for
   it), and merged to `master` only when both agree. When it lands, its
-  backlog file is deleted in the same commit. Everything else is
-  planning and stays with the coordinator.
+  backlog file is deleted in the same commit and its line moves to the
+  Changelog in `backlog/index.md`, which lists every item in priority
+  order with the owner's checkbox mark. Everything else is planning and
+  stays with the coordinator.
 
 ## The two roles
 
@@ -39,10 +41,15 @@ and the methodology pages the runbook points to.
 1. Create the next `benchmarks/bench<N>/` folder with the standard kit
    shape (`AGENT.md`, `state.md`, `results.md`, `results/` — see
    `AGENTS.md`, standing rules).
-2. Open with the reading list: the run's `state.md` history, the
-   relevant `docs/methodology/` pages, and any forensics file that
-   overrides older lore. Point, do not paste — the runbook stays short.
-   `docs/methodology/checklist.md` is ALWAYS on the list, and the
+2. Open with one short essentials section: the run's `state.md`
+   history, the worktree command, and the rules that apply to every
+   block. Do not front-load a reading list. Each block names the
+   documents it needs at its own start, and the runner reads them
+   there. Reason: a fresh, small context gets more attention from an
+   agent than a page read an hour earlier; the runbook is already in
+   the right order, so the right file gets read at the right time.
+   Point, do not paste — the runbook stays short.
+   `docs/methodology/checklist.md` is still the first block's reading, and the
    runbook's first instruction is its step 1: create the run worktree
    and move into it before any other action. Runners skip this when
    the runbook only implies it — spell out the exact `git worktree
@@ -51,11 +58,12 @@ and the methodology pages the runbook points to.
    `path` instead, because that work is interactive and the owner's
    HUD reads the session directory. See `AGENTS.md`, standing rules.
 3. Require the run to record its own evidence, and say where.
-   - **Context per compaction cycle.** `peak_context` claims to be the
-     maximum across all cycles, and today that cannot be checked: the
-     session log records that a compaction happened but not the context
-     size at each one. Have the run log the context reading at every
-     cycle, so the maximum can be recomputed instead of trusted.
+   - **Verify `peak_context` with the counter before you commit a row.**
+     The context of every turn is already in the session log: each
+     assistant message carries its own usage block. The maximum over
+     those messages is the peak, across all compaction cycles.
+     `benchmark/count-tool-calls.mjs` in the Mendel repo prints it. Make
+     the run print it and compare it with the row.
    - **Session logs must leave the scratch directory.** Mendel run 7
      produced 17 local rows and only 8 surviving session logs. The rest
      lived under a gitignored `scratchpad/` and went away with their
@@ -67,7 +75,12 @@ and the methodology pages the runbook points to.
      record for both. The split turn carries a summary beginning
      `No prior history`. Counting it inflates the number; it did, twice,
      in run 7.
-4. State the execution rules the runner must not relearn: local run
+4. Never write a `sudo` command into a runbook. The runner verifies
+   the machine read-only (`sysctl -n iogpu.wired_limit_mb`, `pgrep`,
+   `vm_stat`) and, only when a value is wrong, reports it and shows the
+   owner the command to run. The owner's Mac is not the runner's to
+   change.
+5. State the execution rules the runner must not relearn: local run
    branch in a fresh sibling worktree (the main worktree stays with the
    coordinator), no bare `git stash` — named stashes only, applied by
    name (see `AGENTS.md` standing rules), scoring in a subagent on the
@@ -78,19 +91,19 @@ and the methodology pages the runbook points to.
    one model on the GPU at a time, port, heartbeat cadence, the scoped
    memory watcher on every run, commit as results land, never push a
    run branch, never publish.
-5. Write the blocks in priority order. Each block gives: the exact
+6. Write the blocks in priority order. Each block gives: the exact
    serving command, the exact run command (with every env var), where
    results land, what "done" means, and what to update when it is done
    (tables, `results.md`, `state.md`, commit).
-6. Make every condition executable. "If promising" is a coordinator
+7. Make every condition executable. "If promising" is a coordinator
    judgment — either resolve it while planning, or spell out the test
    the runner applies and what to do on each outcome.
-7. Bake in the failure paths so the GPU never sits idle: what to check
+8. Bake in the failure paths so the GPU never sits idle: what to check
    when output stops growing (server log first — see
    `docs/methodology/server-lore.md`), how to resume each block, and
    the order to start the next block the moment one ends. No approval
    gates.
-8. Close the loop: when the run ends, the runner updates `state.md`
+9. Close the loop: when the run ends, the runner updates `state.md`
    with a clean handing-over section, and the coordinator adds the
    run's findings to `benchmarks/INDEX.md`.
 

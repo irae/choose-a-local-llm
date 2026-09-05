@@ -203,13 +203,25 @@ function renderKpis(model) {
 }
 
 function modelRows(data, model) {
-  const rows = data.rows.filter((r) => r.config.startsWith(model.rowMatch) && !r.hidden)
-  const extra = (model.extraRows || []).filter((r) => !r.hidden)
+  const rows = data.rows.filter(
+    (r) => r.config.startsWith(model.rowMatch) && !r.hidden && !r.retired,
+  )
+  const extra = (model.extraRows || []).filter((r) => !r.hidden && !r.retired)
+  return [...rows, ...extra]
+}
+
+function retiredRows(data, model) {
+  const rows = data.rows.filter((r) => r.config.startsWith(model.rowMatch) && r.retired)
+  const extra = (model.extraRows || []).filter((r) => r.retired)
   return [...rows, ...extra]
 }
 
 function renderModelTable(data, model) {
-  return renderTable(modelRows(data, model), { footnotes: false, sort: false })
+  const table = renderTable(modelRows(data, model), { footnotes: false, sort: false })
+  const lines = retiredRows(data, model).map(
+    (r) => `Retired entries: ${r.config} — ${r.retired.reason} ([details](${r.retired.details})).`,
+  )
+  return lines.length ? [table, '', ...lines].join('\n') : table
 }
 
 function renderModelConfigs(data, model) {
@@ -281,7 +293,7 @@ let drift = false
 for (const dataFile of dataFiles) {
   const setupDir = dataFile.replace(/\/models\.json$/, '')
   const data = JSON.parse(readFileSync(dataFile, 'utf8'))
-  const visible = data.rows.filter((r) => !r.hidden)
+  const visible = data.rows.filter((r) => !r.hidden && !r.retired)
   const comparisonTable = renderTable(visible.filter((r) => !hasPending(r)))
   const homeTable = renderHomeTable({ ...data, rows: visible })
 

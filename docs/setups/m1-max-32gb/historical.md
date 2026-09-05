@@ -30,6 +30,52 @@ For numbers you can act on, go to [the comparison page](./comparison.md).
 Full raw archives, with their eras labeled, live in the benchmarks pages.
 :::
 
+## Gemma-4-12B figures measured on the retired LM Studio entry (superseded 2026-09-04)
+
+Every number in this section was measured on the LM Studio entry
+`google/gemma-4-12b`. That entry always thinks, ships Google's pre-fix
+chat template, produced all three invalid Mendel rows, and is gone from
+the model store. Its readings were copied onto the thinking-off row of
+the site, which is a different entry. **Do not use them for either
+entry.** The current curves for both backends are on
+[the Gemma-12B report](./reports/gemma-4-12b-it.md); the evidence behind
+the retirement is on
+[its data page](./benchmarks/gemma-4-12b-it.md#the-retired-entry).
+
+Headline figures withdrawn: 29.3 tok/s at 65K used tokens, a
+compression-onset ceiling of 65-74K, a shallow reading of 35.4 tok/s,
+and 8.1 GB at max context.
+
+Ceiling confirmation sweep (`--parallel 4`, watcher at 20 s, wired limit
+24000, 2026-08-30):
+
+| depth | decode tok/s | watcher state |
+|---|--:|---|
+| 41,095 | 31.05 | clean |
+| 49,112 | 30.25 | clean |
+| 57,077 | 29.25 | clean |
+| 65,094 | 29.29 — read as the last clean step | clean |
+| 74,099 | 27.95 | compression/swap onset inside this step |
+
+Shallow sweep (`--parallel 4`, `STEP_SLEEP=25`, wired limit 24000,
+2026-08-30):
+
+| depth | decode tok/s |
+|---|--:|
+| 4,175 | 35.41 |
+| 8,292 | 34.89 |
+| 16,465 | 33.88 |
+| 24,638 | 33.08 |
+| 33,071 | 32.19 |
+
+RSS 8.1 GB at 33,071 tokens.
+
+EvalPlus, thinking on: 0.622 base / 0.610 plus, with 61 of 164
+completions empty. It is a completion-rate failure wearing a quality
+number's clothes — 102 of the 103 answers it delivered pass. It is not a
+score for any current configuration, and no thinking-on score exists for
+the model today.
+
 ## Mendel rows from old prompt versions (superseded 2026-09-02)
 
 Replaced by fresh rows on blind prompt v1.1 and guided v3.0, run
@@ -78,7 +124,9 @@ as the onset of memory compression/swap in the watcher log, with tok/s
 taken from the last clean step before onset. A confirmation sweep under
 the new criterion found onset between 65K and 74K used tokens (65,094
 tokens clean at 29.29 tok/s; 74,099 tokens shows compression bursts up
-to 114,012 pages). Current figures are on
+to 114,012 pages). That replacement is itself superseded: it was
+measured on the retired entry — see the 2026-09-04 section at the top of
+this page. Current figures are on
 [the comparison page](./comparison.md) and
 [the Gemma-12B report](./reports/gemma-4-12b-it.md).
 

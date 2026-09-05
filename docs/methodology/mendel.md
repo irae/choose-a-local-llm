@@ -55,3 +55,23 @@ two tests.
   window or output budget that could not fit, a flag the serving stack
   ignored), the corrected re-run keeps the best row with no penalty.
   Mendel's `PLAN.md` holds the formula.
+- `tool_calls` counts one `toolCall` block inside one assistant
+  message of the run's session log. A call counts even when no result
+  came back. Tool results, user messages, and any session the row does
+  not score (a false start, a killed first attempt, or a tail after
+  mid-run human help) do not count. `benchmark/count-tool-calls.mjs`
+  in the Mendel repo prints the count for a log. Checked 2026-09-04:
+  all 17 local rows agree with their logs.
+- `peak_context` is the maximum, over the assistant messages of the
+  scored session or sessions, of `usage.input + usage.cacheRead +
+  usage.cacheWrite + usage.output`, which the harness reports as
+  `usage.totalTokens`. It is the largest context one turn occupied,
+  the response of that turn included, across all compaction cycles. It
+  is never the value after a compaction.
+  `benchmark/count-tool-calls.mjs` in the Mendel repo prints it, so a
+  row is checked against its log before it is committed. Checked
+  2026-09-04: every row with a committed log agrees with its log. One
+  retired harness writes its log in another record shape that the
+  counter does not read. Those rows keep an older reading, which
+  counts the prompt of the largest turn without the response of that
+  turn; the two mirrored reports mark those cells with a dagger.

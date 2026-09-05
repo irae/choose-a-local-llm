@@ -53,6 +53,44 @@ score as failures (up to 38% of scores lost before this was found).
 6. Evaluate runs automatically at the end. Record pass@1 base/plus AND
    the empty count, honestly, on every surface.
 
+## The smoke: a fast fixed subset for a research trial
+
+A research run tries a candidate container. It must not run this gate:
+that is bench work and costs an hour or more per config. It runs
+`benchmarks/evalplus-smoke.py` instead — four fixed HumanEval+ problems,
+the same output budget on both sides, once against the config we run
+today and once against the candidate.
+
+What it can say, and only this: the candidate is level, better or
+worse on four problems. What it cannot say: a score. The smoke never
+produces a pass@1 and never reaches the site. Four problems have no
+resolution to separate two good configs a few tenths of a point apart;
+they separate a broken config from a working one. A candidate that
+survives the smoke still has to pass this gate before any number is
+published.
+
+The subset is fixed in the tool and is not a parameter. Three problems
+are short and every scored config passes them, so a failure means
+something changed. The fourth is the problem with the most empty
+completions on our configs, so the smoke also sees the completion
+failure mode, not only the wrong-answer one.
+
+The budget is the current config's, on both sides, and the candidate is
+never calibrated. A candidate that needs a bigger budget to pass is a
+candidate that costs more.
+
+```bash
+SMOKE_CALIBRATION=benchmarks/calibration-CURRENT_CONFIG.json \
+  benchmarks/evalplus-smoke.py LABEL MODEL_ID_AS_SERVED [extra-body-json]
+```
+
+Run it once per side, one at a time, and compare the two `SMOKE` lines.
+Level is the same `passed` and the same `empty`; better is a higher
+`passed` with `empty` no higher; worse is a lower `passed`, or an equal
+`passed` with a higher `empty`. Any other mix is not a verdict. A
+difference of one problem is one problem out of four: never write it as
+a percentage, and never write it beside a pass@1 number.
+
 ## Harness patches (do not rediscover these)
 
 EvalPlus 0.3.1 needs local patches, all live in
