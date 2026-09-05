@@ -62,3 +62,11 @@ passes, `208896` OOMs on the 4096-token check. Final: **-c 202752**
 (101376/slot).
 
 Starting full creep on this slot.
+
+Creep result: verdict **window** — the sweep's own request at depth
+98338 exceeded the allocated `101376`-token slot before speed or
+memory stopped it. Reported ceiling: depth 81958 at 33.56 tok/s.
+Server killed, wired memory recovered to 90862 pages (below session
+baseline). Full numbers in `results.md`.
+
+Starting Block A3 (LM Studio, gemma-4-12b-it-mlx).

@@ -47,6 +47,48 @@ use at session start (818.75 MB), a recorded deviation per
 `state.md`; this verdict is a swap-growth stop measured against that
 baseline, not against zero.
 
+### A2 — gemma-4-26b-a4b-2x, GGUF, f16 KV
+
+Command:
+
+```
+llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
+  --alias gemma-4-26b-a4b-2x --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \
+  -ngl 999 -fa on -c <search> \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081 --offline
+```
+
+`-c` search (published `376832` does not load): `425984` (212992/slot
+x2) OOMs at load. `212992` loads clean but OOMs on compute buffers on
+a real 4096-token completion (checked from the start after the A1
+lesson). `131072`, `172032`, `192512`, `202752` all pass the
+4096-token check; `208896` fails it. Final: **-c 202752**
+(101376/slot).
+
+Full creep, one slot
+(`benchmarks/bench10/results/creep-gemma26-gguf-2x-f16.tsv`):
+
+| depth | decode tok/s | wired MB | free MB | swap Δ MB | compress pages | decompress pages |
+| --- | --- | --- | --- | --- | --- | --- |
+| 4114 | 66.63 | 25477 | 2580 | 0 | 0 | 31 |
+| 8222 | 57.44 | 25476 | 2308 | 0 | 0 | 3160 |
+| 16386 | 60.76 | 25474 | 2264 | 0 | 0 | 374 |
+| 24602 | 52.56 | 25490 | 2039 | 0 | 0 | 559 |
+| 32818 | 50.62 | 25474 | 1774 | 0 | 0 | 2382 |
+| 49198 | 36.11 | 25451 | 1128 | -48 | 0 | 8487 |
+| 65578 | 34.37 | 25347 | 61 | -64 | 0 | 5286 |
+| 81958 | 33.56 | 25288 | 60 | -72 | 75 | 934 |
+
+Verdict: **window**. At depth 98338 the request (102634 tokens)
+exceeded the allocated `101376`-token slot — the search-bound `-c`
+arrived before speed or memory did. No mem or speed stop happened up
+to that point; the reported ceiling is **depth 81958 at 33.56 tok/s**,
+the deepest row inside the allocated window. This is a hardware
+ceiling (the model's trained window is far larger, but `-c 202752`
+could not load higher on this machine), not a "stopped early" mistake.
+
 ## Block B — Mendel smoke, Qwen3.8 GGUF f16
 
 ## Block C — Gemma-26B GGUF f16, EvalPlus thinking on
