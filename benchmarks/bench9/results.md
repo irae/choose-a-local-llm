@@ -443,3 +443,36 @@ q8_0's speed stop well below 8 tok/s at a fraction of this depth).
 
 Block B0 closed. Five `SMOKE` lines, three verdicts, all level — no
 config was dropped or found broken. Moving to B1.
+
+## Block B1 — Gemma-12B GGUF thinking off, EvalPlus
+
+Server: published `gemma-4-12b` command, `f16` both cache types,
+`-c 32768`. Calibration (reused from the interrupted attempt, same
+config, temp 0 deterministic): observed max 1049 tokens → budget 8192
+(floor). Command:
+
+```
+RESULTS_BASE=benchmarks/bench9/results \
+EVALPLUS_MAX_NEW_TOKENS=8192 \
+benchmarks/run-humaneval.sh gemma12-gguf-off gemma-4-12b \
+  '{"chat_template_kwargs":{"enable_thinking":false}}'
+```
+
+Resumed from the interrupted run's 120/164 already-generated
+completions (same config, safe to resume) and finished the remaining
+44. Memory watcher ran throughout (`/tmp/bench9-memwatch-b1.log`): no
+swap growth, occasional small decompress noise, nothing of concern.
+
+| budget | base | plus | empty | problems |
+| --- | --- | --- | --- | --- |
+| 8192 | **0.976** | **0.939** | 0/164 | 164/164 |
+
+Compared with the published MLX score (0.909/0.872): Δbase=0.067,
+Δplus=0.067 — both far over the 0.012 threshold. **The GGUF f16 quant
+does not share a score with the MLX 4-bit quant** — this is the first
+scoring of the GGUF quant, and it scores meaningfully higher than MLX,
+with zero empty completions (vs the model's usual thinking-loop risk).
+Per AGENT.md, the shared-score rule now needs a quant condition for
+this model; the coordinator decides the row.
+
+Block B1 closed.
