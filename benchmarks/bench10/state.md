@@ -43,15 +43,22 @@ are dropped as candidates.
 Full creep running on this slot: `creep-gemma12-gguf-4x-f16.tsv`,
 depths 4096..163840.
 
-### Coordinator note, mid-session
+### Coordinator note, mid-session (retracted)
 
-The coordinator sent word (via a peer session) that the checklist's
-cold-start steps changed: `master` has `tools/preflight.sh` at commit
-`0778404` or later. Next session: `git merge master` into `run10`
-first, then run `preflight.sh` instead of the old manual app-quit /
-`mac-services.sh turn-off` / reboot-ask sequence. Act only on its
-`fix`/`ask` lines. Swap in use at start is a number to record, not a
-reboot reason — only swap growth during a run matters. Keep every
-commit inside `benchmarks/bench10/` and the Mendel kit; site pages and
-`models.json` stay the coordinator's after the merge. Not acted on
-mid-block; applies from the next cold-start.
+The coordinator sent word about a `preflight.sh` cold-start change,
+then retracted it: run 10 continues on its original runbook, no
+change to startup or branch. Not acted on either way. The only
+remaining coordinator instruction is at run close, about moving the
+run folder before the final merge.
+
+### Block A2 — gemma-4-26b-a4b-2x, f16
+
+`-c` search (published `376832` does not load, per AGENT.md; searched
+from `425984` = 212992/slot x2): `425984` OOMs at load, `212992` loads
+clean but OOMs on compute buffers at a real 4096-token completion (the
+A1 false-positive pattern, checked every candidate this way from the
+start), `131072` passes, `172032` passes, `192512` passes, `202752`
+passes, `208896` OOMs on the 4096-token check. Final: **-c 202752**
+(101376/slot).
+
+Starting full creep on this slot.

@@ -1,0 +1,25 @@
+0.00.079.578 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.079.751 W srv  llama_server: -----------------
+0.00.079.752 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.079.752 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.079.752 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.079.752 W srv  llama_server: -----------------
+0.00.081.367 I srv    load_model: loading model 'unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL'
+0.00.926.401 E llama_init_from_model: failed to initialize the context: Gemma4Assistant requires ctx_other to be set (this warning is normal during memory fitting)
+0.00.958.678 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model
+0.01.325.013 W load: control-looking token:     50 '<|tool_response>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.01.328.043 W load: control-looking token:    212 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.01.331.975 W load: control-looking token:      1 '<eos>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.01.335.510 W load: special_eog_ids contains '<|tool_response>', removing '</s>' token from EOG list
+0.02.868.470 I cmn          init: llama threadpool init, n_threads = 8
+0.02.922.662 I common_speculative_init_result: loading draft model '/Users/irae/.cache/huggingface/hub/models--unsloth--gemma-4-26b-a4b-it-GGUF/snapshots/c099eb48e663fd284577b04978a94ffccb261841/mtp-gemma-4-26B-A4B-it.gguf'
+0.03.273.921 W load: control-looking token:     50 '<|tool_response>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.03.276.926 W load: control-looking token:    212 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.03.284.447 W load: special_eog_ids contains '<|tool_response>', removing '</s>' token from EOG list
+0.03.330.113 W llama_kv_cache: layer   3: sharing with layer 29. k = 0x7ca3fc000, v = 0x7e2ffc000
+0.03.330.140 W llama_kv_cache: layer   0: sharing with layer 28. k = 0x81fbfc000, v = 0x8207fc000
+0.03.330.141 W llama_kv_cache: layer   1: sharing with layer 28. k = 0x81fbfc000, v = 0x8207fc000
+0.03.330.141 W llama_kv_cache: layer   2: sharing with layer 28. k = 0x81fbfc000, v = 0x8207fc000
+0.03.455.704 I srv    load_model: initializing, n_slots = 2, n_ctx_slot = 101376, kv_unified = 'false'
+0.03.518.055 I srv  llama_server: model loaded
+0.03.518.063 I srv  llama_server: listening on http://127.0.0.1:8081
