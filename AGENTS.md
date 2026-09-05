@@ -85,7 +85,13 @@ Benchmark work:
   four-problem EvalPlus subset for a research trial. Not a score,
   never published. Same budget on both sides, read as level, better or
   worse; `docs/methodology/evalplus.md`. It replaced the older LM
-  Studio concurrency smoke, now retired), `loop-check.py` (repetition-loop detector for
+  Studio concurrency smoke, now retired), `crash-watch.sh` (live crash
+  watcher for a scoring run: tails the server log for the death
+  signatures, probes one real completion after the output file goes
+  silent, exits 42 with the reason on stdout the moment the server is
+  dead. Start it as a background task so the crash interrupts the
+  coordinator; `--help` lists its `CRASHWATCH_*` variables. It
+  restarts nothing), `loop-check.py` (repetition-loop detector for
   a pi session log: distinct-shape ratio in a sliding window,
   threshold 0.10; catches identical lines, counters, and short
   cycles), `liveness-watch.sh` (tells a stalled scoring run from a
