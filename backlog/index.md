@@ -21,10 +21,10 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 - [ ] One folder per machine: move bench and research runs under hardware/<id>/{benchmarks,research}; method pages already read the machine file (hardware-folders-per-machine.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
-- [ ] Faster crash detection while babysitting a live run: a live tail+Monitor watcher instead of the 15-25 min ScheduleWakeup blind spot that missed two mlx_lm.server Metal OOM crashes in bench 9 block E (live-crash-detection-during-a-run.md)
 
 ## Changelog
 
+- 2026-09-05 Live crash watcher for scoring runs: `benchmarks/crash-watch.sh` tails the server log for the death signatures, probes one real completion on silence, exits 42 with the reason; checklist step 7 starts it beside every scoring run. The Mendel runner's `/slots`-only stall watchdog stays as it is: the runner never learns the server log path (branch `backlog/live-crash-detection`)
 - 2026-09-05 Run 9 closed: KV picks, real `-c` ceilings, Gemma-12B GGUF scored; site, historical page and findings index updated; bench 10 draft de-duplicated
 - 2026-09-05 Runner alarms landed: output-limit counters, 25-minute turn cap, at-budget pair stop, loop flag beside every row with a log, maxTokens rule in PLAN.md (Mendel `a41170a4`, site `4b3eb67`); Mac models.json edits still to apply after bench 9. Qwen3.8 budget item closed by the same rule
 - 2026-09-05 README says what the project does not measure, five items with the owner's reasons; agent rules moved to AGENTS.md, "collapse" term out of CONVENTIONS.md (`backlog/non-goals` merge)
