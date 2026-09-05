@@ -20,7 +20,9 @@ ASD-STE100 Simplified Technical English.
   conditional; the checklist says when.
 - Before any Mendel block: `git -C ~/code/mendel-benchmark pull
   --ff-only` on `benchmark` (the runner alarms, commit `a41170a4`,
-  must be in).
+  must be in). The Mendel smoke tool is `benchmarks/mendel-smoke.sh`;
+  this run is its first use against a real server, so a bug in it goes
+  to the subagent rule above.
 - Serve the exact files each block names. No block of this run may
   download anything. A missing file is stop and ask.
 - Never run a bare `git stash`. WIP commits on `run10` instead. Commit
@@ -52,29 +54,6 @@ ASD-STE100 Simplified Technical English.
   coordinator publishes.
 - Archive evidence before the session closes:
   `tools/archive-evidence.sh benchmarks/bench10/results run10`.
-
-## Block 0 — first session housekeeping
-
-1. The orphan Bonsai MLX blind session (started 2026-09-02 22:44, 52
-   tool calls) sits in `~/code/mendel-benchmark/scratchpad/benchmark/runs/`
-   with no branch and no row. Copy its log into `benchmark/runs/`, add
-   a `SESSIONS.md` line "abandoned attempt; no branch, no result row"
-   the way the aborted Qwen3.8 medium session is recorded, commit on
-   `benchmark`, then `tools/archive-evidence.sh` on it.
-2. Write the Mendel smoke tool, `benchmarks/mendel-smoke.sh`, in this
-   repo, from two sources: the fixture and the handed task in
-   `research/run1/results/replay-probe.sh` (the two-file `xtend`
-   swap, `PROMPT_PARSER`, the `build_workdir` function), and the
-   counters of `research/run2/results/mendel-probe-xtend.md` (tool
-   calls, distinct calls, longest identical run, loop verdict from
-   `benchmarks/loop-check.py`, commits, clean working tree, end
-   reason). Interface: `mendel-smoke.sh <pi-model-id> <thinking-level>`,
-   a 25-minute cap, a pinned pi config under `/tmp` so
-   `~/.pi/agent/models.json` is untouched, one `SMOKE-MENDEL` line at
-   the end with the counters and `pass` or `fail`. Pass is: one commit,
-   clean tree, no LOOP verdict, inside the cap. Read
-   `docs/methodology/mendel.md` "The smoke" first. Record in
-   `state.md` what you wrote; the coordinator indexes it.
 
 ## Block A — the curves still missing
 
@@ -211,7 +190,7 @@ the run: `pkill -f "Mendel Daemon"`, clean per `PLAN.md` "Cleanup".
 Expected cost: EvalPlus 1 to 2 hours with thinking on; Mendel up to 5
 hours, a night block.
 
-## Block D — Bonsai MLX thinking off: smoke, guided, blind
+## Block D — Bonsai MLX thinking off: smoke, then guided
 
 Run 9's deferred block C. Read `docs/methodology/mendel.md`. Owner
 decision of 2026-09-03: Bonsai Mendel runs use thinking OFF. Check the
@@ -220,15 +199,14 @@ decision of 2026-09-03: Bonsai Mendel runs use thinking OFF. Check the
 server by hand.
 
 1. `benchmarks/mendel-smoke.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit off`.
-   A `fail` drops both runs below and ends the block.
+   A `fail` ends the block.
 2. `cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi guided off`
-3. Then `pi blind off`.
 
-Score each as in block C, one row per run, the guided report with
-`--guided`. After each run: `pkill -f "Mendel Daemon"`, clean, keep the
-branch.
+Score as in block C, one row, the guided report with `--guided`. After
+the run: `pkill -f "Mendel Daemon"`, clean, keep the branch. The blind
+run is not in this run: the owner decides it from the guided score.
 
-Expected cost: up to 5 hours per run, night blocks.
+Expected cost: up to 5 hours, a night block.
 
 ## Block E — Qwen3.8 GGUF at f16, Mendel blind
 
@@ -270,7 +248,7 @@ effort medium.
 
 ## Order
 
-Block 0, then A, B, C, D, E, F. Night blocks are C's Mendel run, D and
+A, B, C, D, E, F. Night blocks are C's Mendel run, D and
 E; a night block starts the moment the previous block ends, per the
 checklist's rule 1. Nothing in this run waits for the owner except the
 two items below, which are not in it.
@@ -282,6 +260,8 @@ two items below, which are not in it.
   smaller `contextWindow` or an earlier compaction trigger first.
 - Bonsai on the PrismML fork, blind thinking-high retry and the q8_0
   KV arm without the bias file: the KV bias corpus question.
+- Bonsai MLX thinking off, blind: after the owner reads the guided
+  score from block D.
 
 ## After the run
 
