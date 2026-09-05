@@ -87,7 +87,19 @@ idle with runnable queued work because one item is stuck or ambiguous.
 
 ## During the run
 
-7. **Set the idle/silent-crash monitor.** Schedule a wakeup ≤20 minutes
+7. **Set the idle/silent-crash monitor.** Start the crash watcher in
+   the background beside every scoring run, before the wakeup loop:
+   `CRASHWATCH_SERVER_LOG=<server log> CRASHWATCH_OUTPUT=<result file>
+   CRASHWATCH_BASE_URL=<base url> CRASHWATCH_MODEL=<model id> bash
+   benchmarks/crash-watch.sh` as a background task (`run_in_background`,
+   or under `Monitor`). It tails the server log for the death
+   signatures and probes one real completion after
+   `CRASHWATCH_SILENCE` seconds without output growth (default 600).
+   It exits 42 the moment the server is dead, and its last stdout line
+   says why; the background-task notification carries that line. Read
+   exit 42 as: kill the server, restart it, resume the block, start a
+   new watcher. Any other exit is not a verdict. It never restarts
+   anything. Then schedule a wakeup ≤20 minutes
    after starting any block. At every wakeup verify REAL output growth
    (result-file line count, not process liveness) — servers can die or
    hang while the process lives and `/health` returns 200. If output

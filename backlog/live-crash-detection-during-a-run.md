@@ -1,7 +1,30 @@
 # Faster crash detection while babysitting a live run
 
-Status: filed 2026-09-05, from bench 9 (Qwen3.8 MLX, block E). Needs
+Status: landed 2026-09-05 on branch `backlog/live-crash-detection`.
+Filed 2026-09-05, from bench 9 (Qwen3.8 MLX, block E). Needs
 hardware: no to design the approach; a live run to validate it.
+
+## What landed
+
+- `benchmarks/crash-watch.sh`: the live watcher. It tails the server
+  log for the death signatures (the `creep_mlx.py` list plus the LM
+  Studio list from server lore), and after `CRASHWATCH_SILENCE`
+  seconds without growth of the output file it sends one real
+  completion, never `/health`. Exit 42 with a one-line reason on
+  stdout. Configuration through `CRASHWATCH_*` variables, `--help`
+  lists them. It restarts nothing.
+- `docs/methodology/checklist.md` step 7 starts it beside every
+  scoring run and says how to read exit 42. `AGENTS.md` indexes it.
+- Verified without a GPU: a fake log that grows the Metal OOM line
+  (exit 42 within one poll), a fake server that answers `/health` 200
+  and hangs the completion (exit 42 after the silence and probe
+  timeout), a healthy log (quiet), a silent output file with a live
+  server (the probe answers, the watcher keeps waiting).
+- Not done: the runner-side `serverBusy()` path for `mlx_lm.server`
+  and LM Studio. `run-worker.sh` does not start the server, the
+  coordinator does, so the runner has no server log path to grep. The
+  10-minute stall floor in `run-pi-rpc.mjs` stays. If a later run
+  wants it, the runner needs an explicit log path input first.
 
 ## What happened, the evidence
 
