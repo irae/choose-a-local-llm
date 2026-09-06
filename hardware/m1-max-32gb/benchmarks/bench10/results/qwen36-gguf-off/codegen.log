@@ -1,0 +1,11 @@
+Greedy decoding ON (--greedy): setting bs=1, n_samples=1, temperature=0
+Initializing a decoder model: qwen3.6-35b-a3b ...
+Sanitized code outputs will be saved to /Users/irae/code/choose-a-local-llm-run10/hardware/m1-max-32gb/benchmarks/bench10/results/qwen36-gguf-off/humaneval/qwen3.6-35b-a3b_openai_temp_0.0.jsonl
+Raw outputs will be saved to /Users/irae/code/choose-a-local-llm-run10/hardware/m1-max-32gb/benchmarks/bench10/results/qwen36-gguf-off/humaneval/qwen3.6-35b-a3b_openai_temp_0.0.raw.jsonl
+Codegen: HumanEval/0 @ qwen3.6-35b-a3b
+Codegen: HumanEval/1 @ qwen3.6-35b-a3b
+Codegen: HumanEval/2 @ qwen3.6-35b-a3b
+Codegen: HumanEval/3 @ qwen3.6-35b-a3b
+Codegen: HumanEval/4 @ qwen3.6-35b-a3b
+Codegen: HumanEval/5 @ qwen3.6-35b-a3b
+Codegen: HumanEval/6 @ qwen3.6-35b-a3b
