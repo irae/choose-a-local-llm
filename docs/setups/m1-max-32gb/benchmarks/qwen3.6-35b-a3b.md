@@ -106,9 +106,9 @@ The chat template has no `reasoning_effort` (unlike Qwen3.8) — only binary `en
 
 ## Quality — EvalPlus HumanEval+ (2026-08-28, fair budget)
 
-| config scored | budget | pass@1 base | pass@1 plus | empty | regenerated |
-|---|--:|--:|--:|--:|--:|
-| llama-server+MTP Q4_K_XL, thinking on | 26624 | **0.939** | **0.921** | 5/164 | 56 (54 missing + 2 previously empty) |
+| config scored | budget | pass@1 base | pass@1 plus | empty | completion | regenerated |
+|---|--:|--:|--:|--:|--:|--:|
+| llama-server+MTP Q4_K_XL, thinking on | 26624 | **0.939** | **0.921** | 5/164 | 97% | 56 (54 missing + 2 previously empty) |
 
 This corrected the 56 missing or empty completions at the calibrated budget
 of 26624 tokens, which is safe because temperature 0 is deterministic. The
@@ -119,7 +119,7 @@ heartbeat check.
 limit, not a harness artifact.
 
 A 2026-08-26 pass under a flawed 3072-token cap had scored this config
-0.610/0.610 with 62/164 empty (superseded, see
+0.610/0.610/62% with 62/164 empty (superseded, see
 [the historical page](../historical.md)). The corrected score is 0.329
 higher on base.
 

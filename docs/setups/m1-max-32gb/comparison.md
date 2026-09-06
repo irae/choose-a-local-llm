@@ -5,7 +5,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 ## Highlights
 
 - **Best quality, and the first local model to finish the agent task:**
-  Qwen3.8-27B — 0.982 / 0.939 EvalPlus on MLX, and on llama-server at
+  Qwen3.8-27B — 0.982 / 0.939 / 100% EvalPlus on MLX, and on llama-server at
   f16 KV the highest valid Mendel blind score of any local model, 87 of
   100 with all eight libraries (run 10). Send hard problems to the llama
   row.
@@ -18,10 +18,10 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
   70K (ceiling), in 20.0 GB.
 - **Best big window, and the secondary-model pick:** Gemma-26B on
   llama-server with f16 KV — 60.3 tok/s at 4K and 17.3 at 197K, the
-  largest context this machine loads for it (run 9), and 0.884 / 0.860
+  largest context this machine loads for it (run 9), and 0.884 / 0.860 / 89%
   on EvalPlus with thinking on (run 10), far above its MLX build.
 - **Best all-round config, with a caveat:** Qwen3.6-35B on llama — the
-  fastest shallow decode and 0.939 / 0.921, but the slow creep of run 9
+  fastest shallow decode and 0.939 / 0.921 / 97%, but the slow creep of run 9
   shows memory compaction from 16K at the only `-c` that loads; the
   clean depth is 8K.
 - **Best all-day agent:** Ternary Bonsai-27B — 27B-class quality from 8 GB of
@@ -38,22 +38,22 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 <!-- gen:models-evaluated:start -->
 | # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.8-27B, GGUF, MTP f16, effort medium | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939 |
-| 2 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
-| 3 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939 |
-| 4 | Gemma-4-12B, GGUF, MTP f16, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939 |
-| 5 | Qwen3.8-27B, MLX, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927 |
-| 6 | Gemma-4-12B, GGUF, MTP q8, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939 |
-| 7 | Qwen3.6-35B-A3B, MLX, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921 |
-| 8 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921 |
-| 9 | Ternary-Bonsai-27B, MLX, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902 |
-| 10 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890 |
-| 11 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890 |
-| 12 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
-| 13 | Gemma-4-12B, MLX³, thinking off | 131k | mem | 34.19 → 23.23 | 17.2 GB | 0.909/0.872 |
-| 14 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860 |
-| 15 | Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860 |
-| 16 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
+| 1 | Qwen3.8-27B, GGUF, MTP f16, effort medium | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939/100% |
+| 2 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% |
+| 3 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% |
+| 4 | Gemma-4-12B, GGUF, MTP f16, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939/100% |
+| 5 | Qwen3.8-27B, MLX, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% |
+| 6 | Gemma-4-12B, GGUF, MTP q8, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939/100% |
+| 7 | Qwen3.6-35B-A3B, MLX, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921/97% |
+| 8 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921/97% |
+| 9 | Ternary-Bonsai-27B, MLX, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% |
+| 10 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% |
+| 11 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% |
+| 12 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% |
+| 13 | Gemma-4-12B, MLX³, thinking off | 131k | mem | 34.19 → 23.23 | 17.2 GB | 0.909/0.872/100% |
+| 14 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% |
+| 15 | Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860/89% |
+| 16 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% |
 <!-- gen:models-evaluated:end -->
 
 ¹ Two values. **mem**: memory ended the curve, whether the server did
@@ -112,19 +112,19 @@ are slow-creep sweeps of 2026-09-03 and 2026-09-04; the remaining llama rows
 are speed-floored, not memory-gated, so the fast 2026-08-28 sweep still
 applies.
 
-| model / runtime | tok/s @ 4K | @ 16K | @ 32-33K | @ 49K | @ 74-90K | capped by | EvalPlus (base/plus) |
+| model / runtime | tok/s @ 4K | @ 16K | @ 32-33K | @ 49K | @ 74-90K | capped by | EvalPlus (base/plus/completion) |
 |---|--:|--:|--:|--:|--:|---|--:|
-| **Gemma-26B MLX** | 51.1 | 43.5 | 35.6 | 28.8 | 12.8 (70K) | mem — stable to 70K, 12.8 tok/s there | 0.713/0.701 |
+| **Gemma-26B MLX** | 51.1 | 43.5 | 35.6 | 28.8 | 12.8 (70K) | mem — stable to 70K, 12.8 tok/s there | 0.713/0.701/72% |
 | **Qwen3.6-35B MLX** | 53.3 | 49.6 | 42.2 | | | mem — stable to 37K, 42.0 tok/s there | pending |
-| Qwen3.6-35B llama (q8, MTP, `-c 49152`) | 36.4 | 31.0 | 19.6 | | | mem — compaction from 16K at 25 GB wired; last clean row 8K, 43.8 tok/s (run 9) | 0.939/0.921 |
-| Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 17.3 (58K) | mem — stable to 58K, 17.3 tok/s there | 0.915/0.884 |
-| Qwen3.8 MLX | 17.1* | 16.4 | | | 15.3 (28K) | mem — stable to 28K, 15.3 tok/s there | 0.982/0.939 |
-| **Gemma-26B llama (f16, MTP, `-c 212992`)** | 60.3 | 56.5 | 45.9 | 45.9 | 26.4 (115K), 17.3 (197K) | mem — 212992 is the largest `-c` that loads; 17.3 tok/s at 197K (run 9) | 0.884/0.860 |
-| Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 7.9 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890 |
-| **Qwen3.8 llama (f16, MTP, `-c 49152`)** | 20.0 | 16.0 | 16.4 | 15.0 | | mem — 49152 is the largest `-c` that loads; 15.0 tok/s at 49K (run 9) | 0.982/0.939 (MLX score) |
-| Gemma-12B llama (q8, MTP) | 13.8 | 6.5 | | | | speed — under 8 tok/s at 16K | 0.976/0.939 |
-| **Gemma-12B llama (f16, no drafter)** | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | mem — 8.86 tok/s at 245K, where the trained window ends² | 0.976/0.939 |
-| **Gemma-12B MLX (LM Studio engine, CLI)** | 34.2 | 32.1 | 30.6 | | 23.2 (131K) | mem — last stable 131K, 23.23 tok/s there² | 0.909/0.872 |
+| Qwen3.6-35B llama (q8, MTP, `-c 49152`) | 36.4 | 31.0 | 19.6 | | | mem — compaction from 16K at 25 GB wired; last clean row 8K, 43.8 tok/s (run 9) | 0.939/0.921/97% |
+| Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 17.3 (58K) | mem — stable to 58K, 17.3 tok/s there | 0.915/0.884/97% |
+| Qwen3.8 MLX | 17.1* | 16.4 | | | 15.3 (28K) | mem — stable to 28K, 15.3 tok/s there | 0.982/0.939/100% |
+| **Gemma-26B llama (f16, MTP, `-c 212992`)** | 60.3 | 56.5 | 45.9 | 45.9 | 26.4 (115K), 17.3 (197K) | mem — 212992 is the largest `-c` that loads; 17.3 tok/s at 197K (run 9) | 0.884/0.860/89% |
+| Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 7.9 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890/98% |
+| **Qwen3.8 llama (f16, MTP, `-c 49152`)** | 20.0 | 16.0 | 16.4 | 15.0 | | mem — 49152 is the largest `-c` that loads; 15.0 tok/s at 49K (run 9) | 0.982/0.939/100% (MLX score) |
+| Gemma-12B llama (q8, MTP) | 13.8 | 6.5 | | | | speed — under 8 tok/s at 16K | 0.976/0.939/100% |
+| **Gemma-12B llama (f16, no drafter)** | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | mem — 8.86 tok/s at 245K, where the trained window ends² | 0.976/0.939/100% |
+| **Gemma-12B MLX (LM Studio engine, CLI)** | 34.2 | 32.1 | 30.6 | | 23.2 (131K) | mem — last stable 131K, 23.23 tok/s there² | 0.909/0.872/100% |
 
 Cells are blank past a config's cap, or where no step was measured at that depth.
 
@@ -139,15 +139,15 @@ auto-fits it.
 
 ## Code quality — EvalPlus HumanEval+
 
-| model | config scored | pass@1 base | pass@1 plus | status |
-|---|---|--:|--:|---|
-| **Qwen3.8-27B** | mlx 4-bit, reasoning_effort=medium, budget 8192 | **0.982** | **0.939** | 0 empty |
-| **Ternary Bonsai-27B** | mlx 2-bit, thinking on, budget 10240 | **0.915** | **0.884** | 5/164 empty is a real model ceiling |
-| **Qwen3.6-35B-A3B (MoE)** | llama+MTP, thinking on, budget 26624 | **0.939** | **0.921** | 5/164 empty is a real model ceiling; thinking off reads 0.951 / 0.915 with 0 empty (run 10) |
-| **Gemma-4-26B-A4B** | GGUF UD-Q4_K_XL llama f16, thinking off, budget 8192 | **0.976** | **0.945** | 0 empty, 19 minutes (run 10); thinking on reads 0.884 / 0.860 with 18 empty |
-| Gemma-4-26B-A4B | mlx 4-bit, thinking on, budget 30000 | 0.713 | 0.701 | 46/164 (~28%) empty, the thinking-convergence problem at its worst |
-| **Gemma-4-12B** | GGUF Q4_K_XL llama f16, thinking off, budget 8192 | **0.976** | **0.939** | 0 empty (run 9) |
-| Gemma-4-12B | LM Studio MLX 4-bit, thinking off, budget 30000 | 0.909 | 0.872 | 0 empty; 0.067 under the GGUF quant, so the two do not share a score |
+| model | config scored | pass@1 base | pass@1 plus | completion | status |
+|---|---|--:|--:|--:|---|
+| **Qwen3.8-27B** | mlx 4-bit, reasoning_effort=medium, budget 8192 | **0.982** | **0.939** | 100% | 0 empty |
+| **Ternary Bonsai-27B** | mlx 2-bit, thinking on, budget 10240 | **0.915** | **0.884** | 97% | 5/164 empty is a real model ceiling |
+| **Qwen3.6-35B-A3B (MoE)** | llama+MTP, thinking on, budget 26624 | **0.939** | **0.921** | 97% | 5/164 empty is a real model ceiling; thinking off reads 0.951 / 0.915 / 100% with 0 empty (run 10) |
+| **Gemma-4-26B-A4B** | GGUF UD-Q4_K_XL llama f16, thinking off, budget 8192 | **0.976** | **0.945** | 100% | 0 empty, 19 minutes (run 10); thinking on reads 0.884 / 0.860 / 89% with 18 empty |
+| Gemma-4-26B-A4B | mlx 4-bit, thinking on, budget 30000 | 0.713 | 0.701 | 72% | 46/164 (~28%) empty, the thinking-convergence problem at its worst |
+| **Gemma-4-12B** | GGUF Q4_K_XL llama f16, thinking off, budget 8192 | **0.976** | **0.939** | 100% | 0 empty (run 9) |
+| Gemma-4-12B | LM Studio MLX 4-bit, thinking off, budget 30000 | 0.909 | 0.872 | 100% | 0 empty; 0.067 under the GGUF quant, so the two do not share a score |
 
 ## Mendel — agentic quality (issue-13 bake-off)
 

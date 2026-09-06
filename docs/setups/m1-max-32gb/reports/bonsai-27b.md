@@ -6,7 +6,7 @@ Backends: mlx-lm, prism-llama fork · [Ternary-Bonsai-27B on Hugging Face](https
 <div class="kpis">
   <div class="kpi"><b>24.5 tok/s</b><span>decode, shallow (MLX)</span></div>
   <div class="kpi"><b>58K</b><span>max healthy depth, 17.3 tok/s (MLX)</span></div>
-  <div class="kpi"><b>0.927 / 0.890</b><span>EvalPlus base/plus (fork, calibrated q4)</span></div>
+  <div class="kpi"><b>0.927 / 0.890 / 98%</b><span>EvalPlus base/plus/completion (fork, calibrated q4)</span></div>
   <div class="kpi"><b>2×48K</b><span>fork slots in 10.0 GB</span></div>
 </div>
 <!-- gen:model-kpis:end -->
@@ -15,9 +15,9 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 
 ## Highlights
 
-- **27B-class quality from 8 GB of weights** — EvalPlus 0.927 / 0.890,
+- **27B-class quality from 8 GB of weights** — EvalPlus 0.927 / 0.890 / 98%,
   and the vendor's q4-KV calibration costs no quality (it beats plain
-  MLX 2-bit's 0.915 / 0.884).
+  MLX 2-bit's 0.915 / 0.884 / 97%).
 - **The flattest speed curve of any model here** (MLX): −23% from 4K to
   49K, never hits the speed floor; the limit is memory (~58-60K).
 - **The only multi-agent setup that leaves the machine free**: 2×48K
@@ -32,10 +32,10 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
-| 2 | Ternary-Bonsai-27B, MLX, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902 |
-| 3 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890 |
-| 4 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890 |
+| 1 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% |
+| 2 | Ternary-Bonsai-27B, MLX, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% |
+| 3 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% |
+| 4 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -97,13 +97,13 @@ of any model.** Ternary Bonsai is PrismML's quality-oriented compression of
 Qwen3.6-27B, and they claim 95% of full-precision performance. An early pass
 scored it far too low, with a token budget that was too small. Calibrating
 the budget (10240) and regenerating all 55 truncated completions moved the
-score to 0.915/0.884, the second-largest correction in the project. The
+score to 0.915/0.884/97%, the second-largest correction in the project. The
 flawed cap had been hiding most of its ability. The deflated number is on
 [the historical page](../historical.md). The 4-5 empty completions that
 remain are a real model ceiling — they stay empty at the full budget — not
 a harness artifact. The ternary claim holds up: 2-bit compression kept
 near-27B-class quality, and the vendor's q4-KV calibration then held it
-again (0.927/0.890, slightly above MLX 2-bit).
+again (0.927/0.890/98%, slightly above MLX 2-bit).
 
 **Two serving profiles, and they trade against each other.** MLX is fastest
 at every depth it reaches, but memory grows with the session and hard-OOMs
@@ -143,10 +143,10 @@ matches the PQ2_0 variant.
 
 ## Quality — EvalPlus HumanEval+
 
-| config scored | pass@1 base | pass@1 plus | empty completions |
-|---|--:|--:|--:|
-| fork, q4_0 KV + calibration bias, thinking on, budget 10240 #2 | 0.927 | 0.890 | 4/164 (~2%) |
-| MLX 2-bit, thinking on, budget 10240 #1 | 0.915 | 0.884 | 5/164 (~3%) |
+| config scored | pass@1 base | pass@1 plus | empty completions | completion |
+|---|--:|--:|--:|--:|
+| fork, q4_0 KV + calibration bias, thinking on, budget 10240 #2 | 0.927 | 0.890 | 4/164 (~2%) | 98% |
+| MLX 2-bit, thinking on, budget 10240 #1 | 0.915 | 0.884 | 5/164 (~3%) | 97% |
 
 ## Config 1 (MLX) — decode speed vs used context (slow creep, limit 24000)
 

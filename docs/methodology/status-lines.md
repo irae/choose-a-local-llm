@@ -201,7 +201,7 @@ a guess when only one completion has landed.
 
 ### EvalPlus close
 
-- **short**: `<model short id> <config>: <base>/<plus>, <empty>/164 empty, budget <B>.`
+- **short**: `<model short id> <config>: <base>/<plus>/<completion%>, <empty>/164 empty, budget <B>.`
 - **medium**: the score, the empty count with its cause, the budget and
   the calibration it came from, and the result directory.
 - **large**: the comparison rows.
@@ -263,11 +263,13 @@ count, so the commit count and the elapsed time are the progress proxy
 ```
 | model | serving | score | worst defect |
 |---|---|--:|---|
-| qwen-3.6-35b-a3b | llama-server | **63/100** | critical |     <- published
-| qwen-3.8-27b | mlx_lm.server | **12.5/100** (partial) | minor |  <- new
+| qwen-3.6-35b-a3b | llama-server | **63/100** 8/8 | critical |     <- published
+| qwen-3.8-27b | mlx_lm.server | **12.5/100** (partial 1/8) | minor |  <- new
 ```
 
-A partial always carries the word `(partial)` and the stop reason.
+The score cell always carries the libraries done: `8/8` for a
+complete run, `(partial <N>/8)` for a partial one. A partial always
+carries the word `partial` and the stop reason.
 
 ### Watcher event
 
@@ -373,7 +375,7 @@ table per change.
   same model. A new curve pairs with the previous creep of the same
   config.
 - **A carried cell is marked.** When the old value was a copy, write
-  `(<source> copy)` after it, for example `0.713/0.701 (MLX copy)`,
+  `(<source> copy)` after it, for example `0.713/0.701/72% (MLX copy)`,
   and pair with the run that measured it. The note says so once.
 - A result the run has not finished still gets its row, with `—` in
   the cells it does not have and its state in the note.
@@ -410,29 +412,29 @@ Quality:
 
 | old/new | # | Config | Max ctx | Gated by | tok/s (shallow → deep) | Memory | EvalPlus |
 |---|--:|---|--:|:--:|--:|--:|--:|
-| old | 16 | Gemma-4-26B-A4B, MLX, thinking on | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
-| new | — | Gemma-4-26B-A4B, GGUF, MTP f16, thinking on | 197k | mem | 60.3 → 17.3 | 25.6 GB | **0.884/0.860** |
-| old | — | Gemma-4-26B-A4B, GGUF, MTP f16, thinking on (this run) | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860 |
-| new | — | Gemma-4-26B-A4B, GGUF, MTP f16, thinking off | 197k | mem | 60.3 → 17.3 | 25.6 GB | **0.976/0.945** |
-| old | 8 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921 |
-| new | — | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking off | 8k | mem | 36.4 → 43.8 | 25.0 GB | **0.951/0.915** |
+| old | 16 | Gemma-4-26B-A4B, MLX, thinking on | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% |
+| new | — | Gemma-4-26B-A4B, GGUF, MTP f16, thinking on | 197k | mem | 60.3 → 17.3 | 25.6 GB | **0.884/0.860/89%** |
+| old | — | Gemma-4-26B-A4B, GGUF, MTP f16, thinking on (this run) | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% |
+| new | — | Gemma-4-26B-A4B, GGUF, MTP f16, thinking off | 197k | mem | 60.3 → 17.3 | 25.6 GB | **0.976/0.945/100%** |
+| old | 8 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921/97% |
+| new | — | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking off | 8k | mem | 36.4 → 43.8 | 25.0 GB | **0.951/0.915/100%** |
 
 Speed and context (run 9, shown for the shape):
 
 | old/new | # | Config | Max ctx | Gated by | tok/s (shallow → deep) | Memory | EvalPlus |
 |---|--:|---|--:|:--:|--:|--:|--:|
-| old | 13 | Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701 (MLX copy) |
-| new | — | Gemma-4-26B-A4B, GGUF, MTP f16 | **197k** | **mem** | **60.3 → 17.3** | **25.6 GB** | 0.713/0.701 (MLX copy) |
+| old | 13 | Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701/72% (MLX copy) |
+| new | — | Gemma-4-26B-A4B, GGUF, MTP f16 | **197k** | **mem** | **60.3 → 17.3** | **25.6 GB** | 0.713/0.701/72% (MLX copy) |
 
 Mendel:
 
 | old/new | test | model | serving | score | worst defect |
 |---|---|---|---|--:|---|
-| old | blind | Qwen3.8-27B (mlx, medium) | mlx_lm.server | 80/100 (partial) | medium |
-| new | blind | qwen3.8-27b, GGUF f16 -c 49152, medium | llama-server | **87/100** | minor |
+| old | blind | Qwen3.8-27B (mlx, medium) | mlx_lm.server | 80/100 (partial 3/8) | medium |
+| new | blind | qwen3.8-27b, GGUF f16 -c 49152, medium | llama-server | **87/100** 8/8 | minor |
 | old | blind | gemma-4-26b-a4b, GGUF q8_0 (prompt v1.0) | llama-server | 38/100 (partial) | critical |
-| new | blind | gemma-4-26b-a4b, GGUF f16 -c 212992, high | llama-server | **47.5/100** | critical |
-| old | guided | Ternary-Bonsai-27B-mlx-2bit, low | mlx_lm.server | 59/100 (partial) | minor |
+| new | blind | gemma-4-26b-a4b, GGUF f16 -c 212992, high | llama-server | **47.5/100** 8/8 | critical |
+| old | guided | Ternary-Bonsai-27B-mlx-2bit, low | mlx_lm.server | 59/100 (partial 1/8) | minor |
 | new | guided | Ternary-Bonsai-27B-mlx-2bit, off | mlx_lm.server | — | — |
 
 Gates:
@@ -454,9 +456,9 @@ Gates:
   same build (2026-08-29). Base up, plus down, the five empties gone.
 - **Qwen3.8 blind.** The pair is the same model's last blind run at the
   same effort, on the MLX build (run 7, partial on a server failure).
-  87 complete, all eight libraries, no bug defect.
+  **87/100** 8/8, no bug defect.
 - **Gemma-26B blind.** The pair is the same model's earlier blind run
-  at q8_0 on the previous prompt version. 47.5 complete, one critical
+  at q8_0 on the previous prompt version. **47.5/100** 8/8, one critical
   trap hit.
 - **Bonsai guided.** The thinking-off attempt went invalid on a harness
   fault (a dead `gh` token, a login loop). Invalid rows are neither old

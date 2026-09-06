@@ -133,6 +133,12 @@ These rules bind every `reports/<model>.md` page:
   row**, incomplete cells allowed (`pending`). Scores are shared across
   rows when thinking mode, effort, and quant match, whatever the
   context size, slot count, tok/s, or what gates the config.
+- **The `evalplus` field holds three values: `base/plus/completion%`**,
+  for example `0.976/0.945/100%`. Completion is (164 minus the empty
+  completion count) over 164, rounded to the nearest whole percent. A
+  row that carries its score from another row under the shared-score
+  rule also carries that row's completion. Write `base/plus/—` only
+  when no empty count exists anywhere for the score.
 
 ## The decode-speed page (`benchmarks/decode-speed.md`)
 

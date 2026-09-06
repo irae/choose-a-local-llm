@@ -104,8 +104,8 @@ Shallow sweep (`--parallel 4`, `STEP_SLEEP=25`, wired limit 24000,
 
 RSS 8.1 GB at 33,071 tokens.
 
-EvalPlus, thinking on: 0.622 base / 0.610 plus, with 61 of 164
-completions empty. It is a completion-rate failure wearing a quality
+EvalPlus, thinking on: 0.622 base / 0.610 plus / 63% completion, with 61
+of 164 completions empty. It is a completion-rate failure wearing a quality
 number's clothes — 102 of the 103 answers it delivered pass. It is not a
 score for any current configuration, and no thinking-on score exists for
 the model today.
@@ -184,11 +184,11 @@ The first quality pass capped output at 3072 tokens. Reasoning exhausted the
 cap, and the empty completions scored as hard failures. These are lower
 bounds, not measurements.
 
-| model / config | deflated base | deflated plus | empty | corrected base/plus |
+| model / config | deflated base | deflated plus | empty | corrected base/plus/completion |
 |---|--:|--:|--:|--:|
-| Qwen3.6-35B-A3B, llama+MTP, thinking on | 0.610 | 0.610 | 62/164 (~38%) | 0.939 / 0.921 |
-| Ternary Bonsai-27B, mlx 2-bit, thinking on | 0.640 | 0.634 | 49/164 (~30%) | 0.915 / 0.884 |
-| Qwen3.8-27B, mlx 4-bit, effort medium | 0.970 | 0.939 | 3/164 (~2%) | 0.982 / 0.939 |
+| Qwen3.6-35B-A3B, llama+MTP, thinking on | 0.610 | 0.610 | 62/164 (~38%) | 0.939 / 0.921 / 97% |
+| Ternary Bonsai-27B, mlx 2-bit, thinking on | 0.640 | 0.634 | 49/164 (~30%) | 0.915 / 0.884 / 97% |
+| Qwen3.8-27B, mlx 4-bit, effort medium | 0.970 | 0.939 | 3/164 (~2%) | 0.982 / 0.939 / 100% |
 
 The lesson generalizes: treat any single-pass score with a fixed output
 budget as a lower bound until the budget is calibrated from measured
