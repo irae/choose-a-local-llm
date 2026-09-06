@@ -1,0 +1,31 @@
+Greedy decoding ON (--greedy): setting bs=1, n_samples=1, temperature=0
+Initializing a decoder model: gemma-4-26b-a4b ...
+Sanitized code outputs will be saved to /Users/irae/code/choose-a-local-llm-run10/hardware/m1-max-32gb/benchmarks/bench10/results/gemma26-gguf-off/humaneval/gemma-4-26b-a4b_openai_temp_0.0.jsonl
+Raw outputs will be saved to /Users/irae/code/choose-a-local-llm-run10/hardware/m1-max-32gb/benchmarks/bench10/results/gemma26-gguf-off/humaneval/gemma-4-26b-a4b_openai_temp_0.0.raw.jsonl
+Codegen: HumanEval/0 @ gemma-4-26b-a4b
+Codegen: HumanEval/1 @ gemma-4-26b-a4b
+Codegen: HumanEval/2 @ gemma-4-26b-a4b
+Codegen: HumanEval/3 @ gemma-4-26b-a4b
+Codegen: HumanEval/4 @ gemma-4-26b-a4b
+Codegen: HumanEval/5 @ gemma-4-26b-a4b
+Codegen: HumanEval/6 @ gemma-4-26b-a4b
+Codegen: HumanEval/7 @ gemma-4-26b-a4b
+Codegen: HumanEval/8 @ gemma-4-26b-a4b
+Codegen: HumanEval/9 @ gemma-4-26b-a4b
+Codegen: HumanEval/10 @ gemma-4-26b-a4b
+Codegen: HumanEval/11 @ gemma-4-26b-a4b
+Codegen: HumanEval/12 @ gemma-4-26b-a4b
+Codegen: HumanEval/13 @ gemma-4-26b-a4b
+Codegen: HumanEval/14 @ gemma-4-26b-a4b
+Codegen: HumanEval/15 @ gemma-4-26b-a4b
+Codegen: HumanEval/16 @ gemma-4-26b-a4b
+Codegen: HumanEval/17 @ gemma-4-26b-a4b
+Codegen: HumanEval/18 @ gemma-4-26b-a4b
+Codegen: HumanEval/19 @ gemma-4-26b-a4b
+Codegen: HumanEval/20 @ gemma-4-26b-a4b
+Codegen: HumanEval/21 @ gemma-4-26b-a4b
+Codegen: HumanEval/22 @ gemma-4-26b-a4b
+Codegen: HumanEval/23 @ gemma-4-26b-a4b
+Codegen: HumanEval/24 @ gemma-4-26b-a4b
+Codegen: HumanEval/25 @ gemma-4-26b-a4b
+Codegen: HumanEval/26 @ gemma-4-26b-a4b

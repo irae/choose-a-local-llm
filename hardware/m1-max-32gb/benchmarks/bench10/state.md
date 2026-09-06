@@ -184,3 +184,6 @@ Block E closed.
 
 Starting Block F (EvalPlus for the survivors: gemma26-gguf-off,
 qwen36-gguf-off, qwen38-gguf-medium).
+
+F1 calibration done (all converged, budget 8192). Scored run launched
+with watchers.
