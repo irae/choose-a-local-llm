@@ -92,3 +92,19 @@ manual read of the server log is the fallback if a death signature
 looks ambiguous.
 
 Starting Block B (Mendel smoke, Qwen3.8 GGUF f16).
+
+Owner pushed `run10` to origin and had the coordinator merge it into
+master (merge commit `bce6d98`) rather than wait on the earlier
+classifier block; the coordinator also added a checklist rule
+forbidding `AskUserQuestion` mid-run. Merged `origin/master` back into
+`run10` clean (fast-forward, commit `4d5793f`), picking up that rule
+and the run-watch.sh fixes the earlier deviation note flagged as
+missing — that deviation is resolved now. From here: push `run10`
+after every block commit, and the coordinator merges at each report.
+
+Block B smoke: pass (`SMOKE-MENDEL model=qwen3.8-27b level=medium
+calls=8 distinct=8 longest_run=1 loop=ok:1.00 commits=1 clean=yes
+end=stop wall_s=62`). Qwen3.8 GGUF continues to Block E. Mendel Daemon
+killed after. Block B closed.
+
+Starting Block C (Gemma-26B GGUF f16, EvalPlus thinking on).

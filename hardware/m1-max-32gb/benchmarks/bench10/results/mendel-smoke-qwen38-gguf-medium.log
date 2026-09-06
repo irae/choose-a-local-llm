@@ -1,0 +1,6 @@
+mendel-smoke: model qwen3.8-27b, thinking medium, cap 1500s
+mendel-smoke: everything lands in /tmp/mendel-smoke.cbYvo8
+mendel-smoke: fixture ready, one commit, clean tree
+mendel-smoke: pi config pinned at /tmp/mendel-smoke.cbYvo8/pi-agent
+mendel-smoke: pi exited 0 after 62s, session /tmp/mendel-smoke.cbYvo8/session/2026-09-06T00-12-56-333Z_01a0740f-a08d-7a2a-80ea-cd40337451db.jsonl
+SMOKE-MENDEL model=qwen3.8-27b level=medium calls=8 distinct=8 longest_run=1 loop=ok:1.00 commits=1 clean=yes end=stop wall_s=62 verdict=pass
