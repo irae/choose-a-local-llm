@@ -195,8 +195,9 @@ hours, a night block.
 Run 9's deferred block C. Read `docs/methodology/mendel.md`. Owner
 decision of 2026-09-03: Bonsai Mendel runs use thinking OFF. Check the
 `prism-ml/Ternary-Bonsai-27B-mlx-2bit` entry has `"off": "off"` in
-`thinkingLevelMap`. The worker starts the server its entry needs; no
-server by hand.
+`thinkingLevelMap`. Start the server by hand first, the published
+`bonsai-mlx` command; `run-worker.sh` never starts a server, for any
+provider (corrected 2026-09-06 during the run).
 
 1. `benchmarks/mendel-smoke.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit off`.
    A `fail` ends the block.

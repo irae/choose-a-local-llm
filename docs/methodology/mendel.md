@@ -68,10 +68,11 @@ window ladder and the summary rubric live in
 
 - One model at a time — one GPU. The Mendel tooling supports parallel
   workers; do not use that here.
-- Start the model's server with the exact serving config from its
-  report page, then run the harness per Mendel's `PLAN.md` (local
+- Start the model's server by hand with the exact serving config from
+  its report page, then run the harness per Mendel's `PLAN.md` (local
   models: pi harness; provider `llama` is llama-server, `lmstudio` is
-  LM Studio).
+  LM Studio, `mlx` is mlx_lm.server). The worker never starts a server
+  for any provider; a run launched without one fails its first turn.
 - Do not re-run models that already have a result row there.
 - After each run finishes, the agent running the benchmark (never the
   model under test) kills stray `Mendel Daemon` processes — exact name,
