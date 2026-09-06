@@ -292,3 +292,20 @@ either `run-watch.sh` or the sunset scripts — another match.
 Block E closed.
 
 ## Block F — EvalPlus, the survivors
+
+### F1 — Gemma-26B GGUF f16, thinking off
+
+Server: Block C's server config (f16 KV, `-c 212992`, `--parallel 1`).
+
+Calibration: all 10 problems converged, max 945 completion tokens.
+Budget = max(945×1.5, 8192 floor) = **8192**.
+
+```
+RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench10/results \
+EVALPLUS_MAX_NEW_TOKENS=8192 \
+benchmarks/run-humaneval.sh gemma26-gguf-off gemma-4-26b-a4b \
+  '{"chat_template_kwargs":{"enable_thinking":false}}'
+```
+
+**Result**: pass@1 base **0.976**, plus **0.945**, empty **0/164**,
+wall **0:19:31**. Clean run, no stall/death on either watcher.

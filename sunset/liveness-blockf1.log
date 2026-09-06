@@ -1,0 +1,5 @@
+watching hardware/m1-max-32gb/benchmarks/bench10/results/gemma26-gguf-off/humaneval/samples.jsonl, stall threshold 600s, probe timeout 300s
+STALL 600s: health=ok probe=alive 1s
+  verdict: server alive, run is thinking. Not a failure.
+STALL 600s: health=ok probe=alive 1s
+  verdict: server alive, run is thinking. Not a failure.
