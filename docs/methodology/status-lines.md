@@ -21,6 +21,16 @@ asks for it. The medium form goes into `state.md` when the block
 closes. The large form is the comparison table: the exact published row
 first, the new row under it.
 
+Two rules decide the size, and they leave no judgment to the runner:
+
+1. **An agent that runs a benchmark unattended sends the short form at
+   every 20-minute wakeup.** Every wakeup, not only the interesting
+   ones. A wakeup with nothing new still sends one short line.
+2. **The medium form is the default answer when the owner asks for
+   status.** The owner asking is not a request for the short line
+   again, and not a request for a wall of prose. Give the medium form
+   unless they name a different size.
+
 ## Every short line stands alone
 
 A short line is often the only line the owner reads. It must repeat the
@@ -326,38 +336,104 @@ paragraph." (`f55b29c3`, 2026-09-05). The runner's answer to it:
 
 ## The site comparison, in full
 
-The large size is always the same shape: the exact row the site
-publishes today, then the new row under it, then the notes that explain
-the change. Nothing else. The table header is the published one, copied
+The large form is three parts, always in this order:
+
+1. **One comparison table** with every model the run changed.
+2. **One Mendel table**, in the shape the site uses.
+3. **Items or short prose** for the events and the details.
+
+Two tables, then the words. Not a table for each model, and not a table
+for each change.
+
+### The comparison table
+
+One table for the whole run. Each published row comes first, and its
+new row follows it at once. The header is the published one, copied
 without change from `docs/setups/<setup>/comparison.md`.
+
+- The published row keeps its `#`. The new row carries `—`, because the
+  number belongs to `models.json` and the coordinator writes it there.
+- Bold only the cells that moved.
+- A new row with no exact published match pairs with the closest
+  published row. The note under the table says which row it picked and
+  why. A new thinking-off row pairs with the model's thinking-on row. A
+  new backend pairs with the same model on the other backend.
+- A result the run has not finished still gets its row, with `—` in the
+  cells it does not have and its state in the note.
+
+### The Mendel table
+
+One table, in the shape of the site block the change belongs to
+(`docs/setups/<setup>/benchmarks/mendel.md`). The local blind block is
+`model | serving | score | worst defect`. The guided block is
+`model | harness | score`. Pair the rows the same way: the published
+row, then its new row. When one run changed both a blind and a guided
+row, add a `test` column and keep one table.
+
+A model the site has never scored pairs with the row it replaces, or
+with the nearest published local row. The note says which.
+
+### The worked example
+
+Run 10, as of 2026-09-06. Three EvalPlus scores and three Mendel rows
+changed.
 
 ```
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 12 | Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701 |
-| — | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
+| 14 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
+| —  | Gemma-4-26B-A4B, GGUF, MTP f16, thinking on | 197k | mem | 60.3 → 17.3 | 25.6 GB | **0.884/0.860** |
+| 14 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
+| —  | Gemma-4-26B-A4B, GGUF, MTP f16, thinking off | 197k | mem | 60.3 → 17.3 | 25.6 GB | **0.976/0.945** |
+| 8  | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921 |
+| —  | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking off | 8k | mem | 36.4 → 43.8 | 25.0 GB | **0.951/0.915** |
 ```
 
-- The published row keeps its `#`. The new row carries `—` until the
-  coordinator writes it into `models.json`.
-- One published row and one new row per change. Two changes are two
-  pairs, not one four-row table.
-- Under the table, one bullet per cell that moved, each naming the
-  evidence: the file, the stop condition, or the `-c` that OOMs.
-- When the change touches many cells, use a before / after / comment
-  table instead of the paired rows. The owner asked for exactly that
-  when prose got dense: "Hard to read in prose, please make it a full
-  table before/after/comments columns." (`3f1b158c`, 2026-08-31).
-- The runner drafts this. It never edits `models.json`; that is the
-  coordinator's publish step
-  ([EDITOR.md](https://github.com/) rules for generated blocks apply).
+```
+| test | model | serving | score | worst defect |
+|---|---|---|--:|---|
+| blind | Qwen3.8-27B (mlx, low) | mlx_lm.server | **12.5/100** (partial) | minor |
+| blind | qwen3.8-27b | llama-server | **87/100** | minor |
+| blind | qwen3.6-35b-a3b | llama-server | **63/100** | critical |
+| blind | gemma-4-26b-a4b | llama-server | **47.5/100** | critical |
+| guided | Ternary-Bonsai-27B-mlx-2bit | pi | **12.5/100** (partial) | — |
+| guided | Ternary-Bonsai-27B-mlx-2bit | pi | — | — |
+```
+
+- **Gemma-26B, thinking on**: an exact pair. Row 14 carried
+  0.713/0.701, copied from the MLX row. This run scored the GGUF quant
+  itself for the first time, and the score rises to 0.884/0.860.
+- **Gemma-26B, thinking off**: the site has no thinking-off row for
+  this model, so the pair is row 14, its thinking-on row. Thinking off
+  scores higher, 0.976/0.945.
+- **Qwen3.6, thinking off**: the same case. The pair is row 8, the
+  published thinking-on row. 0.951/0.915: up on base, down on plus.
+- **Qwen3.8 blind Mendel**: the site has no llama-server row for this
+  model, so the pair is the published MLX low row, the only Qwen3.8
+  Mendel row there is. 87/100 against 12.5/100 partial. The MLX row
+  stopped on a server failure, not on the rubric, so the pair shows the
+  backend, not a gain in model quality.
+- **Gemma-26B blind Mendel**: the first Mendel row for this model. The
+  pair is qwen3.6-35b-a3b on llama-server, the nearest published local
+  row. 47.5/100, worst defect critical: trap A, `glob(...).then is not
+  a function`.
+- **Bonsai guided**: the published 12.5/100 partial stands. The run 10
+  retry is still running, so its row carries `—`. Do not publish an
+  invalid row, and do not delete the old one. The new row lands when
+  the retry closes.
+
+The runner drafts all of this. It never edits `models.json`; that is
+the coordinator's publish step (`EDITOR.md` at the repo root, the
+generated-block rules).
 
 The owner asks for this form by name: "draw me the new line, similar to
 the one on the website, updated for Qwen3.8 new numbers on llama,
 please. Also include other models you found the definitive ceiling so
 far." (`f55b29c3`, 2026-09-05). And: "Please compare Gemma-4-26B-A4B
 new numbers/decisions with what is published (comparison table)"
-(`f55b29c3`, 2026-09-05).
+(`f55b29c3`, 2026-09-05). When the details get dense, they become their
+own table: "Hard to read in prose, please make it a full table
+before/after/comments columns." (`3f1b158c`, 2026-08-31).
 
 ## Context budget
 
