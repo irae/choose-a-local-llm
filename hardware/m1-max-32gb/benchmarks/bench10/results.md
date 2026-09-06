@@ -326,3 +326,24 @@ benchmarks/run-humaneval.sh qwen36-gguf-off qwen3.6-35b-a3b \
 
 **Result**: pass@1 base **0.951**, plus **0.915**, empty **0/164**,
 wall **0:14:42**. Clean run.
+
+F3 (Qwen3.8-27B GGUF f16, effort medium) started calibration then was
+deferred to the next run block per the owner — not run this session.
+
+## Extra — Gemma-4-26B-A4B GGUF f16, thinking off, Mendel
+
+Not in the original runbook. Owner noticed both existing Mendel rows
+for this model (blind, two attempts) are thinking `high`; no row
+exists yet at thinking `off`, guided or blind. Same server as Block C
+(f16 KV, `-c 212992`).
+
+```
+benchmarks/mendel-smoke.sh gemma-4-26b-a4b off
+```
+
+`SMOKE-MENDEL model=gemma-4-26b-a4b level=off calls=9 distinct=9
+longest_run=1 loop=ok:1.00 commits=1 clean=yes end=stop wall_s=16
+verdict=pass`
+
+Gate: **pass**. Starting the guided run (primary ask), then blind
+(secondary ask).
