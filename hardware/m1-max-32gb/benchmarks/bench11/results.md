@@ -241,5 +241,34 @@ finished cleanly and did not visibly lose task state — it re-read
 against "shallow compaction causes thread loss" for this model, even
 though the compaction pattern itself still looks inefficient.
 
-Next: block 4 (Gemma-12B GGUF, blind, off) — not block 10, per the
-corrected order.
+## Block 4/10 — Gemma-12B GGUF, thinking off, Mendel blind
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-12b pi blind off
+```
+
+Server: f16 KV, no drafter, `-c 262144`, reserveTokens 8192
+(the standing rule value; block 4's own text says 16384, stale since
+the rule went in on 2026-09-06). Branch `gemma-4-12b-off-issue-13`,
+base `2652ed6`.
+
+**INVALID, zero commits.** `end_reason: model_budget_exhausted` — the
+model used all 3 allowed nudges without finishing. 80.3 min wall
+clock, 96 assistant messages, 92 tool calls, 30 tool errors. The
+budget went to a tool-schema loop: 24 of 28 `edit` calls failed
+validation on the same malformed-array shape, and the model never
+adapted, alternating between retrying it and full-file
+`write`/heredoc. Not context-bound (peak 178629 of 262144).
+
+Scored anyway per Mendel's zero-commit rule: score_raw 2, score_total
+0 on 0/8 libraries. Two uncommitted defects worth noting even though
+nothing landed: a broken `uuid` destructure that never binds
+`uuidv4`, and a heredoc that overwrote
+`mendel-pipeline/test/helpers/index.js` with an unrelated package's
+test content. Row in `results.csv`/`.json` (`benchmark` branch,
+commit `f79f447`), `invalid: true`. Session log redacted and pushed,
+run branch pushed (identical to base, zero commits), worker worktree
+removed.
+
+Next: block 5 (Gemma-26B, thinking on, Mendel guided), same server A
+as blocks 2/3, restarted.

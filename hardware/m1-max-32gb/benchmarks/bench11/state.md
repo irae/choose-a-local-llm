@@ -164,3 +164,13 @@ handing-over section at the end.
 - Block 10 (Qwen3.6 GGUF blind, off) also runs at window 81920 when
   its turn comes, same config note pattern. Final order: 4, 5, 6, 7,
   8, 9(retry), 10.
+- Block 4 finished: `end_reason: model_budget_exhausted`, zero
+  commits. Invalid per Mendel's zero-commit rule. Cause: a
+  tool-schema loop, 24 of 28 `edit` calls failed the same malformed
+  shape, model never adapted. score_raw 2, score_total 0. Scored,
+  JSON+CSV+report built together before committing, pushed to
+  `benchmark` (`f79f447`). Session log redacted and pushed, run
+  branch pushed (identical to base since zero commits), worktree
+  removed.
+- Stopping server C, waiting for wired recovery, then starting server
+  A again for block 5 (Gemma-26B, thinking on, guided).
