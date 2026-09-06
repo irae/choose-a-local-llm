@@ -64,3 +64,57 @@ Have the coordinator look into pi's compaction options soon:
 
 Session for reference: this conversation, run 11, block 9,
 2026-09-06, around 19:20Z-20:30Z.
+
+## Findings (coordinator, 2026-09-06, from pi 0.84.4 docs and source)
+
+pi has no compaction target. The floor after a compaction is a sum:
+
+    system prompt + tool definitions + summary + kept recent messages
+
+- The trigger is `contextTokens > contextWindow - reserveTokens`.
+- The kept part is `compaction.keepRecentTokens`, default 20000,
+  estimated at chars/4. The cut walks back from the newest message
+  until 20000 estimated tokens, then cuts at the nearest user or
+  assistant message. It never cuts between a tool call and its
+  result, so one large tool result inside the kept span stays whole.
+  Code tokenizes denser than chars/4, so 20000 estimated is more than
+  20000 real on a Qwen tokenizer.
+- The summary is written by the run's own model, capped at
+  `0.8 * reserveTokens` output tokens (6553 at reserve 8192).
+- The same model generates the summary, so each compaction costs one
+  prefill of the whole summarized span plus up to 6553 output tokens.
+  On a local model that is minutes, not seconds.
+
+At contextWindow 49152 the kept span alone is 41 percent of the
+window. That is why the deep compactions land at 57 to 70 percent:
+about 5K system, 3 to 6K summary, 20K plus kept. Claude Code's 90
+percent to 3 percent drop is the same design at a 1M window, where a
+kept span of a few tens of thousands of tokens is 3 percent. The
+shallow 1 to 8 point compactions fit one cause: a large tool result
+(a file read, a test run) sits inside the kept span, so every
+compaction keeps it whole until 20K newer tokens push it past the
+cut. The 20:17Z drop to 57 percent is that moment.
+
+So: the shallowness is the small window, not a pi defect, and it is
+tunable.
+
+- `compaction.keepRecentTokens` is the depth knob. At 8000 on a 49152
+  window the floor is near 35 to 40 percent. Nothing else changes.
+- The cost of deeper compaction is re-reading. The run already showed
+  the model re-reads `TASKS.md` and `git status` after a compaction,
+  so the re-derive cost is one or two tool calls.
+- The trade is favorable at this scale: fewer summaries (each one a
+  full prefill plus thousands of output tokens on the local model)
+  against one or two re-reads. Above about 100K windows the default
+  is fine.
+- An extension on `session_before_compact` can implement a Claude
+  Code style compaction (summary only, keep nothing), but it is a
+  new results epoch and needs its own row category.
+- The other lever is the window itself: block 1 found 82K clean depth
+  for this model at q8_0 KV (`qwen36-entry-window.md`).
+
+Proposed rule for run 12, owner decides: for entries with
+`contextWindow` under 65536, set `compaction.keepRecentTokens` to
+8192 in the run's pinned pi config, beside `reserveTokens` 8192, and
+record it in every config note. Rows before that keep the default
+20000 in their notes.
