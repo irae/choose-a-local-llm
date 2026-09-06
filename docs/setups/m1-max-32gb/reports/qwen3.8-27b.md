@@ -45,8 +45,8 @@ the GGUF at f16 holds 49K at 15 tok/s, the MLX build 26K at the same
 speed, and this task needs about 46K.
 
 So the llama row is the daily-driver candidate for hard problems. Its
-own EvalPlus score lands in run 10's last block; until then the cell
-carries the MLX score. The MLX row stays the low-memory option and
+own EvalPlus score was deferred from run 10 to run 11; until then the
+cell carries the MLX score. The MLX row stays the low-memory option and
 keeps its single-turn score.
 
 ## All configs — this model

@@ -120,6 +120,14 @@ converted locally with `gguf-dspark-to-dflash`; the published Q4_1 sidecar
 and the plain Q2_0 GGUF are legacy layouts that do not load on current fork
 builds.
 
+**The MLX build with thinking off has no valid agent row.** Run 10
+(2026-09-06) passed the Mendel smoke at thinking off (14 calls, one
+clean commit, 115 s) and then lost the guided run twice to the harness:
+first a dead `gh` token and a login loop, then 85 identical shell calls
+in a row against a missing file, zero commits in three hours, stopped
+by the operator. Both rows are invalid in the guided CSV. No third
+attempt is scheduled, and the blind test at thinking off did not run.
+
 **PrismML's own published figures need their serving stack.** They report
 100K at ~15 GB, and 262K with 4-bit KV. The 4-bit KV path is llama.cpp-only,
 so the fork is where the bigger context lives.
