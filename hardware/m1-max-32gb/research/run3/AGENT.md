@@ -247,3 +247,39 @@ change as a bench item.
 - The EvalPlus smoke subset (`backlog/evalplus-smoke-subset.md`) must
   exist before the first trial.
 - `peak_context` caveat, `tool_calls` gap (parked since run 2).
+
+## Goal 4 — pi compaction on this hardware (draft, 2026-09-05)
+
+Not a per-model test; it needs two or three approved models. pi
+compacts between turns when the context passes `contextWindow -
+reserveTokens`, and the model under test writes the summary itself,
+so the quality of a compaction differs per model and can be scored.
+
+The candidate task is the Mendel smoke, which some models already
+finish at their normal window: Qwen3.8 GGUF f16 at effort medium (run
+10 block B, 8 calls, one commit, 62 s) and Gemma-12B llama f16
+thinking off (research run 2 probe, 42 calls, one commit). Run the
+same smoke with `contextWindow` lowered on a ladder until pi compacts
+mid-task, and record per run: whether compaction fired, the summary
+pi wrote, the peak context, and whether the task still completed with
+a clean commit. A small rubric scores the summary: does it keep the
+task, the files touched, and the remaining steps, and does the run
+after it finish.
+
+The design with the ladder, the rubric, the repeats and the commands is
+`compaction-experiment.md` in this folder (in preparation on branch
+`research-compaction`, with the `mendel-smoke.sh` parameters it needs).
+Outcome: a `contextWindow` floor per model at which compaction still
+rescues the task, or a note that it does not for that model.
+
+## Goal 0 — the wired limit, retested with the slow creep (draft, 2026-09-05)
+
+Top item of this run because the owner is present for sudo and a
+reboot. 24000 was set before the slow creep existed and 25000 was
+never retried since; runs 9 and 10 served with wired memory at 25.1 to
+25.6 GB under the 24000 limit, so what the sysctl bounds is not what
+the number says. The procedure page and the research item are in
+preparation on branch `wired-limit-method`
+(`docs/methodology/wired-limit.md`, Mac only, grouped with the
+services script; `wired-limit-retest.md` in this folder with the
+history table and the ladder).
