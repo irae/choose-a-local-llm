@@ -170,7 +170,8 @@ cheap model. Only then do new runs use the framework.
 
 ## Files that must move together
 
-The runner alarms (`backlog/runner-alarms-output-limit-and-loop-stop.md`)
+The runner alarms (decided 2026-09-05; the evidence is
+`benchmarks/history/runner-alarms-output-limit-and-loop-stop.html`)
 split across the two repos. The counters, the turn cap, the pair stop
 and the loop flag at run close live in the Mendel kit
 (`run-pi-rpc.mjs`, `run-worker.sh`, `PLAN.md`). The loop verdict itself
