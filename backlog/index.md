@@ -19,6 +19,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
+- [ ] Real near-OOM in run 11 block 5: mediaanalysisd (macOS media indexing) at ~70% CPU competed for memory while the server held wired 25000; free RAM crashed 1565→62 MB in 20s, harness killed the run mid-work, uncommitted work lost (mediaanalysisd-memory-contention.md)
 - [ ] pi's compaction may be too shallow under a small contextWindow: frequency climbed from 1/9min to 1/2-3min mid-run, several compactions freed only 1-8 points of headroom; research pi's compaction options (pi-compaction-efficiency.md)
 - [ ] Shared-score rule: the owner's sentence for when two quants of one model carry their own scores (shared-score-quant-exception.md)
 - [ ] Qwen3.6 GGUF pi entry at contextWindow 49152: keep on the daily driver, or raise back to 98304 (qwen36-entry-window.md)
