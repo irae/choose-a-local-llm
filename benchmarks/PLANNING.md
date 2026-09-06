@@ -10,9 +10,14 @@ and the methodology pages the runbook points to.
 
 - `hardware/<hardware-id>/benchmarks/bench<N>/`: a bench run. Hardware
   only, no judgment. A small runner executes exact commands.
-- `hardware/<hardware-id>/research/run<N>/`: a research run. Needs
-  judgment and web access, and the benchmark machine.
-  `<hardware-id>` is the machine's setup id under `docs/setups/`.
+- `hardware/<hardware-id>/research/<mnemonic>.md`: a research item,
+  one file each, like a backlog item for questions that need the
+  benchmark machine, judgment and web access. Attached files go in
+  `research/<mnemonic>/`. A research run is
+  `hardware/<hardware-id>/research/run<N>/`: its `index.md` lists the
+  items the run takes, in order, with a checkbox each; the runbook and
+  the kit appear when the run starts. `<hardware-id>` is the machine's
+  setup id under `docs/setups/`.
 - `backlog/<mnemonic-name>.md`: one file per item, issue-tracker
   style. Things to do that need no benchmark hardware (tooling, method
   pages, runner code, site restructures), not yet decided or scheduled,

@@ -83,8 +83,14 @@ Benchmark work:
   Read it before you resume or touch anything that run left behind.
 - `hardware/<hardware-id>/benchmarks/bench4/lmstudio-forensics.md`.
   Before any LM Studio work; it overrides older lore.
-- `hardware/<hardware-id>/research/run<N>/`. The research runs of that
-  machine. Same kit shape as a bench run.
+- `hardware/<hardware-id>/research/<mnemonic>.md`. One research item
+  per file, a backlog of questions for that machine, with
+  `research/<mnemonic>/` beside it for attached files when needed.
+- `hardware/<hardware-id>/research/run<N>/`. A research run: its
+  `index.md` is the task list that links the items the run takes, in
+  order, with a checkbox per item; the executor writes results beside
+  each item. `AGENT.md` and the rest of the kit appear only when the
+  run starts.
 - `benchmarks/` (root). The shared tools every run uses:
   `run-humaneval.sh`, `run_codegen_wrapper.py` (patched EvalPlus
   client), `calibrate.py`, `run-watch.sh` (the one watcher of a
