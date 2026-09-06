@@ -2,7 +2,8 @@
 # Tests for benchmarks/mendel-smoke.sh, through SMOKE_MENDEL_SESSION.
 # The pi run needs a model and a GPU, so it stays out; these tests cover
 # the counters, the loop verdict, the git columns and the pass or fail
-# rule. The session logs are real Mendel logs, trimmed.
+# rule. The session logs are real Mendel logs, trimmed. The fixture and
+# the pinned pi config are tested with a pi on PATH that runs nothing.
 
 set -u
 
@@ -215,6 +216,123 @@ test_the_cap_fails_the_smoke() {
     rm -rf "$CASE_DIR"
 }
 
+test_counters_on_a_compacted_session() {
+    smoke_on "$FIXTURES/session-compaction.jsonl"
+    assert_contains "a compacted log counts its tool calls" "$LINE" "calls=17"
+    assert_contains "two real compactions" "$LINE" "compactions=2"
+    assert_contains "and one split-turn record apart from them" "$LINE" "splits=1"
+    assert_contains "the peak is the largest turn total, before the compaction" "$LINE" "peak=45159"
+    assert_contains "the task column says which task" "$LINE" "task=xtend"
+    assert_contains "and the window column says default" "$LINE" "window=default"
+    assert_contains "it says where the summaries went" "$OUT_TEXT" "summaries.md"
+    assert_equal "the summaries file has one section per record" \
+        "$(grep -c '^## \(compaction\|split turn\) [0-9]' "$CASE_DIR/summaries.md")" "3"
+    assert_contains "and names the split turn" "$(cat "$CASE_DIR/summaries.md")" "## split turn 1, tokensBefore 45159"
+    rm -rf "$CASE_DIR"
+}
+
+test_the_split_turn_record_is_not_a_compaction() {
+    CASE_DIR=$(mktemp -d "${TMPDIR:-/tmp}/mendel-smoke-test.XXXXXX")
+    head -n 33 "$FIXTURES/session-compaction.jsonl" > "$CASE_DIR/split-only.jsonl"
+    OUT_TEXT=$(SMOKE_MENDEL_OUT="$CASE_DIR" SMOKE_MENDEL_SESSION="$CASE_DIR/split-only.jsonl" \
+        bash "$SMOKE" test-model low 2>&1)
+    LINE=$(echo "$OUT_TEXT" | grep '^SMOKE-MENDEL' || true)
+    assert_contains "a log with only the No prior history record counts no compaction" "$LINE" "compactions=0"
+    assert_contains "but counts the split" "$LINE" "splits=1"
+    assert_contains "and the peak stays" "$LINE" "peak=45159"
+    rm -rf "$CASE_DIR"
+}
+
+test_a_healthy_session_has_no_compaction() {
+    smoke_on "$FIXTURES/session-healthy.jsonl"
+    assert_contains "no compaction record counts zero" "$LINE" "compactions=0"
+    assert_contains "and zero splits" "$LINE" "splits=0"
+    assert_contains "the peak matches count-tool-calls.mjs" "$LINE" "peak=99611"
+    assert_missing "and no summaries file is written" "$OUT_TEXT" "summaries.md"
+    rm -rf "$CASE_DIR"
+}
+
+# A pi on PATH that runs nothing, and a HOME with a models.json to pin.
+# The smoke then builds its fixture and its pinned config, and stops at
+# the missing session log.
+fake_pi_home() {
+    FAKE_HOME=$(mktemp -d "${TMPDIR:-/tmp}/mendel-smoke-home.XXXXXX")
+    mkdir -p "$FAKE_HOME/.pi/agent" "$FAKE_HOME/bin"
+    printf '#!/bin/sh\nexit 0\n' > "$FAKE_HOME/bin/pi"
+    chmod +x "$FAKE_HOME/bin/pi"
+    cat > "$FAKE_HOME/.pi/agent/models.json" <<'JSONEOF'
+{"providers":{"llama":{"baseUrl":"http://127.0.0.1:8081/v1","api":"openai-completions",
+"models":[{"id":"test-model","contextWindow":49152,"maxTokens":8192}]}}}
+JSONEOF
+}
+
+test_the_window_lands_in_the_pinned_config() {
+    CASE_DIR=$(mktemp -d "${TMPDIR:-/tmp}/mendel-smoke-test.XXXXXX")
+    fake_pi_home
+    OUT_TEXT=$(HOME="$FAKE_HOME" PATH="$FAKE_HOME/bin:$PATH" SMOKE_MENDEL_OUT="$CASE_DIR" \
+        SMOKE_MENDEL_CONTEXT_WINDOW=28672 SMOKE_MENDEL_RESERVE_TOKENS=8192 \
+        SMOKE_MENDEL_KEEP_RECENT_TOKENS=10240 \
+        bash "$SMOKE" test-model low 2>&1)
+    LINE=$(echo "$OUT_TEXT" | grep '^SMOKE-MENDEL' || true)
+    assert_contains "it says the window is pinned" "$OUT_TEXT" "contextWindow 28672 pinned on provider llama"
+    assert_contains "the pinned models.json carries the window" \
+        "$(cat "$CASE_DIR/pi-agent/models.json")" '"contextWindow": 28672'
+    assert_contains "the pinned settings carry the reserve" \
+        "$(cat "$CASE_DIR/pi-agent/settings.json")" '"reserveTokens": 8192'
+    assert_contains "and the recent budget" \
+        "$(cat "$CASE_DIR/pi-agent/settings.json")" '"keepRecentTokens": 10240'
+    assert_contains "the line says the window" "$LINE" "window=28672"
+    assert_contains "no session log is still a fail" "$LINE" "verdict=fail"
+    rm -rf "$CASE_DIR" "$FAKE_HOME"
+}
+
+test_the_default_config_pins_no_window() {
+    CASE_DIR=$(mktemp -d "${TMPDIR:-/tmp}/mendel-smoke-test.XXXXXX")
+    fake_pi_home
+    OUT_TEXT=$(HOME="$FAKE_HOME" PATH="$FAKE_HOME/bin:$PATH" SMOKE_MENDEL_OUT="$CASE_DIR" \
+        bash "$SMOKE" test-model low 2>&1)
+    assert_missing "nothing is pinned without the override" "$OUT_TEXT" "pinned on provider"
+    assert_contains "the owner's window stays" \
+        "$(cat "$CASE_DIR/pi-agent/models.json")" '"contextWindow":49152'
+    assert_equal "and the settings keep pi's compaction defaults" \
+        "$(cat "$CASE_DIR/pi-agent/settings.json")" \
+        '{"compaction": {"enabled": true}, "retry": {"enabled": true}}'
+    rm -rf "$CASE_DIR" "$FAKE_HOME"
+}
+
+test_the_wide_task_builds_ten_xtend_files() {
+    CASE_DIR=$(mktemp -d "${TMPDIR:-/tmp}/mendel-smoke-test.XXXXXX")
+    fake_pi_home
+    OUT_TEXT=$(HOME="$FAKE_HOME" PATH="$FAKE_HOME/bin:$PATH" SMOKE_MENDEL_OUT="$CASE_DIR" \
+        SMOKE_MENDEL_TASK=xtend-wide bash "$SMOKE" test-model low 2>&1)
+    LINE=$(echo "$OUT_TEXT" | grep '^SMOKE-MENDEL' || true)
+    assert_contains "the fixture line names the task" "$OUT_TEXT" "fixture ready (xtend-wide, 12 files"
+    assert_equal "ten files require xtend" \
+        "$(grep -rl "require('xtend')" "$CASE_DIR/fixture/lib" | wc -l | tr -d ' ')" "10"
+    assert_equal "two files do not" \
+        "$(grep -rL "require('xtend')" "$CASE_DIR/fixture/lib" | wc -l | tr -d ' ')" "2"
+    assert_contains "package.json lists xtend" "$(cat "$CASE_DIR/fixture/package.json")" '"xtend"'
+    assert_equal "every file parses and loads its own helpers" \
+        "$(cd "$CASE_DIR/fixture" && node -e "
+            const T = require('./lib/util/timing.js');
+            const t = T({label: 'x'});
+            t.recordLaps('a').recordLaps('b');
+            console.log(t.state({extra: 1}).laps.length, t.validate().length);
+        ")" "2 0"
+    assert_equal "the fixture is one commit" \
+        "$(git -C "$CASE_DIR/fixture" rev-list --count HEAD)" "1"
+    assert_contains "the line says the task" "$LINE" "task=xtend-wide"
+    rm -rf "$CASE_DIR" "$FAKE_HOME"
+}
+
+test_an_unknown_task_refuses() {
+    local out status
+    out=$(SMOKE_MENDEL_TASK=nosuch bash "$SMOKE" test-model low 2>&1)
+    status=$?
+    assert_equal "an unknown task exits 2" "$status" "2"
+    assert_contains "and names the choices" "$out" "xtend or xtend-wide"
+}
+
 test_a_missing_loop_check_is_not_a_pass() {
     CASE_DIR=$(mktemp -d "${TMPDIR:-/tmp}/mendel-smoke-test.XXXXXX")
     mkdir -p "$CASE_DIR/alone"
@@ -244,6 +362,13 @@ test_a_loop_fails_a_committed_tree
 test_a_dirty_tree_fails
 test_no_commit_of_its_own_fails
 test_the_cap_fails_the_smoke
+test_counters_on_a_compacted_session
+test_the_split_turn_record_is_not_a_compaction
+test_a_healthy_session_has_no_compaction
+test_the_window_lands_in_the_pinned_config
+test_the_default_config_pins_no_window
+test_the_wide_task_builds_ten_xtend_files
+test_an_unknown_task_refuses
 test_a_missing_loop_check_is_not_a_pass
 
 echo "mendel-smoke.sh: $PASS passed, $FAIL failed"
