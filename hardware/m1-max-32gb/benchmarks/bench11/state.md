@@ -86,3 +86,25 @@ handing-over section at the end.
   this arm found; their pi window must not exceed it.
 - Block 1 done. Stopping the MLX server, waiting for wired recovery,
   moving to block 2 (Server A, Gemma-26B GGUF f16).
+- Server A up, warmup ok (74.2 tok/s, draft 160/188). gh auth passes.
+  pi entry `gemma-4-26b-a4b`: contextWindow 212992, maxTokens 8192,
+  thinkingLevelMap off→off, high→high (not edited). Config note for
+  every row this server: f16 KV, -c 212992, reserveTokens 8192, wired
+  25000. Starting block 2 (guided, off).
+- Block 2 ran to completion (20.4 min) but `meta.json` shows
+  `end_reason: "repetition_loop"` (5x identical `edit` tool call,
+  18:12:06 to 18:12:47). `run-worker.sh`'s stdout said "loop verdict
+  ok, worst ratio 0.22" — a post-hoc check on the same cut-short
+  transcript, not authoritative over the live stop. Per this run's
+  rule (repetition_loop or degenerate_output = invalid, no retry),
+  marked this row invalid and moved on rather than re-running it.
+- Scored with a Fable subagent per Mendel's `PLAN.md`: score_raw 44,
+  capped to 25 (2/8 libraries). Row appended to `results-guided.csv`
+  with `invalid: true`. Verified peak_context (72725) and tool_calls
+  (91) against `count-tool-calls.mjs`. Ran `generate-report.mjs
+  --guided`, clean. Session log redacted (home paths only, no
+  secrets found) and committed to `benchmark/runs/`, listed in
+  `SESSIONS.md`. Committed and pushed `benchmark` (`2f1960c`).
+  Pushed the run branch `gemma-4-26b-a4b-off-guided-v3-issue-13`.
+  Removed its worker worktree, per the Mendel repo's cleanup rule.
+- Moving to block 3 (Gemma-26B blind, off) on the same server A.
