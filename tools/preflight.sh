@@ -85,6 +85,8 @@ Checks:
   wired-limit    iogpu.wired_limit_mb matches the machine file
   memory         the starting numbers: wired, free, swap, balloon verdict
   reboot         the checklist's three reboot conditions
+  gh-auth        gh auth status passes; a Mendel run reads the issue
+                 through gh and loops on a dead token
 
 The values come from ~/.config/choose-a-local-llm/machine.md. The
 header of this file lists the environment variables that override them.
@@ -432,6 +434,18 @@ case "${1:-}" in
         ;;
 esac
 
+check_gh_auth() {
+    if ! command -v gh >/dev/null 2>&1; then
+        report ask gh-auth "gh is not installed; a Mendel run needs it to read the issue"
+        return
+    fi
+    if gh auth status >/dev/null 2>&1; then
+        report ok gh-auth "gh auth status passes"
+    else
+        report ask gh-auth "gh auth status fails. The owner runs: gh auth login -h github.com. No Mendel run until it passes."
+    fi
+}
+
 check_gpu_free
 check_apps
 check_login_items
@@ -439,5 +453,6 @@ check_little_snitch
 check_wired_limit
 check_memory
 check_reboot
+check_gh_auth
 
 exit "$exit_code"

@@ -64,6 +64,13 @@ in the runbook is a plain message, not a question tool.
       `sudo sysctl iogpu.wired_limit_mb=<value>` command. The value
       resets to 0 on every reboot, and 0 means the system default.
       preflight never runs sudo.
+   6. `ask gh-auth`: the GitHub token is dead. Only the owner can log
+      in. Every block that does not need `gh` still runs; no Mendel
+      block starts until `gh auth status` passes, and the runner
+      checks it again right before every Mendel run, blind or guided.
+      A model that meets a dead token reads the issue by other means
+      or loops on the forbidden login until its budget ends; the loop
+      is a harness fault and a wasted night.
    6. Read the balloon verdict on the `memory` line. "No balloon"
       needs no action. "Balloon needed" means: load the model under
       test and drive its context up SLOWLY towards the configured

@@ -73,6 +73,10 @@ window ladder and the summary rubric live in
   models: pi harness; provider `llama` is llama-server, `lmstudio` is
   LM Studio, `mlx` is mlx_lm.server). The worker never starts a server
   for any provider; a run launched without one fails its first turn.
+- `gh auth status` must pass right before every run, blind or guided.
+  The task names a GitHub issue and the model reads it through `gh`;
+  a dead token costs a run to a login loop (run 10, Bonsai guided).
+  A failing status means no Mendel run until the owner logs in.
 - Do not re-run models that already have a result row there.
 - After each run finishes, the agent running the benchmark (never the
   model under test) kills stray `Mendel Daemon` processes — exact name,
