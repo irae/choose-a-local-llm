@@ -13,7 +13,7 @@ What moves, and where it is today:
 | tool | source | history |
 | --- | --- | --- |
 | `slow-context-creep` | this repo, `tools/sweeps/creep.py` and `creep_llama.py`, `creep_mlx.py`, `creep_lmstudio.py`; method: `docs/methodology/context-creep.md` | 18 commits on `tools/sweeps/` |
-| `codebase-issue-simulator` | `../mendel-benchmark`, branch `benchmark`, folder `benchmark/` (worktree of `../mendel`); plus `benchmarks/loop-check.py` from this repo, which `run-worker.sh` calls by path | 116 commits on `benchmark/` |
+| `codebase-issue-simulator` | `../mendel-benchmark`, branch `benchmark`, folder `benchmark/` (worktree of `../mendel`); plus, from this repo: `benchmarks/loop-check.py`, which `run-worker.sh` calls by path, and the runner tests `tests/test-run-pi-rpc.sh`, `tests/helpers/fake-pi`, `tests/fixtures/events-*.jsonl` with `tests/fixtures/README.md`, `tests/test_loop_check.py` | 116 commits on `benchmark/`; 4 on `tests/` |
 
 The runner alarms evidence: `benchmarks/history/runner-alarms-output-limit-and-loop-stop.html`.
 
@@ -64,8 +64,19 @@ shipped as files.
 
 - `../choose-a-local-llm`: `tools/sweeps/creep.py`, `creep_llama.py`,
   `creep_mlx.py`, `creep_lmstudio.py`. Method page:
-  `docs/methodology/context-creep.md`. Also `benchmarks/loop-check.py`,
-  the repetition-loop verdict the simulator's worker calls by path.
+  `docs/methodology/context-creep.md`. The creep tool has no tests yet.
+- `../choose-a-local-llm`, simulator parts that live outside Mendel:
+  `benchmarks/loop-check.py`, the repetition-loop verdict the worker
+  calls by path, with `tests/test_loop_check.py`; and the runner's
+  live loop stop tests, `tests/test-run-pi-rpc.sh`, which drive
+  `run-pi-rpc.mjs` through `tests/helpers/fake-pi` on real trimmed
+  event fixtures, `tests/fixtures/events-*.jsonl` (see
+  `tests/fixtures/README.md`). These tests are the simulator's first
+  behavior tests; they move with it. `tests/run.sh` in the source repo
+  keeps running its other tests; do not touch it.
+  `benchmarks/mendel-smoke.sh` and `tests/test-mendel-smoke.sh` are the
+  owner's pre-run smoke for the Mendel kit; decide in the plan whether
+  they move or stay, and say why.
 - `../mendel-benchmark`: branch `benchmark`, folder `benchmark/`. It is
   a worktree of `../mendel`. Read `benchmark/PLAN.md` end to end, then
   `run-worker.sh` and `run-pi-rpc.mjs`, before you touch anything.
@@ -92,9 +103,12 @@ survive.
   creep files import them.
 - Simulator: `--path benchmark/` renamed to `codebase-issue-simulator/`.
   Check for files outside `benchmark/` the scripts depend on before
-  the filter runs; it is one shot. Then bring `loop-check.py` in from
-  `choose-a-local-llm` with its own history, and change the path in
-  `run-worker.sh` in the same commit.
+  the filter runs; it is one shot. Then bring `loop-check.py`, the
+  runner tests, the fake pi and the event fixtures in from
+  `choose-a-local-llm` with their own history (one more filter, paths
+  `benchmarks/loop-check.py` and `tests/`, renamed under the
+  simulator's folder), and change the paths in `run-worker.sh` and in
+  `test-run-pi-rpc.sh` in the same commit.
 
 Bring both histories into the new repository with
 `git fetch` and `git merge --allow-unrelated-histories`. Verify: commit
@@ -128,8 +142,8 @@ Refactor targets, both tools:
   file keeps the field names `PLAN.md` documents, because
   `choose-a-local-llm` reads them.
 - Tests test behavior, not implementation: a fake server for the creep
-  tool, a fake pi session for the simulator. Keep and extend any test
-  that already exists in the sources.
+  tool (new), the fake pi with event fixtures for the simulator
+  (moved). Keep the moved tests green at every commit and extend them.
 - The worker stays bash plus node. Python stays for the creep tool.
 
 ### Step 3: implement and prove
