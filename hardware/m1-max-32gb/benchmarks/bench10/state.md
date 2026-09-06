@@ -206,3 +206,75 @@ unique commits vs `master`) was deleted locally to let `run-worker.sh`
 recreate it; the old row already committed to `results-guided.json`
 stays as the record of the failed attempt, this retry adds a fresh
 one. Guided retry launched with watchers. Block F3 queued after.
+
+Guided retry got stuck: calls 21-105 (85 in a row) were one identical
+bash command (`ls`/`cat` on a nonexistent `.taprc`), zero commits,
+zero edits, `loop-check.py` gives LOOP ratio 0.02. Owner stopped it by
+hand at ~3h elapsed and asked to archive it (not clean it up) so the
+worktree stays for inspection: `../mendel-bench-guided-prism-ml-Ternary-Bonsai-27B-mlx-2bit-off`
+on branch `prism-ml-Ternary-Bonsai-27B-mlx-2bit-off-guided-v3-issue-13`
+(zero unique commits). Archived as an invalid row (`end_reason:
+operator_stop`, attempt 2), mendel-benchmark commit `5966f62`. Filed
+`backlog/mendel-live-loop-stop.md` for a live loop detector in the
+Mendel runner. Bonsai's guided config has now failed twice for two
+different reasons; the owner is holding on a third attempt.
+
+Owner deferred block F3 (`qwen38-gguf-medium`) to the next run.
+
+Owner noticed a coverage gap: `gemma-4-26b-a4b` had blind rows only at
+thinking `high`, no row at `off` of any kind, despite this run's own
+`gemma26-gguf-off` EvalPlus pass. Added smoke at `off` (pass), started
+guided at `off` — then the owner decided this whole line of work
+belongs in the next run instead, done properly with all four
+combinations (thinking off/on × guided/blind), starting with off
+guided. **Stopped and fully discarded**: the guided attempt's worktree
+and branch (`gemma-4-26b-a4b-off-guided-v3-issue-13`) were removed,
+not archived — unlike the Bonsai loop, this one is being redone
+cleanly in run 11, not inspected. Filed
+`backlog/mendel-thinking-off-gaps.md` for the same likely gap in
+`qwen3.6-35b-a3b` (checked: its full creep, bench 9, gives a real
+ceiling of only 8222 tokens after the compaction correction — the
+owner judged this too small to be worth a Mendel attempt without a
+`-c` fix first, so no work started there this run).
+
+## Handing over
+
+All of Block A-F ran; see `results.md` for every number. Closed with:
+- A1 mem @ 49198/27.65 tok/s, A2 window @ 81958/33.56 tok/s, A3
+  wired_mb 17249 @ 131072.
+- B smoke pass (qwen3.8-27b).
+- C EvalPlus 0.884/0.860 (gate pass), Mendel smoke pass, Mendel blind
+  47.5/100.
+- D smoke pass (Bonsai); guided failed twice (gh 401, then a stuck
+  loop) — unresolved, worktree kept for inspection, blind not run
+  (per the original runbook, "not in this run").
+- E Mendel blind 87/100 (qwen3.8-27b).
+- F1 EvalPlus 0.976/0.945, F2 EvalPlus 0.951/0.915. F3 deferred to
+  the next run.
+- Extra (owner-added, not in the original plan): gemma-4-26b-a4b
+  thinking-off Mendel smoke passed; guided/blind at off, and the
+  thinking-on guided (blind-on already exists from block C), move to
+  run 11.
+
+Machine state left behind: no server running, `iogpu.wired_limit_mb`
+unchanged at 24000, LM Studio quit, background services still off
+from before this session. Worktrees: `run10` itself (this one, to be
+merged and removed), the Bonsai guided-loop worktree (kept, not
+cleaned, per the owner), and the two other pre-existing worktrees
+(`mendel-bench-repro-gemma-4-12b-low-guided`, unrelated to this run)
+untouched.
+
+Watcher trial verdict: **did not fully match**. `run-watch.sh` and the
+sunset scripts agreed on every scoring run except one — block C's
+EvalPlus run, where the sunset `liveness-watch.sh` called `SERVER
+DEAD` on a probe that was only queued behind a live, slow turn, while
+`run-watch.sh` correctly waited for a second failed probe and never
+called death. Every Mendel run after that (block C blind, block E
+blind) matched cleanly. Since the run did not match end to end,
+`sunset/` is not deleted this run; a future run can retire it once a
+full run passes clean, or the coordinator can judge the one mismatch
+already explains enough to retire it now.
+
+Evidence archived: not yet run — `tools/archive-evidence.sh
+hardware/m1-max-32gb/benchmarks/bench10/results run10` still needs to
+run before or as part of closing.
