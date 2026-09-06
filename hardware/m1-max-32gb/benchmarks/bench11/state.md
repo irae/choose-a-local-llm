@@ -154,13 +154,13 @@ handing-over section at the end.
 - Block 9's original run (49152, ran per the runbook's own instruction
   at the time) stays valid and scored (46.5, 8/8). It gets a RETRY at
   the new 81920 window, harness-caused re-run under Mendel PLAN.md's
-  retry rule: no penalty, the better of the two rows stands. Retry
-  queued to start the moment block 4 ends, before block 5. Config note
-  for the retry: "-c 98304, window 81920 (block 1 clean depth 81958),
-  q8_0 KV; retry at window 81920, first attempt ran on 49152 by
-  runbook instruction". If it OOMs or the server dies at 81920, step
-  the window down by 8192 (73728) and retry again; record the step
-  here when it happens.
+  retry rule: no penalty, the better of the two rows stands. Owner
+  correction: the retry runs after block 8, not right after block 4 —
+  order is 4, 5, 6, 7, 8, 9(retry), 10. Config note for the retry:
+  "-c 98304, window 81920 (block 1 clean depth 81958), q8_0 KV; retry
+  at window 81920, first attempt ran on 49152 by runbook instruction".
+  If it OOMs or the server dies at 81920, step the window down by 8192
+  (73728) and retry again; record the step here when it happens.
 - Block 10 (Qwen3.6 GGUF blind, off) also runs at window 81920 when
-  its turn comes, same config note pattern. Block 10 still waits
-  until after block 8, per the numeric-order correction above.
+  its turn comes, same config note pattern. Final order: 4, 5, 6, 7,
+  8, 9(retry), 10.
