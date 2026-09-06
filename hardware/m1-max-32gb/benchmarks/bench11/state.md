@@ -63,3 +63,10 @@ handing-over section at the end.
 - GATE MET: GGUF clean depth 81958 ≥ 46K at ≥ 8 tok/s. Blocks 9 and 10
   will run right after block 3, arm and `-c` pending the f16 and MLX
   arms still to run in this block.
+- f16 arm: loaded at `-c 40960` (did not load on 2026-09-04). Warmup
+  ok, 69.28 tok/s. Creep found `no ceiling found up to 40960`; binary
+  search above 40960 (44032 to 65536) all OOM on first completion, so
+  40960 is the f16 load ceiling too — the creep already covered the
+  whole reachable range. q8_0 stays the arm for blocks 9/10 at `-c
+  98304`; f16's window is a third of q8_0's despite higher tok/s.
+  Moving to the MLX arm now.

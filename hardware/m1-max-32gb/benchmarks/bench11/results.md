@@ -85,3 +85,35 @@ number for Qwen3.6 GGUF q8_0 KV at wired 25000, `-c 98304`.
 and 10 (Qwen3.6 GGUF Mendel, thinking off) run right after block 3, on
 q8_0 KV at `-c 98304` (pending the f16 and MLX arms below, which may
 still change the arm choice).
+
+## Block 1/10 continued — f16 KV arm
+
+f16 loaded at `-c 40960` (it did not load on 2026-09-04, at wired
+24000): warmup completion ok, 69.28 tok/s decode, draft 386/471.
+`results/server-qwen36-gguf-f16-c40960.log`.
+
+Creep, `results/creep-qwen36-gguf-f16-clean.tsv`:
+
+| depth_tokens | decode_toks |
+| --- | --- |
+| 4114 | 67.94 |
+| 8222 | 71.99 |
+| 16386 | 65.66 |
+| 24602 | 61.50 |
+| 32818 | 56.84 |
+| 40982 | 53.00 |
+
+`no ceiling found up to 40960` — never dropped near the 8 tok/s floor.
+
+Binary search above 40960 (same method as the q8_0 arm): 44032, 47104,
+53248 and 65536 all load but fail the first real completion (Metal
+OOM). So 40960 is also the f16 arm's load ceiling — the creep's tested
+range was the whole reachable range, not an arbitrary stop. f16 is much
+faster per token (53 tok/s at 40982 vs. q8_0's 16.57 at the same
+depth) but its window is a third of q8_0's (40960 vs 98304 clean
+ceiling before the floor).
+
+f16 does not change the block 1 gate: it still clears 46K only if the
+Mendel task needs ≤40960 tokens, which is not guaranteed, while q8_0
+clears 46K on speed alone up to 81958. q8_0 stays the arm for blocks 9
+and 10, `-c 98304`.
