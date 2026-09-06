@@ -294,9 +294,9 @@ test_the_default_config_pins_no_window() {
     assert_missing "nothing is pinned without the override" "$OUT_TEXT" "pinned on provider"
     assert_contains "the owner's window stays" \
         "$(cat "$CASE_DIR/pi-agent/models.json")" '"contextWindow":49152'
-    assert_equal "and the settings keep pi's compaction defaults" \
+    assert_equal "and the settings pin the rule's reserve, 8192" \
         "$(cat "$CASE_DIR/pi-agent/settings.json")" \
-        '{"compaction": {"enabled": true}, "retry": {"enabled": true}}'
+        '{"compaction": {"enabled": true, "reserveTokens": 8192}, "retry": {"enabled": true}}'
     rm -rf "$CASE_DIR" "$FAKE_HOME"
 }
 

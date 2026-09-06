@@ -50,8 +50,9 @@
 #                         contextWindow - reserveTokens.
 #   SMOKE_MENDEL_RESERVE_TOKENS
 #                         pins `compaction.reserveTokens` in the pinned
-#                         settings.json. Empty keeps pi's default (16384;
-#                         the pinned config never inherits the owner's).
+#                         settings.json. Default 8192, the output budget
+#                         rule's value; the pinned config never inherits
+#                         the owner's, and pi's own default is 16384.
 #   SMOKE_MENDEL_KEEP_RECENT_TOKENS
 #                         pins `compaction.keepRecentTokens`. Empty keeps
 #                         pi's default (20000). pi cannot shrink a context
@@ -106,7 +107,7 @@ BASE="${SMOKE_MENDEL_BASE:-}"
 GIVEN_SESSION="${SMOKE_MENDEL_SESSION:-}"
 TASK_NAME="${SMOKE_MENDEL_TASK:-xtend}"
 WINDOW="${SMOKE_MENDEL_CONTEXT_WINDOW:-}"
-RESERVE="${SMOKE_MENDEL_RESERVE_TOKENS:-}"
+RESERVE="${SMOKE_MENDEL_RESERVE_TOKENS:-8192}"
 KEEP_RECENT="${SMOKE_MENDEL_KEEP_RECENT_TOKENS:-}"
 
 WORK="$OUT/fixture"

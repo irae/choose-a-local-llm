@@ -50,9 +50,11 @@ ASD-STE100 Simplified Technical English.
   and record `thinkingLevelMap`, `contextWindow` and `maxTokens` in
   `state.md`; do not edit it. A block that names an entry that does not
   exist is stop and ask.
-- Known condition of every Mendel row in this run: the pinned pi
-  config the worker builds uses pi's default `reserveTokens` 16384,
-  not 8192. Do not change it. Write it in the row's config note.
+- The pinned pi config the worker builds sets `reserveTokens` 8192
+  since 2026-09-06 (the output budget rule's value; rows before that
+  date ran at pi's default 16384). Confirm it in the pinned
+  `settings.json` the worker writes before the first Mendel run, and
+  write `reserveTokens 8192` in every row's config note.
 - Serve the exact files each block names. No block of this run may
   download anything. A missing file is stop and ask.
 - Never run a bare `git stash`. WIP commits on `run11` instead. Commit
@@ -198,7 +200,7 @@ Verify with one real chat completion. pi entry `gemma-4-26b-a4b`;
 thinking off is level `off`, thinking on is the level the map names
 for on (`high` last time). Smokes passed at both levels on 2026-09-06
 (9 calls and 11 calls, one clean commit each); no smoke runs again.
-Config note on every row: `f16 KV, -c 212992, reserveTokens 16384, wired 25000`.
+Config note on every row: `f16 KV, -c 212992, reserveTokens 8192, wired 25000`.
 
 ### Block 2/12 — Gemma-26B, thinking off, Mendel guided
 
@@ -282,7 +284,7 @@ benchmarks/mendel-smoke.sh <pi-id> <on-level> 2>&1 | tee hardware/m1-max-32gb/be
 ```
 
 A `fail` drops blocks 6 and 7. Config note: `mlx_lm.server,
---prompt-cache-size 2, thinking on, reserveTokens 16384, wired 25000`.
+--prompt-cache-size 2, thinking on, reserveTokens 8192, wired 25000`.
 
 ### Block 6/12 — Qwen3.6 MLX, thinking on, Mendel blind
 
@@ -313,7 +315,7 @@ mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
 
 pi entry `prism-ml/Ternary-Bonsai-27B-mlx-2bit`, level `off`. Config
 note: `mlx_lm.server, --prompt-cache-size 2, thinking off,
-reserveTokens 16384, wired 25000`.
+reserveTokens 8192, wired 25000`.
 
 ### Block 8/12 — Bonsai MLX, thinking off, Mendel guided
 
@@ -364,7 +366,7 @@ benchmarks/mendel-smoke.sh bonsai-prism <on-level> 2>&1 | tee hardware/m1-max-32
 ```
 
 A `fail` drops block 10. Config note: `prism fork, q4_0 KV + bias, -c
-65536, reserveTokens 16384, wired 25000`.
+65536, reserveTokens 8192, wired 25000`.
 
 ### Block 10/12 — Bonsai fork, thinking high, Mendel guided
 
@@ -403,7 +405,7 @@ benchmarks/mendel-smoke.sh qwen3.6-35b-a3b off 2>&1 | tee hardware/m1-max-32gb/b
 ```
 
 A `fail` drops blocks 11 and 12. Config note: `<KV> KV, -c <value>,
-clean depth <value> (block 1), reserveTokens 16384, wired 25000`.
+clean depth <value> (block 1), reserveTokens 8192, wired 25000`.
 
 ### Block 11/12 — Qwen3.6 GGUF, thinking off, Mendel guided
 
@@ -455,8 +457,6 @@ publishes.
 
 ## Open decisions for the owner
 
-- `reserveTokens` 8192 in the kit's pinned settings: before this run,
-  or after it. The runbook assumes after.
 - The Bonsai MLX thinking-high retries (penalty rule), and the
   Bonsai fork blind retry: in a later run, or dropped.
 - The corpus behind the Bonsai KV bias file
