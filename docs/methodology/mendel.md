@@ -161,11 +161,15 @@ never copied from a runbook or from the owner's daily-driver entry.
 - **Clean depth**: from the newest slow creep at that `-c`: the
   deepest step at or above the 8 tok/s floor before the creep's STOP
   verdict, or the last step when no verdict came.
-- **Harness window** (`contextWindow`): the largest of 32768, 49152,
-  65536, 98304, 131072, 212992 that is at or under both `-c` and the
-  clean depth. The task has needed about 46K on other models, so a
-  window under that is a known partial condition, written in the
-  config note, and never a reason to freeze a larger measurement out.
+- **Harness window** (`contextWindow`): the clean depth rounded down
+  to a multiple of 4096, at or under `-c`. Never a smaller "safe"
+  value (owner rule, 2026-09-06): this hardware is old and every
+  token of window matters, so a run goes to the measured limit and
+  only steps down, by 8192 at a time, after an OOM or a server death
+  at that window, with the step written in `state.md` and the config
+  note. The task has needed about 46K on other models, so a window
+  under that is a known partial condition, written in the config
+  note, and never a reason to freeze a larger measurement out.
 - **Output budget**: `maxTokens` and `reserveTokens` by the output
   budget rule above.
 - **Compaction keep** (`keepRecentTokens`): pi's default 20000 unless
