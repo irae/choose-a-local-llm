@@ -22,6 +22,14 @@ test"): strong API models run blind only; local and weak models run
 both, so each pair shows the lift. Never compare a score across the
 two tests.
 
+Note added by the owner, run 10, 2026-09-06: a model can be scored
+more than once at different thinking levels, and coverage can be
+uneven — a model may have a thinking-on row and no thinking-off row
+(or vice versa) even after EvalPlus clears the gate at that level.
+Check every thinking level a model has an EvalPlus pass at before
+assuming its Mendel coverage is complete;
+`backlog/mendel-thinking-off-gaps.md` tracks confirmed gaps.
+
 ## The smoke
 
 One handed task before the full run: replace one dependency that spans
