@@ -218,7 +218,7 @@ Run twice on the final config. Same speed as the deep-clone prompt (15.59), so t
 
 **pass@1 0.982 base / 0.939 plus / 100% completion** (mlx 4-bit, reasoning_effort=medium, output
 budget 8192, temperature 0). A 2026-08-26 pass under a flawed 3072-token cap
-had scored it 0.970/0.939 (superseded, see
+had scored it 0.970/0.939/98% (superseded, see
 [the historical page](../historical.md)). Zero empty completions. The
 strongest HumanEval+ result of the models scored so far.
 

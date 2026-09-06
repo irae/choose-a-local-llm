@@ -55,7 +55,7 @@ Both servers: 14.9 GB RSS combined. ~12 GB left for KV → roughly 2×35K contex
 
 **pass@1 0.915 base / 0.884 plus / 97% completion** (mlx, thinking on, output budget 10240,
 temperature 0). A 2026-08-26 pass under a flawed 3072-token cap had scored
-it 0.640/0.634 — the biggest correction of any model (superseded, see
+it 0.640/0.634/70% — the biggest correction of any model (superseded, see
 [the historical page](../historical.md)). 5/164 completions stay empty even
 at the full budget: a real model ceiling, not a harness artifact. The
 ternary 95% claim holds up in practice. Bonsai is also the least disruptive
