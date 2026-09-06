@@ -23,8 +23,10 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
   figure came from the fast sweep and is on the historical page.
 - **Second-best quality measured here: 0.939 / 0.921 EvalPlus.** Only
   Qwen3.8 scores higher, and Qwen3.8 is four times slower.
-- Weak point: decode falls to ~17 tok/s past ~30K used, and there is no
-  thinking-off score yet, so sub-agent use is unmeasured.
+- **Thinking off scores 0.951 / 0.915 with no empty completion, in 15
+  minutes (run 10).** Base is higher than with thinking on, plus is
+  slightly lower, and the five thinking-on empties are gone.
+- Weak point: decode falls to ~17 tok/s past ~30K used.
 
 ## All configs — this model
 
@@ -112,6 +114,7 @@ MTP numbers there read below the py/js bench.
 | config scored | budget | pass@1 base | pass@1 plus | empty completions |
 |---|--:|--:|--:|--:|
 | llama-server + MTP, thinking on | 26624 | **0.939** | **0.921** | 5/164 (~3%) |
+| llama-server + MTP, q8_0 KV, `-c 49152`, thinking off (run 10) | 8192 | 0.951 | 0.915 | 0/164 |
 
 The 5 empty completions are a real model limit, not a harness artifact — they
 stay empty at the full budget.

@@ -143,7 +143,7 @@ auto-fits it.
 |---|---|--:|--:|---|
 | **Qwen3.8-27B** | mlx 4-bit, reasoning_effort=medium, budget 8192 | **0.982** | **0.939** | 0 empty |
 | **Ternary Bonsai-27B** | mlx 2-bit, thinking on, budget 10240 | **0.915** | **0.884** | 5/164 empty is a real model ceiling |
-| **Qwen3.6-35B-A3B (MoE)** | llama+MTP, thinking on, budget 26624 | **0.939** | **0.921** | 5/164 empty is a real model ceiling |
+| **Qwen3.6-35B-A3B (MoE)** | llama+MTP, thinking on, budget 26624 | **0.939** | **0.921** | 5/164 empty is a real model ceiling; thinking off reads 0.951 / 0.915 with 0 empty (run 10) |
 | **Gemma-4-26B-A4B** | GGUF UD-Q4_K_XL llama f16, thinking off, budget 8192 | **0.976** | **0.945** | 0 empty, 19 minutes (run 10); thinking on reads 0.884 / 0.860 with 18 empty |
 | Gemma-4-26B-A4B | mlx 4-bit, thinking on, budget 30000 | 0.713 | 0.701 | 46/164 (~28%) empty, the thinking-convergence problem at its worst |
 | **Gemma-4-12B** | GGUF Q4_K_XL llama f16, thinking off, budget 8192 | **0.976** | **0.939** | 0 empty (run 9) |

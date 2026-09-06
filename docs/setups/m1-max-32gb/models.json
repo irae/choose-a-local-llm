@@ -440,6 +440,14 @@
       "empty": "5/164"
     },
     {
+      "slug": "qwen3.6-35b-a3b",
+      "model": "Qwen3.6-35B-A3B (GGUF UD-Q4_K_XL, q8_0 KV)",
+      "mode": "thinking off",
+      "base": "0.951",
+      "plus": "0.915",
+      "empty": "0/164"
+    },
+    {
       "slug": "bonsai-27b",
       "model": "Ternary-Bonsai-27B (fork q4+bias)",
       "mode": "thinking on",
