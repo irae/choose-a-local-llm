@@ -19,6 +19,8 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
+- [p] Status-lines proposal: one template per update type in three sizes, branch `status-lines`, worktree `../choose-a-local-llm-statuslines`; two points to settle, see the decisions file (owner-decisions-pending.md)
+- [ ] Owner decisions pending: run-branch push rule, shared-score quant exception wording, Qwen3.6 entry at 49152, Qwen3.8 MLX window, Bonsai KV bias corpus (owner-decisions-pending.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
 - [ ] Two owner questions left by the non-goals sweep: the positive half of the model entry criteria, and whether "a run gated by our own configuration is our fault" becomes a rule (non-goals-sweep-findings.md)
 
