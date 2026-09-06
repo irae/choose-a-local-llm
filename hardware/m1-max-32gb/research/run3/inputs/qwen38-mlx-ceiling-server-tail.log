@@ -1,0 +1,27 @@
+2026-09-04 04:47:10,803 - INFO - Starting httpd at 127.0.0.1 on port 8081...
+127.0.0.1 - - [04/Sep/2026 04:47:12] "GET /v1/models HTTP/1.1" 200 -
+2026-09-04 04:47:14,142 - INFO - Prompt Cache: 0 sequences, 0.00 GB
+127.0.0.1 - - [04/Sep/2026 04:47:14] "POST /v1/completions HTTP/1.1" 200 -
+2026-09-04 04:47:32,529 - INFO - Prompt processing progress: 2048/22238
+2026-09-04 04:47:50,986 - INFO - Prompt processing progress: 4096/22238
+2026-09-04 04:48:09,688 - INFO - Prompt processing progress: 6144/22238
+2026-09-04 04:48:28,606 - INFO - Prompt processing progress: 8192/22238
+2026-09-04 04:48:47,775 - INFO - Prompt processing progress: 10240/22238
+2026-09-04 04:49:07,172 - INFO - Prompt processing progress: 12288/22238
+2026-09-04 04:49:26,802 - INFO - Prompt processing progress: 14336/22238
+2026-09-04 04:49:46,652 - INFO - Prompt processing progress: 16384/22238
+2026-09-04 04:50:06,760 - INFO - Prompt processing progress: 18432/22238
+2026-09-04 04:50:27,073 - INFO - Prompt processing progress: 20480/22238
+2026-09-04 04:50:44,860 - INFO - Prompt processing progress: 22237/22238
+2026-09-04 04:50:44,974 - INFO - Prompt processing progress: 22238/22238
+2026-09-04 04:50:49,521 - INFO - Prompt Cache: 2 sequences, 3.23 GB
+127.0.0.1 - - [04/Sep/2026 04:50:49] "POST /v1/completions HTTP/1.1" 200 -
+2026-09-04 04:51:08,531 - INFO - Prompt processing progress: 1850/1851
+2026-09-04 04:51:08,621 - INFO - Prompt processing progress: 1851/1851
+2026-09-04 04:51:12,873 - INFO - Prompt Cache: 2 sequences, 3.47 GB
+127.0.0.1 - - [04/Sep/2026 04:51:12] "POST /v1/completions HTTP/1.1" 200 -
+    prompt_responses, gen_responses = batch_generator.next()
+    self._prompt_batch.prompt(prompts)
+  File "/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/generate.py", line 1161, in prompt
+    mx.eval([c.state for c in self.prompt_cache])
+RuntimeError: [METAL] Command buffer execution failed: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory).
