@@ -42,7 +42,20 @@ timings, prompt-cache reuse, the KV type decision) live in
    it names. A missing or different file is stop-and-ask, never a
    substitute. Whether a run may download, and what, is decided when the
    run is planned and written into its runbook; a runbook that says
-   nothing means no download.
+   nothing means no download. Exactness stops at identity: the files,
+   the backend, the thinking level, the prompt version, the KV type
+   once picked. The values measured around them are rule 10.
+10. **Measured parameters come from the newest measurement, never from
+   a planning snapshot.** The serving `-c`, the harness window, the
+   output budget, the drafter depth and every gate input are
+   measurements. A runbook gives the value known when it was written,
+   with its date and source. A newer measurement under the same
+   identity, made in the same run or committed since, replaces it,
+   and the config note names the value and its source. A value frozen
+   on purpose is a dated owner decision with its reason, written as
+   such. Run 11 measured an 82K clean depth in its first block and
+   ran its Mendel rows on a 49152 window because the runbook froze
+   the window; this rule exists so that does not repeat.
 9. **After tests, check for leftovers and clean up** (the checklist has
    the commands). Do not delete model files or tools early — keep
    variants for debugging until many successes.

@@ -48,6 +48,59 @@ and the methodology pages the runbook points to.
   It gets everything it needs from that file and the pages it links.
   If the runner has to guess, the runbook failed.
 
+## Fixed and derived parameters
+
+A runbook is written days before its run. Every number in it is a
+snapshot of what was known at planning time, and the run itself
+produces newer numbers as it goes. The rule (owner, 2026-09-06):
+**parameters and gates are decided on the newest data, never on the
+planning snapshot.** A runbook that freezes a measured value turns
+the agent into a script and wastes the run: run 11 measured an 82K
+clean depth in its first block and then, by the runbook's own words,
+ran the Mendel pair on a 49152 window.
+
+Two kinds of parameter, and the runbook says which is which:
+
+- **Fixed** parameters are identity. The model files, revision and
+  quant; the backend; the thinking level; the prompt version; the base
+  commit; the KV type when a pick exists; the wired limit the owner
+  set. They are what the row is about. A different value is a
+  different row, so a mismatch is stop and ask, never a substitute.
+- **Derived** parameters are measurements. The serving `-c`; the
+  harness window (`contextWindow`); `maxTokens` and `reserveTokens`
+  from the output budget rule; the drafter depth; `keepRecentTokens`;
+  any gate input such as clean depth or decode speed. The runbook
+  names each one, gives the planning-time value with its date and
+  source, and says where the run gets a newer one: a block of this
+  run first, then the newest committed result under
+  `hardware/<hardware-id>/`, then the published page. The newest
+  measurement under the run's fixed parameters wins, and the config
+  note carries the value and its source ("`-c 98304`, block 1").
+
+The consequences:
+
+- A derived value changes downstream values in the same run. A block
+  that finds a new `-c` or clean depth also sets the harness window
+  of every later block on that model, by the rule in
+  `docs/methodology/mendel.md` ("Window and budget"). The runbook
+  writes that dependency as a step, not as a number.
+- A freeze is allowed only when the owner asks for one, and then it
+  is written as a dated owner decision with its reason ("every other
+  model keeps its 24000 numbers; owner, 2026-09-06"). Anything else
+  written as "stays as it is" or "the runner never changes it" is a
+  planning bug.
+- The owner's harness file, `~/.pi/agent/models.json`, is not the
+  place for a run's derived values. The run's pinned config is (the
+  worker and the smoke build one per run). The coordinator writes the
+  final values into the owner's file at close-out, with the site.
+- A gate compares a threshold from the method (46K for the Mendel
+  task, 0.800 for EvalPlus) with the newest measurement. Thresholds
+  are rules and may be fixed; the measured side never is.
+
+When you write a block, list its parameters first and mark each one
+fixed or derived. If a derived one has no source in the run and no
+committed measurement, the block that measures it comes first.
+
 ## How to write `bench<N>/AGENT.md`
 
 1. Create the next `hardware/<hardware-id>/benchmarks/bench<N>/` folder
@@ -95,6 +148,9 @@ and the methodology pages the runbook points to.
 5. Name the exact model files, revision and quant each block serves,
    and say whether the run may download anything and what. Silence
    means no download; the runner then stops and asks on a missing file.
+   That exactness covers identity only ("Fixed and derived parameters"
+   above). The serving parameters beside the files are derived, and
+   the block says where the run takes them from.
 6. State the execution rules the runner must not relearn: local run
    branch in a fresh sibling worktree (the main worktree stays with the
    coordinator); no bare `git stash`, named stashes only, applied by
@@ -110,13 +166,20 @@ and the methodology pages the runbook points to.
    form in `state.md`, the site comparison in `results.md`); the scoped
    memory watcher on every run; commit as results land; never push a
    run branch; never publish.
-7. Write the blocks in priority order. Each block gives: the exact
-   serving command, the exact run command (with every env var), where
-   results land, what "done" means, and what to update when it is done
-   (tables, `results.md`, `state.md`, commit).
+7. Write the blocks in priority order. Each block gives: the serving
+   command with its derived parameters marked and sourced, the run
+   command (with every env var), where results land, what "done"
+   means, and what to update when it is done (tables, `results.md`,
+   `state.md`, commit). A serving command is exact in its files and
+   flags and open in its measured values: write `-c <newest clean
+   ceiling; planning value 98304, block 1 of run 11>`, never a bare
+   number that a later block of the same run can outdate.
 8. Make every condition executable. "If promising" is a coordinator
    judgment. Resolve it while planning, or spell out the test the
-   runner applies and what to do on each outcome.
+   runner applies and what to do on each outcome. A gate's outcome
+   includes the values it sets for later blocks; write them as
+   assignments the runner records in `state.md`, so a later block
+   reads its parameters from `state.md`, not from this file.
 9. Bake in the failure paths so the GPU never sits idle: what to check
    when output stops growing (server log first; see
    `docs/methodology/server-lore.md`), how to resume each block, and
@@ -124,7 +187,13 @@ and the methodology pages the runbook points to.
    gates.
 10. Close the loop: when the run ends, the runner updates `state.md`
    with a clean handing-over section, and the coordinator adds the
-   run's findings to `hardware/<hardware-id>/benchmarks/INDEX.md`.
+   run's findings to `hardware/<hardware-id>/benchmarks/INDEX.md`,
+   and writes the run's final derived values into the owner's harness
+   file and the site in the same pass.
+11. Read the finished runbook once more as the runner would, block by
+   block, and ask of every number: is this identity, or a measurement
+   that this run can outdate? Every measurement gets a source and a
+   "newest wins" path, or the block that measures it moves earlier.
 
 The methodology carries the "how to not make mistakes":
 `docs/methodology/checklist.md` is the run loop, `common-rules.md` the

@@ -84,7 +84,14 @@ in the runbook is a plain message, not a question tool.
       deviation on a judged score.
    8. Only now start the real benchmark.
 4. Serve the exact files the runbook names. A missing file is STOP and
-   ask, unless the runbook says this run may download it.
+   ask, unless the runbook says this run may download it. The
+   parameters beside the files (`-c`, the harness window, the output
+   budget, the drafter depth) come from the newest measurement, not
+   from the runbook's number: this run's earlier blocks first, then
+   the newest committed result for the same files, backend and KV
+   type ([common rules](./common-rules.md), rule 10). Write the value
+   you serve and where it came from in `state.md` before the server
+   starts, and in the row's config note.
 5. Start the server for ONE config. Verify it serves (warmup request).
    LM Studio: load explicitly with `lms load`, verify with `lms ps`,
    then check the SERVER is up with `lms server status` and start it

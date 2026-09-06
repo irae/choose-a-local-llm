@@ -251,6 +251,15 @@ Benchmark work:
 - **Run the exact files the runbook names.** A missing or different
   file is stop-and-ask. Downloading is a planning decision written into
   the runbook (`docs/methodology/common-rules.md`, rule 8).
+- **Measured parameters come from the newest data, never from the
+  runbook's snapshot** (owner rule, 2026-09-06). The serving `-c`, the
+  harness window, the output budget and every gate input are
+  measurements; a runbook gives their planning-time value and its
+  source, and a newer measurement made under the same fixed
+  parameters, in this run or in a committed result, replaces it. The
+  runner records the value it used and its source in `state.md` and
+  the row's config note. Which parameters are fixed and which are
+  derived: `benchmarks/PLANNING.md`, "Fixed and derived parameters".
 - **Run `tests/run.sh` after you touch any script under
   `benchmarks/`.** It is one command and it needs no server.
 - **Never edit a shell script while it runs.** The shell reads the file
@@ -325,7 +334,10 @@ Benchmark work:
   repository for Mendel rows. A run branch never edits `models.json`,
   the site pages, the method pages, or any other shared file. Scoring,
   publishing and every shared-file change happen on `master` after the
-  merge.
+  merge. This does not freeze a run's harness parameters: the run's
+  derived values go into the pinned pi config the run tools build
+  per run, and the coordinator writes the final values into the
+  owner's `models.json` at close-out.
 - **When master moves a run folder, rename it on the run branch first.**
   On the run branch, `git mv` the run folder to the same new path,
   commit, then merge `master`. Both sides renamed the same path, so the

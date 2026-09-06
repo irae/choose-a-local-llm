@@ -148,3 +148,36 @@ window ladder and the summary rubric live in
   counter does not read. Those rows keep an older reading, which
   counts the prompt of the largest turn without the response of that
   turn; the two mirrored reports mark those cells with a dagger.
+
+## Window and budget
+
+A Mendel row's harness parameters are measurements, set from the
+newest data at run time ([common rules](./common-rules.md), rule 10),
+never copied from a runbook or from the owner's daily-driver entry.
+
+- **Serving `-c`**: the largest value that loads and serves one real
+  completion under the current wired limit, from the newest ladder
+  for the same files and KV type.
+- **Clean depth**: from the newest slow creep at that `-c`: the
+  deepest step at or above the 8 tok/s floor before the creep's STOP
+  verdict, or the last step when no verdict came.
+- **Harness window** (`contextWindow`): the largest of 32768, 49152,
+  65536, 98304, 131072, 212992 that is at or under both `-c` and the
+  clean depth. The task has needed about 46K on other models, so a
+  window under that is a known partial condition, written in the
+  config note, and never a reason to freeze a larger measurement out.
+- **Output budget**: `maxTokens` and `reserveTokens` by the output
+  budget rule above.
+- **Compaction keep** (`keepRecentTokens`): pi's default 20000 unless
+  the run's pinned config sets another value; the config note says
+  which (`backlog/pi-compaction-efficiency.md` holds the open
+  proposal for small windows).
+
+These values live in the run's pinned pi config, which the smoke
+already builds from `SMOKE_MENDEL_CONTEXT_WINDOW`,
+`SMOKE_MENDEL_RESERVE_TOKENS` and `SMOKE_MENDEL_KEEP_RECENT_TOKENS`.
+The Mendel worker copies the owner's entry as it is (state on
+2026-09-06); until it takes the same overrides, a run whose measured
+window differs from the owner's entry is stop and ask, and the ask
+names the measured value. The config note of every row carries the
+window, the `-c`, the budget and the source block of each.
