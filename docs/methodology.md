@@ -14,6 +14,7 @@ split by task — read the page for the task you are about to do:
 | Run an EvalPlus scoring pass | [EvalPlus](./methodology/evalplus.md) |
 | Run the Mendel agentic benchmark | [Mendel](./methodology/mendel.md) |
 | Run the Aider polyglot benchmark | [Polyglot](./methodology/polyglot.md) |
+| Report progress of a run, in chat or in a file | [Status lines](./methodology/status-lines.md) |
 | Touch a server, or debug a stall/crash | [Server lore](./methodology/server-lore.md) |
 
 ## Goals

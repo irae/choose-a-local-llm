@@ -125,13 +125,16 @@ in the runbook is a plain message, not a question tool.
    If output stopped: read the server log for the death signatures
    before blaming the model, restart, resume. Every wakeup ends with a
    new wakeup or with the shutdown steps below. The GPU never sits
-   idle between blocks.
+   idle between blocks. A background monitor reports on an event, never
+   on a timer ([status lines](./status-lines.md), "Context budget").
 8. **Reinforcing rule 1: this covers QUEUED blocks, not only mid-block.**
    When one block finishes, start the next queued block in the same
    wakeup. A block simply being scored, long, or run at night is not a
    stop-and-ask condition on its own — only the block's own text saying
    so, or the owner asking to pause, is.
 9. Heartbeat format: "Block N (model): done X/Y, [num]h[num]min left."
+   One short line, numbers only. Every update type has a template in
+   three sizes on [status lines](./status-lines.md); use it.
 10. Note deviations in the run's `state.md` AS THEY HAPPEN, not at the
    end. Smallest fix, fairness first, suspect the harness before the
    model.
