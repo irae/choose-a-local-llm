@@ -23,8 +23,10 @@ and the methodology pages the runbook points to.
   it), and merged to `master` only when both agree. When it lands, its
   backlog file is deleted in the same commit and its line moves to the
   Changelog in `backlog/index.md`, which lists every item in priority
-  order with the owner's checkbox mark. Everything else is planning and
-  stays with the coordinator.
+  order with the owner's checkbox mark. Only the coordinator files an
+  item, and only when the owner asks for one; a sub-agent that finds
+  something worth filing reports it and files nothing. Everything else
+  is planning and stays with the coordinator.
 
 ## The two roles
 
