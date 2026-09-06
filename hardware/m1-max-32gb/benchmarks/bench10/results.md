@@ -323,3 +323,6 @@ EVALPLUS_MAX_NEW_TOKENS=8192 \
 benchmarks/run-humaneval.sh qwen36-gguf-off qwen3.6-35b-a3b \
   '{"chat_template_kwargs":{"enable_thinking":false}}'
 ```
+
+**Result**: pass@1 base **0.951**, plus **0.915**, empty **0/164**,
+wall **0:14:42**. Clean run.
