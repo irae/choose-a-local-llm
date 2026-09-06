@@ -4,8 +4,11 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
 
 ## Highlights
 
-- **Best quality:** Qwen3.8-27B on MLX — 0.982 / 0.939 EvalPlus. Send hard
-  problems here.
+- **Best quality, and the first local model to finish the agent task:**
+  Qwen3.8-27B — 0.982 / 0.939 EvalPlus on MLX, and on llama-server at
+  f16 KV the highest valid Mendel blind score of any local model, 87 of
+  100 with all eight libraries (run 10). Send hard problems to the llama
+  row.
 - **Best depth:** Gemma-12B on llama-server with f16 KV and no drafter —
   24.64 tok/s at 4K and still 8.86 at 245K, so it reaches the model's own
   262,144 window above the floor, in 13.9 GB. The LM Studio engine is
@@ -90,15 +93,16 @@ Compaction thresholds come from the floor table below, not from the window.
 - [Gemma-4-26B-A4B](./reports/gemma-4-26b-a4b.md) —
   MoE+MTP: fastest Python, 197K at f16 KV on one slot
 - [Qwen3.6-35B-A3B](./reports/qwen3.6-35b-a3b.md) —
-  MoE+MTP: fastest JS, strongest base benchmarks; 96K context at the current
-  wired limit
+  MoE+MTP: fastest JS, strongest base benchmarks; 49K is the context
+  that loads at the current wired limit
 - [Gemma-4-12B-it](./reports/gemma-4-12b-it.md) —
   biggest context, best concurrency
 - [Ternary Bonsai-27B](./reports/bonsai-27b.md) —
   27B-class from 8 GB; two serving profiles (MLX speed / prism-fork
   desktop), 2 concurrent slots on the fork
 - [Qwen3.8-27B](./reports/qwen3.8-27b.md) — strongest
-  base model, slowest on this hardware
+  base model, slowest on this hardware; on llama f16 it finishes the
+  agent task (87 blind, run 10)
 
 ## Decode speed vs used context — the 8 tok/s usability floor
 

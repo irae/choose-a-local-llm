@@ -25,26 +25,29 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
   llama at f16 KV now holds 15 tok/s to 49K, the largest context this
   machine loads for it (run 9).
 
-## Can it finish engineering tasks? Not yet
+## Can it finish engineering tasks? Yes, on llama-server at f16 KV
 
-Every Mendel run of this model is partial, and the last one is invalid.
-Blind at effort medium scored 80 partial; blind at low 67.5 partial;
+Run 10 settled it. The GGUF row at f16 KV and `-c 49152` completed the
+Mendel blind task: 87 of 100, all eight libraries replaced, no bug
+defect, all three traps handled, 10 commits in 129 minutes, peak
+context 45,705 of the 49,152 window, no loop. Points went on a
+lockfile-only install and on commit craft. It is the highest valid
+blind score of any local model on this machine; the next is Qwen3.6
+GGUF at 63.
+
+Every earlier run was on the MLX build and every one was partial or
+invalid: blind at effort medium 80 partial, blind at low 67.5 partial,
 guided at low 84 partial on the first prompt version and 34 on the
-current one, with three server crashes; the run 9 retry at low ended
-invalid after three attempts, two of them real Metal OOM crashes when
-the context grew past the 26624-token MLX window in agentic use. The
-best single-turn score on this hardware has never delivered a complete
-multi-file task through the harness.
+current one with three server crashes, and the run 9 retry invalid
+after three attempts, two of them Metal OOM crashes when the context
+grew past the 26,624-token MLX window. The difference is the window:
+the GGUF at f16 holds 49K at 15 tok/s, the MLX build 26K at the same
+speed, and this task needs about 46K.
 
-So this page reads as a caution. Either the model does not fit this
-machine for agent work, or the right configuration is not found yet.
-The llama-server row at f16 KV, 15 tok/s to 49K, passed the Mendel
-smoke in run 10 (one handed two-file task: 8 tool calls, one clean
-commit, no loop, 62 seconds), so it gets a Mendel blind run in the
-same run. Research looks at community builds,
-a smaller window with earlier compaction, and 3-bit weights that buy
-context. If none of that produces a completed run, the model retires
-from the daily-driver question and keeps its single-turn score.
+So the llama row is the daily-driver candidate for hard problems. Its
+own EvalPlus score lands in run 10's last block; until then the cell
+carries the MLX score. The MLX row stays the low-memory option and
+keeps its single-turn score.
 
 ## All configs — this model
 
