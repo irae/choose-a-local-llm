@@ -198,5 +198,11 @@ F2 done: base 0.951, plus 0.915, empty 0/164, wall 0:14:42. Watchers
 stopped.
 
 Owner fixed `gh` auth between blocks (`gh auth status` now shows
-logged in). Starting Block F3, then retrying Block D's guided run for
-Bonsai afterward (harness-fault retry, no penalty, per house rules).
+logged in). Owner asked to prioritize the Mendel retry over Block F3,
+so retrying Block D's guided run first (harness-fault retry, no
+penalty, per house rules). The stale invalid-run branch
+(`prism-ml-Ternary-Bonsai-27B-mlx-2bit-off-guided-v3-issue-13`, zero
+unique commits vs `master`) was deleted locally to let `run-worker.sh`
+recreate it; the old row already committed to `results-guided.json`
+stays as the record of the failed attempt, this retry adds a fresh
+one. Guided retry launched with watchers. Block F3 queued after.
