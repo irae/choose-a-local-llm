@@ -196,3 +196,7 @@ launched with watchers.
 
 F2 done: base 0.951, plus 0.915, empty 0/164, wall 0:14:42. Watchers
 stopped.
+
+Owner fixed `gh` auth between blocks (`gh auth status` now shows
+logged in). Starting Block F3, then retrying Block D's guided run for
+Bonsai afterward (harness-fault retry, no penalty, per house rules).
