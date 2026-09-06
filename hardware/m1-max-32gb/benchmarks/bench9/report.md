@@ -15,19 +15,19 @@ Speed and context:
 
 | old/new | # | Config | Max ctx | Gated by | tok/s (shallow → deep) | Memory | EvalPlus |
 |---|--:|---|--:|:--:|--:|--:|--:|
-| old | 5 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921 |
-| new | — | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | **8k** | **mem** | **36.4 → 43.8** | **25.0 GB** | 0.939/0.921 |
-| old | 3 | Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | 18.9 GB | 0.982/0.939 |
-| new | — | Qwen3.8-27B, GGUF, MTP f16, effort medium | **49k** | **mem** | **20.0 → 15.0** | **23.5 GB** | 0.982/0.939 |
-| old | 7 | Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701 (MLX copy) |
-| new | — | Gemma-4-26B-A4B, GGUF, MTP f16 | **197k** | **mem** | **60.3 → 17.3** | **25.6 GB** | 0.713/0.701 (MLX copy) |
+| old | 5 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 90k | speed | 44 → 8.1 | 22.8 GB | 0.939/0.921/97% |
+| new | — | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | **8k** | **mem** | **36.4 → 43.8** | **25.0 GB** | 0.939/0.921/97% |
+| old | 3 | Qwen3.8-27B, GGUF, MTP q8, effort medium | 19k | speed | 14.1 → 8 | 18.9 GB | 0.982/0.939/100% |
+| new | — | Qwen3.8-27B, GGUF, MTP f16, effort medium | **49k** | **mem** | **20.0 → 15.0** | **23.5 GB** | 0.982/0.939/100% |
+| old | 7 | Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701/72% (MLX copy) |
+| new | — | Gemma-4-26B-A4B, GGUF, MTP f16 | **197k** | **mem** | **60.3 → 17.3** | **25.6 GB** | 0.713/0.701/72% (MLX copy) |
 
 Mendel:
 
 | old/new | test | model | serving | score | worst defect |
 |---|---|---|---|--:|---|
-| old | guided | Ternary-Bonsai-27B-mlx-2bit, low (nearest scored local row, prompt v3.0) | mlx_lm.server | 59/100 (partial) | — |
-| new | guided | Gemma-4-12B, GGUF, f16 KV, no MTP, thinking off | pi | **37.5/100 (partial)** | — |
+| old | guided | Ternary-Bonsai-27B-mlx-2bit, low (nearest scored local row, prompt v3.0) | mlx_lm.server | 12.5/100 (partial 1/8) | — |
+| new | guided | Gemma-4-12B, GGUF, f16 KV, no MTP, thinking off | pi | **37.5/100** (partial 3/8) | — |
 | new | guided | Qwen3.8-27B (mlx, low) | mlx_lm.server | — | — |
 
 Gates:
@@ -74,6 +74,11 @@ Gates:
   Bonsai on the prism fork at low reasoning effort. Gemma-12B stopped
   at 3 of 8 libraries on `model_budget_exhausted`, the same signature
   as the retired LM Studio entry's high-effort attempt.
+- **Mendel score cells now carry the libraries done.** A partial score
+  is capped at 12.5 points per completed library, so the cell shows
+  the capped number, not the raw rubric total; this correction fixed
+  the Bonsai reference row above (raw 59, capped 12.5 at 1 of 8
+  libraries).
 - **Qwen3.8 MLX guided-low stays invalid after three attempts, root
   cause found.** The `maxTokens` fix from the previous run works: no
   crash comes from a budget/window mismatch at request time. But the
