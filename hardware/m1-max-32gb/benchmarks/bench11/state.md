@@ -108,3 +108,19 @@ handing-over section at the end.
   Pushed the run branch `gemma-4-26b-a4b-off-guided-v3-issue-13`.
   Removed its worker worktree, per the Mendel repo's cleanup rule.
 - Moving to block 3 (Gemma-26B blind, off) on the same server A.
+- Mid-block-2-scoring, coordinator flagged that results-guided.json
+  was never updated (only the CSV). My mistake — generate-report.mjs
+  reads only the JSON, so the report silently stayed stale. Fixed
+  with a subagent: built the matching JSON entry, verified
+  generate-report.mjs runs clean, committed and pushed (`fb48363`).
+  Learned for block 3: build the JSON entry immediately, not after
+  the fact.
+- Block 3 (blind, off) also ended on `repetition_loop` (5x identical
+  `edit` on cli-printer.js, 18:42:46Z to 18:50:15Z) — same pattern as
+  block 2. Invalid, no retry. Scored: score_raw 21, capped to 12.5 on
+  1/8 libraries. Dispatched the JSON-entry subagent immediately this
+  time (not after committing the CSV alone).
+- Block 1's gate (met earlier: GGUF clean depth 81958 ≥ 46K) means
+  blocks 9 and 10 run now, before block 4. Stopping server A, waiting
+  for wired recovery, then starting the Qwen3.6 GGUF server at `-c
+  98304`, q8_0 KV (block 1's found config) for blocks 9 and 10.

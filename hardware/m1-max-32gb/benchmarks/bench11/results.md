@@ -175,3 +175,29 @@ defect list in `results-guided.csv`
 on the `mendel-benchmark` `benchmark` branch, commit `2f1960c`. Session
 log redacted and pushed to `mendel-benchmark/benchmark/runs/`; run
 branch pushed to `origin/gemma-4-26b-a4b-off-guided-v3-issue-13`.
+
+## Block 3/10 — Gemma-26B, thinking off, Mendel blind
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-26b-a4b pi blind off
+```
+
+Branch `gemma-4-26b-a4b-off-issue-13`, base `2652ed6`. 28.0 min wall
+clock, 121 assistant messages, 120 tool calls, 21 tool errors, 7
+commits (1 library fully done: uuid), peak context 135797 of 212992
+(63.76%).
+
+**INVALID: same as block 2, the run ended on the live loop stop,
+`repetition_loop`, unit "edit" (tool call), 5 identical calls on
+`packages/mendel-pipeline/src/helpers/analytics/cli-printer.js`, first
+at 18:42:46Z, final at 18:50:15Z** (`meta.json`). No retry, moved on.
+
+Scored: score_raw 21, capped to 12.5 on 1/8 libraries. Notable: trap A
+(the `fs.promises.glob().then()` bug) still failed on the working
+tree — this model reproduced the same trap the Gemma-26B blind row at
+`high` hit before. Row in `results.csv`/`results.json`
+(`benchmark` branch), `invalid: true`. Session log redacted and
+pushed, run branch pushed to
+`origin/gemma-4-26b-a4b-off-issue-13`, worker worktree removed.
+
+Block 1's gate promotes blocks 9 and 10 next, before block 4.
