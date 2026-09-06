@@ -16,6 +16,11 @@ asked to pause, wait, or hold. **The only idle scenario is one the
 owner asked for.** A blocked block gets skipped, with the reason
 written to `state.md`, and the next one starts — never leave the GPU
 idle with runnable queued work because one item is stuck or ambiguous.
+Never call `AskUserQuestion` during a run. A multiple-choice question
+stops the GPU until the owner answers, and every case it would ask
+about is already covered: a blocked step is skipped and logged, a
+denied command is logged and the block continues, a stop-and-ask line
+in the runbook is a plain message, not a question tool.
 
 ## Before the run
 
