@@ -6,6 +6,33 @@ person's Mac, so it stays out of this repo.
 
 Build your own list once. The script reads it every run.
 
+## The three Mac setup steps
+
+A Mac needs three setup steps before it can serve benchmark runs. Each
+one is done once, and then again only when its own condition holds. A
+run reads their results; a run never does them.
+
+1. **The services list.** Decide what `mac-services.sh` disables. The
+   rest of this page. Redo it when you install or remove an app that
+   loads at boot.
+2. **The wired limit.** Find the largest `iogpu.wired_limit_mb` this
+   machine serves at, and the smaller value for when you work beside a
+   run. The procedure is
+   [the wired limit page](../docs/methodology/wired-limit.md). It needs
+   `sudo` and it can need a reboot, so the owner must be present.
+   Redo it after a macOS update, after a new model size class enters
+   the cache, or after the services list changes.
+3. **The machine file.** Write both results into
+   `~/.config/choose-a-local-llm/machine.md`. Steps 1 and 2 are only
+   finished when their values are in it, because
+   [`tools/preflight.sh`](./preflight.sh) reads that file and nothing
+   else. "Where your files go" and "What preflight reads" below give
+   its shape.
+
+Do them in that order. The services list changes the machine's resting
+memory, so a wired-limit ladder run before it measures the wrong
+machine.
+
 ## Where your files go
 
     ~/.config/choose-a-local-llm/

@@ -33,6 +33,7 @@ export default defineConfig({
           { text: 'KV cache pick', link: '/methodology/kv-cache-pick' },
           { text: 'Context creep', link: '/methodology/context-creep' },
           { text: 'Memory ceiling', link: '/methodology/memory-ceiling' },
+          { text: 'Wired limit', link: '/methodology/wired-limit' },
           { text: 'EvalPlus', link: '/methodology/evalplus' },
           { text: 'Mendel', link: '/methodology/mendel' },
           { text: 'Polyglot', link: '/methodology/polyglot' },

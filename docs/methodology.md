@@ -10,6 +10,7 @@ split by task — read the page for the task you are about to do:
 | Measure a new model at all | [KV cache pick](./methodology/kv-cache-pick.md) |
 | Run a depth / context-creep sweep | [Context creep](./methodology/context-creep.md) |
 | Probe a memory ceiling | [Memory ceiling](./methodology/memory-ceiling.md) |
+| Set or re-find the macOS wired limit | [Wired limit](./methodology/wired-limit.md) |
 | Run an EvalPlus scoring pass | [EvalPlus](./methodology/evalplus.md) |
 | Run the Mendel agentic benchmark | [Mendel](./methodology/mendel.md) |
 | Run the Aider polyglot benchmark | [Polyglot](./methodology/polyglot.md) |
