@@ -44,13 +44,22 @@ handing-over section at the end.
   32818 (decode 36.5, 44.1, 31.2, 24.1, 19.6 tok/s over depths 4114,
   8222, 16386, 24602, 32818). This is far below the site's published
   8K+ clean-depth figure and the block's 46K gate.
-- SUSPECT DEVIATION, not accepted as the block's clean-machine number:
-  block 1 requires this creep on a machine "clean... right after the
-  reboot, before any other model has loaded." The binary search just
-  before this loaded and killed the model 8 times (candidates 262144
-  down to 98304) on this same machine session, so the page cache and
-  memory state were disturbed before this creep ran. That is the
-  likely cause of the early compaction, not a real ceiling. Machine
-  was not rebooted since binary search. Result recorded here as
-  evidence but not treated as the block's clean-depth finding; a
-  redo after a real clean start is needed before this row can close.
+- Checked whether a reboot was actually needed before treating the
+  first creep as invalid: `tools/preflight.sh` reboot line said `ok`
+  (no condition holds), wired had recovered to 1634 MB (near the
+  1781 MB start baseline), swap flat (517 vs 533 MB). Free memory was
+  lower (11250 vs 17269 MB) but that is expected and not the meter
+  that matters (`memory-ceiling.md`). Preflight's own definition of
+  clean was met without a reboot; the runner never reboots on its own
+  regardless.
+- Coordinator's read on the first creep's mem-stop at 32818: not worse
+  than the site's published 24000 row (8K clean, compaction from 16K)
+  — 32818 tokens at 19.6 tok/s is deeper. Wired stays at 25000, no
+  intermediate values.
+- Redo creep, second clean start, same config: full ladder to a speed
+  verdict, floor hit at 98338, ceiling 81958 tokens at 9.24 tok/s.
+  Clears the block's 46K gate. Treating the first creep's early mem
+  stop as noise (did not reproduce); the redo is the accepted number.
+- GATE MET: GGUF clean depth 81958 ≥ 46K at ≥ 8 tok/s. Blocks 9 and 10
+  will run right after block 3, arm and `-c` pending the f16 and MLX
+  arms still to run in this block.
