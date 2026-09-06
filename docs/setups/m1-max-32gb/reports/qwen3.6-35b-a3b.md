@@ -5,7 +5,7 @@ Backends: llama-server, mlx-lm · [Qwen3.6-35B-A3B-MTP GGUF on Hugging Face](htt
 <!-- gen:model-kpis:start -->
 <div class="kpis">
   <div class="kpi"><b>53.3 tok/s</b><span>decode, shallow (MLX)</span></div>
-  <div class="kpi"><b>0.939 / 0.921</b><span>EvalPlus, thinking on</span></div>
+  <div class="kpi"><b>0.939 / 0.921 / 97%</b><span>EvalPlus, thinking on</span></div>
   <div class="kpi"><b>8K</b><span>GGUF clean depth before memory compaction (q8_0, -c 49152)</span></div>
   <div class="kpi"><b>37K</b><span>MLX last stable depth (OOM ~41K)</span></div>
 </div>
@@ -33,8 +33,8 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.6-35B-A3B, MLX, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921 |
-| 2 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921 |
+| 1 | Qwen3.6-35B-A3B, MLX, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921/97% |
+| 2 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921/97% |
 <!-- gen:model-table:end -->
 
 ## Configs

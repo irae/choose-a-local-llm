@@ -6,7 +6,7 @@ Backends: llama-server, mlx-lm · [GGUF on Hugging Face](https://huggingface.co/
 <div class="kpis">
   <div class="kpi"><b>51 tok/s</b><span>decode, shallow (MLX)</span></div>
   <div class="kpi"><b>70K</b><span>last stable depth, 12.8 tok/s (MLX)</span></div>
-  <div class="kpi"><b>0.884 / 0.860</b><span>EvalPlus, thinking on (GGUF f16); MLX 0.713 / 0.701</span></div>
+  <div class="kpi"><b>0.884 / 0.860 / 89%</b><span>EvalPlus, thinking on (GGUF f16); MLX 0.713 / 0.701 / 72%</span></div>
   <div class="kpi"><b>18/164</b><span>empty on GGUF f16: thinking non-convergence (46/164 on MLX)</span></div>
 </div>
 <!-- gen:model-kpis:end -->
@@ -35,9 +35,9 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
-| 2 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860 |
-| 3 | Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860 |
+| 1 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% |
+| 2 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% |
+| 3 | Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860/89% |
 <!-- gen:model-table:end -->
 
 ## Configs

@@ -4,7 +4,7 @@ Backends: llama-server, mlx-lm · [Qwen3.8-27B MLX 4-bit on Hugging Face](https:
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
-  <div class="kpi"><b>0.982 / 0.939</b><span>EvalPlus, effort medium — best score</span></div>
+  <div class="kpi"><b>0.982 / 0.939 / 100%</b><span>EvalPlus, effort medium — best score</span></div>
   <div class="kpi"><b>17 tok/s</b><span>decode, shallow (MLX)</span></div>
   <div class="kpi"><b>28K</b><span>MLX memory ceiling</span></div>
   <div class="kpi"><b>~26K</b><span>pi compaction setting</span></div>
@@ -54,9 +54,9 @@ keeps its single-turn score.
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939 |
-| 2 | Qwen3.8-27B, MLX, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927 |
-| 3 | Qwen3.8-27B, GGUF, MTP f16, effort medium | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939 |
+| 1 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% |
+| 2 | Qwen3.8-27B, MLX, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% |
+| 3 | Qwen3.8-27B, GGUF, MTP f16, effort medium | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939/100% |
 <!-- gen:model-table:end -->
 
 ## Configs

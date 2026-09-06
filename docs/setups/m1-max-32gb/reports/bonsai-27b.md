@@ -6,7 +6,7 @@ Backends: mlx-lm, prism-llama fork · [Ternary-Bonsai-27B on Hugging Face](https
 <div class="kpis">
   <div class="kpi"><b>24.5 tok/s</b><span>decode, shallow (MLX)</span></div>
   <div class="kpi"><b>58K</b><span>max healthy depth, 17.3 tok/s (MLX)</span></div>
-  <div class="kpi"><b>0.927 / 0.890</b><span>EvalPlus base/plus (fork, calibrated q4)</span></div>
+  <div class="kpi"><b>0.927 / 0.890 / 98%</b><span>EvalPlus base/plus/completion (fork, calibrated q4)</span></div>
   <div class="kpi"><b>2×48K</b><span>fork slots in 10.0 GB</span></div>
 </div>
 <!-- gen:model-kpis:end -->
@@ -32,10 +32,10 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884 |
-| 2 | Ternary-Bonsai-27B, MLX, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902 |
-| 3 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890 |
-| 4 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890 |
+| 1 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% |
+| 2 | Ternary-Bonsai-27B, MLX, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% |
+| 3 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% |
+| 4 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% |
 <!-- gen:model-table:end -->
 
 ## Configs

@@ -250,7 +250,7 @@ function renderEvalplusTable(data) {
   ]
   const completion = (empty) => {
     const m = /^(\d+)\/(\d+)$/.exec(empty || '')
-    return m ? `${(((m[2] - m[1]) / m[2]) * 100).toFixed(1)}%` : '—'
+    return m ? `${Math.round(((m[2] - m[1]) / m[2]) * 100)}%` : '—'
   }
   const body = (data.evalplusRuns || []).map(
     (r) => `| [${r.model}](./${r.slug}.md) | ${r.mode} | ${r.base} | ${r.plus} | ${r.empty} | ${completion(r.empty)} |`,

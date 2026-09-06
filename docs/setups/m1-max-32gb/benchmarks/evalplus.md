@@ -7,16 +7,16 @@ across serving configs when thinking mode, effort, and quant match.
 <!-- gen:evalplus-table:start -->
 | model | mode | pass@1 base | pass@1 plus | empty | completion |
 |---|---|--:|--:|--:|--:|
-| [Qwen3.8-27B](./qwen3.8-27b.md) | effort medium | 0.982 | 0.939 | 0/164 | 100.0% |
-| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | thinking on | 0.939 | 0.921 | 5/164 | 97.0% |
-| [Qwen3.6-35B-A3B (GGUF UD-Q4_K_XL, q8_0 KV)](./qwen3.6-35b-a3b.md) | thinking off | 0.951 | 0.915 | 0/164 | 100.0% |
-| [Ternary-Bonsai-27B (fork q4+bias)](./bonsai-27b.md) | thinking on | 0.927 | 0.890 | 4/164 | 97.6% |
-| [Ternary-Bonsai-27B (MLX 2-bit)](./bonsai-27b.md) | thinking on | 0.915 | 0.884 | 5/164 | 97.0% |
-| [Gemma-4-12B (GGUF Q4_K_XL)](./gemma-4-12b-it.md) | thinking off | 0.976 | 0.939 | 0/164 | 100.0% |
-| [Gemma-4-12B (LM Studio MLX 4-bit)](./gemma-4-12b-it.md) | thinking off | 0.909 | 0.872 | 0/164 | 100.0% |
-| [Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)](./gemma-4-26b-a4b.md) | thinking off | 0.976 | 0.945 | 0/164 | 100.0% |
-| [Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)](./gemma-4-26b-a4b.md) | thinking on | 0.884 | 0.860 | 18/164 | 89.0% |
-| [Gemma-4-26B-A4B (MLX 4-bit)](./gemma-4-26b-a4b.md) | thinking on | 0.713 | 0.701 | 46/164 | 72.0% |
+| [Qwen3.8-27B](./qwen3.8-27b.md) | effort medium | 0.982 | 0.939 | 0/164 | 100% |
+| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | thinking on | 0.939 | 0.921 | 5/164 | 97% |
+| [Qwen3.6-35B-A3B (GGUF UD-Q4_K_XL, q8_0 KV)](./qwen3.6-35b-a3b.md) | thinking off | 0.951 | 0.915 | 0/164 | 100% |
+| [Ternary-Bonsai-27B (fork q4+bias)](./bonsai-27b.md) | thinking on | 0.927 | 0.890 | 4/164 | 98% |
+| [Ternary-Bonsai-27B (MLX 2-bit)](./bonsai-27b.md) | thinking on | 0.915 | 0.884 | 5/164 | 97% |
+| [Gemma-4-12B (GGUF Q4_K_XL)](./gemma-4-12b-it.md) | thinking off | 0.976 | 0.939 | 0/164 | 100% |
+| [Gemma-4-12B (LM Studio MLX 4-bit)](./gemma-4-12b-it.md) | thinking off | 0.909 | 0.872 | 0/164 | 100% |
+| [Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)](./gemma-4-26b-a4b.md) | thinking off | 0.976 | 0.945 | 0/164 | 100% |
+| [Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)](./gemma-4-26b-a4b.md) | thinking on | 0.884 | 0.860 | 18/164 | 89% |
+| [Gemma-4-26B-A4B (MLX 4-bit)](./gemma-4-26b-a4b.md) | thinking on | 0.713 | 0.701 | 46/164 | 72% |
 <!-- gen:evalplus-table:end -->
 
 An empty completion is reasoning that exhausted the output budget; a
