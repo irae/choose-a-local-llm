@@ -7,6 +7,59 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench10, 2026-09-05 to 2026-09-06 ([state](bench10/state.md), [results](bench10/results.md))
+
+- Runbook: [bench10/AGENT.md](bench10/AGENT.md). The three curves the
+  site still read `pending` on, a first Mendel smoke against a real
+  server, the f16 re-scores on Gemma-26B and Qwen3.6, and two Mendel
+  blind rows on GGUF quants.
+- **Every `pending` cell on the site now has a real number.** Gemma-12B
+  4-slot and Gemma-26B 2-slot both moved from q8_0 to f16 like their
+  single-slot siblings; the LM Studio Gemma-12B row's wired memory at
+  its ceiling is 17249 MB. All three published `-c` values failed to
+  load; each was binary-searched down and verified with a real
+  4096-token completion, not a trivial warmup — a trivial warmup passed
+  and then OOM'd on compute buffers on both Gemma-12B 4-slot and
+  Gemma-26B 2-slot before this check went in.
+- **Gemma-26B 2-slot hit a window verdict, not mem or speed.** The
+  search-bound `-c` (202752, 101376/slot) ran out before speed or
+  memory did; the reported ceiling, depth 81958 at 33.56 tok/s, is a
+  hardware ceiling from the load search, not an early stop.
+- **The GGUF f16 build beats the MLX build on Gemma-26B EvalPlus, both
+  thinking modes.** Thinking on: 0.884/0.860/89% against the MLX
+  build's 0.713/0.701/72%, the same non-convergence problem but fewer
+  empties (18/164 against 46/164). Thinking off, never scored before:
+  0.976/0.945/100%, 0 empty.
+- **Qwen3.6 thinking off also beats its thinking-on sibling**:
+  0.951/0.915/100%, 0 empty, against 0.939/0.921/97%.
+- **Qwen3.8 GGUF at f16 clears the Mendel blind bar the MLX build never
+  reached.** 87/100, all 8 libraries, no bug defect — the first local
+  model to finish this agent task with a fully valid score, on
+  llama-server where the MLX build only ever scored a partial run.
+- **Gemma-26B GGUF blind (thinking high): 47.5/100, 8/8 libraries**,
+  one critical trap hit, against the old q8_0 run's 38/100 partial.
+- **Bonsai's guided config failed twice for two different reasons.**
+  The first attempt was a harness fault (a dead `gh` token, an
+  interactive login loop the prompt forbids); once the owner fixed
+  `gh` auth, the no-penalty retry got stuck in an 85-call identical
+  bash loop instead and was stopped by hand. Both rows are invalid; the
+  owner is holding on a third attempt. The worktree
+  (`../mendel-bench-guided-prism-ml-Ternary-Bonsai-27B-mlx-2bit-off`) is
+  kept for inspection.
+- **A coverage gap found mid-run: Gemma-26B had no Mendel row at
+  thinking off.** The owner added a smoke (passed) and started the
+  guided run, then moved the whole four-combination gap (on/off ×
+  guided/blind) to run 11 for a clean pass. The same gap likely exists
+  for Qwen3.6, flagged and not acted on: its real ceiling after the
+  run 9 compaction correction is only 8222 tokens.
+- **Qwen3.8 GGUF effort medium (block F3) deferred to run 11** at the
+  owner's request.
+- **The new run watcher did not fully match the sunset scripts.** One
+  mismatch, on Block C's EvalPlus run (a false `SERVER DEAD` from the
+  sunset liveness watcher on a probe queued behind a live turn); every
+  Mendel run after that matched cleanly. `sunset/` stays for one more
+  run.
+
 ## bench9, 2026-09-04 to 2026-09-05 ([state](bench9/state.md), [results](bench9/results.md))
 
 - Runbook: [bench9/AGENT.md](bench9/AGENT.md). The KV cache type per
