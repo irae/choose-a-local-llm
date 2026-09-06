@@ -162,20 +162,26 @@ Benchmark work:
   this repo").
 - **Push only on owner request.** Never push on your own initiative,
   and never offer to publish. The owner asks when they want it.
-  When the owner asks for a push or for stop-and-sync, push `master`
-  and only `master`. Refusing a requested push loses data; do it.
+  When the owner asks for a push or for stop-and-sync, push `master`.
+  Refusing a requested push loses data; do it. The one standing
+  exception is the run branch during a run, below.
 - **Only the agent whose worktree has master checked out may merge into
   master.** Git enforces this: a branch lives in one worktree at a time,
   so any other worktree gets the merge refused. If you are not on
   master, commit on your branch and stop.
-- **A run branch is temporary and local; origin holds only `master`.**
-  Planning a run (writing `bench<N>/AGENT.md`) happens on `master`.
-  When the run starts on the benchmark machine, create a local branch
-  for it (for example `run6`), commit the run's progress there, and
-  merge it back into `master` when the run finishes. Never push a run
-  branch to origin. The branch exists only so a benchmark run and site
-  work can proceed at the same time, each in its own worktree. All
-  communication between agents goes through `master`.
+- **A run branch is temporary; the coordinator merges it at every
+  block.** Planning a run (writing `bench<N>/AGENT.md`) happens on
+  `master`. When the run starts on the benchmark machine, create a
+  branch for it (for example `run11`) in its own worktree and commit
+  the run's progress there. The runner pushes the run branch to origin
+  after every block commit and reports the block to the coordinator;
+  the coordinator merges `origin/run<N>` into `master` at each report,
+  so the site updates while the run goes on. The runner never merges
+  `master` itself unless the coordinator says so. At run close the
+  branch is merged one last time and deleted, on origin too. The
+  branch exists only so a benchmark run and site work can proceed at
+  the same time, each in its own worktree. All other communication
+  between agents goes through `master`.
 - **Stop and sync, when the owner asks to stop a run and merge.** The
   goal state: all work is on `master`, `master` is on `origin/master`,
   no run branch remains anywhere, no run worktree remains. Follow these
@@ -189,6 +195,7 @@ Benchmark work:
   5. Remove the run worktree: `git worktree remove
      ../choose-a-local-llm-run<N>`, then `git worktree prune`.
   6. Delete the branch: `git branch -d run<N>`. Use `-d`, not `-D`.
+     Then `git push origin --delete run<N>`.
      If git refuses, the merge did not land; go back to step 3.
   7. Verify and report: `git branch` lists no run branch, `git
      rev-parse master origin/master` prints the same hash twice,
@@ -259,6 +266,10 @@ Benchmark work:
   commit on your own branch instead. If a stash is unavoidable, name it
   (`git stash push -m "<agent/run>: <what>"`) and apply or pop it by
   that name only (`git stash pop 'stash^{/<name>}'`), never by index.
+- **Never `git add -A` in `../mendel-benchmark`.** The kit is a
+  worktree of `../mendel` on the `benchmark` branch, which carries the
+  whole Mendel project; a blanket add stages files that belong to
+  other branches. Add named files only.
 - **No superseded number on a current page.** Not in a table, not in
   prose. Old figures move to the setup's `historical.md`, which opens
   with a red warning that tells readers not to use them. Only the

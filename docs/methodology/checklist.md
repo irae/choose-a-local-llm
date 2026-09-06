@@ -28,9 +28,11 @@ in the runbook is a plain message, not a question tool.
    and in `../mendel` when the run touches it:
    `git worktree add ../choose-a-local-llm-run<N> -b run<N>`, then
    `cd` into it and verify with `git worktree list` and `pwd`. Every
-   later command of the run happens there. Never push the run branch.
-   Never run a bare `git stash`. The reasons and the stop-and-sync
-   steps are `AGENTS.md`, standing rules.
+   later command of the run happens there. Push the run branch after
+   every block commit and report the block to the coordinator, who
+   merges it; never merge `master` yourself. Never run a bare
+   `git stash`. The reasons and the stop-and-sync steps are
+   `AGENTS.md`, standing rules.
 2. **Run `tools/preflight.sh` first.** It reads the machine and prints
    one line per check: `ok`, `fix`, or `ask`. It changes nothing, it
    needs no sudo, and it takes its values from the machine file,

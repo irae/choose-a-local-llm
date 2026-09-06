@@ -19,20 +19,19 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
-- [ ] Pushing a run branch: rewrite the rule to the run 10 practice, or return to one merge at run close (run-branch-push-rule.md)
 - [ ] Shared-score rule: the owner's sentence for when two quants of one model carry their own scores (shared-score-quant-exception.md)
 - [ ] Qwen3.6 GGUF pi entry at contextWindow 49152: keep on the daily driver, or raise back to 98304 (qwen36-entry-window.md)
 - [ ] Qwen3.8 MLX window before any Mendel retry: smaller window, earlier compaction, or wait for the no-OOM research (qwen38-mlx-window.md)
 - [ ] Bonsai KV bias corpus: name it, or the fork row stands and two runs are dropped (bonsai-kv-bias-corpus.md)
 - [ ] Devstral Small 2 download: which files and revision (devstral-download.md)
 - [ ] Budget for cloud Mendel re-runs, and which models go to polyglot (cloud-reruns-and-polyglot-tier.md)
-- [ ] Mendel staging rule "never git add -A in the kit": formal line in AGENTS.md or not (mendel-staging-rule.md)
 - [ ] Mendel: score thinking-off configs that only have thinking-high rows (qwen3.6-35b-a3b confirmed gap) (mendel-thinking-off-gaps.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
 - [ ] Two owner questions left by the non-goals sweep: the positive half of the model entry criteria, and whether "a run gated by our own configuration is our fault" becomes a rule (non-goals-sweep-findings.md)
 
 ## Changelog
 
+- 2026-09-06 Run branch rule rewritten to the run 10 practice: the runner pushes the run branch after every block, the coordinator merges at each report, the branch is deleted at close on origin too; the Mendel staging rule (never `git add -A` in the kit) is a standing rule (`AGENTS.md`, `docs/methodology/checklist.md`)
 - 2026-09-06 Live loop stop in the Mendel runner: five identical tool calls in a row (three after a stall), an in-message shape cycle, or a one-character flood end the run as `repetition_loop` or `degenerate_output`; every loop seen so far is in `hardware/m1-max-32gb/research/loop-signatures.md` (Mendel `run-pi-rpc.mjs`, `PLAN.md`)
 - 2026-09-06 Status lines: one template per update type in three sizes; short at every unattended wakeup, medium on a status request, large compares runs one table per task with carried cells marked (`docs/methodology/status-lines.md`, merge 1888b51)
 - 2026-09-05 One folder per machine: `benchmarks/bench1`-`bench10`, `benchmarks/INDEX.md` and `research/run1`-`run3` moved under `hardware/m1-max-32gb/`; shared scripts, calibrations, `history/` and `mendel/` stay at `benchmarks/`; run branches commit inside their own run folder only (branch `hardware-folders`)
