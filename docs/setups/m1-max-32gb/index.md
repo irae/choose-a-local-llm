@@ -75,6 +75,19 @@ through the 8 tok/s floor by 16K used tokens while f16 is still at 13.0
 tok/s at 131K, a 3.2x gap at 16K
 ([the KV cache pick](../../methodology/kv-cache-pick.md)).
 
+### KV cache quantization on this chip
+
+On llama-server, a quantized KV cache costs about 2 to 4 microseconds
+per cached token here, against 0.2 to 0.3 for f16, on every model
+measured. The penalty therefore grows with depth: Gemma-4-26B-A4B runs
+6.3 tok/s at 32K with q8_0 against 45.9 with f16, at almost the same
+wired memory. The cause is not the M1. Apple gives this GPU family every
+instruction the Metal backend asks for, and MLX runs a quantized cache
+on the same chip for a few percent. It is llama.cpp's decode-time
+attention kernel, which unpacks each cached value inline and reaches
+about 3% of this machine's memory bandwidth where f16 reaches 51%. The
+research is in `hardware/m1-max-32gb/research/kv-quant-on-m1.md`.
+
 ## Models under test
 
 | model | files | reports |
