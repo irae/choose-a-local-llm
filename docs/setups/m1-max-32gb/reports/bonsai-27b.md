@@ -57,7 +57,7 @@ mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#3 — Ternary-Bonsai-27B, GGUF⁴, q4, thinking on.** The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus (research run 2, `bonsai-kv-bias-missing.md`). Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/` — see [the benchmarks](../benchmarks/bonsai-27b.md).
+**#3 — Ternary-Bonsai-27B, GGUF⁴, q4, thinking on.** The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
@@ -120,8 +120,8 @@ converted locally with `gguf-dspark-to-dflash`; the published Q4_1 sidecar
 and the plain Q2_0 GGUF are legacy layouts that do not load on current fork
 builds.
 
-**The MLX build with thinking off has no valid agent row.** Run 10
-(2026-09-06) passed the Mendel smoke at thinking off (14 calls, one
+**The MLX build with thinking off has no valid agent row.** On
+2026-09-06 it passed the Mendel smoke at thinking off (14 calls, one
 clean commit, 115 s) and then lost the guided run twice to the harness:
 first a dead `gh` token and a login loop, then 85 identical shell calls
 in a row against a missing file, zero commits in three hours, stopped

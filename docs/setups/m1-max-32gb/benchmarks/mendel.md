@@ -53,8 +53,8 @@ committed nothing. They measure that serving combination, not the
 model — the evidence is on
 [the Gemma-12B data page](./gemma-4-12b-it.md#the-retired-entry).
 
-Two Ternary-Bonsai-27B guided runs with thinking off (run 10,
-2026-09-06) are invalid and are not listed above. The first hit a dead
+Two Ternary-Bonsai-27B guided runs with thinking off (2026-09-06) are
+invalid and are not listed above. The first hit a dead
 `gh` token and looped on login. The second ran 85 identical shell calls
 in a row against a missing file and committed nothing in three hours,
 and the operator stopped it. Both rows are in the guided CSV with their

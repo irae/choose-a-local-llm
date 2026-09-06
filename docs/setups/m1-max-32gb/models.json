@@ -39,7 +39,7 @@
       "id": "qwen38-gguf-medium",
       "hidden": false,
       "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 49152 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b`. Re-measured 2026-09-05 at f16 KV, the run 9 pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant is not scored on its own yet."
+      "note": "pi id `qwen3.8-27b`. Measured 2026-09-05 at f16 KV, the KV pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant's own score is pending. Mendel blind at effort medium: 87/100, complete."
     },
     {
       "config": "Qwen3.6-35B-A3B, MLX, thinking on",
@@ -64,7 +64,7 @@
       "id": "qwen36-gguf-think",
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 49152 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.6-35b-a3b`. Re-measured 2026-09-04 (run 9): q8_0 KV stays, because f16 does not load even at 40960. The published `-c 98304` and 65536 OOM at load; 49152 loads. Wired sits at 25 GB, over the limit, and memory compaction starts by 16K without recovering, so the last clean row is 8K. That row is faster than 4K because the MTP drafter warms up over the first rows."
+      "note": "pi id `qwen3.6-35b-a3b`. Measured 2026-09-04 with the slow creep: q8_0 KV stays, because f16 does not load even at 40960. The published `-c 98304` and 65536 OOM at load; 49152 loads. Wired sits at 25 GB, over the limit, and memory compaction starts by 16K without recovering, so the last clean row is 8K. That row is faster than 4K because the MTP drafter warms up over the first rows."
     },
     {
       "config": "Gemma-4-26B-A4B, MLX",
@@ -89,7 +89,7 @@
       "id": "gemma26-gguf",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 212992 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-26b-a4b`. Re-measured 2026-09-05 at f16 KV, the run 9 pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. EvalPlus scored on this config 2026-09-06 (run 10): 0.884/0.860/89%, 18/164 empty, budget 30000, thinking on."
+      "note": "pi id `gemma-4-26b-a4b`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete."
     },
     {
       "config": "Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots",
@@ -102,7 +102,7 @@
       "id": "gemma26-gguf-2x",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 202752 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-26b-a4b-2x`. Measured 2026-09-05 (run 10) at f16 KV: 202752 is the largest `-c` that serves a real 4096-token completion (208896 and above fail on compute buffers or at load), 101376 per slot. One slot swept with the other loaded and idle: no speed or memory stop before the slot window; the deepest row is 82K at 33.6 tok/s. The EvalPlus score is the single-slot f16 config's (run 10), same weights and cache type."
+      "note": "pi id `gemma-4-26b-a4b-2x`. Measured 2026-09-05 at f16 KV: 202752 is the largest `-c` that serves a real 4096-token completion (208896 and above fail on compute buffers or at load), 101376 per slot. One slot swept with the other loaded and idle: no speed or memory stop before the slot window; the deepest row is 82K at 33.6 tok/s. The EvalPlus score is the single-slot f16 config's, same weights and cache type."
     },
     {
       "id": "gemma12-lmstudio-think",
@@ -163,7 +163,7 @@
       "id": "gemma12-gguf-4x",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-4x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \\\n  -ngl 999 -fa on -c 655360 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-12b-4x`. Measured 2026-09-05 (run 10) at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper."
+      "note": "pi id `gemma-4-12b-4x`. Measured 2026-09-05 at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper."
     },
     {
       "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking on",
@@ -202,7 +202,7 @@
       "id": "bonsai-fork-single",
       "hidden": false,
       "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
-      "note": "The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus (research run 2, `bonsai-kv-bias-missing.md`). Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/` — see [the benchmarks](../benchmarks/bonsai-27b.md)."
+      "note": "The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md)."
     },
     {
       "config": "Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on",
@@ -319,10 +319,10 @@
     "gemma-4-26b-a4b": {
       "rowMatch": "Gemma-4-26B-A4B",
       "kpis": [
-        "shallow",
-        "depth",
+        "ggufFloor",
+        "evalplusOff",
         "evalplus",
-        "empties"
+        "mendelBlind"
       ],
       "stats": {
         "shallow": {
@@ -347,7 +347,15 @@
         },
         "ggufFloor": {
           "value": "197K",
-          "label": "GGUF f16 KV ceiling, 17.3 tok/s there"
+          "label": "GGUF f16 KV ceiling, 60.3 tok/s at 4K, 17.3 there"
+        },
+        "evalplusOff": {
+          "value": "0.976 / 0.945 / 100%",
+          "label": "EvalPlus, thinking off (GGUF f16), 0 empty"
+        },
+        "mendelBlind": {
+          "value": "47.5 / 100",
+          "label": "Mendel blind, thinking high (GGUF f16), complete"
         }
       }
     },
@@ -383,6 +391,10 @@
         "empties": {
           "value": "5/164",
           "label": "empty completions at full budget"
+        },
+        "evalplusOff": {
+          "value": "0.951 / 0.915 / 100%",
+          "label": "EvalPlus, thinking off (GGUF q8_0), 0 empty"
         }
       }
     },
@@ -390,9 +402,9 @@
       "rowMatch": "Qwen3.8-27B",
       "kpis": [
         "evalplus",
-        "shallow",
-        "ceiling",
-        "compaction"
+        "mendelBlind",
+        "ggufFloor",
+        "ceiling"
       ],
       "stats": {
         "evalplus": {
@@ -413,7 +425,11 @@
         },
         "ggufFloor": {
           "value": "49K",
-          "label": "GGUF f16 KV ceiling, 15.0 tok/s there"
+          "label": "GGUF f16 KV ceiling, 20.0 tok/s at 4K, 15.0 there"
+        },
+        "mendelBlind": {
+          "value": "87 / 100",
+          "label": "Mendel blind, effort medium (GGUF f16), complete, no bug defect"
         },
         "empties": {
           "value": "0/164",

@@ -11,7 +11,7 @@ Backends: llama-server, LM Studio MLX engine · [GGUF on Hugging Face](https://h
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves re-measured 2026-09-04 at wired limit 24000; EvalPlus scored on the LM Studio MLX container 2026-09-03 and on the GGUF quant 2026-09-05 (run 9), thinking off; the two do not share a score.
+Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves re-measured 2026-09-04 at wired limit 24000, the four-slot config 2026-09-05; EvalPlus scored on the LM Studio MLX container 2026-09-03 and on the GGUF quant 2026-09-05, thinking off; the two do not share a score.
 
 ## Highlights
 
@@ -19,23 +19,22 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
   drafter, thinking off.** It decodes 24.64 tok/s at 4K and 8.86 at
   245K, so it reaches the model's own 262,144 window and stays above the
   8 tok/s floor. Wired memory holds flat at 13.9 GB. On the Mendel
-  guided run (run 9, no drafter) it replaced 3 of 8 libraries and
-  scored 37.5 capped, ending on the model budget after three nudges.
+  guided run it replaced 3 of 8 libraries and scored 37.5 capped, ending
+  on the model budget after three nudges.
 - **The GGUF quant scores 0.976 / 0.939 / 100% with thinking off, all 164
-  answers delivered (run 9).** That is 0.067 above the LM Studio MLX
-  entry's 0.909 / 0.872 / 100%, so the two quants do not share a score here.
-  The LM Studio entry keeps the fastest curve, 34.19 tok/s at 4K down
-  to 23.23 at 131K, in 17.2 GB wired at that depth (run 10), and it is
-  not usable for multi-turn tool work: on the same tool task, with
-  thinking off, it looped on the thought channel for 2679 lines and
-  committed nothing.
+  answers delivered.** That is 0.067 above the LM Studio MLX entry's
+  0.909 / 0.872 / 100%, so the two quants do not share a score here. The
+  LM Studio entry keeps the fastest curve, 34.19 tok/s at 4K down to
+  23.23 at 131K, in 17.2 GB wired at that depth, and it is not usable
+  for multi-turn tool work: on the same tool task, with thinking off, it
+  looped on the thought channel for 2679 lines and committed nothing.
 - **The KV type sets the depth on this model, not the weights.** With
   q8_0 KV the same server drops under the 8 tok/s floor by 16K. With f16
   KV it is 3.2x faster at 16K and stays usable eight times deeper.
-- **Four slots at f16 KV hold 49K each** (run 10): 42.9 tok/s at 4K and
-  27.7 at 49K on one slot with the other three idle, in 25.1 GB wired,
-  before swap growth ended the sweep. The old "four 256K slots in
-  16.9 GB" was an allocation at q8_0, not a measured depth.
+- **Four slots at f16 KV hold 49K each**: 42.9 tok/s at 4K and 27.7 at
+  49K on one slot with the other three idle, in 25.1 GB wired, before
+  swap growth ended the sweep. The old "four 256K slots in 16.9 GB" was
+  an allocation at q8_0, not a measured depth.
 
 ## All configs — this model
 
@@ -83,7 +82,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#4 — Gemma-4-12B, GGUF, MTP f16, 4 slots, thinking off.** pi id `gemma-4-12b-4x`. Measured 2026-09-05 (run 10) at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper.
+**#4 — Gemma-4-12B, GGUF, MTP f16, 4 slots, thinking off.** pi id `gemma-4-12b-4x`. Measured 2026-09-05 at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -102,7 +101,7 @@ it lacks the `gemma4_unified` model type. LM Studio's engine supports
 that type and gives the flattest decode curve on this machine.
 llama-server serves the GGUF quant, and it is the only path that
 survives multi-turn tool work. Serving from the `lms` CLI is an approved
-exception to the no-GUI rule — every step runs command-line only, and
+exception to the no-GUI rule: every step runs command-line only, and
 the model store is shared with the app.
 
 **The two backends fail differently, and that decides the pick.**
@@ -110,8 +109,8 @@ llama-server allocates its KV from `-c`, so wired memory stays flat at
 59% of the limit from load to the trained window; it runs out of model,
 not of machine. The LM Studio engine grows into the cap instead: wired
 reaches 87% of the limit past 131K, and the sweep stops on swap growth.
-So LM Studio is faster at every depth it survives — 1.4x at 4K, 1.8x at
-131K — and llama-server is the one that finishes.
+So LM Studio is faster at every depth it survives (1.4x at 4K, 1.8x at
+131K) and llama-server is the one that finishes.
 
 **The chat path costs nothing on llama-server.** 24.68 tok/s against
 24.64 at 4K, and 22.59 against 22.66 at 16K. The raw-prompt curve below
@@ -119,12 +118,12 @@ transfers to harness use.
 
 **The context ceiling of the GGUF is the model, not the machine.** GGUF
 metadata gives a trained context of 262,144, and a sliding window of
-1024 on 5 of every 6 layers, so KV grows only ~1 GB per 64K tokens. No
-Metal OOM appeared at any size tested. Context limits are
+1024 on 5 of every 6 layers, so KV grows only about 1 GB per 64K
+tokens. No Metal OOM appeared at any size tested. Context limits are
 mode-independent, since KV is preallocated by `-c`. Four slots at f16
-load at 163,840 each (run 10, `-c 655360`); the next step up fails on
-compute buffers at the first real request, which a trivial warmup does
-not show.
+load at 163,840 each (`-c 655360`); the next step up fails on compute
+buffers at the first real request, which a trivial warmup does not
+show.
 
 **The context window cannot be pinned on the MLX path.** The engine
 ignores every context-length setting for this model: CLI flags, REST
@@ -133,15 +132,23 @@ from the GPU wired limit and gives 158,464 tokens at a 24000 limit.
 `--parallel` is the one load knob that works.
 
 **The two quants carry their own scores.** The GGUF quant scored
-0.976 / 0.939 / 100% thinking off in run 9, 0.067 above the LM Studio MLX
-container's 0.909 / 0.872 / 100%, so the shared-score rule does not apply to
-this pair. A thinking-on score is pending: the earlier one was
+0.976 / 0.939 / 100% thinking off, 0.067 above the LM Studio MLX
+container's 0.909 / 0.872 / 100%, so the shared-score rule does not
+apply to this pair. A thinking-on score is pending: the earlier one was
 measured on a retired entry and moved to
 [the historical page](../historical.md).
 
 **Thinking on is a pitfall of this model, on both backends.** The
 evidence, the retired LM Studio entry, and the chat-template history are
 on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
+
+## Agentic quality — Mendel
+
+| test | config | score | status |
+|---|---|--:|---|
+| guided | llama-server, f16 KV, no drafter, thinking off | **37.5/100** | partial, 3/8 libraries; model budget exhausted after three nudges |
+
+The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
 ## Decode speed vs used context (2026-09-04, wired limit 24000)
 

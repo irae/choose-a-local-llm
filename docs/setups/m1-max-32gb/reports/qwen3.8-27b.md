@@ -5,49 +5,29 @@ Backends: llama-server, mlx-lm · [Qwen3.8-27B MLX 4-bit on Hugging Face](https:
 <!-- gen:model-kpis:start -->
 <div class="kpis">
   <div class="kpi"><b>0.982 / 0.939 / 100%</b><span>EvalPlus, effort medium — best score</span></div>
-  <div class="kpi"><b>17 tok/s</b><span>decode, shallow (MLX)</span></div>
+  <div class="kpi"><b>87 / 100</b><span>Mendel blind, effort medium (GGUF f16), complete, no bug defect</span></div>
+  <div class="kpi"><b>49K</b><span>GGUF f16 KV ceiling, 20.0 tok/s at 4K, 15.0 there</span></div>
   <div class="kpi"><b>28K</b><span>MLX memory ceiling</span></div>
-  <div class="kpi"><b>~26K</b><span>pi compaction setting</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort medium re-scored 2026-08-28 with the calibrated budget; GGUF re-measured at f16 KV 2026-09-05 (run 9).
+Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort medium re-scored 2026-08-28 with the calibrated budget; GGUF re-measured at f16 KV 2026-09-05 and run on Mendel 2026-09-06.
 
 ## Highlights
 
-- **The best quality score of any config measured here.** EvalPlus 0.982 /
-  0.939 / 100%, zero empty completions — the model to send hard problems to.
-- **MLX holds 14-17 tok/s across its whole usable window.** It never gets
-  slow inside the context it can hold.
+- **The first local model to finish the agent task.** On llama-server at
+  f16 KV and `-c 49152` the Mendel blind run scores 87 of 100: all eight
+  libraries replaced, no bug defect, all three traps handled. Every
+  earlier attempt, all on the MLX build, was partial or invalid.
+- **The best quality score of any config measured here.** EvalPlus
+  0.982 / 0.939 / 100%, zero empty completions. The model to send hard
+  problems to.
+- **llama at f16 KV holds 15 tok/s to 49K**, the largest context this
+  machine loads for it, at the MLX speed with almost twice the MLX
+  window. MLX holds 14 to 17 tok/s across its whole window and OOMs
+  between 28K and 30K.
 - Weak point: the slowest model on this hardware (19.7 tok/s ceiling),
   with poor prompt processing (~123 tok/s).
-- Weak point: a small window on MLX, which OOMs between 28K and 30K.
-  llama at f16 KV now holds 15 tok/s to 49K, the largest context this
-  machine loads for it (run 9).
-
-## Can it finish engineering tasks? Yes, on llama-server at f16 KV
-
-Run 10 settled it. The GGUF row at f16 KV and `-c 49152` completed the
-Mendel blind task: 87 of 100, all eight libraries replaced, no bug
-defect, all three traps handled, 10 commits in 129 minutes, peak
-context 45,705 of the 49,152 window, no loop. Points went on a
-lockfile-only install and on commit craft. It is the highest valid
-blind score of any local model on this machine; the next is Qwen3.6
-GGUF at 63.
-
-Every earlier run was on the MLX build and every one was partial or
-invalid: blind at effort medium 80 partial, blind at low 67.5 partial,
-guided at low 84 partial on the first prompt version and 34 on the
-current one with three server crashes, and the run 9 retry invalid
-after three attempts, two of them Metal OOM crashes when the context
-grew past the 26,624-token MLX window. The difference is the window:
-the GGUF at f16 holds 49K at 15 tok/s, the MLX build 26K at the same
-speed, and this task needs about 46K.
-
-So the llama row is the daily-driver candidate for hard problems. Its
-own EvalPlus score was deferred from run 10 to run 11; until then the
-cell carries the MLX score. The MLX row stays the low-memory option and
-keeps its single-turn score.
 
 ## All configs — this model
 
@@ -78,7 +58,7 @@ mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --chat-template-args '{"reasoning_effort":"low"}' --prompt-cache-size 2 --port 8081
 ```
 
-**#3 — Qwen3.8-27B, GGUF, MTP f16, effort medium.** pi id `qwen3.8-27b`. Re-measured 2026-09-05 at f16 KV, the run 9 pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant is not scored on its own yet.
+**#3 — Qwen3.8-27B, GGUF, MTP f16, effort medium.** pi id `qwen3.8-27b`. Measured 2026-09-05 at f16 KV, the KV pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant's own score is pending. Mendel blind at effort medium: 87/100, complete.
 
 ```bash
 llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
@@ -92,60 +72,62 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
 
 ## Model details and findings
 
-**The equilibrium moved to llama at f16 KV (run 9).** At q8_0 KV llama
-crossed the 8 tok/s floor at about 19K, so MLX won on usable speed. At
-f16 KV the same server decodes 20.0 tok/s at 4K and 15.0 at 49K, and
-49152 is the largest `-c` this machine loads for it (65536 and above
-OOM at load). That is the MLX speed with almost twice the MLX window,
-plus prompt caching and slots. The four-problem smoke read level with
-q8_0, so the cache type cost no answers. MLX keeps its place as the
-config with the lowest memory.
+**The window decides whether it finishes engineering tasks.** The
+Mendel blind task needs about 46K of context. The GGUF at f16 holds 49K
+at 15 tok/s and completed it: 87 of 100, 10 commits in 129 minutes, peak
+context 45,705 of the 49,152 window, no loop; points went on a
+lockfile-only install and on commit craft. It is the highest valid blind
+score of any local model here; the next is Qwen3.6 GGUF at 63. The MLX
+build holds 26K at the same speed, and every run on it was partial or
+invalid: blind at effort medium 80 partial, blind at low 67.5 partial,
+guided at low 34 with three server crashes, then a retry invalid after
+three attempts, two of them Metal OOM crashes when the context grew past
+the 26,624-token window. The llama row is the daily-driver candidate for
+hard problems; its own EvalPlus score is pending, so its cell carries
+the MLX score. The MLX row stays the low-memory option.
+
+**The equilibrium moved to llama at f16 KV.** At q8_0 KV llama crossed
+the 8 tok/s floor at about 19K, so MLX won on usable speed. At f16 KV
+the same server decodes 20.0 tok/s at 4K and 15.0 at 49K, and 49152 is
+the largest `-c` this machine loads for it (65536 and above OOM at
+load). The four-problem smoke read level with q8_0, so the cache type
+cost no answers. KV grows only about 0.8 GB per 16K tokens, because the
+hybrid DeltaNet layers keep no KV; only the full-attention layers do,
+which is why f16 fits.
 
 **The quality score is fair, and it is the project's best.** The output
-budget was calibrated to 8192 — its longest observed reasoning was only
-~2.6K tokens — and the three empty completions left from an earlier,
+budget was calibrated to 8192 (its longest observed reasoning was about
+2.6K tokens) and the three empty completions left from an earlier,
 uncalibrated pass were regenerated. Zero empty completions remain. Full
 data: [the benchmarks](../benchmarks/qwen3.8-27b.md).
 
-**Medium reasoning effort is faster for a mechanical reason.** The MTP head
-predicts medium-effort text better than xhigh-effort text, so acceptance
-climbs from 58–61% to 73–81%. That is where the ~21% per-token gain comes
-from.
+**Medium reasoning effort is faster for a mechanical reason.** The MTP
+head predicts medium-effort text better than xhigh-effort text, so
+acceptance climbs from 58 to 61% to 73 to 81%. That is where the 21%
+per-token gain comes from. The n-max 3 result repeated exactly on a
+second run, and a second JS prompt matched within 0.3 tok/s, so the JS
+penalty comes from the language, not the task.
 
-**q8_0 KV was not free here.** It looked free in a 512-token output
-comparison at the retired 27000 limit, but the run 9 short creep showed
-it at 7.1 tok/s at 32K against 16.4 for f16, more than a 2x gap, at
-almost the same wired memory. The KV pick is f16. KV grows only about
-0.8 GB per 16K tokens, because the hybrid DeltaNet layers keep no KV;
-only the full-attention layers do, which is why f16 fits.
+**The old context maxima are withdrawn.** Every allocation figure for
+this model was measured at the retired 27000 wired limit. Those tables
+and the q8_0 KV curve are on [the historical page](../historical.md);
+do not use them. The f16 ceiling at 49K is a load limit, not a decode
+floor. MTP-on-MLX exists only as a CLI with no API, so it is
+disqualified for harness use; its raw numbers stay in
+[the benchmarks](../benchmarks/qwen3.8-27b.md).
 
-**The n-max 3 result is real.** It repeated exactly on a second run (16.77).
-A second JS prompt — debounce, run twice — matched deep clone within 0.3
-tok/s, so the JS penalty comes from the language, not the task. The settings
-choice is the same for both languages.
-
-**The old context maxima are withdrawn.** Every allocation figure for this
-model was measured at the retired 27000 wired limit and awaits a re-probe at
-24000. Those tables are on
-[the historical page](../historical.md); do not use them.
-The f16 ceiling at 49K is a load limit, not a decode floor.
-[The benchmarks](../benchmarks/qwen3.8-27b.md) keep the labeled archive.
-MTP-on-MLX exists only as a CLI with no API, so it is disqualified for
-harness use; its raw numbers stay in the benchmarks too.
-
-**Open issue: prompt processing.** It is ~20 tok/s on short prompts and
-reaches only ~123–127 tok/s on 1.5K–4K prompts, which is low for this
-hardware class. It is independent of MTP — the no-MTP baseline shows the same
-numbers — so it looks like a Metal kernel limitation of the new hybrid
-DeltaNet architecture in the current build. Worth re-testing on future
-llama.cpp releases.
+**Open issue: prompt processing.** About 20 tok/s on short prompts and
+only 123 to 127 tok/s on 1.5K to 4K prompts, low for this hardware
+class. It is independent of MTP, so it looks like a Metal kernel limit
+of the hybrid DeltaNet architecture in the current build. Worth
+re-testing on future llama.cpp releases.
 
 ## Which to pick for a coding task
 
-| need | config | tok/s (py/js) | context |
+| need | config | tok/s | context |
 |---|---|--:|--:|
-| **Daily driver** | mlx_lm.server, compaction at ~26K | 14-17 across the window | to ~28K ceiling |
-| **llama alternative** | llama-server + MTP n=3, f16 KV, `-c 49152` | 20.0 shallow, 15.0 at 49K | 49K, the largest `-c` that loads (run 9) |
+| **Hard problems, agent work** | llama-server + MTP n=3, f16 KV, `-c 49152` | 20.0 shallow, 15.0 at 49K | 49K, the largest `-c` that loads |
+| **Low memory** | mlx_lm.server, compaction at ~26K | 14-17 across the window | to ~28K ceiling |
 
 ## Quality — EvalPlus HumanEval+
 
@@ -153,20 +135,30 @@ llama.cpp releases.
 |---|--:|--:|--:|--:|
 | mlx_lm.server 4-bit, reasoning_effort=medium | 0.982 | 0.939 | 0/164 | 100% |
 
-## Decode speed vs used context (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
+## Agentic quality — Mendel
 
-| depth | llama+MTP q8 | mlx |
+| test | config | score | worst defect | status |
+|---|---|--:|---|---|
+| blind | llama-server, f16 KV, `-c 49152`, effort medium | **87/100** | minor | complete, 8/8 libraries |
+| blind | mlx_lm.server, effort low | 12.5/100 | minor | partial, 1/8; the 26624-token window stopped it |
+
+The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
+
+## Decode speed vs used context (llama f16 KV, slow creep, 2026-09-05; mlx slow creep, 2026-08-29; limit 24000)
+
+| depth | llama+MTP f16 | mlx |
 |---|--:|--:|
-| 4-8K | 14.1 / 12.8 | 17.1 |
-| 16K | 8.6 | 16.4 |
+| 4-8K | 20.0 | 17.1 |
+| 16K | 16.0 | 16.4 |
 | 22K | – | 10.23 |
 | 24K | – | 14.79 |
-| 24.5K | 7.3 — below the 8 tok/s floor | – |
 | 26K | – | 15.19 |
 | **28K** | – | **15.29 — last stable** |
-| ~30K | – | Metal OOM — server thread dies, /health stays 200; gfx-resident ~22 GB at last stable depth |
+| ~30K | – | Metal OOM; server thread dies, /health stays 200 |
+| 33K | 16.4 | |
+| **49K** | **15.0 — last stable, 49152 is the largest `-c` that loads** | |
 
-llama RSS at floor depth (19K, q8_0 KV, 32K alloc): 18.9 GB.
+Wired memory at the last row: 23.5 GB on llama, 22.0 GB on MLX.
 
 ## Backend comparison: llama-server (GGUF) vs mlx-lm (MLX)
 
@@ -211,6 +203,9 @@ At medium effort the llama peak stays at n-max 3:
 |---|--:|--:|---|
 | q8_0 | 16.79 | 15.58 | near-lossless |
 | **f16** | **16.93** | **15.73** | **lossless** |
+
+Shallow only. At depth the gap opens: 7.1 tok/s at 32K for q8_0 against
+16.4 for f16, at almost the same wired memory.
 
 ---
 

@@ -30,11 +30,76 @@ For numbers you can act on, go to [the comparison page](./comparison.md).
 Full raw archives, with their eras labeled, live in the benchmarks pages.
 :::
 
-## Two slot rows at q8_0 KV, allocation only (superseded 2026-09-05, run 10)
+## q8_0 KV curves and allocation tables on the report pages (superseded 2026-09-06)
+
+The report pages carried the q8_0 KV decode curves and the
+allocation-only context tables next to the f16 curves that replaced
+them. They moved here on 2026-09-06. The KV pick is f16 on Qwen3.8 and
+Gemma-26B; on Qwen3.6 q8_0 stays because f16 does not load, but the
+published `-c 98304` OOMs at load under the 24000 limit, so its
+allocation table is wrong too.
+
+Gemma-4-26B-A4B, llama+MTP q8_0 KV, limit 25000, 2026-08-28:
+
+| depth | tok/s |
+|---|--:|
+| 4K | 23.5 |
+| 16K | 11.2 |
+| 24.5K | 7.97, under the 8 tok/s floor |
+
+RSS at floor depth (24.5K, 32K alloc): 15.4 GB.
+
+Gemma-4-26B-A4B, context allocation at q8_0 KV, n-max 2, limit 24000
+(allocation only, nothing measured at depth):
+
+| -c | slots | result | RSS |
+|---|---|---|--:|
+| 262,144 | 1 (f16 KV) | Metal OOM at load | – |
+| 262,144 | 1 | OK, 62.4/53.3 tok/s, 256-token check | 19.3 GB |
+| 327,680 | 2×160K | OK, 67.6/52.7 tok/s | 20.1 GB |
+| 376,832 | 2×184K | OK, 58.4/56.5 tok/s | 20.4 GB |
+| 385,024 | 2×188K | Metal OOM | – |
+
+Qwen3.8-27B, llama+MTP q8_0 KV, limit 25000, 2026-08-28:
+
+| depth | tok/s |
+|---|--:|
+| 4-8K | 14.1 / 12.8 |
+| 16K | 8.6 |
+| 24.5K | 7.3, under the 8 tok/s floor |
+
+RSS at floor depth (19K, 32K alloc): 18.9 GB.
+
+Qwen3.6-35B-A3B, llama+MTP q8_0 KV at `-c 98304`, fast sweep, limit
+25000, 2026-08-28:
+
+| depth | tok/s |
+|---|--:|
+| 4K | 44.5 |
+| 16K | 30.1 |
+| 33K | 18.8 |
+| 49K | 13.5 |
+| 65K / 82K / 90K | 10.7 / 8.8 / 8.1 |
+
+Qwen3.6-35B-A3B, context ramp at q8_0 KV, n-max 3, limit 24000, 256-token
+check only:
+
+| -c | result | tok/s | RSS |
+|---|---|--:|--:|
+| 98,304 | OK | 62.0 / 67.7 | 22.9 GB |
+| 106,496 | Metal OOM | – | – |
+| 131,072 | Metal OOM | – | – |
+
+The slow creep of 2026-09-04 found 49152 the largest `-c` that loads
+for it, with compaction from 16K; the current row is 8K clean at 43.8
+tok/s.
+
+## Two slot rows at q8_0 KV, allocation only (superseded 2026-09-05)
 
 Both rows carried an allocation as their context and no measured depth.
-Run 10 measured one slot of each at f16 KV, with the other slots loaded
-and idle, at the largest `-c` that serves a real completion.
+On 2026-09-05 one slot of each was measured at f16 KV, with the other
+slots loaded and idle, at the largest `-c` that serves a real
+completion.
 
 | row | old | now |
 | --- | --- | --- |
@@ -45,9 +110,9 @@ The Gemma-12B sweep ran with free memory near zero and swap already in
 use at session start; the row says so.
 Evidence: `hardware/m1-max-32gb/benchmarks/bench10/results.md`.
 
-## Three GGUF rows at the fast sweep and the old KV type (superseded 2026-09-05, run 9)
+## Three GGUF rows at the fast sweep and the old KV type (superseded 2026-09-05)
 
-Run 9 picked the KV cache type per model with a short creep of both
+The KV pick of 2026-09-04 chose the cache type per model with a short creep of both
 types, then ran the slow creep at the pick with the largest `-c` the
 machine loads. These rows were measured before that, with the fast
 sweep of 2026-08-28 and, for two of them, at q8_0 KV. All three

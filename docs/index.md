@@ -32,9 +32,10 @@ flow is binding.
 
 Apple Silicon, wired limit 24000 MB. Five models, four runtimes:
 llama-server, mlx_lm.server, LM Studio, and the PrismML llama.cpp fork.
-Depth sweeps are complete; quality scores are partial. The law: MLX
-runtimes barely slow down but hit hard memory ceilings; llama runtimes
-slow down faster but never OOM inside their window.
+Depth sweeps and EvalPlus scores are complete for every model; two
+models have finished the agent task. The rule: MLX runtimes barely slow
+down but hit hard memory ceilings; llama runtimes hold their speed
+deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 
 <!-- gen:models-evaluated:start -->
 | # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |

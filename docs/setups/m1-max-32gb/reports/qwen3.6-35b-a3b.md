@@ -11,22 +11,23 @@ Backends: llama-server, mlx-lm · [Qwen3.6-35B-A3B-MTP GGUF on Hugging Face](htt
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wired limit 24000); EvalPlus corrected 2026-08-29; GGUF re-measured with the slow creep 2026-09-04 (run 9).
+Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wired limit 24000); EvalPlus corrected 2026-08-29, thinking off scored 2026-09-06; GGUF re-measured with the slow creep 2026-09-04.
 
 ## Highlights
 
 - **The speed king: 68 py / 74 js tok/s.** 1.5× Gemma-12B, 4× dense Qwen3.8.
-- **The deep-context claim did not survive the slow creep (run 9).** The
+- **Second-best quality measured here, and thinking off is better on
+  base.** Thinking on 0.939 / 0.921 / 97%; thinking off 0.951 / 0.915 /
+  100% with no empty completion, in 15 minutes. Only Qwen3.8 scores
+  higher, and Qwen3.8 is four times slower.
+- **The deep-context claim did not survive the slow creep.** The
   published `-c 98304` OOMs at load under the 24000 limit; 49152 loads
   with wired memory at 25 GB, and macOS compacts from 16K on without
-  recovering. The last clean row is 8K at 43.8 tok/s. The old 90K
-  figure came from the fast sweep and is on the historical page.
-- **Second-best quality measured here: 0.939 / 0.921 / 97% EvalPlus.** Only
-  Qwen3.8 scores higher, and Qwen3.8 is four times slower.
-- **Thinking off scores 0.951 / 0.915 / 100% with no empty completion, in 15
-  minutes (run 10).** Base is higher than with thinking on, plus is
-  slightly lower, and the five thinking-on empties are gone.
-- Weak point: decode falls to ~17 tok/s past ~30K used.
+  recovering. The last clean row is 8K at 43.8 tok/s. The old 90K figure
+  came from the fast sweep and is on the historical page.
+- Weak point: on the agent task it scores 63 blind and 83 guided at
+  thinking high, with one critical trap hit blind; no thinking-off
+  agent row exists yet, and the 8K clean depth is too small for one.
 
 ## All configs — this model
 
@@ -49,7 +50,7 @@ mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#2 — Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on.** pi id `qwen3.6-35b-a3b`. Re-measured 2026-09-04 (run 9): q8_0 KV stays, because f16 does not load even at 40960. The published `-c 98304` and 65536 OOM at load; 49152 loads. Wired sits at 25 GB, over the limit, and memory compaction starts by 16K without recovering, so the last clean row is 8K. That row is faster than 4K because the MTP drafter warms up over the first rows.
+**#2 — Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on.** pi id `qwen3.6-35b-a3b`. Measured 2026-09-04 with the slow creep: q8_0 KV stays, because f16 does not load even at 40960. The published `-c 98304` and 65536 OOM at load; 49152 loads. Wired sits at 25 GB, over the limit, and memory compaction starts by 16K without recovering, so the last clean row is 8K. That row is faster than 4K because the MTP drafter warms up over the first rows.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
@@ -63,82 +64,80 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
 
 ## Model details and findings
 
-**The first quality score was broken, and the correction moved it further
-than any other model's.** An early pass capped output at 3072 tokens. This
-model's reasoning exhausted that budget on 38% of the problems, and each
-empty completion scores as a hard failure, so the first score was a floor
-rather than a measurement. The fix regenerated the 56 missing or empty
-completions at the calibrated budget of 26624, which is safe because
-temperature 0 is deterministic. The prediction held — its base model reports
-73.4 SWE-bench Verified, and the real capability was far higher than the
-flawed cap suggested. The deflated numbers are on
-[the historical page](../historical.md); do not use them. Full data:
-[the benchmarks page](../benchmarks/qwen3.6-35b-a3b.md).
+**The first quality score was broken, and the correction moved it
+further than any other model's.** An early pass capped output at 3072
+tokens. This model's reasoning exhausted that budget on 38% of the
+problems, and each empty completion scores as a hard failure, so the
+first score was a floor rather than a measurement. The fix regenerated
+the 56 missing or empty completions at the calibrated budget of 26624,
+which is safe because temperature 0 is deterministic. The deflated
+numbers are on [the historical page](../historical.md); do not use
+them. Full data: [the benchmarks page](../benchmarks/qwen3.6-35b-a3b.md).
 
-**The wired limit cost this model most of its context.** The limit is now
-24000. At 27000 the machine became too slow for normal use; at 24000 context
-capped at 40K. Under the current limit, single-session context reaches 96K.
-The larger single-slot and two-agent configs that the 27000 limit allowed are
-retired; their numbers are on
-[the historical page](../historical.md). Raise the limit
-again only for a dedicated session.
+**Thinking off scores higher on base and loses nothing that matters.**
+0.951 base against 0.939, 0.915 plus against 0.921, and the five
+thinking-on empties are gone. The five empties with thinking on stay
+empty at the full budget, so they are a real model limit.
 
-**Deep fill is the accepted trade.** Decode collapses to ~17 tok/s once ~30K+
-tokens are in use — measured at 16.7 tok/s with 31,365 used tokens, while
-prompt processing stayed healthy at 556 tok/s. This is accepted, because the
-initial part of a session is where speed matters most. A deep-fill check at
-96K is still pending.
+**The wired limit and the slow creep cost this model its depth.** At
+27000 the machine became too slow for normal use. At 24000 the
+published `-c 98304` and 65536 OOM at load; 49152 loads, but wired sits
+at 25 GB, over the limit, and memory compaction starts by 16K without
+recovering. The last clean row is 8K, faster than 4K because the MTP
+drafter warms up over the first rows. The larger single-slot and
+two-agent configs of the old limit, and the 90K fast-sweep curve, are
+on [the historical page](../historical.md). f16 KV does not load even
+at 40960, so q8_0 stays.
 
-**MoE on MLX is the faster curve, but it cannot hold the depth.** MLX is 2.2×
-faster than llama at 33K, with 18.7 GB RSS, and then dies between 37K and
-41K. llama at 22.8 GB RSS never OOMs inside its window. This is the whole
-project's pattern in one model.
+**MoE on MLX is the faster curve, but it cannot hold the depth.** MLX is
+2.2× faster than llama at 33K, with 18.7 GB RSS, and then dies between
+37K and 41K. This is the whole project's pattern in one model.
 
-MTP acceptance does not degrade at the maximum (py 80%, js 90%). KV is only
-~19 KB/token, so decode speed does not fall as *allocated* context grows —
-only as used context grows. Prompt processing is healthy on this architecture
-(62–93 tok/s even on tiny prompts, against ~22 for dense Qwen3.8). A no-MTP
-baseline is still in progress. Sweep prompts are synthetic continuations, so
-MTP numbers there read below the py/js bench.
+MTP acceptance does not degrade at the maximum (py 80%, js 90%). KV is
+only about 19 KB per token, so decode speed does not fall as allocated
+context grows, only as used context grows. Prompt processing is healthy
+on this architecture (62 to 93 tok/s even on tiny prompts, against
+about 22 for dense Qwen3.8). Sweep prompts are synthetic continuations,
+so MTP numbers there read below the py/js bench.
 
 ## Which to pick for a coding task
 
 | need | config | tok/s (py/js) | context |
 |---|---|--:|--:|
-| **Max context** | llama-server + MTP n=3, q8_0 KV, `-c 49152`, 1 slot | 36.4 at 4K, 43.8 at 8K | 8K clean; compaction past it (run 9) |
-| **Max speed** | same config (near-empty context) | 68 / 74 | same |
-| **Multi-agent** | untested at limit 25000 (at 24000: OOM even at 2×20K) | – | – |
+| **Max speed** | llama-server + MTP n=3, q8_0 KV, `-c 49152`, 1 slot, near-empty context | 68 / 74 | 8K clean; compaction past it |
+| **Max depth** | mlx_lm.server 4-bit | 53.3 at 4K, 42.0 at 37K | 37K, OOM at about 41K |
+| **Multi-agent** | untested at limit 24000 (OOM even at 2×20K) | – | – |
 
 ## Quality — EvalPlus HumanEval+
 
 | config scored | budget | pass@1 base | pass@1 plus | empty completions | completion |
 |---|--:|--:|--:|--:|--:|
-| llama-server + MTP, thinking on | 26624 | **0.939** | **0.921** | 5/164 (~3%) | 97% |
-| llama-server + MTP, q8_0 KV, `-c 49152`, thinking off (run 10) | 8192 | 0.951 | 0.915 | 0/164 | 100% |
+| llama-server + MTP, q8_0 KV, `-c 49152`, thinking off | 8192 | **0.951** | 0.915 | 0/164 | 100% |
+| llama-server + MTP, thinking on | 26624 | 0.939 | **0.921** | 5/164 | 97% |
 
-The 5 empty completions are a real model limit, not a harness artifact — they
-stay empty at the full budget.
+## Agentic quality — Mendel
 
-## Decode speed vs used context (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
+| test | config | score | worst defect | status |
+|---|---|--:|---|---|
+| guided | llama-server, thinking high | **83/100** | – | complete, 8/8 libraries |
+| blind | llama-server, thinking high | **63/100** | critical | complete, 8/8 libraries |
 
-| depth | llama+MTP q8 (96K alloc) | MLX (Qwen3.6-35B-A3B-4bit) |
+The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
+
+## Decode speed vs used context (llama slow creep at `-c 49152`, 2026-09-04; mlx slow creep, 2026-08-29; limit 24000)
+
+| depth | llama+MTP q8_0 | MLX (Qwen3.6-35B-A3B-4bit) |
 |---|--:|--:|
-| 4K | 44.5 | 53.3 |
-| 16K | 30.1 | 49.6 |
-| 33K | 18.8 | 42.2 |
-| 37K | | 42.0 |
-| ~41K | | Metal OOM — ceiling 37-41K |
-| 49K | 13.5 | |
-| 65K / 82K / 90K | 10.7 / 8.8 / 8.1 | |
+| 4K | 36.4 | 53.3 |
+| **8K** | **43.8 — last clean row; compaction from 16K** | |
+| 16K | 31.0 | 49.6 |
+| 33K | 19.6 | 42.2 |
+| **37K** | | **42.0 — last stable** |
+| ~41K | | Metal OOM |
 
-## Context ramp (n-max 3, q8_0 KV, limit 24000 — current)
-
-| -c | result | tok/s | RSS |
-|---|---|--:|--:|
-| **98,304** | **OK — maximum (256-tok verified)** | **62.0 / 67.7** | **22.9 GB** |
-| 106,496 | Metal OOM | – | – |
-| 114,688 | Metal OOM | – | – |
-| 131,072 | Metal OOM | – | – |
+Wired memory: 25.0 GB on llama at `-c 49152`, 18.7 GB on MLX at 37K.
+The llama rows past 8K ran under memory compaction and are not clean
+readings.
 
 ## MTP draft depth sweep (32K, f16 KV)
 
