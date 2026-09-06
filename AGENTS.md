@@ -50,6 +50,10 @@ Site and process docs:
     criterion).
   - `docs/methodology/memory-ceiling.md`. Before you probe allocation
     maxima or change the wired limit.
+  - `docs/methodology/wired-limit.md`. macOS only, and a setup task,
+    not a run task. Before you search for a new
+    `iogpu.wired_limit_mb`: the ladder, the stop condition, and how to
+    pick the unattended and in-use values. Needs the owner present.
   - `docs/methodology/evalplus.md`. Before EvalPlus or any scoring
     benchmark. The budget-calibration rule lives here; skipping it
     once cost 38% of a score.
