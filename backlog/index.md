@@ -19,8 +19,15 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
-- [p] Status-lines proposal: one template per update type in three sizes, branch `status-lines`, worktree `../choose-a-local-llm-statuslines`; two points to settle, see the decisions file (owner-decisions-pending.md)
-- [ ] Owner decisions pending: run-branch push rule, shared-score quant exception wording, Qwen3.6 entry at 49152, Qwen3.8 MLX window, Bonsai KV bias corpus (owner-decisions-pending.md)
+- [p] Status-lines proposal: one template per update type in three sizes, branch `status-lines`; two points to settle at review (status-lines-proposal.md)
+- [ ] Pushing a run branch: rewrite the rule to the run 10 practice, or return to one merge at run close (run-branch-push-rule.md)
+- [ ] Shared-score rule: the owner's sentence for when two quants of one model carry their own scores (shared-score-quant-exception.md)
+- [ ] Qwen3.6 GGUF pi entry at contextWindow 49152: keep on the daily driver, or raise back to 98304 (qwen36-entry-window.md)
+- [ ] Qwen3.8 MLX window before any Mendel retry: smaller window, earlier compaction, or wait for the no-OOM research (qwen38-mlx-window.md)
+- [ ] Bonsai KV bias corpus: name it, or the fork row stands and two runs are dropped (bonsai-kv-bias-corpus.md)
+- [ ] Devstral Small 2 download: which files and revision (devstral-download.md)
+- [ ] Budget for cloud Mendel re-runs, and which models go to polyglot (cloud-reruns-and-polyglot-tier.md)
+- [ ] Mendel staging rule "never git add -A in the kit": formal line in AGENTS.md or not (mendel-staging-rule.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
 - [ ] Two owner questions left by the non-goals sweep: the positive half of the model entry criteria, and whether "a run gated by our own configuration is our fault" becomes a rule (non-goals-sweep-findings.md)
 
