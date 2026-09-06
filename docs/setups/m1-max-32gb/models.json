@@ -9,7 +9,7 @@
       "tokShallow": "17",
       "tokDeep": "15.3",
       "memory": "22.0 GB",
-      "evalplus": "0.982/0.939",
+      "evalplus": "0.982/0.939/100%",
       "id": "qwen38-mlx-medium",
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --reasoning-effort medium --port 8081",
@@ -22,7 +22,7 @@
       "tokShallow": "17",
       "tokDeep": "15.3",
       "memory": "22.0 GB",
-      "evalplus": "0.976/0.927",
+      "evalplus": "0.976/0.927/100%",
       "id": "qwen38-mlx-low",
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --chat-template-args '{\"reasoning_effort\":\"low\"}' --prompt-cache-size 2 --port 8081",
@@ -35,7 +35,7 @@
       "tokShallow": "20.0",
       "tokDeep": "15.0",
       "memory": "23.5 GB",
-      "evalplus": "0.982/0.939",
+      "evalplus": "0.982/0.939/100%",
       "id": "qwen38-gguf-medium",
       "hidden": false,
       "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 49152 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -48,7 +48,7 @@
       "tokShallow": "53.3",
       "tokDeep": "42.0",
       "memory": "18.7 GB",
-      "evalplus": "0.939/0.921",
+      "evalplus": "0.939/0.921/97%",
       "id": "qwen36-mlx-think",
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \\\n  --prompt-cache-size 2 --port 8081"
@@ -60,7 +60,7 @@
       "tokShallow": "36.4",
       "tokDeep": "43.8",
       "memory": "25.0 GB",
-      "evalplus": "0.939/0.921",
+      "evalplus": "0.939/0.921/97%",
       "id": "qwen36-gguf-think",
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 49152 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
@@ -73,7 +73,7 @@
       "tokShallow": "51",
       "tokDeep": "12.8",
       "memory": "20.0 GB",
-      "evalplus": "0.713/0.701",
+      "evalplus": "0.713/0.701/72%",
       "id": "gemma26-mlx",
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \\\n  --prompt-cache-size 2 --port 8081"
@@ -85,7 +85,7 @@
       "tokShallow": "60.3",
       "tokDeep": "17.3",
       "memory": "25.6 GB",
-      "evalplus": "0.884/0.860",
+      "evalplus": "0.884/0.860/89%",
       "id": "gemma26-gguf",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 212992 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -98,7 +98,7 @@
       "tokShallow": "66.6",
       "tokDeep": "33.6",
       "memory": "25.3 GB",
-      "evalplus": "0.884/0.860",
+      "evalplus": "0.884/0.860/89%",
       "id": "gemma26-gguf-2x",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 202752 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -120,7 +120,7 @@
       "tokShallow": "34.19",
       "tokDeep": "23.23",
       "memory": "17.2 GB",
-      "evalplus": "0.909/0.872",
+      "evalplus": "0.909/0.872/100%",
       "id": "gemma12-lmstudio-off",
       "hidden": false,
       "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y",
@@ -133,7 +133,7 @@
       "tokShallow": "24.64",
       "tokDeep": "8.86",
       "memory": "13.9 GB",
-      "evalplus": "0.976/0.939",
+      "evalplus": "0.976/0.939/100%",
       "id": "gemma12-gguf-f16",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -146,7 +146,7 @@
       "tokShallow": "13.8",
       "tokDeep": "6.5",
       "memory": "10.5 GB",
-      "evalplus": "0.976/0.939",
+      "evalplus": "0.976/0.939/100%",
       "id": "gemma12-gguf-off",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
@@ -159,7 +159,7 @@
       "tokShallow": "42.9",
       "tokDeep": "27.7",
       "memory": "25.1 GB",
-      "evalplus": "0.976/0.939",
+      "evalplus": "0.976/0.939/100%",
       "id": "gemma12-gguf-4x",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-4x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \\\n  -ngl 999 -fa on -c 655360 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -172,7 +172,7 @@
       "tokShallow": "24.5",
       "tokDeep": "17.3",
       "memory": "22.5 GB",
-      "evalplus": "0.915/0.884",
+      "evalplus": "0.915/0.884/97%",
       "id": "bonsai-mlx",
       "hidden": false,
       "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
@@ -185,7 +185,7 @@
       "tokShallow": "24.5",
       "tokDeep": "17.3",
       "memory": "22.5 GB",
-      "evalplus": "0.927/0.902",
+      "evalplus": "0.927/0.902/100%",
       "id": "bonsai-mlx-off",
       "hidden": false,
       "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
@@ -198,7 +198,7 @@
       "tokShallow": "14.8",
       "tokDeep": "7.9",
       "memory": "9.6 GB",
-      "evalplus": "0.927/0.890",
+      "evalplus": "0.927/0.890/98%",
       "id": "bonsai-fork-single",
       "hidden": false,
       "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
@@ -211,7 +211,7 @@
       "tokShallow": "14.9",
       "tokDeep": "7.8",
       "memory": "10.9 GB",
-      "evalplus": "0.927/0.890",
+      "evalplus": "0.927/0.890/98%",
       "id": "bonsai-fork-2x",
       "hidden": false,
       "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism-2x \\\n  -ngl 999 -fa on -c 98304 --parallel 2 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081"
@@ -236,12 +236,12 @@
           "label": "max healthy depth, 17.3 tok/s (MLX)"
         },
         "evalplus": {
-          "value": "0.927 / 0.890",
-          "label": "EvalPlus base/plus (fork, calibrated q4)"
+          "value": "0.927 / 0.890 / 98%",
+          "label": "EvalPlus base/plus/completion (fork, calibrated q4)"
         },
         "evalplusMlx": {
-          "value": "0.915 / 0.884",
-          "label": "EvalPlus base/plus (MLX 2-bit)"
+          "value": "0.915 / 0.884 / 97%",
+          "label": "EvalPlus base/plus/completion (MLX 2-bit)"
         },
         "multiAgent": {
           "value": "2×48K",
@@ -295,8 +295,8 @@
           "label": "LM Studio auto-fit window at wired 24000"
         },
         "evalplusOff": {
-          "value": "0.976 / 0.939",
-          "label": "EvalPlus, thinking off (GGUF); LM Studio MLX 0.909 / 0.872"
+          "value": "0.976 / 0.939 / 100%",
+          "label": "EvalPlus, thinking off (GGUF); LM Studio MLX 0.909 / 0.872 / 100%"
         },
         "evalplusOn": {
           "value": "pending",
@@ -334,8 +334,8 @@
           "label": "last stable depth, 12.8 tok/s (MLX)"
         },
         "evalplus": {
-          "value": "0.884 / 0.860",
-          "label": "EvalPlus, thinking on (GGUF f16); MLX 0.713 / 0.701"
+          "value": "0.884 / 0.860 / 89%",
+          "label": "EvalPlus, thinking on (GGUF f16); MLX 0.713 / 0.701 / 72%"
         },
         "empties": {
           "value": "18/164",
@@ -365,7 +365,7 @@
           "label": "decode, shallow (MLX)"
         },
         "evalplus": {
-          "value": "0.939 / 0.921",
+          "value": "0.939 / 0.921 / 97%",
           "label": "EvalPlus, thinking on"
         },
         "depthGguf": {
@@ -396,7 +396,7 @@
       ],
       "stats": {
         "evalplus": {
-          "value": "0.982 / 0.939",
+          "value": "0.982 / 0.939 / 100%",
           "label": "EvalPlus, effort medium — best score"
         },
         "shallow": {
