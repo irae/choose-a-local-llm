@@ -260,4 +260,35 @@ which did not land this session).
 
 ## Block E — Qwen3.8 GGUF f16, Mendel blind
 
+Server: same as Block B (`qwen3.8-27b`, MTP n=3, `-c 49152`, f16 KV).
+
+```
+cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh qwen3.8-27b pi blind medium
+```
+
+The blind prompt named issue 13, and this model hit the same `gh`
+401 as Block D's Bonsai run — but recovered on its own, falling back
+to an unauthenticated `curl` against the public GitHub API and
+continuing normally. No abort needed, not a harness fault.
+
+Result: **87/100**, 8/8 libraries, valid, complete. No bug defects
+(all three traps handled correctly, trap B caught by the model's own
+grep). Lost points on `node_modules` (2/8: `pnpm install
+--lockfile-only` only, never a real install check) and commit craft
+(9/12: one `--no-verify` commit, TASKS.md never committed). 10
+commits, 2 failed commit attempts (same hook reject), 1 tooling
+nudge, 0 model nudges, 4 real compactions, peak context 45705/49152
+(93%). Config note: f16 KV, `-c 49152`, `maxTokens` 8192. Scored on
+`claude-fable-5`, mendel-benchmark commit `1a868b5` (branch
+`benchmark`), run branch `qwen3.8-27b-medium-issue-13` pushed.
+
+This is the row that answers Block B's question: whether the GGUF
+quant keeps the cell currently held by the MLX score for this model.
+The editorial call is the coordinator's/owner's.
+
+Watcher trial note: this run showed no stall or death verdict on
+either `run-watch.sh` or the sunset scripts — another match.
+
+Block E closed.
+
 ## Block F — EvalPlus, the survivors

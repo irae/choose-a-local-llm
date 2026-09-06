@@ -174,3 +174,13 @@ penalty, harness fault) is not attempted this session. Continuing to
 Block E, which does not depend on `gh`.
 
 Block D closed.
+
+Block E: qwen3.8-27b Mendel blind (same server as Block B). Hit the
+same gh 401 as Block D but recovered by itself with curl, no abort
+needed. Scored 87/100 (Fable subagent), mendel-benchmark commit
+`1a868b5`. Watchers matched again (no stall on either side). Cleanup
+done (Mendel Daemon, server, worker worktree, run branch pushed).
+Block E closed.
+
+Starting Block F (EvalPlus for the survivors: gemma26-gguf-off,
+qwen36-gguf-off, qwen38-gguf-medium).
