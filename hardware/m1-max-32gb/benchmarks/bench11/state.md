@@ -141,3 +141,26 @@ handing-over section at the end.
 - Stopping the Qwen3.6 server. Waiting for wired recovery, then
   starting block 4 (Gemma-12B GGUF, blind, off) — not block 10, per
   the corrected order. Block 10 waits until after block 8.
+- Owner change, relayed by the coordinator across three messages, then
+  confirmed directly by the owner in chat: measured parameters use the
+  newest value in this run's state.md, not a fixed AGENT.md number,
+  with both value and source block written in the config note.
+  Qwen3.6 GGUF harness window raised: block 1 found clean depth 81958
+  at 9.24 tok/s (above the 8 tok/s floor) at `-c 98304`, so the window
+  goes to 81920 (the largest 8192-step at or under both -c and clean
+  depth). Edited `~/.pi/agent/models.json`,
+  `qwen3.6-35b-a3b.contextWindow`: 49152 -> 81920, no other field
+  touched (the one authorized edit).
+- Block 9's original run (49152, ran per the runbook's own instruction
+  at the time) stays valid and scored (46.5, 8/8). It gets a RETRY at
+  the new 81920 window, harness-caused re-run under Mendel PLAN.md's
+  retry rule: no penalty, the better of the two rows stands. Owner
+  correction: the retry runs after block 8, not right after block 4 —
+  order is 4, 5, 6, 7, 8, 9(retry), 10. Config note for the retry:
+  "-c 98304, window 81920 (block 1 clean depth 81958), q8_0 KV; retry
+  at window 81920, first attempt ran on 49152 by runbook instruction".
+  If it OOMs or the server dies at 81920, step the window down by 8192
+  (73728) and retry again; record the step here when it happens.
+- Block 10 (Qwen3.6 GGUF blind, off) also runs at window 81920 when
+  its turn comes, same config note pattern. Final order: 4, 5, 6, 7,
+  8, 9(retry), 10.
