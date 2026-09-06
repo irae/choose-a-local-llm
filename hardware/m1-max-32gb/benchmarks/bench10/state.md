@@ -120,3 +120,11 @@ Calibration confirms the same 2-problem non-convergence as the old
 run. Scored EvalPlus run launched at `EVALPLUS_MAX_NEW_TOKENS=30000`
 per AGENT.md. Run watcher + both sunset scripts started. Full numbers
 in `results.md`.
+
+EvalPlus done: pass@1 base 0.884, plus 0.860, empty 18/164, wall
+3:47:00. Gate pass, well above 0.800. Watcher comparison: the sunset
+`liveness-watch.sh` called SERVER DEAD once on a false positive (a
+probe queued behind a live turn); `run-watch.sh` never did, correctly
+waiting for a second failed probe. Not a match yet — `sunset/` stays
+through the rest of the run. Run watcher and sunset scripts stopped.
+Continuing to the Mendel smoke on the same server.

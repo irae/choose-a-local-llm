@@ -163,6 +163,25 @@ benchmarks/run-humaneval.sh gemma26-gguf-think gemma-4-26b-a4b \
 Run watcher and both sunset scripts started per checklist step 6.
 Compare against old: 0.713/0.701 base/plus, 46/164 empty.
 
+**Result** (`gemma26-gguf-think`, wall 3:47:00, 164/164):
+
+pass@1 base **0.884**, plus **0.860**, empty **18/164**. A large
+improvement over the old q8_0-KV score (0.713/0.701 base/plus,
+46/164 empty) — this is the f16 KV row from run 9 re-scored with
+thinking on.
+
+Watcher trial note: `run-watch.sh` (the run's own watcher) required
+two failed probes before a death verdict and never called one — every
+silence resolved as "server alive, the run is thinking." The sunset
+`liveness-watch.sh` (one probe, single failure) called **SERVER DEAD**
+once mid-run on a probe that simply queued behind a live turn; the run
+was not dead and finished cleanly. The two watchers did not match on
+this block — `sunset/` stays for the rest of the run per the trial
+rule, verdict written here for the closing comparison.
+
+Gate: **pass** (base pass@1 0.884 ≥ 0.800). Continuing to Mendel smoke,
+then Mendel blind, in this block.
+
 ## Block D — Bonsai MLX thinking off, Mendel
 
 ## Block E — Qwen3.8 GGUF f16, Mendel blind
