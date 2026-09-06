@@ -57,8 +57,10 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 - **The new run watcher did not fully match the sunset scripts.** One
   mismatch, on Block C's EvalPlus run (a false `SERVER DEAD` from the
   sunset liveness watcher on a probe queued behind a live turn); every
-  Mendel run after that matched cleanly. `sunset/` stays for one more
-  run.
+  Mendel run after that matched cleanly. The mismatch was the old
+  script's false alarm, and the new watcher was right every time, so
+  `sunset/` was deleted after the run; its logs are under
+  `bench10/results/sunset-logs/`.
 
 ## bench9, 2026-09-04 to 2026-09-05 ([state](bench9/state.md), [results](bench9/results.md))
 

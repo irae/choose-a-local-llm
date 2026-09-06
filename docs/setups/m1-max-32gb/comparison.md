@@ -167,17 +167,21 @@ stop, the corrected re-run carries no penalty. Runs where a serving
 failure prevented any real work are invalid and not listed here; the
 hosted reports show them dimmed, with reasons.
 
-| model | test | config scored | score | status |
-|---|---|---|--:|---|
-| Qwen3.8-27B | blind | llama-server f16 KV `-c 49152`, effort medium, `pi` harness | **87/100** | complete, all 8 libraries; no bug defect |
-| Qwen3.6-35B-A3B | guided | llama-server, thinking high, `pi` harness | **83/100** | complete, all 8 libraries |
-| Qwen3.6-35B-A3B | blind | llama-server, thinking high, `pi` harness | **63/100** | complete, all 8 libraries; one critical runtime defect (trap A) |
-| Gemma-4-26B-A4B | blind | llama-server f16 KV `-c 212992`, thinking high, `pi` harness | **47.5/100** | complete, all 8 libraries; one critical runtime defect (trap A) |
-| Gemma-4-12B | guided | llama-server f16 KV, no drafter, thinking off, `pi` harness | **37.5/100** | partial, 3/8 libraries; model budget exhausted after three nudges |
-| Ternary Bonsai-27B | blind | mlx 2-bit, thinking high, `pi` harness | **37.5/100** (raw 55) | partial, 300-min wall clock at 3/8 libraries |
-| Qwen3.8-27B | blind | mlx 4-bit, effort low, `pi` harness | **12.5/100** (raw 67.5) | partial, 1/8; the 26624-token window plus a 16384-token output budget forced premature stops (our config arithmetic, not the model) |
-| Ternary Bonsai-27B | guided | mlx 2-bit, thinking high, `pi` harness | **12.5/100** (raw 59) | partial, 300-min wall clock at 1/8 libraries |
-| Ternary Bonsai-27B | blind | PrismML GGUF fork, thinking high, `pi` harness | **12.5/100** (raw 60.5) | 1/8 libraries; typoed the repo path, self-scoped to chalk; a penalized retry is pending |
+Every row ran under the same harness, pi, which is pluggable and
+configurable and serves every model the same way, the cloud baselines
+included. "Max ctx" is the context window the harness had for the run.
+
+| model | test | runtime | thinking | max ctx | score | status |
+|---|---|---|---|--:|--:|---|
+| Qwen3.8-27B | blind | GGUF, f16 KV | effort medium | 49k | **87/100** | complete, all 8 libraries; no bug defect |
+| Qwen3.6-35B-A3B | guided | GGUF | high | 120k | **83/100** | complete, all 8 libraries |
+| Qwen3.6-35B-A3B | blind | GGUF | high | 98k | **63/100** | complete, all 8 libraries; one critical runtime defect (trap A) |
+| Gemma-4-26B-A4B | blind | GGUF, f16 KV | high | 213k | **47.5/100** | complete, all 8 libraries; one critical runtime defect (trap A) |
+| Gemma-4-12B | guided | GGUF, f16 KV, no drafter | off | 262k | **37.5/100** | partial, 3/8 libraries; model budget exhausted after three nudges |
+| Ternary Bonsai-27B | blind | MLX 2-bit | high | 58k | **37.5/100** (raw 55) | partial, 300-min wall clock at 3/8 libraries |
+| Qwen3.8-27B | blind | MLX 4-bit | effort low | 26k | **12.5/100** (raw 67.5) | partial, 1/8; the 26624-token window plus a 16384-token output budget forced premature stops (our config arithmetic, not the model) |
+| Ternary Bonsai-27B | guided | MLX 2-bit | high | 58k | **12.5/100** (raw 59) | partial, 300-min wall clock at 1/8 libraries |
+| Ternary Bonsai-27B | blind | GGUF⁴, q4 KV | high | 64k | **12.5/100** (raw 60.5) | 1/8 libraries; typoed the repo path, self-scoped to chalk; a penalized retry is pending |
 
 Invalid, not scored as model quality: three Gemma-4-12B runs on the
 retired LM Studio entry (thinking on, repetition loop, zero commits);

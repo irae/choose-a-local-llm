@@ -122,9 +122,6 @@ Benchmark work:
 - `tests/`. The tests for the shared tools in `benchmarks/`. One
   command, `tests/run.sh`, and `tests/fixtures/README.md` says where
   every fixture came from.
-- `sunset/`. Scripts on their way out. They run beside their
-  replacement for one run, then the directory is deleted. Its README
-  says which run and what replaced them.
 - `tools/sweeps/`. The depth-sweep tools. `creep.py` owns the method
   (depth ladder, pause, stop conditions, memory columns, liveness) and
   one `creep_<backend>.py` owns each backend. One command per sweep
