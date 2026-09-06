@@ -4,3 +4,91 @@ Created 2026-09-05 by the coordinator. No sessions yet.
 
 Start here: read `AGENT.md`. Log every session below with a
 handing-over section at the end.
+
+## Session 1, 2026-09-05
+
+Worktree `../choose-a-local-llm-run10` on branch `run10`, verified with
+`git worktree list`. Mendel repo pulled to `d99ff4d` (`a41170a4` in).
+GPU was free. LM Studio quit and confirmed gone. Background services
+already off from a prior session. `iogpu.wired_limit_mb` already 24000
+(no reboot needed to set it).
+
+Deviation: swap in use at start (818.75M used, `Pages wired down`
+113513), and this session runs Block A speed sweeps. The checklist's
+reboot condition holds, but the owner chose to skip the reboot. Any
+speed number from Block A carries this as a recorded deviation; watch
+for swap growth during the sweeps as the invalidating signal.
+
+Starting Block A.
+
+### Block A1 — gemma-4-12b-4x, f16
+
+`-c` search (published 1048576 does not load): 524288 loads, 786432
+OOMs at load ("model loaded" but `Insufficient Memory` in the log),
+655360 loads, 720896 OOMs, 688128 loads clean, 704512 OOMs. Settled at
+**-c 688128** (172032/slot), the largest that loads at this bisection
+resolution (4096/slot). Verified each loading candidate with one real
+chat completion.
+
+Deviation: the trivial warmup completion (22-token prompt) was not
+enough to catch a real ceiling. `-c 688128` loaded clean and served a
+trivial completion, then OOM'd on compute buffers at the sweep's first
+real depth (4114 tokens, `ggml_metal_synchronize` /
+`Insufficient Memory`). Re-verified with a realistic 4096-token
+completion instead of a trivial one before committing to a value.
+`655360` (163840/slot) passed the 4096-token check cleanly (327 tok/s
+prefill) and is the config used for the full creep. `688128` and above
+are dropped as candidates.
+
+Full creep running on this slot: `creep-gemma12-gguf-4x-f16.tsv`,
+depths 4096..163840.
+
+### Coordinator note, mid-session (retracted)
+
+The coordinator sent word about a `preflight.sh` cold-start change,
+then retracted it: run 10 continues on its original runbook, no
+change to startup or branch. Not acted on either way. The only
+remaining coordinator instruction is at run close, about moving the
+run folder before the final merge.
+
+### Block A2 — gemma-4-26b-a4b-2x, f16
+
+`-c` search (published `376832` does not load, per AGENT.md; searched
+from `425984` = 212992/slot x2): `425984` OOMs at load, `212992` loads
+clean but OOMs on compute buffers at a real 4096-token completion (the
+A1 false-positive pattern, checked every candidate this way from the
+start), `131072` passes, `172032` passes, `192512` passes, `202752`
+passes, `208896` OOMs on the 4096-token check. Final: **-c 202752**
+(101376/slot).
+
+Starting full creep on this slot.
+
+Creep result: verdict **window** — the sweep's own request at depth
+98338 exceeded the allocated `101376`-token slot before speed or
+memory stopped it. Reported ceiling: depth 81958 at 33.56 tok/s.
+Server killed, wired memory recovered to 90862 pages (below session
+baseline). Full numbers in `results.md`.
+
+Starting Block A3 (LM Studio, gemma-4-12b-it-mlx).
+
+Block A3 done: local key is `google/gemma-4-12b`, not
+`gemma-4-12b-it-mlx` (same file). Prefill jump 4096->131072 took 1013s
+(one queued stall probe failed while the step was still live, then it
+answered). Result: depth 131098, wired_mb 17249, but swap grew 443MB
+at this row — mem verdict right at the target depth. `wired_mb 17249`
+is the number this block asked for. LM Studio quit after. Block A
+closed.
+
+Run folder moved to `hardware/m1-max-32gb/benchmarks/bench10/` per
+coordinator instruction (commit `de902ba`). `git merge origin/master`
+(to bring in the folder-move fix on master and the run-watch.sh
+signature fixes) was blocked by the auto-mode classifier; the owner
+chose to skip it for now rather than approve or run it manually.
+Deviation: run10 does not have the master-side watcher fixes (bare
+`[ERROR]` no longer a false death signature, split-signature
+detection) for the rest of this session. Watch the run watcher output
+more carefully during Block C/D/E scoring runs as a result — a
+manual read of the server log is the fallback if a death signature
+looks ambiguous.
+
+Starting Block B (Mendel smoke, Qwen3.8 GGUF f16).
