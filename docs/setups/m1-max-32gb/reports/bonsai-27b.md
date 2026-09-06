@@ -125,8 +125,9 @@ builds.
 clean commit, 115 s) and then lost the guided run twice to the harness:
 first a dead `gh` token and a login loop, then 85 identical shell calls
 in a row against a missing file, zero commits in three hours, stopped
-by the operator. Both rows are invalid in the guided CSV. No third
-attempt is scheduled, and the blind test at thinking off did not run.
+by the operator. Both rows are invalid in the guided CSV. A third
+attempt is scheduled, with the runner's live loop stop in place, and
+the blind test at thinking off with it.
 
 **PrismML's own published figures need their serving stack.** They report
 100K at ~15 GB, and 262K with 4-bit KV. The 4-bit KV path is llama.cpp-only,

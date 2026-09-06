@@ -173,15 +173,21 @@ included. "Max ctx" is the context window the harness had for the run.
 
 | model | test | runtime | thinking | max ctx | score | status |
 |---|---|---|---|--:|--:|---|
-| Qwen3.8-27B | blind | GGUF, f16 KV | effort medium | 49k | **87/100** | complete, all 8 libraries; no bug defect |
-| Qwen3.6-35B-A3B | guided | GGUF | high | 120k | **83/100** | complete, all 8 libraries |
+| Qwen3.8-27B | blind | GGUF, f16 KV | effort medium | 49k | **87/100**‡ | complete, all 8 libraries; no bug defect |
+| Qwen3.6-35B-A3B | guided | GGUF | high | 120k | **83/100**‡ | complete, all 8 libraries |
 | Qwen3.6-35B-A3B | blind | GGUF | high | 98k | **63/100** | complete, all 8 libraries; one critical runtime defect (trap A) |
-| Gemma-4-26B-A4B | blind | GGUF, f16 KV | high | 213k | **47.5/100** | complete, all 8 libraries; one critical runtime defect (trap A) |
+| Gemma-4-26B-A4B | blind | GGUF, f16 KV | high | 213k | **47.5/100**‡ | complete, all 8 libraries; one critical runtime defect (trap A) |
 | Gemma-4-12B | guided | GGUF, f16 KV, no drafter | off | 262k | **37.5/100** | partial, 3/8 libraries; model budget exhausted after three nudges |
 | Ternary Bonsai-27B | blind | MLX 2-bit | high | 58k | **37.5/100** (raw 55) | partial, 300-min wall clock at 3/8 libraries |
 | Qwen3.8-27B | blind | MLX 4-bit | effort low | 26k | **12.5/100** (raw 67.5) | partial, 1/8; the 26624-token window plus a 16384-token output budget forced premature stops (our config arithmetic, not the model) |
 | Ternary Bonsai-27B | guided | MLX 2-bit | high | 58k | **12.5/100** (raw 59) | partial, 300-min wall clock at 1/8 libraries |
 | Ternary Bonsai-27B | blind | GGUF⁴, q4 KV | high | 64k | **12.5/100** (raw 60.5) | 1/8 libraries; typoed the repo path, self-scoped to chalk; a penalized retry is pending |
+
+‡ Scheduled for a re-run. These rows compacted under the harness's
+old reserve of 16384 tokens, twice the answer budget; since 2026-09-06
+the harness reserves 8192, so each gets a fresh row under the current
+setting and keeps this one until then. The Qwen3.8 re-run waits for
+the reasoning-effort question on that model.
 
 Invalid, not scored as model quality: three Gemma-4-12B runs on the
 retired LM Studio entry (thinking on, repetition loop, zero commits);

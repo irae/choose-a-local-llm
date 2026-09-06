@@ -243,6 +243,21 @@ one row also compare the `llama-fit-params` projection (finding 2)
 with the `-c` the search found; agreement within 10 percent makes
 `kv-cache-pick.md` adopting it a bench item.
 
+**Note, 2026-09-06, the reserve in force.** The Mendel worker and the
+smoke now pin `reserveTokens` 8192 in their private pi config, the
+output budget rule's value; every row before that date ran at pi's
+default 16384. That is `maxTokens` with a margin of zero, so step 3's
+rule is not yet applied: a turn can grow by the answer plus its tool
+results (one bash result up to about 16000 tokens, finding 3), and a
+turn that starts just under `contextWindow - 8192` can overshoot the
+window. On llama-server the overshoot is a rejected request and a
+tooling nudge; on `mlx_lm.server` it is the dead thread. The chance
+per turn does not grow with the window, but a longer task has more
+compaction cycles, so review the value before a long task on a large
+window (Gemma-12B f16 at 262K) and before any MLX row that sits close
+to its ceiling. Step 3 replaces the fixed 8192 with
+`maxTokens + margin` once step 2 measures the margin.
+
 Output: the rule as a sentence for `docs/methodology/mendel.md` and
 `kv-cache-pick.md`, the margin per backend with its evidence, the
 preflight or worker change as a bench item. Fix tools and search

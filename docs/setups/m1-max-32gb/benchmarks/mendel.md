@@ -58,7 +58,15 @@ invalid and are not listed above. The first hit a dead
 `gh` token and looped on login. The second ran 85 identical shell calls
 in a row against a missing file and committed nothing in three hours,
 and the operator stopped it. Both rows are in the guided CSV with their
-stop reasons. No third attempt is scheduled.
+stop reasons. A third attempt is scheduled, with the runner's live
+loop stop in place.
+
+Three scored rows above are scheduled for a re-run: Qwen3.8-27B GGUF
+blind (87), Gemma-4-26B-A4B GGUF blind (47.5) and Qwen3.6-35B-A3B
+guided (83). They compacted under the harness's old reserve of 16384
+tokens; since 2026-09-06 the harness reserves 8192, the answer budget.
+Each keeps its row until the fresh one lands. The Qwen3.8 re-run
+waits for the reasoning-effort question on that model.
 
 ## Cloud reference — blind test
 
