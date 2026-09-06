@@ -306,3 +306,6 @@ EVALPLUS_MAX_NEW_TOKENS=8192 \
 benchmarks/run-humaneval.sh gemma26-gguf-off gemma-4-26b-a4b \
   '{"chat_template_kwargs":{"enable_thinking":false}}'
 ```
+
+**Result**: pass@1 base **0.976**, plus **0.945**, empty **0/164**,
+wall **0:19:31**. Clean run, no stall/death on either watcher.
