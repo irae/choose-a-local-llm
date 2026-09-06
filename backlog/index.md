@@ -28,6 +28,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 - [ ] Mendel: score thinking-off configs that only have thinking-high rows (qwen3.6-35b-a3b confirmed gap) (mendel-thinking-off-gaps.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
 - [ ] Two owner questions left by the non-goals sweep: the positive half of the model entry criteria, and whether "a run gated by our own configuration is our fault" becomes a rule (non-goals-sweep-findings.md)
+- [ ] New pi test idea: sub-agent hand-offs to keep the main agent's context clean, trading compactions for per-hand-off cache misses (pi-subagent-context-hygiene-test.md)
 
 ## Changelog
 
