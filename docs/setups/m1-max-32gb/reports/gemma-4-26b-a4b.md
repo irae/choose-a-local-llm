@@ -24,10 +24,11 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
   184K each" was an allocation at q8_0, not a measured depth.
 - Weak point: wired memory sits at 25.6 GB on that config, above the
   24000 limit, flat but with no headroom for anything beside it.
-- **The GGUF at f16 KV scores 0.884 / 0.860 thinking on, 18/164 empty
-  (run 10).** The MLX build scored 0.713 / 0.701 with 46/164 empty on
-  the same budget; the two builds do not share a score. Thinking still
-  fails to converge on some problems, on both.
+- **The GGUF at f16 KV scores 0.976 / 0.945 with thinking off, 0/164
+  empty, in 19 minutes (run 10).** With thinking on it scores 0.884 /
+  0.860 with 18/164 empty; the MLX build 0.713 / 0.701 with 46/164. On
+  this model thinking costs answers on the single-turn test, and the
+  two builds do not share a score.
 
 ## All configs — this model
 
@@ -134,6 +135,7 @@ A deep-fill decode check on the llama config is still pending.
 
 | config scored | pass@1 base | pass@1 plus | empty completions |
 |---|--:|--:|--:|
+| llama-server UD-Q4_K_XL, f16 KV, thinking off, budget 8192 (run 10) | 0.976 | 0.945 | 0/164 |
 | llama-server UD-Q4_K_XL, f16 KV, thinking on, budget 30000 (run 10) | 0.884 | 0.860 | 18/164 |
 | mlx_lm.server 4-bit, thinking on, budget 30000 | 0.713 | 0.701 | 46/164 (~28%) |
 

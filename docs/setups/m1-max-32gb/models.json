@@ -474,6 +474,14 @@
     {
       "slug": "gemma-4-26b-a4b",
       "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)",
+      "mode": "thinking off",
+      "base": "0.976",
+      "plus": "0.945",
+      "empty": "0/164"
+    },
+    {
+      "slug": "gemma-4-26b-a4b",
+      "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)",
       "mode": "thinking on",
       "base": "0.884",
       "plus": "0.860",
