@@ -94,14 +94,14 @@ ASD-STE100 Simplified Technical English.
 
 ## The order, and why
 
-Twelve blocks. The first is a depth creep that decides where the
-Qwen3.6 GGUF Mendel pair goes. The other eleven are Mendel rows the
+Ten blocks. The first is a depth creep that decides where the
+Qwen3.6 GGUF Mendel pair goes. The other nine are Mendel rows the
 site does not have, sorted by EvalPlus base score, then decode speed
 at depth, then context. A row that exists is not run again. Qwen3.8
 has no block in this run: its reasoning-effort question is a research
 item (`hardware/m1-max-32gb/research/qwen38-configs.md`).
 
-## Block 1/12 — Qwen3.6 at wired 25000 on clean memory: both backends, both KV types
+## Block 1/10 — Qwen3.6 at wired 25000 on clean memory: both backends, both KV types
 
 Read `docs/methodology/context-creep.md` and
 `docs/methodology/memory-ceiling.md`. The site rows say 8K clean depth
@@ -169,7 +169,7 @@ starting memory numbers from preflight beside them, all in
 `results.md`, committed. Then the gates:
 
 - **GGUF, clean depth of 46K or more at 8 tok/s or more on either KV
-  arm**: blocks 11 and 12 (Qwen3.6 GGUF Mendel, thinking off) run
+  arm**: blocks 9 and 10 (Qwen3.6 GGUF Mendel, thinking off) run
   right after block 3, on the arm and `-c` this block found, and the
   config note names them. Otherwise they stay last, at the `-c` this
   block found, and the partial they produce is the finding.
@@ -202,7 +202,7 @@ for on (`high` last time). Smokes passed at both levels on 2026-09-06
 (9 calls and 11 calls, one clean commit each); no smoke runs again.
 Config note on every row: `f16 KV, -c 212992, reserveTokens 8192, wired 25000`.
 
-### Block 2/12 — Gemma-26B, thinking off, Mendel guided
+### Block 2/10 — Gemma-26B, thinking off, Mendel guided
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-26b-a4b pi guided off
@@ -212,7 +212,7 @@ Done: one scored guided row at `off` in `results-guided.csv`, the
 result line and the telemetry in `results.md`, committed. Expected: up
 to 5 hours, a night block.
 
-### Block 3/12 — Gemma-26B, thinking off, Mendel blind
+### Block 3/10 — Gemma-26B, thinking off, Mendel blind
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-26b-a4b pi blind off
@@ -220,7 +220,7 @@ cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-26b-a4b pi blind
 
 Done: one scored blind row at `off` in `results.csv`. Expected: up to
 5 hours. When block 1 promoted the Qwen3.6 GGUF pair, stop this server
-after this block and run blocks 11 and 12 now, then continue with
+after this block and run blocks 9 and 10 now, then continue with
 block 4.
 
 ## Server C, block 4: Gemma-12B GGUF f16, no drafter
@@ -238,7 +238,7 @@ pi entry `gemma-4-12b`, thinking off is level `off`. The guided row at
 missing. Config note: `f16 KV, no drafter, -c 262144, reserveTokens
 16384`.
 
-### Block 4/12 — Gemma-12B GGUF, thinking off, Mendel blind
+### Block 4/10 — Gemma-12B GGUF, thinking off, Mendel blind
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-12b pi blind off
@@ -247,7 +247,7 @@ cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-12b pi blind off
 Done: one scored blind row at `off`. Expected: up to 5 hours. Stop
 server C after it; wait for wired recovery.
 
-### Block 5/12 — Gemma-26B, thinking on, Mendel guided
+### Block 5/10 — Gemma-26B, thinking on, Mendel guided
 
 Server A again. The blind row at `high` exists (47.5/100); guided at
 any level does not.
@@ -286,13 +286,13 @@ benchmarks/mendel-smoke.sh <pi-id> <on-level> 2>&1 | tee hardware/m1-max-32gb/be
 A `fail` drops blocks 6 and 7. Config note: `mlx_lm.server,
 --prompt-cache-size 2, thinking on, reserveTokens 8192, wired 25000`.
 
-### Block 6/12 — Qwen3.6 MLX, thinking on, Mendel blind
+### Block 6/10 — Qwen3.6 MLX, thinking on, Mendel blind
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh <pi-id> pi blind <on-level>
 ```
 
-### Block 7/12 — Qwen3.6 MLX, thinking on, Mendel guided
+### Block 7/10 — Qwen3.6 MLX, thinking on, Mendel guided
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh <pi-id> pi guided <on-level>
@@ -301,39 +301,7 @@ cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh <pi-id> pi guided <on-le
 Done, each: one scored row. Expected: up to 5 hours each. Stop the
 server after block 7; wait for wired recovery.
 
-## Server E, blocks 8 and 9: Bonsai MLX, thinking off
-
-The smoke at `off` passed 2026-09-06 (14 calls, one commit, 115 s).
-Two guided attempts went invalid on the harness (a dead `gh` token,
-then an 85-call identical-command loop). This is the third attempt,
-with the live loop stop in the runner and `gh` checked first.
-
-```bash
-mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
-  --prompt-cache-size 2 --port 8081 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench11/results/server-bonsai-mlx.log
-```
-
-pi entry `prism-ml/Ternary-Bonsai-27B-mlx-2bit`, level `off`. Config
-note: `mlx_lm.server, --prompt-cache-size 2, thinking off,
-reserveTokens 8192, wired 25000`.
-
-### Block 8/12 — Bonsai MLX, thinking off, Mendel guided
-
-```bash
-cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi guided off
-```
-
-### Block 9/12 — Bonsai MLX, thinking off, Mendel blind
-
-```bash
-cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi blind off
-```
-
-Done, each: one scored row, valid or invalid with its reason.
-Expected: up to 5 hours each. Stop the server after block 9; wait for
-wired recovery.
-
-## Server F, block 10: Bonsai on the PrismML fork, q4 KV
+## Server E, block 8: Bonsai on the PrismML fork, q4 KV
 
 The blind row exists (12.5/100, partial). Guided is missing. The KV
 bias file is generated, not downloaded. Not the main task of this
@@ -365,10 +333,10 @@ last time). Run the smoke first (this config never ran the smoke):
 benchmarks/mendel-smoke.sh bonsai-prism <on-level> 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench11/results/mendel-smoke-bonsai-prism.log
 ```
 
-A `fail` drops block 10. Config note: `prism fork, q4_0 KV + bias, -c
+A `fail` drops block 8. Config note: `prism fork, q4_0 KV + bias, -c
 65536, reserveTokens 8192, wired 25000`.
 
-### Block 10/12 — Bonsai fork, thinking high, Mendel guided
+### Block 8/10 — Bonsai fork, thinking high, Mendel guided
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh bonsai-prism pi guided <on-level>
@@ -378,7 +346,7 @@ Done: one scored guided row. Expected: up to 5 hours; the fork decodes
 under 8 tok/s past 33K, so a wall-clock partial is a likely result and
 still a row. Stop the server after it; wait for wired recovery.
 
-## Server G, blocks 11 and 12: Qwen3.6 GGUF, thinking off
+## Server F, blocks 9 and 10: Qwen3.6 GGUF, thinking off
 
 Block 1 decided where these two run and at which `-c` and KV type.
 Both rows at `off` are missing, and the EvalPlus score at `off` is the
@@ -404,28 +372,28 @@ under 46K is then a known condition, not a deviation. Run the smoke at
 benchmarks/mendel-smoke.sh qwen3.6-35b-a3b off 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench11/results/mendel-smoke-qwen36-gguf-off.log
 ```
 
-A `fail` drops blocks 11 and 12. Config note: `<KV> KV, -c <value>,
+A `fail` drops blocks 9 and 10. Config note: `<KV> KV, -c <value>,
 clean depth <value> (block 1), reserveTokens 8192, wired 25000`.
 
-### Block 11/12 — Qwen3.6 GGUF, thinking off, Mendel guided
+### Block 9/10 — Qwen3.6 GGUF, thinking off, Mendel guided
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh qwen3.6-35b-a3b pi guided off
 ```
 
-### Block 12/12 — Qwen3.6 GGUF, thinking off, Mendel blind
+### Block 10/10 — Qwen3.6 GGUF, thinking off, Mendel blind
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh qwen3.6-35b-a3b pi blind off
 ```
 
 Done, each: one scored row. Expected: up to 5 hours each. Stop the
-server after block 12; wait for wired recovery.
+server after block 10; wait for wired recovery.
 
 ## Order
 
-1 to 12 in this file's order, with one conditional move: when block 1
-passes its gate, blocks 11 and 12 run right after block 3. Every
+1 to 10 in this file's order, with one conditional move: when block 1
+passes its gate, blocks 9 and 10 run right after block 3. Every
 Mendel block is a night block: it starts the moment the previous block
 ends, per the checklist's rule 1. Nothing in this run waits for the
 owner.
@@ -440,6 +408,10 @@ owner.
 - Gemma-26B MLX: 0.713 on EvalPlus, under the 0.800 gate.
 - Gemma-12B on the LM Studio engine: loops on the thought channel in
   tool work. Gemma-12B thinking on: no EvalPlus score.
+- Bonsai MLX at thinking off, guided and blind: moved to run 12 by the
+  owner (2026-09-06). The smoke passed, two guided attempts went
+  invalid on the harness; the third attempt runs with the loop stop
+  in run 12.
 - Bonsai MLX at thinking high: both rows exist, partial; a retry
   carries the penalty rule and waits for the owner.
 - Gemma-26B thinking on, blind: the row exists (47.5/100, complete).
