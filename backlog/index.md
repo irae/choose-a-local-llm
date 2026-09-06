@@ -19,6 +19,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
+- [ ] Mendel runner: stop a live repeated-identical-tool-call loop, not only slow/output-limit ones (mendel-live-loop-stop.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
 
 ## Changelog
