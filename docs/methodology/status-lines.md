@@ -336,91 +336,131 @@ paragraph." (`f55b29c3`, 2026-09-05). The runner's answer to it:
 
 ## The site comparison, in full
 
-The large form is three parts, always in this order:
+The large form compares **runs**, not table cells. The site table is
+only the format: its header and its columns. The data in an old row is
+the measurement this run replaces, on the same model and the same
+configuration, or the nearest one. A cell the site carried by a rule
+(a score copied from another build, a curve copied from a sibling
+row) is not a measurement: it is shown, marked as a copy, and the pair
+is the run that measured it.
 
-1. **One comparison table** with every model the run changed.
-2. **One Mendel table**, in the shape the site uses.
-3. **Items or short prose** for the events and the details.
+One table per task, then the words:
 
-Two tables, then the words. Not a table for each model, and not a table
-for each change.
+1. **Quality table**: every EvalPlus change, in the site's comparison
+   columns.
+2. **Speed and context table**: every depth curve, ceiling, or memory
+   change, same columns.
+3. **Mendel table**: every agent row, in the site's Mendel columns.
+4. **Gates table**: every smoke and every gate decision, one line each.
+5. **Items** for the events and the details.
 
-### The comparison table
+A table with no rows is left out. Not a table per model, and not a
+table per change.
 
-One table for the whole run. Each published row comes first, and its
-new row follows it at once. The header is the published one, copied
-without change from `docs/setups/<setup>/comparison.md`.
+### The rows and the pairs
 
-- The published row keeps its `#`. The new row carries `—`, because the
-  number belongs to `models.json` and the coordinator writes it there.
+- Every table has an `old/new` column first. `old` is the run that
+  measured the value being replaced; `new` is this run. The old row
+  keeps the site's `#` where it has one. The new row carries `—`,
+  because the number belongs to `models.json` and the coordinator
+  writes it there.
 - Bold only the cells that moved.
-- A new row with no exact published match pairs with the closest
-  published row. The note under the table says which row it picked and
-  why. A new thinking-off row pairs with the model's thinking-on row. A
-  new backend pairs with the same model on the other backend.
-- A result the run has not finished still gets its row, with `—` in the
-  cells it does not have and its state in the note.
+- **The pair is the same model, the same configuration or the nearest
+  one, on the same task.** A new EvalPlus score pairs with the run that
+  measured the score it replaces, not with the row that displayed it.
+  A new thinking-off score pairs with the thinking-on run of the same
+  build. A new backend pairs with the run on the other backend of the
+  same model. A new curve pairs with the previous creep of the same
+  config.
+- **A carried cell is marked.** When the old value was a copy, write
+  `(<source> copy)` after it, for example `0.713/0.701 (MLX copy)`,
+  and pair with the run that measured it. The note says so once.
+- A result the run has not finished still gets its row, with `—` in
+  the cells it does not have and its state in the note.
+- **No code fences around a table.** Claude Code renders a bare
+  markdown table; a fenced one shows raw pipes. The same bare table
+  goes into `results.md` and `state.md`. Fences are for commands and
+  log excerpts only.
 
 ### The Mendel table
 
-One table, in the shape of the site block the change belongs to
-(`docs/setups/<setup>/benchmarks/mendel.md`). The local blind block is
-`model | serving | score | worst defect`. The guided block is
-`model | harness | score`. Pair the rows the same way: the published
-row, then its new row. When one run changed both a blind and a guided
-row, add a `test` column and keep one table.
+The site's local blind block is `model | serving | score | worst
+defect`; the guided block is `model | harness | score`. One table,
+`old/new` first and a `test` column when the run changed both blind
+and guided rows. The old row is the run's previous scored row on the
+same model, the same test and the nearest configuration. An invalid
+row is never an old row and never a new row. A model with no scored
+row of its own pairs with the row it replaces, or with the nearest
+scored local row, and the note says which.
 
-A model the site has never scored pairs with the row it replaces, or
-with the nearest published local row. The note says which.
+### The gates table
+
+`old/new | gate | model | config | result | verdict`. One line per
+smoke (EvalPlus smoke, Mendel smoke) and per gate decision (a config
+dropped, a threshold passed). The old row is the same smoke on the
+config the run compares against, when there is one. A smoke never
+reaches the site, so this table lives in `results.md` and in chat
+only.
 
 ### The worked example
 
-Run 10, as of 2026-09-06. Three EvalPlus scores and three Mendel rows
-changed.
+Run 10, as of 2026-09-06, the blocks that changed a published number.
 
-```
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
-|--:|---|--:|:--:|--:|--:|--:|
-| 14 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
-| —  | Gemma-4-26B-A4B, GGUF, MTP f16, thinking on | 197k | mem | 60.3 → 17.3 | 25.6 GB | **0.884/0.860** |
-| 14 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
-| —  | Gemma-4-26B-A4B, GGUF, MTP f16, thinking off | 197k | mem | 60.3 → 17.3 | 25.6 GB | **0.976/0.945** |
-| 8  | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921 |
-| —  | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking off | 8k | mem | 36.4 → 43.8 | 25.0 GB | **0.951/0.915** |
-```
+Quality:
 
-```
-| test | model | serving | score | worst defect |
-|---|---|---|--:|---|
-| blind | Qwen3.8-27B (mlx, low) | mlx_lm.server | **12.5/100** (partial) | minor |
-| blind | qwen3.8-27b | llama-server | **87/100** | minor |
-| blind | qwen3.6-35b-a3b | llama-server | **63/100** | critical |
-| blind | gemma-4-26b-a4b | llama-server | **47.5/100** | critical |
-| guided | Ternary-Bonsai-27B-mlx-2bit | pi | **12.5/100** (partial) | — |
-| guided | Ternary-Bonsai-27B-mlx-2bit | pi | — | — |
-```
+| old/new | # | Config | Max ctx | Gated by | tok/s (shallow → deep) | Memory | EvalPlus |
+|---|--:|---|--:|:--:|--:|--:|--:|
+| old | 16 | Gemma-4-26B-A4B, MLX, thinking on | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
+| new | — | Gemma-4-26B-A4B, GGUF, MTP f16, thinking on | 197k | mem | 60.3 → 17.3 | 25.6 GB | **0.884/0.860** |
+| old | — | Gemma-4-26B-A4B, GGUF, MTP f16, thinking on (this run) | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860 |
+| new | — | Gemma-4-26B-A4B, GGUF, MTP f16, thinking off | 197k | mem | 60.3 → 17.3 | 25.6 GB | **0.976/0.945** |
+| old | 8 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921 |
+| new | — | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking off | 8k | mem | 36.4 → 43.8 | 25.0 GB | **0.951/0.915** |
 
-- **Gemma-26B, thinking on**: an exact pair. Row 14 carried
-  0.713/0.701, copied from the MLX row. This run scored the GGUF quant
-  itself for the first time, and the score rises to 0.884/0.860.
-- **Gemma-26B, thinking off**: the site has no thinking-off row for
-  this model, so the pair is row 14, its thinking-on row. Thinking off
-  scores higher, 0.976/0.945.
-- **Qwen3.6, thinking off**: the same case. The pair is row 8, the
-  published thinking-on row. 0.951/0.915: up on base, down on plus.
-- **Qwen3.8 blind Mendel**: the site has no llama-server row for this
-  model, so the pair is the published MLX low row, the only Qwen3.8
-  Mendel row there is. 87/100 against 12.5/100 partial. The MLX row
-  stopped on a server failure, not on the rubric, so the pair shows the
-  backend, not a gain in model quality.
-- **Gemma-26B blind Mendel**: the first Mendel row for this model. The
-  pair is qwen3.6-35b-a3b on llama-server, the nearest published local
-  row. 47.5/100, worst defect critical: trap A, `glob(...).then is not
-  a function`.
-- **Bonsai guided**: the published 12.5/100 partial stands. The run 10
-  retry is still running, so its row carries `—`. Do not publish an
-  invalid row, and do not delete the old one. The new row lands when
-  the retry closes.
+Speed and context (run 9, shown for the shape):
+
+| old/new | # | Config | Max ctx | Gated by | tok/s (shallow → deep) | Memory | EvalPlus |
+|---|--:|---|--:|:--:|--:|--:|--:|
+| old | 13 | Gemma-4-26B-A4B, GGUF, MTP q8 | 24k | speed | 23.5 → 8 | 15.4 GB | 0.713/0.701 (MLX copy) |
+| new | — | Gemma-4-26B-A4B, GGUF, MTP f16 | **197k** | **mem** | **60.3 → 17.3** | **25.6 GB** | 0.713/0.701 (MLX copy) |
+
+Mendel:
+
+| old/new | test | model | serving | score | worst defect |
+|---|---|---|---|--:|---|
+| old | blind | Qwen3.8-27B (mlx, medium) | mlx_lm.server | 80/100 (partial) | medium |
+| new | blind | qwen3.8-27b, GGUF f16 -c 49152, medium | llama-server | **87/100** | minor |
+| old | blind | gemma-4-26b-a4b, GGUF q8_0 (prompt v1.0) | llama-server | 38/100 (partial) | critical |
+| new | blind | gemma-4-26b-a4b, GGUF f16 -c 212992, high | llama-server | **47.5/100** | critical |
+| old | guided | Ternary-Bonsai-27B-mlx-2bit, low | mlx_lm.server | 59/100 (partial) | minor |
+| new | guided | Ternary-Bonsai-27B-mlx-2bit, off | mlx_lm.server | — | — |
+
+Gates:
+
+| old/new | gate | model | config | result | verdict |
+|---|---|---|---|---|---|
+| new | mendel smoke | qwen3.8-27b | GGUF f16, medium | 8 calls, 1 commit, no loop, 62 s | pass |
+| new | evalplus threshold | gemma-4-26b-a4b | GGUF f16, thinking on | base 0.884 against 0.800 | pass, on to Mendel |
+| new | mendel smoke | gemma-4-26b-a4b | GGUF f16, high | 11 calls, 1 commit, no loop, 31 s | pass |
+| new | mendel smoke | bonsai-27b | MLX, off | 14 calls, 1 commit, no loop, 115 s | pass |
+
+- **Gemma-26B, thinking on.** The old score was measured on the MLX
+  build (2026-08-29) and carried to the GGUF rows by the shared-score
+  rule; this run scored the GGUF quant itself. The two builds no longer
+  share a score.
+- **Gemma-26B, thinking off.** No earlier thinking-off run exists, so
+  the pair is this run's own thinking-on score of the same build.
+- **Qwen3.6, thinking off.** The pair is the thinking-on run of the
+  same build (2026-08-29). Base up, plus down, the five empties gone.
+- **Qwen3.8 blind.** The pair is the same model's last blind run at the
+  same effort, on the MLX build (run 7, partial on a server failure).
+  87 complete, all eight libraries, no bug defect.
+- **Gemma-26B blind.** The pair is the same model's earlier blind run
+  at q8_0 on the previous prompt version. 47.5 complete, one critical
+  trap hit.
+- **Bonsai guided.** The thinking-off attempt went invalid on a harness
+  fault (a dead `gh` token, a login loop). Invalid rows are neither old
+  nor new; the retry runs and its row lands when it closes.
 
 The runner drafts all of this. It never edits `models.json`; that is
 the coordinator's publish step (`EDITOR.md` at the repo root, the
