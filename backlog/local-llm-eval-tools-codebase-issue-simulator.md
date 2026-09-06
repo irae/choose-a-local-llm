@@ -104,11 +104,25 @@ survive.
 - Simulator: `--path benchmark/` renamed to `codebase-issue-simulator/`.
   Check for files outside `benchmark/` the scripts depend on before
   the filter runs; it is one shot. Then bring `loop-check.py`, the
-  runner tests, the fake pi and the event fixtures in from
+  runner tests, the fake pi and the fixtures in from
   `choose-a-local-llm` with their own history (one more filter, paths
   `benchmarks/loop-check.py` and `tests/`, renamed under the
   simulator's folder), and change the paths in `run-worker.sh` and in
   `test-run-pi-rpc.sh` in the same commit.
+
+**The fixtures are the most valuable part of the move.** Every file
+under `tests/fixtures/` is real run output, trimmed by hand, never
+synthetic; `tests/fixtures/README.md` says which run and which lines
+each one came from. The Mendel-born ones move verbatim, byte for
+byte, with their README entries: `events-*.jsonl` (the runner tests),
+`session-*.jsonl` (the loop verdict tests). Verify with `sha256sum`
+against the source after the move and again after the refactor. Never
+regenerate, reformat, re-trim or "clean" a fixture; a test that needs
+a different payload gets a new file with a new README entry that
+names its source run and lines. The server logs and the `vm_stat`
+files belong to the source repo's watcher tests and stay there; copy
+them, unchanged, only if the creep tool's fake server wants real
+payloads.
 
 Bring both histories into the new repository with
 `git fetch` and `git merge --allow-unrelated-histories`. Verify: commit
