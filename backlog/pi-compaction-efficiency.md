@@ -113,6 +113,25 @@ tunable.
 - The other lever is the window itself: block 1 found 82K clean depth
   for this model at q8_0 KV (`qwen36-entry-window.md`).
 
+Why block 9 ran at 49152 and not at the 82K block 1 found: by
+instruction. The runbook (Server F section) says the pi entry's
+`contextWindow` is 49152 and "the entry stays as it is (the runner
+never edits it)"; the server ran at `-c 98304` and pi capped itself
+at 49152. The 49152 value is the coordinator's daily-driver setting
+of 2026-09-05 (`qwen36-entry-window.md`, owner decision pending). Not
+macOS memory: the server log and the creep show no pressure at that
+depth.
+
+Note for the future (owner, 2026-09-06): the guided prompt hands the
+model `TASKS.md` so it can find its place again after a compaction,
+and the block 9 log shows it re-reading that file after most
+compactions. Whether that file is what kept the thread across twelve
+compactions is untested. A run with the same prompt minus the task
+file, or a blind row with many compactions, would show it. Other
+harnesses keep the original prompt plus the recent span and compact
+the rest differently; pi keeps the summary plus the recent span and
+drops the original prompt into the summary.
+
 Proposed rule for run 12, owner decides: for entries with
 `contextWindow` under 65536, set `compaction.keepRecentTokens` to
 8192 in the run's pinned pi config, beside `reserveTokens` 8192, and
