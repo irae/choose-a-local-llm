@@ -144,3 +144,14 @@ Starting Block D (Bonsai MLX thinking off: smoke, then guided).
 Block D smoke pass (14 calls, 1 clean commit, wall 115s). Starting the
 guided run next; killing the by-hand mlx_lm.server first since the
 worker starts its own.
+
+Deviation: AGENT.md's claim that "the worker starts the server its
+entry needs" does not hold for `run-worker.sh` — it never starts a
+server; `run-pi-rpc.mjs` just calls the base URL the pi entry already
+points at. Killing the by-hand server left the worker's first turn
+with a connection error ("stream error: Connection error"), though the
+`run-pi-rpc.mjs` process itself stayed alive and retried. Restarted
+`mlx_lm.server` by hand (same published command) and the worker
+recovered on its own, no restart of the worker needed. For any later
+block: start the server by hand BEFORE `run-worker.sh` for any
+non-llama-server provider too, same as blocks B/C/E.
