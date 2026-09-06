@@ -129,9 +129,35 @@ As of 2026-09-06.
   desktop profile holds q4 KV at 9.8 GB flat with a 30K floor, and serves
   2×48K slots at 9.8 tok/s each. The DSpark drafter helps only at
   shallow context, so it is not used for scoring.
-- pi wiring: qwen3.8 llama at a 49152 window, qwen3.6 llama at 49152,
-  gemma-26b llama at 212992, bonsai-mlx at 48K, qwen3.8-mlx at 26K;
-  `maxTokens` 8192 on every entry.
+- pi wiring: qwen3.8 llama at a 49152 window, qwen3.6 llama at 81920
+  (raised during run 11, see below), gemma-26b llama at 212992,
+  bonsai-mlx at 48K, qwen3.8-mlx at 26K; `maxTokens` 8192 on every
+  entry.
+
+## Run 11, in progress
+
+Preliminary numbers from the run on the machine now, at wired limit
+25000 as a trial. They are not in the tables above until the run
+closes and the limit decision is made
+([the wired limit](#the-wired-limit-24000)). Raw evidence:
+`hardware/m1-max-32gb/benchmarks/bench11/results.md` in the repo.
+
+- Qwen3.6 GGUF, q8_0 KV: `-c 98304` loads and serves a real
+  completion; every `-c` from 100864 up loads but OOMs on the first
+  completion. Slow creep at 98304 on a clean machine: clean depth
+  81958 at 9.24 tok/s, floor hit at 98K. f16 KV now loads at
+  `-c 40960` (it did not at 24000).
+- Qwen3.6 MLX 4-bit: ceiling 40982 at 37.4 tok/s, then the generation
+  thread died on a Metal OOM while the models endpoint kept answering.
+- Mendel, thinking off: Gemma-26B guided and blind both ended on the
+  live loop stop (invalid, five identical edits). Qwen3.6 GGUF guided
+  completed 8/8 at 46.5 on a 49152 window with twelve compactions;
+  a retry on the 81920 window the creep supports is queued, no
+  penalty, the better row stands. Qwen3.6 GGUF blind runs last on
+  the same window.
+- Running now: Gemma-12B GGUF blind at thinking off. Then Gemma-26B
+  guided thinking on, Qwen3.6 MLX blind and guided thinking on, the
+  Bonsai fork guided, the Qwen3.6 retry, Qwen3.6 blind.
 
 ## Open work
 
