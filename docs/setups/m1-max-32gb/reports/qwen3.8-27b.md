@@ -38,8 +38,10 @@ multi-file task through the harness.
 
 So this page reads as a caution. Either the model does not fit this
 machine for agent work, or the right configuration is not found yet.
-The llama-server row at f16 KV, 15 tok/s to 49K, is untested on Mendel
-and gets the smoke first in run 10. Research looks at community builds,
+The llama-server row at f16 KV, 15 tok/s to 49K, passed the Mendel
+smoke in run 10 (one handed two-file task: 8 tool calls, one clean
+commit, no loop, 62 seconds), so it gets a Mendel blind run in the
+same run. Research looks at community builds,
 a smaller window with earlier compaction, and 3-bit weights that buy
 context. If none of that produces a completed run, the model retires
 from the daily-driver question and keeps its single-turn score.
