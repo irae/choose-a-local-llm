@@ -24,7 +24,25 @@ first that yields a completed run:
    recipes, with their proof, and compute the context each buys from
    run 9's KV cost per token. A 3-bit build that reaches 96K at 12
    tok/s beats a 4-bit build at 49K for agent work.
-3. **The OOM-at-load threshold.** Moved to `no-oom-at-mendel.md`,
+3. **Reasoning effort: low and xhigh, not medium.** The community
+   reports (owner, 2026-09-06) that effort medium is the worst of this
+   model's settings for agent work: it thinks too much and does not
+   reach a conclusion. Low and xhigh are the two to try. Every scored
+   row here ran medium (the llama blind 87 included) or low on the MLX
+   build, and the MTP acceptance sweep on the report page shows medium
+   only as the fastest decode. The owner also pointed at
+   https://www.youtube.com/watch?v=dHK90xc9Q64; its transcript,
+   fetched and condensed, is `qwen38-configs/video-dHK90xc9Q64.md`.
+   That video says nothing about effort levels; it covers quant and
+   context on 32 GB Macs (4-bit MLX holds 32K at 15.8 tok/s, 19.2 GB;
+   llama.cpp issue 27756, a silent end-of-sequence past about 130K
+   context on this model), which feeds candidate 2. The trial:
+   the Mendel smoke on the llama f16 row at low and at xhigh, then the
+   blind run at whichever passes with the fewer nudges, against the
+   medium row's 87. Run 11 holds no Qwen3.8 block; the deferred EvalPlus
+   at medium and the guided run wait for this item's answer, because
+   the effort level decides which config is worth scoring.
+4. **The OOM-at-load threshold.** Moved to `no-oom-at-mendel.md`,
    which holds the llama fit findings (`--fit` is off whenever `-ngl`
    is set by hand; `-ub` sizes the compute buffer; `llama-fit-params`
    projects without a server).
