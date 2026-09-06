@@ -124,3 +124,10 @@ handing-over section at the end.
   blocks 9 and 10 run now, before block 4. Stopping server A, waiting
   for wired recovery, then starting the Qwen3.6 GGUF server at `-c
   98304`, q8_0 KV (block 1's found config) for blocks 9 and 10.
+- Owner correction: my reading of "blocks 9 and 10 run right after
+  block 3" as a full reorder was a misinterpretation. The gate only
+  decides whether 9/10 run at all (or get dropped), not when. Block 9
+  (guided) was already started and is healthy, so it keeps running —
+  not stopped mid-flight. But block 10 does NOT start right after 9:
+  the corrected order is 9, 4, 5, 6, 7, 8, 10 (numeric order, with 9
+  already pulled forward since it started, and 10 pushed to last).
