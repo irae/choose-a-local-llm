@@ -131,3 +131,13 @@ handing-over section at the end.
   not stopped mid-flight. But block 10 does NOT start right after 9:
   the corrected order is 9, 4, 5, 6, 7, 8, 10 (numeric order, with 9
   already pulled forward since it started, and 10 pushed to last).
+- Block 9 finished: `end_reason: complete`, 8/8 libraries, score_raw
+  46.5, no cap. First valid completed guided run this session. Real
+  bugs found despite completion (trap A, dead chalk code, stale
+  lockfile, no green suite before the last 2 commits) — completion
+  does not mean clean. Scored, JSON+CSV+report built together this
+  time before committing, pushed to `benchmark` (`109253c`). Session
+  log redacted and pushed, run branch pushed, worktree removed.
+- Stopping the Qwen3.6 server. Waiting for wired recovery, then
+  starting block 4 (Gemma-12B GGUF, blind, off) — not block 10, per
+  the corrected order. Block 10 waits until after block 8.

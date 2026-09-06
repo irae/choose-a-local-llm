@@ -200,4 +200,46 @@ tree — this model reproduced the same trap the Gemma-26B blind row at
 pushed, run branch pushed to
 `origin/gemma-4-26b-a4b-off-issue-13`, worker worktree removed.
 
-Block 1's gate promotes blocks 9 and 10 next, before block 4.
+Block 1's gate promotes block 9 next (owner correction: the gate only
+decides whether 9/10 run at all, not a full reorder — block 10 goes
+last, after block 8, in numeric order).
+
+## Block 9/10 — Qwen3.6 GGUF, thinking off, Mendel guided
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh qwen3.6-35b-a3b pi guided off
+```
+
+Server: q8_0 KV, `-c 98304` (block 1's found config), wired 25000,
+reserveTokens 8192. Smoke passed first (pass, 7 calls, loop ok:1.00).
+
+Branch `qwen3.6-35b-a3b-off-guided-v3-issue-13`, base `86935f4`.
+**`end_reason: complete`** — the first valid completed guided run this
+session (both Gemma-26B runs ended on the live loop stop). 95.6 min
+wall clock, 275 assistant messages, 299 tool calls, 37 tool errors, 7
+commits, **8/8 libraries done**. Peak context 51567 against the pi
+entry's 49152-token window (104.9%) — 12 compactions, 11 from
+overflow. 2 model nudges (harness policy text), 0 tooling nudges.
+
+Scored: score_raw 46.5 = score_total (no cap, 8/8). Real bugs remain
+despite full completion: trap A (`fs.promises.glob().then()`) still
+broken; the chalk replacement has a dead `fn.__proto__ = base` bug and
+ignores the prompt's `util.styleText` direction; `tmp`/`shasum` cut
+with `sed`, never from `pnpm-lock.yaml` (`pnpm install
+--frozen-lockfile` fails at HEAD); no green root test suite before the
+last two commits. Row in `results-guided.csv`/`.json`
+(`benchmark` branch, commit `109253c`), `invalid: false`. Session log
+redacted and pushed, run branch pushed to
+`origin/qwen3.6-35b-a3b-off-guided-v3-issue-13`, worker worktree
+removed.
+
+Notable for the compaction backlog item
+(`backlog/pi-compaction-efficiency.md` on `master`): this run
+compacted every 2-3 minutes for a long stretch, often shallow, yet
+finished cleanly and did not visibly lose task state — it re-read
+`TASKS.md`/`git status` after most compactions before acting. Evidence
+against "shallow compaction causes thread loss" for this model, even
+though the compaction pattern itself still looks inefficient.
+
+Next: block 4 (Gemma-12B GGUF, blind, off) — not block 10, per the
+corrected order.
