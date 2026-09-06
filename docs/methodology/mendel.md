@@ -112,11 +112,20 @@ window ladder and the summary rubric live in
   if healthy output comes near the line. Evidence and the per-model
   values as of 2026-09-05:
   `/history/runner-alarms-output-limit-and-loop-stop.html`.
+- **Live loop stop.** The runner ends a run on the same tool call five
+  times in a row (three when that call already stalled a turn), on a
+  message without a tool call whose lines repeat in shape (the
+  `loop-check.py` measure over a 60-line window, under 0.10), or on a
+  one-character flood of 2000 characters or more. The end reasons are
+  `repetition_loop` and `degenerate_output`; the row is invalid. Every
+  loop the project saw before the rule, with its timing, is in
+  `hardware/m1-max-32gb/research/loop-signatures.md`. The rule is in
+  the Mendel `PLAN.md`.
 - **Repetition-loop flag.** At run close the Mendel worker runs
   `benchmarks/loop-check.py` on the session log, and the verdict, its
   worst ratio, and its kind land beside the row as
   `telemetry.loop_flag`, `loop_ratio` and `loop_kind`. It is a flag,
-  never a stop.
+  never a stop, and it also catches a repeat that spans many turns.
 - `tool_calls` counts one `toolCall` block inside one assistant
   message of the run's session log. A call counts even when no result
   came back. Tool results, user messages, and any session the row does

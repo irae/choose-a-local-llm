@@ -27,13 +27,13 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 - [ ] Devstral Small 2 download: which files and revision (devstral-download.md)
 - [ ] Budget for cloud Mendel re-runs, and which models go to polyglot (cloud-reruns-and-polyglot-tier.md)
 - [ ] Mendel staging rule "never git add -A in the kit": formal line in AGENTS.md or not (mendel-staging-rule.md)
-- [ ] Mendel runner: stop a live repeated-identical-tool-call loop, not only slow/output-limit ones (mendel-live-loop-stop.md)
 - [ ] Mendel: score thinking-off configs that only have thinking-high rows (qwen3.6-35b-a3b confirmed gap) (mendel-thinking-off-gaps.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
 - [ ] Two owner questions left by the non-goals sweep: the positive half of the model entry criteria, and whether "a run gated by our own configuration is our fault" becomes a rule (non-goals-sweep-findings.md)
 
 ## Changelog
 
+- 2026-09-06 Live loop stop in the Mendel runner: five identical tool calls in a row (three after a stall), an in-message shape cycle, or a one-character flood end the run as `repetition_loop` or `degenerate_output`; every loop seen so far is in `hardware/m1-max-32gb/research/loop-signatures.md` (Mendel `run-pi-rpc.mjs`, `PLAN.md`)
 - 2026-09-06 Status lines: one template per update type in three sizes; short at every unattended wakeup, medium on a status request, large compares runs one table per task with carried cells marked (`docs/methodology/status-lines.md`, merge 1888b51)
 - 2026-09-05 One folder per machine: `benchmarks/bench1`-`bench10`, `benchmarks/INDEX.md` and `research/run1`-`run3` moved under `hardware/m1-max-32gb/`; shared scripts, calibrations, `history/` and `mendel/` stay at `benchmarks/`; run branches commit inside their own run folder only (branch `hardware-folders`)
 - 2026-09-05 Live crash watcher for scoring runs: `benchmarks/crash-watch.sh` tails the server log for the death signatures, probes one real completion on silence, exits 42 with the reason; checklist step 7 starts it beside every scoring run. The Mendel runner's `/slots`-only stall watchdog stays as it is: the runner never learns the server log path (branch `backlog/live-crash-detection`)

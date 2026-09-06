@@ -18,6 +18,7 @@ STATUS=0
 echo "== bash tests"
 bash "$HERE/test-run-watch.sh" || STATUS=1
 bash "$HERE/test-mendel-smoke.sh" || STATUS=1
+bash "$HERE/test-run-pi-rpc.sh" || STATUS=1
 
 echo
 echo "== python tests"
