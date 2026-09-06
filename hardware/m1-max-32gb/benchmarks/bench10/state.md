@@ -155,3 +155,22 @@ with a connection error ("stream error: Connection error"), though the
 recovered on its own, no restart of the worker needed. For any later
 block: start the server by hand BEFORE `run-worker.sh` for any
 non-llama-server provider too, same as blocks B/C/E.
+
+Guided run: invalid, raw 27/100 (zero commits, 0/8 libraries). Two
+compounding faults, neither the model's: the connection-error restart
+above cost the first three turns, then `gh issue view 13` hit HTTP
+401 because this machine's `gh` token is invalid, and the model
+looped on the interactive `gh auth login` the prompt forbids until
+`tooling_budget_exhausted`. Scored anyway per PLAN.md (a harness fault
+still gets a row, marked `invalid: true`), mendel-benchmark commit
+`238ae57`. Cleanup done (Mendel Daemon killed, mlx_lm.server killed,
+worker worktree removed, run branch pushed).
+
+**STOP AND ASK**: `gh auth status` shows the token invalid on this
+machine; fixing it needs an interactive device-code login only the
+owner can complete. Every later block whose model might reach for
+`gh` carries the same risk until this is fixed. The guided re-run (no
+penalty, harness fault) is not attempted this session. Continuing to
+Block E, which does not depend on `gh`.
+
+Block D closed.
