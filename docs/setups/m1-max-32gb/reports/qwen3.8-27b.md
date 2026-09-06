@@ -137,12 +137,19 @@ re-testing on future llama.cpp releases.
 
 ## Agentic quality — Mendel
 
-| test | config | score | worst defect | status |
-|---|---|--:|---|---|
-| blind | llama-server, f16 KV, `-c 49152`, effort medium | **87/100** | minor | complete, 8/8 libraries |
-| blind | mlx_lm.server, effort low | 12.5/100 | minor | partial, 1/8; the 26624-token window stopped it |
+<!-- gen:model-mendel:start -->
+| test | prompt | thinking | serving | score | done | wall | tokens | peak ctx | compactions | tool calls | commits | status |
+|---|---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|---|
+| blind | v1.1 | medium | llama-server | **87** | 8/8 | 129.3 | 5,947k | 46k | 4 | 210 | 10 | complete |
+| blind | v1.1 | low | mlx_lm.server | **12.5** (raw 67.5) | 1/8 | 85.2 | 610k | 24k | 0 | 29 | 1 | partial |
+| guided | v3.0 | low | mlx_lm.server | **0** (raw 34) | 0/8 | 261.3 | 1,254k | 30k | 0 | 48 | 0 | invalid |
+| blind | v1.0 | default | mlx_lm.server | **37.5** (raw 80) | 3/8 | 253.5 | 1,777k | 24k | 0 | 135 | 6 | partial |
+| guided | v2.1 | low | mlx_lm.server | **75** (raw 84) | 6/8 | 153.8 | 1,123k | 23k | 0 | 95 | 6 | partial |
+<!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
+
+The MLX build gives a 26624-token window. That window stopped the low-effort run.
 
 ## Decode speed vs used context (llama f16 KV, slow creep, 2026-09-05; mlx slow creep, 2026-08-29; limit 24000)
 

@@ -105,6 +105,14 @@ These rules bind every `reports/<model>.md` page:
   model and all its variants.** Rows come from the shared `rows` list
   (matched by `models.<page-slug>.rowMatch`). Old or abandoned variants
   may be added as `models.<page-slug>.extraRows` and may be incomplete.
+- **Every report page carries an "Agentic quality — Mendel" table**
+  with one row per Mendel run of that model, both tests and every
+  prompt version. `npm run docs:tables` generates it from
+  `benchmarks/mendel/results.csv` and
+  `benchmarks/mendel/results-guided.csv`, between
+  `<!-- gen:model-mendel:... -->` markers. A model with no run gets a
+  one-line block. Add the model to `MENDEL_SLUGS` in
+  `tools/gen-tables.mjs` when a run uses a new `model` value.
 - **Config numbers go at the end of table lines as `#1`, `#2`**, never
   as a `1:`/`2:` prefix.
 - **Every row in `models.json` carries a mnemonic `id`, a `hidden`

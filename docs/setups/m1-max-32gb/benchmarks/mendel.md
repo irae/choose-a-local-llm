@@ -33,12 +33,12 @@ scoreboard per version.
 <!-- gen:mendel-local:start -->
 | model | serving | score | worst defect |
 |---|---|--:|---|
-| qwen3.8-27b | llama-server | **87/100** | minor |
+| [qwen3.8-27b](../reports/qwen3.8-27b.md) | llama-server | **87/100** | minor |
 | [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **63/100** | critical |
 | [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **47.5/100** | critical |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **37.5/100** (partial) | medium |
 | [Qwen3.8-27B (mlx, low)](../reports/qwen3.8-27b.md) | mlx_lm.server | **12.5/100** (partial) | minor |
-| bonsai-prism | llama-server | **12.5/100** | critical |
+| [bonsai-prism](../reports/bonsai-27b.md) | llama-server | **12.5/100** | critical |
 <!-- gen:mendel-local:end -->
 
 Run notes for the two partials are in the
@@ -101,6 +101,6 @@ same frozen prompt; a blind-guided pair can land at different times.
 | [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **83/100** |
 | Claude Haiku 4.5 | pi | **76/100** |
 | [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **46.5/100** |
-| Gemma-4-12B (llama.cpp, off) | pi | **37.5/100** (partial) |
+| [Gemma-4-12B (llama.cpp, off)](../reports/gemma-4-12b-it.md) | pi | **37.5/100** (partial) |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **12.5/100** (partial) |
 <!-- gen:mendel-guided:end -->

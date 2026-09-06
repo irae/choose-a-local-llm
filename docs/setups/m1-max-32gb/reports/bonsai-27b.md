@@ -157,6 +157,22 @@ matches the PQ2_0 variant.
 | fork, q4_0 KV + calibration bias, thinking on, budget 10240 #2 | 0.927 | 0.890 | 4/164 (~2%) | 98% |
 | MLX 2-bit, thinking on, budget 10240 #1 | 0.915 | 0.884 | 5/164 (~3%) | 97% |
 
+## Agentic quality — Mendel
+
+<!-- gen:model-mendel:start -->
+| test | prompt | thinking | serving | score | done | wall | tokens | peak ctx | compactions | tool calls | commits | status |
+|---|---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|---|
+| blind | v1.1 | low | mlx_lm.server | **37.5** (raw 55) | 3/8 | 300.0 | 3,555k | 52k | 0 | 135 | 4 | partial, loop: thinking |
+| blind | v1.1 | high | llama-server | **12.5** (raw 60.5) | 1/8 | 43.1 | 1,718k | 51k | 0 | 76 | 2 | complete |
+| guided | v3.0 | low | mlx_lm.server | **12.5** (raw 59) | 1/8 | 300.0 | 3,619k | 46k | 0 | 122 | 1 | partial |
+| guided | v3.0 | off | mlx_lm.server | **0** (raw 27) | 0/8 | 83.5 | 48k | 5k | 0 | 10 | 0 | invalid |
+| guided | v3.0 | off | mlx_lm.server | **0** (raw 25) | 0/8 | 186.9 | 1,969k | 27k | 0 | 105 | 0 | invalid, loop: tool call |
+| blind | v1.0 | default | mlx_lm.server | **37.5** (raw 58) | 3/8 | 101.8 | 887k | 28k | 0 | 53 | 3 | partial |
+| guided | v2.1 | default | mlx_lm.server | **37.5** (raw 69) | 3/8 | 230.3 | 2,142k | 51k | 0 | 94 | 3 | partial |
+<!-- gen:model-mendel:end -->
+
+The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
+
 ## Config 1 (MLX) — decode speed vs used context (slow creep, limit 24000)
 
 | depth (used tokens) | decode tok/s |
