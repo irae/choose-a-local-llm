@@ -174,3 +174,25 @@ handing-over section at the end.
   removed.
 - Stopping server C, waiting for wired recovery, then starting server
   A again for block 5 (Gemma-26B, thinking on, guided).
+- **INCIDENT: block 5's server, worker, and watcher were all killed by
+  the harness's own low-memory protection at ~23:30Z**, mid-run, with
+  real uncommitted work in the worktree (`TASKS.md` and two
+  `mendel-development` files modified but not committed) — 8/8
+  libraries had commits, but the run was still working, not wrapping
+  up. `mem-watch-block5.log` shows free RAM collapsing from ~1565 MB
+  to 62 MB in one 20-second sample at 20:27:20, with sustained heavy
+  page compression (144115 pages in one interval) for over 3 minutes.
+  Not a GPU OOM (no Metal error in the server log), not a repetition
+  loop — a real near-system-OOM. Likely cause: `mediaanalysisd-access`
+  (macOS Photos/media indexing) running at ~70% CPU at the same time,
+  competing for memory while the server already held ~25 GB wired.
+  This machine is not tracked in `~/.config/choose-a-local-llm/machine.md`
+  or the login-items disable list. Not the model's fault and not a
+  benchmark misconfiguration — a real machine contention event, worth
+  a backlog item on master (mediaanalysisd or similar background
+  indexing during a run at wired 25000).
+- Retrying block 5 cleanly: waiting for wired recovery, restarting
+  server A, re-running `run-worker.sh gemma-4-26b-a4b pi guided high`
+  (the interrupted worktree/branch gets rebuilt fresh by the script).
+  This is a harness-caused interruption, not a model failure — no
+  penalty if a later valid attempt needs the Mendel retry rule.
