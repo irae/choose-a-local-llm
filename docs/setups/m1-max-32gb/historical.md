@@ -30,6 +30,18 @@ For numbers you can act on, go to [the comparison page](./comparison.md).
 Full raw archives, with their eras labeled, live in the benchmarks pages.
 :::
 
+## The 22000 "in use" wired limit (retired 2026-09-06)
+
+From 2026-08-29 the setup page carried a second standing value:
+`iogpu.wired_limit_mb=22000` for when the owner worked beside a run.
+Below about 24000 the sysctl gates cleanly, so the machine stayed
+responsive, at the cost of context depth (Qwen3.6-35B MLX capped near
+13K instead of about 35K). Retired on 2026-09-06: at the model sizes
+under test this machine is a model server, driven from another
+machine, and a shared-use setting is not a case we evaluate. No
+published number was measured at 22000. The single standing value is
+24000.
+
 ## q8_0 KV curves and allocation tables on the report pages (superseded 2026-09-06)
 
 The report pages carried the q8_0 KV decode curves and the

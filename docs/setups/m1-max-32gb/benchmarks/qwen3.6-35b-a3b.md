@@ -22,7 +22,8 @@ the 27000 limit and is retired.
 ## Context — q8_0 KV at `iogpu.wired_limit_mb=24000` (current, 2026-08-25)
 
 Limit history on this 32 GB machine: 27000 made the machine too slow for normal
-use; 24000 capped this model at 40K; 25000 is the compromise.
+use; 24000 capped this model at 40K; 25000 was the compromise until
+2026-08-29, when 24000 became the standing value.
 
 | `-c` | slots | result | rss |
 |---|---|---|---|

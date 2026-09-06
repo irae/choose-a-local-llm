@@ -68,9 +68,8 @@ run. It changes nothing and it needs no sudo. It reads:
   never passes in silence.
 - `machine.md`, "Thresholds". It takes the Setting cell of the
   `iogpu.wired_limit_mb` row and of the "Skip the balloon above" row,
-  and reads the numbers out of it. A cell with two numbers ("24000
-  unattended, 22000 when the owner also uses the machine") accepts
-  both.
+  and reads the numbers out of it. A cell with more than one number
+  accepts each of them.
 - `services-state`, through `mac-services.sh status`.
 - `last-start-wired-mb`, when it exists: the wired MB value the last
   run recorded at its start. preflight compares the current wired

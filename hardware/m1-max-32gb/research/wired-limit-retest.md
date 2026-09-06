@@ -1,10 +1,12 @@
 # Research item — re-find `iogpu.wired_limit_mb` (top item of run 3)
 
-The standing values are 24000 unattended and 22000 in use. Both were
-chosen on 2026-08-29. Two things changed since then, and neither was
-fed back into the choice. This item runs the ladder in
+The standing value is 24000, chosen on 2026-08-29. A second value,
+22000 for when the owner works beside a run, was chosen the same day
+and retired on 2026-09-06: the machine is a model server during a run.
+Two things changed since the choice, and neither was fed back into it.
+This item runs the ladder in
 [the wired limit page](../../../docs/methodology/wired-limit.md) and
-replaces the values or confirms them.
+replaces the value or confirms it.
 
 The owner is available for `sudo` and for a reboot after a panic. That
 is why this item is first: nothing else in run 3 needs the owner
@@ -18,6 +20,7 @@ present, so this block uses the time when they are.
 | 24000 | 2026-08-25 | trial after 27000 made the machine too slow for normal use; capped Qwen3.6-35B at 40K | `8b171a1` |
 | 25000 | 2026-08-25 | compromise: gave Qwen3.6-35B 96K instead of 40K | `4e154f4`; `docs/setups/m1-max-32gb/benchmarks/qwen3.6-35b-a3b.md` line 25 |
 | 24000 + 22000 | 2026-08-29 | 25000 and 24000 measured the same ceiling, so higher bought nothing; 22000 added as the clean-gating value for when the owner uses the machine | `63ecc31`; `docs/setups/m1-max-32gb/index.md`, "The wired limit" |
+| 24000 | 2026-09-06 | 22000 retired: the machine is a model server during a run, shared use is not a case we evaluate | `docs/setups/m1-max-32gb/historical.md`, "The 22000 in use wired limit" |
 
 Every rung above was measured with **fast** sweeps. The slow-creep rule
 landed in the same commit that set the 24000 policy.
@@ -84,10 +87,8 @@ reboot and a report read, not a re-run: a failed rung is not retried.
 
 ## Decision rule
 
-- The unattended value becomes the highest rung that passed twice
-  clean, minus one rung.
-- The in-use value becomes the highest rung whose creep never drove
-  free memory below 2000 MB and never showed material compaction.
+- The value becomes the highest rung that passed twice clean, minus
+  one rung.
 - **If 24000 stays the answer, that is a result, not a failure.** It
   would mean the fast-sweep verdict of 2026-08-29 was right for the
   wrong reason, and the site gets the correct reason.

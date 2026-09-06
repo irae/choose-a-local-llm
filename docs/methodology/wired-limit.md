@@ -78,13 +78,11 @@ Stop at the first rung that shows any of these:
 
 ## Picking the published values
 
-- **Unattended value.** The highest rung that passed twice clean, minus
-  one rung as margin. Such runs may drive free memory to near zero.
-- **In use value**, for when the owner works beside a run. The highest
-  rung whose creep never drove free memory below 2000 MB and never
-  showed material compaction. It costs context depth, and that cost is
-  the point: the machine stays usable.
-- Both values go on the setup page with the date and the balloon. Every
+- **The value.** The highest rung that passed twice clean, minus one
+  rung as margin. Such runs may drive free memory to near zero. That
+  is accepted: the machine is a model server during a run, nobody
+  works beside it.
+- The value goes on the setup page with the date and the balloon. Every
   ceiling measured under an old value is superseded and moves to the
   setup's historical page.
 
@@ -99,8 +97,8 @@ changes. Otherwise leave it alone. The ladder costs hours and a reboot.
 
 Write the result into `~/.config/choose-a-local-llm/machine.md`
 (`tools/README-mac-services.md` says how). In "Thresholds": the
-`iogpu.wired_limit_mb` row, with both values in one cell, unattended
-first. `tools/preflight.sh` reads this row and accepts either number.
+`iogpu.wired_limit_mb` row. `tools/preflight.sh` reads this row and
+accepts every number in the cell.
 In "Observed on this machine": the date of the ladder, the balloon
 used, the rung that failed and how it failed, and any panic report
 name. The machine file is the owner's, not the repo's. Never commit it.

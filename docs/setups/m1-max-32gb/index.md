@@ -2,8 +2,12 @@
 
 ## Highlights
 
-- **Wired limit: 24000 MB for unattended runs, 22000 MB when the machine is
-  in use.** It resets on reboot. Re-run the sysctl before any model work.
+- **Wired limit: 24000 MB.** It resets on reboot. Re-run the sysctl
+  before any model work.
+- **This machine is a model server, not a workstation, while it serves
+  the models under test.** At the sizes we evaluate, a run drives free
+  memory to near zero and the desktop stops responding. We do not
+  consider a shared-use setting. Drive the models from another machine.
 - **Every model has a depth curve, a KV pick and an EvalPlus score.**
   Qwen3.8 0.982/0.939/100%, Gemma-26B 0.976/0.945/100% and Gemma-12B
   0.976/0.939/100% thinking off, Qwen3.6 0.951/0.915/100% thinking off,
@@ -23,9 +27,8 @@
 sudo sysctl iogpu.wired_limit_mb=24000
 ```
 
-**This resets on reboot.** Re-run it before any model work. Set 22000
-instead when you also use the machine; see
-[the wired limit](#the-wired-limit-24000-unattended-22000-in-use).
+**This resets on reboot.** Re-run it before any model work. See
+[the wired limit](#the-wired-limit-24000).
 
 - Servers always listen on port 8081. Port 8080 is the DB admin UI. LM Studio
   serves on 1234.
@@ -148,7 +151,7 @@ calibrated per model from measured reasoning length; every corrected score
 went up. Superseded numbers under the old cap live on
 [the historical page](./historical.md), never on a current page.
 
-## The wired limit: 24000 unattended, 22000 in use
+## The wired limit: 24000
 
 Measured on this machine (Qwen3.6-35B MLX, per-process `vmmap` tracking):
 
@@ -157,17 +160,18 @@ Measured on this machine (Qwen3.6-35B MLX, per-process `vmmap` tracking):
   the sysctl, and the crash point no longer responds to sysctl changes
   (25000 and 24000 give the same ceiling). This regime reaches the
   machine's true context maxima, but the near-zero free RAM is what
-  locks up the keyboard and causes visual glitches. Use it only for
-  unattended runs. **24000 is the standing value for those**; anything
-  higher buys nothing.
+  locks up the keyboard and causes visual glitches. **24000 is the
+  standing value**; anything higher buys nothing.
 - **Below about 24000 MB the sysctl gates cleanly.** The model process
   hits the limit, gets a Metal OOM, and dies or rejects the request,
   while macOS keeps gigabytes free and the machine stays responsive.
-  **22000 is the standing value when the machine is in use.** The cost
-  is context depth: Qwen3.6-35B MLX caps near 13K instead of about 35K.
-- Max-context numbers matter even though they cost usability: the
-  laptop can run as a bare model server, driven by agents from another
-  machine, with the minimal local system.
+  The cost is context depth: Qwen3.6-35B MLX caps near 13K at 22000
+  instead of about 35K. That trade is not one we make. The lower
+  shared-use value is retired; see
+  [the historical page](./historical.md).
+- Max-context numbers are the point: the laptop runs as a bare model
+  server, driven by agents from another machine, with the minimal
+  local system.
 
 Every published number states the limit it was measured under, and only
 24000 numbers appear on the current site pages. Superseded measurements
