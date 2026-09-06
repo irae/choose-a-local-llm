@@ -13,9 +13,10 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25
   on memory, and it loops in multi-turn tool work.
 - **Best speed with depth:** Gemma-26B on MLX — 51 tok/s at 4K, still 12.8 at
   70K (ceiling), in 20.0 GB.
-- **Best big window:** Gemma-26B on llama-server with f16 KV — 60.3 tok/s
-  at 4K and 17.3 at 197K, the largest context this machine loads for it
-  (run 9). Its quality score is the open question of run 10.
+- **Best big window, and the secondary-model pick:** Gemma-26B on
+  llama-server with f16 KV — 60.3 tok/s at 4K and 17.3 at 197K, the
+  largest context this machine loads for it (run 9), and 0.884 / 0.860
+  on EvalPlus with thinking on (run 10), far above its MLX build.
 - **Best all-round config, with a caveat:** Qwen3.6-35B on llama — the
   fastest shallow decode and 0.939 / 0.921, but the slow creep of run 9
   shows memory compaction from 16K at the only `-c` that loads; the
@@ -63,7 +64,9 @@ then at max ctx.
 ² Scored once per model and thinking mode; runtimes serving the same
 model at a standard quant share the score, until a measurement says
 otherwise: Gemma-4-12B's GGUF Q4_K_XL scored 0.067 above its LM Studio
-MLX 4-bit (run 9), so those two carry their own. Aggressive quants (for
+MLX 4-bit (run 9), and Gemma-4-26B-A4B's GGUF UD-Q4_K_XL at f16 KV
+scored 0.171 above its MLX 4-bit (run 10), so those pairs carry their
+own. Aggressive quants (for
 example the prism fork's calibrated q4 KV) never share; they pass the
 gate separately.
 
@@ -112,11 +115,11 @@ applies.
 | Qwen3.6-35B llama (q8, MTP, `-c 49152`) | 36.4 | 31.0 | 19.6 | | | mem — compaction from 16K at 25 GB wired; last clean row 8K, 43.8 tok/s (run 9) | 0.939/0.921 |
 | Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 17.3 (58K) | mem — stable to 58K, 17.3 tok/s there | 0.915/0.884 |
 | Qwen3.8 MLX | 17.1* | 16.4 | | | 15.3 (28K) | mem — stable to 28K, 15.3 tok/s there | 0.982/0.939 |
-| **Gemma-26B llama (f16, MTP, `-c 212992`)** | 60.3 | 56.5 | 45.9 | 45.9 | 26.4 (115K), 17.3 (197K) | mem — 212992 is the largest `-c` that loads; 17.3 tok/s at 197K (run 9) | 0.713/0.701 at q8_0 |
+| **Gemma-26B llama (f16, MTP, `-c 212992`)** | 60.3 | 56.5 | 45.9 | 45.9 | 26.4 (115K), 17.3 (197K) | mem — 212992 is the largest `-c` that loads; 17.3 tok/s at 197K (run 9) | 0.884/0.860 |
 | Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 7.9 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890 |
 | **Qwen3.8 llama (f16, MTP, `-c 49152`)** | 20.0 | 16.0 | 16.4 | 15.0 | | mem — 49152 is the largest `-c` that loads; 15.0 tok/s at 49K (run 9) | 0.982/0.939 (MLX score) |
-| Gemma-12B llama (q8, MTP) | 13.8 | 6.5 | | | | speed — under 8 tok/s at 16K | 0.909/0.872 |
-| **Gemma-12B llama (f16, no drafter)** | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | mem — 8.86 tok/s at 245K, where the trained window ends² | 0.909/0.872 |
+| Gemma-12B llama (q8, MTP) | 13.8 | 6.5 | | | | speed — under 8 tok/s at 16K | 0.976/0.939 |
+| **Gemma-12B llama (f16, no drafter)** | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | mem — 8.86 tok/s at 245K, where the trained window ends² | 0.976/0.939 |
 | **Gemma-12B MLX (LM Studio engine, CLI)** | 34.2 | 32.1 | 30.6 | | 23.2 (131K) | mem — last stable 131K, 23.23 tok/s there² | 0.909/0.872 |
 
 Cells are blank past a config's cap, or where no step was measured at that depth.
