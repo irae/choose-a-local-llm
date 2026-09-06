@@ -108,3 +108,15 @@ end=stop wall_s=62`). Qwen3.8 GGUF continues to Block E. Mendel Daemon
 killed after. Block B closed.
 
 Starting Block C (Gemma-26B GGUF f16, EvalPlus thinking on).
+
+Deviation: `benchmarks/calibrate.py` needs the EvalPlus pipx venv's
+Python (`~/.local/pipx/venvs/evalplus/bin/python3`), not the system
+`python3` — plain `python3` fails with `ModuleNotFoundError: No module
+named 'openai'`. `run-humaneval.sh` already resolves this itself via
+`evalplus.codegen`'s shebang, so only the standalone calibrate.py call
+needed the explicit venv python.
+
+Calibration confirms the same 2-problem non-convergence as the old
+run. Scored EvalPlus run launched at `EVALPLUS_MAX_NEW_TOKENS=30000`
+per AGENT.md. Run watcher + both sunset scripts started. Full numbers
+in `results.md`.

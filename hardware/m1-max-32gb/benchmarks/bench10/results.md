@@ -133,6 +133,36 @@ Gate: **pass**. Qwen3.8 GGUF continues to Block E (Mendel blind).
 
 ## Block C — Gemma-26B GGUF f16, EvalPlus thinking on
 
+Server: published `gemma-4-26b-a4b` command, f16 KV, `-c 212992`
+(`server-gemma26-gguf-f16-evalplus.log`).
+
+Calibration, thinking on
+(`benchmarks/calibration-gemma26-gguf-think.json`):
+
+```
+benchmarks/calibrate.py gemma26-gguf-think gemma-4-26b-a4b \
+  '{"chat_template_kwargs":{"enable_thinking":true}}'
+```
+
+Same non-convergence as the old calibration: 2 of 10 problems
+(`HumanEval/38`, `HumanEval/145`) hit `finish_reason: length` at the
+30000-token cap with an empty completion. The 8 converging problems
+top out at 13884 completion tokens (`HumanEval/32`). Per AGENT.md,
+using `EVALPLUS_MAX_NEW_TOKENS=30000` regardless, matching the old run
+so the two scores compare.
+
+Scored run launched:
+
+```
+RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench10/results \
+EVALPLUS_MAX_NEW_TOKENS=30000 \
+benchmarks/run-humaneval.sh gemma26-gguf-think gemma-4-26b-a4b \
+  '{"chat_template_kwargs":{"enable_thinking":true}}'
+```
+
+Run watcher and both sunset scripts started per checklist step 6.
+Compare against old: 0.713/0.701 base/plus, 46/164 empty.
+
 ## Block D — Bonsai MLX thinking off, Mendel
 
 ## Block E — Qwen3.8 GGUF f16, Mendel blind
