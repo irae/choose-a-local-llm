@@ -19,7 +19,6 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
-- [p] Status-lines proposal: one template per update type in three sizes, branch `status-lines`; two points to settle at review (status-lines-proposal.md)
 - [ ] Pushing a run branch: rewrite the rule to the run 10 practice, or return to one merge at run close (run-branch-push-rule.md)
 - [ ] Shared-score rule: the owner's sentence for when two quants of one model carry their own scores (shared-score-quant-exception.md)
 - [ ] Qwen3.6 GGUF pi entry at contextWindow 49152: keep on the daily driver, or raise back to 98304 (qwen36-entry-window.md)
@@ -33,6 +32,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Changelog
 
+- 2026-09-06 Status lines: one template per update type in three sizes; short at every unattended wakeup, medium on a status request, large compares runs one table per task with carried cells marked (`docs/methodology/status-lines.md`, merge 1888b51)
 - 2026-09-05 One folder per machine: `benchmarks/bench1`-`bench10`, `benchmarks/INDEX.md` and `research/run1`-`run3` moved under `hardware/m1-max-32gb/`; shared scripts, calibrations, `history/` and `mendel/` stay at `benchmarks/`; run branches commit inside their own run folder only (branch `hardware-folders`)
 - 2026-09-05 Live crash watcher for scoring runs: `benchmarks/crash-watch.sh` tails the server log for the death signatures, probes one real completion on silence, exits 42 with the reason; checklist step 7 starts it beside every scoring run. The Mendel runner's `/slots`-only stall watchdog stays as it is: the runner never learns the server log path (branch `backlog/live-crash-detection`)
 - 2026-09-05 Run 9 closed: KV picks, real `-c` ceilings, Gemma-12B GGUF scored; site, historical page and findings index updated; bench 10 draft de-duplicated
