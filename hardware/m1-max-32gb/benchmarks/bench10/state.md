@@ -140,3 +140,7 @@ sub-run to match. Worker worktree removed, run branch
 watcher + sunset scripts stopped. Block C closed.
 
 Starting Block D (Bonsai MLX thinking off: smoke, then guided).
+
+Block D smoke pass (14 calls, 1 clean commit, wall 115s). Starting the
+guided run next; killing the by-hand mlx_lm.server first since the
+worker starts its own.
