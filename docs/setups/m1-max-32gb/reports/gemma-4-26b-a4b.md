@@ -139,9 +139,14 @@ The two GGUF rows share the thinking-on score; the MLX row keeps its own.
 
 ## Agentic quality — Mendel
 
-| test | config | score | worst defect | status |
-|---|---|--:|---|---|
-| blind | llama-server, f16 KV, `-c 212992`, thinking high | **47.5/100** | critical | complete, 8/8 libraries |
+<!-- gen:model-mendel:start -->
+| test | prompt | thinking | serving | score | done | wall | tokens | peak ctx | compactions | tool calls | commits | status |
+|---|---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|---|
+| blind | v1.1 | high | llama-server | **47.5** | 8/8 | 80.8 | 23,832k | 209k | 1 | 246 | 21 | complete |
+| blind | v1.1 | off | llama-server | **12.5** | 1/8 | 28.0 | 8,053k | 136k | 0 | 120 | 7 | invalid, loop: tool call |
+| guided | v3.0 | off | llama-server | **25** | 2/8 | 20.4 | 2,605k | 73k | 0 | 91 | 3 | invalid, loop: tool call |
+| blind | v1.0 | default | llama-server | **38** | 8/8 | 104.0 | 8,150k | 142k | 0 | 115 | 9 | partial |
+<!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 

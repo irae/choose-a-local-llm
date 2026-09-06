@@ -21,6 +21,8 @@ const MENDEL_CLOUD_START = '<!-- gen:mendel-cloud:start -->'
 const MENDEL_CLOUD_END = '<!-- gen:mendel-cloud:end -->'
 const MENDEL_GUIDED_START = '<!-- gen:mendel-guided:start -->'
 const MENDEL_GUIDED_END = '<!-- gen:mendel-guided:end -->'
+const MODEL_MENDEL_START = '<!-- gen:model-mendel:start -->'
+const MODEL_MENDEL_END = '<!-- gen:model-mendel:end -->'
 
 // Minimal CSV parser: handles quoted fields with embedded commas/quotes.
 function parseCsv(text) {
@@ -53,6 +55,11 @@ const MENDEL_SLUGS = {
   'Qwen3.8-27B (mlx, low)': 'qwen3.8-27b',
   'Ternary-Bonsai-27B (mlx, low)': 'bonsai-27b',
   'gemma-4-12b': 'gemma-4-12b-it',
+  'google/gemma-4-12b': 'gemma-4-12b-it',
+  'Gemma-4-12B (low)': 'gemma-4-12b-it',
+  'Gemma-4-12B (llama.cpp, off)': 'gemma-4-12b-it',
+  'bonsai-prism': 'bonsai-27b',
+  'qwen3.8-27b': 'qwen3.8-27b',
 }
 
 function mendelName(r) {
@@ -100,6 +107,75 @@ function renderMendelGuided(rows) {
   const body = rows
     .sort((a, b) => Math.min(b.score_total, (100 * (b.libraries_done === '' ? 8 : b.libraries_done)) / 8) - Math.min(a.score_total, (100 * (a.libraries_done === '' ? 8 : a.libraries_done)) / 8))
     .map((r) => `| ${mendelName(r)} | ${r.harness} | ${mendelScore(r)} |`)
+  return [...header, ...body].join('\n')
+}
+
+function promptOrder(v) {
+  return String(v || 'v0').replace(/^v/, '').split('.').reduce((a, p) => a * 1000 + Number(p), 0)
+}
+
+function latestPromptVersion(rows) {
+  return rows.map((r) => r.prompt_version).sort((a, b) => promptOrder(a) - promptOrder(b)).at(-1)
+}
+
+function thinkingLevel(branch) {
+  const m = String(branch).match(/-(xhigh|high|medium|low|off)-/)
+  return m ? m[1] : 'default'
+}
+
+function renderModelMendel(slug, blindRows, guidedRows) {
+  const latestBlind = latestPromptVersion(blindRows)
+  const latestGuided = latestPromptVersion(guidedRows)
+  const tagged = [
+    ...blindRows.map((r) => ({ r, test: 'blind', current: r.prompt_version === latestBlind })),
+    ...guidedRows.map((r) => ({ r, test: 'guided', current: r.prompt_version === latestGuided })),
+  ].filter(({ r }) => MENDEL_SLUGS[r.model] === slug)
+  if (!tagged.length) return 'No Mendel run yet.'
+
+  const capped = (r) => {
+    const done = r.libraries_done === '' ? 8 : Number(r.libraries_done)
+    return Math.min(Number(r.score_total), (100 * done) / 8)
+  }
+  tagged.sort((a, b) => {
+    if (a.current !== b.current) return a.current ? -1 : 1
+    if (a.test !== b.test) return a.test === 'blind' ? -1 : 1
+    return capped(b.r) - capped(a.r)
+  })
+
+  const esc = (v) => String(v ?? '').replace(/\|/g, '\\|')
+  const thousands = (v) => {
+    const n = Number(v)
+    if (!Number.isFinite(n) || v === '') return '—'
+    return `${Math.round(n / 1000).toLocaleString('en-US')}k`
+  }
+  const header = [
+    '| test | prompt | thinking | serving | score | done | wall | tokens | peak ctx | compactions | tool calls | commits | status |',
+    '|---|---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|---|',
+  ]
+  const body = tagged.map(({ r, test }) => {
+    const done = r.libraries_done === '' ? 8 : Number(r.libraries_done)
+    const cap = capped(r)
+    const raw = Number(r.score_total)
+    const score = cap < raw ? `**${cap}** (raw ${raw})` : `**${cap}**`
+    const wall = r['telemetry.wall_clock_min'] === '' ? '—' : Number(r['telemetry.wall_clock_min']).toFixed(1)
+    let status = r.invalid === 'True' ? 'invalid' : r.partial === 'True' ? 'partial' : 'complete'
+    if (r['telemetry.loop_flag'] === 'LOOP') status += `, loop: ${esc(r['telemetry.loop_kind'] || 'unknown')}`
+    return [
+      test,
+      esc(r.prompt_version),
+      thinkingLevel(r.branch),
+      esc(r.serving),
+      score,
+      `${done}/8`,
+      wall,
+      thousands(r['telemetry.tokens_total']),
+      thousands(r['telemetry.peak_context']),
+      esc(r['telemetry.compactions'] || '0'),
+      esc(r['telemetry.tool_calls'] || '0'),
+      esc(r['telemetry.commits'] || '0'),
+      status,
+    ].join(' | ')
+  }).map((line) => `| ${line} |`)
   return [...header, ...body].join('\n')
 }
 
@@ -327,8 +403,10 @@ for (const dataFile of dataFiles) {
     }
   }
 
-  const mendelBlind = currentPromptVersion(parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8')).filter((r) => r.invalid !== 'True'))
-  const mendelGuided = currentPromptVersion(parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8')).filter((r) => r.invalid !== 'True'))
+  const mendelBlindAll = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8'))
+  const mendelGuidedAll = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8'))
+  const mendelBlind = currentPromptVersion(mendelBlindAll.filter((r) => r.invalid !== 'True'))
+  const mendelGuided = currentPromptVersion(mendelGuidedAll.filter((r) => r.invalid !== 'True'))
   const typePages = [
     [`${setupDir}/benchmarks/evalplus.md`, EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(data)],
     [`${setupDir}/benchmarks/decode-speed.md`, DECODE_START, DECODE_END, renderDecodeSummary(data)],
@@ -355,6 +433,7 @@ for (const dataFile of dataFiles) {
     let updated = applyBlock(original, KPI_START, KPI_END, renderKpis(model), target)
     updated = applyBlock(updated, MODEL_START, MODEL_END, renderModelTable(data, model), target)
     updated = applyBlock(updated, CONFIGS_START, CONFIGS_END, renderModelConfigs(data, model), target)
+    updated = applyBlock(updated, MODEL_MENDEL_START, MODEL_MENDEL_END, renderModelMendel(slug, mendelBlindAll, mendelGuidedAll), target)
     checkRefs(updated, modelRows(data, model).length, target)
     if (updated === original) continue
     if (CHECK) {

@@ -144,9 +144,14 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 
 ## Agentic quality — Mendel
 
-| test | config | score | status |
-|---|---|--:|---|
-| guided | llama-server, f16 KV, no drafter, thinking off | **37.5/100** | partial, 3/8 libraries; model budget exhausted after three nudges |
+<!-- gen:model-mendel:start -->
+| test | prompt | thinking | serving | score | done | wall | tokens | peak ctx | compactions | tool calls | commits | status |
+|---|---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|---|
+| blind | v1.1 | high | lm-studio | **0** (raw 30.5) | 0/8 | 49.5 | 218k | 28k | 0 | 15 | 0 | invalid |
+| guided | v3.0 | off | llama-server | **37.5** (raw 58) | 3/8 | 97.6 | 6,453k | 125k | 0 | 132 | 3 | partial, loop: text |
+| guided | v3.0 | high | lm-studio | **0** (raw 30) | 0/8 | 46.0 | 306k | 30k | 0 | 21 | 0 | invalid |
+| guided | v3.0 | low | lm-studio | **0** (raw 29.5) | 0/8 | 99.0 | 1,971k | 45k | 3 | 130 | 0 | invalid, loop: tool call |
+<!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
