@@ -1,0 +1,5 @@
+07:39:15 free_mb=183 d_swapin=0 d_swapout=0 d_compress=0 d_decompress=0
+07:44:15 free_mb=180 d_swapin=262735 d_swapout=1458641 d_compress=1904768 d_decompress=367403
+07:49:15 free_mb=56 d_swapin=91131 d_swapout=647676 d_compress=696653 d_decompress=134258
+07:54:15 free_mb=213 d_swapin=167846 d_swapout=975143 d_compress=1336481 d_decompress=391770
+07:59:15 free_mb=68 d_swapin=8885 d_swapout=25412 d_compress=215653 d_decompress=290876

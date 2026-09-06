@@ -190,3 +190,9 @@ with watchers.
 
 F1 done: base 0.976, plus 0.945, empty 0/164, wall 0:19:31. Watchers
 stopped, no stall on either. Starting F2 next.
+
+F2 calibration done (all converged, budget 8192). Scored run
+launched with watchers.
+
+F2 done: base 0.951, plus 0.915, empty 0/164, wall 0:14:42. Watchers
+stopped.
