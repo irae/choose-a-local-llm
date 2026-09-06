@@ -26,7 +26,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 - [ ] Devstral Small 2 download: which files and revision (devstral-download.md)
 - [ ] Budget for cloud Mendel re-runs, and which models go to polyglot (cloud-reruns-and-polyglot-tier.md)
 - [ ] Mendel: score thinking-off configs that only have thinking-high rows (qwen3.6-35b-a3b confirmed gap) (mendel-thinking-off-gaps.md)
-- [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
+- [ ] local-llm-eval-tools: extract creep and the Mendel kit with history into two tools; hand-over prompt for the coordinator agent (local-llm-eval-tools-codebase-issue-simulator.md)
 - [ ] Two owner questions left by the non-goals sweep: the positive half of the model entry criteria, and whether "a run gated by our own configuration is our fault" becomes a rule (non-goals-sweep-findings.md)
 
 ## Changelog

@@ -1,180 +1,150 @@
-# Extract the Mendel benchmark method into `local-llm-eval-tools/codebase-issue-simulator`
+# Extract the two tools into `local-llm-eval-tools`
 
-Status: pending owner review; the owner reads this first, then says
-start. Nothing started.
-Filed: 2026-09-04 at the owner's request; repo and project names set by
-the owner the same day.
-Needs hardware: no for the extraction and the refactor; a smoke run
-against a served model at the end.
+Status: pending owner review of the prompt below. The owner creates the
+folder and runs `git init`, then hands the prompt to a coordinator
+agent in another pane. Nothing started here.
+Filed: 2026-09-04 at the owner's request; rewritten 2026-09-06 to a
+hand-over prompt, both tools in scope.
+Needs hardware: no for extraction and refactor; a smoke run of each
+tool against a served model at the end.
 
-## The shape the owner decided
+What moves, and where it is today:
 
-- **One new repository, `local-llm-eval-tools`, holding several
-  projects.** Its README says these are the personal tools the owner
-  develops to choose a local model for their own hardware and for the
-  next hardware they buy, tells a little about this project
-  (choose-a-local-llm: the measurements and the site) and cross-links
-  it; this repository links back.
-- **First project: `codebase-issue-simulator`**, extracted from the
-  Mendel `benchmark` branch with its history. Description: have several
-  models produce competing implementations for an issue on a GitHub
-  repository, through the pi harness, and score the results.
-- **Second project later: `slow-context-creep`**, the depth-sweep
-  apparatus (`tools/sweeps/creep.py` and its backend files) once it is
-  stable. Not part of this item; the repo layout must leave room for it
-  (one folder per project, each with its own README, shared nothing at
-  the top level but the repo README and a licence).
+| tool | source | history |
+| --- | --- | --- |
+| `slow-context-creep` | this repo, `tools/sweeps/creep.py` and `creep_llama.py`, `creep_mlx.py`, `creep_lmstudio.py`; method: `docs/methodology/context-creep.md` | 18 commits on `tools/sweeps/` |
+| `codebase-issue-simulator` | `../mendel-benchmark`, branch `benchmark`, folder `benchmark/` (worktree of `../mendel`); plus `benchmarks/loop-check.py` from this repo, which `run-worker.sh` calls by path | 116 commits on `benchmark/` |
 
-The extraction below therefore lands in `codebase-issue-simulator/`
-inside the new repository, not at its root. `git filter-repo` supports
-that with `--path-rename benchmark/:codebase-issue-simulator/`.
+The runner alarms evidence: `benchmarks/history/runner-alarms-output-limit-and-loop-stop.html`.
 
-## What it is about
+Open for the owner, answered in the prompt as assumptions: Mendel's
+results data (`results*.json`, `results*.csv`, `runs/`, the reports)
+leaves the tree and stays only in history; the worker stays bash plus
+node; the licence is the owner's choice, MIT assumed.
 
-The Mendel repository's `benchmark` branch (checked out at
-`../mendel-benchmark`, folder `benchmark/`) holds the whole agent
-benchmark method this project uses: how a model is given a real
-repository task through the pi harness, how the run is kept honest
-(nudges, wall clock, tooling budget, evidence archiving), how a run is
-scored from a verification battery plus a rubric, how plan-based API
-cost is accounted, and how the report is generated (completion cap,
-invalid rows, score-line categories). All of that is tied to one task
-(Mendel issue 13, replace eight small dependencies) and lives inside
-the Mendel repo, so nobody can reuse it on another codebase.
+---
 
-The goal: a new repository that carries that method as a formal
-framework, agnostic of Mendel, that does exactly what it does today:
-benchmark any code repository task with pi, with the same rigour. Its
-history must be the real history of the `benchmark/` folder, not a
-fresh copy, so every rule keeps the commit that explains it.
+## Prompt for the coordinator agent
 
-## Step 1: extract the folder with its history
+You are the coordinator for a new repository, `local-llm-eval-tools`.
+The owner created the folder and ran `git init`. You have autonomy to
+build the repository. You run on a medium effort model. Extraction
+sub-agents run on a standard tier model at high effort. Code review
+runs on the standard tier. Implementers run on the standard or cheap
+tier, your call per task. Write all prose in ASD-STE100 Simplified
+Technical English and pass that rule to every sub-agent.
 
-Work in a fresh clone; never in `../mendel` or `../mendel-benchmark`.
+### Goal
 
-1. `git clone --branch benchmark --single-branch <mendel remote> /tmp/mendel-extract`
-2. Install `git filter-repo` (the maintained successor of
-   `filter-branch`; `brew install git-filter-repo` or pip).
-3. In the clone:
-   `git filter-repo --path benchmark/ --path-rename benchmark/:codebase-issue-simulator/`
-   This keeps only the commits that touched `benchmark/`, drops every
-   Mendel source file from every commit, and moves the folder's
-   contents under `codebase-issue-simulator/`. Commit messages, authors and
-   dates survive. If some files that belong to the method live
-   outside `benchmark/` (check `.gitignore`, `scratchpad/` rules,
-   husky or commitlint config that the run scripts depend on), add
-   them with more `--path` arguments before running, because the
-   filter is one shot.
-4. Check the result: `git log --oneline | wc -l` against
-   `git -C ../mendel-benchmark log --oneline -- benchmark | wc -l`;
-   `git ls-files` shows no Mendel source; the run scripts still
-   reference only files that exist.
-5. Push to `local-llm-eval-tools` once the owner creates it; the repo
-   README and the project README come in the first commit after the
-   extracted history. The Mendel `benchmark` branch stays as it is.
-   Results data (`results*.json`,
-   `results*.csv`, `runs/`, the reports) stays in the extracted
-   history but is Mendel's data, see step 2.
+One repository, several small tools, each one shaped like the others:
+one folder per tool, one README per tool, one README at the root, one
+licence, nothing else shared at the top level. The root README says
+these are the tools the owner uses to choose a local model for their
+own hardware, links to `choose-a-local-llm` (the measurements and the
+site), and lists each tool in one line.
 
-## Step 2: separate the generic method from the Mendel task
+Two tools now:
 
-Inventory of `benchmark/` as of 2026-09-04, sorted by what it is:
+- `slow-context-creep`. A depth sweep that grows a prompt step by step
+  against a served model and records decode speed, memory and the
+  stop verdict. Backends: llama-server, mlx_lm.server, LM Studio.
+- `codebase-issue-simulator`. Several models each implement one issue
+  of a real repository through the pi harness; the tool keeps the run
+  honest (nudges, budgets, loop stop, evidence), scores it from a
+  verification battery plus a rubric, and generates the report.
 
-Generic (becomes the framework):
+Each tool ends with: simple documentation, a simple stated goal, some
+behavior tests, and one example in its README. The example is
+abstract and fits in one file of prose plus commands: for the creep
+tool, the way `choose-a-local-llm` runs it; for the simulator, Mendel
+issue 13 (eight small dependencies to replace), described, not
+shipped as files.
 
-- `run-worker.sh`: worktree per run, branch naming with bench and
-  thinking-level suffixes, abort on an existing branch, plan probes
-  before and after, evidence under `scratchpad/`, per-run pi config
-  directory, worker JSON record.
-- `run-pi-rpc.mjs`: the pi RPC runner. Nudge policy (model nudge on
-  unchecked task items, tooling nudge), wall-clock and tooling
-  budgets, telemetry (tokens, cache reads, compactions, tool calls
-  and errors, peak context), session log.
-- `score.mjs`: the evidence pack. `generate-report.mjs` and the two
-  report templates: the completion cap, invalid and dimmed rows,
-  score-line priority, null-cell gate. `probe-plan.mjs` and
-  `estimate-plan-share.mjs`: plan accounting for subscription
-  providers. `agents-global.md` v1.0: the frozen agent rules.
-- `PLAN.md`: the rules. Run procedure, scoring procedure, results
-  shape, redaction, plan accounting, invalid-run criteria, best-of and
-  re-run categories, credit exhaustion.
+### Sources
 
-Mendel-specific (becomes the first task definition, kept as the
-worked example):
+- `../choose-a-local-llm`: `tools/sweeps/creep.py`, `creep_llama.py`,
+  `creep_mlx.py`, `creep_lmstudio.py`. Method page:
+  `docs/methodology/context-creep.md`. Also `benchmarks/loop-check.py`,
+  the repetition-loop verdict the simulator's worker calls by path.
+- `../mendel-benchmark`: branch `benchmark`, folder `benchmark/`. It is
+  a worktree of `../mendel`. Read `benchmark/PLAN.md` end to end, then
+  `run-worker.sh` and `run-pi-rpc.mjs`, before you touch anything.
+- House rules the tools must keep: `../choose-a-local-llm/docs/methodology/mendel.md`
+  and `benchmarks/PLANNING.md` (worktree first, no bare stash, one run
+  at a time, credit exhaustion is a pause, scoring on a strong model).
+  `benchmark/agents-global.md` stays frozen at v1.0; a new version is a
+  new results epoch.
 
-- `issue-13.md`, `prompt-blind.txt`, `prompt-guided.txt` and their
-  versions (v1.1 blind, v2.1 and v3.0 guided).
-- `RUBRIC.md` criteria that name the eight libraries, the traps, the
-  house commit style, the `pnpm` and `tap` commands.
-- The moving base tags `benchmark-blind-base` and
-  `benchmark-guided-base`, the `pnpm install` in the worker, the
-  `Mendel Daemon` cleanup, `libraries_done` 0-8 as the completion
-  unit.
-- `results.json`, `results-guided.json`, the CSVs, `runs/`, the
-  generated reports: Mendel's measurements. They belong with the
-  Mendel task definition or with this project's `benchmarks/mendel/`
-  mirror, not in the framework core.
+Never edit `../choose-a-local-llm`, `../mendel` or `../mendel-benchmark`.
+They are in use by live runs.
 
-## Step 3: the framework shape (proposal, owner decides)
+### Step 1: extract with history
 
-- A **task definition** is a folder: target repository and base ref,
-  the issue text, one or more prompt variants with versions, the
-  rubric, the verification battery command, the completion unit and
-  its maximum (the "8" in `done/8`), cleanup hooks, and the traps a
-  guided prompt may disclose.
-- The **runner** takes a task, a model id, a harness (pi only at
-  first), a thinking level and a variant, and produces the same
-  artifacts as today: worker record, session log, runner log,
-  telemetry, plan probes, archived evidence.
-- The **scorer** produces the evidence pack from the battery, and a
-  scoring guide that a strong model applies with the rubric. The
-  results file shape stays the one `PLAN.md` documents, with
-  `prompt_version`, `invalid`, `best_of`, `reruns`, the raw and
-  capped totals.
-- The **report** generator reads any task's results and applies the
-  same policies. The site in this repository keeps reading
-  `results.json` and `results.csv` by the same field names.
-- The **rules** (`PLAN.md`, `agents-global.md`) split into the
-  framework's rules and the task's rules. `agents-global.md` stays
-  frozen at v1.0 for every existing row; a new version is a new
-  results epoch.
+Delegate each extraction to one sub-agent, in a scratch clone, never
+in the source checkouts. Use `git filter-repo` (or `git subtree split`
+where it gives the same result): keep only the commits that touched
+the tool's paths, drop every other file from every commit, and rename
+the paths into the tool's folder. Commit messages, authors and dates
+survive.
 
-## Step 4: prove it on Mendel
+- Creep: `--path tools/sweeps/` renamed to `slow-context-creep/`. Leave
+  out `lmstudio_concurrency_probe.py` and `prism-probe.sh` unless the
+  creep files import them.
+- Simulator: `--path benchmark/` renamed to `codebase-issue-simulator/`.
+  Check for files outside `benchmark/` the scripts depend on before
+  the filter runs; it is one shot. Then bring `loop-check.py` in from
+  `choose-a-local-llm` with its own history, and change the path in
+  `run-worker.sh` in the same commit.
 
-The Mendel task, expressed in the new format, must reproduce one
-existing row: same worker command shape, same telemetry fields, same
-evidence pack, same report rendering, on an unscored replay of a
-cheap model. Only then do new runs use the framework.
+Bring both histories into the new repository with
+`git fetch` and `git merge --allow-unrelated-histories`. Verify: commit
+count per tool against `git log --oneline -- <path> | wc -l` in the
+source, `git ls-files` shows nothing foreign, every script references
+only files that exist. Show the owner the counts and the file list
+before any push.
 
-## How the agent starts
+Mendel's measurements (`results*.json`, `results*.csv`, `runs/`, the
+generated reports) leave the tree in one commit after the merge. They
+stay in history; the owner's mirror in `choose-a-local-llm` keeps the
+live copies.
 
-1. Read this file, then `../mendel-benchmark/benchmark/PLAN.md` end to
-   end, then `run-worker.sh` and `run-pi-rpc.mjs`.
-2. Read `docs/methodology/mendel.md` and `benchmarks/PLANNING.md` in
-   this repository for the house rules the framework must keep
-   (worktree-first, no bare stash, one run at a time, credit
-   exhaustion is a pause, scoring on a strong model).
-3. Do step 1 in a scratch clone and show the owner the commit count
-   and file list before anything is pushed.
-4. Write the framework plan as a document in the new repository,
-   with the inventory above as its first section, and stop for the
-   owner's review before refactoring.
+### Step 2: plan the refactor
 
-## Open for the owner
+Load the superpowers brainstorming skill, then the writing-plans
+skill, and write one plan per tool inside the repository. The plan
+states which files exist after the refactor, what each exports or
+consumes, the test blocks by intent, and the README outline. Stop for
+the owner's review before the refactor starts.
 
-- Whether Mendel's results data moves with the task definition or
-  stays only in the Mendel branch and this project's mirror.
-- Whether the first refactor keeps bash plus node, or moves the
-  worker to node too.
-- The licence of the new repository.
+Refactor targets, both tools:
 
-## Files that must move together
+- One entry point per tool, one README with the same section order:
+  what it does, install, run, output, tests, example.
+- Generic method separated from any one target. For the simulator, a
+  task definition is a folder: target repository and base ref, issue
+  text, prompt variants with versions, rubric, verification battery
+  command, completion unit and its maximum, cleanup hooks. The runner,
+  scorer and report generator read a task, not Mendel. The results
+  file keeps the field names `PLAN.md` documents, because
+  `choose-a-local-llm` reads them.
+- Tests test behavior, not implementation: a fake server for the creep
+  tool, a fake pi session for the simulator. Keep and extend any test
+  that already exists in the sources.
+- The worker stays bash plus node. Python stays for the creep tool.
 
-The runner alarms (decided 2026-09-05; the evidence is
-`benchmarks/history/runner-alarms-output-limit-and-loop-stop.html`)
-split across the two repos. The counters, the turn cap, the pair stop
-and the loop flag at run close live in the Mendel kit
-(`run-pi-rpc.mjs`, `run-worker.sh`, `PLAN.md`). The loop verdict itself
-is `benchmarks/loop-check.py` in this repo, and `run-worker.sh` calls
-it by path. When the kit moves into the new repo, `loop-check.py` moves
-with it, and the path in `run-worker.sh` changes in the same commit.
+### Step 3: implement and prove
+
+Delegate implementation per plan task to implementers; review every
+task with a code-review sub-agent before you merge it. Prove each tool
+at the end:
+
+- Creep: a smoke sweep against a served model, or the fake server when
+  no model is available, reproduces the output shape
+  `choose-a-local-llm` consumes (header, one row per step, events,
+  the STOP line).
+- Simulator: the Mendel task, written in the new task format, replays
+  one existing row on a cheap model, unscored: same worker command
+  shape, same telemetry fields, same evidence pack, same report.
+
+Report to the owner: what moved, what each README says, which tests
+run, what the smoke runs showed, and what you left out and why.
