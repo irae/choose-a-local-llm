@@ -98,8 +98,10 @@ Benchmark work:
   handed task that gates a full Mendel run: one dependency swap across
   two files in a fixture it builds itself, one pi run under a
   25-minute cap, one SMOKE-MENDEL line, pass or fail. Unscored, never
-  published; `--help` lists its `SMOKE_MENDEL_*` variables;
-  `docs/methodology/mendel.md`), `loop-check.py` (repetition-loop detector for
+  published; `--help` lists its `SMOKE_MENDEL_*` variables. The same
+  script runs the compaction experiment with a lowered `contextWindow`
+  and the longer `xtend-wide` task, and counts compactions and peak
+  context; `docs/methodology/mendel.md`), `loop-check.py` (repetition-loop detector for
   a pi session log: distinct-shape ratio in a sliding window,
   threshold 0.10; catches identical lines, counters, and short
   cycles).

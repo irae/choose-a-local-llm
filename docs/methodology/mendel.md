@@ -39,6 +39,18 @@ the smoke in one session, and only the passes go on to a full run of
 several hours each. It never produces a score and never reaches the
 site.
 
+The same tool also runs the compaction experiment. The harness
+compacts between turns when the context passes `contextWindow -
+reserveTokens`, and the model under test writes its own summary. With
+`SMOKE_MENDEL_CONTEXT_WINDOW` the tool pins a smaller window into its
+own copy of the harness config, and `SMOKE_MENDEL_TASK=xtend-wide`
+hands a longer task of the same shape, because the two-file swap never
+grows past the harness's 20000-token keep budget. The line then carries
+`compactions`, `splits` and `peak`, and the summaries land in the
+output directory. The pass rule does not change. The design, the
+window ladder and the summary rubric live in
+`hardware/m1-max-32gb/research/compaction-experiment.md`.
+
 ## Where things live
 
 - **The instructions live in the Mendel repo** (`benchmark` branch:
