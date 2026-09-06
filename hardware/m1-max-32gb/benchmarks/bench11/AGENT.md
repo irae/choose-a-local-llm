@@ -20,6 +20,15 @@ ASD-STE100 Simplified Technical English.
   own. Record the `memory` line's starting numbers in `state.md`.
   Block 1 needs a clean machine: if preflight says `fix reboot`, that
   reboot happens before block 1, not after it.
+- **This run runs at `iogpu.wired_limit_mb=25000`** (owner decision,
+  2026-09-06). The owner sets the sysctl and the machine file's
+  `iogpu.wired_limit_mb` row before the run. Verify with
+  `sysctl -n iogpu.wired_limit_mb`: 25000, and preflight's
+  `wired-limit` line `ok`. Any other value is stop and ask; the runner
+  never runs sudo. Every row's config note in this run carries
+  `wired 25000`. Only Qwen3.6 gets new depth numbers at this limit
+  (block 1); every other model runs its known combination unchanged,
+  and its published depth numbers stay as measured at 24000.
 - `gh auth status` must pass at run start and again right before every
   Mendel run, blind or guided. A failing status means no Mendel block
   starts; block 1 still runs. The last run lost a night to a dead
@@ -90,18 +99,20 @@ at depth, then context. A row that exists is not run again. Qwen3.8
 has no block in this run: its reasoning-effort question is a research
 item (`hardware/m1-max-32gb/research/qwen38-configs.md`).
 
-## Block 1/12 — Qwen3.6 GGUF on clean memory: the `-c` that loads, and its creep
+## Block 1/12 — Qwen3.6 at wired 25000 on clean memory: both backends, both KV types
 
 Read `docs/methodology/context-creep.md` and
-`docs/methodology/memory-ceiling.md`. The site row says 8K clean depth
-at `-c 49152`, q8_0 KV, 25 GB wired, compaction from 16K. That reading
-came from 2026-09-04, on a machine whose memory state is not recorded,
-and it conflicts with two facts: the Mendel rows of 2026-08-30 to
-2026-09-02 ran this config at `-c 98304` under the same 24000 limit
-and peaked at 94K used tokens without a crash, and the fast sweep of
-2026-08-28 held 8.1 tok/s at 90K. This block repeats the measurement on
-a machine that preflight calls clean, right after the reboot, before
-any other model has loaded.
+`docs/methodology/memory-ceiling.md`. The site rows say 8K clean depth
+at `-c 49152`, q8_0 KV, 25 GB wired, compaction from 16K on the GGUF,
+and 37K on MLX. The GGUF reading came from 2026-09-04 at limit 24000,
+on a machine whose memory state is not recorded, and it conflicts with
+two facts: the Mendel rows of 2026-08-30 to 2026-09-02 ran this config
+at `-c 98304` under the same limit and peaked at 94K used tokens
+without a crash, and the fast sweep of 2026-08-28 at limit 25000 held
+8.1 tok/s at 90K. This block repeats every Qwen3.6 measurement at the
+run's limit of 25000, on a machine that preflight calls clean, right
+after the reboot, before any other model has loaded: three creeps, in
+this order, with a wired-recovery wait between them.
 
 Serve with the published command and this `-c` ladder, one at a time:
 98304, 65536, 49152. Each candidate that logs `model loaded` gets one
@@ -133,19 +144,40 @@ completion, log to `results/server-qwen36-gguf-f16-c40960.log`. When it
 serves, run the same creep on it to `creep-qwen36-gguf-f16-clean.tsv`;
 when it does not, record the log line and move on.
 
-Done means: the ladder table, the creep table with its verdict, the
+Then the MLX arm, the published `qwen36-mlx-think` command, whose
+ceiling was 37K at limit 24000:
+
+```bash
+mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
+  --prompt-cache-size 2 --port 8081 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench11/results/server-qwen36-mlx-creep.log
+```
+
+```bash
+DEPTH_LIST="4096,8192,16384,24576,32768,36864,40960,45056,49152,57344,65536" \
+MODEL=mlx-community/Qwen3.6-35B-A3B-4bit python3 tools/sweeps/creep_mlx.py \
+  | tee hardware/m1-max-32gb/benchmarks/bench11/results/creep-qwen36-mlx-25000.tsv
+```
+
+An MLX server dies on a Metal OOM without refusing the request; the
+creep's own probe reads that as the stop. Quit the server after.
+
+Done means: the `-c` ladder table, the three creep tables with their
+verdicts (or the load failure line where an arm did not load), the
 starting memory numbers from preflight beside them, all in
-`results.md`, committed. Then the gate:
+`results.md`, committed. Then the gates:
 
-- **Clean depth of 46K or more, at 8 tok/s or more, on either arm**:
-  blocks 11 and 12 (Qwen3.6 GGUF Mendel, thinking off) run right after
-  block 3, on the arm and `-c` this block found, and the config note
-  names them. Write the decision in `state.md`.
-- **Otherwise**: blocks 11 and 12 stay last, at the `-c` this block
-  found, and the partial they produce is the finding.
+- **GGUF, clean depth of 46K or more at 8 tok/s or more on either KV
+  arm**: blocks 11 and 12 (Qwen3.6 GGUF Mendel, thinking off) run
+  right after block 3, on the arm and `-c` this block found, and the
+  config note names them. Otherwise they stay last, at the `-c` this
+  block found, and the partial they produce is the finding.
+- **MLX**: blocks 6 and 7 run at the last stable depth this arm
+  found, whatever it is; their pi window must not exceed it. Write
+  both decisions in `state.md`.
 
-Expected cost: 30 minutes for the ladder, 1 to 1.5 hours per creep.
-Stop the server after it; wait for wired recovery (checklist step 13).
+Expected cost: 30 minutes for the ladder, 1 to 1.5 hours per creep,
+about 5 hours in all. Wait for wired recovery (checklist step 13)
+between arms and after the last one.
 
 ## Server A, blocks 2, 3 and 5: Gemma-26B GGUF f16
 
@@ -166,7 +198,7 @@ Verify with one real chat completion. pi entry `gemma-4-26b-a4b`;
 thinking off is level `off`, thinking on is the level the map names
 for on (`high` last time). Smokes passed at both levels on 2026-09-06
 (9 calls and 11 calls, one clean commit each); no smoke runs again.
-Config note on every row: `f16 KV, -c 212992, reserveTokens 16384`.
+Config note on every row: `f16 KV, -c 212992, reserveTokens 16384, wired 25000`.
 
 ### Block 2/12 — Gemma-26B, thinking off, Mendel guided
 
@@ -227,9 +259,10 @@ Stop server A after it; wait for wired recovery.
 
 ## Server D, blocks 6 and 7: Qwen3.6 MLX
 
-This model has no agent row at all on MLX. Its window is 37K clean;
-the task has needed about 46K on other models, so a partial on the
-window is a possible result and still a row.
+This model has no agent row at all on MLX. Its window is the last
+stable depth block 1's MLX arm found (37K at limit 24000 before); the
+task has needed about 46K on other models, so a partial on the window
+is a possible result and still a row.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
@@ -238,7 +271,9 @@ mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
 
 pi entry: the one whose model is `mlx-community/Qwen3.6-35B-A3B-4bit`
 (record its id, `contextWindow` and `maxTokens`; the window must not
-exceed 37K, the last stable depth). No entry is stop and ask. Thinking
+exceed the last stable depth of block 1's MLX arm; when it does, the
+entry stays as it is, the runner never edits it, and the run is stop
+and ask). No entry is stop and ask. Thinking
 on is the level the map names for on. Run the smoke first, because
 this serving config never ran the agent task:
 
@@ -247,7 +282,7 @@ benchmarks/mendel-smoke.sh <pi-id> <on-level> 2>&1 | tee hardware/m1-max-32gb/be
 ```
 
 A `fail` drops blocks 6 and 7. Config note: `mlx_lm.server,
---prompt-cache-size 2, thinking on, reserveTokens 16384`.
+--prompt-cache-size 2, thinking on, reserveTokens 16384, wired 25000`.
 
 ### Block 6/12 — Qwen3.6 MLX, thinking on, Mendel blind
 
@@ -278,7 +313,7 @@ mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
 
 pi entry `prism-ml/Ternary-Bonsai-27B-mlx-2bit`, level `off`. Config
 note: `mlx_lm.server, --prompt-cache-size 2, thinking off,
-reserveTokens 16384`.
+reserveTokens 16384, wired 25000`.
 
 ### Block 8/12 — Bonsai MLX, thinking off, Mendel guided
 
@@ -329,7 +364,7 @@ benchmarks/mendel-smoke.sh bonsai-prism <on-level> 2>&1 | tee hardware/m1-max-32
 ```
 
 A `fail` drops block 10. Config note: `prism fork, q4_0 KV + bias, -c
-65536, reserveTokens 16384`.
+65536, reserveTokens 16384, wired 25000`.
 
 ### Block 10/12 — Bonsai fork, thinking high, Mendel guided
 
@@ -368,7 +403,7 @@ benchmarks/mendel-smoke.sh qwen3.6-35b-a3b off 2>&1 | tee hardware/m1-max-32gb/b
 ```
 
 A `fail` drops blocks 11 and 12. Config note: `<KV> KV, -c <value>,
-clean depth <value> (block 1), reserveTokens 16384`.
+clean depth <value> (block 1), reserveTokens 16384, wired 25000`.
 
 ### Block 11/12 — Qwen3.6 GGUF, thinking off, Mendel guided
 
