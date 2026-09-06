@@ -189,6 +189,27 @@ Mendel smoke, thinking on (pi level `high`, from the entry's
 longest_run=1 loop=ok:1.00 commits=1 clean=yes end=stop wall_s=31
 verdict=pass`
 
+Mendel blind result: **47.5 / 100** (blind v1.1, 8/8 libraries,
+complete, valid, no cap, 0 reruns). One critical bug (a `.then()` left
+on `require('fs').promises` glob, trap A hit). Completion lost points
+on two rimraf calls plus a `package.json` left behind, and a root
+`tmp` directory. Never ran `pnpm install` (0/… on the node_modules
+criterion, lockfile unchanged). Lint clean on re-run. 21 commits, 6
+failed commit attempts, node trap hit 3 times, 2 model nudges.
+Telemetry: 80.8 min wall, peak context 208972 (98% of the 212992
+window), 1 compaction, 246 tool calls, loop verdict ok (ratio 0.25 on
+tool call). Config note: f16 KV, `-c 212992`. Scored on
+`claude-fable-5` per Mendel's `PLAN.md`, mendel-benchmark commit
+`80c4c13` (branch `benchmark`), run branch
+`gemma-4-26b-a4b-high-issue-13` pushed.
+
+Watcher trial note: this run showed no stall or death verdict on
+either `run-watch.sh` or the sunset scripts, and the memory readings
+were broadly consistent between them — a match, unlike the EvalPlus
+run in this same block.
+
+Block C closed.
+
 Gate: **pass**. Starting Mendel blind on the same server, pi level
 `high`.
 

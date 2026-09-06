@@ -131,3 +131,12 @@ Continuing to the Mendel smoke on the same server.
 
 Mendel smoke pass (level high, 11 calls, 1 clean commit, wall 31s).
 Starting Mendel blind now (night block, GPU stays busy).
+
+Mendel blind done and scored: 47.5/100 (Fable subagent per PLAN.md),
+mendel-benchmark commit `80c4c13`. Watcher trial: this run's two
+watchers agreed (no stall/death on either side) — the first block-C
+sub-run to match. Worker worktree removed, run branch
+`gemma-4-26b-a4b-high-issue-13` pushed, Mendel Daemon killed, run
+watcher + sunset scripts stopped. Block C closed.
+
+Starting Block D (Bonsai MLX thinking off: smoke, then guided).
