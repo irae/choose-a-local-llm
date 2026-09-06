@@ -85,7 +85,7 @@
       "tokShallow": "60.3",
       "tokDeep": "17.3",
       "memory": "25.6 GB",
-      "evalplus": "0.713/0.701",
+      "evalplus": "0.884/0.860",
       "id": "gemma26-gguf",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 212992 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -98,7 +98,7 @@
       "tokShallow": "66.6",
       "tokDeep": "33.6",
       "memory": "25.3 GB",
-      "evalplus": "0.713/0.701",
+      "evalplus": "0.884/0.860",
       "id": "gemma26-gguf-2x",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 202752 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -334,12 +334,12 @@
           "label": "last stable depth, 12.8 tok/s (MLX)"
         },
         "evalplus": {
-          "value": "0.713 / 0.701",
-          "label": "EvalPlus, thinking on"
+          "value": "0.884 / 0.860",
+          "label": "EvalPlus, thinking on (GGUF f16); MLX 0.713 / 0.701"
         },
         "empties": {
-          "value": "46/164",
-          "label": "empty: thinking non-convergence"
+          "value": "18/164",
+          "label": "empty on GGUF f16: thinking non-convergence (46/164 on MLX)"
         },
         "memory": {
           "value": "20.0 GB",
@@ -473,7 +473,15 @@
     },
     {
       "slug": "gemma-4-26b-a4b",
-      "model": "Gemma-4-26B-A4B",
+      "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)",
+      "mode": "thinking on",
+      "base": "0.884",
+      "plus": "0.860",
+      "empty": "18/164"
+    },
+    {
+      "slug": "gemma-4-26b-a4b",
+      "model": "Gemma-4-26B-A4B (MLX 4-bit)",
       "mode": "thinking on",
       "base": "0.713",
       "plus": "0.701",

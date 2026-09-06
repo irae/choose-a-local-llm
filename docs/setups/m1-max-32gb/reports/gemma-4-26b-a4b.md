@@ -6,12 +6,12 @@ Backends: llama-server, mlx-lm · [GGUF on Hugging Face](https://huggingface.co/
 <div class="kpis">
   <div class="kpi"><b>51 tok/s</b><span>decode, shallow (MLX)</span></div>
   <div class="kpi"><b>70K</b><span>last stable depth, 12.8 tok/s (MLX)</span></div>
-  <div class="kpi"><b>0.713 / 0.701</b><span>EvalPlus, thinking on</span></div>
-  <div class="kpi"><b>46/164</b><span>empty: thinking non-convergence</span></div>
+  <div class="kpi"><b>0.884 / 0.860</b><span>EvalPlus, thinking on (GGUF f16); MLX 0.713 / 0.701</span></div>
+  <div class="kpi"><b>18/164</b><span>empty on GGUF f16: thinking non-convergence (46/164 on MLX)</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired limit 24000); EvalPlus scored 2026-08-29 at q8_0 KV; GGUF re-measured at f16 KV 2026-09-05 (run 9). The f16 re-score is a run 10 item.
+Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired limit 24000); EvalPlus scored 2026-08-29 on the MLX build; GGUF re-measured at f16 KV 2026-09-05 (run 9) and scored on its own 2026-09-06 (run 10).
 
 ## Highlights
 
@@ -24,8 +24,10 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
   184K each" was an allocation at q8_0, not a measured depth.
 - Weak point: wired memory sits at 25.6 GB on that config, above the
   24000 limit, flat but with no headroom for anything beside it.
-- Weak point: EvalPlus 0.713/0.701 with 46/164 (~28%) empty — its thinking
-  often never converges, the worst convergence rate of any scored model.
+- **The GGUF at f16 KV scores 0.884 / 0.860 thinking on, 18/164 empty
+  (run 10).** The MLX build scored 0.713 / 0.701 with 46/164 empty on
+  the same budget; the two builds do not share a score. Thinking still
+  fails to converge on some problems, on both.
 
 ## All configs — this model
 
@@ -33,8 +35,8 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701 |
-| 2 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.713/0.701 |
-| 3 | Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.713/0.701 |
+| 2 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860 |
+| 3 | Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860 |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -80,9 +82,9 @@ an agentic run stopped in a thinking loop. Run 9 changed its llama row
 from 23.5 to 8 tok/s gated by speed at 24K to 60.3 to 17.3 tok/s at
 197K, by moving the KV cache to f16. Served at 128K on purpose it keeps
 the machine usable and finishes simple tasks faster than a smarter,
-slower model. The EvalPlus score on this page was measured at q8_0 KV.
-Run 10 re-scores it at f16, thinking on; a base pass@1 at or above
-0.800 sends it to Mendel blind in the same run.
+slower model. Run 10 scored the GGUF at f16 on its own: 0.884 / 0.860,
+above the owner's 0.800 gate, so the same run continues to the Mendel
+smoke and then Mendel blind.
 
 **f16 KV is the pick, and q8_0 was the speed problem.** The run 9 short
 creep read 6.3 tok/s at 32K for q8_0 against 45.9 for f16, at almost the
@@ -105,13 +107,14 @@ on/off, default off, with no graded effort levels. The speed numbers on this
 page were measured with thinking off. Thinking costs only ~3 tok/s, so there
 is little reason to avoid it on quality grounds.
 
-**Quality is scored, and the convergence problem is real.** Calibration
-alone showed that at a 30K output cap, 2 of 10 sample problems never
-finished reasoning at all. The full 164-problem run confirmed it at scale:
-46/164 (~28%) empty completions, well above the calibration sample's rate,
-for a final EvalPlus of 0.713/0.701. This is model behavior, not a harness
-limit — every empty completion still had budget left in the 30000-token
-cap. Its smaller sibling, the 12B, does it more often — counterintuitively.
+**Quality is scored twice, and the builds differ.** On the MLX build,
+calibration showed that at a 30K output cap 2 of 10 sample problems
+never finished reasoning, and the full run confirmed it: 46/164 empty
+for 0.713/0.701. On the GGUF at f16 KV, same budget, run 10 read
+0.884/0.860 with 18/164 empty. The convergence problem is model
+behaviour on both, since every empty completion still had budget left,
+but the GGUF build converges far more often. Like Gemma-12B, this model
+does not share a score across its two quants.
 
 A deep-fill decode check on the llama config is still pending.
 
@@ -127,10 +130,10 @@ A deep-fill decode check on the llama config is still pending.
 
 | config scored | pass@1 base | pass@1 plus | empty completions |
 |---|--:|--:|--:|
+| llama-server UD-Q4_K_XL, f16 KV, thinking on, budget 30000 (run 10) | 0.884 | 0.860 | 18/164 |
 | mlx_lm.server 4-bit, thinking on, budget 30000 | 0.713 | 0.701 | 46/164 (~28%) |
 
-Score is shared with the llama+MTP config at the same quant (both serve the
-same weights).
+The two GGUF rows share the first score; the MLX row keeps its own.
 
 ## Decode speed vs used context (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
