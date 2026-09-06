@@ -246,7 +246,7 @@ off on both arms, 25-minute cap.
 Thinking off is enough for EvalPlus, which is single-turn. It is not
 enough for multi-turn tool work on the MLX path: the loop is on the
 thought channel, in `text_delta`, and no `enable_thinking` kwarg was
-sent — the same request shape as the 0.909 / 0.872 scoring run.
+sent — the same request shape as the 0.909 / 0.872 / 100% scoring run.
 
 ## `google/gemma-4-12b`: the retired entry and the thinking-on pitfall {#the-retired-entry}
 
@@ -256,9 +256,9 @@ machine. Its numbers are off the current pages; the superseded speed and
 ceiling readings are on [the historical page](../historical.md). The
 evidence is collected here so the report page stays clean.
 
-**The 0.622 / 0.610 score is a completion failure, not a quality drop.**
+**The 0.622 / 0.610 / 63% score is a completion failure, not a quality drop.**
 61 of 164 problems came back empty. Of the 103 it answered, 102 passed —
-99.0%. Read together with the thinking-off row (0.909 / 0.872 at 164 of
+99.0%. Read together with the thinking-off row (0.909 / 0.872 / 100% at 164 of
 164 answered), thinking makes this model better at the problems it
 finishes and unable to finish 37% of them.
 

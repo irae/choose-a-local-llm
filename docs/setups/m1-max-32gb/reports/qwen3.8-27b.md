@@ -16,7 +16,7 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 ## Highlights
 
 - **The best quality score of any config measured here.** EvalPlus 0.982 /
-  0.939, zero empty completions — the model to send hard problems to.
+  0.939 / 100%, zero empty completions — the model to send hard problems to.
 - **MLX holds 14-17 tok/s across its whole usable window.** It never gets
   slow inside the context it can hold.
 - Weak point: the slowest model on this hardware (19.7 tok/s ceiling),
@@ -149,9 +149,9 @@ llama.cpp releases.
 
 ## Quality — EvalPlus HumanEval+
 
-| config scored | pass@1 base | pass@1 plus | empty completions |
-|---|--:|--:|--:|
-| mlx_lm.server 4-bit, reasoning_effort=medium | 0.982 | 0.939 | 0/164 |
+| config scored | pass@1 base | pass@1 plus | empty completions | completion |
+|---|--:|--:|--:|--:|
+| mlx_lm.server 4-bit, reasoning_effort=medium | 0.982 | 0.939 | 0/164 | 100% |
 
 ## Decode speed vs used context (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 

@@ -21,9 +21,9 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
   with wired memory at 25 GB, and macOS compacts from 16K on without
   recovering. The last clean row is 8K at 43.8 tok/s. The old 90K
   figure came from the fast sweep and is on the historical page.
-- **Second-best quality measured here: 0.939 / 0.921 EvalPlus.** Only
+- **Second-best quality measured here: 0.939 / 0.921 / 97% EvalPlus.** Only
   Qwen3.8 scores higher, and Qwen3.8 is four times slower.
-- **Thinking off scores 0.951 / 0.915 with no empty completion, in 15
+- **Thinking off scores 0.951 / 0.915 / 100% with no empty completion, in 15
   minutes (run 10).** Base is higher than with thinking on, plus is
   slightly lower, and the five thinking-on empties are gone.
 - Weak point: decode falls to ~17 tok/s past ~30K used.
@@ -111,10 +111,10 @@ MTP numbers there read below the py/js bench.
 
 ## Quality — EvalPlus HumanEval+
 
-| config scored | budget | pass@1 base | pass@1 plus | empty completions |
-|---|--:|--:|--:|--:|
-| llama-server + MTP, thinking on | 26624 | **0.939** | **0.921** | 5/164 (~3%) |
-| llama-server + MTP, q8_0 KV, `-c 49152`, thinking off (run 10) | 8192 | 0.951 | 0.915 | 0/164 |
+| config scored | budget | pass@1 base | pass@1 plus | empty completions | completion |
+|---|--:|--:|--:|--:|--:|
+| llama-server + MTP, thinking on | 26624 | **0.939** | **0.921** | 5/164 (~3%) | 97% |
+| llama-server + MTP, q8_0 KV, `-c 49152`, thinking off (run 10) | 8192 | 0.951 | 0.915 | 0/164 | 100% |
 
 The 5 empty completions are a real model limit, not a harness artifact — they
 stay empty at the full budget.

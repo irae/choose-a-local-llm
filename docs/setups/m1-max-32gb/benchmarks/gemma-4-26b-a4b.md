@@ -84,7 +84,7 @@ f16 two-slot max was 2×128K. Single-slot stays f16 (model-limited at 256K; q8 b
 Fresh 164-problem run, mlx_lm.server 4-bit, thinking on, budget 30000
 (`chat_template_kwargs: {enable_thinking: true}`).
 
-pass@1 base 0.713, pass@1 plus 0.701, 46/164 (~28%) empty completions.
+pass@1 base 0.713, pass@1 plus 0.701, completion 72%, 46/164 (~28%) empty completions.
 Every empty completion had budget left in the 30000-token cap — a real
 model convergence limit, not a harness artifact. Matches the calibration
 signal (2/10 sample problems never finished reasoning at this budget) at
