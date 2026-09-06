@@ -1,1 +1,17 @@
 03:15:32 free_mb=1751 d_swapin=0 d_swapout=0 d_compress=0 d_decompress=0
+03:20:32 free_mb=2715 d_swapin=483 d_swapout=0 d_compress=0 d_decompress=4404
+03:25:32 free_mb=117 d_swapin=119 d_swapout=0 d_compress=0 d_decompress=2988
+03:30:32 free_mb=1541 d_swapin=32 d_swapout=0 d_compress=0 d_decompress=1812
+03:35:32 free_mb=7756 d_swapin=1076 d_swapout=0 d_compress=0 d_decompress=5605
+03:40:32 free_mb=7478 d_swapin=8 d_swapout=0 d_compress=0 d_decompress=473
+03:45:32 free_mb=7366 d_swapin=28 d_swapout=0 d_compress=0 d_decompress=1594
+03:50:32 free_mb=5539 d_swapin=917 d_swapout=0 d_compress=0 d_decompress=3743
+03:55:32 free_mb=5059 d_swapin=51 d_swapout=0 d_compress=0 d_decompress=1845
+04:00:32 free_mb=5329 d_swapin=91 d_swapout=0 d_compress=0 d_decompress=191
+04:05:32 free_mb=4979 d_swapin=163 d_swapout=0 d_compress=0 d_decompress=544
+04:10:32 free_mb=4851 d_swapin=64 d_swapout=0 d_compress=0 d_decompress=844
+04:15:33 free_mb=4770 d_swapin=19 d_swapout=0 d_compress=0 d_decompress=331
+04:20:33 free_mb=4622 d_swapin=155 d_swapout=0 d_compress=0 d_decompress=467
+04:25:33 free_mb=4374 d_swapin=346 d_swapout=0 d_compress=0 d_decompress=909
+04:30:33 free_mb=3744 d_swapin=290 d_swapout=0 d_compress=0 d_decompress=2743
+04:35:33 free_mb=1358 d_swapin=133 d_swapout=0 d_compress=0 d_decompress=858

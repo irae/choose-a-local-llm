@@ -230,6 +230,34 @@ end=stop wall_s=115 verdict=pass`
 
 Gate: **pass**. Continuing to the guided run.
 
+Mendel guided result: **invalid, raw 27/100** (zero commits, branch
+tip still the base commit, 0/8 libraries). Harness fault, not the
+model's: the first three turns hit `stream error: Connection error`
+(the session's own restart-server deviation, above), then the model
+tried `gh issue view 13`, got HTTP 401 (this machine's `gh` token is
+invalid), and looped on an interactive `gh auth login` the prompt
+forbids — 8 identical retries across 8 nudges,
+`tooling_budget_exhausted`, 83.5 min wall for 394 output tokens.
+Config note: `mlx_lm.server, --prompt-cache-size 2, thinking off`.
+Scored on `claude-fable-5`, mendel-benchmark commit `238ae57` (branch
+`benchmark`), `invalid: true` on the row.
+
+`gh auth status` on this machine confirms the token is invalid and
+`gh auth login` needs an interactive device-code flow — not fixable
+from this session. **This is a stop-and-ask item for the owner**: fix
+`gh` auth on the host, then re-run the guided config. Per house rules
+a harness-caused retry keeps the best row with no penalty, so the
+retry is free once auth is fixed. Not attempted again this session.
+
+Watcher trial note: `run-watch.sh` saw 4 stall probes, all resolved
+"server alive, thinking," no death called; the sunset
+`liveness-watch.sh` saw zero stall events at all. Both agree — no
+false death from either side, a match.
+
+Block D closed (guided invalid pending owner fix; blind run is not in
+this run per AGENT.md — the owner decides it from the guided score,
+which did not land this session).
+
 ## Block E — Qwen3.8 GGUF f16, Mendel blind
 
 ## Block F — EvalPlus, the survivors
