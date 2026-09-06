@@ -13,7 +13,7 @@ Quality:
 | old | — | Ternary-Bonsai-27B, GGUF, q4, thinking on (later split into single-slot and 2-slot rows) | 2x48k | speed | 14.9 → 7.9 | 10.0 GB | pending |
 | new | — | Ternary-Bonsai-27B, GGUF, q4, thinking on | 2x48k | speed | 14.9 → 7.9 | 10.0 GB | **0.927/0.890/98%** |
 | old | — | Gemma-4-12B, MLX³, thinking on (paused, resumes run 5) | 170k | engine | 37 → 31 | 8.8 GB | pending |
-| new | — | Gemma-4-12B, MLX³, thinking on | 170k | engine | 37 → 31 | 8.8 GB | 0.741/0.722 (directional, 54/164 attempted, 13 empty) |
+| new | — | Gemma-4-12B, MLX³, thinking on | 170k | engine | 37 → 31 | 8.8 GB | 0.741/0.722/— (directional, 54/164 attempted, 13 empty) |
 
 Speed and context:
 
@@ -21,8 +21,8 @@ Speed and context:
 |---|--:|---|--:|:--:|--:|--:|--:|
 | old | — | Gemma-4-12B, MLX³, thinking on | 170k | engine | 37 → 31 | 8.8 GB | pending |
 | new | — | Gemma-4-12B, MLX³, thinking on | **158k*** | **mem** | 37 → **29.29** | 8.8 GB | pending |
-| old | — | Gemma-4-12B, MLX³, thinking off | 170k | engine | 37 → 31 | 8.8 GB | 0.909/0.872 |
-| new | — | Gemma-4-12B, MLX³, thinking off | **158k*** | **mem** | 37 → **29.29** | 8.8 GB | 0.909/0.872 |
+| old | — | Gemma-4-12B, MLX³, thinking off | 170k | engine | 37 → 31 | 8.8 GB | 0.909/0.872/100% |
+| new | — | Gemma-4-12B, MLX³, thinking off | **158k*** | **mem** | 37 → **29.29** | 8.8 GB | 0.909/0.872/100% |
 
 - **New LM Studio ceiling criterion, the owner's decision.** The old
   170K figure came from an LM Studio engine bug (auto-fit stops at a
@@ -44,6 +44,8 @@ Speed and context:
   (0.915/0.884) by a small margin.
 - **Gemma-12B thinking-on EvalPlus stopped at 54/164**, directional
   numbers only (0.741/0.722 among attempted, 13 empty); resumes in
-  run 5.
+  run 5. The completion-percent field is `—` for this row: the
+  164-problem formula does not apply to a run that has not finished
+  attempting all 164.
 - **Not yet run this night**: Qwen3.8-27B thinking-low, bonsai-off,
   Aider polyglot.
