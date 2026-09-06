@@ -37,8 +37,12 @@ and the methodology pages the runbook points to.
 
 - **Coordinator** (strong model, full context). Plans, investigates,
   fixes the harness, writes the runbook, spawns the runner, judges the
-  results. Its working state lives in `HANDOFF.md` (local, gitignored;
-  see "The handoff file" below).
+  results. Work that needs judgment (the runbook, the run close-out,
+  the site check against a run's results, the handoff) is never
+  delegated to a sub-agent. A sub-agent gets only mechanical work, and
+  only when the owner says so (owner rule, 2026-09-06). Its working
+  state lives in `HANDOFF.md` (local, gitignored; see "The handoff
+  file" below).
 - **Runner** (smaller model, minimal context). Executes
   `hardware/<hardware-id>/benchmarks/bench<N>/AGENT.md` block by block.
   It gets everything it needs from that file and the pages it links.
