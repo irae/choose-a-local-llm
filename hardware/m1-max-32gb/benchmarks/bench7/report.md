@@ -22,8 +22,6 @@ Mendel:
 | old | blind | qwen3.6-35b-a3b, thinking on (prompt v1.0) | llama-server | 41.5/100 8/8 | critical |
 | new | blind | qwen3.6-35b-a3b, high (prompt v1.1) | llama-server | **63/100** 8/8 | critical |
 | new | blind | Qwen3.8-27B (mlx, low) | mlx_lm.server | 12.5/100 (partial 1/8) | minor (harness stall) |
-| old | blind | Ternary-Bonsai-27B-mlx-2bit, thinking on (prompt v1.0) | mlx_lm.server | 37.5/100 (partial 3/8) | — |
-| new | blind | Ternary-Bonsai-27B-mlx-2bit, low | mlx_lm.server | 37.5/100 (partial 3/8) | — |
 | new | blind | bonsai-prism, high | llama-server | **60.5/100** 1/8 | critical (self-scoped to one library) |
 | old | guided | qwen3.6-35b-a3b (prompt v2.1) | pi | 65.5/100 8/8 | — |
 | new | guided | qwen3.6-35b-a3b, high (prompt v3.0) | pi | **83/100** 8/8 | critical |
@@ -69,11 +67,17 @@ Mendel:
 - **Mendel score cells now carry the libraries done.** A partial score
   is capped at 12.5 points per completed library, so several cells
   above changed from the raw rubric total to the capped number: the
-  two Bonsai blind rows (raw 58 and 55, both capped to 37.5 at 3 of 8
-  libraries), the Bonsai guided rows (raw 69 capped to 37.5 at 3/8, raw
-  59 capped to 12.5 at 1/8), the Qwen3.8-mlx-low blind row (raw 67.5
-  capped to 12.5 at 1/8), and both Qwen3.8-27B-4bit guided-low rows
-  (raw 84 capped to 75 at 6/8, raw 34 capped to 0 at 0/8).
+  Bonsai guided rows (raw 69 capped to 37.5 at 3/8, raw 59 capped to
+  12.5 at 1/8), the Qwen3.8-mlx-low blind row (raw 67.5 capped to 12.5
+  at 1/8), and both Qwen3.8-27B-4bit guided-low rows (raw 84 capped to
+  75 at 6/8, raw 34 capped to 0 at 0/8).
+- **Correction: this run has no Ternary-Bonsai-27B-mlx-2bit blind row.**
+  An earlier version of this report paired the old 58/100 (partial)
+  blind row against a 55/100 (partial) score — that 55 score belongs
+  to run 5's Bonsai MLX blind-low attempt, a different run entirely.
+  This run's own item #5 (Bonsai-PrismML blind low) stopped within
+  seconds on a wrong thinking level, zero commits, worktree removed —
+  no row, old or new, for that model in this run.
 - **The Gemma-12B GGUF dagger sweep re-confirmed, with a smaller
   floor.** Re-measured under the current 24000 MB wired limit: floor
   now crosses at 16,410 tokens, not the earlier 11K reading. Close to
