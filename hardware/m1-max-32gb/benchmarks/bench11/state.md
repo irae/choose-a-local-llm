@@ -70,3 +70,19 @@ handing-over section at the end.
   whole reachable range. q8_0 stays the arm for blocks 9/10 at `-c
   98304`; f16's window is a third of q8_0's despite higher tok/s.
   Moving to the MLX arm now.
+- Mid-run: peer session `local-llm-eval-tools repository setup` asked
+  for a side task (short creep sweeps + payload capture, then clone
+  and push a branch to a different repo). Declined for now: it means
+  a new repo clone/push mid-run. The peer then cancelled the request
+  on its own.
+- MLX arm: `results/creep-qwen36-mlx-25000.tsv`. Ran without
+  `SERVER_LOG` (the runbook's literal command omits it), so the
+  sweep's own fast death detection was blind. Confirmed by hand from
+  the server log: generation thread died on Metal OOM at depth 45090
+  while `/v1/models` still answered 200. Killed the sweep early
+  instead of waiting out its two-strike probe timeout. Ceiling: 40982
+  tokens at 37.38 tok/s, the last good row.
+- MLX GATE: blocks 6 and 7 run at 40982 tokens, the last stable depth
+  this arm found; their pi window must not exceed it.
+- Block 1 done. Stopping the MLX server, waiting for wired recovery,
+  moving to block 2 (Server A, Gemma-26B GGUF f16).

@@ -117,3 +117,33 @@ f16 does not change the block 1 gate: it still clears 46K only if the
 Mendel task needs ≤40960 tokens, which is not guaranteed, while q8_0
 clears 46K on speed alone up to 81958. q8_0 stays the arm for blocks 9
 and 10, `-c 98304`.
+
+## Block 1/10 continued — MLX arm
+
+`results/creep-qwen36-mlx-25000.tsv`, `results/server-qwen36-mlx-creep.log`.
+
+| depth_tokens | decode_toks |
+| --- | --- |
+| 4114 | 55.09 |
+| 8222 | 53.84 |
+| 16386 | 47.78 |
+| 24602 | 42.95 |
+| 32818 | 38.34 |
+| 36874 | 38.95 |
+| 40982 | 37.38 |
+
+Death at depth 45090: `/v1/models` kept answering 200 while the
+generation thread died on a Metal OOM
+(`kIOGPUCommandBufferCallbackErrorOutOfMemory`) — the death mode the
+methodology page warns about for this backend. Confirmed from the
+server log, not left to the probe's two-strike timeout. **Ceiling:
+40982 tokens at 37.38 tok/s**, the last good row.
+
+Deviation: `SERVER_LOG` was not set for this sweep (the runbook's
+literal command omits it), so the sweep's own fast death detection
+was blind; the death was still caught by reading the server log by
+hand. Future MLX sweeps in this run should set `SERVER_LOG` per
+`context-creep.md`.
+
+**MLX gate: blocks 6 and 7 run at the last stable depth this arm
+found — 40982 tokens — and their pi window must not exceed it.**
