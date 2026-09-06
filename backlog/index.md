@@ -28,6 +28,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 - [ ] Budget for cloud Mendel re-runs, and which models go to polyglot (cloud-reruns-and-polyglot-tier.md)
 - [ ] Mendel staging rule "never git add -A in the kit": formal line in AGENTS.md or not (mendel-staging-rule.md)
 - [ ] Mendel runner: stop a live repeated-identical-tool-call loop, not only slow/output-limit ones (mendel-live-loop-stop.md)
+- [ ] Mendel: score thinking-off configs that only have thinking-high rows (qwen3.6-35b-a3b confirmed gap) (mendel-thinking-off-gaps.md)
 - [ ] local-llm-eval-tools: extract the Mendel method into codebase-issue-simulator, room for slow-context-creep (local-llm-eval-tools-codebase-issue-simulator.md)
 - [ ] Two owner questions left by the non-goals sweep: the positive half of the model entry criteria, and whether "a run gated by our own configuration is our fault" becomes a rule (non-goals-sweep-findings.md)
 

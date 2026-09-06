@@ -270,3 +270,23 @@ Update `state.md` with a handing-over section: what ran, what a gate
 dropped and why, machine state left behind (wired limit, LM Studio,
 worktrees), the watcher comparison verdict, evidence archived. The
 coordinator adds the findings to `hardware/m1-max-32gb/benchmarks/INDEX.md` and publishes.
+
+## Added mid-run by the owner, 2026-09-06
+
+The owner noticed a gap while the run was in progress: `gemma-4-26b-a4b`
+had two Mendel blind rows, both thinking `high`, and no row at all —
+guided or blind — at thinking `off`, even though this run's own
+EvalPlus survivor pass already scored that config
+(`gemma26-gguf-off`). Added to the run: smoke at thinking `off`, then
+the guided test (primary ask), then the blind test (secondary ask),
+same server as block C (f16 KV, `-c 212992`). Full record in
+`results.md` and `state.md`, marked as owner-added, not part of the
+original block plan above.
+
+The owner also asked to defer block F's third EvalPlus config
+(`qwen38-gguf-medium`) to the next run block; it was not scored this
+session.
+
+The same gap likely exists for `qwen3.6-35b-a3b` (Mendel rows only at
+`high`/`xhigh`, thinking `off` never run despite an EvalPlus survivor
+pass this run) — flagged, not acted on this session.
