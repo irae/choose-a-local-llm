@@ -78,3 +78,17 @@ answered). Result: depth 131098, wired_mb 17249, but swap grew 443MB
 at this row — mem verdict right at the target depth. `wired_mb 17249`
 is the number this block asked for. LM Studio quit after. Block A
 closed.
+
+Run folder moved to `hardware/m1-max-32gb/benchmarks/bench10/` per
+coordinator instruction (commit `de902ba`). `git merge origin/master`
+(to bring in the folder-move fix on master and the run-watch.sh
+signature fixes) was blocked by the auto-mode classifier; the owner
+chose to skip it for now rather than approve or run it manually.
+Deviation: run10 does not have the master-side watcher fixes (bare
+`[ERROR]` no longer a false death signature, split-signature
+detection) for the rest of this session. Watch the run watcher output
+more carefully during Block C/D/E scoring runs as a result — a
+manual read of the server log is the fallback if a death signature
+looks ambiguous.
+
+Starting Block B (Mendel smoke, Qwen3.8 GGUF f16).
