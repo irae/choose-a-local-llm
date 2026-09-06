@@ -215,6 +215,21 @@ Gate: **pass**. Starting Mendel blind on the same server, pi level
 
 ## Block D — Bonsai MLX thinking off, Mendel
 
+Server: published command,
+`mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit --prompt-cache-size 2 --port 8081`.
+pi entry `prism-ml/Ternary-Bonsai-27B-mlx-2bit` confirmed
+`thinkingLevelMap` has `"off": "off"`.
+
+```
+benchmarks/mendel-smoke.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit off
+```
+
+`SMOKE-MENDEL model=prism-ml/Ternary-Bonsai-27B-mlx-2bit level=off
+calls=14 distinct=11 longest_run=1 loop=ok:1.00 commits=1 clean=yes
+end=stop wall_s=115 verdict=pass`
+
+Gate: **pass**. Continuing to the guided run.
+
 ## Block E — Qwen3.8 GGUF f16, Mendel blind
 
 ## Block F — EvalPlus, the survivors
