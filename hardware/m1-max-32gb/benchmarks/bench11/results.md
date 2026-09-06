@@ -147,3 +147,31 @@ hand. Future MLX sweeps in this run should set `SERVER_LOG` per
 
 **MLX gate: blocks 6 and 7 run at the last stable depth this arm
 found — 40982 tokens — and their pi window must not exceed it.**
+
+## Block 2/10 — Gemma-26B, thinking off, Mendel guided
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-26b-a4b pi guided off
+```
+
+Branch `gemma-4-26b-a4b-off-guided-v3-issue-13`, base `86935f4`.
+20.4 min wall clock, 93 assistant messages, 91 tool calls, 28 tool
+errors, 3 commits (2 libraries: uuid, xtend×2), peak context 72725 of
+212992 (34.15%).
+
+**INVALID: the run ended on the live loop stop, `repetition_loop`,
+unit "edit" (tool call), 5 identical calls, first at 18:12:06Z, final
+at 18:12:47Z** (`meta.json`). `run-worker.sh`'s own post-hoc loop
+check logged "ok, worst ratio 0.22" on the same session — that check
+ran on the already-cut-short transcript and does not override the
+live stop. Per this run's rule, the row is invalid and no retry runs
+in this block; the next block starts.
+
+Scored anyway per Mendel's own invalid-run handling (data kept,
+`invalid: true`): score_raw 44, capped to 25 on the 2/8-libraries
+completion cap. Scoring subagent (Fable model) full report and
+defect list in `results-guided.csv`
+(`benchmark/results-guided.csv`, row `gemma-4-26b-a4b-off-guided-v3-issue-13`)
+on the `mendel-benchmark` `benchmark` branch, commit `2f1960c`. Session
+log redacted and pushed to `mendel-benchmark/benchmark/runs/`; run
+branch pushed to `origin/gemma-4-26b-a4b-off-guided-v3-issue-13`.
