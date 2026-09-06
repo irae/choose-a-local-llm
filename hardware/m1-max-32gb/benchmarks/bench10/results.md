@@ -116,6 +116,21 @@ LM Studio app quit after.
 
 ## Block B — Mendel smoke, Qwen3.8 GGUF f16
 
+Server: llama-server, `bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, alias
+`qwen3.8-27b`, MTP n=3, `-c 49152`, f16 KV
+(`server-qwen38-gguf-f16-smoke.log`). pi entry `qwen3.8-27b`:
+`contextWindow` 49152, `maxTokens` 8192, confirmed unchanged.
+
+```
+benchmarks/mendel-smoke.sh qwen3.8-27b medium
+```
+
+`SMOKE-MENDEL model=qwen3.8-27b level=medium calls=8 distinct=8
+longest_run=1 loop=ok:1.00 commits=1 clean=yes end=stop wall_s=62
+verdict=pass`
+
+Gate: **pass**. Qwen3.8 GGUF continues to Block E (Mendel blind).
+
 ## Block C — Gemma-26B GGUF f16, EvalPlus thinking on
 
 ## Block D — Bonsai MLX thinking off, Mendel
