@@ -182,6 +182,16 @@ rule, verdict written here for the closing comparison.
 Gate: **pass** (base pass@1 0.884 ≥ 0.800). Continuing to Mendel smoke,
 then Mendel blind, in this block.
 
+Mendel smoke, thinking on (pi level `high`, from the entry's
+`thinkingLevelMap`):
+
+`SMOKE-MENDEL model=gemma-4-26b-a4b level=high calls=11 distinct=9
+longest_run=1 loop=ok:1.00 commits=1 clean=yes end=stop wall_s=31
+verdict=pass`
+
+Gate: **pass**. Starting Mendel blind on the same server, pi level
+`high`.
+
 ## Block D — Bonsai MLX thinking off, Mendel
 
 ## Block E — Qwen3.8 GGUF f16, Mendel blind

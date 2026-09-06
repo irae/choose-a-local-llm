@@ -128,3 +128,6 @@ probe queued behind a live turn); `run-watch.sh` never did, correctly
 waiting for a second failed probe. Not a match yet — `sunset/` stays
 through the rest of the run. Run watcher and sunset scripts stopped.
 Continuing to the Mendel smoke on the same server.
+
+Mendel smoke pass (level high, 11 calls, 1 clean commit, wall 31s).
+Starting Mendel blind now (night block, GPU stays busy).
