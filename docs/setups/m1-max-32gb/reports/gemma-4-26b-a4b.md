@@ -83,8 +83,12 @@ from 23.5 to 8 tok/s gated by speed at 24K to 60.3 to 17.3 tok/s at
 197K, by moving the KV cache to f16. Served at 128K on purpose it keeps
 the machine usable and finishes simple tasks faster than a smarter,
 slower model. Run 10 scored the GGUF at f16 on its own: 0.884 / 0.860,
-above the owner's 0.800 gate, so the same run continues to the Mendel
-smoke and then Mendel blind.
+above the owner's 0.800 gate, so the same run went on to the Mendel
+smoke (pass, 31 seconds) and to Mendel blind at thinking high: 47.5 of
+100, all eight libraries touched, one critical trap hit, leftover
+calls and a package.json costing completion, 21 commits in 81 minutes,
+peak context at 98 percent of the 212992 window, no loop. The earlier
+blind row at q8_0 KV scored 38.
 
 **f16 KV is the pick, and q8_0 was the speed problem.** The run 9 short
 creep read 6.3 tok/s at 32K for q8_0 against 45.9 for f16, at almost the
