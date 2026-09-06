@@ -19,3 +19,7 @@ handing-over section at the end.
 - STOP AND ASK: machine file not updated to 25000. Block 1 not
   started. Waiting on the owner or the coordinator to fix the machine
   file (or say the mismatch is fine to proceed past).
+- Owner's answer: the runfile wins. The live sysctl value (25000)
+  is the real check; the machine file text is a stale reference on
+  master, fixed there separately, and does not block this run. Only
+  the owner could have set 25000. Resuming at block 1.
