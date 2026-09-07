@@ -8,25 +8,23 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
   Qwen3.8-27B. 0.982 / 0.939 / 100% on EvalPlus, and on llama-server at
   f16 KV the highest valid Mendel blind score of any local model, 87 of
   100 with all eight libraries. Send hard problems to the llama row.
-- **Secondary-model pick, and the best big window:** Gemma-26B on
-  llama-server at f16 KV. 60.3 tok/s at 4K and 17.3 at 197K, the largest
-  context this machine loads for it; 0.976 / 0.945 / 100% on EvalPlus
-  with thinking off; 47.5 of 100 on the Mendel blind task, complete.
-- **Best depth:** Gemma-12B on llama-server with f16 KV and no drafter.
-  24.64 tok/s at 4K and still 8.86 at 245K, so it reaches the model's own
-  262,144 window above the floor, in 13.9 GB. The LM Studio engine is
-  faster at every depth it survives (34.19 at 4K, 23.23 at 131K) but
-  stops on memory, and it loops in multi-turn tool work.
+- **Secondary-model pick, best big window, and best depth:** Gemma-26B
+  on llama-server at f16 KV gives 60.3 tok/s at 4K and 17.3 at 197K,
+  the largest context this machine loads for it; 0.976 / 0.945 / 100%
+  on EvalPlus with thinking off, 47.5 of 100 on Mendel, complete.
+  Gemma-12B with f16 KV and no drafter goes deeper still, 24.64 tok/s
+  at 4K and still 8.86 at 245K, reaching the model's own 262,144
+  window above the floor, in 13.9 GB.
 - **Fastest shallow decode, and the KV type decides it:** Qwen3.6-35B
   on llama. With f16 KV it holds 67.7 tok/s at 4K and 56.0 at 33K, and
   with q8_0 KV the same server gives 36.7 and 19.7. The f16 window is
   7K smaller, `-c 33792` against `-c 40960`. EvalPlus 0.951 / 0.915 /
   100% with thinking off.
-- **Cheapest in memory:** Ternary Bonsai-27B. 27B-class quality from 8
-  GB of weights, and the flattest curve of any model. It has never
-  finished the agent task.
-- **Most parallel:** Bonsai on the prism fork. 2×48K slots at 9.8
-  tok/s each, in 10.0 GB. The only setup that leaves the machine free.
+- **Cheapest in memory, and most parallel:** Ternary Bonsai-27B gives
+  27B-class quality from 8 GB of weights and the flattest curve of any
+  model, but has never finished the agent task. On the prism fork it
+  runs 2×48K slots at 9.8 tok/s each in 10.0 GB, the only setup that
+  leaves the machine free.
 - **The rule that decides everything:** MLX runtimes barely slow down but
   hit hard memory ceilings. llama runtimes hold their speed deeper at f16
   KV, and their ceiling is the largest `-c` that loads; a published `-c`
