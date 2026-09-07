@@ -34,21 +34,21 @@ Five rules hold across every item in this run:
 - **GGUF only.** An MLX build enters only when it is the only build of
   that model that exists.
 
-- [ ] `downloads-background` — start the model files this run still
+- [x] `downloads-background` — start the model files this run still
   needs, in the background, and go on to the next item at once. The
   `unsloth/…:UD-Q3_K_XL` build is already on disk (2026-09-07);
   `AtomicChat/…:AD-IQ3_S` and
   `ISTA-DASLab/…:GSQ-RCO-IQ3_S-mtp` are not, with their MTP drafters.
   Two downloads at a time, never three. The download's own notes live
   with the machine's model pins, not here.
-- [ ] `tool-check` — clone or `git pull --ff-only`
+- [x] `tool-check` — clone or `git pull --ff-only`
   `git@github.com:irae/local-llm-eval-tools.git` at
   `~/code/local-llm-eval-tools`, record `git rev-parse --short HEAD`
   in `state.md`, and run `creep.py llama --help`. That hash is pinned
   for the whole run: no second pull in the middle of it. The two
   tools were already compared on this machine and they agree, so this
   item measures nothing; it only fixes which version the run used.
-- [ ] `qwen38-unsloth-q3kxl-creep` — `unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL`,
+- [x] `qwen38-unsloth-q3kxl-creep` — `unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL`,
   ladder, then context creep at f16 KV, MTP drafter on.
   **The priority of this run.** It is the only K-quant of the three,
   so it is the one build whose speed does not depend on the i-quant
