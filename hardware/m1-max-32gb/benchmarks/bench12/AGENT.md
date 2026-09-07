@@ -335,7 +335,7 @@ cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 4 window> .
 | window | derived | `<planning>` 81920 (run 11, clean depth 81958) | clean depth at the ladder's `-c` |
 
 ```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 6 window> ./run-worker.sh qwen3.6-35b-a3b pi guided high
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> ./run-worker.sh qwen3.6-35b-a3b pi guided high
 ```
 
 ### Block 6/7 — Gemma-26B GGUF, blind, thinking high
@@ -349,7 +349,7 @@ cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 6 window> .
 | window | derived | `<planning>` 212992 | clean depth at the ladder's `-c` |
 
 ```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> ./run-worker.sh gemma-4-26b-a4b pi blind high
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 6 window> ./run-worker.sh gemma-4-26b-a4b pi blind high
 ```
 
 ## Order
