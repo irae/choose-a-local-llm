@@ -149,6 +149,7 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 |---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
 | guided-v3.0 | llama-off-ctx.256k | **37.5** (raw 58) | 3/8/partial | 97.6 | 6,453k | 125k | 0 | 132 | 3 | text |
 | blind-v1.1 | lmstudio-high-ctx.160k † | **0** (raw 30.5) | 0/8/invalid | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
+| blind-v1.1 | llama-off-ctx.256k | **0** | 0/8/invalid | 80.3 | 9,994k | 179k | 0 | 92 | 0 |  |
 | guided-v3.0 | lmstudio-high-ctx.160k † | **0** (raw 30) | 0/8/invalid | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
 | guided-v3.0 | lmstudio-low-ctx.160k † | **0** (raw 29.5) | 0/8/invalid | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
 

@@ -100,6 +100,7 @@ same frozen prompt; a blind-guided pair can land at different times.
 | claude-sonnet-4.5 | pi | **88/100** |
 | [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **83/100** |
 | Claude Haiku 4.5 | pi | **76/100** |
+| [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | pi | **57/100** (partial) |
 | [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **46.5/100** |
 | [Gemma-4-12B (llama.cpp, off)](../reports/gemma-4-12b-it.md) | pi | **37.5/100** (partial) |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **12.5/100** (partial) |

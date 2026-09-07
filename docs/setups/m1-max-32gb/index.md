@@ -150,14 +150,20 @@ closes and the limit decision is made
 - Qwen3.6 MLX 4-bit: ceiling 40982 at 37.4 tok/s, then the generation
   thread died on a Metal OOM while the models endpoint kept answering.
 - Mendel, thinking off: Gemma-26B guided and blind both ended on the
-  live loop stop (invalid, five identical edits). Qwen3.6 GGUF guided
-  completed 8/8 at 46.5 on a 49152 window with twelve compactions;
-  a retry on the 81920 window the creep supports is queued, no
-  penalty, the better row stands. Qwen3.6 GGUF blind runs last on
-  the same window.
-- Running now: Gemma-12B GGUF blind at thinking off. Then Gemma-26B
-  guided thinking on, Qwen3.6 MLX blind and guided thinking on, the
-  Bonsai fork guided, the Qwen3.6 retry, Qwen3.6 blind.
+  live loop stop (invalid, five identical edits). Gemma-12B GGUF blind
+  ended with zero commits on a tool-schema loop, 24 of 28 edit calls
+  malformed the same way (invalid). Qwen3.6 GGUF guided completed 8/8
+  at 46.5 on a 49152 window with twelve compactions; a retry on the
+  81920 window the creep supports is queued, no penalty, the better
+  row stands. Qwen3.6 GGUF blind runs last on the same window.
+- Mendel, thinking on: Gemma-26B guided completed 7/8 at 57 on its
+  third attempt. The first two were killed by a system-wide memory
+  squeeze from a macOS media indexing process, not by the model; the
+  run paused until the owner stopped that process.
+- Qwen3.6 MLX blind and guided were skipped: no pi entry exists for
+  that model, and the runbook makes a missing entry a stop.
+- Running now: the Bonsai fork guided at thinking high. Then the
+  Qwen3.6 retry, then Qwen3.6 blind.
 
 ## Open work
 
