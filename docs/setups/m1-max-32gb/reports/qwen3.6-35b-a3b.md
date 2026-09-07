@@ -118,13 +118,13 @@ so MTP numbers there read below the py/js bench.
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | prompt | thinking | serving | score | done | wall | tokens | peak ctx | compactions | tool calls | commits | status |
-|---|---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|---|
-| blind | v1.1 | high | llama-server | **63** | 8/8 | 79.2 | 7,933k | 94k | 0 | 203 | 13 | complete |
-| guided | v3.0 | high | llama-server | **83** | 8/8 | 91.9 | 12,712k | 94k | 1 | 285 | 16 | complete |
-| guided | v3.0 | off | llama-server | **46.5** | 8/8 | 95.6 | 9,473k | 52k | 12 | 299 | 7 | complete |
-| blind | v1.0 | default | llama-server | **41.5** | 8/8 | 132.0 | 10,090k | 94k | 1 | 258 | 13 | complete |
-| guided | v2.1 | default | llama-server | **65.5** | 8/8 | 75.6 | 12,081k | 94k | 0 | 251 | 8 | complete |
+| test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
+| guided-v3.0 | llama-high-ctx.128k | **83** | 8/8/done | 91.9 | 12,712k | 94k | 1 | 285 | 16 |  |
+| guided-v2.1 | llama-default-ctx.96k | **65.5** | 8/8/done | 75.6 | 12,081k | 94k | 0 | 251 | 8 |  |
+| blind-v1.1 | llama-high-ctx.96k | **63** | 8/8/done | 79.2 | 7,933k | 94k | 0 | 203 | 13 |  |
+| guided-v3.0 | llama-off-ctx.48k | **46.5** | 8/8/done | 95.6 | 9,473k | 52k | 12 | 299 | 7 |  |
+| blind-v1.0 | llama-default-ctx.96k | **41.5** | 8/8/done | 132.0 | 10,090k | 94k | 1 | 258 | 13 |  |
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).

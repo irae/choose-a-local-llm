@@ -160,15 +160,15 @@ matches the PQ2_0 variant.
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | prompt | thinking | serving | score | done | wall | tokens | peak ctx | compactions | tool calls | commits | status |
-|---|---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|---|
-| blind | v1.1 | low | mlx_lm.server | **37.5** (raw 55) | 3/8 | 300.0 | 3,555k | 52k | 0 | 135 | 4 | partial, loop: thinking |
-| blind | v1.1 | high | llama-server | **12.5** (raw 60.5) | 1/8 | 43.1 | 1,718k | 51k | 0 | 76 | 2 | complete |
-| guided | v3.0 | low | mlx_lm.server | **12.5** (raw 59) | 1/8 | 300.0 | 3,619k | 46k | 0 | 122 | 1 | partial |
-| guided | v3.0 | off | mlx_lm.server | **0** (raw 27) | 0/8 | 83.5 | 48k | 5k | 0 | 10 | 0 | invalid |
-| guided | v3.0 | off | mlx_lm.server | **0** (raw 25) | 0/8 | 186.9 | 1,969k | 27k | 0 | 105 | 0 | invalid, loop: tool call |
-| blind | v1.0 | default | mlx_lm.server | **37.5** (raw 58) | 3/8 | 101.8 | 887k | 28k | 0 | 53 | 3 | partial |
-| guided | v2.1 | default | mlx_lm.server | **37.5** (raw 69) | 3/8 | 230.3 | 2,142k | 51k | 0 | 94 | 3 | partial |
+| test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
+| blind-v1.0 | mlx-default-ctx.56k | **37.5** (raw 58) | 3/8/partial | 101.8 | 887k | 28k | 0 | 53 | 3 |  |
+| blind-v1.1 | mlx-low-ctx.56k | **37.5** (raw 55) | 3/8/partial | 300.0 | 3,555k | 52k | 0 | 135 | 4 | thinking |
+| guided-v2.1 | mlx-default-ctx.56k | **37.5** (raw 69) | 3/8/partial | 230.3 | 2,142k | 51k | 0 | 94 | 3 |  |
+| blind-v1.1 | llama-high-ctx.64k | **12.5** (raw 60.5) | 1/8/done | 43.1 | 1,718k | 51k | 0 | 76 | 2 |  |
+| guided-v3.0 | mlx-low-ctx.56k | **12.5** (raw 59) | 1/8/partial | 300.0 | 3,619k | 46k | 0 | 122 | 1 |  |
+| guided-v3.0 | mlx-off-ctx.56k | **0** (raw 27) | 0/8/invalid | 83.5 | 48k | 5k | 0 | 10 | 0 |  |
+| guided-v3.0 | mlx-off-ctx.56k | **0** (raw 25) | 0/8/invalid | 186.9 | 1,969k | 27k | 0 | 105 | 0 | tool call |
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).

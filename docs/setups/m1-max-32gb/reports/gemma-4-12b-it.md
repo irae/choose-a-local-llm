@@ -145,12 +145,12 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | prompt | thinking | serving | score | done | wall | tokens | peak ctx | compactions | tool calls | commits | status |
-|---|---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|---|
-| blind | v1.1 | high | lm-studio | **0** (raw 30.5) | 0/8 | 49.5 | 218k | 28k | 0 | 15 | 0 | invalid |
-| guided | v3.0 | off | llama-server | **37.5** (raw 58) | 3/8 | 97.6 | 6,453k | 125k | 0 | 132 | 3 | partial, loop: text |
-| guided | v3.0 | high | lm-studio | **0** (raw 30) | 0/8 | 46.0 | 306k | 30k | 0 | 21 | 0 | invalid |
-| guided | v3.0 | low | lm-studio | **0** (raw 29.5) | 0/8 | 99.0 | 1,971k | 45k | 3 | 130 | 0 | invalid, loop: tool call |
+| test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
+| guided-v3.0 | llama-off-ctx.256k | **37.5** (raw 58) | 3/8/partial | 97.6 | 6,453k | 125k | 0 | 132 | 3 | text |
+| blind-v1.1 | lmstudio-high-ctx.160k | **0** (raw 30.5) | 0/8/invalid | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
+| guided-v3.0 | lmstudio-high-ctx.160k | **0** (raw 30) | 0/8/invalid | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
+| guided-v3.0 | lmstudio-low-ctx.160k | **0** (raw 29.5) | 0/8/invalid | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).

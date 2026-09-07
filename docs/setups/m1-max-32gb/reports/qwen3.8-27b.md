@@ -138,13 +138,13 @@ re-testing on future llama.cpp releases.
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | prompt | thinking | serving | score | done | wall | tokens | peak ctx | compactions | tool calls | commits | status |
-|---|---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|---|
-| blind | v1.1 | medium | llama-server | **87** | 8/8 | 129.3 | 5,947k | 46k | 4 | 210 | 10 | complete |
-| blind | v1.1 | low | mlx_lm.server | **12.5** (raw 67.5) | 1/8 | 85.2 | 610k | 24k | 0 | 29 | 1 | partial |
-| guided | v3.0 | low | mlx_lm.server | **0** (raw 34) | 0/8 | 261.3 | 1,254k | 30k | 0 | 48 | 0 | invalid |
-| blind | v1.0 | default | mlx_lm.server | **37.5** (raw 80) | 3/8 | 253.5 | 1,777k | 24k | 0 | 135 | 6 | partial |
-| guided | v2.1 | low | mlx_lm.server | **75** (raw 84) | 6/8 | 153.8 | 1,123k | 23k | 0 | 95 | 6 | partial |
+| test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
+| blind-v1.1 | llama-medium-ctx.48k | **87** | 8/8/done | 129.3 | 5,947k | 46k | 4 | 210 | 10 |  |
+| guided-v2.1 | mlx-low-ctx.26k | **75** (raw 84) | 6/8/partial | 153.8 | 1,123k | 23k | 0 | 95 | 6 |  |
+| blind-v1.0 | mlx-default-ctx.26k | **37.5** (raw 80) | 3/8/partial | 253.5 | 1,777k | 24k | 0 | 135 | 6 |  |
+| blind-v1.1 | mlx-low-ctx.26k | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
+| guided-v3.0 | mlx-low-ctx.?k | **0** (raw 34) | 0/8/invalid | 261.3 | 1,254k | 30k | 0 | 48 | 0 |  |
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).

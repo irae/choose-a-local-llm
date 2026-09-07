@@ -110,25 +110,17 @@ function renderMendelGuided(rows) {
   return [...header, ...body].join('\n')
 }
 
-function promptOrder(v) {
-  return String(v || 'v0').replace(/^v/, '').split('.').reduce((a, p) => a * 1000 + Number(p), 0)
-}
-
-function latestPromptVersion(rows) {
-  return rows.map((r) => r.prompt_version).sort((a, b) => promptOrder(a) - promptOrder(b)).at(-1)
-}
-
 function thinkingLevel(branch) {
   const m = String(branch).match(/-(xhigh|high|medium|low|off)-/)
   return m ? m[1] : 'default'
 }
 
+const SERVING_SHORT = { 'llama-server': 'llama', 'mlx_lm.server': 'mlx', 'lm-studio': 'lmstudio' }
+
 function renderModelMendel(slug, blindRows, guidedRows) {
-  const latestBlind = latestPromptVersion(blindRows)
-  const latestGuided = latestPromptVersion(guidedRows)
   const tagged = [
-    ...blindRows.map((r) => ({ r, test: 'blind', current: r.prompt_version === latestBlind })),
-    ...guidedRows.map((r) => ({ r, test: 'guided', current: r.prompt_version === latestGuided })),
+    ...blindRows.map((r) => ({ r, test: 'blind' })),
+    ...guidedRows.map((r) => ({ r, test: 'guided' })),
   ].filter(({ r }) => MENDEL_SLUGS[r.model] === slug)
   if (!tagged.length) return 'No Mendel run yet.'
 
@@ -136,11 +128,7 @@ function renderModelMendel(slug, blindRows, guidedRows) {
     const done = r.libraries_done === '' ? 8 : Number(r.libraries_done)
     return Math.min(Number(r.score_total), (100 * done) / 8)
   }
-  tagged.sort((a, b) => {
-    if (a.current !== b.current) return a.current ? -1 : 1
-    if (a.test !== b.test) return a.test === 'blind' ? -1 : 1
-    return capped(b.r) - capped(a.r)
-  })
+  tagged.sort((a, b) => capped(b.r) - capped(a.r))
 
   const esc = (v) => String(v ?? '').replace(/\|/g, '\\|')
   const thousands = (v) => {
@@ -148,32 +136,39 @@ function renderModelMendel(slug, blindRows, guidedRows) {
     if (!Number.isFinite(n) || v === '') return '—'
     return `${Math.round(n / 1000).toLocaleString('en-US')}k`
   }
+  const ladder = [26624, 32768, 49152, 57344, 65536, 81920, 98304, 131072, 163840, 212992, 262144]
+  const config = (r) => {
+    const peak = Number(r['telemetry.peak_context'])
+    const pct = Number(r['telemetry.window_pct'])
+    const est = peak > 0 && pct > 0 ? (peak / pct) * 100 : 0
+    const snapped = est ? ladder.reduce((a, b) => (Math.abs(b - est) < Math.abs(a - est) ? b : a)) : 0
+    const window = snapped ? `${Math.round(snapped / 1024)}k` : '?k'
+    return `${SERVING_SHORT[r.serving] || esc(r.serving)}-${thinkingLevel(r.branch)}-ctx.${window}`
+  }
   const header = [
-    '| test | prompt | thinking | serving | score | done | wall | tokens | peak ctx | compactions | tool calls | commits | status |',
-    '|---|---|---|---|--:|--:|--:|--:|--:|--:|--:|--:|---|',
+    '| test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |',
+    '|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|',
   ]
   const body = tagged.map(({ r, test }) => {
     const done = r.libraries_done === '' ? 8 : Number(r.libraries_done)
     const cap = capped(r)
     const raw = Number(r.score_total)
     const score = cap < raw ? `**${cap}** (raw ${raw})` : `**${cap}**`
-    const wall = r['telemetry.wall_clock_min'] === '' ? '—' : Number(r['telemetry.wall_clock_min']).toFixed(1)
-    let status = r.invalid === 'True' ? 'invalid' : r.partial === 'True' ? 'partial' : 'complete'
-    if (r['telemetry.loop_flag'] === 'LOOP') status += `, loop: ${esc(r['telemetry.loop_kind'] || 'unknown')}`
+    const minutes = r['telemetry.wall_clock_min'] === '' ? '—' : Number(r['telemetry.wall_clock_min']).toFixed(1)
+    const state = r.invalid === 'True' ? 'invalid' : r.partial === 'True' ? 'partial' : 'done'
+    const loop = r['telemetry.loop_flag'] === 'LOOP' ? esc(r['telemetry.loop_kind'] || 'yes') : ''
     return [
-      test,
-      esc(r.prompt_version),
-      thinkingLevel(r.branch),
-      esc(r.serving),
+      `${test}-${esc(r.prompt_version)}`,
+      config(r),
       score,
-      `${done}/8`,
-      wall,
+      `${done}/8/${state}`,
+      minutes,
       thousands(r['telemetry.tokens_total']),
       thousands(r['telemetry.peak_context']),
       esc(r['telemetry.compactions'] || '0'),
       esc(r['telemetry.tool_calls'] || '0'),
       esc(r['telemetry.commits'] || '0'),
-      status,
+      loop,
     ].join(' | ')
   }).map((line) => `| ${line} |`)
   return [...header, ...body].join('\n')
