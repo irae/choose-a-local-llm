@@ -1,6 +1,9 @@
 # A config that reaches Mendel never runs out of memory
 
-Research item of `m1-max-32gb`, opened as run 3 goal 3; attached files
+Research item of `m1-max-32gb`, third item of research run 3, the
+memory run, after the control creep and the wired ladder
+(`run3/index.md`): its margin is derived once, at the standing limit
+those two settle. Attached files
 in `no-oom-at-mendel/`. Owner rule to establish (2026-09-05): when a
 config gets to a Mendel run, its window and budget values are safe, so
 the run cannot end in a Metal OOM. Today they come from a creep

@@ -43,6 +43,29 @@ landed in the same commit that set the 24000 policy.
    Metal share, not total wired memory, and the machine is already
    working above the number we publish. Whether the sysctl still gates
    anything at 24000 is exactly what is untested.
+3. **Run 11 ran a whole night at 25000 and the numbers say the same
+   thing** (2026-09-06 to 2026-09-07, `../benchmarks/bench11/`). No
+   panic, no lockup, no Metal OOM at load, no swap-growth stop across
+   eight blocks and four creeps. Wired during the creeps:
+
+   | limit | config | wired at start | wired at depth | free at depth |
+   | --- | --- | --- | --- | --- |
+   | 24000 | Qwen3.6 GGUF q8 (run 9) | 24650 | 25062 | 60 MB |
+   | 24000 | Gemma-12B 4 slots (run 10) | 24628 | 25144 | 94 MB |
+   | 24000 | Gemma-26B 2 slots (run 10) | 24885 | 25477 | 2580 MB |
+   | 25000 | Qwen3.6 GGUF q8 | 25584 | 25998 | 71 MB |
+   | 25000 | Qwen3.6 GGUF f16 | 24885 | 25305 | 1449 MB |
+
+   Both regimes land in the same place. The one large difference is a
+   load-time one: at 24000 the Qwen3.6 GGUF failed to load `-c 65536`
+   and `-c 98304`, and at 25000 it loaded 98304 and served. That gap
+   is too big for 1000 MB of KV cache, and run 11's own two creeps of
+   the same config at the same limit gave 32818 and 81958 tokens
+   depending only on how clean the machine was. **So the ladder must
+   first separate the sysctl from the machine state**: the control
+   creep at the top of `run3/index.md` does that, and its answer
+   decides whether the rest of this ladder is a re-measurement of
+   every published ceiling or a formality.
 
 ## The ladder for this machine
 
