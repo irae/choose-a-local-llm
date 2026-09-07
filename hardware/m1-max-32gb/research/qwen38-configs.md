@@ -318,6 +318,15 @@ file name, revision and real size beside the other model pins.
 
 The trial runs at wired **25000**, the limit the next runs drive.
 
+**Build 1, `unsloth:UD-Q3_K_XL`, goes first and is the priority.** Two
+surveys reached it independently, for different reasons. It is the
+only K-quant on the list, so it is the one build whose speed does not
+depend on the i-quant Metal path. And it is the cheapest way to close
+the whole direction: if a K-quant 3-bit cannot hold 8 tok/s at the
+depth the agent task needs, no 3-bit build will, and builds 2 and 3
+stop mattering. If the run has time for one build only, it is this
+one. If the run has time for one step only, it is this build's creep.
+
 Each build takes the same three steps, in this order, and stops at the
 first one that fails:
 
