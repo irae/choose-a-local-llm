@@ -64,6 +64,22 @@ llama row is already vision-free; the MLX container never had the
 tower on disk; LM Studio does not serve Qwen3.8 here. The step closes
 on the desk, and the Mac part below only writes the number down.
 
+## Never modify a model file in place
+
+A stripped model is always a new file beside the original, never an
+edit of it (owner rule, 2026-09-07). The original stays byte for byte
+as it was downloaded, because it is what every published row was
+measured on and what a re-measurement has to reproduce. This applies
+to any tool that removes a tower, a drafter, or an unused tensor from
+a checkpoint: write `<name>-notower.gguf` next to `<name>.gguf`, keep
+both, and record which file each row served. The same holds for the
+projector files the procedure below downloads: they are extra files,
+and nothing they touch is removed.
+
+The disk cost of a duplicate is the whole model, 12 to 20 GB per copy
+here, so a duplicate is made for one measurement and deleted when its
+row is recorded, with the original untouched.
+
 ## Mac procedure
 
 Goal: put a wired-MB number on the saving each GGUF row already takes,
