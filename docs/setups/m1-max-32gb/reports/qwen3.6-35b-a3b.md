@@ -123,6 +123,7 @@ so MTP numbers there read below the py/js bench.
 | guided-v3.0 | llama-high-ctx.128k | **83** | 8/8/done | 91.9 | 12,712k | 94k | 1 | 285 | 16 |  |
 | guided-v2.1 | llama-default-ctx.96k | **65.5** | 8/8/done | 75.6 | 12,081k | 94k | 0 | 251 | 8 |  |
 | blind-v1.1 | llama-high-ctx.96k | **63** | 8/8/done | 79.2 | 7,933k | 94k | 0 | 203 | 13 |  |
+| guided-v3.0 | llama-off-ctx.80k | **62.5** | 8/8/done | 89.4 | 13,045k | 78k | 1 | 264 | 16 |  |
 | guided-v3.0 | llama-off-ctx.48k | **46.5** | 8/8/done | 95.6 | 9,473k | 52k | 12 | 299 | 7 |  |
 | blind-v1.0 | llama-default-ctx.96k | **41.5** | 8/8/done | 132.0 | 10,090k | 94k | 1 | 258 | 13 |  |
 <!-- gen:model-mendel:end -->

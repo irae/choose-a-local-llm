@@ -112,15 +112,16 @@ scope.
 
 ## Current state
 
-As of 2026-09-06.
+As of 2026-09-07.
 
 - Seats: hard problems and agent work go to Qwen3.8 on llama-server at
   f16 KV (`-c 49152`); the secondary and deep seat is Gemma-26B on
   llama-server at f16 KV (`-c 212992`, thinking off for single-turn
   work); all-day and swarm go to Bonsai; Gemma-12B holds the deepest
   window on llama-server, and its LM Studio configuration is single-turn
-  work only. Qwen3.6 is the fastest shallow decoder, but its clean depth
-  is 8K at the only `-c` that loads.
+  work only. Qwen3.6 is the fastest shallow decoder; its 8K clean depth
+  is a 24000 number, and at the trial limit of run 11 the same build
+  served `-c 98304` and creeped to 82K (below).
 - Every GGUF row carries the largest `-c` that loads under the 24000
   limit, measured with a real completion, and the KV type the pick
   chose: f16 on Qwen3.8, Gemma-26B and Gemma-12B, q8_0 on Qwen3.6
@@ -134,13 +135,13 @@ As of 2026-09-06.
   bonsai-mlx at 48K, qwen3.8-mlx at 26K; `maxTokens` 8192 on every
   entry.
 
-## Run 11, in progress
+## Run 11, closed 2026-09-07
 
-Preliminary numbers from the run on the machine now, at wired limit
-25000 as a trial. They are not in the tables above until the run
-closes and the limit decision is made
-([the wired limit](#the-wired-limit-24000)). Raw evidence:
-`hardware/m1-max-32gb/benchmarks/bench11/results.md` in the repo.
+Every number here was measured at wired limit 25000, a trial value for
+that run. They stay out of the tables above until the owner sets the
+standing limit ([the wired limit](#the-wired-limit-24000)). Raw
+evidence and the full report:
+`hardware/m1-max-32gb/benchmarks/bench11/` in the repo.
 
 - Qwen3.6 GGUF, q8_0 KV: `-c 98304` loads and serves a real
   completion; every `-c` from 100864 up loads but OOMs on the first
@@ -167,16 +168,23 @@ closes and the limit decision is made
   at 469 minutes and scored on the first 300: 3/8 at 31.5, a
   wall-clock partial. The runner now kills pi five minutes after an
   ignored abort.
-- Running now: the Qwen3.6 GGUF guided retry on the 81920 window,
-  then Qwen3.6 blind.
+- **The window decides the score.** The Qwen3.6 guided retry on the
+  81920-token window its own creep supports scored 62.5 with 8/8
+  libraries, against 46.5 for the same config on a 49152-token window
+  with twelve compactions. Both rows are published; the config note of
+  each names its window.
+- Qwen3.6 blind at thinking off did not run. It moves to the next run
+  on the same window.
 
 ## Open work
 
-- Mendel at thinking off for Gemma-26B, guided and blind, and guided at
-  thinking on. The Qwen3.8 GGUF quant's own EvalPlus score. A
-  thinking-on score for Gemma-12B.
-- A Bonsai guided row at thinking off, after the runner gets a live
-  loop alarm. The bonsai-prism q4 A/B.
+- Qwen3.6 blind at thinking off, on the 81920-token window. Qwen3.6 on
+  the MLX server, blind and guided: it has no agent row at all.
+- The Qwen3.8 GGUF quant's own EvalPlus score, and a thinking-on score
+  for Gemma-12B.
+- A Bonsai guided row at thinking off. The bonsai-prism q4 A/B.
+- Gemma-12B at two slots: the largest `-c` that serves both, and the
+  round-robin creep beside a one-slot run at the same per-slot window.
 - Aider tier 2, driven from another computer. Docker does not fit here.
 - A benchmark user account that starves the media indexing daemon
   (below).

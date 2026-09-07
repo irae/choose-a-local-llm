@@ -7,6 +7,37 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench11, 2026-09-06 to 2026-09-07 ([state](bench11/state.md), [results](bench11/results.md), [report](bench11/report.md))
+
+- Runbook: [bench11/AGENT.md](bench11/AGENT.md). Every missing Mendel
+  row at the trial wired limit 25000, opened by a Qwen3.6 depth creep
+  that decided where its own Mendel pair ran.
+- **The harness window decides the score.** Qwen3.6 GGUF guided at
+  thinking off scored 46.5 on a 49152-token window with twelve
+  compactions, and 62.5 on the 81920-token window its own creep
+  supports. The runbook had frozen the smaller window; the rule that
+  measured parameters come from the newest measurement
+  (`docs/methodology/common-rules.md`, rule 10) came out of this.
+- **Qwen3.6 GGUF is not an 8K model.** At 25000 it serves `-c 98304`
+  and creeps to 81958 tokens at 9.24 tok/s. The ceiling is sharp:
+  98304 serves a real completion, 100864 loads and fails the first
+  one. Its f16 KV build now loads at `-c 40960`; it did not at 24000.
+- **Gemma-26B fails at thinking off.** Both thinking-off rows ended on
+  five identical edit calls, caught by the live loop stop in under
+  half an hour each. Its thinking-on guided row completed 7 of 8 at 57.
+- **Gemma-12B GGUF cannot drive the agent task**: 24 of 28 edit calls
+  carried the same malformed tool shape, zero commits.
+- **A background macOS service ended two runs.** The media analysis
+  daemon drove free memory under 100 MB while the server held 25 GB
+  wired; one killed attempt held 8 of 8 commits and its branch was
+  deleted before scoring. The no-cleanup-mid-run rule came out of this.
+- **The 300-minute wall clock cap was not a stop**: the abort never
+  settled the turn and block 8 ran 469 minutes. The runner now kills pi
+  five minutes after an ignored abort.
+- **A missing pi entry cost two blocks.** Qwen3.6 MLX had no harness
+  entry, so blocks 6 and 7 did not run. A missing entry is no longer a
+  skip; the runner creates it from the block's parameter table.
+
 ## bench10, 2026-09-05 to 2026-09-06 ([state](bench10/state.md), [results](bench10/results.md))
 
 - Runbook: [bench10/AGENT.md](bench10/AGENT.md). The three curves the
