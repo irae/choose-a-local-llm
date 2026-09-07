@@ -167,7 +167,7 @@ a changed `STALL_S` must say so.
    work it will serve, never a one-token probe. A server can report
    "loaded" and still answer every request with a 500 and "Insufficient
    Memory" in its log, and it can pass a small probe and then fail the
-   first real step: Qwen3.6 GGUF at q8_0 KV passed a one-token probe at
+   first real step: one MoE 35B model at q8_0 KV passed a one-token probe at
    `-c 49920` under wired 24000 and hit a Metal OOM on the first sweep
    step, while `-c 40960` served the whole creep (2026-09-07). The
    largest `-c` that serves real traffic is the hardware ceiling and is

@@ -83,7 +83,8 @@ window ladder and the summary rubric live in
   for any provider; a run launched without one fails its first turn.
 - `gh auth status` must pass right before every run, blind or guided.
   The task names a GitHub issue and the model reads it through `gh`;
-  a dead token costs a run to a login loop (run 10, Bonsai guided).
+  a dead token costs a run to a login loop (measured 2026-09-05, on a
+  guided run of one dense 27B model).
   A failing status means no Mendel run until the owner logs in.
 - Do not re-run models that already have a result row there.
 - After each run finishes, the agent running the benchmark (never the
@@ -189,8 +190,8 @@ never copied from a runbook or from the owner's daily-driver entry.
   under 65536, pi's default 20000 above it. pi cannot shrink a context
   below its system prompt plus the summary plus this budget, so on a
   small window the default leaves almost no headroom and the run
-  compacts every few turns (measured on the Qwen3.6 GGUF guided row of
-  run 11: twelve compactions, several freeing 1 to 8 points).
+  compacts every few turns (measured 2026-09-06 on a guided row of one
+  MoE 35B model: twelve compactions, several freeing 1 to 8 points).
 
 These values live in the run's pinned pi config, never in the owner's
 file. The worker takes them from `MENDEL_CONTEXT_WINDOW`,
