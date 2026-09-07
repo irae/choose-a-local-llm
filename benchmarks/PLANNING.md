@@ -51,6 +51,11 @@ and the methodology pages the runbook points to.
   only when the owner says so (owner rule, 2026-09-06). Its working
   state lives in `HANDOFF.md` (local, gitignored; see "The handoff
   file" below).
+  Every sub-agent prompt names `CONVENTIONS.md`, the index of the
+  writing rules, and tells the sub-agent to read it before it writes
+  anything. A sub-agent that spawns a sub-agent of its own passes the
+  same instruction down. A sub-agent that has not been given the index
+  will not find it.
 - **Runner** (smaller model, minimal context). Executes
   `hardware/<hardware-id>/benchmarks/bench<N>/AGENT.md` block by block.
   It gets everything it needs from that file and the pages it links.
