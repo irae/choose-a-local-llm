@@ -317,7 +317,7 @@
         },
         "multiAgent": {
           "value": "2\u00d748K",
-          "label": "fork slots in 10.0 GB"
+          "label": "fork slots, 10.9 GB at the floor"
         },
         "weights": {
           "value": "8 GB",
@@ -442,9 +442,9 @@
     "qwen3.6-35b-a3b": {
       "rowMatch": "Qwen3.6-35B-A3B",
       "kpis": [
-        "shallow",
-        "evalplus",
+        "shallowGguf",
         "depthGguf",
+        "evalplusOff",
         "mlxCeiling"
       ],
       "stats": {
@@ -479,6 +479,10 @@
         "depthGgufQ8": {
           "value": "33K",
           "label": "GGUF q8_0 KV depth, 19.7 tok/s, stop under review"
+        },
+        "shallowGguf": {
+          "value": "67.7 tok/s",
+          "label": "decode, shallow (GGUF, f16 KV)"
         }
       },
       "mendelUntrusted": [

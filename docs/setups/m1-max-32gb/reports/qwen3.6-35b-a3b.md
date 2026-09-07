@@ -4,9 +4,9 @@ Backends: llama-server, mlx-lm · [Qwen3.6-35B-A3B-MTP GGUF on Hugging Face](htt
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
-  <div class="kpi"><b>53.3 tok/s</b><span>decode, shallow (MLX)</span></div>
-  <div class="kpi"><b>0.939 / 0.921 / 97%</b><span>EvalPlus, thinking on</span></div>
+  <div class="kpi"><b>67.7 tok/s</b><span>decode, shallow (GGUF, f16 KV)</span></div>
   <div class="kpi"><b>33K</b><span>GGUF f16 KV depth, 56.0 tok/s, no ceiling found</span></div>
+  <div class="kpi"><b>0.951 / 0.915 / 100%</b><span>EvalPlus, thinking off (GGUF q8_0), 0 empty</span></div>
   <div class="kpi"><b>37K</b><span>MLX last stable depth (OOM ~41K)</span></div>
 </div>
 <!-- gen:model-kpis:end -->
@@ -97,21 +97,25 @@ them. Full data: [the benchmarks page](../benchmarks/qwen3.6-35b-a3b.md).
 thinking-on empties are gone. The five empties with thinking on stay
 empty at the full budget, so they are a real model limit.
 
-**The wired limit and the slow creep cost this model its depth.** At
-27000 the machine became too slow for normal use. At 24000 the
-published `-c 98304` and 65536 OOM at load; 49152 loads, but wired sits
-at 25 GB, over the limit, and memory compaction starts by 16K without
-recovering. The last clean row is 8K, faster than 4K because the MTP
-drafter warms up over the first rows. The larger single-slot and
-two-agent configs of the old limit, and the 90K fast-sweep curve, are
-on [the historical page](../historical.md). At a smaller `-c` f16 KV
-does load, and it is the faster arm; the sentence below was measured
+**The wired limit and the KV type set this model's depth.** At 27000 the
+machine became too slow for normal use. At 24000, re-measured
+2026-09-07 with a real sweep step as the ceiling test, the model serves
+`-c 40960` at q8_0 KV and `-c 33792` at f16 KV; the published `-c 98304`
+and 65536 OOM at load, and `-c 49152` is not safe either. The f16 arm
+holds 56.0 tok/s at 32818 used tokens against 19.7 for q8_0, so the
+cache type is worth more here than the 7K of window it costs. The
+larger single-slot and two-agent configs of the old limit, and the 90K
+fast-sweep curve, are on [the historical page](../historical.md). The
+sentence below was measured
 before that. f16 KV does not load even
 at 40960, so q8_0 stays.
 
-**MoE on MLX is the faster curve, but it cannot hold the depth.** MLX is
-2.2× faster than llama at 33K, with 18.7 GB RSS, and then dies between
-37K and 41K. This is the whole project's pattern in one model.
+**MLX was the faster curve until the KV type was fixed.** Against llama
+at q8_0 KV, MLX is 2.2x faster at 33K, with 18.7 GB RSS, and then dies
+between 37K and 41K. Against llama at f16 KV, measured 2026-09-07, it
+is slower: 42.0 tok/s at 33K against 56.0. The llama arm holds its
+speed and does not OOM inside its window; the MLX arm still reaches
+37K against llama's 33K.
 
 MTP acceptance does not degrade at the maximum (py 80%, js 90%). KV is
 only about 19 KB per token, so decode speed does not fall as allocated
@@ -124,7 +128,8 @@ so MTP numbers there read below the py/js bench.
 
 | need | config | tok/s (py/js) | context |
 |---|---|--:|--:|
-| **Max speed** | llama-server + MTP n=3, q8_0 KV, `-c 49152`, 1 slot, near-empty context | 68 / 74 | 8K clean; compaction past it |
+| **Max speed at depth** | llama-server + MTP n=3, f16 KV, `-c 33792`, 1 slot | 67.7 at 4K, 56.0 at 33K | 33K, no ceiling found |
+| **Max window on llama** | llama-server + MTP n=3, q8_0 KV, `-c 40960`, 1 slot | 36.7 at 4K, 19.7 at 33K | 33K, stop under review |
 | **Max depth** | mlx_lm.server 4-bit, f16 KV | 53.3 at 4K, 42.0 at 37K | 37K, OOM at about 41K |
 | **Multi-agent** | untested at limit 24000 (OOM even at 2×20K) | – | – |
 

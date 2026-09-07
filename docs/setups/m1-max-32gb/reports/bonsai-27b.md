@@ -7,7 +7,7 @@ Backends: mlx-lm, prism-llama fork · [Ternary-Bonsai-27B on Hugging Face](https
   <div class="kpi"><b>24.5 tok/s</b><span>decode, shallow (MLX)</span></div>
   <div class="kpi"><b>58K</b><span>max healthy depth, 17.3 tok/s (MLX)</span></div>
   <div class="kpi"><b>0.927 / 0.890 / 98%</b><span>EvalPlus base/plus/completion (fork, calibrated q4)</span></div>
-  <div class="kpi"><b>2×48K</b><span>fork slots in 10.0 GB</span></div>
+  <div class="kpi"><b>2×48K</b><span>fork slots, 10.9 GB at the floor</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
@@ -21,8 +21,8 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 - **The flattest speed curve of any model here** (MLX): −23% from 4K to
   49K, never hits the speed floor; the limit is memory (~58-60K).
 - **The only multi-agent setup that leaves the machine free**: 2×48K
-  fork slots in 10.0 GB — but window is not usable depth: the fork's
-  speed floor is ~30K used tokens.
+  fork slots, 10.0 GB shallow and 10.9 GB at the floor — but window is
+  not usable depth: the fork's speed floor is ~30K used tokens.
 - The scored fork config's speed floor is 33K used tokens, 9.6 GB flat —
   the calibration bias and rotation flag do not move it versus the plain
   q4 proxy.
