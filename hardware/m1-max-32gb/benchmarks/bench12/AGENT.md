@@ -59,17 +59,19 @@ ASD-STE100 Simplified Technical English.
   `benchmark/count-tool-calls.mjs`, build the JSON entry, the CSV row
   and the report together before the commit, commit and push
   `benchmark`).
-- Harness values live in the run's pinned pi config. The worker
-  copies `~/.pi/agent/models.json`; when a block's derived window
-  differs from the entry, the runner sets `contextWindow` on that one
-  entry to the derived value (the owner authorizes this edit, run 11
-  precedent), writes old and new in `state.md`, and leaves it. When
-  no entry exists for a block's model, the runner creates it from the
-  block's parameter table (provider, model id, `contextWindow`,
-  `maxTokens` 8192, the thinking map copied from the sibling entry of
-  the same provider), records it in `state.md`, and runs; a missing
-  entry is never a skip. The pinned `settings.json` sets
-  `reserveTokens` 8192; confirm it before the first Mendel run.
+- **Harness values are per run, and the owner's file is never
+  edited.** Pass the block's derived window to the worker:
+  `MENDEL_CONTEXT_WINDOW=<window> ./run-worker.sh <model> pi <bench>
+  <level>`. `MENDEL_RESERVE_TOKENS` defaults to 8192, and
+  `MENDEL_KEEP_RECENT_TOKENS` derives itself (8192 under a
+  65536-token window, pi's default above it). The worker pins all of
+  it in its own config dir. Write the three values in `state.md` and
+  in the row's config note.
+- When no pi entry exists for a block's model, run `npm run pi:models`
+  in the run worktree: it writes every entry from the site data. A new
+  entry needs its thinking map by hand, copied from the sibling entry
+  of the same provider; the tool says which. A missing entry is never
+  a skip.
 - **Every gate and every stop-and-ask goes to the coordinator
   session**, with the block, the condition and your candidate answer.
   Keep the GPU busy with the next block that does not depend on it
@@ -220,8 +222,8 @@ Smoke first, then the two runs:
 
 ```bash
 benchmarks/mendel-smoke.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit off 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench12/results/mendel-smoke-bonsai-mlx-off.log
-cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi guided off
-cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi blind off
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 3 window> ./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi guided off
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 3 window> ./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi blind off
 ```
 
 A `fail` on the smoke drops both rows. Config note: `mlx_lm.server,
@@ -251,7 +253,7 @@ model at this run's wired limit before its block.
 Serve with the site row's command at the derived `-c`, then:
 
 ```bash
-cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh qwen3.8-27b pi blind medium
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 4 window> ./run-worker.sh qwen3.8-27b pi blind medium
 ```
 
 ### Block 5/7 — Gemma-26B GGUF, blind, thinking high
@@ -265,7 +267,7 @@ cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh qwen3.8-27b pi blind med
 | window | derived | `<planning>` 212992 | clean depth at the ladder's `-c` |
 
 ```bash
-cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-26b-a4b pi blind high
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> ./run-worker.sh gemma-4-26b-a4b pi blind high
 ```
 
 ### Block 6/7 — Qwen3.6 GGUF, guided, thinking high
@@ -279,7 +281,7 @@ cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-26b-a4b pi blind
 | window | derived | `<planning>` 81920 (run 11, clean depth 81958) | clean depth at the ladder's `-c` |
 
 ```bash
-cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh qwen3.6-35b-a3b pi guided high
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 6 window> ./run-worker.sh qwen3.6-35b-a3b pi guided high
 ```
 
 ## Block 7/7 — windows up at the run's limit (conditional)
