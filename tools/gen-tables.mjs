@@ -117,7 +117,9 @@ function thinkingLevel(branch) {
 
 const SERVING_SHORT = { 'llama-server': 'llama', 'mlx_lm.server': 'mlx', 'lm-studio': 'lmstudio' }
 
-function renderModelMendel(slug, blindRows, guidedRows) {
+function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
+  const distrust = (r) => untrusted.find((u) =>
+    (!u.serving || u.serving === r.serving) && (!u.branch || new RegExp(u.branch).test(r.branch)))
   const tagged = [
     ...blindRows.map((r) => ({ r, test: 'blind' })),
     ...guidedRows.map((r) => ({ r, test: 'guided' })),
@@ -159,7 +161,7 @@ function renderModelMendel(slug, blindRows, guidedRows) {
     const loop = r['telemetry.loop_flag'] === 'LOOP' ? esc(r['telemetry.loop_kind'] || 'yes') : ''
     return [
       `${test}-${esc(r.prompt_version)}`,
-      config(r),
+      config(r) + (distrust(r) ? ' †' : ''),
       score,
       `${done}/8/${state}`,
       minutes,
@@ -171,7 +173,9 @@ function renderModelMendel(slug, blindRows, guidedRows) {
       loop,
     ].join(' | ')
   }).map((line) => `| ${line} |`)
-  return [...header, ...body].join('\n')
+  const used = untrusted.filter((u) => tagged.some(({ r }) => distrust(r) === u))
+  const legend = used.length ? ['', ...used.map((u) => `† config no longer trusted: ${u.reason}.`)] : []
+  return [...header, ...body, ...legend].join('\n')
 }
 
 function parseCtx(s) {
@@ -428,7 +432,7 @@ for (const dataFile of dataFiles) {
     let updated = applyBlock(original, KPI_START, KPI_END, renderKpis(model), target)
     updated = applyBlock(updated, MODEL_START, MODEL_END, renderModelTable(data, model), target)
     updated = applyBlock(updated, CONFIGS_START, CONFIGS_END, renderModelConfigs(data, model), target)
-    updated = applyBlock(updated, MODEL_MENDEL_START, MODEL_MENDEL_END, renderModelMendel(slug, mendelBlindAll, mendelGuidedAll), target)
+    updated = applyBlock(updated, MODEL_MENDEL_START, MODEL_MENDEL_END, renderModelMendel(slug, mendelBlindAll, mendelGuidedAll, model.mendelUntrusted), target)
     checkRefs(updated, modelRows(data, model).length, target)
     if (updated === original) continue
     if (CHECK) {

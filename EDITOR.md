@@ -112,7 +112,11 @@ These rules bind every `reports/<model>.md` page:
   `benchmarks/mendel/results-guided.csv`, between
   `<!-- gen:model-mendel:... -->` markers. A model with no run gets a
   one-line block. Add the model to `MENDEL_SLUGS` in
-  `tools/gen-tables.mjs` when a run uses a new `model` value.
+  `tools/gen-tables.mjs` when a run uses a new `model` value. A run on
+  a configuration the project no longer trusts gets a † on its config
+  cell and one legend line with the reason; the list is
+  `models.<page-slug>.mendelUntrusted` in `models.json`, one entry per
+  config with `serving` (and an optional `branch` regex) and `reason`.
 - **Config numbers go at the end of table lines as `#1`, `#2`**, never
   as a `1:`/`2:` prefix.
 - **Every row in `models.json` carries a mnemonic `id`, a `hidden`

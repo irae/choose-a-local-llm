@@ -267,6 +267,9 @@
     },
     "gemma-4-12b-it": {
       "rowMatch": "Gemma-4-12B",
+      "mendelUntrusted": [
+        { "serving": "lm-studio", "reason": "the LM Studio engine lost every agent run; that config is single-turn work only" }
+      ],
       "kpis": [
         "agentDepth",
         "lmsCeiling",
@@ -400,6 +403,9 @@
     },
     "qwen3.8-27b": {
       "rowMatch": "Qwen3.8-27B",
+      "mendelUntrusted": [
+        { "serving": "mlx_lm.server", "reason": "a 26624-token window with a 16384-token output budget, our config arithmetic, not the model" }
+      ],
       "kpis": [
         "evalplus",
         "mendelBlind",
