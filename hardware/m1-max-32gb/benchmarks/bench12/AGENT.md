@@ -22,11 +22,16 @@ ASD-STE100 Simplified Technical English.
   before a block starts. Act on `fix` and `ask` lines the way the
   checklist says; never sudo, never reboot on your own. Record the
   `memory` line's starting numbers in `state.md`.
-- **Wired limit: `<owner sets it before the run: 24000 or 25000>`**
-  (owner decision, dated in `state.md` at run start). Verify with
+- **Wired limit: 24000** (settled 2026-09-07 from this run's own
+  pre-block prep: six creeps at 24000 with zero swap growth, against
+  real swap growth at 25000 under back-to-back sweeps). Verify with
   `sysctl -n iogpu.wired_limit_mb` and preflight's `wired-limit` line
   `ok`. Any other value is stop and ask. Every config note carries
-  `wired <value>`.
+  `wired 24000`.
+- **A ceiling test is a real request the size of the block's work.**
+  A one-token probe passed at `-c 49920` on Qwen3.6 q8_0 and the first
+  real sweep step OOMed; `-c 40960` served. Use the workload size
+  (`docs/methodology/context-creep.md`, step 1).
 - **Measured parameters come from the newest measurement, never from
   a number in this file** (`docs/methodology/common-rules.md`, rule
   10). Each block below has a parameter table: fixed values are

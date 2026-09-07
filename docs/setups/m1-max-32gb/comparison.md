@@ -17,10 +17,11 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
   262,144 window above the floor, in 13.9 GB. The LM Studio engine is
   faster at every depth it survives (34.19 at 4K, 23.23 at 131K) but
   stops on memory, and it loops in multi-turn tool work.
-- **Fastest shallow decode, with a caveat:** Qwen3.6-35B on llama. 68 py
-  / 74 js tok/s and 0.951 / 0.915 / 100% with thinking off, but the slow
-  creep shows memory compaction from 16K at the only `-c` that loads;
-  the clean depth is 8K.
+- **Fastest shallow decode, and the KV type decides it:** Qwen3.6-35B
+  on llama. With f16 KV it holds 67.7 tok/s at 4K and 56.0 at 33K, and
+  with q8_0 KV the same server gives 36.7 and 19.7. The f16 window is
+  7K smaller, `-c 33792` against `-c 40960`. EvalPlus 0.951 / 0.915 /
+  100% with thinking off.
 - **Cheapest in memory:** Ternary Bonsai-27B. 27B-class quality from 8
   GB of weights, and the flattest curve of any model. It has never
   finished the agent task.
@@ -43,14 +44,15 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
 | 5 | Qwen3.8-27B, MLX, f16 KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% |
 | 6 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939/100% |
 | 7 | Qwen3.6-35B-A3B, MLX, f16 KV, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921/97% |
-| 8 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921/97% |
-| 9 | Ternary-Bonsai-27B, MLX, f16 KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% |
-| 10 | Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% |
-| 11 | Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% |
-| 12 | Ternary-Bonsai-27B, MLX, f16 KV, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% |
-| 13 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% |
-| 14 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860/89% |
-| 15 | Gemma-4-26B-A4B, MLX, f16 KV | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% |
+| 8 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 33k | mem | 36.7 → 19.7 | 24.8 GB | 0.939/0.921/97% |
+| 9 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 33k | mem | 67.7 → 56.0 | 24.9 GB | 0.939/0.921/97% |
+| 10 | Ternary-Bonsai-27B, MLX, f16 KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% |
+| 11 | Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% |
+| 12 | Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% |
+| 13 | Ternary-Bonsai-27B, MLX, f16 KV, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% |
+| 14 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% |
+| 15 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860/89% |
+| 16 | Gemma-4-26B-A4B, MLX, f16 KV | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% |
 <!-- gen:models-evaluated:end -->
 
 ¹ Two values. **mem**: memory ended the curve, whether the server did
@@ -92,7 +94,7 @@ Compaction thresholds come from the floor table below, not from the window.
 - [Gemma-4-26B-A4B](./reports/gemma-4-26b-a4b.md): MoE+MTP, fastest
   Python, 197K at f16 KV on one slot, 47.5 blind on the agent task
 - [Qwen3.6-35B-A3B](./reports/qwen3.6-35b-a3b.md): MoE+MTP, fastest JS,
-  strongest base benchmarks; 8K clean depth at the `-c` that loads
+  strongest base benchmarks; 33K at 56 tok/s with f16 KV
 - [Gemma-4-12B-it](./reports/gemma-4-12b-it.md): biggest context, best
   concurrency
 - [Ternary Bonsai-27B](./reports/bonsai-27b.md): 27B-class from 8 GB;
@@ -110,7 +112,8 @@ rows keep the fast sweep of 2026-08-28.
 | **Gemma-26B llama (f16 KV, MTP, `-c 212992`)** | 60.3 | 56.5 | 45.9 | 45.9 | 26.4 (115K), 17.3 (197K) | mem — 212992 is the largest `-c` that loads; 17.3 tok/s at 197K | 0.976/0.945/100% off, 0.884/0.860/89% on |
 | **Gemma-26B MLX (f16 KV)** | 51.1 | 43.5 | 35.6 | 28.8 | 12.8 (70K) | mem — stable to 70K, 12.8 tok/s there | 0.713/0.701/72% |
 | **Qwen3.6-35B MLX (f16 KV)** | 53.3 | 49.6 | 42.2 | | | mem — stable to 37K, 42.0 tok/s there | pending |
-| Qwen3.6-35B llama (q8_0 KV, MTP, `-c 49152`) | 36.4 | 31.0 | 19.6 | | | mem — compaction from 16K at 25 GB wired; last clean row 8K, 43.8 tok/s | 0.951/0.915/100% off, 0.939/0.921/97% on |
+| **Qwen3.6-35B llama (f16 KV, MTP, `-c 33792`)** | 67.7 | 64.5 | 56.0 | | | mem — 33792 is the largest `-c` that loads; no ceiling found to 33K | 0.951/0.915/100% off, 0.939/0.921/97% on |
+| Qwen3.6-35B llama (q8_0 KV, MTP, `-c 40960`) | 36.7 | 31.3 | 19.7 | | | mem — stop at 33K on the compaction rule, under review; zero swap | 0.951/0.915/100% off, 0.939/0.921/97% on |
 | Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 17.3 (58K) | mem — stable to 58K, 17.3 tok/s there | 0.915/0.884/97% |
 | **Qwen3.8 llama (f16 KV, MTP, `-c 49152`)** | 20.0 | 16.0 | 16.4 | 15.0 | | mem — 49152 is the largest `-c` that loads; 15.0 tok/s at 49K | 0.982/0.939/100% (MLX score) |
 | Qwen3.8 MLX (f16 KV) | 17.1* | 16.4 | | | 15.3 (28K) | mem — stable to 28K, 15.3 tok/s there | 0.982/0.939/100% |

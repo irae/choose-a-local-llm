@@ -73,22 +73,35 @@
     },
     {
       "config": "Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on",
-      "maxCtx": "8k",
+      "maxCtx": "33k",
       "gatedBy": "mem",
-      "tokShallow": "36.4",
-      "tokDeep": "43.8",
-      "memory": "25.0 GB",
+      "tokShallow": "36.7",
+      "tokDeep": "19.7",
+      "memory": "24.8 GB",
       "evalplus": "0.939/0.921/97%",
       "id": "qwen36-gguf-think",
       "hidden": false,
-      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 49152 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.6-35b-a3b`. Measured 2026-09-04 with the slow creep: q8_0 KV stays, because f16 does not load even at 40960. The published `-c 98304` and 65536 OOM at load; 49152 loads. Wired sits at 25 GB, over the limit, and memory compaction starts by 16K without recovering, so the last clean row is 8K. That row is faster than 4K because the MTP drafter warms up over the first rows.",
+      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 40960 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.6-35b-a3b`. Re-measured 2026-09-07 at wired limit 24000 with a real sweep step as the ceiling test: `-c 40960` serves; `-c 49920` passes a one-token probe and then OOMs on the first real step, so the older published `-c 49152` is not safe. Two creeps, two tools, agree row for row and stop at depth 32818 on the compaction rule with zero swap growth; that stop is under review, because the same rule fires from ordinary speed decay at this depth. The f16 KV row below is 2.8x faster at that depth.",
       "pi": {
         "provider": "llama",
         "id": "qwen3.6-35b-a3b",
-        "contextWindow": 81920,
+        "contextWindow": 32768,
         "maxTokens": 8192
       }
+    },
+    {
+      "config": "Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on",
+      "maxCtx": "33k",
+      "gatedBy": "mem",
+      "tokShallow": "67.7",
+      "tokDeep": "56.0",
+      "memory": "24.9 GB",
+      "evalplus": "0.939/0.921/97%",
+      "id": "qwen36-gguf-f16",
+      "hidden": false,
+      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 33792 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Measured 2026-09-07 at wired limit 24000: `-c 33792` serves, `-c 33920` fails with a Metal OOM. Four creeps across two tools found no ceiling to 32818 and zero swap growth, at 56.0 tok/s there against 19.7 for the q8_0 row. This overturns the older reading that f16 KV does not load for this model, which was measured at a larger `-c`. The window is 7K smaller than the q8_0 row and the speed at depth is 2.8x."
     },
     {
       "config": "Gemma-4-26B-A4B, MLX, f16 KV",
@@ -444,8 +457,8 @@
           "label": "EvalPlus, thinking on"
         },
         "depthGguf": {
-          "value": "8K",
-          "label": "GGUF clean depth before memory compaction (q8_0, -c 49152)"
+          "value": "33K",
+          "label": "GGUF f16 KV depth, 56.0 tok/s, no ceiling found"
         },
         "mlxCeiling": {
           "value": "37K",
@@ -462,6 +475,10 @@
         "evalplusOff": {
           "value": "0.951 / 0.915 / 100%",
           "label": "EvalPlus, thinking off (GGUF q8_0), 0 empty"
+        },
+        "depthGgufQ8": {
+          "value": "33K",
+          "label": "GGUF q8_0 KV depth, 19.7 tok/s, stop under review"
         }
       }
     },

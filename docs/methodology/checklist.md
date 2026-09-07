@@ -95,7 +95,10 @@ is pending, the next block that does not depend on it runs.
    type ([common rules](./common-rules.md), rule 10). Write the value
    you serve and where it came from in `state.md` before the server
    starts, and in the row's config note.
-5. Start the server for ONE config. Verify it serves (warmup request).
+5. Start the server for ONE config. Verify it serves, with a request the
+   size of the work this block will send, not a one-token warmup: a
+   config can pass a small probe and OOM on the first real request
+   ([context creep](./context-creep.md), step 1).
    LM Studio: load explicitly with `lms load`, verify with `lms ps`,
    then check the SERVER is up with `lms server status` and start it
    with `lms server start` if it is not. `lms load` does not start it

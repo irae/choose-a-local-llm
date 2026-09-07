@@ -163,11 +163,16 @@ a changed `STALL_S` must say so.
 1. Set `-c` to the model's trained context (GGUF metadata
    `<arch>.context_length`, or the vendor card). When that does not
    load, binary-search the largest `-c` that does, toward the trained
-   value, and verify each candidate with one real completion: a server
-   can report "loaded" and still answer every request with a 500 and
-   "Insufficient Memory" in its log. The largest `-c` that loads is a
-   hardware ceiling and is recorded as one. Grow a prompt in steps:
-   4K, 8K, 16K, 24K, 32K, then 16K steps.
+   value, and verify each candidate with a real request the size of the
+   work it will serve, never a one-token probe. A server can report
+   "loaded" and still answer every request with a 500 and "Insufficient
+   Memory" in its log, and it can pass a small probe and then fail the
+   first real step: Qwen3.6 GGUF at q8_0 KV passed a one-token probe at
+   `-c 49920` under wired 24000 and hit a Metal OOM on the first sweep
+   step, while `-c 40960` served the whole creep (2026-09-07). The
+   largest `-c` that serves real traffic is the hardware ceiling and is
+   recorded as one. Grow a prompt in steps: 4K, 8K, 16K, 24K, 32K, then
+   16K steps.
 2. Measure decode tok/s at each depth (server timings, or streamed
    chunks where the server has none). The runner writes one row per
    step, with the memory counters of that same step beside the speed.

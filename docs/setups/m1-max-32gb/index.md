@@ -15,8 +15,8 @@
   [comparison page](./comparison.md) is this project's main artifact.
 - **Two local models finish the agent task.** Qwen3.8 on llama-server at
   f16 KV scores 87 of 100 blind, Gemma-26B 47.5, both complete.
-- **Four runtimes are in play**, not one: llama-server, mlx_lm.server, LM
-  Studio's engine, and the PrismML llama.cpp fork.
+- **Three runtimes are in play**: llama-server, mlx_lm.server, and the
+  PrismML llama.cpp fork. LM Studio was tried and retired.
 - **The rule:** MLX barely slows down but OOMs hard; llama holds its
   speed deeper at f16 KV, and its ceiling is the largest `-c` that
   loads.
@@ -122,35 +122,36 @@ As of 2026-09-07.
   large models; Bonsai is the cheapest in memory and the only one that
   serves two slots under 11 GB; Gemma-12B holds the deepest window on
   llama-server. Nothing here is a decision; none of these has been used
-  for real work yet. Qwen3.6 is the fastest shallow decoder; its 8K clean depth
-  is a 24000 number, and at the trial limit of run 11 the same build
-  served `-c 98304` and creeped to 82K (below).
-- Every GGUF row carries the largest `-c` that loads under the 24000
-  limit, measured with a real completion, and the KV type the pick
-  chose: f16 on Qwen3.8, Gemma-26B and Gemma-12B, q8_0 on Qwen3.6
-  because f16 does not load.
+  for real work yet. Qwen3.6 is the fastest shallow decoder, and with
+  f16 KV it holds 56 tok/s at 33K.
+- Every GGUF row carries the largest `-c` that serves a real request of
+  the size the work will send, and the KV type the pick chose: f16 on
+  Qwen3.8, Gemma-26B and Gemma-12B, and now on Qwen3.6 as well, where
+  f16 loads at a smaller `-c` and decodes 2.8x faster at depth than
+  q8_0. The q8_0 row stays for its larger window.
 - Bonsai extras: the PrismML fork is installed at `~/prism-llama/`. Its
   desktop profile holds q4 KV at 9.8 GB flat with a 30K floor, and serves
   2×48K slots at 9.8 tok/s each. The DSpark drafter helps only at
   shallow context, so it is not used for scoring.
-- pi wiring: qwen3.8 llama at a 49152 window, qwen3.6 llama at 81920
-  (raised during run 11, see below), gemma-26b llama at 212992,
-  bonsai-mlx at 48K, qwen3.8-mlx at 26K; `maxTokens` 8192 on every
-  entry.
+- pi wiring: qwen3.8 llama at a 49152 window, qwen3.6 llama at 32768
+  (what wired 24000 serves), gemma-26b llama at 212992, bonsai-mlx at
+  48K, qwen3.8-mlx at 26K; `maxTokens` 8192 on every entry.
 
 ## Run 11, closed 2026-09-07
 
 Every number here was measured at wired limit 25000, a trial value for
-that run. They stay out of the tables above until the owner sets the
-standing limit ([the wired limit](#the-wired-limit-24000)). Raw
-evidence and the full report:
+that run. **The trial ended: 24000 stands** (below), so these numbers
+stay out of the tables above and the current Qwen3.6 rows are the
+2026-09-07 re-measurement at 24000. Raw evidence and the full report:
 `hardware/m1-max-32gb/benchmarks/bench11/` in the repo.
 
 - Qwen3.6 GGUF, q8_0 KV: `-c 98304` loads and serves a real
   completion; every `-c` from 100864 up loads but OOMs on the first
   completion. Slow creep at 98304 on a clean machine: clean depth
-  81958 at 9.24 tok/s, floor hit at 98K. f16 KV now loads at
-  `-c 40960` (it did not at 24000).
+  81958 at 9.24 tok/s, floor hit at 98K. f16 KV loads at `-c 40960`.
+  At 24000 the same arms serve `-c 40960` and `-c 33792`, so the
+  extra 1000 MB of wired limit bought this model a much larger q8_0
+  window and about 7K more tokens at f16.
 - Qwen3.6 MLX 4-bit: ceiling 40982 at 37.4 tok/s, then the generation
   thread died on a Metal OOM while the models endpoint kept answering.
 - Mendel, thinking off: Gemma-26B guided and blind both ended on the
@@ -230,6 +231,15 @@ went up. Superseded numbers under the old cap live on
 [the historical page](./historical.md), never on a current page.
 
 ## The wired limit: 24000
+
+**Settled 2026-09-07: 24000 stands.** Run 11 ran a night at 25000 with
+no panic and no lockup, and it bought Qwen3.6 a larger window. Against
+that, 25000 produced real swap growth under back-to-back sweeps with
+no recovery gap, while six creeps at 24000 on the same model, two KV
+types and two tools showed zero swap growth. Swap ends a measurement
+and can end a run, so the machine keeps the value that never swapped.
+The re-measurement at 24000 is on the model's own pages; the 25000
+numbers stay in the run 11 record.
 
 Measured on this machine (Qwen3.6-35B MLX, per-process `vmmap` tracking):
 
