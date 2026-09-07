@@ -302,7 +302,57 @@ in `results-guided.csv`/`.json` (`benchmark` branch, commit
 `c2c49ef`), `invalid: false`. Session log redacted and pushed, run
 branch pushed, worktree removed.
 
-Next: block 6 (Qwen3.6 MLX, thinking on, Mendel blind), window 40982
-per block 1's MLX gate (a separate pi entry from the GGUF one; the
-owner's window correction to 81920 applies only to the GGUF entry,
-used by blocks 9 and 10).
+**Blocks 6 and 7 skipped**: no pi entry exists for
+`mlx-community/Qwen3.6-35B-A3B-4bit` in `~/.pi/agent/models.json`.
+AGENT.md's own text: "No entry is stop and ask." Not created — that
+would go past the one owner-authorized `models.json` edit. Per the
+checklist's rule 1 (a blocked block is skipped, logged, next one
+starts), moved to block 8.
+
+## Block 8/10 — Bonsai fork (PrismML), thinking high, Mendel guided
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh bonsai-prism pi guided high
+```
+
+KV bias file was missing (known issue,
+`hardware/m1-max-32gb/research/run2/results/bonsai-kv-bias-missing.md`).
+Regenerated with the vendor's `make_kv_bias.sh`, built-in synthetic
+corpus (no recorded corpus for the original scored file), copied to
+`~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf`
+(the persistent location, not `/tmp`). This row runs on a regenerated
+file. Smoke passed first.
+
+Branch `bonsai-prism-high-guided-v3-issue-13`, base `86935f4`. Ran to
+469 minutes with no natural end. **Found a Mendel harness bug**:
+`meta.json`'s `wall_min: 300` policy is never enforced anywhere in
+`run-pi-rpc.mjs` or any other Mendel script (confirmed by grep across
+the whole `benchmark/` directory) — the documented 5-hour cap does
+not exist in practice. Stopped by hand at 469 min per the owner's
+instruction: capped the data at 300 minutes, discarded everything
+past it, scored what remained as a normal `wall_clock` partial (no
+penalty; this is what the harness should have done itself).
+
+Method: truncated the raw pi session log to the first 300 minutes
+(706 of 1419 lines), reset the worktree to its last commit before the
+cutoff (all 3 commits landed well before 300 min, none dropped),
+recomputed `peak_context`/`tool_calls` from the truncated slice only
+(343 tool calls, peak 63100 of the 65536 window, 96.28%).
+
+Scored: score_raw 31.5 = score_total (3/8 libraries: uuid, xtend,
+urlsafe-base64 — the last folded into the rimraf commit via
+`git commit --amend` after a commitlint rejection, so no commit names
+it alone). rimraf itself is NOT done despite being ticked in
+TASKS.md (trap B missed — two `requirify` files and one
+`mendel-transform-less` reference still stand). Two real regressions:
+`tree-variation-walker.js` rewritten from memory after a
+`git checkout HEAD~1` restore (wrong constructor signature, 3/3 test
+failures), and a drive-by `splice.apply` → `splice` change (another
+3/3 regression, the model called it "pre-existing" and committed
+anyway). Row in `results-guided.csv`/`.json` (`benchmark` branch,
+commit `c403b07`), `invalid: false`, `end_reason: wall_clock`.
+Session log redacted and pushed, run branch pushed, worktree removed.
+
+Next: block 9's retry at window 81920 (Qwen3.6 GGUF, guided, off —
+the original 49152-window row stays valid and scored; this is a
+no-penalty harness-class re-run per Mendel's retry rule).
