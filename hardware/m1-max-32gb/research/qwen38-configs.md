@@ -308,6 +308,51 @@ publisher's.
 No mmproj file is needed: the row runs `--no-mmproj`. If the owner
 authorizes only one, take number 1.
 
+### The trial, as the owner approved it
+
+The owner approved all three builds on 2026-09-07 and sent the
+download to the machine the same evening. The machine fetches them
+with llama's own Hugging Face path, at the revisions above, so the
+files land in the cache llama already reads. The machine records each
+file name, revision and real size beside the other model pins.
+
+The trial runs at wired **25000**, the limit the next runs drive.
+
+Each build takes the same three steps, in this order, and stops at the
+first one that fails:
+
+1. **Context creep.** Every build gets one. The creep gives the
+   ceiling, the curve and the depth where decode falls under 8 tok/s.
+   This is the step that answers the one question the survey could not:
+   speed. A build that cannot hold 8 tok/s at a depth the agent task
+   needs is finished here, whatever its window.
+2. **Mendel smoke**, against the same smoke on the row we serve today.
+3. **EvalPlus smoke**, the same budget on both sides, against the same
+   row.
+
+Rules for the trial:
+
+- **KV cache is f16.** This hardware is slow at a quantized KV cache,
+  so f16 is the default for every creep and every smoke. Use q8_0 only
+  where a build cannot reach a needed depth at f16, and say so in the
+  row.
+- **No full Mendel run and no full EvalPlus run.** Research stops at
+  the two smokes. A build that passes both becomes a bench item; the
+  scored run happens there, not here.
+- **GGUF only.** No MLX build enters the trial unless it is the only
+  build of that model that exists.
+- Serving flags stay as the current row has them, `--no-mmproj`,
+  `--spec-type draft-mtp`, one slot. Only `-c` changes.
+- **Every build is tried with the MTP drafter where the build has
+  one.** ISTA-DASLab ships a separate `-mtp` file, about 0.35 GB
+  larger, and shortlist build 3 is already that file. AtomicChat says
+  its files carry an MTP head. The unsloth build inherits the path our
+  current row already uses. Where a build needs a separate MTP file,
+  that file is downloaded upfront with the weights, not later. Where a
+  build has no MTP head, record that and run it without one.
+- A build served above 120K needs a long-prompt completion check in
+  its smoke, because of llama.cpp issue 27756 below.
+
 ### Reasoning effort: what the sources say
 
 Step 3 keeps its plan. This is the desk evidence found for it, and it
