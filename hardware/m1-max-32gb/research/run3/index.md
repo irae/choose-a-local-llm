@@ -76,14 +76,14 @@ Five rules hold across every item in this run:
   step after it. A build at or above that depth runs its EvalPlus
   smoke. Log every build, including the ones that pass, so the run
   records which creep invalidated which EvalPlus smoke.
-- [ ] `qwen38-unsloth-q3kxl-evalplus-smoke` — EvalPlus smoke, same
+- [x] `qwen38-unsloth-q3kxl-evalplus-smoke` — EvalPlus smoke, same
   budget on both sides, against the row we serve today. Runs only if
   `qwen38-creep-gate` marked it `run`.
-- [ ] `qwen38-atomicchat-iq3s-evalplus-smoke` — the same, under the
+- [x] `qwen38-atomicchat-iq3s-evalplus-smoke` — the same, under the
   same gate.
-- [ ] `qwen38-ista-iq3s-mtp-evalplus-smoke` — the same, under the same
+- [x] `qwen38-ista-iq3s-mtp-evalplus-smoke` — the same, under the same
   gate.
-- [ ] `qwen38-evalplus-gate` — **a task, not a judgment call.** Read
+- [x] `qwen38-evalplus-gate` — **a task, not a judgment call.** Read
   every EvalPlus smoke this run produced, after the last one ends. For
   each build write one line in `results.md`: the build, its pass
   count, and `mendel: run` or `mendel: skipped, EvalPlus returned
