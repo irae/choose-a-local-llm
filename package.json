@@ -15,6 +15,7 @@
     "docs:build": "npm run build",
     "docs:preview": "npm run preview",
     "docs:tables": "node tools/gen-tables.mjs",
+    "pi:models": "node tools/gen-pi-models.mjs",
     "docs:check": "node tools/gen-tables.mjs --check && node tools/check-links.mjs"
   },
   "devDependencies": {

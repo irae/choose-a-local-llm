@@ -13,7 +13,13 @@
       "id": "qwen38-mlx-medium",
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --reasoning-effort medium --port 8081",
-      "note": "Set the harness compaction threshold at ~26K."
+      "note": "Set the harness compaction threshold at ~26K.",
+      "pi": {
+        "provider": "mlx",
+        "id": "mlx-community/Qwen3.8-27B-4bit",
+        "contextWindow": 26624,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Qwen3.8-27B, MLX, effort low",
@@ -39,7 +45,13 @@
       "id": "qwen38-gguf-medium",
       "hidden": false,
       "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 49152 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b`. Measured 2026-09-05 at f16 KV, the KV pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant's own score is pending. Mendel blind at effort medium: 87/100, complete."
+      "note": "pi id `qwen3.8-27b`. Measured 2026-09-05 at f16 KV, the KV pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant's own score is pending. Mendel blind at effort medium: 87/100, complete.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b",
+        "contextWindow": 49152,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Qwen3.6-35B-A3B, MLX, thinking on",
@@ -51,7 +63,13 @@
       "evalplus": "0.939/0.921/97%",
       "id": "qwen36-mlx-think",
       "hidden": false,
-      "command": "mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \\\n  --prompt-cache-size 2 --port 8081"
+      "command": "mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \\\n  --prompt-cache-size 2 --port 8081",
+      "pi": {
+        "provider": "mlx",
+        "id": "mlx-community/Qwen3.6-35B-A3B-4bit",
+        "contextWindow": 40960,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on",
@@ -64,7 +82,13 @@
       "id": "qwen36-gguf-think",
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 49152 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.6-35b-a3b`. Measured 2026-09-04 with the slow creep: q8_0 KV stays, because f16 does not load even at 40960. The published `-c 98304` and 65536 OOM at load; 49152 loads. Wired sits at 25 GB, over the limit, and memory compaction starts by 16K without recovering, so the last clean row is 8K. That row is faster than 4K because the MTP drafter warms up over the first rows."
+      "note": "pi id `qwen3.6-35b-a3b`. Measured 2026-09-04 with the slow creep: q8_0 KV stays, because f16 does not load even at 40960. The published `-c 98304` and 65536 OOM at load; 49152 loads. Wired sits at 25 GB, over the limit, and memory compaction starts by 16K without recovering, so the last clean row is 8K. That row is faster than 4K because the MTP drafter warms up over the first rows.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.6-35b-a3b",
+        "contextWindow": 81920,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Gemma-4-26B-A4B, MLX",
@@ -89,7 +113,13 @@
       "id": "gemma26-gguf",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 212992 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-26b-a4b`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete."
+      "note": "pi id `gemma-4-26b-a4b`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete.",
+      "pi": {
+        "provider": "llama",
+        "id": "gemma-4-26b-a4b",
+        "contextWindow": 212992,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots",
@@ -114,7 +144,7 @@
       }
     },
     {
-      "config": "Gemma-4-12B, MLX³, thinking off",
+      "config": "Gemma-4-12B, MLX\u00b3, thinking off",
       "maxCtx": "131k",
       "gatedBy": "mem",
       "tokShallow": "34.19",
@@ -124,7 +154,13 @@
       "id": "gemma12-lmstudio-off",
       "hidden": false,
       "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y",
-      "note": "LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel."
+      "note": "LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only \u2014 in multi-turn tool work it loops on the thought channel.",
+      "pi": {
+        "provider": "lmstudio",
+        "id": "gemma-4-12b-it-mlx",
+        "contextWindow": 131072,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off",
@@ -137,7 +173,13 @@
       "id": "gemma12-gguf-f16",
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor."
+      "note": "pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.",
+      "pi": {
+        "provider": "llama",
+        "id": "gemma-4-12b",
+        "contextWindow": 262144,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
@@ -176,7 +218,13 @@
       "id": "bonsai-mlx",
       "hidden": false,
       "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
-      "note": "Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak."
+      "note": "Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak.",
+      "pi": {
+        "provider": "mlx",
+        "id": "prism-ml/Ternary-Bonsai-27B-mlx-2bit",
+        "contextWindow": 57344,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking off",
@@ -192,7 +240,7 @@
       "note": "Extra body per request: `{\"chat_template_kwargs\":{\"enable_thinking\":false}}`. Curve shared with the thinking-on row: same server, same weights."
     },
     {
-      "config": "Ternary-Bonsai-27B, GGUF⁴, q4, thinking on",
+      "config": "Ternary-Bonsai-27B, GGUF\u2074, q4, thinking on",
       "maxCtx": "33k",
       "gatedBy": "speed",
       "tokShallow": "14.8",
@@ -202,10 +250,16 @@
       "id": "bonsai-fork-single",
       "hidden": false,
       "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
-      "note": "The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md)."
+      "note": "The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).",
+      "pi": {
+        "provider": "llama",
+        "id": "bonsai-prism",
+        "contextWindow": 65536,
+        "maxTokens": 8192
+      }
     },
     {
-      "config": "Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on",
+      "config": "Ternary-Bonsai-27B, GGUF\u2074, q4, 2 slots, thinking on",
       "maxCtx": "2x48k",
       "gatedBy": "speed",
       "tokShallow": "14.9",
@@ -244,7 +298,7 @@
           "label": "EvalPlus base/plus/completion (MLX 2-bit)"
         },
         "multiAgent": {
-          "value": "2×48K",
+          "value": "2\u00d748K",
           "label": "fork slots in 10.0 GB"
         },
         "weights": {
@@ -268,7 +322,10 @@
     "gemma-4-12b-it": {
       "rowMatch": "Gemma-4-12B",
       "mendelUntrusted": [
-        { "serving": "lm-studio", "reason": "the LM Studio engine lost every agent run; that config is single-turn work only" }
+        {
+          "serving": "lm-studio",
+          "reason": "the LM Studio engine lost every agent run; that config is single-turn work only"
+        }
       ],
       "kpis": [
         "agentDepth",
@@ -306,7 +363,7 @@
           "label": "EvalPlus, thinking on"
         },
         "slots": {
-          "value": "4×49K",
+          "value": "4\u00d749K",
           "label": "llama f16 slots, one swept, 25.1 GB"
         },
         "shallowLlama": {
@@ -404,7 +461,10 @@
     "qwen3.8-27b": {
       "rowMatch": "Qwen3.8-27B",
       "mendelUntrusted": [
-        { "serving": "mlx_lm.server", "reason": "a 26624-token window with a 16384-token output budget, our config arithmetic, not the model" }
+        {
+          "serving": "mlx_lm.server",
+          "reason": "a 26624-token window with a 16384-token output budget, our config arithmetic, not the model"
+        }
       ],
       "kpis": [
         "evalplus",
@@ -415,7 +475,7 @@
       "stats": {
         "evalplus": {
           "value": "0.982 / 0.939 / 100%",
-          "label": "EvalPlus, effort medium — best score"
+          "label": "EvalPlus, effort medium \u2014 best score"
         },
         "shallow": {
           "value": "17 tok/s",

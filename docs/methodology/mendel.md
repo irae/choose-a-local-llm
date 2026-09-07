@@ -185,16 +185,16 @@ never copied from a runbook or from the owner's daily-driver entry.
   note, and never a reason to freeze a larger measurement out.
 - **Output budget**: `maxTokens` and `reserveTokens` by the output
   budget rule above.
-- **Compaction keep** (`keepRecentTokens`): pi's default 20000 unless
-  the run's pinned config sets another value; the config note says
-  which (`backlog/pi-compaction-efficiency.md` holds the open
-  proposal for small windows).
+- **Compaction keep** (`keepRecentTokens`): 8192 when the window is
+  under 65536, pi's default 20000 above it. pi cannot shrink a context
+  below its system prompt plus the summary plus this budget, so on a
+  small window the default leaves almost no headroom and the run
+  compacts every few turns (measured on the Qwen3.6 GGUF guided row of
+  run 11: twelve compactions, several freeing 1 to 8 points).
 
-These values live in the run's pinned pi config, which the smoke
-already builds from `SMOKE_MENDEL_CONTEXT_WINDOW`,
-`SMOKE_MENDEL_RESERVE_TOKENS` and `SMOKE_MENDEL_KEEP_RECENT_TOKENS`.
-The Mendel worker copies the owner's entry as it is (state on
-2026-09-06); until it takes the same overrides, a run whose measured
-window differs from the owner's entry is stop and ask, and the ask
-names the measured value. The config note of every row carries the
-window, the `-c`, the budget and the source block of each.
+These values live in the run's pinned pi config, never in the owner's
+file. The worker takes them from `MENDEL_CONTEXT_WINDOW`,
+`MENDEL_RESERVE_TOKENS` and `MENDEL_KEEP_RECENT_TOKENS`, and the smoke
+from the same names with a `SMOKE_` prefix. The config note of every
+row carries the window, the `-c`, the budget, the keep budget and the
+source block of each.

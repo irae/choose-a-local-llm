@@ -149,7 +149,11 @@ is pending, the next block that does not depend on it runs.
    three sizes on [status lines](./status-lines.md); use it.
 10. Note deviations in the run's `state.md` AS THEY HAPPEN, not at the
    end. Smallest fix, fairness first, suspect the harness before the
-   model.
+   model. Every finding, bug and idea of the run goes there too, never
+   into `backlog/`: the backlog is the owner's queue and needs their
+   explicit request (`AGENTS.md`). Tell the owner in one line that the
+   note is in `state.md` and let them decide; the question never stops
+   the run.
 
 ## After the run
 

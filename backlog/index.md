@@ -20,14 +20,11 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 ## Open
 
 - [ ] Resume an interrupted Mendel run in place: worker `--resume`, runner counts earlier sessions toward the cap, cleanup only by an explicit close (mendel-resume-interrupted-run.md)
-- [ ] Generate the pi entries from the site's models.json: the one surface no script writes; picks the best config per model and backend, merges into the owner's file (pi-entries-from-models-json.md)
 - [ ] Real near-OOM in run 11 block 5: mediaanalysisd (macOS media indexing) at ~70% CPU competed for memory while the server held wired 25000; free RAM crashed 1565→62 MB in 20s, harness killed the run mid-work, uncommitted work lost (mediaanalysisd-memory-contention.md)
 - [ ] pi's compaction may be too shallow under a small contextWindow: frequency climbed from 1/9min to 1/2-3min mid-run, several compactions freed only 1-8 points of headroom; research pi's compaction options (pi-compaction-efficiency.md)
 - [ ] Shared-score rule: the owner's sentence for when two quants of one model carry their own scores (shared-score-quant-exception.md)
-- [ ] Qwen3.6 GGUF pi entry at contextWindow 49152: keep on the daily driver, or raise back to 98304 (qwen36-entry-window.md)
 - [ ] Qwen3.8 MLX window before any Mendel retry: smaller window, earlier compaction, or wait for the no-OOM research (qwen38-mlx-window.md)
 - [ ] Bonsai KV bias corpus: name it, or the fork row stands and two runs are dropped (bonsai-kv-bias-corpus.md)
-- [ ] Devstral Small 2 download: which files and revision (devstral-download.md)
 - [ ] Budget for cloud Mendel re-runs, and which models go to polyglot (cloud-reruns-and-polyglot-tier.md)
 - [ ] Mendel: score thinking-off configs that only have thinking-high rows (qwen3.6-35b-a3b confirmed gap) (mendel-thinking-off-gaps.md)
 - [ ] local-llm-eval-tools: extract creep and the Mendel kit with history into two tools; hand-over prompt for the coordinator agent (local-llm-eval-tools-codebase-issue-simulator.md)
@@ -36,6 +33,9 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Changelog
 
+- 2026-09-07 pi entries generated from the site data: `npm run pi:models` writes `contextWindow` and `maxTokens` for every row with a `pi` block, largest window wins, other fields and providers untouched (`tools/gen-pi-models.mjs`)
+- 2026-09-07 Devstral Small 2 download dropped by the owner: smaller models first, and later (`devstral-download.md` deleted, unstarted)
+- 2026-09-07 Qwen3.6 GGUF pi entry: run 11 answered it. The entry is at `contextWindow` 81920, the window its own creep supports at `-c 98304`; the window rule is `docs/methodology/mendel.md`, "Window and budget"
 - 2026-09-06 Run branch rule rewritten to the run 10 practice: the runner pushes the run branch after every block, the coordinator merges at each report, the branch is deleted at close on origin too; the Mendel staging rule (never `git add -A` in the kit) is a standing rule (`AGENTS.md`, `docs/methodology/checklist.md`)
 - 2026-09-06 Live loop stop in the Mendel runner: five identical tool calls in a row (three after a stall), an in-message shape cycle, or a one-character flood end the run as `repetition_loop` or `degenerate_output`; every loop seen so far is in `hardware/m1-max-32gb/research/loop-signatures.md` (Mendel `run-pi-rpc.mjs`, `PLAN.md`)
 - 2026-09-06 Status lines: one template per update type in three sizes; short at every unattended wakeup, medium on a status request, large compares runs one table per task with carried cells marked (`docs/methodology/status-lines.md`, merge 1888b51)

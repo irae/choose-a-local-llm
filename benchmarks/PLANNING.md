@@ -28,10 +28,13 @@ and the methodology pages the runbook points to.
   it), and merged to `master` only when both agree. When it lands, its
   backlog file is deleted in the same commit and its line moves to the
   Changelog in `backlog/index.md`, which lists every item in priority
-  order with the owner's checkbox mark. Only the coordinator files an
-  item, and only when the owner asks for one; a sub-agent that finds
-  something worth filing reports it and files nothing. Everything else
-  is planning and stays with the coordinator.
+  order with the owner's checkbox mark. **Only the coordinator files
+  an item, and only when the owner asks for one in those words**
+  (owner rule, 2026-09-07, mandatory). Without that request: work
+  small enough to do now gets done now, larger work gets one entry in
+  `HANDOFF.md`, a runner's finding goes in the run's `state.md`, and
+  the owner hears one line saying where it is and asking whether they
+  want an item. A sub-agent files nothing, ever.
 
 ## The two roles
 

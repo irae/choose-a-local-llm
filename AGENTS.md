@@ -276,8 +276,24 @@ Benchmark work:
   budget rule, the thinking map copied from the sibling entry of the
   same provider), records the entry in `state.md`, and runs. The
   coordinator writes the final entry into the owner's file at
-  close-out. Generating the entry from the site's `models.json` is
-  `backlog/pi-entries-from-models-json.md`.
+  close-out. On a machine with the repo, `npm run pi:models` writes
+  every entry from the site's `models.json`; a row carries its entry
+  in a `pi` block (`provider`, `id`, `contextWindow`, `maxTokens`),
+  the largest window wins when two rows share a model, and no other
+  field of an existing entry is touched.
+- **No `backlog/` item without an explicit owner request** (owner
+  rule, 2026-09-07, mandatory). The backlog is the owner's queue, not
+  a place to park findings. Where a finding goes instead:
+  - **Planner or coordinator.** Small enough to do now: do it, in the
+    same session. Larger: one entry in `HANDOFF.md`, with what it is
+    and what it would take. Never a new `backlog/` file.
+  - **Runner or sub-agent.** The run's `state.md`, as it happens. The
+    coordinator and the owner read it at the close.
+  - Either way, tell the owner in one line, as a question they can
+    ignore: "this is in the handoff (or `state.md`); do you want a
+    backlog item?" The question never blocks the work.
+  An item the owner asks for follows `CONVENTIONS.md` and gets its
+  line in `backlog/index.md`.
 - **Run `tests/run.sh` after you touch any script under
   `benchmarks/`.** It is one command and it needs no server.
 - **Never edit a shell script while it runs.** The shell reads the file

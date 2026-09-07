@@ -32,7 +32,9 @@ timings, prompt-cache reuse, the KV type decision) live in
    `docs/setups/<setup>/reports/*.md` page **including the summary
    line** (it goes stale easily), the setup's `comparison.md`, the
    generated tables (`models.json` + `node tools/gen-tables.mjs`), and
-   the harness config (`~/.pi/agent/models.json`). Every server config
+   the harness config (`npm run pi:models` writes the pi entries from
+   the same `models.json`; `--dry-run` and `--check` show the drift
+   first, and it never touches a field it does not own). Every server config
    gets a copy-paste command block in its report whose alias equals the
    harness model id. The report and comparison pages show only numbers
    measured under the CURRENT wired limit; superseded measurements move
