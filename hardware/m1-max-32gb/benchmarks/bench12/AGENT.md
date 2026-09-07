@@ -114,7 +114,7 @@ ASD-STE100 Simplified Technical English.
   branch, session file and pinned config; score its commits as a
   partial and leave the rest to the coordinator. Only a run that
   ended on its own and is scored gets its worktree removed.
-- **Block 7 is the retry sweep.** When blocks 1 to 6 are done and no
+- **`retry-sweep` is the last block.** When every other block is done and no
   message from the owner says otherwise, retry every row of this run
   that was killed or interrupted, oldest first, each in a fresh
   worktree with a suffix, under the Mendel retry rule (no penalty
@@ -126,23 +126,37 @@ ASD-STE100 Simplified Technical English.
 - Archive evidence before the session closes:
   `tools/archive-evidence.sh hardware/m1-max-32gb/benchmarks/bench12/results run12`.
 
-## The order, and why
+## The order
 
-Seven blocks. The first two are Gemma-12B window measurements the
-owner asked for (two agents in parallel on one server). Block 3 asks
-what the Bonsai fork does with f16 KV, the one cache type it never
-served, and then runs the agent task there. Blocks 4 to 6 re-run the
-three valid rows that compacted under pi's old 16384 reserve, at the
-8192 reserve every row uses since 2026-09-06. Gemma-26B goes last of
-the three (owner, 2026-09-07): it scores worst of them on the agent
-task, so it is the one to drop if the run runs short. Block 7 is the retry
-sweep. Every block starts the moment the previous one ends.
+**This list is the order.** Every block starts the moment the one
+above it ends, and nothing in this run waits for the owner. Each name
+below is the block's mnemonic; its section is lower in this file,
+under that name, in whatever order the file keeps them.
+
+- `tool-check`
+- `gemma12-gguf-2slot`
+- `gemma12-gguf-1slot-131072`
+- `bonsai-fork-f16`
+- `qwen38-gguf-blind-medium`
+- `qwen36-gguf-guided-high`
+- `gemma26-gguf-blind-high`
+- `retry-sweep`
+
+Why this order. The two Gemma-12B blocks are the window measurements
+the owner asked for, two agents in parallel on one server against one.
+`bonsai-fork-f16` asks what the fork does with f16 KV, the one cache
+type it never served, and then runs the agent task there. The three
+re-runs follow, for the three valid rows that compacted under pi's old
+16384 reserve, at the 8192 reserve every row uses since 2026-09-06.
+`gemma26-gguf-blind-high` goes last of the three (owner, 2026-09-07):
+it scores worst of them on the agent task, so it is the one to drop if
+the run runs short.
 
 Every MLX item moved to `../unscheduled/`: those rows wait on the
 in-turn margin rule, because that server cannot refuse a request it
 cannot serve.
 
-## Tool check — before Block 1
+## `tool-check`
 
 The depth-sweep tool moved out of this repo, to `local-llm-eval-tools`.
 The two tools were already compared on this machine, twice, on the
@@ -173,7 +187,7 @@ check. Decode on this machine swings run to run on identical code, 40
 to 54 tok/s on one run against 21 to 27 on the next (`results.md`,
 "Pre-block prep"). A speed comparison would fail on machine noise.
 
-## Block 1/7 — Gemma-12B GGUF, two slots: `-c` ladder and round-robin creep
+## `gemma12-gguf-2slot` — Gemma-12B GGUF, two slots: `-c` ladder and round-robin creep
 
 Read `docs/methodology/context-creep.md` and
 `docs/methodology/memory-ceiling.md`.
@@ -217,9 +231,9 @@ Done: the ladder table and the creep table with its verdict in
 Write the per-slot clean depth in `state.md` as `gemma12_2x_clean`.
 Stop the server; wait for wired recovery.
 
-## Block 2/7 — Gemma-12B GGUF, one slot at `-c 131072`: creep
+## `gemma12-gguf-1slot-131072` — Gemma-12B GGUF, one slot: creep
 
-Same files, KV type and drafter as block 1. Fixed for this block:
+Same files, KV type and drafter as `gemma12-gguf-2slot`. Fixed for this block:
 `--parallel 1`, `-c 131072` (the owner's comparison point, the same
 per-slot window as the two-slot target). Derived: the clean depth,
 from this creep.
@@ -239,11 +253,11 @@ N_CONTEXTS=1 MODEL=gemma-4-12b \
   | tee hardware/m1-max-32gb/benchmarks/bench12/results/creep-gemma12-gguf-1x-c131072-f16.tsv
 ```
 
-Done: the creep table beside block 1's in `results.md`, one
+Done: the creep table beside `gemma12-gguf-2slot`'s in `results.md`, one
 comparison table (depth, tok/s one slot, tok/s per slot at two
 slots). Stop the server; wait for wired recovery.
 
-## Block 3/7 — Bonsai on the PrismML fork, f16 KV: ladder, creep, then the agent task
+## `bonsai-fork-f16` — Bonsai on the PrismML fork, f16 KV: ladder, creep, then the agent task
 
 Read `docs/methodology/context-creep.md`. The fork has never served
 this model with f16 KV, and the site's own KV study says that is where
@@ -299,7 +313,7 @@ drafter, no EvalPlus: the quality gate at f16 is
 `../unscheduled/bonsai-fork-f16-evalplus.md`. Stop the server; wait
 for wired recovery.
 
-## Blocks 4 to 6 — the reserve re-runs
+## The three reserve re-runs
 
 Three valid rows compacted under pi's default 16384 reserve before
 2026-09-06. Each runs again at reserve 8192, same test and level,
@@ -308,7 +322,7 @@ the better row stands, the config note says "re-run at reserveTokens
 8192; first row ran at 16384". Ladder-before-serve applies to each
 model at this run's wired limit before its block.
 
-### Block 4/7 — Qwen3.8 GGUF, blind, effort medium
+### `qwen38-gguf-blind-medium` — Qwen3.8 GGUF, blind, effort medium
 
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
@@ -321,24 +335,24 @@ model at this run's wired limit before its block.
 Serve with the site row's command at the derived `-c`, then:
 
 ```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 4 window> ./run-worker.sh qwen3.8-27b pi blind medium
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<this block's window> ./run-worker.sh qwen3.8-27b pi blind medium
 ```
 
-### Block 5/7 — Qwen3.6 GGUF, guided, thinking high
+### `qwen36-gguf-guided-high` — Qwen3.6 GGUF, guided, thinking high
 
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
 | files | fixed | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`, `--no-mmproj` | published command |
 | KV type, drafter | fixed | q8_0, MTP n-max 3 | KV pick (f16 loads only at 40960) |
 | thinking | fixed | pi level for `high` | the first row |
-| `-c` | derived | `<planning>` 98304 at 25000 (run 11 block 1) | ladder at this run's limit |
+| `-c` | derived | `<planning>` 98304 at 25000 (the Qwen3.6 creep of 2026-09-06) | ladder at this run's limit |
 | window | derived | `<planning>` 81920 (run 11, clean depth 81958) | clean depth at the ladder's `-c` |
 
 ```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> ./run-worker.sh qwen3.6-35b-a3b pi guided high
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<this block's window> ./run-worker.sh qwen3.6-35b-a3b pi guided high
 ```
 
-### Block 6/7 — Gemma-26B GGUF, blind, thinking high
+### `gemma26-gguf-blind-high` — Gemma-26B GGUF, blind, thinking high
 
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
@@ -349,13 +363,8 @@ cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> .
 | window | derived | `<planning>` 212992 | clean depth at the ladder's `-c` |
 
 ```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 6 window> ./run-worker.sh gemma-4-26b-a4b pi blind high
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<this block's window> ./run-worker.sh gemma-4-26b-a4b pi blind high
 ```
-
-## Order
-
-1 to 7 in this file's order. Every block starts the moment the
-previous one ends. Nothing in this run waits for the owner.
 
 ## Not in this run
 

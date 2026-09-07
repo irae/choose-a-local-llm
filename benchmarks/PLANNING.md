@@ -15,7 +15,9 @@ and the methodology pages the runbook points to.
   benchmark machine, judgment and web access. Attached files go in
   `research/<mnemonic>/`. A research run is
   `hardware/<hardware-id>/research/run<N>/`: its `index.md` lists the
-  items the run takes, in order, with a checkbox each; the runbook and
+  items the run takes, with a checkbox each, and that list is the
+  order; items carry mnemonics and are never numbered, the same rule
+  the blocks of a bench run follow. The runbook and
   the kit appear when the run starts. `<hardware-id>` is the machine's
   setup id under `docs/setups/`.
 - `hardware/<hardware-id>/benchmarks/unscheduled/` and
@@ -179,14 +181,33 @@ committed measurement, the block that measures it comes first.
    form in `state.md`, the site comparison in `results.md`); the scoped
    memory watcher on every run; commit as results land; never push a
    run branch; never publish.
-7. Write the blocks in priority order. Each block gives: the serving
+7. **Never number the blocks** (owner rule, 2026-09-07). A numbered
+   block turns every reorder into a diff that renumbers the whole
+   file, and the real change disappears inside it. Instead:
+   - Every block owns a **mnemonic**: the model, the runtime and the
+     config or the task, in the style the result files already use
+     (`gemma12-gguf-2slot`, `qwen36-gguf-guided-high`,
+     `retry-sweep`). The mnemonic is the block's name everywhere: its
+     heading, every cross-reference, and the values it writes into
+     `state.md`.
+   - The runbook opens with an **unordered list of those mnemonics,
+     one line each, and that list is the order.** The owner reorders
+     the run by moving one line, and the diff shows one line.
+   - The block sections themselves sit in whatever order the file
+     finds convenient. A section never says which block comes next; a
+     reader who needs the order reads the list at the top.
+   - A block that needs a value from another block names that block by
+     its mnemonic, never by a position.
+
+   Each block gives: the serving
    command with its derived parameters marked and sourced, the run
    command (with every env var), where results land, what "done"
    means, and what to update when it is done (tables, `results.md`,
    `state.md`, commit). A serving command is exact in its files and
    flags and open in its measured values: write `-c <newest clean
-   ceiling; planning value 98304, block 1 of run 11>`, never a bare
-   number that a later block of the same run can outdate.
+   ceiling; planning value 98304, the qwen36 ladder of the run
+   before>`, never a bare number that a later block of the same run
+   can outdate.
 8. Make every condition executable. "If promising" is a coordinator
    judgment. Resolve it while planning, or spell out the test the
    runner applies and what to do on each outcome. A gate's outcome
@@ -196,8 +217,9 @@ committed measurement, the block that measures it comes first.
 9. Bake in the failure paths so the GPU never sits idle: what to check
    when output stops growing (server log first; see
    `docs/methodology/server-lore.md`), how to resume each block, and
-   the order to start the next block the moment one ends. No approval
-   gates. The last block of every runbook is the retry sweep: the
+   the rule that the next block on the list starts the moment one
+   ends. No approval
+   gates. The last line of every runbook's list is the retry sweep: the
    run's killed or interrupted rows, oldest first, in fresh
    worktrees, while the owner is away. Nothing of an interrupted run
    is cleaned up mid-run (`docs/methodology/mendel.md`).
@@ -206,8 +228,9 @@ committed measurement, the block that measures it comes first.
    run's findings to `hardware/<hardware-id>/benchmarks/INDEX.md`,
    and writes the run's final derived values into the owner's harness
    file and the site in the same pass.
-11. Read the finished runbook once more as the runner would, block by
-   block, and ask of every number: is this identity, or a measurement
+11. Read the finished runbook once more as the runner would, in the
+   order the list at the top gives,
+   and ask of every number: is this identity, or a measurement
    that this run can outdate? Every measurement gets a source and a
    "newest wins" path, or the block that measures it moves earlier.
 
