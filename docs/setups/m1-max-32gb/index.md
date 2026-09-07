@@ -162,8 +162,13 @@ closes and the limit decision is made
   run paused until the owner stopped that process.
 - Qwen3.6 MLX blind and guided were skipped: no pi entry exists for
   that model, and the runbook makes a missing entry a stop.
-- Running now: the Bonsai fork guided at thinking high. Then the
-  Qwen3.6 retry, then Qwen3.6 blind.
+- The Bonsai fork guided at thinking high ran past the 300-minute cap
+  because the runner's abort never settled the turn; stopped by hand
+  at 469 minutes and scored on the first 300: 3/8 at 31.5, a
+  wall-clock partial. The runner now kills pi five minutes after an
+  ignored abort.
+- Running now: the Qwen3.6 GGUF guided retry on the 81920 window,
+  then Qwen3.6 blind.
 
 ## Open work
 
