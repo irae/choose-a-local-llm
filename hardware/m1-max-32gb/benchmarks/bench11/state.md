@@ -274,3 +274,12 @@ handing-over section at the end.
   hand-capped `wall_clock`-equivalent partial, not an invalid/
   interrupted row — no penalty, this is what the harness should have
   done itself at 300 min.
+- Owner correction: the wall_min finding is a run note, not a
+  backlog item — backlog is reserved for when the owner asks. Reverted
+  the unrequested `mendel-wall-min-not-enforced.md` backlog addition
+  on `master`.
+- Block 8 scored: score_raw 31.5 = score_total, 3/8 libraries.
+  Committed and pushed to `benchmark` (`c403b07`). Session log
+  redacted and pushed, run branch pushed, worktree removed.
+- Block 8 was the last regular block. Moving to block 9's retry at
+  window 81920 now.

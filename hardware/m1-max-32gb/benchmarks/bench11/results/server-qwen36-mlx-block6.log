@@ -1,0 +1,6 @@
+/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/server.py:1723: UserWarning: mlx_lm.server is not recommended for production as it only implements basic security checks.
+  warnings.warn(
+2026-09-06 23:30:24,083 - INFO - Starting httpd at 127.0.0.1 on port 8081...
+2026-09-06 23:30:24,260 - INFO - HTTP Request: GET https://huggingface.co/api/models/mlx-community/Qwen3.6-35B-A3B-4bit/revision/main "HTTP/1.1 200 OK"
+Fetching 15 files:   0%|          | 0/15 [00:00<?, ?it/s]Fetching 15 files: 100%|██████████| 15/15 [00:00<00:00, 136474.10it/s]
+127.0.0.1 - - [06/Sep/2026 23:30:29] "GET /v1/models HTTP/1.1" 200 -

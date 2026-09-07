@@ -1,0 +1,7 @@
+mendel-smoke: model bonsai-prism, thinking high, task xtend, cap 1500s
+mendel-smoke: everything lands in /tmp/mendel-smoke.yLYkjo
+mendel-smoke: fixture ready (xtend, 2 files, 310 bytes under lib), one commit, clean tree
+mendel-smoke: compaction settings {"enabled": true, "reserveTokens": 8192}
+mendel-smoke: pi config pinned at /tmp/mendel-smoke.yLYkjo/pi-agent
+mendel-smoke: pi exited 0 after 136s, session /tmp/mendel-smoke.yLYkjo/session/2026-09-07T02-33-26-782Z_01a079b6-9ffe-718f-8b60-5ae10bed1f3e.jsonl
+SMOKE-MENDEL model=bonsai-prism level=high task=xtend window=default calls=15 distinct=11 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=4735 commits=1 clean=yes end=stop wall_s=136 verdict=pass
