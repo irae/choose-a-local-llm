@@ -19,23 +19,22 @@ two questions are one: at limit 24000 the machine already held 25.0 to
 the sysctl was not the binding constraint in either regime. What
 changed the result was the machine's state at the start.
 
-- [ ] **Control: is the gain the limit or a clean machine?** One
-  Qwen3.6-35B-A3B GGUF q8_0 creep at `-c 98304`, wired limit 24000, on
-  a machine preflight calls clean, no other model loaded. Run 11 got
-  81958 tokens at 9.24 tok/s from the same config at 25000, and 8222
-  from the 2026-09-04 measurement at 24000 on a machine whose state is
-  not recorded. About ninety minutes, unattended, no sudo.
-  - Reaches about 82K: the clean start was the cause. Keep 24000, no
-    re-sweeps, and run 11's numbers publish as 24000 numbers.
-  - Caps near 33K or fails to load `-c 98304`: the 1000 MB is real.
-    Adopt 25000, and every published sweep needs a re-run to stay
-    comparable (ten creeps, twelve to fifteen hours).
+- [x] **Control: is the gain the limit or a clean machine?** Answered
+  2026-09-07 by run 12's pre-block prep
+  (`../../benchmarks/bench12/results.md`): at wired 24000 the same
+  model serves `-c 40960` at q8_0 and `-c 33792` at f16, against
+  `-c 98304` and `-c 40960` at 25000. The gain was the limit, not the
+  machine state. 24000 stands, because six creeps there showed zero
+  swap growth while 25000 swapped under back-to-back sweeps. Only
+  Qwen3.6 changed rows; no other model needs a re-sweep.
 - [ ] **Wired limit ladder** (../wired-limit-retest.md; the procedure is
   `docs/methodology/wired-limit.md`). Needs the owner for sudo and a
-  reboot. Rungs 24000, 25000, 26000, 27000, 28000, two clean passes
-  each, stop at the first panic or lockup. The owner suspects 26000
-  buys context; the control above says whether any rung buys anything
-  the sysctl can claim.
+  reboot. Rungs 26000, 27000, 28000, two clean passes each, stop at the
+  first panic or lockup. 24000 and 25000 are measured. The question is
+  no longer whether a rung buys context, it does, but whether the swap
+  it brings is worth the window: every rung now needs a swap-growth
+  reading with a recovery gap between sweeps, because 25000's swap was
+  seen only under back-to-back runs.
 - [ ] **A config that reaches Mendel never runs out of memory**: the
   in-turn margin, the mlx and llama findings, four tests in order
   (../no-oom-at-mendel.md; attachments in ../no-oom-at-mendel/). It
