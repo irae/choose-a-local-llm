@@ -92,3 +92,42 @@ swaps" is not established, only "25000 swapped under the stacking
 pattern tested so far." The coordinator should read the linked
 branches in full before setting `AGENT.md`'s wired-limit line for this
 run.
+
+## Follow-up — wired 25000 looks clean after all, single sweeps (2026-09-07, later)
+
+New evidence changes the working conclusion above. Two single-sweep
+creeps at wired 25000, each on a freshly restarted server, both fully
+clean:
+
+- q8_0, `-c 98304`: full ladder to depth 98338, stop on the speed
+  floor (`< 8 tok/s`), not a memory verdict.
+  `results/creep-qwen36-gguf-q8-w25000-c98304-clean.tsv`. Zero swap
+  growth on every row.
+- f16, `-c 40960`: `no ceiling found up to 40960`.
+  `results/creep-qwen36-gguf-f16-w25000-c40960-clean.tsv`. Zero swap
+  growth on every row.
+
+Both numbers match run11's original wired-25000 results closely
+(q8_0: 36.5→7.86 tok/s here vs. run11's 36.5→7.87; f16: 69.1→52.6 here
+vs. run11's 67.9→53.0).
+
+**The swap growth seen earlier only ever showed up under one specific
+condition: several sweeps run back to back, on the same server
+process, with no recovery gap between them.** Every single-sweep test
+at wired 25000, on a freshly started server — today's two, plus
+run11's own historical runs — came back clean. This suggests wired
+25000 itself is not the cause; something that accumulates across
+unbroken sweep sequences on one long-lived server is. A background
+process independent of the sweep (`mediaanalysisd` drained free RAM
+during run11 unrelated to any block, per that run's own history) is a
+plausible cause, but this was not directly confirmed today — nobody
+checked the process list at the time the swap growth happened, so
+this is a lead, not a finding.
+
+**Revised working picture:** `-c 98304` (q8_0) and `-c 40960` (f16)
+both look stable at wired 25000 for a normal single-sweep or
+single-session workload. The failure mode we chased all day needs
+several unbroken sweeps stacked with no gap to reproduce, which is not
+how a normal scoring block runs. Recommend the coordinator re-reads
+this section before finalizing the wired-limit line; the case for
+24000 over 25000 is weaker than the earlier section suggested.

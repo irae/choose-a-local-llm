@@ -10,6 +10,15 @@ between sweeps), and links to the full tool-side evidence on
 `local-llm-eval-tools`'s `creep-ab-verdict` and
 `creep-configurable-thresholds` branches.
 
+Follow-up landed same day: two clean single-sweep creeps at wired
+25000, fresh server each time (`-c 98304` q8_0, `-c 40960` f16), both
+zero swap growth and matching run11's original numbers. The swap
+growth from the pre-block prep section only ever showed up under
+several sweeps stacked back to back with no recovery gap — a pattern
+a normal scoring block does not hit. See `results.md`, "Follow-up",
+before reading the earlier section's working conclusion; that section
+leaned toward 24000, this one weakens that case.
+
 Handing over: the coordinator sets `AGENT.md`'s wired-limit line
-(24000 or 25000) after reading the linked evidence, then the run
-proper starts.
+(24000 or 25000) after reading both `results.md` sections in full,
+then the run proper starts.
