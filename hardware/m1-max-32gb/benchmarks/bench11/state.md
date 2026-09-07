@@ -233,3 +233,13 @@ handing-over section at the end.
 - RUN RESUMED. Moving to block 6 (Qwen3.6 MLX, thinking on, blind),
   window 40982 (block 1's MLX gate, a separate pi entry from the
   GGUF one raised to 81920 for blocks 9/10).
+- BLOCKS 6 AND 7 SKIPPED: no pi entry exists at all for
+  `mlx-community/Qwen3.6-35B-A3B-4bit` in `~/.pi/agent/models.json`
+  (checked the `mlx` provider block directly: only Qwen3.8-27B-4bit
+  and the Bonsai entries exist). AGENT.md's own text for this block
+  says "No entry is stop and ask." Not creating the entry myself —
+  that would go past the one owner-authorized `models.json` edit
+  (the qwen3.6-35b-a3b GGUF window). Per the checklist's rule 1 (a
+  blocked block is skipped, logged, the next one starts, the GPU
+  never sits idle for an ambiguous case), skipping both 6 and 7 and
+  moving to block 8. Stopped the MLX server.
