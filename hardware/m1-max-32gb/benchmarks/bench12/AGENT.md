@@ -133,7 +133,9 @@ owner asked for (two agents in parallel on one server). Block 3 asks
 what the Bonsai fork does with f16 KV, the one cache type it never
 served, and then runs the agent task there. Blocks 4 to 6 re-run the
 three valid rows that compacted under pi's old 16384 reserve, at the
-8192 reserve every row uses since 2026-09-06. Block 7 is the retry
+8192 reserve every row uses since 2026-09-06. Gemma-26B goes last of
+the three (owner, 2026-09-07): it scores worst of them on the agent
+task, so it is the one to drop if the run runs short. Block 7 is the retry
 sweep. Every block starts the moment the previous one ends.
 
 Every MLX item moved to `../unscheduled/`: those rows wait on the
@@ -288,21 +290,7 @@ Serve with the site row's command at the derived `-c`, then:
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 4 window> ./run-worker.sh qwen3.8-27b pi blind medium
 ```
 
-### Block 5/7 — Gemma-26B GGUF, blind, thinking high
-
-| parameter | kind | value | source |
-| --- | --- | --- | --- |
-| files | fixed | `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, `--no-mmproj` | published command |
-| KV type, drafter | fixed | f16, MTP n-max 2 | site row |
-| thinking | fixed | pi level for `high` | the first row |
-| `-c` | derived | `<planning>` 212992 (run 9 ceiling; run 11 served it at 25000) | ladder at this run's limit |
-| window | derived | `<planning>` 212992 | clean depth at the ladder's `-c` |
-
-```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> ./run-worker.sh gemma-4-26b-a4b pi blind high
-```
-
-### Block 6/7 — Qwen3.6 GGUF, guided, thinking high
+### Block 5/7 — Qwen3.6 GGUF, guided, thinking high
 
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
@@ -314,6 +302,20 @@ cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> .
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 6 window> ./run-worker.sh qwen3.6-35b-a3b pi guided high
+```
+
+### Block 6/7 — Gemma-26B GGUF, blind, thinking high
+
+| parameter | kind | value | source |
+| --- | --- | --- | --- |
+| files | fixed | `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, `--no-mmproj` | published command |
+| KV type, drafter | fixed | f16, MTP n-max 2 | site row |
+| thinking | fixed | pi level for `high` | the first row |
+| `-c` | derived | `<planning>` 212992 (run 9 ceiling; run 11 served it at 25000) | ladder at this run's limit |
+| window | derived | `<planning>` 212992 | clean depth at the ladder's `-c` |
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> ./run-worker.sh gemma-4-26b-a4b pi blind high
 ```
 
 ## Order
