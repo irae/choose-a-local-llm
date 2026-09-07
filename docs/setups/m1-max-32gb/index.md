@@ -2,12 +2,11 @@
 
 ## Highlights
 
-- **Wired limit: 24000 MB.** It resets on reboot. Re-run the sysctl
-  before any model work.
-- **This machine is a model server, not a workstation, while it serves
-  the models under test.** At the sizes we evaluate, a run drives free
-  memory to near zero and the desktop stops responding. We do not
-  consider a shared-use setting. Drive the models from another machine.
+- **Wired limit: 24000 MB, resets on reboot.** Re-run the sysctl before
+  any model work. This machine is a model server, not a workstation,
+  while it serves the models under test: a run drives free memory to
+  near zero and the desktop stops responding. We do not consider a
+  shared-use setting; drive the models from another machine.
 - **Every model has a depth curve, a KV pick and an EvalPlus score.**
   The decode-vs-used-context table on the
   [comparison page](./comparison.md) is this project's main artifact.

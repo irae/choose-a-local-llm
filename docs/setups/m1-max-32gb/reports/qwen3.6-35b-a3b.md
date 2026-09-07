@@ -25,15 +25,15 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
   with wired memory near 25 GB. Re-measured 2026-09-07 at wired limit
   24000: the GGUF serves `-c 40960` at q8_0 KV and `-c 33792` at f16 KV,
   and the older published `-c 49152` is not safe. The old 90K figure
-  came from the fast sweep and is on the historical page.
+  came from the fast sweep and is on the historical page. On the agent
+  task it scores 63 blind and 83 guided at thinking high, with one
+  critical trap hit blind; its two thinking-off agent rows ran on
+  windows that need the retired 25000 limit.
 - **f16 KV is 2.8x faster at depth than q8_0 on this model**, 56.0
   against 19.7 tok/s at 32818 used tokens, for a window 7K smaller.
   Four creeps across two tools found no ceiling for the f16 arm and
   zero swap growth. The earlier reading that f16 does not load was
   taken at a larger `-c`.
-- Weak point: on the agent task it scores 63 blind and 83 guided at
-  thinking high, with one critical trap hit blind. Its two thinking-off
-  agent rows ran on windows that need the retired 25000 limit.
 
 ## All configs — this model
 

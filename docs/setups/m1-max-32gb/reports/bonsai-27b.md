@@ -23,13 +23,13 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 - **The only multi-agent setup that leaves the machine free**: 2×48K
   fork slots, 10.0 GB shallow and 10.9 GB at the floor — but window is
   not usable depth: the fork's speed floor is ~30K used tokens.
-- The scored fork config's speed floor is 33K used tokens, 9.6 GB flat —
-  the calibration bias and rotation flag do not move it versus the plain
-  q4 proxy.
 - **The fork was never served with f16 KV, and that is where its floor
-  comes from.** Quantized KV costs this machine 2 to 4 microseconds per
-  cached token against 0.2 to 0.3 for f16, so the floor near 30K is the
-  cache type, not the weights. A creep at f16 is queued
+  comes from.** The scored config's speed floor is 33K used tokens, 9.6
+  GB flat — the calibration bias and rotation flag do not move it
+  versus the plain q4 proxy. Quantized KV costs this machine 2 to 4
+  microseconds per cached token against 0.2 to 0.3 for f16, so the
+  floor near 30K is the cache type, not the weights. A creep at f16 is
+  queued
   ([the arithmetic](../benchmarks/bonsai-27b.md#fork-with-f16-kv-never-measured-and-the-first-thing-to-measure)).
 
 ## All configs — this model
