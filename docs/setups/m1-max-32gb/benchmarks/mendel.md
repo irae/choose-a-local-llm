@@ -31,6 +31,11 @@ scoreboard per version.
 Each row names the serving path and the harness window. The KV cache type
 of a run is in its config note in the Mendel report.
 
+Every Qwen3.6-35B-A3B score below is pending a re-run, at low priority:
+those runs used harness windows of 48K to 120K, and at wired limit
+24000 the model serves `-c 40960`. The scores stay as records of what
+the model did; they are not reproducible on this machine today.
+
 ## Local models — blind test
 
 <!-- gen:mendel-local:start -->

@@ -148,7 +148,7 @@ re-testing on future llama.cpp releases.
 
 The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 
-† a 26624-token window with a 16384-token output budget, our config arithmetic, not the model.
+† a 26624-token window with a 16384-token output budget, our config arithmetic, not the model
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).

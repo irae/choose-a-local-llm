@@ -178,14 +178,21 @@ included. "Max ctx" is the context window the harness had for the run.
 | model | test | runtime | thinking | max ctx | score | status |
 |---|---|---|---|--:|--:|---|
 | Qwen3.8-27B | blind | GGUF, f16 KV | effort medium | 49k | **87/100**‡ | complete, all 8 libraries; no bug defect |
-| Qwen3.6-35B-A3B | guided | GGUF | high | 120k | **83/100**‡ | complete, all 8 libraries |
-| Qwen3.6-35B-A3B | blind | GGUF | high | 98k | **63/100** | complete, all 8 libraries; one critical runtime defect (trap A) |
+| Qwen3.6-35B-A3B | guided | GGUF, q8_0 KV | high | 120k | **83/100**‡⏳ | complete, all 8 libraries |
+| Qwen3.6-35B-A3B | blind | GGUF, q8_0 KV | high | 98k | **63/100**⏳ | complete, all 8 libraries; one critical runtime defect (trap A) |
 | Gemma-4-26B-A4B | blind | GGUF, f16 KV | high | 213k | **47.5/100**‡ | complete, all 8 libraries; one critical runtime defect (trap A) |
 | Gemma-4-12B | guided | GGUF, f16 KV, no drafter | off | 262k | **37.5/100** | partial, 3/8 libraries; model budget exhausted after three nudges |
 | Ternary Bonsai-27B | blind | MLX 2-bit | high | 58k | **37.5/100** (raw 55) | partial, 300-min wall clock at 3/8 libraries |
 | Qwen3.8-27B | blind | MLX 4-bit | effort low | 26k | **12.5/100** (raw 67.5) | partial, 1/8; the 26624-token window plus a 16384-token output budget forced premature stops (our config arithmetic, not the model) |
 | Ternary Bonsai-27B | guided | MLX 2-bit | high | 58k | **12.5/100** (raw 59) | partial, 300-min wall clock at 1/8 libraries |
 | Ternary Bonsai-27B | blind | GGUF⁴, q4 KV | high | 64k | **12.5/100** (raw 60.5) | 1/8 libraries; typoed the repo path, self-scoped to chalk; a penalized retry is pending |
+
+⏳ Pending a re-run, low priority. Every Qwen3.6 agent score ran on a
+harness window this machine no longer serves: at wired 24000 the model
+tops out at `-c 40960`, and these runs had 98K and 120K. The depth and
+speed measurements from those sessions stand; the scores wait for a
+run at the window the machine serves. See
+[the wired limit](./index.md#the-wired-limit-24000).
 
 ‡ Scheduled for a re-run. These rows compacted under the harness's
 old reserve of 16384 tokens, twice the answer budget; since 2026-09-06

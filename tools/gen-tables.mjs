@@ -183,7 +183,7 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
     ? [
         '',
         ...used.map((u) =>
-          `${u.marker || '†'} ${u.reason}${u.page ? ` [Why this runtime is not a candidate](${u.page}).` : '.'}`,
+          `${u.marker || '†'} ${u.reason}${u.page ? ` [${u.linkText || 'Why this runtime is not a candidate'}](${u.page}).` : ''}`,
         ),
       ]
     : []

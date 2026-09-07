@@ -480,7 +480,16 @@
           "value": "33K",
           "label": "GGUF q8_0 KV depth, 19.7 tok/s, stop under review"
         }
-      }
+      },
+      "mendelUntrusted": [
+        {
+          "serving": "llama-server",
+          "marker": "\u23f3",
+          "page": "../index.md#the-wired-limit-24000",
+          "reason": "every Qwen3.6 agent score ran on a harness window this machine cannot serve at wired 24000, which now tops out at `-c 40960`; the scores stand as records and a re-run at the serving window is pending, at low priority.",
+          "linkText": "What the machine serves at wired 24000"
+        }
+      ]
     },
     "qwen3.8-27b": {
       "rowMatch": "Qwen3.8-27B",
