@@ -243,3 +243,34 @@ handing-over section at the end.
   blocked block is skipped, logged, the next one starts, the GPU
   never sits idle for an ambiguous case), skipping both 6 and 7 and
   moving to block 8. Stopped the MLX server.
+- Block 8: KV bias file did not exist at either
+  `~/.local/share/choose-a-local-llm/` or `/tmp` (known issue,
+  `hardware/m1-max-32gb/research/run2/results/bonsai-kv-bias-missing.md`
+  — `/tmp` was cleared on an earlier reboot). Regenerated with
+  `~/prism-llama/Bonsai-demo/scripts/make_kv_bias.sh`, built-in
+  synthetic corpus (no owner-recorded corpus exists for the original
+  scored file, per the open backlog question). Copied the output to
+  `~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf`
+  (65 KB, 2026-09-06 23:32) — the persistent location per the repo's
+  own machine-state rule, not `/tmp`. This row runs on a regenerated
+  file, not the original scored calibration; the backlog question on
+  the corpus (`backlog/bonsai-kv-bias-corpus.md`) stays open.
+- Block 8 ran well past the runbook's expected "up to 5 hours" (469
+  min elapsed) with no natural end. Checked Mendel's own policy: every
+  run's `meta.json` carries `wall_min: 300`, but that value is never
+  read back or enforced anywhere in `run-pi-rpc.mjs` or any other
+  Mendel script — confirmed by grep across the whole `benchmark/`
+  directory. Filed as a Mendel bug on `master`
+  (`backlog/mendel-wall-min-not-enforced.md`).
+- Stopped the run by hand at 469 min (owner's instruction: cap the
+  data at 300 min, discard anything past it, can't score past that).
+  Cutoff: 2026-09-07T07:35:58Z (start + 300 min). All 3 commits landed
+  well before the cutoff, so none were dropped. Truncated the raw pi
+  session log to the first 300 minutes (706 of 1419 lines), reset the
+  worktree to its last pre-cutoff commit (discarding uncommitted
+  post-cutoff `glob` work and some stray scratch files), and
+  recomputed `peak_context`/`tool_calls` from the truncated session
+  only (343 tool calls, peak 63100 of the 65536 window). Scored as a
+  hand-capped `wall_clock`-equivalent partial, not an invalid/
+  interrupted row — no penalty, this is what the harness should have
+  done itself at 300 min.
