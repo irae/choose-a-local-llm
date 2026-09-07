@@ -145,7 +145,8 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
     const est = peak > 0 && pct > 0 ? (peak / pct) * 100 : 0
     const snapped = est ? ladder.reduce((a, b) => (Math.abs(b - est) < Math.abs(a - est) ? b : a)) : 0
     const window = snapped ? `${Math.round(snapped / 1024)}k` : '?k'
-    return `${SERVING_SHORT[r.serving] || esc(r.serving)}-${thinkingLevel(r.branch)}-ctx.${window}`
+    const kv = r.kv_type ? `-${r.kv_type}` : ''
+    return `${SERVING_SHORT[r.serving] || esc(r.serving)}${kv}-${thinkingLevel(r.branch)}-ctx.${window}`
   }
   const header = [
     '| test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |',
@@ -176,7 +177,7 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
   const used = untrusted.filter((u) => tagged.some(({ r }) => distrust(r) === u))
   const kvNote = [
     '',
-    'The config cell names the server, the thinking level and the harness window. The KV cache type of each run is in the Mendel report\'s config note.',
+    'The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.',
   ]
   const legend = used.length
     ? [

@@ -140,13 +140,13 @@ re-testing on future llama.cpp releases.
 <!-- gen:model-mendel:start -->
 | test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
-| blind-v1.1 | llama-medium-ctx.48k | **87** | 8/8/done | 129.3 | 5,947k | 46k | 4 | 210 | 10 |  |
-| guided-v2.1 | mlx-low-ctx.26k † | **75** (raw 84) | 6/8/partial | 153.8 | 1,123k | 23k | 0 | 95 | 6 |  |
-| blind-v1.0 | mlx-default-ctx.26k † | **37.5** (raw 80) | 3/8/partial | 253.5 | 1,777k | 24k | 0 | 135 | 6 |  |
-| blind-v1.1 | mlx-low-ctx.26k † | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
-| guided-v3.0 | mlx-low-ctx.?k † | **0** (raw 34) | 0/8/invalid | 261.3 | 1,254k | 30k | 0 | 48 | 0 |  |
+| blind-v1.1 | llama-f16-medium-ctx.48k | **87** | 8/8/done | 129.3 | 5,947k | 46k | 4 | 210 | 10 |  |
+| guided-v2.1 | mlx-f16-low-ctx.26k † | **75** (raw 84) | 6/8/partial | 153.8 | 1,123k | 23k | 0 | 95 | 6 |  |
+| blind-v1.0 | mlx-f16-default-ctx.26k † | **37.5** (raw 80) | 3/8/partial | 253.5 | 1,777k | 24k | 0 | 135 | 6 |  |
+| blind-v1.1 | mlx-f16-low-ctx.26k † | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
+| guided-v3.0 | mlx-f16-low-ctx.?k † | **0** (raw 34) | 0/8/invalid | 261.3 | 1,254k | 30k | 0 | 48 | 0 |  |
 
-The config cell names the server, the thinking level and the harness window. The KV cache type of each run is in the Mendel report's config note.
+The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 
 † a 26624-token window with a 16384-token output budget, our config arithmetic, not the model.
 <!-- gen:model-mendel:end -->
