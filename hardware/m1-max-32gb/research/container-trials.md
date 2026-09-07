@@ -29,7 +29,7 @@ Research runs no full EvalPlus and no scored Mendel. Those are bench
 runs, and this project scores its own quantized files there. Research
 tries candidates and reports whether they look better; the evidence it
 uses is what the community already has (user impressions, "this is my
-daily driver on a 32 GB machine" reports, a quant publisher's own proof
+candidate for real coding use on a 32 GB machine" reports, a quant publisher's own proof
 that their build of the same model at the same size is done better)
 plus the three quick checks below.
 

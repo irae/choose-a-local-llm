@@ -97,7 +97,7 @@ sweep reports, so the published raw figures transfer to real use.
 
 So LM Studio is faster at every depth it survives — 1.4x at 4K widening
 to 1.8x at 131K — and llama-server is the one that reaches the model's
-own limit. For a long-context daily driver the trade is speed against
+own limit. For a long-context candidate for real coding use the trade is speed against
 finishing.
 
 **And the agent probe breaks the tie.** With thinking off on the same

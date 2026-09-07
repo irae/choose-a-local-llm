@@ -10,8 +10,7 @@ against OpenAI-compatible servers that a coding harness can actually use.
   falls as the context fills. A model that benchmarks at 60 tok/s can crawl
   at 2 tok/s mid-session.
 - **Context that fits the machine while it stays a desktop.** Memory
-  footprints are measured so the Mac remains usable during all-day agent
-  work.
+  footprints are measured so the Mac remains usable while a model serves.
 - **Quality per quantization.** Published scores cover full-precision
   models. What you run is a quant. One score per model and thinking
   mode; runtimes at standard quants share it.

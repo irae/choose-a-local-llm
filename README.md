@@ -58,8 +58,8 @@ machine. Other projects answer them.
   publish them.
 - **A large model catalogue.** We do not add a model to grow the table,
   and we do not test an old model that already scores below the models
-  here. The answer is one daily driver and a few work seats, not a
-  leaderboard.
+  here. The answer is a candidate for real coding use and a few
+  configurations worth keeping, not a leaderboard.
 
 ## Read/develop docs website locally
 

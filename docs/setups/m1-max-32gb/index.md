@@ -115,12 +115,14 @@ scope.
 
 As of 2026-09-07.
 
-- Seats: hard problems and agent work go to Qwen3.8 on llama-server at
-  f16 KV (`-c 49152`); the secondary and deep seat is Gemma-26B on
-  llama-server at f16 KV (`-c 212992`, thinking off for single-turn
-  work); all-day and swarm go to Bonsai; Gemma-12B holds the deepest
-  window on llama-server, and its LM Studio configuration is single-turn
-  work only. Qwen3.6 is the fastest shallow decoder; its 8K clean depth
+- Candidates for real coding use, by what the measurements support:
+  Qwen3.8 on llama-server at f16 KV (`-c 49152`) is the only local model
+  that finished the agent task; Gemma-26B on llama-server at f16 KV
+  (`-c 212992`) is the deep-context candidate and the fastest of the
+  large models; Bonsai is the cheapest in memory and the only one that
+  serves two slots under 11 GB; Gemma-12B holds the deepest window on
+  llama-server. Nothing here is a decision; none of these has been used
+  for real work yet. Qwen3.6 is the fastest shallow decoder; its 8K clean depth
   is a 24000 number, and at the trial limit of run 11 the same build
   served `-c 98304` and creeped to 82K (below).
 - Every GGUF row carries the largest `-c` that loads under the 24000

@@ -21,9 +21,10 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
   / 74 js tok/s and 0.951 / 0.915 / 100% with thinking off, but the slow
   creep shows memory compaction from 16K at the only `-c` that loads;
   the clean depth is 8K.
-- **Best all-day agent:** Ternary Bonsai-27B. 27B-class quality from 8
-  GB of weights, and the flattest curve of any model.
-- **Best multi-agent:** Bonsai on the prism fork. 2×48K slots at 9.8
+- **Cheapest in memory:** Ternary Bonsai-27B. 27B-class quality from 8
+  GB of weights, and the flattest curve of any model. It has never
+  finished the agent task.
+- **Most parallel:** Bonsai on the prism fork. 2×48K slots at 9.8
   tok/s each, in 10.0 GB. The only setup that leaves the machine free.
 - **The rule that decides everything:** MLX runtimes barely slow down but
   hit hard memory ceilings. llama runtimes hold their speed deeper at f16

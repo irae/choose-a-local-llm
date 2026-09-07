@@ -59,8 +59,9 @@ it 0.640/0.634/70% — the biggest correction of any model (superseded, see
 [the historical page](../historical.md)). 5/164 completions stay empty even
 at the full budget: a real model ceiling, not a harness artifact. The
 ternary 95% claim holds up in practice. Bonsai is also the least disruptive
-model to run while working (moderate fan noise, ~8 GB weights) — a
-practical all-day background-agent candidate.
+model to run while working (moderate fan noise, ~8 GB weights), so it is
+a candidate for real coding use in the background. It has not finished
+the agent task in any attempt.
 
 ## Corrected serving command + depth sweep (shallow: limit 25000, 2026-08-28; deep re-test: limit 24000, slow creep, 2026-08-29)
 
@@ -195,7 +196,7 @@ settles it.
 concurrently at **9.8 / 9.9 tok/s** (aggregate 19.7, +35% from batching),
 RSS **10.0 GB**. Two agents above the 8 tok/s floor with ~20 GB left for the
 system — the only multi-agent config measured that keeps the machine free.
-3×32K is the projected next probe for grunt-agent swarms.
+3×32K is the projected next probe for parallel work.
 
 ## Fork multi-slot, single-slot depth sweep (2026-08-30, with bias flags)
 
