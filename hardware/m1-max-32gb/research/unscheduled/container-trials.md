@@ -43,7 +43,7 @@ A candidate container enters a trial only if ALL hold:
   wired limit of the machine file at the model's KV cost (run 9 for
   llama-server; the measured ceiling for MLX).
 - The HF revision is pinned at download time and added to
-  `run2/results/model-pins.md`.
+  `../run2/results/model-pins.md`.
 - K-quants only on llama-server; IQ quants are reported 3.5x slower on
   Apple GPUs, so a decode check comes before any IQ trial.
 
@@ -69,7 +69,7 @@ the three shapes for Qwen3.6-35B-A3B, Qwen3.8-27B and Gemma-26B-A4B,
 with size, revision, the claim and its proof; compute the context each
 buys from run 9's KV cost per token; shortlist at most three. Run 2's
 survey covered OptiQ only and found it bigger than our 4-bit builds
-(`run2/results/quant-survey.md`).
+(`../run2/results/quant-survey.md`).
 
 The run then executes the approved trials: download at a pinned
 revision (a planning decision written into the runbook), the three
@@ -89,9 +89,9 @@ until the trial runs.
 
 | Model | Publisher / repository | Claim | File size | Revision to pin | Proof offered |
 | --- | --- | --- | --- | --- | --- |
-| Qwen3.6-35B-A3B | `mlx-community/Qwen3.6-35B-A3B-OptiQ-4bit` | OptiQ mixed-precision 4-bit, sensitive layers at 8-bit | 22.14 GB | `70a3aa32c7feef511182bf16aa332f37e8d82014` | None published for this model specifically; the OptiQ card family reports a capability score against its own sensitivity reference, not against uniform 4-bit (`run2/results/quant-survey.md`) |
+| Qwen3.6-35B-A3B | `mlx-community/Qwen3.6-35B-A3B-OptiQ-4bit` | OptiQ mixed-precision 4-bit, sensitive layers at 8-bit | 22.14 GB | `70a3aa32c7feef511182bf16aa332f37e8d82014` | None published for this model specifically; the OptiQ card family reports a capability score against its own sensitivity reference, not against uniform 4-bit (`../run2/results/quant-survey.md`) |
 | Qwen3.6-35B-A3B | GGUF: no QAT or OptiQ-style build found | — | — | — | None. The only GGUF for this model is unsloth's dynamic UD line, already our pinned baseline |
-| Qwen3.8-27B | `mlx-community/Qwen3.8-27B-OptiQ-4bit` | Same OptiQ method | 19.43 GB | (see `run2/results/quant-survey.md`, already surveyed) | Capability score 87.98%, no uniform-4-bit number beside it |
+| Qwen3.8-27B | `mlx-community/Qwen3.8-27B-OptiQ-4bit` | Same OptiQ method | 19.43 GB | (see `../run2/results/quant-survey.md`, already surveyed) | Capability score 87.98%, no uniform-4-bit number beside it |
 | Qwen3.8-27B | `unsloth/Qwen3.8-27B-GGUF:UD-Q4_K_XL` | Unsloth "Dynamic 2.0": selective higher precision on sensitive tensors, same nominal bit width as our current `Q4_K_M` pin | 17.56 GB | `4ca720788d1e01f1bff70c033e0d0028fd02e502` | Publisher blog claims across the UD line generally; no model-specific score card on this repo |
 | Qwen3.8-27B | `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` | GSQ-RCO quantization method | IQ2_S 9-10 GB class, IQ3_S 12-13 GB class (not measured, IQ only) | `d562806dbafae37109975e970aae91b43e73b440` | None on the card beyond the method name; also IQ-only, so it fails the K-quants-only rule before proof matters |
 | Gemma-4-26B-A4B | `google/gemma-4-26B-A4B-it-qat-q4_0-gguf` | Official Google QAT (quantization-aware trained) int4, from the model's own publisher | 14.44 GB | `d1c082be9cf3c8a514acf63b8761f4b41935842e` | Google's QAT method write-ups for the Gemma family report smaller quality loss than post-training quant at the same width; no HumanEval+/EvalPlus number on this card itself |
@@ -143,8 +143,8 @@ context, and wired all known, overhead is the remainder) — it is a
 calibration, not a second measurement, and it can be wrong for a
 candidate whose compute-buffer needs differ from the row it was solved
 from. Weights are the file size above, taken as listed (GB treated as
-1000 MB, the convention already used in `run3/unscheduled/`
-small-agent-models.md`). All numbers below are computed, unverified
+1000 MB, the convention already used in `small-agent-models.md`).
+All numbers below are computed, unverified
 against hardware.
 
 **KV cost per token, f16**, verified from each model's `config.json`
@@ -152,12 +152,12 @@ against hardware.
 [Hub](https://huggingface.co/Qwen/Qwen3.6-35B-A3B/raw/main/config.json),
 Gemma-26B:
 [Hub](https://huggingface.co/google/gemma-4-26B-A4B-it/raw/main/config.json)),
-same method as `kv-quant-on-m1.md`'s Qwen3.8 section:
+same method as `../kv-quant-on-m1.md`'s Qwen3.8 section:
 
 | Model | Layers that own a cache | KV heads × head_dim | KV per token, f16 |
 | --- | --- | --- | --- |
 | Qwen3.6-35B-A3B | 10 of 40 (`full_attention`, one in every four) | 2 × 256 | 10 × 2 × 2 × 256 × 2 bytes = 20 KiB |
-| Qwen3.8-27B | 16 of 64 (`full_attention`) | 4 × 256 | 64 KiB (from `kv-quant-on-m1.md`) |
+| Qwen3.8-27B | 16 of 64 (`full_attention`) | 4 × 256 | 64 KiB (from `../kv-quant-on-m1.md`) |
 | Gemma-4-26B-A4B | 5 of 30 (`full_attention`, the global layers; `num_global_key_value_heads`/`global_head_dim`) | 2 × 512 | 5 × 2 × 2 × 512 × 2 bytes = 20 KiB, past the 1024-token sliding window that the other 25 layers cap at |
 
 **Overhead calibration**, from the real f16 rows in
@@ -184,7 +184,7 @@ context prediction below inherits without explaining it further.
 | --- | --- | --- |
 | Qwen3.6-35B-A3B, MLX | OptiQ-4bit, 22.14 GB | 95,232 tokens (overhead clamped to 0, see caveat above) |
 | Qwen3.8-27B, GGUF | unsloth UD-Q4_K_XL, 17.56 GB | 75,392 tokens, against the current pin's real measured 49,152 |
-| Qwen3.8-27B, MLX | OptiQ-4bit, 19.43 GB | 6,720 tokens — the OptiQ tax is severe here, confirms `run2/results/quant-survey.md`'s qualitative warning with a number |
+| Qwen3.8-27B, MLX | OptiQ-4bit, 19.43 GB | 6,720 tokens — the OptiQ tax is severe here, confirms `../run2/results/quant-survey.md`'s qualitative warning with a number |
 | Gemma-4-26B-A4B, GGUF | Google QAT `q4_0`, 14.44 GB | 262,144 (trained-window capped), room to spare |
 | Gemma-4-26B-A4B, GGUF | unsloth QAT UD-Q4_K_XL, 14.25 GB | 262,144 (trained-window capped) |
 | Gemma-4-26B-A4B, MLX | OptiQ-4bit, 17.63 GB | 160,614 tokens |
@@ -250,7 +250,7 @@ context prediction below inherits without explaining it further.
 ### Ruled out
 
 - **Every OptiQ MLX build (all three models).** Carries forward
-  `run2/results/quant-survey.md`'s finding and extends it: OptiQ is
+  `../run2/results/quant-survey.md`'s finding and extends it: OptiQ is
   bigger than the current 4-bit MLX build on every model surveyed here
   too (Qwen3.6 +1.7 GB, Gemma-26B +2.2 GB, on top of the already-known
   Qwen3.8 +2.8 GB), and no repo publishes a same-size head-to-head
@@ -315,7 +315,7 @@ context prediction below inherits without explaining it further.
 - [crucible-labs/Gemma4-26B-A4B-REAP-25-GGUF](https://huggingface.co/crucible-labs/Gemma4-26B-A4B-REAP-25-GGUF)
 - [DJLougen/Qwen3.6-35B-A3B-REAP-90pct-GGUF](https://huggingface.co/DJLougen/Qwen3.6-35B-A3B-REAP-90pct-GGUF)
 - Hugging Face Hub search and tree APIs (`/api/models`, `/api/models/{id}/tree/main`), queried 2026-09-07, for file listings and sizes
-- [`run2/results/quant-survey.md`](run2/results/quant-survey.md), [`run2/results/model-pins.md`](run2/results/model-pins.md), [`kv-quant-on-m1.md`](kv-quant-on-m1.md), [`unscheduled/small-agent-models.md`](unscheduled/small-agent-models.md), [`docs/setups/m1-max-32gb/comparison.md`](../../../docs/setups/m1-max-32gb/comparison.md) — this project's own prior research and measurements
+- [`../run2/results/quant-survey.md`](../run2/results/quant-survey.md), [`../run2/results/model-pins.md`](../run2/results/model-pins.md), [`../kv-quant-on-m1.md`](../kv-quant-on-m1.md), [`small-agent-models.md`](small-agent-models.md), [`docs/setups/m1-max-32gb/comparison.md`](../../../../docs/setups/m1-max-32gb/comparison.md) — this project's own prior research and measurements
 
 ## Waits on
 
