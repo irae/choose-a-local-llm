@@ -210,3 +210,26 @@ handing-over section at the end.
   owner: quiet `mediaanalysisd` (outside what this runner can touch,
   no sudo, not a login item `mac-services.sh` covers), or say to
   proceed anyway and accept the risk.
+- Owner killed `mediaanalysisd`/`mediaanalysisd-access` with sudo
+  (their own command, not run by this session). Owner also asked for
+  a throwaway slow creep on the fastest model first (Qwen3.6 GGUF
+  q8_0, `STEP_PAUSE_S=10`, numbers not stored) purely to exercise and
+  free memory before resuming — that creep hit its own mem-stop early
+  (depth 32818, heavy compaction), confirming the machine was still
+  under real pressure right after the kill. Owner's instruction: try
+  one real task regardless, only stop for a reboot ask if that also
+  fails.
+- Attempt 3 of block 5 started with free RAM still low (~976 MB) but
+  `mediaanalysisd` idle. It survived the whole run this time despite
+  several low free-RAM readings along the way (as low as ~56 MB at
+  one point) — never killed. `end_reason: complete`, 7/8 libraries,
+  scored 57. First two attempts of this block produced no scoreable
+  data: attempt 1 had 8/8 commits but its branch was force-deleted
+  during cleanup before scoring (a mistake — that data is lost, not
+  recoverable); attempt 2 was stopped within minutes of starting, no
+  meaningful work lost. Scored, JSON+CSV+report built together before
+  committing, pushed to `benchmark` (`c2c49ef`). Session log
+  redacted and pushed, run branch pushed, worktree removed.
+- RUN RESUMED. Moving to block 6 (Qwen3.6 MLX, thinking on, blind),
+  window 40982 (block 1's MLX gate, a separate pi entry from the
+  GGUF one raised to 81920 for blocks 9/10).

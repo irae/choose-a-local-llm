@@ -270,5 +270,39 @@ commit `f79f447`), `invalid: true`. Session log redacted and pushed,
 run branch pushed (identical to base, zero commits), worker worktree
 removed.
 
-Next: block 5 (Gemma-26B, thinking on, Mendel guided), same server A
-as blocks 2/3, restarted.
+## Block 5/10 — Gemma-26B, thinking high, Mendel guided
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh gemma-4-26b-a4b pi guided high
+```
+
+**Interrupted twice by a real machine incident before completing, on
+the third attempt.** `mediaanalysisd` (macOS media indexing) drove
+free RAM into collapse independent of any block config — see the
+incident note in `state.md`. Attempts 1 and 2 produced no scoreable
+data (attempt 1 had 8/8 commits but the branch was force-deleted
+during cleanup before scoring — a mistake, that data is lost; attempt
+2 was stopped within minutes, no meaningful work). Neither counts
+against the model: harness fault, not a model failure.
+
+Attempt 3, branch `gemma-4-26b-a4b-high-guided-v3-issue-13`, base
+`86935f4`: **`end_reason: complete`**. 115.1 min wall clock, 273
+assistant messages, 269 tool calls, 42 tool errors, 13 commits, 7/8
+libraries done (rimraf incomplete: trap B — the model's own grep
+found two remaining `require('rimraf')` call sites in
+`legacy-packages/mendel-requirify` and skipped them). Peak context
+209024 of 212992 (98.1%), 2 overflow compactions, 1 model nudge.
+
+Scored: score_raw 57 = score_total (well under the 87.5 cap at 7/8).
+Trap A still broken (`fs.promises.glob().then()`); chalk port done
+correctly this time (contrast with earlier Qwen attempts' buggy
+chalk swaps); stale lockfile on a hand-edited `tmp` removal; 4 of 13
+commits multi-package, one a 6-package omnibus via `git add .`. Row
+in `results-guided.csv`/`.json` (`benchmark` branch, commit
+`c2c49ef`), `invalid: false`. Session log redacted and pushed, run
+branch pushed, worktree removed.
+
+Next: block 6 (Qwen3.6 MLX, thinking on, Mendel blind), window 40982
+per block 1's MLX gate (a separate pi entry from the GGUF one; the
+owner's window correction to 81920 applies only to the GGUF entry,
+used by blocks 9 and 10).
