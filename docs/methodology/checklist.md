@@ -20,7 +20,10 @@ Never call `AskUserQuestion` during a run. A multiple-choice question
 stops the GPU until the owner answers, and every case it would ask
 about is already covered: a blocked step is skipped and logged, a
 denied command is logged and the block continues, a stop-and-ask line
-in the runbook is a plain message, not a question tool.
+in the runbook is a plain message to the coordinator session, not a
+question tool. The coordinator answers gates; the owner gets only
+what needs the owner (`AGENTS.md`, standing rules). While the answer
+is pending, the next block that does not depend on it runs.
 
 ## Before the run
 

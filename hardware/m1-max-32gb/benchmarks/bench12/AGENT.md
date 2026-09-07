@@ -63,9 +63,22 @@ ASD-STE100 Simplified Technical English.
   copies `~/.pi/agent/models.json`; when a block's derived window
   differs from the entry, the runner sets `contextWindow` on that one
   entry to the derived value (the owner authorizes this edit, run 11
-  precedent), writes old and new in `state.md`, and leaves it. The
-  pinned `settings.json` sets `reserveTokens` 8192; confirm it before
-  the first Mendel run.
+  precedent), writes old and new in `state.md`, and leaves it. When
+  no entry exists for a block's model, the runner creates it from the
+  block's parameter table (provider, model id, `contextWindow`,
+  `maxTokens` 8192, the thinking map copied from the sibling entry of
+  the same provider), records it in `state.md`, and runs; a missing
+  entry is never a skip. The pinned `settings.json` sets
+  `reserveTokens` 8192; confirm it before the first Mendel run.
+- **Every gate and every stop-and-ask goes to the coordinator
+  session**, with the block, the condition and your candidate answer.
+  Keep the GPU busy with the next block that does not depend on it
+  while you wait. The coordinator takes to the owner only what needs
+  the owner.
+- The Mendel runner ends a run at 300 minutes on its own
+  (`--wall-min`), and kills pi five minutes later when the abort does
+  not settle the turn. A row that ends on `wall_clock` is a partial,
+  not an invalid row, and the next block starts.
 - Serve the exact files each block names. No block of this run may
   download anything. A missing file is stop and ask.
 - Never run a bare `git stash`. Commit on `run12` as results land:

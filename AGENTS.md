@@ -260,6 +260,24 @@ Benchmark work:
   runner records the value it used and its source in `state.md` and
   the row's config note. Which parameters are fixed and which are
   derived: `benchmarks/PLANNING.md`, "Fixed and derived parameters".
+- **A gate or a stop-and-ask goes to the coordinator first** (owner
+  rule, 2026-09-07). The runner messages the coordinator session with
+  the block, the condition and the candidate answer, and keeps the
+  GPU busy with the next block that does not depend on it. The
+  coordinator answers inside the runbook's and the method's rules,
+  and takes to the owner only what needs the owner: sudo, a reboot, a
+  download, money, or a rule change. The coordinator never opens a
+  conversation with the runner on its own.
+- **A missing harness entry is never a reason to skip a block.** A pi
+  entry for a model under test is a derived artifact: the runner
+  creates or updates it in the run's pinned config from the block's
+  parameter table (provider, model id, `contextWindow` from the
+  measured window, `maxTokens` and `reserveTokens` from the output
+  budget rule, the thinking map copied from the sibling entry of the
+  same provider), records the entry in `state.md`, and runs. The
+  coordinator writes the final entry into the owner's file at
+  close-out. Generating the entry from the site's `models.json` is
+  `backlog/pi-entries-from-models-json.md`.
 - **Run `tests/run.sh` after you touch any script under
   `benchmarks/`.** It is one command and it needs no server.
 - **Never edit a shell script while it runs.** The shell reads the file

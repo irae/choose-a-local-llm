@@ -46,7 +46,7 @@ function replay() {
         e.message.usage = e.message.usage || { output: 50 };
     }
     out(e);
-    timer = setTimeout(replay, 5);
+    timer = setTimeout(replay, Number(process.env.FAKE_PI_STEP_MS || 5));
 }
 
 let buf = '';
@@ -67,6 +67,8 @@ process.stdin.on('data', (d) => {
                 success: true,
                 data: { sessionFile: state.sessionFile },
             });
+        else if (c.type === 'abort' && process.env.FAKE_PI_IGNORE_ABORT)
+            out({ type: 'response', id: c.id, success: true });
         else if (c.type === 'abort') {
             aborted = true;
             clearTimeout(timer);

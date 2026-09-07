@@ -88,5 +88,15 @@ assert_eq "end reason" "$(meta_field repeats end_reason)" "complete"
 assert_eq "no loop record" "$(meta_field repeats repetition_loop)" ""
 assert_eq "no flood record" "$(meta_field repeats degenerate_output)" ""
 
+echo "test-run-pi-rpc: the wall clock cap kills a turn that ignores the abort"
+FAKE_PI_EVENTS="$FIXTURES/events-healthy.jsonl" FAKE_PI_IGNORE_ABORT=1 FAKE_PI_STEP_MS=400 \
+    PATH="$WORK/bin:$PATH" \
+    timeout 60 node "$RUNNER" --model fake --prompt "$WORK/prompt.txt" \
+    --out "$WORK/out-wall" --cwd "$WORK/repo" --allow-bad-config \
+    --wall-min 0.02 --wall-grace-min 0.02 \
+    > "$WORK/out-wall.log" 2>&1
+assert_eq "end reason" "$(meta_field wall end_reason)" "wall_clock"
+assert_eq "hard kill" "$(meta_field wall wall_clock.hard_kill)" "true"
+
 echo "test-run-pi-rpc: $PASS passed, $FAIL failed"
 [ "$FAIL" = "0" ]
