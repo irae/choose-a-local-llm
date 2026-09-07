@@ -145,31 +145,33 @@ cannot serve.
 ## Tool check — before Block 1
 
 The depth-sweep tool moved out of this repo, to `local-llm-eval-tools`.
-This check proves the new tool matches a number this run already
-measured, before it runs any scoring block.
+The two tools were already compared on this machine, twice, on the
+pre-block prep's own arms, and they agree row for row (`results.md`,
+"Pre-block prep"). So this check does not measure agreement again. It
+proves only that a clean pull of the tool runs on this machine and
+that the run records which version it used.
 
 1. `git -C ~/code/local-llm-eval-tools pull --ff-only` (clone first if
    missing: `git clone git@github.com:irae/local-llm-eval-tools.git
    ~/code/local-llm-eval-tools`). Record `git -C
    ~/code/local-llm-eval-tools rev-parse --short HEAD` in `state.md`.
-2. Serve the same config as the pre-block prep's f16 arm: the
-   Qwen3.6 GGUF server command in `results.md`, "Pre-block prep",
-   `--cache-type-k f16 --cache-type-v f16 -c 33792`, wired 24000.
-3. Run one short creep:
-   ```bash
-   DEPTH_LIST="4096,8192,16384,24576,32768" MODEL=qwen3.6-35b-a3b \
-     python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py llama \
-     | tee hardware/m1-max-32gb/benchmarks/bench12/results/creep-toolcheck-qwen36-f16-w24000-c33792.tsv
-   ```
-4. Compare row for row against `results/creep-qwen36-gguf-f16-w24000-c33792.tsv`
-   (the pre-block prep's old-tool reference). **Pass**: every
-   `decode_toks` value is within 5%, and both runs end `no ceiling
-   found up to 32768` with `swap_delta_mb` at or below 0 on every row.
-   **Fail**: any row outside 5%, or a different stop condition. On a
-   fail, stop and ask the coordinator with both files; no scoring
+   That hash is pinned for the whole run: do not pull again in the
+   middle of the run.
+2. `python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py
+   llama --help`. It must exit 0 and print the variables it reads.
+3. On the first server this run starts anyway, run the shortest creep
+   the block already needs, and read its first two rows. **Pass**: the
+   rows carry `decode_toks`, `wired_mb` and `swap_delta_mb`, and the
+   run does not stop on its own inside those two rows. **Fail**: the
+   tool errors, prints no rows, or stops on a condition the block did
+   not expect. On a fail, stop and ask the coordinator; no scoring
    block starts until the coordinator clears it.
-5. Write the commit hash, the pass/fail line, and the file path in
-   `state.md`. Stop the server; wait for wired recovery.
+4. Write the commit hash and the pass line in `state.md`.
+
+Do not compare decode speed against an older file to pass or fail this
+check. Decode on this machine swings run to run on identical code, 40
+to 54 tok/s on one run against 21 to 27 on the next (`results.md`,
+"Pre-block prep"). A speed comparison would fail on machine noise.
 
 ## Block 1/7 — Gemma-12B GGUF, two slots: `-c` ladder and round-robin creep
 

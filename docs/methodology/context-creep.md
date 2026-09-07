@@ -13,6 +13,12 @@ config. Common rules and the run loop apply
   beside it — see [The monitor](#the-monitor) below.
 - Append-only prompt growth (prompt-cache rule) — the sweep tool already
   does this.
+- The pause rule: **creep slowly, ~60 s between depth steps.** The pause
+  simulates real use — an agent's model waits on the user and on tool
+  runs between requests — and it gives macOS time to compress other
+  memory, which raises the measured ceiling (verified on the reference
+  setup: about 2K extra tokens on a 35B MoE MLX config). A no-pause sweep
+  understates the ceiling a real harness reaches.
 
 ## Install
 
@@ -31,12 +37,6 @@ git@github.com:irae/local-llm-eval-tools.git ~/code/local-llm-eval-tools`.
 Record the commit hash the second command prints beside the sweep's
 result, the same way a model's revision is recorded. Run the tool from
 that path: `python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py <backend>`.
-- The pause rule: **creep slowly, ~60 s between depth steps.** The pause
-  simulates real use — an agent's model waits on the user and on tool
-  runs between requests — and it gives macOS time to compress other
-  memory, which raises the measured ceiling (verified on the reference
-  setup: about 2K extra tokens on a 35B MoE MLX config). A no-pause sweep
-  understates the ceiling a real harness reaches.
 
 ## Speed measurement rules
 
