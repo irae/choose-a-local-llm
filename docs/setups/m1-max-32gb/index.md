@@ -9,14 +9,10 @@
   memory to near zero and the desktop stops responding. We do not
   consider a shared-use setting. Drive the models from another machine.
 - **Every model has a depth curve, a KV pick and an EvalPlus score.**
-  Qwen3.8 0.982/0.939/100%, Gemma-26B 0.976/0.945/100% and Gemma-12B
-  0.976/0.939/100% thinking off, Qwen3.6 0.951/0.915/100% thinking off,
-  Bonsai 0.927/0.890/98%. The decode-vs-used-context table on the
+  The decode-vs-used-context table on the
   [comparison page](./comparison.md) is this project's main artifact.
 - **Two local models finish the agent task.** Qwen3.8 on llama-server at
   f16 KV scores 87 of 100 blind, Gemma-26B 47.5, both complete.
-- **Three runtimes are in play**: llama-server, mlx_lm.server, and the
-  PrismML llama.cpp fork. LM Studio was tried and retired.
 - **The rule:** MLX barely slows down but OOMs hard; llama holds its
   speed deeper at f16 KV, and its ceiling is the largest `-c` that
   loads.
