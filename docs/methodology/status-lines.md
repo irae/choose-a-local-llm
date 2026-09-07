@@ -235,20 +235,161 @@ gate qwen-3.8-27b iq3s/f16 dropped: creep clean depth 31k, under the 39k floor. 
 A dropped config never reaches the site. If it was published before,
 its row moves to `historical.md`.
 
-## What goes in the files, not in chat
+## The medium form, in `state.md`
 
-The evidence behind a line goes to `state.md` when the block closes:
-every creep row as a table, the failing log lines behind a gate, the
-stop reason, the tool-call and peak-context counts, the session log
-path. `results.md` takes the site comparison below. Neither belongs in
-chat, and the runner never pastes a table or a log excerpt there.
+The evidence behind a chat line goes to `state.md`, never to chat. The
+runner never pastes a table or a log excerpt into chat; it names the
+file.
 
-The owner fixed the shape of the `state.md` progress block
-(`48960eb2`, 2026-09-02): "done/total items, pending item description,
-done/total sub-items for the current pending item, known events
-count." An answer with prose and parentheses was rejected: "You didn't
-get it. 100% of what I said id about the model. No parens, no
-explanation. It is just progress/status for the model."
+Every medium entry has the same four parts:
+
+1. **The heading**: the task, the model short id, the variant, and the
+   `ctx`. While the thing still runs, the heading ends with
+   `— running`.
+2. **One identity line**: what a reader needs to reproduce the run.
+   The file and its revision, the flags that differ, the KV type, the
+   wired limit, the tool or harness values, and the times.
+3. **One table.** A value that is not known yet is `-`, never blank
+   and never a guess.
+4. **The close**: the verdict or state, the files, and the deviations.
+   Write `Deviation: none` rather than leaving it out.
+
+A count that grows is written as it happens, not at the end. Count the
+known events — failed tool calls, nudges, stalls — and never describe
+them here.
+
+### creep
+
+A creep table carries the measured rows, then one `...` row, then the
+target depth with `-` cells. The target is the largest depth the creep
+is configured to reach. When the target is the next step, the `...`
+row is left out.
+
+### creep qwen-3.8-27b q3kxl/f16 ctx 128k — running
+
+`unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL` rev `4ca7207`, MTP n-max 3, one slot, f16 KV, wired 25000. Tool `2344f00`. Ladder: 131072 served, 139264 failed. Started 21:14, last row 22:02.
+
+| depth | tok/s | wired MB | swap Δ | compress | decompress |
+|--:|--:|--:|--:|--:|--:|
+| 4k | 14.4 | 24831 | 0 | 12 | 0 |
+| 8k | 14.1 | 24847 | 0 | 8 | 0 |
+| 16k | 12.2 | 24902 | 0 | 41 | 0 |
+| 24k | 13.0 | 24955 | 0 | 18 | 0 |
+| 32k | 12.1 | 25010 | 0 | 96 | 0 |
+| ... | | | | | |
+| 128k | - | - | - | - | - |
+
+still running, next depth 41k. No stop condition met.
+Files: `results/creep-qwen38-unsloth-q3kxl-f16.tsv`, `results/server-qwen38-unsloth-q3kxl-f16.log`.
+Deviation: none.
+
+At close the table holds every measured row, with no `...` row and no
+target row:
+
+### creep qwen-3.8-27b q3kxl/f16 ctx 128k
+
+`unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL` rev `4ca7207`, MTP n-max 3, one slot, f16 KV, wired 25000. Tool `2344f00`. Ladder: 131072 served, 139264 failed.
+
+| depth | tok/s | wired MB | swap Δ | compress | decompress |
+|--:|--:|--:|--:|--:|--:|
+| 4k | 14.4 | 24831 | 0 | 12 | 0 |
+| 8k | 14.1 | 24847 | 0 | 8 | 0 |
+| 16k | 12.2 | 24902 | 0 | 41 | 0 |
+| 24k | 13.0 | 24955 | 0 | 18 | 0 |
+| 32k | 12.1 | 25010 | 0 | 96 | 0 |
+| 41k | 10.9 | 25088 | 0 | 210 | 0 |
+| 49k | 12.5 | 25140 | 0 | 154 | 0 |
+
+**speed**, ceiling 49k @ 12.5 tok/s. Floor reached at 57k (7.4 tok/s).
+Files: `results/creep-qwen38-unsloth-q3kxl-f16.tsv`, `results/server-qwen38-unsloth-q3kxl-f16.log`.
+Deviation: none.
+
+The compress and decompress columns stay even when they read near
+zero. Their being near zero is the evidence that a stop was speed and
+not memory.
+
+### evalplus
+
+### evalplus qwen-3.8-27b q3kxl/f16 — running
+
+`unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL` rev `4ca7207`, MTP n-max 3, one slot, f16 KV, ctx 49k, wired 25000. Budget 8k from `calibration-qwen38-gguf-medium.json`. Started 22:40, last problem 23:55.
+
+| metric | value |
+|---|--:|
+| problems | 126/164 |
+| empty so far | 2 |
+| HumanEval base | - |
+| HumanEval plus | - |
+| completion rate | - |
+
+still running, ~2h19min left. Last `task_id` `HumanEval/131`.
+Files: `results/evalplus-qwen38-unsloth-q3kxl-f16/`, `results/server-qwen38-unsloth-q3kxl-f16.log`.
+Deviation: none.
+
+The scores stay `-` until the evaluator runs, because EvalPlus scores
+the whole set at the end. A running average is a number a reader can
+mistake for a result. At close:
+
+### evalplus qwen-3.8-27b q3kxl/f16
+
+`unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL` rev `4ca7207`, MTP n-max 3, one slot, f16 KV, ctx 49k, wired 25000. Budget 8k from `calibration-qwen38-gguf-medium.json` (max completion 1049 → max(1049×1.5, 8192)).
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.976 |
+| HumanEval plus | 0.927 |
+| completion rate | 100% |
+| empty | 2/164 |
+
+Empty: `HumanEval/129`, `HumanEval/132`. Both hit the budget at 8192 tokens, so the cause is length, not refusal.
+Files: `results/evalplus-qwen38-unsloth-q3kxl-f16/`, `results/server-qwen38-unsloth-q3kxl-f16.log`.
+Deviation: none.
+
+An empty completion is always listed by `task_id` with its cause.
+
+### simulator
+
+### simulator(mendel-guided) qwen-3.6-35b-a3b q8/high — running
+
+`unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` rev `5bc3e23`, MTP n-max 3, one slot, q8_0 KV, ctx 98k served, wired 25000. Harness: window 82k, reserve 8192, keep-recent 20000. Branch `qwen3.6-35b-a3b-high-guided-v3-issue-13`. Started 19:20, last event 22:50.
+
+| field | value |
+|---|--:|
+| score | - |
+| tasks | 6/8 |
+| worst defect | - |
+| stop reason | - |
+| tool calls | 168 |
+| peak ctx | 78k/82k |
+| known events | 4 |
+| elapsed | 210 min |
+
+still running, task 7 of 8. Known events: 2 nudges, 2 compactions.
+Files: `results/mendel-qwen36-q8-guided-high.jsonl`, session log `results/session-qwen36-q8-guided-high.log`.
+Deviation: none.
+
+Score and worst defect stay `-` until scoring runs, which happens
+after the run ends. `peak ctx` carries a value from the first task
+onward. At close:
+
+### simulator(mendel-guided) qwen-3.6-35b-a3b q8/high
+
+`unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` rev `5bc3e23`, MTP n-max 3, one slot, q8_0 KV, ctx 98k served, wired 25000. Harness: window 82k, reserve 8192, keep-recent 20000. Branch `qwen3.6-35b-a3b-high-guided-v3-issue-13`.
+
+| field | value |
+|---|--:|
+| score | 62.5/100 |
+| tasks | 8/8 |
+| worst defect | minor |
+| stop reason | completed |
+| tool calls | 214 |
+| peak ctx | 78k/82k |
+| known events | 4 |
+| elapsed | 254 min |
+
+Known events: 2 nudges, 2 compactions. Compactions at task 5 and task 7, each freeing 1 to 8 points of the window.
+Files: `results/mendel-qwen36-q8-guided-high.jsonl`, session log `results/session-qwen36-q8-guided-high.log`.
+Deviation: none.
 
 ## The site comparison, in full
 
