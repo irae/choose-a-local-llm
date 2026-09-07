@@ -37,16 +37,17 @@ machine helpers). A run folder never holds a tool. Improve the shared
 one in place (`AGENTS.md`, "Improve shared tools in place"). When you
 add or move a tool, index it in `AGENTS.md` in the same commit.
 
-Shape of a measurement tool. `tools/sweeps/creep.py` with its
-per-backend files is the reference:
+Shape of a measurement tool. The depth-sweep tool is the reference,
+though it now lives outside this repo
+(`docs/methodology/context-creep.md`, "Install"):
 
 - **One module owns the method; thin adapters own the backend.** The
   method module carries what the methodology page defines: depth
   ladder, pause, append-only growth, stop conditions, output format.
   An adapter carries only what differs per backend: endpoint, request
   shape, how speed is read, liveness signal.
-- **Defaults encode the method.** A pause the method says is 25 s
-  defaults to 25 s and warns when set lower. A script whose name
+- **Defaults encode the method.** A pause the method says is 60 s
+  defaults to 60 s and warns when set lower. A script whose name
   promises a behaviour its defaults do not implement is a bug we have
   had (`docs/methodology/context-creep.md`, "Do not try these").
 - **Configuration through environment variables.** Document them in

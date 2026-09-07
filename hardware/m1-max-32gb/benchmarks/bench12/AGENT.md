@@ -142,6 +142,35 @@ Every MLX item moved to `../unscheduled/`: those rows wait on the
 in-turn margin rule, because that server cannot refuse a request it
 cannot serve.
 
+## Tool check — before Block 1
+
+The depth-sweep tool moved out of this repo, to `local-llm-eval-tools`.
+This check proves the new tool matches a number this run already
+measured, before it runs any scoring block.
+
+1. `git -C ~/code/local-llm-eval-tools pull --ff-only` (clone first if
+   missing: `git clone git@github.com:irae/local-llm-eval-tools.git
+   ~/code/local-llm-eval-tools`). Record `git -C
+   ~/code/local-llm-eval-tools rev-parse --short HEAD` in `state.md`.
+2. Serve the same config as the pre-block prep's f16 arm: the
+   Qwen3.6 GGUF server command in `results.md`, "Pre-block prep",
+   `--cache-type-k f16 --cache-type-v f16 -c 33792`, wired 24000.
+3. Run one short creep:
+   ```bash
+   DEPTH_LIST="4096,8192,16384,24576,32768" MODEL=qwen3.6-35b-a3b \
+     python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py llama \
+     | tee hardware/m1-max-32gb/benchmarks/bench12/results/creep-toolcheck-qwen36-f16-w24000-c33792.tsv
+   ```
+4. Compare row for row against `results/creep-qwen36-gguf-f16-w24000-c33792.tsv`
+   (the pre-block prep's old-tool reference). **Pass**: every
+   `decode_toks` value is within 5%, and both runs end `no ceiling
+   found up to 32768` with `swap_delta_mb` at or below 0 on every row.
+   **Fail**: any row outside 5%, or a different stop condition. On a
+   fail, stop and ask the coordinator with both files; no scoring
+   block starts until the coordinator clears it.
+5. Write the commit hash, the pass/fail line, and the file path in
+   `state.md`. Stop the server; wait for wired recovery.
+
 ## Block 1/7 — Gemma-12B GGUF, two slots: `-c` ladder and round-robin creep
 
 Read `docs/methodology/context-creep.md` and
@@ -176,7 +205,8 @@ holds its own cache:
 
 ```bash
 DEPTH_LIST="4096,8192,16384,24576,32768,40960,49152,65536,81920,98304,114688,131072" \
-N_CONTEXTS=2 MODEL=gemma-4-12b-2x python3 tools/sweeps/creep_llama.py \
+N_CONTEXTS=2 MODEL=gemma-4-12b-2x \
+  python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py llama \
   | tee hardware/m1-max-32gb/benchmarks/bench12/results/creep-gemma12-gguf-2x-f16.tsv
 ```
 
@@ -202,7 +232,8 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
 
 ```bash
 DEPTH_LIST="4096,8192,16384,24576,32768,40960,49152,65536,81920,98304,114688,131072" \
-N_CONTEXTS=1 MODEL=gemma-4-12b python3 tools/sweeps/creep_llama.py \
+N_CONTEXTS=1 MODEL=gemma-4-12b \
+  python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py llama \
   | tee hardware/m1-max-32gb/benchmarks/bench12/results/creep-gemma12-gguf-1x-c131072-f16.tsv
 ```
 
@@ -245,7 +276,8 @@ Then the slow creep at the largest `-c` that served:
 
 ```bash
 DEPTH_LIST="4096,8192,16384,24576,32768,40960,49152,65536,81920,98304,114688,131072" \
-N_CONTEXTS=1 MODEL=bonsai-prism python3 tools/sweeps/creep_llama.py \
+N_CONTEXTS=1 MODEL=bonsai-prism \
+  python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py llama \
   | tee hardware/m1-max-32gb/benchmarks/bench12/results/creep-bonsai-fork-f16.tsv
 ```
 

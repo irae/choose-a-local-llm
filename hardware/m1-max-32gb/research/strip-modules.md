@@ -114,7 +114,8 @@ is below the noise of `vm_stat` between runs; skip it.
    once more and keep the second value: `tok_s_without`.
 5. Run one depth step of the creep at the row's deepest clean depth:
    `DEPTH_LIST=32768 MODEL=qwen3.8-27b SWEEP_BASE=http://127.0.0.1:8081
-   python3 tools/sweeps/creep_llama.py > /tmp/qwen38-nommproj-creep.tsv 2>&1`.
+   python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py llama
+   > /tmp/qwen38-nommproj-creep.tsv 2>&1`.
    Keep the tok/s and the memory column: `creep_without`.
 6. Stop the server. Wait for the wired recovery the machine file
    describes.

@@ -52,7 +52,7 @@ needs a reboot, and this is never run unattended.
 
 1. `sudo sysctl iogpu.wired_limit_mb=<rung>`.
 2. Load the balloon model at the fixed `-c`.
-3. Walk its context up with the slow creep, 25 s per step
+3. Walk its context up with the slow creep, 60 s per step
    ([context creep](./context-creep.md)). Never a fast sweep and never
    a synthetic balloon; rate changes the ceiling.
 4. Write down, per step: wired MB, free MB, the swap delta against the

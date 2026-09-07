@@ -11,9 +11,27 @@ config. Common rules and the run loop apply
 - One command per sweep, and one output file. The runner samples memory
   itself and watches liveness itself, so a sweep needs no second process
   beside it — see [The monitor](#the-monitor) below.
-- Append-only prompt growth (prompt-cache rule) — the sweep scripts in
-  `tools/sweeps/` already do this.
-- The pause rule: **creep slowly, ~25 s between depth steps.** The pause
+- Append-only prompt growth (prompt-cache rule) — the sweep tool already
+  does this.
+
+## Install
+
+The sweep tool is not part of this repo. It lives in
+`slow-context-creep` in the `local-llm-eval-tools` repository, and a
+runner always fetches and uses the newest copy. Before every session
+that runs a sweep:
+
+```bash
+git -C ~/code/local-llm-eval-tools pull --ff-only
+git -C ~/code/local-llm-eval-tools rev-parse --short HEAD
+```
+
+Clone it first if it is not there: `git clone
+git@github.com:irae/local-llm-eval-tools.git ~/code/local-llm-eval-tools`.
+Record the commit hash the second command prints beside the sweep's
+result, the same way a model's revision is recorded. Run the tool from
+that path: `python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py <backend>`.
+- The pause rule: **creep slowly, ~60 s between depth steps.** The pause
   simulates real use — an agent's model waits on the user and on tool
   runs between requests — and it gives macOS time to compress other
   memory, which raises the measured ceiling (verified on the reference
@@ -64,11 +82,15 @@ Read this once and the rest of the page is detail.
 DEPTH_LIST=4096,8192,16384,24576,32768,49152,65536 \
 MODEL=<the id the server answers to> \
 SWEEP_BASE=http://127.0.0.1:8081 \
-python3 tools/sweeps/creep_llama.py > /tmp/<config>-creep.tsv 2>&1
+python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py llama \
+  > ~/.local/share/slow-context-creep/<config>-creep.tsv 2>&1
 ```
 
    On `mlx_lm.server` add `SERVER_LOG=<the server log>`, so the runner
-   sees the death signature.
+   sees the death signature, and use `mlx` in place of `llama`. On LM
+   Studio use `lmstudio`. A sweep run and a server log are data worth
+   keeping across a reboot; never write them under `/tmp` (see the
+   root `AGENTS.md`).
 5. Watch the file grow. Every line is one step row or one event.
 6. Read the verdict from the last line and the exit code.
 
@@ -213,8 +235,8 @@ window is a loader estimate, not a measurement. For LM Studio configs:
 
 - **The ceiling is the FIRST depth step whose row shows material
   compression or swap**: `compress_pages` plus `decompress_pages` at or
-  above `COMPACT_PAGES` (default 200 — hundreds of pages, not single
-  digits), or any growth in `swap_delta_mb`.
+  above `COMPRESS_PAGES` (default 5000 — thousands of pages, not the
+  idle noise of about 12 per tick), or any growth in `swap_delta_mb`.
 - The reported tok/s comes from the last clean step before onset.
 - The context-window column keeps the auto-fit estimate, flagged as a
   loader estimate; the trained max goes in a footnote.
@@ -233,33 +255,36 @@ script. Round-robin works on all three backends: `mlx_lm.server` holds
 several distinct KV caches when started with `--prompt-cache-size` at
 least as large as `N_CONTEXTS`.
 
-## The scripts
+## The tool
 
-One command per backend, all sharing `tools/sweeps/creep.py`, which owns
-the method: the 25-second pause as a DEFAULT, append-only growth,
+One command picks the backend: `python3 creep.py <llama|mlx|lmstudio>`,
+run from the clone (see [Install](#install)). `creep.py` owns the
+method: the 60-second pause as a DEFAULT, append-only growth,
 round-robin contexts, memory sampling, liveness, and the stop
-conditions. Each backend file holds only its endpoint, its request
-shape, how it reads speed, and its two liveness parts. Every script
-prints its own header with `--help`, and every environment variable it
-reads is documented there.
+conditions. Each backend module holds only its endpoint, its request
+shape, how it reads speed, and its two liveness parts. `--help` at
+either level prints the environment variables it reads.
 
-- `tools/sweeps/creep_llama.py` — llama-server. `ENDPOINT=completion`
-  (default) is raw and comparable with every published number here;
-  `ENDPOINT=chat` is the path a harness uses. llama-server defaults
-  `enable_thinking` to TRUE on the chat path, so set `THINKING=off`
-  when that is what you mean.
-- `tools/sweeps/creep_lmstudio.py` — LM Studio. Chat endpoint only.
-- `tools/sweeps/creep_mlx.py` — `mlx_lm.server`. Set `SERVER_LOG`; this
-  backend's generation thread can die while `/health` stays green.
+- `llama` — llama-server. `ENDPOINT=completion` (default) is raw and
+  comparable with every published number here; `ENDPOINT=chat` is the
+  path a harness uses. llama-server defaults `enable_thinking` to TRUE
+  on the chat path, so set `THINKING=off` when that is what you mean.
+- `lmstudio` — LM Studio. Chat endpoint only.
+- `mlx` — `mlx_lm.server`. Set `SERVER_LOG`; this backend's generation
+  thread can die while `/health` stays green.
 
 Stop conditions and their defaults, all overridable by environment
 variable: the floor (`FLOOR_TOKS`, 8 tok/s), swap growth above 1 MB,
-material compaction (`COMPACT_PAGES`, 200 pages) on three steps in a row
-without speed recovering against the previous step, a silent halt, a
-failed request, and a dead server (silence for `STALL_S`, 600 s, then a
-probe with `PROBE_TIMEOUT_S`, 300 s; two failed probes end the sweep).
-Compaction under `COMPACT_PAGES` in one step is noise on a busy machine
-and does not count.
+material memory compression (`COMPRESS_PAGES`, 5000 pages) on six steps
+in a row without speed recovering to `RECOVERY_FRACTION` (0.75) of the
+step before, a silent halt, a failed request, and a dead server
+(silence for `STALL_S`, 600 s, then a probe with `PROBE_TIMEOUT_S`,
+300 s; two failed probes end the sweep). Compression under
+`COMPRESS_PAGES` in one step is noise on a busy machine and does not
+count. These are the loosened thresholds found on this machine on
+2026-09-07 (`hardware/m1-max-32gb/benchmarks/bench12/results.md`,
+"Pre-block prep"); the tighter values used before that date produced a
+false-positive stop from ordinary speed decay at 16K-32K depth.
 
 ## Do not try these — see git history
 
