@@ -1,4 +1,17 @@
-# Research item — re-find `iogpu.wired_limit_mb` (top item of run 3)
+# The wired limit ladder, above 24000
+
+Status: parked, `[l]` later (owner, 2026-09-07). The owner is
+comfortable with 24000 and is not interested in the higher values for
+now. Needs hardware: yes, 10 to 12 hours, and the owner present for
+sudo and a reboot.
+
+What is already settled, so the ladder does not repeat it: 24000 is
+the standing limit, 25000 buys window on Qwen3.6 and brings swap under
+back-to-back sweeps, and six creeps at 24000 showed zero swap growth
+(`hardware/m1-max-32gb/benchmarks/bench12/results.md`, the pre-block
+prep). The open rungs are 26000, 27000 and 28000, and the question is
+whether the window a rung buys is worth the swap it brings, measured
+with a recovery gap between sweeps.
 
 The standing value is 24000, chosen on 2026-08-29. A second value,
 22000 for when the owner works beside a run, was chosen the same day

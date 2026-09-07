@@ -1,9 +1,11 @@
 # A config that reaches Mendel never runs out of memory
 
-Research item of `m1-max-32gb`, third item of research run 3, the
-memory run, after the control creep and the wired ladder
-(`run3/index.md`): its margin is derived once, at the standing limit
-those two settle. Attached files
+Research item of `m1-max-32gb`, the one open item of research run 3
+(`run3/index.md`). It derives its margin at the standing limit, 24000.
+Nothing high-value waits on it: the only pending decision it unblocks
+is the Qwen3.8 MLX row's window (`backlog/qwen38-mlx-window.md`), and
+that row is already marked untrusted, while the Qwen3.8 arm that
+scored 87 is the GGUF one. Attached files
 in `no-oom-at-mendel/`. Owner rule to establish (2026-09-05): when a
 config gets to a Mendel run, its window and budget values are safe, so
 the run cannot end in a Metal OOM. Today they come from a creep

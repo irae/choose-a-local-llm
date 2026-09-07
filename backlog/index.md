@@ -19,6 +19,7 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 
 ## Open
 
+- [l] The wired limit ladder above 24000: rungs 26000 to 28000, whether the window a rung buys is worth its swap; 24000 stands and the owner is comfortable with it (wired-limit-ladder.md)
 - [ ] Resume an interrupted Mendel run in place: worker `--resume`, runner counts earlier sessions toward the cap, cleanup only by an explicit close (mendel-resume-interrupted-run.md)
 - [ ] Real near-OOM in run 11 block 5: mediaanalysisd (macOS media indexing) at ~70% CPU competed for memory while the server held wired 25000; free RAM crashed 1565→62 MB in 20s, harness killed the run mid-work, uncommitted work lost (mediaanalysisd-memory-contention.md)
 - [ ] pi's compaction may be too shallow under a small contextWindow: frequency climbed from 1/9min to 1/2-3min mid-run, several compactions freed only 1-8 points of headroom; research pi's compaction options (pi-compaction-efficiency.md)

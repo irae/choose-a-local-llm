@@ -27,14 +27,6 @@ changed the result was the machine's state at the start.
   machine state. 24000 stands, because six creeps there showed zero
   swap growth while 25000 swapped under back-to-back sweeps. Only
   Qwen3.6 changed rows; no other model needs a re-sweep.
-- [ ] **Wired limit ladder** (../wired-limit-retest.md; the procedure is
-  `docs/methodology/wired-limit.md`). Needs the owner for sudo and a
-  reboot. Rungs 26000, 27000, 28000, two clean passes each, stop at the
-  first panic or lockup. 24000 and 25000 are measured. The question is
-  no longer whether a rung buys context, it does, but whether the swap
-  it brings is worth the window: every rung now needs a swap-growth
-  reading with a recovery gap between sweeps, because 25000's swap was
-  seen only under back-to-back runs.
 - [ ] **A config that reaches Mendel never runs out of memory**: the
   in-turn margin, the mlx and llama findings, four tests in order
   (../no-oom-at-mendel.md; attachments in ../no-oom-at-mendel/). It
@@ -42,11 +34,10 @@ changed the result was the machine's state at the start.
   `backlog/qwen38-mlx-window.md` waits on. Runs unattended, at
   whatever limit the ladder settles on.
 
-Order and why: the control first, because it is cheap and it decides
-whether the ladder is a re-measurement of everything or a formality.
-The ladder second, when the owner is available. The no-OOM item last,
-so its margin is derived at the standing limit and does not need a
-second pass.
+One item is left. The ladder above 24000 moved to the backlog as a
+later item (`backlog/wired-limit-ladder.md`, owner 2026-09-07): 24000
+stands and the higher rungs are not wanted for now. The no-OOM item
+runs unattended at 24000 and needs nothing from the owner.
 
 Waits on the owner: `backlog/bonsai-kv-bias-corpus.md`,
 `backlog/qwen38-mlx-window.md`.
