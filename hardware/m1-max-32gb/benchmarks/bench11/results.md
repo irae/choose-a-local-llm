@@ -353,6 +353,46 @@ anyway). Row in `results-guided.csv`/`.json` (`benchmark` branch,
 commit `c403b07`), `invalid: false`, `end_reason: wall_clock`.
 Session log redacted and pushed, run branch pushed, worktree removed.
 
-Next: block 9's retry at window 81920 (Qwen3.6 GGUF, guided, off —
-the original 49152-window row stays valid and scored; this is a
-no-penalty harness-class re-run per Mendel's retry rule).
+## Block 9/10 retry — Qwen3.6 GGUF, thinking off, Mendel guided, window 81920
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && ./run-worker.sh qwen3.6-35b-a3b pi guided off
+```
+
+Same config as block 9's original run except the pi window: raised
+49152 → 81920 (block 1's clean-depth finding, owner-authorized
+`models.json` edit). No penalty either way per Mendel's retry rule;
+both rows stay in the data.
+
+**Attempt 1** killed mid-run by the harness's low-memory guard
+(`mediaanalysisd` again). 7/8 libraries already committed, 55.6 min
+elapsed — well under the wall_min cap, so no data-capping needed, just
+a clean restart (unlike block 8, this was a genuine harness
+interruption, not a wall-clock overrun). Cleaned up and retried.
+
+**Attempt 2**: `end_reason: complete`. 89.4 min wall clock, 267
+assistant messages, 264 tool calls, 24 tool errors, 16 commits (one
+per file, 0 multi-package), **8/8 libraries**. Peak context 77894 of
+81920 (95.1%), 1 compaction, 0 nudges.
+
+Scored: score_raw 62.5 = score_total (no cap, 8/8). Trap A still
+broken (same bug across every model that's hit it this run); one
+stale dependency left in a frozen legacy package (two `pnpm remove`
+attempts failed, the model gave up); chalk replaced with 6 hand-rolled
+shims instead of `util.styleText`; **all 16 commits used
+`--no-verify`**, and 9 files that were prettier-clean at the base
+commit regressed at the tip as a result (no hook ever caught it).
+**Clearly better than the 49152-window row (46.5)**: the larger
+window let it finish cleanly with one compaction and zero nudges,
+where the tighter window stalled on a repetition loop before
+finishing.
+
+Branch name collided with the original block 9 branch locally (same
+model/bench/thinking slug); pushed to origin as
+`qwen3.6-35b-a3b-off-guided-v3-issue-13-w81920` to keep both distinct.
+Row in `results-guided.csv`/`.json` (`benchmark` branch, commit
+`eb0106c`), `invalid: false`. Session log redacted and pushed, worker
+worktree removed.
+
+Per the owner: this is the last block. No block 10, no further
+retries. Closing the run now.

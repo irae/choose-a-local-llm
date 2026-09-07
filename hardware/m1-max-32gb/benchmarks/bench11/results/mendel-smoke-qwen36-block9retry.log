@@ -1,0 +1,7 @@
+mendel-smoke: model qwen3.6-35b-a3b, thinking off, task xtend, cap 1500s
+mendel-smoke: everything lands in /tmp/mendel-smoke.XbpOj1
+mendel-smoke: fixture ready (xtend, 2 files, 310 bytes under lib), one commit, clean tree
+mendel-smoke: compaction settings {"enabled": true, "reserveTokens": 8192}
+mendel-smoke: pi config pinned at /tmp/mendel-smoke.XbpOj1/pi-agent
+mendel-smoke: pi exited 0 after 25s, session /tmp/mendel-smoke.XbpOj1/session/2026-09-07T10-37-52-220Z_01a07b72-20dc-73ab-b9c1-d0f0d67e1054.jsonl
+SMOKE-MENDEL model=qwen3.6-35b-a3b level=off task=xtend window=default calls=11 distinct=8 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=3926 commits=1 clean=yes end=stop wall_s=25 verdict=pass

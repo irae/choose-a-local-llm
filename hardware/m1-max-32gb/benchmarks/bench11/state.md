@@ -283,3 +283,74 @@ handing-over section at the end.
   redacted and pushed, run branch pushed, worktree removed.
 - Block 8 was the last regular block. Moving to block 9's retry at
   window 81920 now.
+- Block 9 retry attempt 1: killed by `mediaanalysisd` again, 7/8
+  libraries already committed, 55.6 min elapsed (well under the
+  wall_min cap, so a clean restart, not a data-cap situation). Deleted
+  the local branch ref (origin never touched) and retried.
+- Block 9 retry attempt 2: `end_reason: complete`, 8/8 libraries,
+  score_raw 62.5, no cap. Clearly beats the 49152-window row (46.5).
+  Local branch name collided with the original block 9 branch; pushed
+  to origin as `qwen3.6-35b-a3b-off-guided-v3-issue-13-w81920`.
+  Scored, JSON+CSV+report built together, pushed to `benchmark`
+  (`eb0106c`). Session log redacted and force-added (gitignore
+  negation pattern didn't match the `-w81920` suffix ordering).
+  Worktree removed.
+- OWNER INSTRUCTION: this was the last block. No block 10, no more
+  retries — pending work overflows to run 12. Closing the whole run
+  now: merge everything to master, remove the run11 worktree and
+  branch (local + remote), sync with origin/master, resolve conflicts,
+  push, message the coordinator.
+
+## Handing over
+
+Run 11 closes here, on the owner's instruction, after block 9's retry.
+
+**What ran**: blocks 1-5, 8, 9(original + retry). Blocks 6 and 7
+skipped (no pi entry for the MLX Qwen3.6 model). **Block 10 did not
+run — it overflows to run 12.**
+
+**What a gate or deviation dropped, and why**:
+- Blocks 6/7: no pi entry exists for `mlx-community/Qwen3.6-35B-A3B-4bit`
+  in `~/.pi/agent/models.json`. AGENT.md's own text: "No entry is stop
+  and ask." Not created (past the one owner-authorized edit).
+- Block 10: not started. Overflow to run 12 with the same window
+  (81920) block 9's retry used.
+- Blocks 2, 3, 4: invalid (repetition_loop ×2, zero-commit tool-schema
+  loop ×1). Scored anyway per Mendel's rule, kept in the data.
+- Block 5: two attempts lost to a real `mediaanalysisd` memory
+  incident (attempt 1's 8/8-commit branch was force-deleted before
+  scoring — a mistake, not recoverable). Attempt 3 succeeded.
+- Block 8: ran past Mendel's undocumented-but-unenforced 300-min
+  `wall_min` cap (469 min actual). Hand-capped at 300 min per the
+  owner's instruction, scored as a `wall_clock` partial.
+- Block 9: attempt 1 killed by the same `mediaanalysisd` pattern,
+  55.6 min in (well under any cap) — clean restart, no capping
+  needed. Attempt 2 succeeded, clearly beating the smaller-window row.
+
+**Machine state left behind**: no model server running, `mediaanalysisd`
+was killed once by the owner (sudo, their own command) but may
+respawn — not something this session can prevent. Wired limit is
+25000 (owner's standing decision for this run, per
+`hardware/m1-max-32gb/research/wired-limit-retest.md`'s history —
+whether it reverts is the owner's call, not changed here).
+`qwen3.6-35b-a3b`'s pi entry stays at `contextWindow: 81920`
+(owner-authorized, left in place per the runbook: "Leave the entry at
+81920 after the run"). No worktrees of this run remain once cleanup
+below finishes.
+
+**Evidence archived**: pending — `tools/archive-evidence.sh` for
+run11's `results/` still to run as part of close-out below. Run 10's
+evidence was already archived (per the prior session's own note).
+
+**Backlog items filed this run** (all owner-requested, on `master`):
+`pi-compaction-efficiency.md`, `mediaanalysisd-memory-contention.md`.
+One item (`pi-subagent-context-hygiene-test.md`) was filed on this
+`run11` branch itself, not yet moved to `master` — the coordinator
+should decide whether to carry it over on merge.
+
+**Open questions for the owner** (unchanged from AGENT.md, still
+open): the Bonsai MLX thinking-high retries, and the corpus behind the
+regenerated Bonsai KV bias file (`backlog/bonsai-kv-bias-corpus.md`).
+New from this run: Mendel's `wall_min` enforcement gap (a real code
+bug, reported to the owner directly, not filed as a backlog item per
+their instruction that backlog is request-only).
