@@ -35,7 +35,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Gemma-4-26B-A4B, MLX, f16 KV | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% |
+| 1 | Gemma-4-26B-A4B, MLX, unquantized KV | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% |
 | 2 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% |
 | 3 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860/89% |
 <!-- gen:model-table:end -->
@@ -45,7 +45,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Gemma-4-26B-A4B, MLX, f16 KV.**
+**#1 — Gemma-4-26B-A4B, MLX, unquantized KV.**
 
 ```bash
 mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \
@@ -153,26 +153,33 @@ The config cell names the server, the KV cache type, the thinking level and the 
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
-## Decode speed vs used context (llama f16 KV, slow creep, 2026-09-05; mlx slow creep, 2026-08-29; limit 24000)
+## Decode speed vs used context
 
-| depth | llama+MTP, f16 KV, 1 slot | llama+MTP, f16 KV, 2 slots (one decoding) | MLX (gemma-4-26b-a4b-it-4bit) |
-|---|--:|--:|--:|
-| 4K | 60.3 | 66.6 | 51.1 |
-| 16K | 56.5 | 60.8 | 43.5 |
-| 24.5K | | 52.6 | 39.6 |
-| 33K | 45.9 | 50.6 | 35.6 |
-| 49K | 45.9 | 36.1 | 28.8 |
-| 60K | | | 24.96 |
-| 66K | | 34.4 | 13.07 |
-| **70K** | | | **12.83 — last stable** |
-| 82K | | **33.6 — last row inside the slot window** | |
-| 115K | 26.4 | | |
-| **197K** | **17.3 — last stable, 212992 is the largest `-c` that loads** | | |
+The two llama arms share one depth ladder, so they share a table, in
+the shape of
+[the comparison table](../comparison.md#decode-speed-vs-used-context-the-8-tok-s-usability-floor).
+Slow creep 2026-09-05, wired limit 24000.
 
-Wired memory at the last row: 25.6 GB on one slot, 25.3 GB on two, 20.0
-GB on MLX. Full curves in [the benchmarks](../benchmarks/gemma-4-26b-a4b.md).
-The q8_0 KV curve and the allocation-only context table are on
-[the historical page](../historical.md).
+| config | @ 4K | @ 16K | @ 24.5K | @ 33K | @ 49K | @ 66K | capped by |
+|---|--:|--:|--:|--:|--:|--:|---|
+| **llama+MTP, f16 KV, 1 slot, `-c 212992`** | **60.3** | **56.5** | | **45.9** | **45.9** | | mem — 212992 is the largest `-c` that loads; 26.4 at 115K and 17.3 at 197K, the deepest step |
+| llama+MTP, f16 KV, 2 slots, `-c 202752` | 66.6 | 60.8 | 52.6 | 50.6 | 36.1 | 34.4 | mem — 33.6 at 82K, the last row inside the slot window |
+
+Cells are blank where no step was measured at that depth. Wired memory
+at the deepest row: 25.6 GB on one slot, 25.3 GB on two.
+
+### MLX, its own creep (2026-08-29, wired limit 24000)
+
+The MLX server ran its own depth ladder on a different day, so its
+numbers keep their own table. Its cache is unquantized and the server
+offers no KV option.
+
+| depth | 4K | 16K | 24.5K | 33K | 49K | 60K | 66K | 70K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|
+| `mlx-community/gemma-4-26b-a4b-it-4bit` | 51.1 | 43.5 | 39.6 | 35.6 | 28.8 | 24.96 | 13.07 | **12.83 — last stable** |
+
+Wired memory 20.0 GB at 70K. Full curves in
+[the benchmarks](../benchmarks/gemma-4-26b-a4b.md).
 
 ## MTP draft depth sweep (32K, f16 KV)
 

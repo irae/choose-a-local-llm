@@ -34,8 +34,8 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.8-27B, MLX, f16 KV, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% |
-| 2 | Qwen3.8-27B, MLX, f16 KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% |
+| 1 | Qwen3.8-27B, MLX, unquantized KV, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% |
+| 2 | Qwen3.8-27B, MLX, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% |
 | 3 | Qwen3.8-27B, GGUF, MTP, f16 KV, effort medium | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939/100% |
 <!-- gen:model-table:end -->
 
@@ -44,14 +44,14 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Qwen3.8-27B, MLX, f16 KV, compaction ~26k, effort medium.** Set the harness compaction threshold at ~26K.
+**#1 — Qwen3.8-27B, MLX, unquantized KV, compaction ~26k, effort medium.** Set the harness compaction threshold at ~26K.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --reasoning-effort medium --port 8081
 ```
 
-**#2 — Qwen3.8-27B, MLX, f16 KV, effort low.** Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth.
+**#2 — Qwen3.8-27B, MLX, unquantized KV, effort low.** Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
@@ -141,10 +141,10 @@ re-testing on future llama.cpp releases.
 | test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
 | blind-v1.1 | llama-f16-medium-ctx.48k | **87** | 8/8/done | 129.3 | 5,947k | 46k | 4 | 210 | 10 |  |
-| guided-v2.1 | mlx-f16-low-ctx.26k † | **75** (raw 84) | 6/8/partial | 153.8 | 1,123k | 23k | 0 | 95 | 6 |  |
-| blind-v1.0 | mlx-f16-default-ctx.26k † | **37.5** (raw 80) | 3/8/partial | 253.5 | 1,777k | 24k | 0 | 135 | 6 |  |
-| blind-v1.1 | mlx-f16-low-ctx.26k † | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
-| guided-v3.0 | mlx-f16-low-ctx.?k † | **0** (raw 34) | 0/8/invalid | 261.3 | 1,254k | 30k | 0 | 48 | 0 |  |
+| guided-v2.1 | mlx-unquantized-low-ctx.26k † | **75** (raw 84) | 6/8/partial | 153.8 | 1,123k | 23k | 0 | 95 | 6 |  |
+| blind-v1.0 | mlx-unquantized-default-ctx.26k † | **37.5** (raw 80) | 3/8/partial | 253.5 | 1,777k | 24k | 0 | 135 | 6 |  |
+| blind-v1.1 | mlx-unquantized-low-ctx.26k † | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
+| guided-v3.0 | mlx-unquantized-low-ctx.?k † | **0** (raw 34) | 0/8/invalid | 261.3 | 1,254k | 30k | 0 | 48 | 0 |  |
 
 The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 
@@ -155,21 +155,31 @@ The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
 The MLX build gives a 26624-token window. That window stopped the low-effort run.
 
-## Decode speed vs used context (llama f16 KV, slow creep, 2026-09-05; mlx slow creep, 2026-08-29; limit 24000)
+## Decode speed vs used context
 
-| depth | llama+MTP, f16 KV | mlx, f16 KV |
-|---|--:|--:|
-| 4-8K | 20.0 | 17.1 |
-| 16K | 16.0 | 16.4 |
-| 22K | – | 10.23 |
-| 24K | – | 14.79 |
-| 26K | – | 15.19 |
-| **28K** | – | **15.29 — last stable** |
-| ~30K | – | Metal OOM; server thread dies, /health stays 200 |
-| 33K | 16.4 | |
-| **49K** | **15.0 — last stable, 49152 is the largest `-c` that loads** | |
+The llama arm, in the shape of
+[the comparison table](../comparison.md#decode-speed-vs-used-context-the-8-tok-s-usability-floor).
+Slow creep 2026-09-05, wired limit 24000.
 
-Wired memory at the last row: 23.5 GB on llama, 22.0 GB on MLX.
+| config | @ 4-8K | @ 16K | @ 33K | @ 49K | capped by |
+|---|--:|--:|--:|--:|---|
+| **llama+MTP, f16 KV, `-c 49152`** | **20.0** | **16.0** | **16.4** | **15.0** | mem — 49152 is the largest `-c` that loads; 15.0 tok/s there |
+
+Wired memory 23.5 GB at 49K.
+
+### MLX, its own creep (2026-08-29, wired limit 24000)
+
+The MLX server ran its own depth ladder on a different day, so its
+numbers keep their own table. Its cache is unquantized and the server
+offers no KV option.
+
+| depth | 8K | 16K | 22K | 24K | 26K | 28K | ~30K |
+|---|--:|--:|--:|--:|--:|--:|---|
+| `mlx-community/Qwen3.8-27B-4bit` | 17.1 | 16.4 | 10.23 | 14.79 | 15.19 | **15.29 — last stable** | Metal OOM |
+
+The 22K reading is a dip that recovers by 24K, not a decline. At the
+OOM the generation thread dies and `/health` still returns 200. Wired
+memory 22.0 GB at 28K.
 
 ## Backend comparison: llama-server (GGUF) vs mlx-lm (MLX)
 

@@ -81,6 +81,15 @@ closes. None of it is site content.
 - Server commands go in fenced `bash` blocks, so they stay copy-paste ready.
   The `--alias` value equals the harness model id.
 - Tables carry the numbers. Bold the winning row.
+- **A decode-speed table has one row per configuration**, depth
+  buckets as columns, and a last column that says what capped the
+  curve. The comparison page's "Decode speed vs used context" is the
+  model; every report page's section copies its shape and links to it.
+  Never put depth in the rows: with one column per config a reader
+  cannot compare two runtimes without reading down two columns, and a
+  config that was measured at other depths leaves a hole that looks
+  like a missing measurement. Values deeper than the last column go in
+  the "capped by" cell.
 - **Every configuration named in a table says its KV cache type.**
   The type sets the depth curve on this hardware, so a row without it
   is not a configuration, it is a guess. Write it as `f16 KV`,

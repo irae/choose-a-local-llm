@@ -40,7 +40,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.6-35B-A3B, MLX, f16 KV, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921/97% |
+| 1 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921/97% |
 | 2 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 33k | mem | 36.7 → 19.7 | 24.8 GB | 0.939/0.921/97% |
 | 3 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 33k | mem | 67.7 → 56.0 | 24.9 GB | 0.939/0.921/97% |
 <!-- gen:model-table:end -->
@@ -50,7 +50,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Qwen3.6-35B-A3B, MLX, f16 KV, thinking on.**
+**#1 — Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on.**
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
@@ -159,20 +159,34 @@ The config cell names the server, the KV cache type, the thinking level and the 
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
-## Decode speed vs used context (llama slow creep at `-c 49152`, 2026-09-04; mlx slow creep, 2026-08-29; limit 24000)
+## Decode speed vs used context
 
-| depth | llama+MTP, q8_0 KV | MLX, f16 KV (Qwen3.6-35B-A3B-4bit) |
-|---|--:|--:|
-| 4K | 36.4 | 53.3 |
-| **8K** | **43.8 — last clean row; compaction from 16K** | |
-| 16K | 31.0 | 49.6 |
-| 33K | 19.6 | 42.2 |
-| **37K** | | **42.0 — last stable** |
-| ~41K | | Metal OOM |
+The llama arms share one depth ladder, so they share a table, in the
+shape of
+[the comparison table](../comparison.md#decode-speed-vs-used-context-the-8-tok-s-usability-floor).
+Both re-measured 2026-09-07 at wired limit 24000.
 
-Wired memory: 25.0 GB on llama at `-c 49152`, 18.7 GB on MLX at 37K.
-The llama rows past 8K ran under memory compaction and are not clean
-readings.
+| config | @ 4K | @ 8K | @ 16K | @ 25K | @ 33K | capped by |
+|---|--:|--:|--:|--:|--:|---|
+| **llama+MTP, f16 KV, `-c 33792`** | **67.7** | **70.0** | **64.5** | **60.2** | **56.0** | mem — 33792 is the largest `-c` that loads; no ceiling found to 33K, zero swap |
+| llama+MTP, q8_0 KV, `-c 40960` | 36.7 | 44.2 | 31.3 | 24.2 | 19.7 | mem — stopped at 33K on the memory-compression rule, which is under review; zero swap |
+
+Wired memory at the deepest row: 24.9 GB on f16, 24.8 GB on q8_0. The
+older q8_0 curve at `-c 49152`, with its 8K clean row, is superseded:
+that `-c` is not safe under real traffic
+([historical](../historical.md)).
+
+### MLX, its own creep (2026-08-29, wired limit 24000)
+
+The MLX server ran a different depth ladder on a different day, so its
+numbers stay in their own table rather than borrow the columns above.
+Its cache is unquantized and the server offers no KV option.
+
+| depth | 4K | 16K | 33K | 37K | ~41K |
+|---|--:|--:|--:|--:|---|
+| `mlx-community/Qwen3.6-35B-A3B-4bit` | 53.3 | 49.6 | 42.2 | **42.0 — last stable** | Metal OOM |
+
+Wired memory 18.7 GB at 37K.
 
 ## MTP draft depth sweep (32K, f16 KV)
 

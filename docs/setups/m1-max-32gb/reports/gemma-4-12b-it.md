@@ -40,7 +40,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | *Gemma-4-12B, LMS, f16 KV, thinking off* 💀 | *131k* | *mem* | *34.19* → *23.23* | *17.2 GB* | *0.909/0.872/100%* |
+| 1 | *Gemma-4-12B, LMS, unquantized KV, thinking off* 💀 | *131k* | *mem* | *34.19* → *23.23* | *17.2 GB* | *0.909/0.872/100%* |
 | 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% |
 | 3 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939/100% |
 | 4 | Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939/100% |
@@ -55,7 +55,7 @@ Retired entries: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Gemma-4-12B, LMS, f16 KV, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
+**#1 — Gemma-4-12B, LMS, unquantized KV, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
 
 ```bash
 ~/.cache/lm-studio/bin/lms server start --port 8081
@@ -149,10 +149,10 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 | test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
 | guided-v3.0 | llama-f16-off-ctx.256k | **37.5** (raw 58) | 3/8/partial | 97.6 | 6,453k | 125k | 0 | 132 | 3 | text |
-| blind-v1.1 | lmstudio-f16-high-ctx.160k 💀 | **0** (raw 30.5) | 0/8/invalid | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
+| blind-v1.1 | lmstudio-unquantized-high-ctx.160k 💀 | **0** (raw 30.5) | 0/8/invalid | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
 | blind-v1.1 | llama-f16-off-ctx.256k | **0** | 0/8/invalid | 80.3 | 9,994k | 179k | 0 | 92 | 0 |  |
-| guided-v3.0 | lmstudio-f16-high-ctx.160k 💀 | **0** (raw 30) | 0/8/invalid | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
-| guided-v3.0 | lmstudio-f16-low-ctx.160k 💀 | **0** (raw 29.5) | 0/8/invalid | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
+| guided-v3.0 | lmstudio-unquantized-high-ctx.160k 💀 | **0** (raw 30) | 0/8/invalid | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
+| guided-v3.0 | lmstudio-unquantized-low-ctx.160k 💀 | **0** (raw 29.5) | 0/8/invalid | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
 
 The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 
@@ -161,27 +161,25 @@ The config cell names the server, the KV cache type, the thinking level and the 
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
-## Decode speed vs used context (2026-09-04, wired limit 24000)
+## Decode speed vs used context
 
-Thinking off on every column. llama-server: raw `/completion`, with the
-allocation always above the deepest step measured. LM Studio: chat
-endpoint, `--parallel 4`. Pause 25 s per step.
+One row per configuration, the same shape as
+[the comparison table](../comparison.md#decode-speed-vs-used-context-the-8-tok-s-usability-floor).
+Measured 2026-09-04 at wired limit 24000, thinking off on every row.
+llama-server uses the raw completion endpoint with the allocation
+always above the deepest step; LM Studio uses the chat endpoint with
+four slots. Pause 25 s per step.
 
-| used tokens | llama, f16 KV, no drafter | llama, q8_0 KV + MTP | LM Studio MLX engine, f16 KV |
-|---|--:|--:|--:|
-| 4K | 24.64 | 13.82 | 34.19 |
-| 8K | 24.05 | 8.74 | |
-| 16K | 22.66 | **6.53 — under the 8 tok/s floor** | 32.05 |
-| 33K | 20.58 | | 30.59 |
-| 65K | 17.42 | | 27.08 |
-| 98K | 14.91 | | 24.52 |
-| 131K | 12.67 | | **23.23 — last stable; memory gates it here** |
-| 147K | 11.72 | | |
-| 180K | 10.72 | | |
-| 213K | 9.69 | | |
-| **245K** | **8.86 — deepest step inside the trained window** | | |
+| config | @ 4K | @ 16K | @ 33K | @ 65K | @ 131K | @ 245K | capped by |
+|---|--:|--:|--:|--:|--:|--:|---|
+| **llama, f16 KV, no drafter** | **24.6** | **22.7** | **20.6** | **17.4** | **12.7** | **8.86** | mem — the trained window ends at 262144; 14.9 at 98K, 10.7 at 180K, 9.7 at 213K |
+| *LM Studio MLX engine, f16 KV* 💀 | *34.2* | *32.1* | *30.6* | *27.1* | *23.2* | | mem — last stable 131K; the engine grows into the wired cap and swap starts. [Retired here](../lmstudio-retired.md) |
+| llama, q8_0 KV + MTP | 13.8 | 6.5 | | | | | speed — under the 8 tok/s floor by 16K |
 
-Cells are blank past a column's cap.
+Cells are blank past a config's cap, or where no step was measured at
+that depth. Wired memory at the deepest row: 13.9 GB on llama f16,
+17.2 GB on the LM Studio engine, 10.5 GB on llama q8_0.
+
 
 ---
 
