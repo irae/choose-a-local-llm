@@ -164,3 +164,82 @@ handing-over section at the end.
 - Block 10 (Qwen3.6 GGUF blind, off) also runs at window 81920 when
   its turn comes, same config note pattern. Final order: 4, 5, 6, 7,
   8, 9(retry), 10.
+- Block 4 finished: `end_reason: model_budget_exhausted`, zero
+  commits. Invalid per Mendel's zero-commit rule. Cause: a
+  tool-schema loop, 24 of 28 `edit` calls failed the same malformed
+  shape, model never adapted. score_raw 2, score_total 0. Scored,
+  JSON+CSV+report built together before committing, pushed to
+  `benchmark` (`f79f447`). Session log redacted and pushed, run
+  branch pushed (identical to base since zero commits), worktree
+  removed.
+- Stopping server C, waiting for wired recovery, then starting server
+  A again for block 5 (Gemma-26B, thinking on, guided).
+- **INCIDENT: block 5's server, worker, and watcher were all killed by
+  the harness's own low-memory protection at ~23:30Z**, mid-run, with
+  real uncommitted work in the worktree (`TASKS.md` and two
+  `mendel-development` files modified but not committed) — 8/8
+  libraries had commits, but the run was still working, not wrapping
+  up. `mem-watch-block5.log` shows free RAM collapsing from ~1565 MB
+  to 62 MB in one 20-second sample at 20:27:20, with sustained heavy
+  page compression (144115 pages in one interval) for over 3 minutes.
+  Not a GPU OOM (no Metal error in the server log), not a repetition
+  loop — a real near-system-OOM. Likely cause: `mediaanalysisd-access`
+  (macOS Photos/media indexing) running at ~70% CPU at the same time,
+  competing for memory while the server already held ~25 GB wired.
+  This machine is not tracked in `~/.config/choose-a-local-llm/machine.md`
+  or the login-items disable list. Not the model's fault and not a
+  benchmark misconfiguration — a real machine contention event, worth
+  a backlog item on master (mediaanalysisd or similar background
+  indexing during a run at wired 25000).
+- Retrying block 5 cleanly: waiting for wired recovery, restarting
+  server A, re-running `run-worker.sh gemma-4-26b-a4b pi guided high`
+  (the interrupted worktree/branch gets rebuilt fresh by the script).
+  This is a harness-caused interruption, not a model failure — no
+  penalty if a later valid attempt needs the Mendel retry rule.
+- Retry #1 also collapsed: free RAM fell to 56-133 MB with
+  `mediaanalysisd-access` at 93.7% CPU again. Killed the server and
+  worker myself this time before an uncontrolled kill (a persistent
+  Monitor watching free RAM every 15s caught it). Cleaned up
+  worktree/branch again.
+- Checked again with nothing of ours running at all: free RAM kept
+  falling on its own, 8.1 GB -> 6 GB -> 1.8 GB, purely from
+  `mediaanalysisd` (RSS grew 44 MB -> 523 MB and climbing, CPU
+  70-93%). This is not specific to block 5's config — it threatens
+  every remaining block. STOPPING THE RUN HERE rather than start
+  block 6 into a worsening system-wide condition. Waiting on the
+  owner: quiet `mediaanalysisd` (outside what this runner can touch,
+  no sudo, not a login item `mac-services.sh` covers), or say to
+  proceed anyway and accept the risk.
+- Owner killed `mediaanalysisd`/`mediaanalysisd-access` with sudo
+  (their own command, not run by this session). Owner also asked for
+  a throwaway slow creep on the fastest model first (Qwen3.6 GGUF
+  q8_0, `STEP_PAUSE_S=10`, numbers not stored) purely to exercise and
+  free memory before resuming — that creep hit its own mem-stop early
+  (depth 32818, heavy compaction), confirming the machine was still
+  under real pressure right after the kill. Owner's instruction: try
+  one real task regardless, only stop for a reboot ask if that also
+  fails.
+- Attempt 3 of block 5 started with free RAM still low (~976 MB) but
+  `mediaanalysisd` idle. It survived the whole run this time despite
+  several low free-RAM readings along the way (as low as ~56 MB at
+  one point) — never killed. `end_reason: complete`, 7/8 libraries,
+  scored 57. First two attempts of this block produced no scoreable
+  data: attempt 1 had 8/8 commits but its branch was force-deleted
+  during cleanup before scoring (a mistake — that data is lost, not
+  recoverable); attempt 2 was stopped within minutes of starting, no
+  meaningful work lost. Scored, JSON+CSV+report built together before
+  committing, pushed to `benchmark` (`c2c49ef`). Session log
+  redacted and pushed, run branch pushed, worktree removed.
+- RUN RESUMED. Moving to block 6 (Qwen3.6 MLX, thinking on, blind),
+  window 40982 (block 1's MLX gate, a separate pi entry from the
+  GGUF one raised to 81920 for blocks 9/10).
+- BLOCKS 6 AND 7 SKIPPED: no pi entry exists at all for
+  `mlx-community/Qwen3.6-35B-A3B-4bit` in `~/.pi/agent/models.json`
+  (checked the `mlx` provider block directly: only Qwen3.8-27B-4bit
+  and the Bonsai entries exist). AGENT.md's own text for this block
+  says "No entry is stop and ask." Not creating the entry myself —
+  that would go past the one owner-authorized `models.json` edit
+  (the qwen3.6-35b-a3b GGUF window). Per the checklist's rule 1 (a
+  blocked block is skipped, logged, the next one starts, the GPU
+  never sits idle for an ambiguous case), skipping both 6 and 7 and
+  moving to block 8. Stopped the MLX server.
