@@ -28,6 +28,23 @@ tokens**, 12.45 tok/s, wired ~24.5-25.2 GB throughout.
 
 Tool: `local-llm-eval-tools` commit `2344f00`.
 
+## `qwen38-atomicchat-iq3s-creep`
+
+Ladder: `AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, f16 KV, MTP drafter on.
+`-c 106496` served a real 4096-token completion (1411 tokens, EOS,
+13.45 tok/s), so the ladder cleared at the starting value.
+
+Creep ran at `-c 106496` against the depth list capped at 98304, see
+`results/creep-qwen38-atomicchat-iq3s.tsv`:
+
+4k @ 15.8 → 8k @ 15.4 → 16k @ 14.8 → 25k @ 14.2 → 33k @ 13.7 → 41k @
+13.1 → 49k @ 12.7 → 66k @ 11.7 → 82k @ 11.0 → 98k @ 10.3 tok/s. No stop
+condition hit (no OOM, no swap growth) — the sweep ran out of depth
+list before it ran out of headroom. Ceiling: **98338 tokens**, 10.26
+tok/s, wired ~24.0-24.1 GB throughout, clean the whole way.
+
+Tool: `local-llm-eval-tools` commit `2344f00`.
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table

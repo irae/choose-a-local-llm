@@ -20,5 +20,5 @@ that produced it.
 | --- | --- | --- |
 | `creep_tool_hash` | `2344f00` | `tool-check` |
 | `qwen38_unsloth_q3kxl_clean` | 49198 | `qwen38-unsloth-q3kxl-creep` |
-| `qwen38_atomicchat_iq3s_clean` | | `qwen38-atomicchat-iq3s-creep` |
+| `qwen38_atomicchat_iq3s_clean` | 98338 (list ceiling, no stop hit) | `qwen38-atomicchat-iq3s-creep` |
 | `qwen38_ista_iq3s_mtp_clean` | | `qwen38-ista-iq3s-mtp-creep` |

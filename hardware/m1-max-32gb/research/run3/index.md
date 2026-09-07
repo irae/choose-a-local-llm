@@ -54,7 +54,7 @@ Five rules hold across every item in this run:
   so it is the one build whose speed does not depend on the i-quant
   Metal path. If it cannot hold 8 tok/s at the depth the agent task
   needs, no 3-bit build will, and the two builds below stop mattering.
-- [ ] `qwen38-atomicchat-iq3s-creep` —
+- [x] `qwen38-atomicchat-iq3s-creep` —
   `AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, ladder, then creep at f16
   KV. At almost the same size as the build above it drifts 18 percent
   less against BF16 by the publisher's own KLD. This creep also gives
