@@ -18,6 +18,11 @@ and the methodology pages the runbook points to.
   items the run takes, in order, with a checkbox each; the runbook and
   the kit appear when the run starts. `<hardware-id>` is the machine's
   setup id under `docs/setups/`.
+- `hardware/<hardware-id>/benchmarks/unscheduled/` and
+  `hardware/<hardware-id>/research/unscheduled/`: work that needs the
+  machine and is not in a run. One file per item, named by its
+  mnemonic, no index and no order. A run list drops an item here when
+  it stops being scheduled, and takes it back when it is.
 - `backlog/<mnemonic-name>.md`: one file per item, issue-tracker
   style. Things to do that need no benchmark hardware (tooling, method
   pages, runner code, site restructures), not yet decided or scheduled,

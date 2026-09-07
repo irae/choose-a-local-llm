@@ -1,43 +1,27 @@
-# Research run 3 — memory: the wired limit and the no-OOM rule
+# Research run 3, task list
 
 Not started. The runbook (`AGENT.md`) and the rest of the kit appear
 when the run starts. Items are one file each in `../`, in the order
 the run takes them; the executor checks them off here as it goes and
 writes results beside the item (`../<mnemonic>/results.md`).
 
-This run holds the two items that share one apparatus: a served model,
-a slow creep, and the memory watcher. Both change every published
-ceiling, so they run together and before any work that computes a
-context from a limit. Everything else moved to
-[run 4](../run4/index.md).
+Everything here runs at the standing wired limit, 24000. Items that
+wait on a decision, on a download, or on the MLX margin rule live in
+`../unscheduled/`, which has no index and no order.
 
-Why they belong together (2026-09-07). The wired limit item asks what
-`iogpu.wired_limit_mb` should be. The no-OOM item asks what margin a
-config needs so an agent run never dies of memory. Run 11 showed the
-two questions are one: at limit 24000 the machine already held 25.0 to
-25.5 GB wired during creeps, and at 25000 it held 25.3 to 26.0 GB, so
-the sysctl was not the binding constraint in either regime. What
-changed the result was the machine's state at the start.
-
-- [x] **Control: is the gain the limit or a clean machine?** Answered
-  2026-09-07 by run 12's pre-block prep
-  (`../../benchmarks/bench12/results.md`): at wired 24000 the same
-  model serves `-c 40960` at q8_0 and `-c 33792` at f16, against
-  `-c 98304` and `-c 40960` at 25000. The gain was the limit, not the
-  machine state. 24000 stands, because six creeps there showed zero
-  swap growth while 25000 swapped under back-to-back sweeps. Only
-  Qwen3.6 changed rows; no other model needs a re-sweep.
-- [ ] **A config that reaches Mendel never runs out of memory**: the
-  in-turn margin, the mlx and llama findings, four tests in order
-  (../no-oom-at-mendel.md; attachments in ../no-oom-at-mendel/). It
-  writes the window and budget rule that
-  `backlog/qwen38-mlx-window.md` waits on. Runs unattended, at
-  whatever limit the ladder settles on.
-
-One item is left. The ladder above 24000 moved to the backlog as a
-later item (`backlog/wired-limit-ladder.md`, owner 2026-09-07): 24000
-stands and the higher rungs are not wanted for now. The no-OOM item
-runs unattended at 24000 and needs nothing from the owner.
-
-Waits on the owner: `backlog/bonsai-kv-bias-corpus.md`,
-`backlog/qwen38-mlx-window.md`.
+- [ ] **Qwen3.8-27B: alternative GGUF quants and the effort levels**
+  (../qwen38-configs.md; finding attached: ../kv-quant-on-m1.md).
+  Qwen3.8 is the only local model that finished the agent task, and
+  its two weak points are maximum context and decode speed. Its
+  "vision off" step is answered by ../strip-modules.md: every GGUF row
+  already drops the tower, so only the memory measurement remains.
+- [ ] **Strip modules on the trusted models** (../strip-modules.md).
+  One load pair per GGUF model, about ten minutes each, unattended. It
+  measures what `--no-mmproj` already saves and whether the MTP
+  drafters pay for themselves.
+- [ ] **pi compaction at a lowered window**, two to four models, the
+  summary scored (../compaction-experiment.md). The worker now derives
+  a 8192-token keep budget under a 65536-token window, so this item
+  measures whether that rule is right.
+- [ ] **Container trials**: the survey, then at most three candidates
+  through the three quick checks (../container-trials.md).

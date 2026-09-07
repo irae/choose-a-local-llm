@@ -114,7 +114,7 @@ ASD-STE100 Simplified Technical English.
   branch, session file and pinned config; score its commits as a
   partial and leave the rest to the coordinator. Only a run that
   ended on its own and is scored gets its worktree removed.
-- **Block 9 is the retry sweep.** When blocks 1 to 8 are done and no
+- **Block 7 is the retry sweep.** When blocks 1 to 6 are done and no
   message from the owner says otherwise, retry every row of this run
   that was killed or interrupted, oldest first, each in a fresh
   worktree with a suffix, under the Mendel retry rule (no penalty
@@ -128,16 +128,19 @@ ASD-STE100 Simplified Technical English.
 
 ## The order, and why
 
-Nine blocks. The first two are Gemma-12B window measurements the
+Seven blocks. The first two are Gemma-12B window measurements the
 owner asked for (two agents in parallel on one server). Block 3 asks
 what the Bonsai fork does with f16 KV, the one cache type it never
-served. Block 4 is the Bonsai MLX thinking-off pair, moved out of run
-11. Blocks 5 to 7 re-run the three valid rows that compacted under
-pi's old 16384 reserve, at the 8192 reserve every row uses since
-2026-09-06. Block 8 is conditional, block 9 is the retry sweep. Every
-block starts the moment the previous one ends.
+served, and then runs the agent task there. Blocks 4 to 6 re-run the
+three valid rows that compacted under pi's old 16384 reserve, at the
+8192 reserve every row uses since 2026-09-06. Block 7 is the retry
+sweep. Every block starts the moment the previous one ends.
 
-## Block 1/9 — Gemma-12B GGUF, two slots: `-c` ladder and round-robin creep
+Every MLX item moved to `../unscheduled/`: those rows wait on the
+in-turn margin rule, because that server cannot refuse a request it
+cannot serve.
+
+## Block 1/7 — Gemma-12B GGUF, two slots: `-c` ladder and round-robin creep
 
 Read `docs/methodology/context-creep.md` and
 `docs/methodology/memory-ceiling.md`.
@@ -180,7 +183,7 @@ Done: the ladder table and the creep table with its verdict in
 Write the per-slot clean depth in `state.md` as `gemma12_2x_clean`.
 Stop the server; wait for wired recovery.
 
-## Block 2/9 — Gemma-12B GGUF, one slot at `-c 131072`: creep
+## Block 2/7 — Gemma-12B GGUF, one slot at `-c 131072`: creep
 
 Same files, KV type and drafter as block 1. Fixed for this block:
 `--parallel 1`, `-c 131072` (the owner's comparison point, the same
@@ -205,7 +208,7 @@ Done: the creep table beside block 1's in `results.md`, one
 comparison table (depth, tok/s one slot, tok/s per slot at two
 slots). Stop the server; wait for wired recovery.
 
-## Block 3/9 — Bonsai on the PrismML fork, f16 KV, one slot: `-c` ladder and creep
+## Block 3/7 — Bonsai on the PrismML fork, f16 KV: ladder, creep, then the agent task
 
 Read `docs/methodology/context-creep.md`. The fork has never served
 this model with f16 KV, and the site's own KV study says that is where
@@ -244,44 +247,23 @@ N_CONTEXTS=1 MODEL=bonsai-prism python3 tools/sweeps/creep_llama.py \
   | tee hardware/m1-max-32gb/benchmarks/bench12/results/creep-bonsai-fork-f16.tsv
 ```
 
-Done: the ladder table and the creep table with its verdict in
-`results.md`, committed, and one line in `state.md` that names the
-deepest step at or above 8 tok/s. No Mendel run in this block, no
-two-slot arm, no drafter. Stop the server; wait for wired recovery.
-
-## Block 4/9 — Bonsai MLX, thinking off: smoke, Mendel guided, Mendel blind
-
-Third attempt of the guided row (two invalid on the harness: a dead
-`gh` token, then an 85-call loop before the loop stop existed) and
-the first blind attempt at this level.
-
-| parameter | kind | value | source |
-| --- | --- | --- | --- |
-| files | fixed | `prism-ml/Ternary-Bonsai-27B-mlx-2bit` | published command |
-| serving | fixed | `mlx_lm.server --prompt-cache-size 2` | site row `bonsai-mlx-off` |
-| thinking | fixed | off (pi level `off`) | this block |
-| harness window | derived | `<planning>` the entry's value today; the MLX ceiling is 49K (memory) at 24000 | newest Bonsai MLX creep at this run's limit; ladder-before-serve applies to MLX as a creep, not a `-c` ladder |
-| `maxTokens`, `reserveTokens` | derived | 8192 both | output budget rule, `docs/methodology/mendel.md` |
+Then, on the window this creep supports, one agent run: the Mendel
+guided test at thinking high, the same test the q4_0 arm scored 31.5
+on when the wall clock stopped it.
 
 ```bash
-mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
-  --prompt-cache-size 2 --port 8081 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench12/results/server-bonsai-mlx-off.log
+MENDEL_CONTEXT_WINDOW=<clean depth, rounded down to 4096> \
+  ./run-worker.sh bonsai-prism pi guided high
 ```
 
-Smoke first, then the two runs:
+Done: the ladder table, the creep table with its verdict, and the
+agent row, all in `results.md`, committed, and one line in `state.md`
+that names the deepest step at or above 8 tok/s. No two-slot arm, no
+drafter, no EvalPlus: the quality gate at f16 is
+`../unscheduled/bonsai-fork-f16-evalplus.md`. Stop the server; wait
+for wired recovery.
 
-```bash
-benchmarks/mendel-smoke.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit off 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench12/results/mendel-smoke-bonsai-mlx-off.log
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 3 window> ./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi guided off
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 3 window> ./run-worker.sh prism-ml/Ternary-Bonsai-27B-mlx-2bit pi blind off
-```
-
-A `fail` on the smoke drops both rows. Config note: `mlx_lm.server,
---prompt-cache-size 2, thinking off, window <value> (<source>),
-reserveTokens 8192, wired <value>`. Stop the server; wait for wired
-recovery.
-
-## Blocks 5 to 7 — the reserve re-runs
+## Blocks 4 to 6 — the reserve re-runs
 
 Three valid rows compacted under pi's default 16384 reserve before
 2026-09-06. Each runs again at reserve 8192, same test and level,
@@ -290,7 +272,7 @@ the better row stands, the config note says "re-run at reserveTokens
 8192; first row ran at 16384". Ladder-before-serve applies to each
 model at this run's wired limit before its block.
 
-### Block 5/9 — Qwen3.8 GGUF, blind, effort medium
+### Block 4/7 — Qwen3.8 GGUF, blind, effort medium
 
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
@@ -306,7 +288,7 @@ Serve with the site row's command at the derived `-c`, then:
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 4 window> ./run-worker.sh qwen3.8-27b pi blind medium
 ```
 
-### Block 6/9 — Gemma-26B GGUF, blind, thinking high
+### Block 5/7 — Gemma-26B GGUF, blind, thinking high
 
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
@@ -320,7 +302,7 @@ cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 4 window> .
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> ./run-worker.sh gemma-4-26b-a4b pi blind high
 ```
 
-### Block 7/9 — Qwen3.6 GGUF, guided, thinking high
+### Block 6/7 — Qwen3.6 GGUF, guided, thinking high
 
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
@@ -334,25 +316,18 @@ cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> .
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 6 window> ./run-worker.sh qwen3.6-35b-a3b pi guided high
 ```
 
-## Block 8/9 — windows up at the run's limit (conditional)
-
-Runs only when the wired limit is 25000 and the owner wrote in
-`state.md` at run start that 25000 held through run 11. For each
-model with a Mendel row whose ladder in this run found a larger `-c`
-than its site row: the slow creep at the new `-c` (the ladder already
-ran before the model's block). Otherwise this block is empty; write
-that in `state.md`.
-
 ## Order
 
-1 to 9 in this file's order. Every block starts the moment the
+1 to 7 in this file's order. Every block starts the moment the
 previous one ends. Nothing in this run waits for the owner.
 
 ## Not in this run
 
-- Qwen3.8 effort levels and quants: `hardware/m1-max-32gb/research/qwen38-configs.md`.
-- The research items with a Mac procedure (`strip-modules.md`,
-  `specialized-models.md`, `small-agent-models.md`): a research run.
+- Qwen3.8 effort levels and quants, strip modules, the compaction
+  experiment and the container trials: research run 3
+  (`hardware/m1-max-32gb/research/run3/index.md`).
+- Every MLX row, the Bonsai EvalPlus gate at f16, the small agent
+  models and the specialized models: `../unscheduled/`.
 - `keepRecentTokens` under small windows: the owner has not decided
   (`backlog/pi-compaction-efficiency.md`); every row keeps pi's
   default and says so.

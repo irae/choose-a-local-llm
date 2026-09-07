@@ -17,15 +17,18 @@ Legend for the checkbox:
 Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 ("Three kinds of work, three places").
 
+Work that needs the benchmark machine does not live here. A run item
+that is not scheduled lives in
+`hardware/<hardware-id>/benchmarks/unscheduled/` or
+`hardware/<hardware-id>/research/unscheduled/`, one file per item,
+named by its mnemonic, no index and no order.
+
 ## Open
 
-- [l] The wired limit ladder above 24000: rungs 26000 to 28000, whether the window a rung buys is worth its swap; 24000 stands and the owner is comfortable with it (wired-limit-ladder.md)
 - [ ] Resume an interrupted Mendel run in place: worker `--resume`, runner counts earlier sessions toward the cap, cleanup only by an explicit close (mendel-resume-interrupted-run.md)
 - [ ] Real near-OOM in run 11 block 5: mediaanalysisd (macOS media indexing) at ~70% CPU competed for memory while the server held wired 25000; free RAM crashed 1565→62 MB in 20s, harness killed the run mid-work, uncommitted work lost (mediaanalysisd-memory-contention.md)
 - [ ] pi's compaction may be too shallow under a small contextWindow: frequency climbed from 1/9min to 1/2-3min mid-run, several compactions freed only 1-8 points of headroom; research pi's compaction options (pi-compaction-efficiency.md)
 - [ ] Shared-score rule: the owner's sentence for when two quants of one model carry their own scores (shared-score-quant-exception.md)
-- [ ] Qwen3.8 MLX window before any Mendel retry: smaller window, earlier compaction, or wait for the no-OOM research (qwen38-mlx-window.md)
-- [ ] Bonsai KV bias corpus: name it, or the fork row stands and two runs are dropped (bonsai-kv-bias-corpus.md)
 - [ ] Budget for cloud Mendel re-runs, and which models go to polyglot (cloud-reruns-and-polyglot-tier.md)
 - [ ] Mendel: score thinking-off configs that only have thinking-high rows (qwen3.6-35b-a3b confirmed gap) (mendel-thinking-off-gaps.md)
 - [ ] local-llm-eval-tools: extract creep and the Mendel kit with history into two tools; hand-over prompt for the coordinator agent (local-llm-eval-tools-codebase-issue-simulator.md)
@@ -33,6 +36,8 @@ Rules: `CONVENTIONS.md` (backlog row) and `benchmarks/PLANNING.md`
 - [ ] New pi test idea: sub-agent hand-offs to keep the main agent's context clean, trading compactions for per-hand-off cache misses (pi-subagent-context-hygiene-test.md)
 
 ## Changelog
+
+- 2026-09-07 Unscheduled work moved out of the backlog into `hardware/m1-max-32gb/benchmarks/unscheduled/` and `research/unscheduled/`: the wired ladder above 24000, the Qwen3.8 MLX window, the Bonsai KV bias corpus, the no-OOM margin rule, the small agent models and the specialized models
 
 - 2026-09-07 pi entries generated from the site data: `npm run pi:models` writes `contextWindow` and `maxTokens` for every row with a `pi` block, largest window wins, other fields and providers untouched (`tools/gen-pi-models.mjs`)
 - 2026-09-07 Devstral Small 2 download dropped by the owner: smaller models first, and later (`devstral-download.md` deleted, unstarted)

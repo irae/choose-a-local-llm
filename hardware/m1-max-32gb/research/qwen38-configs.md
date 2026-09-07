@@ -42,7 +42,8 @@ first that yields a completed run:
    medium row's 87. Run 11 holds no Qwen3.8 block; the deferred EvalPlus
    at medium and the guided run wait for this item's answer, because
    the effort level decides which config is worth scoring.
-4. **The OOM-at-load threshold.** Moved to `no-oom-at-mendel.md`,
+4. **The OOM-at-load threshold.** Moved to
+   `unscheduled/no-oom-at-mendel.md`,
    which holds the llama fit findings (`--fit` is off whenever `-ngl`
    is set by hand; `-ub` sizes the compute buffer; `llama-fit-params`
    projects without a server).
@@ -55,8 +56,10 @@ first that yields a completed run:
   cache is slow here because of llama.cpp's decode-time attention
   kernel, not the chip; a q4_0 KV trial is a Qwen-only experiment
   (int4 KV breaks Gemma 4 past about 950 tokens).
-- The MLX row's window problem is `backlog/qwen38-mlx-window.md` and
-  `no-oom-at-mendel.md`; the MLX server has no memory bound and no
+- The MLX row's window problem is
+  `../benchmarks/unscheduled/qwen38-mlx-window.md` and
+  `unscheduled/no-oom-at-mendel.md`, both unscheduled; the MLX server
+  has no memory bound and no
   quantized KV.
 
 Each candidate goes through the Mendel smoke on the llama row; a pass

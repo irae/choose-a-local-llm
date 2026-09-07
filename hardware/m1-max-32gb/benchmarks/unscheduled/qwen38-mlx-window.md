@@ -12,5 +12,5 @@ The MLX ceiling for this model is 26708 to 28672 at the 24000 limit.
 Options: a smaller `contextWindow` with `reserveTokens` sized for the
 in-turn growth, an earlier compaction trigger, or waiting for the
 measured margin from the research item
-`hardware/m1-max-32gb/research/no-oom-at-mendel.md`. The blind low
+`hardware/m1-max-32gb/research/unscheduled/no-oom-at-mendel.md`. The blind low
 retry waits on the same decision.

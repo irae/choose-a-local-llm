@@ -90,6 +90,12 @@ Benchmark work:
 - `hardware/<hardware-id>/research/<mnemonic>.md`. One research item
   per file, a backlog of questions for that machine, with
   `research/<mnemonic>/` beside it for attached files when needed.
+- `hardware/<hardware-id>/benchmarks/unscheduled/` and
+  `hardware/<hardware-id>/research/unscheduled/`. Work that needs the
+  machine and is not in a run: one file per item, named by its
+  mnemonic, no index and no order (owner rule, 2026-09-07). An item
+  moves out of a run list into here rather than into `backlog/`, which
+  is for work that needs no benchmark hardware.
 - `hardware/<hardware-id>/research/run<N>/`. A research run: its
   `index.md` is the task list that links the items the run takes, in
   order, with a checkbox per item; the executor writes results beside

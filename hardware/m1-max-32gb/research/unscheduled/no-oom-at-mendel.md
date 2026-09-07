@@ -1,9 +1,11 @@
 # A config that reaches Mendel never runs out of memory
 
-Research item of `m1-max-32gb`, the one open item of research run 3
-(`run3/index.md`). It derives its margin at the standing limit, 24000.
+Research item of `m1-max-32gb`, unscheduled (owner, 2026-09-07): it
+is the MLX margin rule, and every MLX row waits on it. It derives its
+margin at the standing limit, 24000.
 Nothing high-value waits on it: the only pending decision it unblocks
-is the Qwen3.8 MLX row's window (`backlog/qwen38-mlx-window.md`), and
+is the Qwen3.8 MLX row's window
+(`../../benchmarks/unscheduled/qwen38-mlx-window.md`), and
 that row is already marked untrusted, while the Qwen3.8 arm that
 scored 87 is the GGUF one. Attached files
 in `no-oom-at-mendel/`. Owner rule to establish (2026-09-05): when a
