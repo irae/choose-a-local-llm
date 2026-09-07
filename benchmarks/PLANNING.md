@@ -184,7 +184,10 @@ committed measurement, the block that measures it comes first.
    when output stops growing (server log first; see
    `docs/methodology/server-lore.md`), how to resume each block, and
    the order to start the next block the moment one ends. No approval
-   gates.
+   gates. The last block of every runbook is the retry sweep: the
+   run's killed or interrupted rows, oldest first, in fresh
+   worktrees, while the owner is away. Nothing of an interrupted run
+   is cleaned up mid-run (`docs/methodology/mendel.md`).
 10. Close the loop: when the run ends, the runner updates `state.md`
    with a clean handing-over section, and the coordinator adds the
    run's findings to `hardware/<hardware-id>/benchmarks/INDEX.md`,

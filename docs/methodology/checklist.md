@@ -175,9 +175,15 @@ is pending, the next block that does not depend on it runs.
     not memory recovery — a sweep started ~3 min after killing a 23 GB
     server ran the whole window with 60-220 MB free and continuous
     swap-ins, and OOMed ([server lore](./server-lore.md)).
-14. Clean up: `pgrep -fl "llama-server|mlx_lm"`, `lms ps`, kill strays,
-    no background task holding the GPU. End the session with the
-    machine idle.
+14. Clean up processes only: `pgrep -fl "llama-server|mlx_lm"`,
+    `lms ps`, kill strays, no background task holding the GPU. Do not
+    remove a worktree, a branch, a session file or a pinned config of
+    a run that did not end on its own; they stay until the coordinator
+    closes the row ([Mendel](./mendel.md), "No cleanup mid-run").
+15. Before the session ends with the GPU idle: when no queued block
+    remains and the owner is away, retry the run's killed or
+    interrupted rows in fresh worktrees, oldest first, under the
+    Mendel retry rule; then end the session with the machine idle.
 
 ## One more time: the GPU does not sit idle
 

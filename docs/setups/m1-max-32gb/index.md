@@ -178,6 +178,36 @@ closes and the limit decision is made
 - A Bonsai guided row at thinking off, after the runner gets a live
   loop alarm. The bonsai-prism q4 A/B.
 - Aider tier 2, driven from another computer. Docker does not fit here.
+- A benchmark user account that starves the media indexing daemon
+  (below).
+
+## Background services and free memory
+
+During a run the GPU wires about 25 GB and the rest of the machine
+lives in what is left. On 2026-09-06 the macOS media analysis daemon
+(`mediaanalysisd` and its access helper) woke up during a Mendel run,
+climbed to 70 to 94 percent CPU with growing memory, and pushed free
+RAM from about 1.5 GB to under 100 MB in twenty seconds. The harness's
+low-memory protection killed the server and the worker mid-run, and
+a clean retry died the same way; free RAM kept falling with nothing
+of ours running. Two attempts were lost. The daemon indexes the
+user's Photos library, Live Text and Visual Look Up; killing it does
+nothing, macOS respawns it, and disabling it needs System Integrity
+Protection off, which is not an option here.
+
+The fix is preparation, never coercion mid-run:
+
+- **Proposed: a benchmark user account.** No Photos library, no iCloud
+  account, Siri Suggestions off, Spotlight indexing excluded from the
+  model and repo folders. The daemon exists in that user's session
+  but has nothing to analyze. Runs happen as that user; the owner's
+  account keeps its services.
+- Until then, preflight should report the daemon as a `fix` line when
+  it runs, and check a free-RAM floor before a block starts, because
+  free RAM and not wired memory is what this event exhausted.
+- A run killed this way keeps its worktree and branch until the
+  coordinator scores what is there
+  ([Mendel](../../methodology/mendel.md), "No cleanup mid-run").
 
 ## Why quality scores needed a correction
 

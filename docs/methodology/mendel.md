@@ -91,6 +91,19 @@ window ladder and the summary rubric live in
   capital D: `pkill -f "Mendel Daemon"`.
 - Never trust the benchmarked model's own claims; score only from the
   verification battery.
+- **No cleanup mid-run.** A run's worktree, branch, session file and
+  pinned config are removed only when the run ended on its own and
+  its row is scored. A run that something else ended (a memory kill,
+  a server death, an operator stop) keeps all of it until the
+  coordinator closes the row; its commits score as a partial, and a
+  newer kit may resume the session. Never delete a branch before
+  scoring. The rule and the resume path are in the Mendel `PLAN.md`,
+  "Cleanup".
+- **The GPU does not idle on interrupted rows.** When the run's
+  queue is empty and the owner is away, the runner retries the run's
+  killed or interrupted rows in fresh worktrees, oldest first, under
+  the retry rule below, and leaves the interrupted worktrees in
+  place.
 - A valid but partial run can run again. If the model caused the
   failure, the retry replaces the row and loses a fixed number of
   points for each earlier valid attempt. If our harness caused it (a

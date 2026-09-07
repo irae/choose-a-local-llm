@@ -102,6 +102,17 @@ ASD-STE100 Simplified Technical English.
   the rest of this run: write why in `state.md`, commit, start the
   next block. Only a line in this file that says "stop and ask"
   pauses the run.
+- **No cleanup mid-run.** A Mendel run that something else ended (a
+  memory kill, a server death, an operator stop) keeps its worktree,
+  branch, session file and pinned config; score its commits as a
+  partial and leave the rest to the coordinator. Only a run that
+  ended on its own and is scored gets its worktree removed.
+- **Block 8 is the retry sweep.** When blocks 1 to 7 are done and no
+  message from the owner says otherwise, retry every row of this run
+  that was killed or interrupted, oldest first, each in a fresh
+  worktree with a suffix, under the Mendel retry rule (no penalty
+  when the harness caused the loss). The GPU idles only when that
+  list is empty.
 - Do not change published pages or the site's `models.json`. Every
   number goes into `results.md` with the exact command that produced
   it. The coordinator publishes.
@@ -110,12 +121,13 @@ ASD-STE100 Simplified Technical English.
 
 ## The order, and why
 
-Seven blocks. The first two are Gemma-12B window measurements the
+Eight blocks. The first two are Gemma-12B window measurements the
 owner asked for (two agents in parallel on one server). Block 3 is
 the Bonsai MLX thinking-off pair, moved out of run 11. Blocks 4 to 6
 re-run the three valid rows that compacted under pi's old 16384
-reserve, at the 8192 reserve every row uses since 2026-09-06. Every
-block starts the moment the previous one ends.
+reserve, at the 8192 reserve every row uses since 2026-09-06. Block
+7 is conditional, block 8 is the retry sweep. Every block starts the
+moment the previous one ends.
 
 ## Block 1/7 — Gemma-12B GGUF, two slots: `-c` ladder and round-robin creep
 
