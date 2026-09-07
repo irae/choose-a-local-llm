@@ -196,3 +196,17 @@ handing-over section at the end.
   (the interrupted worktree/branch gets rebuilt fresh by the script).
   This is a harness-caused interruption, not a model failure — no
   penalty if a later valid attempt needs the Mendel retry rule.
+- Retry #1 also collapsed: free RAM fell to 56-133 MB with
+  `mediaanalysisd-access` at 93.7% CPU again. Killed the server and
+  worker myself this time before an uncontrolled kill (a persistent
+  Monitor watching free RAM every 15s caught it). Cleaned up
+  worktree/branch again.
+- Checked again with nothing of ours running at all: free RAM kept
+  falling on its own, 8.1 GB -> 6 GB -> 1.8 GB, purely from
+  `mediaanalysisd` (RSS grew 44 MB -> 523 MB and climbing, CPU
+  70-93%). This is not specific to block 5's config — it threatens
+  every remaining block. STOPPING THE RUN HERE rather than start
+  block 6 into a worsening system-wide condition. Waiting on the
+  owner: quiet `mediaanalysisd` (outside what this runner can touch,
+  no sudo, not a login item `mac-services.sh` covers), or say to
+  proceed anyway and accept the risk.
