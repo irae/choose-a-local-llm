@@ -132,7 +132,7 @@ As of 2026-09-07.
   (what wired 24000 serves), gemma-26b llama at 212992, bonsai-mlx at
   48K, qwen3.8-mlx at 26K; `maxTokens` 8192 on every entry.
 
-## Run 11, closed 2026-09-07
+## Latest benchmark run, closed 2026-09-07
 
 Every number here was measured at wired limit 25000, a trial value for
 that run. **The trial ended: 24000 stands** (below), so these numbers
@@ -227,14 +227,15 @@ went up. Superseded numbers under the old cap live on
 
 ## The wired limit: 24000
 
-**Settled 2026-09-07: 24000 stands.** Run 11 ran a night at 25000 with
-no panic and no lockup, and it bought Qwen3.6 a larger window. Against
-that, 25000 produced real swap growth under back-to-back sweeps with
-no recovery gap, while six creeps at 24000 on the same model, two KV
-types and two tools showed zero swap growth. Swap ends a measurement
-and can end a run, so the machine keeps the value that never swapped.
-The re-measurement at 24000 is on the model's own pages; the 25000
-numbers stay in the run 11 record.
+**Settled 2026-09-07: 24000 stands.** A benchmark run served at 25000
+for a full session with no panic and no lockup, and it bought Qwen3.6
+a larger window. Against that, 25000 produced real swap growth under
+back-to-back sweeps with no recovery gap, while six creeps at 24000 on
+the same model, two KV types and two tools showed zero swap growth.
+Swap ends a measurement and can end a run, so the machine keeps the
+value that never swapped. The re-measurement at 24000 is on the
+model's own pages; the 25000 numbers stay in the earlier benchmark
+record.
 
 Measured on this machine (Qwen3.6-35B MLX, per-process `vmmap` tracking):
 
