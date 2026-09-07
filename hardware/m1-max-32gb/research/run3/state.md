@@ -6,9 +6,10 @@ Start here: read `AGENT.md`, then `index.md`, which is the order.
 Log every session below, and close each one with a handing-over
 section, the same way the bench runs do.
 
-The run waits on one thing: the three Qwen3.8 3-bit builds and their
-MTP drafters, downloading on this machine. An item whose file is not
-on disk is stop and ask; it never downloads anything itself.
+`unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL` is on disk (2026-09-07), so the
+run can start at once. The other two builds and their MTP drafters
+fetch in the background under `downloads-background`, two at a time.
+An item whose file has not landed is passed over, not blocked.
 
 ## Values this run sets
 

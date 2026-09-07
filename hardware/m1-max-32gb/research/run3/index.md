@@ -34,6 +34,13 @@ Five rules hold across every item in this run:
 - **GGUF only.** An MLX build enters only when it is the only build of
   that model that exists.
 
+- [ ] `downloads-background` — start the model files this run still
+  needs, in the background, and go on to the next item at once. The
+  `unsloth/…:UD-Q3_K_XL` build is already on disk (2026-09-07);
+  `AtomicChat/…:AD-IQ3_S` and
+  `ISTA-DASLab/…:GSQ-RCO-IQ3_S-mtp` are not, with their MTP drafters.
+  Two downloads at a time, never three. The download's own notes live
+  with the machine's model pins, not here.
 - [ ] `tool-check` — clone or `git pull --ff-only`
   `git@github.com:irae/local-llm-eval-tools.git` at
   `~/code/local-llm-eval-tools`, record `git rev-parse --short HEAD`

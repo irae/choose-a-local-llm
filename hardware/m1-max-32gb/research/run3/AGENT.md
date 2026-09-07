@@ -45,8 +45,11 @@ its method; read that file when the item starts, not before.
 - **Ladder before creep.** From the item's starting `-c`, step 8192
   until a real 4096-token completion fails; the largest value that
   served is the creep's `-c`. Record every candidate in `results.md`.
-- Serve the exact files each item names. **No item of this run may
-  download anything.** A missing file is stop and ask.
+- Serve the exact files each item names. **`downloads-background` is
+  the only item that fetches anything.** A file it is still fetching
+  does not block the run: pass that item over, take the next item that
+  can run, and come back when the file lands. A file that no item is
+  fetching and that is not on disk is stop and ask.
 - One model on the GPU at a time, port 8081. Quit the LM Studio app
   first and confirm with `pgrep -fl "LM Studio"`.
 - A creep runs its own monitor and starts no watcher. Every smoke that
@@ -109,6 +112,34 @@ benchmarks/mendel-smoke.sh qwen3.8-27b medium
 Read the Mendel smoke's verdict line and nothing else. A pass is a
 permit, not a quality signal.
 
+## `downloads-background`
+
+The first item, and the only one that fetches anything. Start it, then
+go straight to the next item; it runs in the background while the run
+works.
+
+On disk already (2026-09-07): `unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL`.
+Still to fetch, with their MTP drafters where the repository ships
+one:
+
+- `AtomicChat/Qwen3.8-27B-GGUF`, file `Qwen3.8-27B-AD-IQ3_S.gguf`,
+  revision `ca10ebceb1887be9d33b838770a36b39d75a8a4c`
+- `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF`, file
+  `Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf`, revision
+  `d562806dbafae37109975e970aae91b43e73b440`
+
+Rules: fetch through llama's own `-hf` path, so the files land in the
+cache llama reads. Pin the revision, and pin the file with
+`--hf-file`, because a quant tag has matched the wrong file on this
+machine before. **Two downloads at a time, never three.** Check the
+free disk space first and stop if it cannot hold both. Record each
+file name, revision and real size on disk with the machine's model
+pins; that record is the download's notes, not this file.
+
+Done: both downloads started and the run moved on. The item closes
+when the files are on disk and pinned. Nothing waits for it except the
+two creeps that need those files.
+
 ## `tool-check`
 
 Clone or pull `git@github.com:irae/local-llm-eval-tools.git` at
@@ -130,8 +161,10 @@ ladder, then a creep, and nothing else until its gate.
 | `qwen38-atomicchat-iq3s-creep` | `AtomicChat/Qwen3.8-27B-GGUF`, `--hf-file Qwen3.8-27B-AD-IQ3_S.gguf` | 106496 |
 | `qwen38-ista-iq3s-mtp-creep` | `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF`, `--hf-file Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf` | 131072 |
 
-The starting values are projections from one measured row, not
-measurements. The ladder replaces them. Done per build: the ladder
+Only the first of the three is on disk today, so it goes first and the
+other two run when their files land. The starting values are
+projections from one measured row, not measurements. The ladder
+replaces them. Done per build: the ladder
 table and the creep table with its verdict in `results.md`, and the
 clean depth in `state.md` as `<mnemonic>_clean`. Stop the server; wait
 for the wired recovery.
@@ -139,7 +172,9 @@ for the wired recovery.
 ## `qwen38-creep-gate`
 
 Runs after the last of the three creeps, never as one of them ends.
-Read all three creep files together. Write one line per build in
+When a build's file is still downloading, this gate waits and the run
+takes the compaction and strip items meanwhile. Read all three creep
+files together. Write one line per build in
 `results.md`: the build, its clean depth, the reference, the ratio,
 and `evalplus: run` or `evalplus: skipped, context too small`.
 
