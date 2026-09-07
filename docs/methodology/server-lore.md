@@ -27,7 +27,9 @@ stall. Everything here was hit at least once.
 
 ## LM Studio (verified 2026-08-29/30, LM Studio 0.4.23 / mlx-engine 1.10.1)
 
-Use `tools/sweeps/creep_lmstudio.py` for LM Studio depth sweeps; set
+Use `python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py
+lmstudio` for LM Studio depth sweeps (`docs/methodology/context-creep.md`,
+"Install"); set
 `N_CONTEXTS` for N alternating contexts. Full forensic record:
 `hardware/m1-max-32gb/benchmarks/bench4/lmstudio-forensics.md`.
 

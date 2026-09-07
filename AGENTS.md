@@ -128,11 +128,12 @@ Benchmark work:
 - `tests/`. The tests for the shared tools in `benchmarks/`. One
   command, `tests/run.sh`, and `tests/fixtures/README.md` says where
   every fixture came from.
-- `tools/sweeps/`. The depth-sweep tools. `creep.py` owns the method
-  (depth ladder, pause, stop conditions, memory columns, liveness) and
-  one `creep_<backend>.py` owns each backend. One command per sweep
-  and one output file. The runner is its own monitor, so nothing else
-  runs beside it (`docs/methodology/context-creep.md`).
+- `tools/sweeps/`. Depth-sweep helpers that are not the creep tool
+  itself: `bench11-cbinsearch*.sh`, `lmstudio_concurrency_probe.py`,
+  `prism-probe.sh`. The depth-sweep tool proper (`creep.py` and one
+  backend module per server) now lives outside this repo, in
+  `local-llm-eval-tools`; see `docs/methodology/context-creep.md`,
+  "Install", for the clone and the run command.
 - `tools/preflight.sh`. Run it FIRST in every run session. It reads
   the machine against `~/.config/choose-a-local-llm/machine.md` and
   prints one line per check (`ok`, `fix`, `ask`): GPU free, login

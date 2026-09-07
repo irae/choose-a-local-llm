@@ -7,7 +7,8 @@
 # crash at once, not at the next wakeup. Bench 9 block E lost two
 # mlx_lm.server Metal OOM crashes to a 15-25 minute wakeup cadence
 # while /health kept answering 200. A depth sweep needs none of this:
-# tools/sweeps/creep.py samples memory and liveness itself.
+# the creep tool (docs/methodology/context-creep.md, "Install")
+# samples memory and liveness itself.
 #
 # Every poll it does three things:
 #   0. When the memory interval is due, it appends one line to the
@@ -17,8 +18,9 @@
 #
 # Two liveness signals, never /health:
 #   1. It tails the server log and matches every new line against the
-#      backend death signatures (the same list as tools/sweeps/creep_*.py
-#      and docs/methodology/server-lore.md). It reads whole lines only,
+#      backend death signatures (the same list as the creep tool's
+#      backend modules and docs/methodology/server-lore.md). It reads
+#      whole lines only,
 #      so a signature written in two pieces is still matched; a last
 #      line that never gets its newline waits for the silence probe.
 #   2. When the run's output file stops growing for SILENCE seconds, it
@@ -30,7 +32,7 @@
 #      the probe waited, the server is alive and the silence clock
 #      resets. Only a second failed probe, after another full silence
 #      window with no growth, calls the server dead. The same rule as
-#      tools/sweeps/creep.py.
+#      the creep tool.
 #
 # It restarts nothing. It reports, the coordinator decides.
 #

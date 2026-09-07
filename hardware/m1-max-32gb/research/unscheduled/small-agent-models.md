@@ -112,7 +112,8 @@ Serve four candidates, in this order: Qwen3.5-9B, Gemma-4-12B, LFM2.5-8B-A1B, Qw
    ```bash
    DEPTH_LIST=4096,8192,16384,24576,32768,49152,65536,81920,98304 \
    MODEL=<alias> SWEEP_BASE=http://127.0.0.1:8081 \
-   python3 tools/sweeps/creep_llama.py > /tmp/<alias>-creep.tsv 2>&1
+   python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py llama \
+     > /tmp/<alias>-creep.tsv 2>&1
    ```
 
    Extend `DEPTH_LIST` to the `-c` in 16K steps for the models above 98304. Read the verdict from the last line. The published number is the deepest clean row.
