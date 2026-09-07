@@ -129,6 +129,12 @@ committed measurement, the block that measures it comes first.
    agent than a page read an hour earlier; the runbook is already in
    the right order, so the right file gets read at the right time.
    Point, do not paste; the runbook stays short.
+   **The fixed reading is `docs/methodology/checklist.md` and
+   `docs/methodology/status-lines.md`, once per session.** Those two
+   are the same for every run, the checklist itself names them, and a
+   runbook never repeats what they hold. A rule the runner needs on
+   every run belongs in one of those two files, not in the essentials
+   of one runbook, or the next run loses it.
    `docs/methodology/checklist.md` is still the first block's reading, and the
    runbook's first instruction is its step 1: create the run worktree
    and move into it before any other action. Runners skip this when

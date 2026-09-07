@@ -56,7 +56,7 @@ effect is zero: the projector is a separate `mtmd` context that runs
 only when a prompt holds an image, and the contributor in discussion
 20246 counts only the LLM prefill of the image embeddings as decode
 cost. The one indirect path is memory: about 900 to 1,200 MB more
-wired memory near the 24000 limit means an earlier compaction start
+wired memory near the limit means an earlier compaction start
 and, on a GGUF row at its largest `-c`, an OOM at load.
 
 What this means for the seed item (`qwen38-configs.md`, step 1): the
@@ -88,8 +88,8 @@ and confirm the decode speed does not move. The pair runs on the same
 other two are optional and follow the same steps. Gemma-12B's 175 MB
 is below the noise of `vm_stat` between runs; skip it.
 
-1. Prepare the machine as the checklist says (wired limit 24000, no
-   other server up). Note the idle wired pages:
+1. Prepare the machine as the checklist says (the run's own wired
+   limit, no other server up). Note the idle wired pages:
    `vm_stat | grep "Pages wired down"` (pages of 16384 bytes;
    MB = pages × 16384 / 10^6).
 2. Start the "without" server: the report page's command for the row,

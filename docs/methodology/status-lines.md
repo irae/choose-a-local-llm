@@ -52,10 +52,11 @@ of it is always there.
 
 ### Blocks
 
-Name a block by its number and the count, not by a letter and not by a
-step word. Write `block 3/8`. Do not write `Step A`, `Step 1`, or
-`Block A1b`. All blocks are the same type of thing, so the number is
-enough.
+Name a block by its mnemonic, the name its runbook gives it, and add
+the count of the run: `gemma12-gguf-2slot 3/8`. Do not write `Step A`,
+`Step 1`, or `Block A1b`, and do not use the number alone: a run
+reorders, and a number that moved tells the reader nothing. The
+mnemonic says which block it is, the count says how far the run is.
 
 A block that repeats one test over several arms gets a subtype with its
 own count: `creep 1/3`, `smoke 2/2`, `arm 1/2`.
@@ -313,7 +314,7 @@ at all. Pick: q8_0 (rule 6 — f16 doesn't fit)." (`f55b29c3`,
 Real short line: "Block A1 closed: Qwen3.6=q8_0, Qwen3.8=f16,
 Gemma-26B=f16. Committed `c5cd928`. Starting block A1b — full creep on
 Qwen3.6 (q8_0) first." (`f55b29c3`, 2026-09-04). Written to today's
-rule it would open `block 1/8 closed:`.
+rule it would open `qwen36-gguf-kv-pick 1/8 closed:`.
 
 ### Run close, and the handing-over pointer
 

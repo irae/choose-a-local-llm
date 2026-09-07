@@ -27,6 +27,12 @@ is pending, the next block that does not depend on it runs.
 
 ## Before the run
 
+**The fixed reading, once per session, before step 1:** this page and
+[status lines](./status-lines.md). Those two are the same two files
+for every run, so a runbook never repeats them and a runner never has
+to go looking for them. Everything else a run reads, the runbook or
+the block names at the point it is needed.
+
 1. **Leave the main worktree BEFORE any other action**, in this repo
    and in `../mendel` when the run touches it:
    `git worktree add ../choose-a-local-llm-run<N> -b run<N>`, then
@@ -147,9 +153,11 @@ is pending, the next block that does not depend on it runs.
    wakeup. A block simply being scored, long, or run at night is not a
    stop-and-ask condition on its own — only the block's own text saying
    so, or the owner asking to pause, is.
-9. Heartbeat format: "Block N (model): done X/Y, [num]h[num]min left."
-   One short line, numbers only. Every update type has a template in
-   three sizes on [status lines](./status-lines.md); use it.
+9. Report in the three sizes of [status lines](./status-lines.md),
+   which you read once per session with this page. No template is
+   repeated here: that page owns them, and a second copy goes stale.
+   The short form goes to chat at every wakeup, the medium form into
+   `state.md` at block close, the large form into `results.md`.
 10. Note deviations in the run's `state.md` AS THEY HAPPEN, not at the
    end. Smallest fix, fairness first, suspect the harness before the
    model. Every finding, bug and idea of the run goes there too, never

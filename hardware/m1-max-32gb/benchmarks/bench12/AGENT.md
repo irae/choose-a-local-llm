@@ -22,12 +22,13 @@ ASD-STE100 Simplified Technical English.
   before a block starts. Act on `fix` and `ask` lines the way the
   checklist says; never sudo, never reboot on your own. Record the
   `memory` line's starting numbers in `state.md`.
-- **Wired limit: 24000** (settled 2026-09-07 from this run's own
-  pre-block prep: six creeps at 24000 with zero swap growth, against
-  real swap growth at 25000 under back-to-back sweeps). Verify with
-  `sysctl -n iogpu.wired_limit_mb` and preflight's `wired-limit` line
-  `ok`. Any other value is stop and ask. Every config note carries
-  `wired 24000`.
+- **Wired limit: 25000** (owner, 2026-09-07). Two fresh-server single
+  sweeps at 25000 were clean, with zero swap growth. The swap growth
+  that argued for 24000 appeared only under several sweeps stacked
+  back to back with no recovery gap, which is not what a scoring block
+  does. Verify with `sysctl -n iogpu.wired_limit_mb` and preflight's
+  `wired-limit` line `ok`. Any other value is stop and ask. Every
+  config note carries `wired 25000`.
 - **A ceiling test is a real request the size of the block's work.**
   A one-token probe passed at `-c 49920` on Qwen3.6 q8_0 and the first
   real sweep step OOMed; `-c 40960` served. Use the workload size
