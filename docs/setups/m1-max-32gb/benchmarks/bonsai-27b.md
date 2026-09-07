@@ -154,6 +154,41 @@ whole time, no crash signatures, no unusual compression events.
   floor ~30K, Mac stays usable; add the dflash drafter only for
   shallow-context serving.
 
+## Fork with f16 KV: never measured, and the first thing to measure
+
+Every fork sweep on this page used q4 or q8 KV. f16 KV was never tried,
+because the fork's value here was memory and the vendor ships a q4
+calibration file. That leaves the model's main weakness untested.
+
+This machine pays a large, measured penalty for quantized KV
+([why](../../../methodology/kv-cache-pick.md);
+`hardware/m1-max-32gb/research/kv-quant-on-m1.md` holds the study). Decode time
+per token is a base plus a term that grows with depth. Across three
+models, every quantized arm costs 2.0 to 4.1 microseconds per cached
+token and every f16 arm costs 0.20 to 0.32. Bonsai on the fork fits
+2.01 at q4 and 2.98 at q8. So this model's 8 tok/s floor near 30K is
+set by the cache type, not by the weights.
+
+What f16 KV should cost and buy, from the numbers already on this page.
+Bonsai keeps 32 KiB per token at q8, so 64 KiB at f16, over about
+8.8 GB of weights:
+
+| context | KV | total memory | projected decode |
+| --: | --: | --: | --: |
+| 33K | 2.1 GB | 10.9 GB | ~14 tok/s |
+| 64K | 4.0 GB | 12.8 GB | ~12.6 tok/s |
+| 98K | 6.1 GB | 14.9 GB | ~11 tok/s |
+
+The projection uses the measured base of 60.3 ms per token and the f16
+depth term of 0.3 microseconds. If it holds, the floor moves from about
+30K to past 98K, and the model stops needing the `--kv-mean-center`
+bias file at all, because that file corrects q4 quantization error. The
+bias file's calibration corpus was never recorded, so an f16 config
+would also be reproducible where the scored q4 rows are not.
+
+Nothing above is measured. One single-slot depth creep at f16 KV
+settles it.
+
 ## Fork multi-slot (2026-08-28)
 
 `--parallel 2 -c 98304` (2×48K, q4 KV, no drafter): both slots decoding

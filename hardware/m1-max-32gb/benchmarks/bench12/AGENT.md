@@ -109,7 +109,7 @@ ASD-STE100 Simplified Technical English.
   branch, session file and pinned config; score its commits as a
   partial and leave the rest to the coordinator. Only a run that
   ended on its own and is scored gets its worktree removed.
-- **Block 8 is the retry sweep.** When blocks 1 to 7 are done and no
+- **Block 9 is the retry sweep.** When blocks 1 to 8 are done and no
   message from the owner says otherwise, retry every row of this run
   that was killed or interrupted, oldest first, each in a fresh
   worktree with a suffix, under the Mendel retry rule (no penalty
@@ -123,15 +123,16 @@ ASD-STE100 Simplified Technical English.
 
 ## The order, and why
 
-Eight blocks. The first two are Gemma-12B window measurements the
-owner asked for (two agents in parallel on one server). Block 3 is
-the Bonsai MLX thinking-off pair, moved out of run 11. Blocks 4 to 6
-re-run the three valid rows that compacted under pi's old 16384
-reserve, at the 8192 reserve every row uses since 2026-09-06. Block
-7 is conditional, block 8 is the retry sweep. Every block starts the
-moment the previous one ends.
+Nine blocks. The first two are Gemma-12B window measurements the
+owner asked for (two agents in parallel on one server). Block 3 asks
+what the Bonsai fork does with f16 KV, the one cache type it never
+served. Block 4 is the Bonsai MLX thinking-off pair, moved out of run
+11. Blocks 5 to 7 re-run the three valid rows that compacted under
+pi's old 16384 reserve, at the 8192 reserve every row uses since
+2026-09-06. Block 8 is conditional, block 9 is the retry sweep. Every
+block starts the moment the previous one ends.
 
-## Block 1/7 — Gemma-12B GGUF, two slots: `-c` ladder and round-robin creep
+## Block 1/9 — Gemma-12B GGUF, two slots: `-c` ladder and round-robin creep
 
 Read `docs/methodology/context-creep.md` and
 `docs/methodology/memory-ceiling.md`.
@@ -174,7 +175,7 @@ Done: the ladder table and the creep table with its verdict in
 Write the per-slot clean depth in `state.md` as `gemma12_2x_clean`.
 Stop the server; wait for wired recovery.
 
-## Block 2/7 — Gemma-12B GGUF, one slot at `-c 131072`: creep
+## Block 2/9 — Gemma-12B GGUF, one slot at `-c 131072`: creep
 
 Same files, KV type and drafter as block 1. Fixed for this block:
 `--parallel 1`, `-c 131072` (the owner's comparison point, the same
@@ -199,7 +200,51 @@ Done: the creep table beside block 1's in `results.md`, one
 comparison table (depth, tok/s one slot, tok/s per slot at two
 slots). Stop the server; wait for wired recovery.
 
-## Block 3/7 — Bonsai MLX, thinking off: smoke, Mendel guided, Mendel blind
+## Block 3/9 — Bonsai on the PrismML fork, f16 KV, one slot: `-c` ladder and creep
+
+Read `docs/methodology/context-creep.md`. The fork has never served
+this model with f16 KV, and the site's own KV study says that is where
+its 8 tok/s floor near 30K comes from: quantized KV costs this machine
+2 to 4 microseconds per cached token against 0.2 to 0.3 for f16
+(`hardware/m1-max-32gb/research/kv-quant-on-m1.md`). This block answers one
+question: **at f16 KV, one slot, what is the deepest context that still
+decodes at 8 tok/s or more?**
+
+| parameter | kind | value | source |
+| --- | --- | --- | --- |
+| files | fixed | `Ternary-Bonsai-27B-Q2_g64.gguf`, the fork's local file | site row `bonsai-fork-single` |
+| serving | fixed | `~/prism-llama/llama-server`, `LLAMA_ATTN_ROT_DISABLE=1`, no drafter, `--parallel 1` | site row |
+| KV type | fixed | f16 (no `--kv-mean-center`; the bias file corrects q4 error only) | this block |
+| `-c` | derived | `<planning>` start at 131072; the arithmetic says 98K fits in about 14.9 GB | this block's ladder |
+| clean depth | derived | `<planning>` q4 gives about 30K; the projection says past 98K | this block's creep |
+
+Ladder first, from `-c 131072` down in 16384 steps until the server
+loads and serves one real 4096-token completion. Record every
+candidate with its load result and its wired memory.
+
+```bash
+LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
+  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \
+  --alias bonsai-prism --parallel 1 \
+  -ngl 999 -fa on -c <candidate> \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench12/results/server-bonsai-fork-f16-c<candidate>.log
+```
+
+Then the slow creep at the largest `-c` that served:
+
+```bash
+DEPTH_LIST="4096,8192,16384,24576,32768,40960,49152,65536,81920,98304,114688,131072" \
+N_CONTEXTS=1 MODEL=bonsai-prism python3 tools/sweeps/creep_llama.py \
+  | tee hardware/m1-max-32gb/benchmarks/bench12/results/creep-bonsai-fork-f16.tsv
+```
+
+Done: the ladder table and the creep table with its verdict in
+`results.md`, committed, and one line in `state.md` that names the
+deepest step at or above 8 tok/s. No Mendel run in this block, no
+two-slot arm, no drafter. Stop the server; wait for wired recovery.
+
+## Block 4/9 — Bonsai MLX, thinking off: smoke, Mendel guided, Mendel blind
 
 Third attempt of the guided row (two invalid on the harness: a dead
 `gh` token, then an 85-call loop before the loop stop existed) and
@@ -231,7 +276,7 @@ A `fail` on the smoke drops both rows. Config note: `mlx_lm.server,
 reserveTokens 8192, wired <value>`. Stop the server; wait for wired
 recovery.
 
-## Blocks 4 to 6 — the reserve re-runs
+## Blocks 5 to 7 — the reserve re-runs
 
 Three valid rows compacted under pi's default 16384 reserve before
 2026-09-06. Each runs again at reserve 8192, same test and level,
@@ -240,7 +285,7 @@ the better row stands, the config note says "re-run at reserveTokens
 8192; first row ran at 16384". Ladder-before-serve applies to each
 model at this run's wired limit before its block.
 
-### Block 4/7 — Qwen3.8 GGUF, blind, effort medium
+### Block 5/9 — Qwen3.8 GGUF, blind, effort medium
 
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
@@ -256,7 +301,7 @@ Serve with the site row's command at the derived `-c`, then:
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 4 window> ./run-worker.sh qwen3.8-27b pi blind medium
 ```
 
-### Block 5/7 — Gemma-26B GGUF, blind, thinking high
+### Block 6/9 — Gemma-26B GGUF, blind, thinking high
 
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
@@ -270,7 +315,7 @@ cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 4 window> .
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> ./run-worker.sh gemma-4-26b-a4b pi blind high
 ```
 
-### Block 6/7 — Qwen3.6 GGUF, guided, thinking high
+### Block 7/9 — Qwen3.6 GGUF, guided, thinking high
 
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
@@ -284,7 +329,7 @@ cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 5 window> .
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<block 6 window> ./run-worker.sh qwen3.6-35b-a3b pi guided high
 ```
 
-## Block 7/7 — windows up at the run's limit (conditional)
+## Block 8/9 — windows up at the run's limit (conditional)
 
 Runs only when the wired limit is 25000 and the owner wrote in
 `state.md` at run start that 25000 held through run 11. For each
@@ -295,7 +340,7 @@ that in `state.md`.
 
 ## Order
 
-1 to 7 in this file's order. Every block starts the moment the
+1 to 9 in this file's order. Every block starts the moment the
 previous one ends. Nothing in this run waits for the owner.
 
 ## Not in this run
