@@ -30,8 +30,9 @@ flow is binding.
 
 ### M1 Max, 32 GB
 
-Apple Silicon, wired limit 24000 MB. Five models, four runtimes:
-llama-server, mlx_lm.server, LM Studio, and the PrismML llama.cpp fork.
+Apple Silicon, wired limit 24000 MB. Five models, three runtimes:
+llama-server, mlx_lm.server, and the PrismML llama.cpp fork. LM Studio
+was tried and retired.
 Depth sweeps and EvalPlus scores are complete for every model; two
 models have finished the agent task. The rule: MLX runtimes barely slow
 down but hit hard memory ceilings; llama runtimes hold their speed
@@ -59,8 +60,8 @@ example the prism fork's calibrated q4 KV) do not share — they pass the
 gate separately.
 
 ³ LM Studio's MLX engine — the only runtime that loads this model's
-`gemma4_unified` architecture. Its context auto-fit cannot be overridden;
-see the setup's comparison page.
+`gemma4_unified` architecture. It is retired on that machine; see
+[why](./setups/m1-max-32gb/lmstudio-retired.md).
 
 ⁴ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
 

@@ -144,7 +144,7 @@
       }
     },
     {
-      "config": "Gemma-4-12B, MLX\u00b3, thinking off",
+      "config": "Gemma-4-12B, LMS, thinking off",
       "maxCtx": "131k",
       "gatedBy": "mem",
       "tokShallow": "34.19",
@@ -160,6 +160,11 @@
         "id": "gemma-4-12b-it-mlx",
         "contextWindow": 131072,
         "maxTokens": 8192
+      },
+      "abandoned": {
+        "marker": "\ud83d\udc80",
+        "page": "../lmstudio-retired.md",
+        "reason": "LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned."
       }
     },
     {
@@ -324,12 +329,14 @@
       "mendelUntrusted": [
         {
           "serving": "lm-studio",
-          "reason": "the LM Studio engine lost every agent run; that config is single-turn work only"
+          "marker": "\ud83d\udc80",
+          "page": "../lmstudio-retired.md",
+          "reason": "LM Studio is retired here: every agent run ended with zero commits."
         }
       ],
       "kpis": [
         "agentDepth",
-        "lmsCeiling",
+        "agentShallow",
         "evalplusOff",
         "slots"
       ],
@@ -356,7 +363,7 @@
         },
         "evalplusOff": {
           "value": "0.976 / 0.939 / 100%",
-          "label": "EvalPlus, thinking off (GGUF); LM Studio MLX 0.909 / 0.872 / 100%"
+          "label": "EvalPlus, thinking off (GGUF)"
         },
         "evalplusOn": {
           "value": "pending",

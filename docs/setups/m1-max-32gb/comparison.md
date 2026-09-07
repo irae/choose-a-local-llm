@@ -47,10 +47,9 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
 | 10 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% |
 | 11 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% |
 | 12 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% |
-| 13 | Gemma-4-12B, MLX³, thinking off | 131k | mem | 34.19 → 23.23 | 17.2 GB | 0.909/0.872/100% |
-| 14 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% |
-| 15 | Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860/89% |
-| 16 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% |
+| 13 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% |
+| 14 | Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860/89% |
+| 15 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% |
 <!-- gen:models-evaluated:end -->
 
 ¹ Two values. **mem**: memory ended the curve, whether the server did
@@ -70,8 +69,8 @@ above its MLX 4-bit, so those pairs carry their own. Aggressive quants
 the gate separately.
 
 ³ LM Studio's MLX engine, the only runtime that loads this model's
-`gemma4_unified` architecture. Its context auto-fit cannot be overridden;
-see the floor table below.
+`gemma4_unified` architecture. It is retired here and no longer a
+candidate; [the reasons are on its own page](./lmstudio-retired.md).
 
 ⁴ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
 
@@ -117,18 +116,19 @@ rows keep the fast sweep of 2026-08-28.
 | Bonsai prism fork (q4 KV) | 14.9 | 10.8 | 7.9 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890/98% |
 | Gemma-12B llama (q8, MTP) | 13.8 | 6.5 | | | | speed — under 8 tok/s at 16K | 0.976/0.939/100% |
 | **Gemma-12B llama (f16, no drafter)** | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | mem — 8.86 tok/s at 245K, where the trained window ends² | 0.976/0.939/100% |
-| **Gemma-12B MLX (LM Studio engine, CLI)** | 34.2 | 32.1 | 30.6 | | 23.2 (131K) | mem — last stable 131K, 23.23 tok/s there² | 0.909/0.872/100% |
 
 Cells are blank past a config's cap, or where no step was measured at that depth.
 
+The Gemma-12B curve on LM Studio is gone from this table. That runtime
+is retired here, and its numbers stay on
+[the model page](./reports/gemma-4-12b-it.md) with the reasons on
+[the LM Studio page](./lmstudio-retired.md).
+
 \*8K value.
 
-² Both Gemma-12B curves were measured 2026-09-04, thinking off. The
-llama f16 curve ends where the model's trained window ends, with wired
-memory flat at 13.9 GB. The LM Studio curve ends on memory: past its
-last stable step the engine grows into the wired cap and swap starts.
-Context length cannot be pinned on the LM Studio path; the loader
-auto-fits it.
+² The Gemma-12B llama f16 curve was measured 2026-09-04, thinking off.
+It ends where the model's trained window ends, with wired memory flat at
+13.9 GB.
 
 ## Code quality — EvalPlus HumanEval+
 

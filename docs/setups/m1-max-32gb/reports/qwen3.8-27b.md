@@ -146,7 +146,7 @@ re-testing on future llama.cpp releases.
 | blind-v1.1 | mlx-low-ctx.26k † | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
 | guided-v3.0 | mlx-low-ctx.?k † | **0** (raw 34) | 0/8/invalid | 261.3 | 1,254k | 30k | 0 | 48 | 0 |  |
 
-† config no longer trusted: a 26624-token window with a 16384-token output budget, our config arithmetic, not the model.
+† a 26624-token window with a 16384-token output budget, our config arithmetic, not the model.
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).

@@ -5,8 +5,8 @@ Backends: llama-server, LM Studio MLX engine · [GGUF on Hugging Face](https://h
 <!-- gen:model-kpis:start -->
 <div class="kpis">
   <div class="kpi"><b>245K</b><span>llama f16 depth, 8.86 tok/s</span></div>
-  <div class="kpi"><b>131K</b><span>LM Studio ceiling, 23.23 tok/s</span></div>
-  <div class="kpi"><b>0.976 / 0.939 / 100%</b><span>EvalPlus, thinking off (GGUF); LM Studio MLX 0.909 / 0.872 / 100%</span></div>
+  <div class="kpi"><b>24.64 tok/s</b><span>llama f16, shallow</span></div>
+  <div class="kpi"><b>0.976 / 0.939 / 100%</b><span>EvalPlus, thinking off (GGUF)</span></div>
   <div class="kpi"><b>4×49K</b><span>llama f16 slots, one swept, 25.1 GB</span></div>
 </div>
 <!-- gen:model-kpis:end -->
@@ -23,11 +23,10 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
   on the model budget after three nudges.
 - **The GGUF quant scores 0.976 / 0.939 / 100% with thinking off, all 164
   answers delivered.** That is 0.067 above the LM Studio MLX entry's
-  0.909 / 0.872 / 100%, so the two quants do not share a score here. The
-  LM Studio entry keeps the fastest curve, 34.19 tok/s at 4K down to
-  23.23 at 131K, in 17.2 GB wired at that depth, and it is not usable
-  for multi-turn tool work: on the same tool task, with thinking off, it
-  looped on the thought channel for 2679 lines and committed nothing.
+  0.909 / 0.872 / 100%, so the two quants do not share a score here.
+  LM Studio is retired on this machine: it kept the fastest curve,
+  34.19 tok/s at 4K down to 23.23 at 131K, and it never finished an
+  agent task. [The full record](../lmstudio-retired.md).
 - **The KV type sets the depth on this model, not the weights.** With
   q8_0 KV the same server drops under the 8 tok/s floor by 16K. With f16
   KV it is 3.2x faster at 16K and stays usable eight times deeper.
@@ -41,10 +40,12 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Gemma-4-12B, MLX³, thinking off | 131k | mem | 34.19 → 23.23 | 17.2 GB | 0.909/0.872/100% |
+| 1 | *Gemma-4-12B, LMS, thinking off* 💀 | *131k* | *mem* | *34.19* → *23.23* | *17.2 GB* | *0.909/0.872/100%* |
 | 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% |
 | 3 | Gemma-4-12B, GGUF, MTP q8, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939/100% |
 | 4 | Gemma-4-12B, GGUF, MTP f16, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939/100% |
+
+💀 LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned. [Why this runtime is not a candidate](../lmstudio-retired.md).
 
 Retired entries: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on repetition loop; entry gone from the model store ([details](../benchmarks/gemma-4-12b-it.md#the-retired-entry)).
 <!-- gen:model-table:end -->
@@ -54,7 +55,7 @@ Retired entries: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Gemma-4-12B, MLX³, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
+**#1 — Gemma-4-12B, LMS, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
 
 ```bash
 ~/.cache/lm-studio/bin/lms server start --port 8081
@@ -148,12 +149,12 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 | test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
 | guided-v3.0 | llama-off-ctx.256k | **37.5** (raw 58) | 3/8/partial | 97.6 | 6,453k | 125k | 0 | 132 | 3 | text |
-| blind-v1.1 | lmstudio-high-ctx.160k † | **0** (raw 30.5) | 0/8/invalid | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
+| blind-v1.1 | lmstudio-high-ctx.160k 💀 | **0** (raw 30.5) | 0/8/invalid | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
 | blind-v1.1 | llama-off-ctx.256k | **0** | 0/8/invalid | 80.3 | 9,994k | 179k | 0 | 92 | 0 |  |
-| guided-v3.0 | lmstudio-high-ctx.160k † | **0** (raw 30) | 0/8/invalid | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
-| guided-v3.0 | lmstudio-low-ctx.160k † | **0** (raw 29.5) | 0/8/invalid | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
+| guided-v3.0 | lmstudio-high-ctx.160k 💀 | **0** (raw 30) | 0/8/invalid | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
+| guided-v3.0 | lmstudio-low-ctx.160k 💀 | **0** (raw 29.5) | 0/8/invalid | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
 
-† config no longer trusted: the LM Studio engine lost every agent run; that config is single-turn work only.
+💀 LM Studio is retired here: every agent run ended with zero commits. [Why this runtime is not a candidate](../lmstudio-retired.md).
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).

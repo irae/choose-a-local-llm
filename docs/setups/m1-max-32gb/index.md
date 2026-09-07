@@ -54,15 +54,16 @@ sudo sysctl iogpu.wired_limit_mb=24000
 
 ## Runtimes on this machine
 
-Four runtimes are in play. The method rules for them are in
-[the methodology](../../methodology.md#runtimes).
+Three runtimes are in play, and one is retired. The method rules for
+them are in [the methodology](../../methodology.md#runtimes).
 
 - **llama-server** (llama.cpp, brew stable).
 - **mlx_lm.server** (mlx-lm, brew).
-- **LM Studio via the `lms` CLI**: the GUI-bundled runtime, driven
-  CLI-only (`lms get/load/server`); the model store is shared with the
-  app. Its engine supports the `gemma4_unified` model type that mlx-lm
-  lacks, and implements its attention properly.
+- **LM Studio via the `lms` CLI**: retired 2026-09-07. Its engine is
+  the only one that loads the `gemma4_unified` model type, and it gave
+  the fastest Gemma-12B curve here, but no agent run on it ever
+  produced a commit and its context window cannot be pinned.
+  [The full record](./lmstudio-retired.md).
 - **PrismML llama.cpp fork**: the only backend for ternary GGUFs
   (Q2_g64), q4-KV with calibration, and the DSpark drafter. Side-by-side
   install in `~/prism-llama/` (`prism-llama` alias; `install-latest.sh`

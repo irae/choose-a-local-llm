@@ -161,7 +161,7 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
     const loop = r['telemetry.loop_flag'] === 'LOOP' ? esc(r['telemetry.loop_kind'] || 'yes') : ''
     return [
       `${test}-${esc(r.prompt_version)}`,
-      config(r) + (distrust(r) ? ' †' : ''),
+      config(r) + (distrust(r) ? ` ${distrust(r).marker || '†'}` : ''),
       score,
       `${done}/8/${state}`,
       minutes,
@@ -174,7 +174,14 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
     ].join(' | ')
   }).map((line) => `| ${line} |`)
   const used = untrusted.filter((u) => tagged.some(({ r }) => distrust(r) === u))
-  const legend = used.length ? ['', ...used.map((u) => `† config no longer trusted: ${u.reason}.`)] : []
+  const legend = used.length
+    ? [
+        '',
+        ...used.map((u) =>
+          `${u.marker || '†'} ${u.reason}${u.page ? ` [Why this runtime is not a candidate](${u.page}).` : '.'}`,
+        ),
+      ]
+    : []
   return [...header, ...body, ...legend].join('\n')
 }
 
@@ -228,15 +235,28 @@ function renderTable(rows, { footnotes = true, sort = true } = {}) {
   const cell = (r, field) => {
     const stale = (r.stale || []).includes(field)
     if (stale) anyStale = true
-    return `${r[field]}${stale ? '†' : ''}`
+    const value = `${r[field]}${stale ? '†' : ''}`
+    return r.abandoned ? `*${value}*` : value
   }
   const body = ordered.map((r, i) => {
     const tok = `${cell(r, 'tokShallow')} → ${cell(r, 'tokDeep')}`
-    return `| ${i + 1} | ${r.config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} | ${cell(r, 'memory')} | ${cell(r, 'evalplus')} |`
+    const config = r.abandoned
+      ? `*${r.config}* ${r.abandoned.marker || '💀'}`
+      : r.config
+    return `| ${i + 1} | ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} | ${cell(r, 'memory')} | ${cell(r, 'evalplus')} |`
   })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']
     : []
+  const seenPages = new Set()
+  for (const r of ordered) {
+    if (!r.abandoned || seenPages.has(r.abandoned.page)) continue
+    seenPages.add(r.abandoned.page)
+    legend.push(
+      '',
+      `${r.abandoned.marker || '💀'} ${r.abandoned.reason} [Why this runtime is not a candidate](${r.abandoned.page}).`,
+    )
+  }
   return [...header, ...body, ...legend].join('\n')
 }
 
@@ -346,7 +366,7 @@ function renderDecodeSummary(data) {
   }
   const body = Object.entries(data.models || {}).flatMap(([slug, model]) => {
     const backends = new Map()
-    for (const r of modelRows(data, model)) {
+    for (const r of modelRows(data, model).filter((r) => !r.abandoned)) {
       const backend = (r.config.split(',')[1] || '').trim().replace(/[^A-Za-z].*$/, '') || 'other'
       if (!backends.has(backend)) backends.set(backend, [])
       backends.get(backend).push(r)
@@ -380,7 +400,9 @@ for (const dataFile of dataFiles) {
   const setupDir = dataFile.replace(/\/models\.json$/, '')
   const data = JSON.parse(readFileSync(dataFile, 'utf8'))
   checkRows(data.rows, data.setup)
-  const visible = data.rows.filter((r) => !r.hidden && !r.retired)
+  // An abandoned row keeps its numbers on the model page only: the comparison
+  // and the home table answer "what should I run", and it is not a candidate.
+  const visible = data.rows.filter((r) => !r.hidden && !r.retired && !r.abandoned)
   const comparisonTable = renderTable(visible.filter((r) => !hasPending(r)))
   const homeTable = renderHomeTable({ ...data, rows: visible })
 
