@@ -28,6 +28,9 @@ from older prompt versions live in
 [historical](../historical.md) and in the hosted reports, one
 scoreboard per version.
 
+Each row names the serving path and the harness window. The KV cache type
+of a run is in its config note in the Mendel report.
+
 ## Local models — blind test
 
 <!-- gen:mendel-local:start -->

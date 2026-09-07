@@ -174,6 +174,10 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
     ].join(' | ')
   }).map((line) => `| ${line} |`)
   const used = untrusted.filter((u) => tagged.some(({ r }) => distrust(r) === u))
+  const kvNote = [
+    '',
+    'The config cell names the server, the thinking level and the harness window. The KV cache type of each run is in the Mendel report\'s config note.',
+  ]
   const legend = used.length
     ? [
         '',
@@ -182,7 +186,7 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
         ),
       ]
     : []
-  return [...header, ...body, ...legend].join('\n')
+  return [...header, ...body, ...kvNote, ...legend].join('\n')
 }
 
 function parseCtx(s) {

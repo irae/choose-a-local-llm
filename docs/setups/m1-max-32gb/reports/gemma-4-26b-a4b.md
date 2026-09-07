@@ -35,9 +35,9 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Gemma-4-26B-A4B, MLX | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% |
-| 2 | Gemma-4-26B-A4B, GGUF, MTP f16 | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% |
-| 3 | Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860/89% |
+| 1 | Gemma-4-26B-A4B, MLX, f16 KV | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% |
+| 2 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% |
+| 3 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860/89% |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -45,14 +45,14 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Gemma-4-26B-A4B, MLX.**
+**#1 — Gemma-4-26B-A4B, MLX, f16 KV.**
 
 ```bash
 mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#2 — Gemma-4-26B-A4B, GGUF, MTP f16.** pi id `gemma-4-26b-a4b`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete.
+**#2 — Gemma-4-26B-A4B, GGUF, MTP, f16 KV.** pi id `gemma-4-26b-a4b`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete.
 
 ```bash
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
@@ -63,7 +63,7 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#3 — Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots.** pi id `gemma-4-26b-a4b-2x`. Measured 2026-09-05 at f16 KV: 202752 is the largest `-c` that serves a real 4096-token completion (208896 and above fail on compute buffers or at load), 101376 per slot. One slot swept with the other loaded and idle: no speed or memory stop before the slot window; the deepest row is 82K at 33.6 tok/s. The EvalPlus score is the single-slot f16 config's, same weights and cache type.
+**#3 — Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots.** pi id `gemma-4-26b-a4b-2x`. Measured 2026-09-05 at f16 KV: 202752 is the largest `-c` that serves a real 4096-token completion (208896 and above fail on compute buffers or at load), 101376 per slot. One slot swept with the other loaded and idle: no speed or memory stop before the slot window; the deepest row is 82K at 33.6 tok/s. The EvalPlus score is the single-slot f16 config's, same weights and cache type.
 
 ```bash
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
@@ -133,7 +133,7 @@ thinking on.
 |---|--:|--:|--:|--:|
 | llama-server UD-Q4_K_XL, f16 KV, thinking off, budget 8192 | 0.976 | 0.945 | 0/164 | 100% |
 | llama-server UD-Q4_K_XL, f16 KV, thinking on, budget 30000 | 0.884 | 0.860 | 18/164 | 89% |
-| mlx_lm.server 4-bit, thinking on, budget 30000 | 0.713 | 0.701 | 46/164 | 72% |
+| mlx_lm.server 4-bit, f16 KV, thinking on, budget 30000 | 0.713 | 0.701 | 46/164 | 72% |
 
 The two GGUF rows share the thinking-on score; the MLX row keeps its own.
 
@@ -147,13 +147,15 @@ The two GGUF rows share the thinking-on score; the MLX row keeps its own.
 | blind-v1.0 | llama-default-ctx.256k | **38** | 8/8/partial | 104.0 | 8,150k | 142k | 0 | 115 | 9 |  |
 | guided-v3.0 | llama-off-ctx.208k | **25** | 2/8/invalid | 20.4 | 2,605k | 73k | 0 | 91 | 3 | tool call |
 | blind-v1.1 | llama-off-ctx.208k | **12.5** | 1/8/invalid | 28.0 | 8,053k | 136k | 0 | 120 | 7 | tool call |
+
+The config cell names the server, the thinking level and the harness window. The KV cache type of each run is in the Mendel report's config note.
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
 ## Decode speed vs used context (llama f16 KV, slow creep, 2026-09-05; mlx slow creep, 2026-08-29; limit 24000)
 
-| depth | llama+MTP f16, 1 slot | llama+MTP f16, 2 slots (one decoding) | MLX (gemma-4-26b-a4b-it-4bit) |
+| depth | llama+MTP, f16 KV, 1 slot | llama+MTP, f16 KV, 2 slots (one decoding) | MLX (gemma-4-26b-a4b-it-4bit) |
 |---|--:|--:|--:|
 | 4K | 60.3 | 66.6 | 51.1 |
 | 16K | 56.5 | 60.8 | 43.5 |

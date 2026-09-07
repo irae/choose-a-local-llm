@@ -81,6 +81,15 @@ closes. None of it is site content.
 - Server commands go in fenced `bash` blocks, so they stay copy-paste ready.
   The `--alias` value equals the harness model id.
 - Tables carry the numbers. Bold the winning row.
+- **Every configuration named in a table says its KV cache type.**
+  The type sets the depth curve on this hardware, so a row without it
+  is not a configuration, it is a guess. Write it as `f16 KV`,
+  `q8_0 KV`, `q4_0 KV`, never as a bare `f16` or `q8` that a reader
+  can confuse with the weight quant or the drafter. A server with no
+  KV option still says the type it runs. The one exception: when every
+  row of a table uses the same type, the sentence above the table says
+  which, and the labels leave it out. Historical pages are archive and
+  keep their original labels.
 - No code comments unless the owner asks for them.
 
 ## Generated blocks and limits on model report pages

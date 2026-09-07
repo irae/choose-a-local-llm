@@ -226,7 +226,7 @@ strongest HumanEval+ result of the models scored so far.
 
 Decode vs used context, append-only prompts, 8 tok/s early stop:
 
-| depth | llama+MTP q8 (32K alloc) | mlx |
+| depth | llama+MTP, q8_0 KV (32K alloc) | mlx, f16 KV |
 |---|---|---|
 | 4K | 14.1 | – |
 | 8K | 12.8 | 17.1 |

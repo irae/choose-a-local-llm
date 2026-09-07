@@ -109,7 +109,7 @@ The chat template has no `reasoning_effort` (unlike Qwen3.8) — only binary `en
 
 | config scored | budget | pass@1 base | pass@1 plus | empty | completion | regenerated |
 |---|--:|--:|--:|--:|--:|--:|
-| llama-server+MTP Q4_K_XL, thinking on | 26624 | **0.939** | **0.921** | 5/164 | 97% | 56 (54 missing + 2 previously empty) |
+| llama-server+MTP Q4_K_XL, q8_0 KV, thinking on | 26624 | **0.939** | **0.921** | 5/164 | 97% | 56 (54 missing + 2 previously empty) |
 
 This corrected the 56 missing or empty completions at the calibrated budget
 of 26624 tokens, which is safe because temperature 0 is deterministic. The
@@ -132,7 +132,7 @@ higher on base.
 
 Decode vs used context, synthetic continuation prompts, 8 tok/s early stop:
 
-| depth | llama+MTP q8 (96K alloc) | mlx (no MTP) |
+| depth | llama+MTP, q8_0 KV (96K alloc) | mlx, f16 KV (no MTP) |
 |---|---|---|
 | 4K | 44.5 | 53.3 |
 | 16K | 30.1 | 49.6 |

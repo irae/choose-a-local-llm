@@ -92,7 +92,7 @@ full scale.
 
 ## Depth sweeps (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
-| depth | llama+MTP q8 (128K alloc) | mlx (`gemma-4-26b-a4b-it-4bit`) |
+| depth | llama+MTP, q8_0 KV (128K alloc) | mlx, f16 KV (`gemma-4-26b-a4b-it-4bit`) |
 |---|---|---|
 | 4K | 23.5 | 51.1 |
 | 16K | 11.2 | 43.5 |

@@ -34,8 +34,8 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.6-35B-A3B, MLX, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921/97% |
-| 2 | Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921/97% |
+| 1 | Qwen3.6-35B-A3B, MLX, f16 KV, thinking on | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921/97% |
+| 2 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 8k | mem | 36.4 → 43.8 | 25.0 GB | 0.939/0.921/97% |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -43,14 +43,14 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP, wir
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Qwen3.6-35B-A3B, MLX, thinking on.**
+**#1 — Qwen3.6-35B-A3B, MLX, f16 KV, thinking on.**
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#2 — Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on.** pi id `qwen3.6-35b-a3b`. Measured 2026-09-04 with the slow creep: q8_0 KV stays, because f16 does not load even at 40960. The published `-c 98304` and 65536 OOM at load; 49152 loads. Wired sits at 25 GB, over the limit, and memory compaction starts by 16K without recovering, so the last clean row is 8K. That row is faster than 4K because the MTP drafter warms up over the first rows.
+**#2 — Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on.** pi id `qwen3.6-35b-a3b`. Measured 2026-09-04 with the slow creep: q8_0 KV stays, because f16 does not load even at 40960. The published `-c 98304` and 65536 OOM at load; 49152 loads. Wired sits at 25 GB, over the limit, and memory compaction starts by 16K without recovering, so the last clean row is 8K. That row is faster than 4K because the MTP drafter warms up over the first rows.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
@@ -105,7 +105,7 @@ so MTP numbers there read below the py/js bench.
 | need | config | tok/s (py/js) | context |
 |---|---|--:|--:|
 | **Max speed** | llama-server + MTP n=3, q8_0 KV, `-c 49152`, 1 slot, near-empty context | 68 / 74 | 8K clean; compaction past it |
-| **Max depth** | mlx_lm.server 4-bit | 53.3 at 4K, 42.0 at 37K | 37K, OOM at about 41K |
+| **Max depth** | mlx_lm.server 4-bit, f16 KV | 53.3 at 4K, 42.0 at 37K | 37K, OOM at about 41K |
 | **Multi-agent** | untested at limit 24000 (OOM even at 2×20K) | – | – |
 
 ## Quality — EvalPlus HumanEval+
@@ -113,7 +113,7 @@ so MTP numbers there read below the py/js bench.
 | config scored | budget | pass@1 base | pass@1 plus | empty completions | completion |
 |---|--:|--:|--:|--:|--:|
 | llama-server + MTP, q8_0 KV, `-c 49152`, thinking off | 8192 | **0.951** | 0.915 | 0/164 | 100% |
-| llama-server + MTP, thinking on | 26624 | 0.939 | **0.921** | 5/164 | 97% |
+| llama-server + MTP, q8_0 KV, thinking on | 26624 | 0.939 | **0.921** | 5/164 | 97% |
 
 ## Agentic quality — Mendel
 
@@ -126,13 +126,15 @@ so MTP numbers there read below the py/js bench.
 | guided-v3.0 | llama-off-ctx.80k | **62.5** | 8/8/done | 89.4 | 13,045k | 78k | 1 | 264 | 16 |  |
 | guided-v3.0 | llama-off-ctx.48k | **46.5** | 8/8/done | 95.6 | 9,473k | 52k | 12 | 299 | 7 |  |
 | blind-v1.0 | llama-default-ctx.96k | **41.5** | 8/8/done | 132.0 | 10,090k | 94k | 1 | 258 | 13 |  |
+
+The config cell names the server, the thinking level and the harness window. The KV cache type of each run is in the Mendel report's config note.
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
 ## Decode speed vs used context (llama slow creep at `-c 49152`, 2026-09-04; mlx slow creep, 2026-08-29; limit 24000)
 
-| depth | llama+MTP q8_0 | MLX (Qwen3.6-35B-A3B-4bit) |
+| depth | llama+MTP, q8_0 KV | MLX, f16 KV (Qwen3.6-35B-A3B-4bit) |
 |---|--:|--:|
 | 4K | 36.4 | 53.3 |
 | **8K** | **43.8 — last clean row; compaction from 16K** | |

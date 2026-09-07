@@ -194,7 +194,7 @@ step of the arm (139,264 for the shallow half, 262,144 for the deep
 half); LM Studio on the chat endpoint with `--parallel 4`, because its
 raw completions path is broken on this build. Thinking off everywhere.
 
-| used tokens | llama f16, no drafter | llama q8, no drafter | llama q8 + MTP | LM Studio MLX |
+| used tokens | llama, f16 KV, no drafter | llama, q8_0 KV, no drafter | llama, q8_0 KV + MTP | LM Studio MLX, f16 KV |
 |---|--:|--:|--:|--:|
 | 4,115 | 24.64 | 14.15 | 13.82 | 34.19 |
 | 8,235 | 24.05 | 10.64 | 8.74 | |

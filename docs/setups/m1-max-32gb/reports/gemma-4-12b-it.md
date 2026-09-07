@@ -40,10 +40,10 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | *Gemma-4-12B, LMS, thinking off* 💀 | *131k* | *mem* | *34.19* → *23.23* | *17.2 GB* | *0.909/0.872/100%* |
+| 1 | *Gemma-4-12B, LMS, f16 KV, thinking off* 💀 | *131k* | *mem* | *34.19* → *23.23* | *17.2 GB* | *0.909/0.872/100%* |
 | 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% |
-| 3 | Gemma-4-12B, GGUF, MTP q8, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939/100% |
-| 4 | Gemma-4-12B, GGUF, MTP f16, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939/100% |
+| 3 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939/100% |
+| 4 | Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939/100% |
 
 💀 LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned. [Why this runtime is not a candidate](../lmstudio-retired.md).
 
@@ -55,7 +55,7 @@ Retired entries: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Gemma-4-12B, LMS, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
+**#1 — Gemma-4-12B, LMS, f16 KV, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
 
 ```bash
 ~/.cache/lm-studio/bin/lms server start --port 8081
@@ -72,7 +72,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#3 — Gemma-4-12B, GGUF, MTP q8, thinking off.** The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep.
+**#3 — Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off.** The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -83,7 +83,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#4 — Gemma-4-12B, GGUF, MTP f16, 4 slots, thinking off.** pi id `gemma-4-12b-4x`. Measured 2026-09-05 at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper.
+**#4 — Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off.** pi id `gemma-4-12b-4x`. Measured 2026-09-05 at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -154,6 +154,8 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 | guided-v3.0 | lmstudio-high-ctx.160k 💀 | **0** (raw 30) | 0/8/invalid | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
 | guided-v3.0 | lmstudio-low-ctx.160k 💀 | **0** (raw 29.5) | 0/8/invalid | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
 
+The config cell names the server, the thinking level and the harness window. The KV cache type of each run is in the Mendel report's config note.
+
 💀 LM Studio is retired here: every agent run ended with zero commits. [Why this runtime is not a candidate](../lmstudio-retired.md).
 <!-- gen:model-mendel:end -->
 
@@ -165,7 +167,7 @@ Thinking off on every column. llama-server: raw `/completion`, with the
 allocation always above the deepest step measured. LM Studio: chat
 endpoint, `--parallel 4`. Pause 25 s per step.
 
-| used tokens | llama f16, no drafter | llama q8 + MTP | LM Studio MLX engine |
+| used tokens | llama, f16 KV, no drafter | llama, q8_0 KV + MTP | LM Studio MLX engine, f16 KV |
 |---|--:|--:|--:|
 | 4K | 24.64 | 13.82 | 34.19 |
 | 8K | 24.05 | 8.74 | |

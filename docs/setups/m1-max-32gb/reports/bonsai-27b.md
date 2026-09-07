@@ -37,10 +37,10 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Ternary-Bonsai-27B, MLX, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% |
-| 2 | Ternary-Bonsai-27B, MLX, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% |
-| 3 | Ternary-Bonsai-27B, GGUF⁴, q4, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% |
-| 4 | Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% |
+| 1 | Ternary-Bonsai-27B, MLX, f16 KV, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% |
+| 2 | Ternary-Bonsai-27B, MLX, f16 KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% |
+| 3 | Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% |
+| 4 | Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -48,21 +48,21 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Ternary-Bonsai-27B, MLX, bounded cache, thinking on.** Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak.
+**#1 — Ternary-Bonsai-27B, MLX, f16 KV, bounded cache, thinking on.** Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak.
 
 ```bash
 mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#2 — Ternary-Bonsai-27B, MLX, bounded cache, thinking off.** Extra body per request: `{"chat_template_kwargs":{"enable_thinking":false}}`. Curve shared with the thinking-on row: same server, same weights.
+**#2 — Ternary-Bonsai-27B, MLX, f16 KV, bounded cache, thinking off.** Extra body per request: `{"chat_template_kwargs":{"enable_thinking":false}}`. Curve shared with the thinking-on row: same server, same weights.
 
 ```bash
 mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#3 — Ternary-Bonsai-27B, GGUF⁴, q4, thinking on.** The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).
+**#3 — Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, thinking on.** The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
@@ -74,7 +74,7 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --jinja --port 8081
 ```
 
-**#4 — Ternary-Bonsai-27B, GGUF⁴, q4, 2 slots, thinking on.**
+**#4 — Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, 2 slots, thinking on.**
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
@@ -175,6 +175,8 @@ matches the PQ2_0 variant.
 | guided-v3.0 | mlx-low-ctx.56k | **12.5** (raw 59) | 1/8/partial | 300.0 | 3,619k | 46k | 0 | 122 | 1 |  |
 | guided-v3.0 | mlx-off-ctx.56k | **0** (raw 27) | 0/8/invalid | 83.5 | 48k | 5k | 0 | 10 | 0 |  |
 | guided-v3.0 | mlx-off-ctx.56k | **0** (raw 25) | 0/8/invalid | 186.9 | 1,969k | 27k | 0 | 105 | 0 | tool call |
+
+The config cell names the server, the thinking level and the harness window. The KV cache type of each run is in the Mendel report's config note.
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).

@@ -3,7 +3,7 @@
   "wiredLimit": 24000,
   "rows": [
     {
-      "config": "Qwen3.8-27B, MLX, compaction ~26k, effort medium",
+      "config": "Qwen3.8-27B, MLX, f16 KV, compaction ~26k, effort medium",
       "maxCtx": "28k",
       "gatedBy": "mem",
       "tokShallow": "17",
@@ -22,7 +22,7 @@
       }
     },
     {
-      "config": "Qwen3.8-27B, MLX, effort low",
+      "config": "Qwen3.8-27B, MLX, f16 KV, effort low",
       "maxCtx": "28k",
       "gatedBy": "mem",
       "tokShallow": "17",
@@ -35,7 +35,7 @@
       "note": "Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth."
     },
     {
-      "config": "Qwen3.8-27B, GGUF, MTP f16, effort medium",
+      "config": "Qwen3.8-27B, GGUF, MTP, f16 KV, effort medium",
       "maxCtx": "49k",
       "gatedBy": "mem",
       "tokShallow": "20.0",
@@ -54,7 +54,7 @@
       }
     },
     {
-      "config": "Qwen3.6-35B-A3B, MLX, thinking on",
+      "config": "Qwen3.6-35B-A3B, MLX, f16 KV, thinking on",
       "maxCtx": "37k",
       "gatedBy": "mem",
       "tokShallow": "53.3",
@@ -72,7 +72,7 @@
       }
     },
     {
-      "config": "Qwen3.6-35B-A3B, GGUF, MTP q8, thinking on",
+      "config": "Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on",
       "maxCtx": "8k",
       "gatedBy": "mem",
       "tokShallow": "36.4",
@@ -91,7 +91,7 @@
       }
     },
     {
-      "config": "Gemma-4-26B-A4B, MLX",
+      "config": "Gemma-4-26B-A4B, MLX, f16 KV",
       "maxCtx": "70k",
       "gatedBy": "mem",
       "tokShallow": "51",
@@ -103,7 +103,7 @@
       "command": "mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \\\n  --prompt-cache-size 2 --port 8081"
     },
     {
-      "config": "Gemma-4-26B-A4B, GGUF, MTP f16",
+      "config": "Gemma-4-26B-A4B, GGUF, MTP, f16 KV",
       "maxCtx": "197k",
       "gatedBy": "mem",
       "tokShallow": "60.3",
@@ -122,7 +122,7 @@
       }
     },
     {
-      "config": "Gemma-4-26B-A4B, GGUF, MTP f16, 2 slots",
+      "config": "Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots",
       "maxCtx": "2x82k",
       "gatedBy": "mem",
       "tokShallow": "66.6",
@@ -144,7 +144,7 @@
       }
     },
     {
-      "config": "Gemma-4-12B, LMS, thinking off",
+      "config": "Gemma-4-12B, LMS, f16 KV, thinking off",
       "maxCtx": "131k",
       "gatedBy": "mem",
       "tokShallow": "34.19",
@@ -187,7 +187,7 @@
       }
     },
     {
-      "config": "Gemma-4-12B, GGUF, MTP q8, thinking off",
+      "config": "Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off",
       "maxCtx": "16k",
       "gatedBy": "speed",
       "tokShallow": "13.8",
@@ -200,7 +200,7 @@
       "note": "The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep."
     },
     {
-      "config": "Gemma-4-12B, GGUF, MTP f16, 4 slots, thinking off",
+      "config": "Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off",
       "maxCtx": "4x49k",
       "gatedBy": "mem",
       "tokShallow": "42.9",
@@ -213,7 +213,7 @@
       "note": "pi id `gemma-4-12b-4x`. Measured 2026-09-05 at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper."
     },
     {
-      "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking on",
+      "config": "Ternary-Bonsai-27B, MLX, f16 KV, bounded cache, thinking on",
       "maxCtx": "58k",
       "gatedBy": "mem",
       "tokShallow": "24.5",
@@ -232,7 +232,7 @@
       }
     },
     {
-      "config": "Ternary-Bonsai-27B, MLX, bounded cache, thinking off",
+      "config": "Ternary-Bonsai-27B, MLX, f16 KV, bounded cache, thinking off",
       "maxCtx": "58k",
       "gatedBy": "mem",
       "tokShallow": "24.5",
@@ -245,7 +245,7 @@
       "note": "Extra body per request: `{\"chat_template_kwargs\":{\"enable_thinking\":false}}`. Curve shared with the thinking-on row: same server, same weights."
     },
     {
-      "config": "Ternary-Bonsai-27B, GGUF\u2074, q4, thinking on",
+      "config": "Ternary-Bonsai-27B, GGUF\u2074, q4_0 KV + bias, thinking on",
       "maxCtx": "33k",
       "gatedBy": "speed",
       "tokShallow": "14.8",
@@ -264,7 +264,7 @@
       }
     },
     {
-      "config": "Ternary-Bonsai-27B, GGUF\u2074, q4, 2 slots, thinking on",
+      "config": "Ternary-Bonsai-27B, GGUF\u2074, q4_0 KV + bias, 2 slots, thinking on",
       "maxCtx": "2x48k",
       "gatedBy": "speed",
       "tokShallow": "14.9",

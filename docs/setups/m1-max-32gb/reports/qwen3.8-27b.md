@@ -34,9 +34,9 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.8-27B, MLX, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% |
-| 2 | Qwen3.8-27B, MLX, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% |
-| 3 | Qwen3.8-27B, GGUF, MTP f16, effort medium | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939/100% |
+| 1 | Qwen3.8-27B, MLX, f16 KV, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% |
+| 2 | Qwen3.8-27B, MLX, f16 KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% |
+| 3 | Qwen3.8-27B, GGUF, MTP, f16 KV, effort medium | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939/100% |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -44,21 +44,21 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Qwen3.8-27B, MLX, compaction ~26k, effort medium.** Set the harness compaction threshold at ~26K.
+**#1 — Qwen3.8-27B, MLX, f16 KV, compaction ~26k, effort medium.** Set the harness compaction threshold at ~26K.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --reasoning-effort medium --port 8081
 ```
 
-**#2 — Qwen3.8-27B, MLX, effort low.** Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth.
+**#2 — Qwen3.8-27B, MLX, f16 KV, effort low.** Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --chat-template-args '{"reasoning_effort":"low"}' --prompt-cache-size 2 --port 8081
 ```
 
-**#3 — Qwen3.8-27B, GGUF, MTP f16, effort medium.** pi id `qwen3.8-27b`. Measured 2026-09-05 at f16 KV, the KV pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant's own score is pending. Mendel blind at effort medium: 87/100, complete.
+**#3 — Qwen3.8-27B, GGUF, MTP, f16 KV, effort medium.** pi id `qwen3.8-27b`. Measured 2026-09-05 at f16 KV, the KV pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant's own score is pending. Mendel blind at effort medium: 87/100, complete.
 
 ```bash
 llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
@@ -127,13 +127,13 @@ re-testing on future llama.cpp releases.
 | need | config | tok/s | context |
 |---|---|--:|--:|
 | **Hard problems, agent work** | llama-server + MTP n=3, f16 KV, `-c 49152` | 20.0 shallow, 15.0 at 49K | 49K, the largest `-c` that loads |
-| **Low memory** | mlx_lm.server, compaction at ~26K | 14-17 across the window | to ~28K ceiling |
+| **Low memory** | mlx_lm.server, f16 KV, compaction at ~26K | 14-17 across the window | to ~28K ceiling |
 
 ## Quality — EvalPlus HumanEval+
 
 | config scored | pass@1 base | pass@1 plus | empty completions | completion |
 |---|--:|--:|--:|--:|
-| mlx_lm.server 4-bit, reasoning_effort=medium | 0.982 | 0.939 | 0/164 | 100% |
+| mlx_lm.server 4-bit, f16 KV, reasoning_effort=medium | 0.982 | 0.939 | 0/164 | 100% |
 
 ## Agentic quality — Mendel
 
@@ -146,6 +146,8 @@ re-testing on future llama.cpp releases.
 | blind-v1.1 | mlx-low-ctx.26k † | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
 | guided-v3.0 | mlx-low-ctx.?k † | **0** (raw 34) | 0/8/invalid | 261.3 | 1,254k | 30k | 0 | 48 | 0 |  |
 
+The config cell names the server, the thinking level and the harness window. The KV cache type of each run is in the Mendel report's config note.
+
 † a 26624-token window with a 16384-token output budget, our config arithmetic, not the model.
 <!-- gen:model-mendel:end -->
 
@@ -155,7 +157,7 @@ The MLX build gives a 26624-token window. That window stopped the low-effort run
 
 ## Decode speed vs used context (llama f16 KV, slow creep, 2026-09-05; mlx slow creep, 2026-08-29; limit 24000)
 
-| depth | llama+MTP f16 | mlx |
+| depth | llama+MTP, f16 KV | mlx, f16 KV |
 |---|--:|--:|
 | 4-8K | 20.0 | 17.1 |
 | 16K | 16.0 | 16.4 |
@@ -173,9 +175,9 @@ Wired memory at the last row: 23.5 GB on llama, 22.0 GB on MLX.
 
 | variant | py tok/s | js tok/s | memory |
 |---|--:|--:|--:|
-| llama-server Q4_K_M, no MTP | 12.44 | 12.44 | ~21 GB RSS |
+| llama-server Q4_K_M, f16 KV, no MTP | 12.44 | 12.44 | ~21 GB RSS |
 | llama-server Q4_K_M + MTP n=3, f16 KV | 16.93 | 15.73 | ~21 GB RSS |
-| **mlx-lm MLX 4-bit, no MTP** | **19.69** | **19.58** | **15.5 GB peak** |
+| **mlx-lm MLX 4-bit, f16 KV, no MTP** | **19.69** | **19.58** | **15.5 GB peak** |
 
 ## MTP draft depth sweep
 

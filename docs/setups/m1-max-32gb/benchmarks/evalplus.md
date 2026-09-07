@@ -4,6 +4,11 @@ The quality gate: pass@1 at temperature 0, output budget calibrated per
 model — see [the method](../../../methodology/evalplus). Scores are shared
 across serving configs when thinking mode, effort, and quant match.
 
+These runs are shallow, a few thousand tokens each, so the KV cache type
+does not move a score and the rows name it only where it is part of the
+quant, as the fork's calibrated q4_0 KV is. Each model page names the KV
+type its config serves.
+
 <!-- gen:evalplus-table:start -->
 | model | mode | pass@1 base | pass@1 plus | empty | completion |
 |---|---|--:|--:|--:|--:|
