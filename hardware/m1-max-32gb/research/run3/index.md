@@ -59,12 +59,12 @@ Five rules hold across every item in this run:
   KV. At almost the same size as the build above it drifts 18 percent
   less against BF16 by the publisher's own KLD. This creep also gives
   the first i-quant decode number this machine has ever had.
-- [ ] `qwen38-ista-iq3s-mtp-creep` —
+- [x] `qwen38-ista-iq3s-mtp-creep` —
   `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, ladder, then creep
   at f16 KV. The only build with task-level proof and the only one
   with papers. Its projected window sits above 120K, so this creep
   carries the long-prompt completion check for llama.cpp issue 27756.
-- [ ] `qwen38-creep-gate` — **a task, not a judgment call.** Read all
+- [x] `qwen38-creep-gate` — **a task, not a judgment call.** Read all
   three creep files together, after the last one ends. For each build
   write one line in `results.md`: the build, its clean depth, the
   reference depth, the ratio, and `evalplus: run` or

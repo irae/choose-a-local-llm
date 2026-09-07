@@ -45,8 +45,46 @@ tok/s, wired ~24.0-24.1 GB throughout, clean the whole way.
 
 Tool: `local-llm-eval-tools` commit `2344f00`.
 
+## `qwen38-ista-iq3s-mtp-creep`
+
+Ladder: `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, f16 KV,
+built-in MTP head. `-c 131072` served a real 4096-token completion
+(1708 tokens, EOS, 13.52 tok/s), ladder cleared at the starting value.
+
+Creep ran at `-c 131072`, see
+`results/creep-qwen38-ista-iq3s-mtp.tsv`:
+
+4k @ 15.1 → 8k @ 13.5 → 16k @ 14.7 → 24k @ 14.2 → 33k @ 13.7 → 41k @
+13.2 → 49k @ 12.7 → 66k @ 11.8 → 82k @ 11.0 → 98k @ 10.3 → 115k @ 9.7
+→ 131k @ 9.1 tok/s. Stop: swap grew 429 MB at depth 131098 (mem
+verdict). Clean ceiling: **114718 tokens**, 9.67 tok/s, wired ~24.2 GB
+throughout.
+
+Tool: `local-llm-eval-tools` commit `2344f00`.
+
+## The three creeps, side by side
+
+| build | ceiling | tok/s at ceiling | stop reason |
+| --- | --: | --: | --- |
+| unsloth q3kxl | 49198 | 12.45 | mem, swap +3 MB at 65578 |
+| atomicchat iq3s | 98338 | 10.26 | none, ran off end of depth list |
+| ista iq3s-mtp | 114718 | 9.67 | mem, swap +429 MB at 131098 |
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table
 here, with one line per build, the builds they passed as well as the
 builds they stopped.
+
+### `qwen38-creep-gate`
+
+Reference: 49152 tokens (deepest clean depth this machine has measured
+for Qwen3.8 at f16). Floor: 20 percent under it, 39322 tokens.
+
+| build | clean depth | reference | ratio | evalplus |
+| --- | --: | --: | --: | --- |
+| unsloth q3kxl | 49198 | 49152 | 100.1% | run |
+| atomicchat iq3s | 98338 | 49152 | 200.1% | run |
+| ista iq3s-mtp | 114718 | 49152 | 233.4% | run |
+
+All three clear the floor. All three go on to their EvalPlus smoke.
