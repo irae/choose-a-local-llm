@@ -127,7 +127,7 @@ Five rules hold across every item in this run:
   `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL` at `-c 212992`. Expect
   an OOM at load on the "with" side; the item says what to do then.
   Optional.
-- [ ] `strip-qwen36-pair` — the same pair on
+- [x] `strip-qwen36-pair` — the same pair on
   `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` at `-c 49152`, drafter
   removed on both sides. Optional. Gemma-12B has no pair: its 175 MB
   sits below the noise of `vm_stat` between runs.

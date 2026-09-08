@@ -259,6 +259,20 @@ about 9.14 → 8.58 tok/s at ~131k used. For a task that needs depth over
 shallow throughput, dropping the drafter is the better trade on this
 build.
 
+## `strip-qwen36-pair`
+
+`unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`, f16, `-c 49152`, drafter
+removed on both sides.
+
+| side | wired | tok/s (warmup) | tok/s (2nd) | creep @ 32818 |
+| --- | --: | --: | --: | --: |
+| without mmproj | 23589 MB | 51.33 | 51.68 | 39.89 |
+| with mmproj | 24785 MB | 51.36 | 51.71 | 39.70 |
+
+Wired delta = **1196 MB**, at or above the mmproj file size (899 MB).
+Speeds match within noise (all under 0.5%). Pass rule met: **memory
+only, already taken.**
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table
