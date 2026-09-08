@@ -97,6 +97,21 @@ Needed `openai` and `evalplus` installed; put them in a venv at
 | atomicchat iq3s | 98338 | 10.26 | none, ran off end of depth list |
 | ista iq3s-mtp | 114718 | 9.67 | mem, swap +429 MB at 131098 |
 
+## The three Mendel smokes
+
+Control (`bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, f16, `-c 49152`, medium):
+10 calls, 1 commit, no loop, clean, 111s, pass.
+
+| build | calls | commits | loop | clean | wall_s | verdict |
+| --- | --: | --: | --- | --- | --: | --- |
+| unsloth q3kxl (`-c 49152`) | 12 | 1 | ok:1.00 | yes | 192 | pass |
+| atomicchat iq3s (`-c 98304`) | 9 | 1 | ok:1.00 | yes | 114 | pass |
+| ista iq3s-mtp (`-c 114688`) | 10 | 1 | ok:1.00 | yes | 111 | pass |
+
+All three pass the handed `xtend` task at their own creep window: the
+task-lossless 3-bit claim survives an agent loop for all three
+candidates. All three are candidates for the coordinator's bench pick.
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table

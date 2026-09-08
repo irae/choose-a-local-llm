@@ -92,12 +92,12 @@ Five rules hold across every item in this run:
   already skipped is logged here too, as `mendel: skipped, no EvalPlus
   smoke ran`. Log every build, so the run records which EvalPlus
   invalidated which Mendel smoke.
-- [ ] `qwen38-unsloth-q3kxl-mendel-smoke` — Mendel smoke on the window
+- [x] `qwen38-unsloth-q3kxl-mendel-smoke` — Mendel smoke on the window
   its creep supports, against the same smoke on the row we serve
   today. Runs only if `qwen38-evalplus-gate` marked it `run`.
-- [ ] `qwen38-atomicchat-iq3s-mendel-smoke` — the same, under the same
+- [x] `qwen38-atomicchat-iq3s-mendel-smoke` — the same, under the same
   gate.
-- [ ] `qwen38-ista-iq3s-mtp-mendel-smoke` — the same, under the same
+- [x] `qwen38-ista-iq3s-mtp-mendel-smoke` — the same, under the same
   gate. This is the clean test of whether a "task-lossless" 3-bit
   claim survives an agent loop.
 - [ ] `qwen38-effort-low-smoke` — the row we serve today
