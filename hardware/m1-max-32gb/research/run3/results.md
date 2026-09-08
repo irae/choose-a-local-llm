@@ -273,6 +273,25 @@ Wired delta = **1196 MB**, at or above the mmproj file size (899 MB).
 Speeds match within noise (all under 0.5%). Pass rule met: **memory
 only, already taken.**
 
+## `strip-gemma26-nodrafter-creep`
+
+`unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, f16 KV, no `--no-mmproj`
+drafter flags, `-c 212992`. Ladder cleared (4096 tokens, EOS, 54.95
+tok/s).
+
+Creep ran clean the whole extended depth list, no stop, see
+`results/creep-strip-gemma26-nodrafter.tsv`:
+
+4k @ 52.5 → 8k @ 50.3 → 16k @ 48.0 → 25k @ 44.0 → 33k @ 41.9 → 41k @
+39.3 → 49k @ 36.9 → 66k @ 33.5 → 82k @ 30.3 → 98k @ 27.8 → 115k @ 25.7
+→ 131k @ 23.9 → 164k @ 21.0 → 197k @ 18.6 tok/s. Wired ~23.8-23.9 GB
+throughout, no swap growth.
+
+At a comparable depth the published with-drafter row gates on memory
+near 197k at 25.6 GB wired; without the drafter this ran the same
+depth clean at 23.9 GB — about 1.7 GB freed, and the ceiling did not
+even hit a stop condition this time.
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table

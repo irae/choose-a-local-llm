@@ -138,7 +138,7 @@ Five rules hold across every item in this run:
   head is worth about 200 to 300 MB, and a drafter costs depth, so
   dropping it may buy a deeper window at a shallower speed. Only a
   ladder and a creep can price that trade.
-- [ ] `strip-gemma26-nodrafter-creep` — the same on the Gemma-26B row,
+- [x] `strip-gemma26-nodrafter-creep` — the same on the Gemma-26B row,
   where the drafter is a separate 462 MB file. Optional. Qwen3.6 has
   no such item: its drafter is small against a 22.9 GB file, and it
   pays 68 to 74 tok/s shallow.

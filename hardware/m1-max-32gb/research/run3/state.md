@@ -1,6 +1,7 @@
 # Research run 3 — state
 
-Created 2026-09-07 by the coordinator. Not started.
+Created 2026-09-07 by the coordinator. Closed 2026-09-08 — every item
+in `index.md` ran.
 
 Start here: read `AGENT.md`, then `index.md`, which is the order.
 Log every session below, and close each one with a handing-over
@@ -66,3 +67,60 @@ compaction never fired — the model just stops early under the reduced
 window on this task. Per the ladder's own rule (stop after two
 failures at one rung), the ladder stops here. No `contextWindow` floor
 found for Gemma-26B on `xtend-wide`.
+
+## Handing over, run close (2026-09-08)
+
+Every item in `index.md` is checked off. Nothing skipped except
+`compaction-bonsai-mlx` (below). Full detail per item is in
+`results.md`; this section is the punch list for the coordinator.
+
+**Bench-item candidates** — three Qwen3.8 3-bit builds, all pass their
+whole chain (creep, EvalPlus smoke, Mendel smoke), all level with the
+control row on quality and clean on the agent loop:
+
+- `unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL` — clean depth 49198
+- `AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S` — clean depth 98338 (list
+  ceiling, not a measured limit — worth a longer depth list next time)
+- `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp` — clean depth
+  114718, the deepest and the only one with outside task-level proof
+
+**Effort levels** (control row): low and xhigh both pass clean, no
+loop, no failure to commit — effort level isn't a robustness lever for
+this model on this task.
+
+**Compaction ladders**: only Gemma-4-12B produced a usable
+`contextWindow` floor (23552). Qwen3.8's task never grew past the
+20000-token line where compaction fires; Gemma-26B's ladder failed
+twice at rung 1 for a reason unrelated to compaction (the model just
+stops early under a reduced window). `compaction-bonsai-mlx` was
+skipped — it needs the MLX margin rule, which this run explicitly
+excludes, and Bonsai has a documented history of multi-hour hangs
+without that margin. **Stop-and-ask: should a future run measure the
+MLX margin rule first, or is Bonsai's compaction behavior not worth
+the risk?**
+
+**Strip pairs**: all three mmproj pairs (Qwen3.8, Qwen3.6, Gemma-26B)
+confirm "memory only, already taken" — the projector costs its file
+size plus 200-250 MB in Metal compute buffers, no speed cost. Gemma-26B
+OOMs with the projector at its own full `-c` (212992), works one step
+down (204800).
+
+**Drafter creeps**: dropping the MTP drafter buys real depth on both
+models tested. Qwen3.8 q3kxl goes from a 49198 mem-stop to running the
+full depth list clean past 131072. Gemma-26B goes from a documented
+25.6 GB mem-gate near 197k to running clean at 23.9 GB at the same
+depth. Worth a pick review: is the drafter's shallow-speed win worth
+losing this much depth for either model?
+
+**Process notes, not results**: a stray downloader process starved the
+first unsloth creep of memory (caught and re-run clean); `--offline`
+silently skips an uncached side-file (mmproj) instead of erroring —
+hit twice, on Gemma-26B and once nearly on Qwen3.6; `evalplus-smoke.py`
+needed `openai` and `evalplus`, now in a venv at
+`~/.venvs/local-llm-bench` (Homebrew Python left untouched).
+
+Machine state: no server running, wired memory recovered to idle.
+Evidence archived under `results/` (server logs, creep TSVs, EvalPlus
+and Mendel smoke logs) and `~/.local/share/choose-a-local-llm/evidence/run3-compaction/`
+(compaction session logs and summaries). Everything committed and
+pushed to `research3`.
