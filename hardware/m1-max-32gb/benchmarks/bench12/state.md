@@ -4,10 +4,18 @@ Started 2026-09-08. `tool-check` pinned `local-llm-eval-tools` at
 `2344f00`. Wired limit confirmed 25000 (per `AGENT.md`; the machine
 file's 24000/22000 is stale, a known false positive on preflight).
 
-`gemma12_2x_clean` = 8222 tokens per slot at `-c 770048` (the ladder's
-own practical top, not a measured failure — wired reached ~25.2 GB
-with ~68 MB free, so the search stopped rather than risk a lockup).
-See `results.md`.
+`gemma12_2x_clean` = **81958** tokens per slot (redo, creep-judged,
+2026-09-08). The coordinator caught that the first reading (8222 at
+`-c 770048`) measured a load ceiling, not a window: that `-c`'s KV
+allocation alone left ~68 MB free, so its creep mem-stopped almost
+immediately. Redo at four `-c` values (262144, 245760, 221184, 196608)
+all hit the same wall — swap growth at depth 81958 — whenever the
+window was large enough to reach it. This ceiling does not move with a
+bigger `-c`; it is the real per-slot limit. See `results.md`,
+`gemma12-gguf-2slot redo`.
+
+`gemma12-gguf-1slot-131072`: clean depth 114718, hit the `-c` boundary
+at 131072 (HTTP 400, not OOM) at the top.
 
 Draft kit, not started as a scored run. Pre-block prep landed
 2026-09-07: wired 24000 ceilings for Qwen3.6 GGUF q8_0 and f16,

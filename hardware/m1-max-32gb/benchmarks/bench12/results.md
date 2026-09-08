@@ -179,3 +179,73 @@ depth: 8222** — far short of the ladder's 770048, because the KV
 allocation for both slots at that `-c` already consumes nearly all of
 the wired budget before any real depth is used.
 
+
+## `gemma12-gguf-1slot-131072` — Gemma-12B GGUF, one slot
+
+Same files, KV type, no drafter. `--parallel 1`, `-c 131072`.
+
+Creep, see `results/creep-gemma12-gguf-1x-c131072-f16.tsv`:
+
+4k @ 25.0 → 8k @ 24.1 → 16k @ 22.8 → 25k @ 21.7 → 33k @ 20.6 → 41k @
+19.5 → 49k @ 18.6 → 66k @ 17.0 → 82k @ 15.7 → 98k @ 14.6 → 115k @ 13.6
+tok/s. Wired ~12 GB flat throughout. Stop: hit the `-c` boundary at
+131072 (HTTP 400, not OOM). **Clean ceiling: 114718 tokens**, 13.59
+tok/s.
+
+Comparison, one slot vs two slots (each column its own tok/s):
+
+| depth | 1 slot | 2 slots (A) | 2 slots (B) |
+| --: | --: | --: | --: |
+| 4096 | 25.0 | 25.0 | 24.7 |
+| 8222 | 24.1 | 23.81 | 23.89 |
+| 16386 | 22.8 | 22.96 | 22.86 |
+
+**Note on `gemma12-gguf-2slot`'s first attempt.** That block's purpose
+is to compare two slots each holding window W against one slot holding
+the same W. The ladder climbed to `-c 770048` because a short
+completion kept succeeding there, but that config's own creep
+mem-stopped at depth 16386 (68 MB free at load, before any real
+depth). A `-c` whose creep cannot reach depth is not a window
+measurement — it answers "does this load," not "can two agents each
+hold this window." The 770048 load result stands as a real finding
+(this machine loads a 12B on two slots at that `-c`), but the block's
+comparison value has to come from a `-c` whose creep itself runs
+clean. Redo below, judged by the creep, not the ladder's short
+completion.
+
+
+## `gemma12-gguf-2slot` redo — creep-judged, not ladder-judged
+
+The coordinator's correction: the block's question is "can two agents
+each hold the same window one agent holds," so the value has to come
+from a `-c` whose **creep** runs clean, never from a `-c` that only
+loads and serves one short completion. Redo below.
+
+| `-c` (per-slot window) | creep result |
+| --- | --- |
+| 262144 (131072) | mem stop, swap +923 MB at depth 81958 |
+| 245760 (122880) | mem stop, swap +310 MB at depth 81958 |
+| 221184 (110592) | mem stop, swap +143 MB at depth 81958 |
+| 196608 (98304) | clean to depth 81958, then hit its own window boundary at 98338 (HTTP 400, not a memory stop) |
+
+**Four separate attempts hit the same wall: depth 81958, every time
+the window is large enough to reach it.** The stop is memory-driven
+(swap growth), not window-driven, at every `-c` from 221184 up. Only
+196608's own window boundary (98304) intervened before the real
+memory limit could show up — that "clean" reading is genuine (no swap
+growth was ever measured), but it did not test past depth 81958
+either; the DEPTH_LIST jumped straight from 81920 to the window's own
+edge.
+
+**Finding: this machine's real per-slot clean ceiling for two Gemma-12B
+slots is 81958 tokens, and it does not move once `-c` is large enough
+to reach it.** Setting a bigger `-c` than needed for 81958 per slot
+(about 172032 total) buys no real depth, only wasted KV allocation.
+`gemma12_2x_clean` = **81958**, superseding the earlier 8222 reading
+(that one was an artifact of `-c 770048`'s KV allocation alone eating
+almost the entire wired budget before any depth was used).
+
+Comparison, one slot (114718 clean) vs two slots (81958 clean each):
+two slots holds about 71% of one slot's clean depth per agent, at
+roughly proportional wired cost.
+
