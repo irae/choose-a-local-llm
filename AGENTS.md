@@ -290,6 +290,14 @@ Benchmark work:
   and takes to the owner only what needs the owner: sudo, a reboot, a
   download, money, or a rule change. The coordinator never opens a
   conversation with the runner on its own.
+- **A drafter file is the one download that needs no approval** (owner
+  rule, 2026-09-08). When a block names a drafter and the machine does
+  not hold one, fetch it and go on. The report then says plainly that
+  no drafter was on disk and that the run downloaded one, with the file
+  name and the revision it fetched. A drafter that arrives silently
+  makes every speed number of that block unreadable, because the reader
+  cannot tell a build that ships a head from a build that borrowed one.
+  Every other download still goes to the owner.
 - **A missing harness entry is never a reason to skip a block.** A pi
   entry for a model under test is a derived artifact: the runner
   creates or updates it in the run's pinned config from the block's
