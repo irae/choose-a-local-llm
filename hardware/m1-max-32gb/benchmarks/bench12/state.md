@@ -119,6 +119,19 @@ against that model id: new branch
 
 Mendel guided-high run started, `bonsai-prism-f16`, `MENDEL_CONTEXT_WINDOW=131072`,
 reserve 8192, keep-recent pi default (window above 65536). Watcher
-running (`results/mem-bonsai-prism-f16-guided-high.log`). Session log:
-`~/code/mendel-benchmark/scratchpad/benchmark/runs/bonsai-prism-f16-high-guided-session.jsonl`.
+running (`results/mem-bonsai-prism-f16-guided-high.log`).
 Up to 300 min wall clock. — running.
+
+**Tool bug found: `run-worker.sh`'s repetition-loop check reads the
+wrong file.** `run_loop_check()` (line 168) reads
+`$RUNS/$fslug-session.jsonl`, but nothing in this pinned tool version
+writes that file — `run-pi-rpc.mjs` writes `$fslug-events.jsonl`
+instead. The check would return "unreadable" at close, silently,
+never a repetition finding. Not fixed in the tool (subagents are off
+for this session per the owner, and the fix belongs in
+`mendel-benchmark`, not here). Worked around by hand: ran
+`benchmarks/loop-check.py` against the real events file directly —
+`text_delta 0.68 ok, thinking_delta 0.62 ok, toolcall_delta 0.33 ok`,
+no loop, at 108k ctx / ~85 min elapsed. Will re-run the same manual
+check at close instead of trusting the script's built-in one for this
+row. Coordinator: file this against `mendel-benchmark` separately.
