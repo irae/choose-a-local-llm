@@ -99,6 +99,13 @@ So `qwen-3.8-27b q3kxl/f16`, `qwen-3.6-35b-a3b q8/high`,
 `gemma-4-12b 2slot`. The benchmark mode is not a model parameter: it
 belongs to the task word, `simulator(mendel-guided)`.
 
+When two publishers ship the same quant name for one model, the quant
+name alone is not a build tag. Add the publisher's own prefix from the
+file name until the tags differ: `ad-iq3s` and `gsq-iq3s`, not `iq3s`
+twice. One model can carry several builds at once, so a tag that
+collides names two different sets of weights and makes every number on
+the line unreadable.
+
 ### The task word comes first
 
 A short line opens with the task, not with the model, because the
