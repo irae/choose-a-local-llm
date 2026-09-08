@@ -189,4 +189,11 @@ EVALPLUS_MAX_NEW_TOKENS=8192 benchmarks/run-humaneval.sh qwen38-ista-mtp
 qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'`.
 Watcher running (`results/mem-qwen38-ista-evalplus.log`). Output:
 `results/qwen38-ista-mtp/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
-— running.
+
+**Closed.** 164/164 problems, 1 empty, wall 3:07:36. **base 0.976,
+plus 0.945**, 100% completion rate. Comparison against the control row
+(`bartowski/Qwen3.8-27B-GGUF:Q4_K_M`) deferred to `qwen38-gguf-blind-medium`
+later in this run's own order — that block is this run's fresh
+control re-measurement (needed anyway, since the published control
+was scored at pi's old 16384 reserve and this run uses 8192). Server
+stopped. Wired recovery starts. Next block: `qwen38-nodrafter-evalplus`.

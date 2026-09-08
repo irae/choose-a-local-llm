@@ -323,3 +323,32 @@ site comparison names the build.
 `bonsai-fork-f16` block is fully done: ladder, creep, agent task, all
 committed.
 
+
+## `qwen38-ista-evalplus` — ISTA IQ3_S-mtp, full EvalPlus
+
+`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf`,
+built-in MTP head, f16 KV, `--parallel 1`, `-c 131072` (ladder cleared
+at this value, research run 3, same wired limit 25000), thinking
+medium, wired 25000.
+
+Calibration: 10/10 converge, max completion 2347 tokens, budget
+max(2347×1.5, 8192) = **8192** (same floor as the control).
+`benchmarks/calibration-qwen38-ista-mtp.json`.
+
+Full run: `RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench12/results
+EVALPLUS_MAX_NEW_TOKENS=8192 benchmarks/run-humaneval.sh qwen38-ista-mtp
+qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'`.
+
+| metric | value |
+| --- | --: |
+| HumanEval base | 0.976 |
+| HumanEval plus | 0.945 |
+| completion rate | 100% |
+| empty | 1/164 |
+| wall | 3:07:36 |
+
+Files: `results/qwen38-ista-mtp/humaneval/`,
+`results/server-qwen38-ista-evalplus.log`.
+
+Comparison against the control row deferred to `qwen38-gguf-blind-medium`
+(this run's own control re-measurement, at pi's current 8192 reserve).
