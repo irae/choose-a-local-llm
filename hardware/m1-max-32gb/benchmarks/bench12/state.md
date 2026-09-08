@@ -103,18 +103,22 @@ Deviation: none.
 boundary; deepest step 131098 still decoded at 9.67 tok/s, above the
 8 tok/s floor). See `results.md`, `bonsai-fork-f16`.
 
-**Needs coordinator: the agent task step of `bonsai-fork-f16` did not
-run.** `run-worker.sh` derives its branch name from the model alias
-alone (`bonsai-prism-high-guided-v3-issue-13`), with no version bump.
-That branch already exists, scored, from the earlier q4_0 KV run
+**Branch collision, resolved without touching the old branch.**
+`run-worker.sh` derives its branch name from the model alias alone
+(`bonsai-prism-high-guided-v3-issue-13`), with no version bump. That
+name was already taken by the earlier, already-scored q4_0 KV run
 (`mendel-benchmark` commit `c403b07`, "Score bonsai-prism guided high:
-wall_clock partial ... 31.5"). Deleting a git branch is a destructive
-action this session's permissions block; I did not force it. Ladder
-and creep for `bonsai-fork-f16` are done and committed; only the
-agent-task row is missing. Skipping per the owner's own rule (never
-halt the run; skipping beats blocking) and moving to the next block.
-Candidate fix for the coordinator: delete
-`bonsai-prism-high-guided-v3-issue-13` locally and on `origin` (score
-already safe in git history), then re-run
-`MENDEL_CONTEXT_WINDOW=131072 ./run-worker.sh bonsai-prism pi guided high`.
-Stopping the bonsai-prism server now; wired recovery starts.
+wall_clock partial ... 31.5"). Left that branch alone. Instead added a
+sibling pi model entry, `bonsai-prism-f16`, to `~/.pi/agent/models.json`
+under the `mlx` provider (copied from `bonsai-prism`, f16 KV,
+`contextWindow` 131072, decode 14.95-9.67 tok/s to 131k). Re-served
+the fork under `--alias bonsai-prism-f16`
+(`results/server-bonsai-fork-f16-mendel.log`) and re-ran the worker
+against that model id: new branch
+`bonsai-prism-f16-high-guided-v3-issue-13`, no collision.
+
+Mendel guided-high run started, `bonsai-prism-f16`, `MENDEL_CONTEXT_WINDOW=131072`,
+reserve 8192, keep-recent pi default (window above 65536). Watcher
+running (`results/mem-bonsai-prism-f16-guided-high.log`). Session log:
+`~/code/mendel-benchmark/scratchpad/benchmark/runs/bonsai-prism-f16-high-guided-session.jsonl`.
+Up to 300 min wall clock. — running.
