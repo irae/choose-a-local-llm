@@ -86,7 +86,21 @@ window ladder and the summary rubric live in
   a dead token costs a run to a login loop (measured 2026-09-05, on a
   guided run of one dense 27B model).
   A failing status means no Mendel run until the owner logs in.
-- Do not re-run models that already have a result row there.
+- **A duplicate is a configuration, not a model.** One model now serves
+  several builds, cache types, windows and levels, so the harness alias
+  never decides this on its own. Two runs are the same run only when
+  all of these match: the exact build in `model_id` (the Hub repo and
+  quant tag, or the local file) at the pinned revision, the serving
+  stack, the KV cache type, the harness window, the thinking or effort
+  level, the mode, and `prompt_version`. Write the exact build into
+  `model_id` for every new row. Older rows repeat the alias there, and
+  their config note carries the rest.
+- **A suspected duplicate never skips itself.** The runner writes a
+  warning, starts the next item, and asks the coordinator or the owner.
+  If either confirms, the item runs out of order. If neither answers
+  before the queue empties, the run completes every item anyway. A
+  duplicate costs GPU time. A skip costs the result. Take the smaller
+  loss.
 - After each run finishes, the agent running the benchmark (never the
   model under test) kills stray `Mendel Daemon` processes — exact name,
   capital D: `pkill -f "Mendel Daemon"`.
