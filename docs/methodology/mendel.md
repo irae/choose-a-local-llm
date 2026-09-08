@@ -199,3 +199,46 @@ file. The worker takes them from `MENDEL_CONTEXT_WINDOW`,
 from the same names with a `SMOKE_` prefix. The config note of every
 row carries the window, the `-c`, the budget, the keep budget and the
 source block of each.
+
+## Comparing two builds of one model
+
+A score alone does not compare two builds. Read it with the context the
+run used and with the count of tool calls.
+
+Context used is a result, not a setting. A build with more quantization
+error writes worse code. It then debugs more, calls more tools, and
+feeds more text back into its own window. A weaker build reaches the
+same score at a higher cost, or it runs out of room and does not reach
+it. Two builds that score alike can spend very different amounts to get
+there.
+
+- **Never match the windows.** Give each build the window its own creep
+  measured. A matched window punishes the build that needs more room.
+  It turns a quality loss into a truncation or a compaction event, and
+  the row then records the wrong cause.
+- **Put peak context and tool calls in the comparison table**, beside
+  the score, for every build and for the control.
+  `benchmark/count-tool-calls.mjs` already verifies both for the row,
+  so the numbers exist before the table is written.
+- **A deeper window is not a proven window.** Weight error and
+  long-context drift both grow with depth, and a short-prompt quality
+  gate measures neither. A row served at a deep window says how deep
+  the task actually went, so a reader can tell an offered window from a
+  used one.
+
+Measured 2026-09-08 on the reference setup: one dense 27B model, f16 KV,
+three community 3-bit builds against the 4-bit build the setup serves
+today ([model page](../setups/m1-max-32gb/benchmarks/qwen3.8-27b.md)).
+All three scored level with the control on the short-prompt quality
+gate and passed the agent smoke clean. The build with the largest
+published divergence from the unquantized weights took 12 tool calls
+and 192 s, against 10 calls and 111 s for the control. That is one run
+per build on one task, so the size of the effect is not established.
+The direction is.
+
+The same measurement shows the other half of the problem. The agent
+task peaked near 8K tokens on that model, twice. A build served at
+114K and a build served at 49K both finish inside the first 9K. A
+window advantage stays invisible while the task does not grow. So a
+deep window earns its row from a task that reaches the depth, not from
+the creep that found the depth.
