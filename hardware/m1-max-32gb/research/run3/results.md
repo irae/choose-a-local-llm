@@ -19,12 +19,24 @@ real 4096-token completions at each rung.
 | 131072 | served, 1849 tokens, EOS, 13.55 tok/s |
 
 Ladder stopped at 131072, the top of the creep tool's own depth list.
-Creep ran at `-c 131072`, see `results/creep-qwen38-unsloth-q3kxl.tsv`:
+Creep ran at `-c 131072`, start wired 24796 MB, free 2054 MB, swap used
+266 MB. Raw file: `results/creep-qwen38-unsloth-q3kxl.tsv`.
 
-4k @ 14.4 → 8k @ 14.1 → 16k @ 12.2 → 24k @ 13.0 → 32k @ 12.1 → 41k @
-10.9 → 49k @ 12.5 → 65k @ 11.6 tok/s. Stop: swap grew 3 MB at depth
-65578 (mem verdict, not a model limit). Clean ceiling: **49198
-tokens**, 12.45 tok/s, wired ~24.5-25.2 GB throughout.
+| depth | tok/s | wired MB | free MB | swap delta MB |
+| --: | --: | --: | --: | --: |
+| 4114 | 14.37 | 25198 | 368 | 0 |
+| 8222 | 14.05 | 25197 | 75 | 0 |
+| 16386 | 12.21 | 25211 | 61 | 0 |
+| 24602 | 13.02 | 25207 | 60 | 0 |
+| 32818 | 12.06 | 25190 | 63 | 0 |
+| 40982 | 10.87 | 25068 | 93 | 0 |
+| **49198** | **12.45** | 25058 | 63 | 0 |
+| 65578 | 11.56 | 25030 | 57 | 3 |
+
+Stop: swap grew 3 MB at depth 65578, a mem verdict and not a model
+limit. Clean ceiling: **49198 tokens** at 12.45 tok/s. Wired sat at
+25.0 to 25.2 GB the whole way, at the top of the 25000 limit, and free
+memory never rose above 93 MB after the first step.
 
 Tool: `local-llm-eval-tools` commit `2344f00`.
 
@@ -34,14 +46,27 @@ Ladder: `AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, f16 KV, MTP drafter on.
 `-c 106496` served a real 4096-token completion (1411 tokens, EOS,
 13.45 tok/s), so the ladder cleared at the starting value.
 
-Creep ran at `-c 106496` against the depth list capped at 98304, see
-`results/creep-qwen38-atomicchat-iq3s.tsv`:
+Creep ran at `-c 106496` against the depth list capped at 98304, start
+wired 24119 MB, free 340 MB, swap used 261 MB. Raw file:
+`results/creep-qwen38-atomicchat-iq3s.tsv`.
 
-4k @ 15.8 → 8k @ 15.4 → 16k @ 14.8 → 25k @ 14.2 → 33k @ 13.7 → 41k @
-13.1 → 49k @ 12.7 → 66k @ 11.7 → 82k @ 11.0 → 98k @ 10.3 tok/s. No stop
-condition hit (no OOM, no swap growth) — the sweep ran out of depth
-list before it ran out of headroom. Ceiling: **98338 tokens**, 10.26
-tok/s, wired ~24.0-24.1 GB throughout, clean the whole way.
+| depth | tok/s | wired MB | free MB | swap delta MB |
+| --: | --: | --: | --: | --: |
+| 4114 | 15.79 | 24133 | 60 | 0 |
+| 8222 | 15.36 | 24105 | 63 | 0 |
+| 16386 | 14.78 | 24099 | 64 | 0 |
+| 24602 | 14.23 | 24107 | 63 | 0 |
+| 32818 | 13.68 | 24089 | 68 | 0 |
+| 40982 | 13.14 | 24086 | 62 | 0 |
+| 49198 | 12.65 | 24093 | 60 | 0 |
+| 65578 | 11.74 | 24070 | 61 | 0 |
+| 81958 | 10.96 | 24063 | 68 | 0 |
+| **98338** | **10.26** | 24057 | 59 | 0 |
+
+**No stop condition was hit**: no OOM and no swap growth at any step.
+The sweep ran out of depth list before it ran out of headroom, so
+98338 is the list's end and **not a measured ceiling**. Wired held at
+24.0 to 24.1 GB the whole way, about 1 GB under the limit.
 
 Tool: `local-llm-eval-tools` commit `2344f00`.
 
@@ -51,14 +76,28 @@ Ladder: `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, f16 KV,
 built-in MTP head. `-c 131072` served a real 4096-token completion
 (1708 tokens, EOS, 13.52 tok/s), ladder cleared at the starting value.
 
-Creep ran at `-c 131072`, see
-`results/creep-qwen38-ista-iq3s-mtp.tsv`:
+Creep ran at `-c 131072`, start wired 24097 MB, free 64 MB, swap used
+253 MB. Raw file: `results/creep-qwen38-ista-iq3s-mtp.tsv`.
 
-4k @ 15.1 → 8k @ 13.5 → 16k @ 14.7 → 24k @ 14.2 → 33k @ 13.7 → 41k @
-13.2 → 49k @ 12.7 → 66k @ 11.8 → 82k @ 11.0 → 98k @ 10.3 → 115k @ 9.7
-→ 131k @ 9.1 tok/s. Stop: swap grew 429 MB at depth 131098 (mem
-verdict). Clean ceiling: **114718 tokens**, 9.67 tok/s, wired ~24.2 GB
-throughout.
+| depth | tok/s | wired MB | free MB | swap delta MB |
+| --: | --: | --: | --: | --: |
+| 4114 | 15.09 | 24083 | 57 | 0 |
+| 8222 | 13.54 | 24065 | 59 | 0 |
+| 16386 | 14.65 | 24073 | 64 | 0 |
+| 24602 | 14.25 | 24067 | 60 | 0 |
+| 32818 | 13.71 | 24212 | 64 | 0 |
+| 40982 | 13.20 | 24213 | 55 | 0 |
+| 49198 | 12.71 | 24206 | 57 | 0 |
+| 65578 | 11.80 | 24199 | 64 | 0 |
+| 81958 | 10.99 | 24213 | 60 | 0 |
+| 98338 | 10.30 | 24219 | 60 | 0 |
+| **114718** | **9.67** | 24204 | 63 | 0 |
+| 131098 | 9.14 | 24189 | 59 | 429 |
+
+Stop: swap grew 429 MB at depth 131098, a mem verdict. Clean ceiling:
+**114718 tokens** at 9.67 tok/s. This is the only measured ceiling of
+the three builds. Wired held near 24.2 GB the whole way, so the stop
+came from the machine's free memory and not from the wired limit.
 
 Tool: `local-llm-eval-tools` commit `2344f00`.
 
@@ -89,13 +128,29 @@ Tool: `benchmarks/evalplus-smoke.py`, budget from
 Needed `openai` and `evalplus` installed; put them in a venv at
 `~/.venvs/local-llm-bench` rather than touching the Homebrew Python.
 
-## The three creeps, side by side
+## Every creep of this run, side by side
 
-| build | ceiling | tok/s at ceiling | stop reason |
-| --- | --: | --: | --- |
-| unsloth q3kxl | 49198 | 12.45 | mem, swap +3 MB at 65578 |
-| atomicchat iq3s | 98338 | 10.26 | none, ran off end of depth list |
-| ista iq3s-mtp | 114718 | 9.67 | mem, swap +429 MB at 131098 |
+The two strip creeps are lower in this file, under their own items.
+They are here because the depth they buy is only readable against the
+candidates.
+
+The `kind` column matters more than the depth. **A measured ceiling is
+a number this machine refused to pass. A list end is only the deepest
+step the tool asked for.** Three of these five never hit a stop
+condition, so their depth is a floor under the true ceiling, never the
+ceiling itself. No plan may read a list end as a ceiling.
+
+| config | depth | tok/s there | kind | stop reason |
+| --- | --: | --: | --- | --- |
+| unsloth q3kxl | 49198 | 12.45 | measured ceiling | mem, swap +3 MB at 65578 |
+| atomicchat iq3s | 98338 | 10.26 | **list end** | none hit |
+| ista iq3s-mtp | 114718 | 9.67 | measured ceiling | mem, swap +429 MB at 131098 |
+| unsloth q3kxl, no drafter | 131098 | 8.58 | **list end** | none hit |
+| gemma26, no drafter | 196618 | 18.57 | **list end** | none hit |
+
+The depth list needs extending before the next run. Three of these
+five rows cannot be improved by any amount of re-reading; they need a
+deeper sweep.
 
 ## The three Mendel smokes
 
@@ -117,9 +172,16 @@ candidates. All three are candidates for the coordinator's bench pick.
 Against the medium row's 87 (`../qwen38-configs.md`, "Reasoning
 effort"). Same row, `-c 49152`, only `--reasoning-effort` moves.
 
-| level | calls | commits | loop | clean | wall_s | verdict |
-| --- | --: | --: | --- | --- | --: | --- |
-| low | 13 | 1 | ok:1.00 | yes | 91 | pass |
+| level | calls | commits | loop | clean | peak | wall_s | verdict |
+| --- | --: | --: | --- | --- | --: | --: | --- |
+| low | 13 | 1 | ok:1.00 | yes | | 91 | pass |
+| xhigh | 10 | 1 | ok:1.00 | yes | 4763 | 127 | pass |
+
+Both levels pass clean, with no loop and no failure to commit. **Effort
+level is not a robustness lever for this model on this task.** The
+report that medium is the worst setting for agent work is neither
+confirmed nor refuted here: the smoke asks whether a level survives the
+loop, and all of them do. Only a scored run separates them.
 
 ## `compaction-qwen38`
 
@@ -243,12 +305,31 @@ removed, everything else unchanged. Ladder cleared at `-c 131072`
 (1849 tokens, EOS, 13.95 tok/s — the with-drafter row measured 13.55
 at the same depth).
 
-Creep ran the whole depth list clean, no stop, see
-`results/creep-strip-qwen38-nodrafter.tsv`:
+Creep ran the whole depth list clean with no stop, start wired 23151 MB,
+free 59 MB, swap used 464 MB. Raw file:
+`results/creep-strip-qwen38-nodrafter.tsv`.
 
-4k @ 13.8 → 8k @ 13.4 → 16k @ 13.0 → 25k @ 12.4 → 33k @ 12.1 → 41k @
-11.7 → 49k @ 11.3 → 66k @ 10.6 → 82k @ 10.0 → 98k @ 9.5 → 115k @ 9.0 →
-131k @ 8.6 tok/s. Wired ~23.1-23.2 GB throughout, no swap growth.
+| depth | tok/s | wired MB | free MB | swap delta MB |
+| --: | --: | --: | --: | --: |
+| 4114 | 13.79 | 23147 | 58 | 0 |
+| 8222 | 13.43 | 23146 | 67 | -8 |
+| 16386 | 12.95 | 23141 | 65 | -8 |
+| 24602 | 12.40 | 23139 | 58 | -8 |
+| 32818 | 12.07 | 23153 | 58 | -8 |
+| 40982 | 11.68 | 23143 | 66 | -8 |
+| 49198 | 11.32 | 23142 | 84 | -8 |
+| 65578 | 10.63 | 23143 | 58 | -16 |
+| 81958 | 10.04 | 23142 | 64 | -24 |
+| 98338 | 9.51 | 23154 | 58 | -24 |
+| 114718 | 9.02 | 23165 | 175 | -32 |
+| **131098** | **8.58** | 23145 | 63 | -48 |
+
+**No stop condition was hit**, so 131098 is the list's end and not a
+measured ceiling. Wired held at 23.1 to 23.2 GB the whole way, about
+2 GB under the same build with its drafter, and the swap delta ran
+**negative** at every step past the first: the machine gave swap back
+as the sweep went deeper. This config had headroom to spare at the
+deepest step the tool could ask for.
 
 **The trade, answered.** With the drafter, this row mem-stopped at
 49198 tokens. Without it, the same row ran clean past 131072 — the
@@ -279,13 +360,30 @@ only, already taken.**
 drafter flags, `-c 212992`. Ladder cleared (4096 tokens, EOS, 54.95
 tok/s).
 
-Creep ran clean the whole extended depth list, no stop, see
-`results/creep-strip-gemma26-nodrafter.tsv`:
+Creep ran clean the whole extended depth list with no stop, start wired
+23582 MB, free 64 MB, swap used 416 MB. Raw file:
+`results/creep-strip-gemma26-nodrafter.tsv`.
 
-4k @ 52.5 → 8k @ 50.3 → 16k @ 48.0 → 25k @ 44.0 → 33k @ 41.9 → 41k @
-39.3 → 49k @ 36.9 → 66k @ 33.5 → 82k @ 30.3 → 98k @ 27.8 → 115k @ 25.7
-→ 131k @ 23.9 → 164k @ 21.0 → 197k @ 18.6 tok/s. Wired ~23.8-23.9 GB
-throughout, no swap growth.
+| depth | tok/s | wired MB | free MB | swap delta MB |
+| --: | --: | --: | --: | --: |
+| 4114 | 52.46 | 23776 | 113 | 0 |
+| 8222 | 50.34 | 23774 | 62 | 0 |
+| 16386 | 47.99 | 23903 | 104 | 0 |
+| 24602 | 43.95 | 23915 | 65 | 0 |
+| 32818 | 41.89 | 23913 | 59 | 0 |
+| 40982 | 39.30 | 23908 | 68 | 0 |
+| 49198 | 36.89 | 23907 | 62 | 0 |
+| 65578 | 33.51 | 23906 | 81 | 0 |
+| 81958 | 30.27 | 23925 | 59 | 0 |
+| 98338 | 27.78 | 23923 | 56 | 0 |
+| 114718 | 25.71 | 23906 | 66 | 0 |
+| 131098 | 23.89 | 23922 | 68 | 0 |
+| 163858 | 21.03 | 23929 | 83 | 0 |
+| **196618** | **18.57** | 23915 | 64 | 0 |
+
+**No stop condition was hit**, so 196618 is the list's end and not a
+measured ceiling. Wired held at 23.8 to 23.9 GB the whole way with no
+swap growth at any step.
 
 At a comparable depth the published with-drafter row gates on memory
 near 197k at 25.6 GB wired; without the drafter this ran the same
