@@ -98,3 +98,9 @@ Deviation: none.
 still running, next depth 16k. No stop condition met. First completion (pre-creep warmup, 4096 tok, 16.93 tok/s) discarded per rule 2; creep's own 4k row (14.95 tok/s) is the recorded shallow number.
 Files: `results/creep-bonsai-fork-f16.tsv`, `results/server-bonsai-fork-f16-c131072.log`.
 Deviation: none.
+
+`bonsai_fork_f16_clean` = **131072** (no ceiling found up to the `-c`
+boundary; deepest step 131098 still decoded at 9.67 tok/s, above the
+8 tok/s floor). See `results.md`, `bonsai-fork-f16`. Next: the Mendel
+guided-high agent task at `MENDEL_CONTEXT_WINDOW=131072`, same server
+still up (pid 44336, port 8081).

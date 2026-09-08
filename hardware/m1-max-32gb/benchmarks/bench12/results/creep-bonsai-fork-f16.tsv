@@ -1,0 +1,16 @@
+llama-server, endpoint=completion thinking=n/a (no template) contexts=1 pause=60s
+start: wired 1594 MB, free 516 MB, swap used 373 MB
+context	depth_tokens	decode_toks	wired_mb	free_mb	swap_delta_mb	compress_pages	decompress_pages	step_seconds
+A	4114	14.95	18291	115	0	0	65	38
+A	8222	16.25	18288	100	0	0	118	31
+A	16386	15.62	18312	170	0	0	1167	61
+A	24602	15.07	18322	67	0	0	107	65
+A	32818	14.45	18307	81	0	0	157	69
+A	40982	13.92	18302	69	-8	0	903	74
+A	49198	13.40	18297	69	-8	0	10	79
+A	65578	12.50	18289	66	-8	0	85	165
+A	81958	11.45	18593	84	-8	0	400	192
+A	98338	10.76	18585	58	-8	0	419	212
+A	114718	10.24	18215	58	-24	0	4041	225
+A	131098	9.67	18182	57	-24	0	31	237
+no ceiling found up to 131072

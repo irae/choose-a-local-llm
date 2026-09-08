@@ -249,3 +249,41 @@ Comparison, one slot (114718 clean) vs two slots (81958 clean each):
 two slots holds about 71% of one slot's clean depth per agent, at
 roughly proportional wired cost.
 
+## `bonsai-fork-f16` — Bonsai on the PrismML fork, f16 KV
+
+`Ternary-Bonsai-27B-Q2_g64.gguf`, prism-ml fork rev `abbae723028d71be674e71e1a71201a6f43fab22`,
+`LLAMA_ATTN_ROT_DISABLE=1`, no drafter, `--parallel 1`, f16 KV, wired 25000.
+
+Ladder: `-c 131072` served on the first candidate (loaded, one real
+4096-token completion, `stop_type` `limit`, 16.93 tok/s). No lower
+step needed.
+`results/server-bonsai-fork-f16-c131072.log`.
+
+Creep, `-c 131072`, one context, `results/creep-bonsai-fork-f16.tsv`:
+
+| depth | tok/s | wired MB | swap Δ |
+| --: | --: | --: | --: |
+| 4114 | 14.95 | 18291 | 0 |
+| 8222 | 16.25 | 18288 | 0 |
+| 16386 | 15.62 | 18312 | 0 |
+| 24602 | 15.07 | 18322 | 0 |
+| 32818 | 14.45 | 18307 | 0 |
+| 40982 | 13.92 | 18302 | -8 |
+| 49198 | 13.40 | 18297 | -8 |
+| 65578 | 12.50 | 18289 | -8 |
+| 81958 | 11.45 | 18593 | -8 |
+| 98338 | 10.76 | 18585 | -8 |
+| 114718 | 10.24 | 18215 | -24 |
+| 131098 | 9.67 | 18182 | -24 |
+
+**speed** verdict (no memory stop; wired flat ~18.3 GB, swap never
+grows). No ceiling found up to 131072: the deepest step, 131098
+tokens, still decoded at 9.67 tok/s, above the block's 8 tok/s floor
+the whole way. **Deepest step at or above 8 tok/s: 131072** (the `-c`
+boundary itself, not a speed or memory floor).
+
+The first request against this server (before the creep started, one
+4096-token completion at 4-token depth) is discarded as warmup per
+`common-rules.md` rule 2; the creep's own 4k row (14.95 tok/s) is the
+recorded shallow number.
+
