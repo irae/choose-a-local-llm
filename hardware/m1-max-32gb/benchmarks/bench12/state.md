@@ -168,4 +168,25 @@ to a subagent on Opus per `PLAN.md`'s scoring rule (never a smaller
 model); result lands in `mendel-benchmark`'s `benchmark` branch, not
 here — this repo never carries Mendel scores directly. Server stopped
 (pid 54961), no Mendel Daemon process was running. Wired recovery
-starts. Next block: `qwen38-ista-evalplus`.
+starts.
+
+## `qwen38-ista-evalplus` — running
+
+Served `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf`
+(built-in MTP head confirmed at load), alias `qwen3.8-27b` (shared pi
+entry), `--spec-type draft-mtp --spec-draft-n-max 3 --parallel 1`, f16
+KV, `-c 131072` (ladder already cleared at this value, research run 3,
+same wired limit 25000 — no re-ladder needed). `results/server-qwen38-ista-evalplus.log`.
+
+Calibration (`benchmarks/calibrate.py qwen38-ista-mtp qwen3.8-27b
+'{"chat_template_kwargs":{"reasoning_effort":"medium"}}'`): 10/10
+converge (`stop`), max completion 2347 tokens, budget = max(2347×1.5,
+8192) = **8192** — same floor as the control row, so the two scores
+compare directly. `benchmarks/calibration-qwen38-ista-mtp.json`.
+
+Full EvalPlus launched: `RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench12/results
+EVALPLUS_MAX_NEW_TOKENS=8192 benchmarks/run-humaneval.sh qwen38-ista-mtp
+qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'`.
+Watcher running (`results/mem-qwen38-ista-evalplus.log`). Output:
+`results/qwen38-ista-mtp/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
+— running.
