@@ -1,8 +1,8 @@
-# Run 12 — Gemma-12B two-slot window, Bonsai MLX thinking off, the reserve re-runs (Mac)
+# Run 12 — Gemma-12B two-slot window, Bonsai on the fork at f16, the two promoted Qwen3.8 3-bit builds (Mac)
 
-DRAFT, 2026-09-06. Not started. The coordinator reads run 11's
-`report.md` before this file gets its go; block values marked
-`<planning>` are the planning-time snapshot and the run replaces them.
+Ready to start, 2026-09-08. The coordinator gated this run on research
+run 3 and re-ordered it. Block values marked `<planning>` are the
+planning-time snapshot and the run replaces them.
 
 You are the runner, on the Mac. Read this file, then the pages each
 block names at its start, and nothing else. Write all prose in
@@ -138,20 +138,43 @@ under that name, in whatever order the file keeps them.
 - `gemma12-gguf-2slot`
 - `gemma12-gguf-1slot-131072`
 - `bonsai-fork-f16`
+- `qwen38-ista-evalplus`
+- `qwen38-nodrafter-evalplus`
 - `qwen38-gguf-blind-medium`
-- `qwen36-gguf-guided-high`
-- `gemma26-gguf-blind-high`
+- `qwen38-ista-mendel`
+- `qwen38-nodrafter-mendel`
 - `retry-sweep`
 
 Why this order. The two Gemma-12B blocks are the window measurements
 the owner asked for, two agents in parallel on one server against one.
 `bonsai-fork-f16` asks what the fork does with f16 KV, the one cache
-type it never served, and then runs the agent task there. The three
-re-runs follow, for the three valid rows that compacted under pi's old
-16384 reserve, at the 8192 reserve every row uses since 2026-09-06.
-`gemma26-gguf-blind-high` goes last of the three (owner, 2026-09-07):
-it scores worst of them on the agent task, so it is the one to drop if
-the run runs short.
+type it never served, and then runs the agent task there.
+
+Then the two builds research run 3 promoted. Both EvalPlus blocks run
+before either Mendel block, because EvalPlus is cheap and decisive and
+a Mendel run is a night. `qwen38-gguf-blind-medium` sits between them:
+it is the control the two new rows are read against, and its 87 was
+scored at pi's old 16384 reserve, so a new row scored against it needs
+it re-run at 8192 first. A new row with no same-reserve control is an
+unreadable number.
+
+Research run 3 measured every Qwen3.8 3-bit candidate level with the
+control on EvalPlus and clean on the Mendel smoke, so quality did not
+separate them. Depth did. The two picks are the two deepest:
+
+| build | clean depth | tok/s at depth | evidence |
+| --- | --: | --: | --- |
+| unsloth q3kxl, drafter dropped | over 131072, no stop | 8.58 at 131k | creep only |
+| ista iq3s-mtp | 114718 | 9.67 | both smokes pass |
+| atomicchat iq3s | 98338, no stop | 10.26 | both smokes pass |
+
+`AtomicChat/…:AD-IQ3_S` is deferred, not dropped. It keeps its two
+smokes and goes to the head of the next run.
+
+Two blocks are dropped at planning time, in the owner's own drop
+order: `gemma26-gguf-blind-high` first, then `qwen36-gguf-guided-high`.
+Both re-run a row that already has a score, so both lose to a build
+that has none.
 
 Every MLX item moved to `../unscheduled/`: those rows wait on the
 in-turn margin rule, because that server cannot refuse a request it
@@ -314,14 +337,105 @@ drafter, no EvalPlus: the quality gate at f16 is
 `../unscheduled/bonsai-fork-f16-evalplus.md`. Stop the server; wait
 for wired recovery.
 
-## The three reserve re-runs
+## The two promoted builds
 
-Three valid rows compacted under pi's default 16384 reserve before
-2026-09-06. Each runs again at reserve 8192, same test and level,
+Research run 3 (`../../research/run3/results.md`) took three Qwen3.8
+3-bit builds through a creep, an EvalPlus smoke and a Mendel smoke.
+All three came back level with the control row and clean on the agent
+loop. These two blocks pairs score the two deepest.
+
+Both builds serve the same model family as the row we serve today, so
+both use the existing `qwen3.8-27b` pi entry. **The site cannot yet
+tell two builds of one model apart**, so no block here writes a site
+row: each block records its build, its revision and its flags in
+`results.md` and in the row's config note, and the coordinator settles
+the identity when it publishes.
+
+**Both builds serve above 120K, so llama.cpp issue 27756 applies**: a
+silent end-of-sequence past about 130K looks exactly like a finished
+turn. Before each Mendel block starts, run one long-prompt completion
+check at the block's own window and record it. A check that returns
+`tokens_predicted = 1` with empty content and `stop_type` "eos" means
+the window is too deep: step the window down by 8192 and check again.
+
+### `qwen38-ista-evalplus` — ISTA IQ3_S-mtp, full EvalPlus
+
+| parameter | kind | value | source |
+| --- | --- | --- | --- |
+| files | fixed | `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, `--no-mmproj` | research run 3 |
+| KV type, drafter | fixed | f16, built-in MTP head | research run 3 |
+| thinking | fixed | effort `medium`, the control row's level | run 3, one level per candidate |
+| `-c` | derived | `<planning>` 131072, the ladder cleared it | ladder at this run's limit |
+| window | derived | `<planning>` 114688, clean depth 114718 | clean depth at the ladder's `-c` |
+
+Read `docs/methodology/evalplus.md`. Calibrate first, then run the
+full set against the control row's published score. Record base, plus,
+empty and wall in `results.md`.
+
+### `qwen38-nodrafter-evalplus` — unsloth UD-Q3_K_XL, drafter dropped, full EvalPlus
+
+| parameter | kind | value | source |
+| --- | --- | --- | --- |
+| files | fixed | `unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL`, `--no-mmproj` | research run 3 |
+| KV type, drafter | fixed | f16, **no `--spec-type draft-mtp`** | `strip-qwen38-nodrafter-creep` |
+| thinking | fixed | effort `medium`, the control row's level | run 3, one level per candidate |
+| `-c` | derived | `<planning>` 131072, the ladder cleared it | ladder at this run's limit |
+| window | derived | `<planning>` 126976 | see the note below |
+
+This config has a creep and no smoke of its own. Its EvalPlus is its
+first quality evidence, so it carries a gate:
+
+**If this EvalPlus lands below the control row, drop
+`qwen38-nodrafter-mendel` and start the next block.** Say in one line
+that the gate dropped it.
+
+Its creep ran the whole depth list clean and never hit a stop, so
+131072 is the list's boundary, not a measured ceiling. The planning
+window is one 8192 step under the ladder value, because the real
+ceiling is unknown and issue 27756 sits just above it. The ladder and
+the long-prompt check replace both numbers.
+
+The same build with the drafter mem-stopped at 49198. Without it the
+row ran clean past 131072, over 2.6 times the depth, at 8.58 tok/s.
+That trade is what these two blocks price.
+
+### `qwen38-ista-mendel` — ISTA IQ3_S-mtp, blind, effort medium
+
+Same server as `qwen38-ista-evalplus`, at that block's derived `-c`.
+Run the long-prompt completion check first.
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<this block's window> ./run-worker.sh qwen3.8-27b pi blind medium
+```
+
+Score per `PLAN.md` "How to score a run". The config note carries the
+build, the revision, `f16 KV`, the `-c`, the window and `wired 25000`,
+and says the row is the ISTA build, not the row we serve today.
+
+### `qwen38-nodrafter-mendel` — unsloth UD-Q3_K_XL, no drafter, blind, effort medium
+
+Runs only when `qwen38-nodrafter-evalplus` came back at or above the
+control row. Same server as that block, long-prompt check first.
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<this block's window> ./run-worker.sh qwen3.8-27b pi blind medium
+```
+
+The config note says the build, the revision, `f16 KV`, the `-c`, the
+window, `no MTP drafter`, and `wired 25000`.
+
+## The reserve re-run
+
+One valid row of the three still runs here; the other two are dropped
+at planning time, above. It compacted under pi's default 16384 reserve
+before 2026-09-06, and runs again at reserve 8192, same test and level,
 under the Mendel retry rule for a harness-caused re-run: no penalty,
 the better row stands, the config note says "re-run at reserveTokens
-8192; first row ran at 16384". Ladder-before-serve applies to each
-model at this run's wired limit before its block.
+8192; first row ran at 16384". Ladder-before-serve applies before its
+block.
+
+It is also the control for the two promoted builds, which is why it
+keeps its place.
 
 ### `qwen38-gguf-blind-medium` — Qwen3.8 GGUF, blind, effort medium
 
@@ -339,39 +453,20 @@ Serve with the site row's command at the derived `-c`, then:
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<this block's window> ./run-worker.sh qwen3.8-27b pi blind medium
 ```
 
-### `qwen36-gguf-guided-high` — Qwen3.6 GGUF, guided, thinking high
-
-| parameter | kind | value | source |
-| --- | --- | --- | --- |
-| files | fixed | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`, `--no-mmproj` | published command |
-| KV type, drafter | fixed | q8_0, MTP n-max 3 | KV pick (f16 loads only at 40960) |
-| thinking | fixed | pi level for `high` | the first row |
-| `-c` | derived | `<planning>` 98304 at 25000 (the Qwen3.6 creep of 2026-09-06) | ladder at this run's limit |
-| window | derived | `<planning>` 81920 (run 11, clean depth 81958) | clean depth at the ladder's `-c` |
-
-```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<this block's window> ./run-worker.sh qwen3.6-35b-a3b pi guided high
-```
-
-### `gemma26-gguf-blind-high` — Gemma-26B GGUF, blind, thinking high
-
-| parameter | kind | value | source |
-| --- | --- | --- | --- |
-| files | fixed | `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, `--no-mmproj` | published command |
-| KV type, drafter | fixed | f16, MTP n-max 2 | site row |
-| thinking | fixed | pi level for `high` | the first row |
-| `-c` | derived | `<planning>` 212992 (run 9 ceiling; run 11 served it at 25000) | ladder at this run's limit |
-| window | derived | `<planning>` 212992 | clean depth at the ladder's `-c` |
-
-```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<this block's window> ./run-worker.sh gemma-4-26b-a4b pi blind high
-```
-
 ## Not in this run
 
 - Qwen3.8 effort levels and quants, strip modules, the compaction
   experiment and the container trials: research run 3
-  (`hardware/m1-max-32gb/research/run3/index.md`).
+  (`hardware/m1-max-32gb/research/run3/index.md`), which is finished.
+- `AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, deferred with both smokes
+  passed. It goes to the head of the next run.
+- `qwen36-gguf-guided-high` and `gemma26-gguf-blind-high`, the two
+  reserve re-runs dropped at planning time.
+- The Gemma-26B row with its MTP drafter dropped. Its research creep
+  ran the whole extended depth list clean at 197k and never hit a stop,
+  and it freed about 1.7 GB against the with-drafter row, but it showed
+  no deeper clean ceiling, because neither side found one. It needs a
+  longer depth list before it can be judged, not a bench block.
 - Every MLX row, the Bonsai EvalPlus gate at f16, the small agent
   models and the specialized models: `../unscheduled/`.
 - `keepRecentTokens` under small windows: the owner has not decided
