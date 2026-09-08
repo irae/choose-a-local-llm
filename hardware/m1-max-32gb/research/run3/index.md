@@ -123,7 +123,7 @@ Five rules hold across every item in this run:
   drafter on both sides (../strip-modules.md). About ten minutes,
   unattended. This pair runs first of the three; the other two are
   optional.
-- [ ] `strip-gemma26-pair` — the same pair on
+- [x] `strip-gemma26-pair` — the same pair on
   `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL` at `-c 212992`. Expect
   an OOM at load on the "with" side; the item says what to do then.
   Optional.

@@ -215,6 +215,27 @@ file size (928 MB). tok/s and creep speed match within noise (both
 under 1%). Pass rule met: **memory only, already taken.** Projector
 compute-buffer cost on Metal = 1175 - 928 = **247 MB**.
 
+## `strip-gemma26-pair`
+
+`unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, f16, `-c 212992`, drafter
+on both sides.
+
+Without mmproj: loads clean, wired delta 24490 MB, tok/s 70.28 →
+75.04, creep @ 32818 clean at 40.95 tok/s.
+
+With mmproj at the row's full `-c 212992`: **OOMs**. First attempt
+used `--offline` and silently skipped the projector (not cached, no
+error) — an invalid measurement, worth flagging as a real gotcha:
+`--offline` on an uncached side-file fails silent, not loud. Retried
+without `--offline` to let it fetch `mmproj-BF16.gguf`; then it hit
+the documented signature exactly (`ggml_metal_synchronize:
+Insufficient Memory`, `Compute error` 500 on every completion,
+`model loaded` printed anyway).
+
+Search down in 8192 steps: `-c 204800` loads and serves fine (with
+`--offline`, now cached); `-c 212992` OOMs. **The boundary is the full
+row's own `-c`** — one 8192 step below it works.
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table
