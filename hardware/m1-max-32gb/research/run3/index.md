@@ -114,9 +114,9 @@ Five rules hold across every item in this run:
   baseline runs, then up to three rungs, two repeats each.
 - [x] `compaction-gemma12` — the same ladder on Gemma-4-12B,
   llama-server, f16 KV, thinking off, the probe arm of research run 2.
-- [ ] `compaction-bonsai-mlx` — the same ladder on Bonsai MLX at
+- [x] `compaction-bonsai-mlx` — the same ladder on Bonsai MLX at
   thinking off. Runs only if its smoke line says `pass`.
-- [ ] `compaction-gemma26` — the same ladder on Gemma-26B GGUF at f16.
+- [x] `compaction-gemma26` — the same ladder on Gemma-26B GGUF at f16.
   Runs only if its smoke line says `pass`.
 - [ ] `strip-qwen38-pair` — one load pair with and without the mmproj
   on `bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, same `-c`, KV type and

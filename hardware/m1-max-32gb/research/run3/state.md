@@ -44,3 +44,25 @@ clean, `compactions=0` both times — the task stayed small enough at
 this window that compaction never had to fire.
 
 `gemma12_contextWindow_floor` = **23552** (two runs at one rung pass).
+
+## `compaction-bonsai-mlx`, skipped
+
+Its smoke line passes (bench10: 14 calls, 1 commit, no loop, 115s), but
+the item needs "the window from the newest MLX creep minus the in-turn
+margin" from the MLX margin rule, and that rule is explicitly listed
+under "Not in this run" in `AGENT.md` (moved to `unscheduled/`, not
+measured). Bonsai has documented history of a 3-hour stuck run and a
+17440-token single-turn blowup without that margin. Skipped rather
+than guessing a window on a model with that history. Stop-and-ask for
+the coordinator: run the MLX margin rule first, or accept a guessed
+window for this one item.
+
+## `compaction-gemma26`, handing-over note
+
+P (larger baseline peak) = 35225. Rung 1 (W 35840) failed twice: both
+runs end `stop` (the model believes it finished) but 0 commits,
+unclean tree, `compactions=0` both times. Not a compaction failure —
+compaction never fired — the model just stops early under the reduced
+window on this task. Per the ladder's own rule (stop after two
+failures at one rung), the ladder stops here. No `contextWindow` floor
+found for Gemma-26B on `xtend-wide`.

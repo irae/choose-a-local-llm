@@ -167,6 +167,39 @@ a real compaction firing (`compactions=1`) and still finishing clean;
 every other pass ran under its own compaction threshold without ever
 triggering one.
 
+## `compaction-bonsai-mlx`, skipped
+
+Smoke line passes (bench10: 14 calls, 1 commit, no loop, 115s), but
+the item needs the MLX margin rule's window, and that rule is
+explicitly out of this run (`AGENT.md`, "Not in this run"). Bonsai has
+documented history of a 3-hour stuck run and a 17440-token single-turn
+blowup without that margin. Skipped rather than guess a window.
+Stop-and-ask for the coordinator.
+
+## `compaction-gemma26`
+
+Baseline, twice, thinking off, `xtend-wide` task, cap 2700s, reserve
+8192:
+
+| run | calls | commits | compactions | peak | wall_s | verdict |
+| --- | --: | --: | --: | --: | --: | --- |
+| 1 | 27 | 1 | 0 | 35092 | 115 | pass |
+| 2 | 28 | 1 | 0 | 35225 | 119 | pass |
+
+P = 35225. Rung 1 (W 35840, T 27648):
+
+| run | compactions | commits | clean | end | verdict |
+| --- | --: | --: | --- | --- | --- |
+| 1 | 0 | 0 | no | stop | fail |
+| 2 | 0 | 0 | no | stop | fail |
+
+Both runs end `stop` — the model believes the task is finished — but
+leave the tree unclean with no commit, and `compactions=0` in both:
+compaction never fired, so this is not a compaction failure. The model
+just does worse work under the reduced window on this task. Per the
+ladder's stop rule (two failures at one rung), the ladder stops here.
+**No `contextWindow` floor found for Gemma-26B** on `xtend-wide`.
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table
