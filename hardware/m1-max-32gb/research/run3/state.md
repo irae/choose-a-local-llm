@@ -32,3 +32,15 @@ the floor, so no rung ran. No compaction observed for this model on
 `xtend-wide` at the default window. The task needs to grow (more
 files, or a task that forces more re-reads) before this experiment can
 say anything about Qwen3.8's compaction behavior.
+
+## `compaction-gemma12`, handing-over note
+
+P (larger baseline peak) = 40238. Ladder: rung 1 (W 39936) mixed, 1
+pass 1 fail (fail ended on `length`, ran out of budget, 0 commits).
+Rung 2 (W 31744) mixed, 1 pass (first real compaction observed,
+`compactions=1`, still clean) 1 fail (hit the 2700s cap, 3
+compactions, never converged, unclean). Rung 3 (W 23552) both pass,
+clean, `compactions=0` both times — the task stayed small enough at
+this window that compaction never had to fire.
+
+`gemma12_contextWindow_floor` = **23552** (two runs at one rung pass).

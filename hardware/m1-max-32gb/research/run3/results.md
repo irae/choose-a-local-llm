@@ -138,6 +138,35 @@ rung ran. **No compaction observed.** This model is too token-efficient
 at the `xtend-wide` task for the experiment to test its compaction
 behavior; the task would need to grow to produce a real reading.
 
+## `compaction-gemma12`
+
+Baseline, twice, thinking off, `xtend-wide` task, cap 2700s, reserve
+8192:
+
+| run | calls | commits | compactions | peak | wall_s | verdict |
+| --- | --: | --: | --: | --: | --: | --- |
+| 1 | 25 | 1 | 0 | 34440 | 420 | pass |
+| 2 | 38 | 1 | 0 | 40238 | 700 | pass |
+
+P = 40238. Ladder, two repeats per rung:
+
+| rung | window | keepRecentTokens | run | compactions | commits | end | verdict |
+| --- | --: | --: | --: | --: | --: | --- | --- |
+| 1 (0.8P) | 39936 | default | 1 | 0 | 1 | stop | pass |
+| 1 | 39936 | default | 2 | 0 | 0 | length | fail |
+| 2 (0.6P) | 31744 | 11264 | 1 | 1 | 1 | stop | pass |
+| 2 | 31744 | 11264 | 2 | 3 | 0 | cap | fail |
+| 3 (0.4P) | 23552 | 7168 | 1 | 0 | 1 | stop | pass |
+| 3 | 23552 | 7168 | 2 | 0 | 1 | stop | pass |
+
+Rungs 1 and 2 are mixed (one pass, one fail each) — variance between
+runs of the same model and window, exactly what the doc's "two repeats"
+rule exists to catch. Rung 3 is the first rung with two clean passes,
+so `contextWindow` floor = **23552**. Only rung 2's passing run showed
+a real compaction firing (`compactions=1`) and still finishing clean;
+every other pass ran under its own compaction threshold without ever
+triggering one.
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table

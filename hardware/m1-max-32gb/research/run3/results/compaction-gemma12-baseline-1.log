@@ -1,0 +1,7 @@
+mendel-smoke: model gemma-4-12b, thinking off, task xtend-wide, cap 2700s
+mendel-smoke: everything lands in /Users/irae/.local/share/choose-a-local-llm/evidence/run3-compaction/gemma12-baseline-1
+mendel-smoke: fixture ready (xtend-wide, 12 files, 102315 bytes under lib), one commit, clean tree
+mendel-smoke: compaction settings {"enabled": true, "reserveTokens": 8192}
+mendel-smoke: pi config pinned at /Users/irae/.local/share/choose-a-local-llm/evidence/run3-compaction/gemma12-baseline-1/pi-agent
+mendel-smoke: pi exited 0 after 420s, session /Users/irae/.local/share/choose-a-local-llm/evidence/run3-compaction/gemma12-baseline-1/session/2026-09-08T02-48-49-740Z_01a07eeb-114c-76c1-9573-bce81f83eaeb.jsonl
+SMOKE-MENDEL model=gemma-4-12b level=off task=xtend-wide window=default calls=25 distinct=25 longest_run=1 loop=ok:0.50 compactions=0 splits=0 peak=34440 commits=1 clean=yes end=stop wall_s=420 verdict=pass

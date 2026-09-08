@@ -112,7 +112,7 @@ Five rules hold across every item in this run:
 - [x] `compaction-qwen38` — the window ladder on Qwen3.8 GGUF Q4_K_M,
   f16 KV, `-c 49152`, effort medium (../compaction-experiment.md). Two
   baseline runs, then up to three rungs, two repeats each.
-- [ ] `compaction-gemma12` — the same ladder on Gemma-4-12B,
+- [x] `compaction-gemma12` — the same ladder on Gemma-4-12B,
   llama-server, f16 KV, thinking off, the probe arm of research run 2.
 - [ ] `compaction-bonsai-mlx` — the same ladder on Bonsai MLX at
   thinking off. Runs only if its smoke line says `pass`.
