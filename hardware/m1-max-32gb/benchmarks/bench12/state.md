@@ -122,19 +122,31 @@ reserve 8192, keep-recent pi default (window above 65536). Watcher
 running (`results/mem-bonsai-prism-f16-guided-high.log`).
 Up to 300 min wall clock. — running.
 
-**Tool bug found: `run-worker.sh`'s repetition-loop check reads the
-wrong file.** `run_loop_check()` (line 168) reads
-`$RUNS/$fslug-session.jsonl`, but nothing in this pinned tool version
-writes that file — `run-pi-rpc.mjs` writes `$fslug-events.jsonl`
-instead. The check would return "unreadable" at close, silently,
-never a repetition finding. Not fixed in the tool (subagents are off
-for this session per the owner, and the fix belongs in
-`mendel-benchmark`, not here). Worked around by hand: ran
-`benchmarks/loop-check.py` against the real events file directly —
-`text_delta 0.68 ok, thinking_delta 0.62 ok, toolcall_delta 0.33 ok`,
-no loop, at 108k ctx / ~85 min elapsed. Will re-run the same manual
-check at close instead of trusting the script's built-in one for this
-row. Coordinator: file this against `mendel-benchmark` separately.
+**Tool bug found, corrected by the coordinator: `run-worker.sh`'s
+close-time repetition check came back `unchecked` on this row.**
+`$RUNS/$fslug-session.jsonl` is a real, normal output — `run-pi-rpc.mjs`
+writes it (line 686) — not a stale path as first suspected. The write
+is conditional (`if (meta._session_path && existsSync(...))`), and it
+silently skipped for this row, so `run_loop_check()` found no file,
+printed one stderr warning, and the row would have committed with
+`loop_flag: unchecked`. This is the first row of twelve committed
+local rows to hit it (per the coordinator's check); nothing earlier is
+in doubt. No resume or respawn happened on this run (checked
+`/tmp/mendel-bonsai-f16-guided-high.log`, no resume/respawn lines),
+which the coordinator flagged as one hypothesis for the failure — so
+that hypothesis does not explain it here; cause still open, filed with
+the coordinator for the owner, not fixed mid-run. Worked around by
+hand: ran `benchmarks/loop-check.py` against the real events file
+directly — `text_delta 0.68 ok, thinking_delta 0.62 ok, toolcall_delta
+0.33 ok`, no loop, at 108k ctx / ~85 min elapsed. Will re-run the same
+manual check at close and record it in `results.md` alongside the
+built-in check's `unchecked` result, per the coordinator's guidance.
+
+`docs/methodology/mendel.md` is correct as written and needs no
+correction: the close-time flag (`loop-check.py`, landed 2026-09-05)
+and the live stop (`repetition_loop`/`degenerate_output` inside the pi
+harness, landed 2026-09-06) are two separate, correctly-dated
+mechanisms, both described accurately on that page.
 
 **Live repetition-loop guard added, not just a close-time check.**
 Since the built-in check only fires at close and its file path is
