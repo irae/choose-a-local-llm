@@ -196,4 +196,29 @@ plus 0.945**, 100% completion rate. Comparison against the control row
 later in this run's own order — that block is this run's fresh
 control re-measurement (needed anyway, since the published control
 was scored at pi's old 16384 reserve and this run uses 8192). Server
-stopped. Wired recovery starts. Next block: `qwen38-nodrafter-evalplus`.
+stopped. Wired recovery starts.
+
+## `qwen38-nodrafter-evalplus` — running
+
+Served `unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL`, drafter dropped
+(`--spec-type draft-mtp` removed, everything else unchanged), f16 KV,
+`--parallel 1`, `-c 131072` (ladder cleared at this value, research
+run 3's `strip-qwen38-nodrafter-creep`, whole depth list clean, same
+wired 25000 — no re-ladder needed). MTP tensors correctly ignored at
+load (unused-tensor warnings for `blk.64.nextn.*`), confirming the
+drafter is really off. `results/server-qwen38-nodrafter-evalplus.log`.
+
+Calibration: 10/10 converge (`stop`), max completion 4324 tokens,
+budget = max(4324×1.5, 8192) = **8192** (floor again).
+`benchmarks/calibration-qwen38-nodrafter.json`.
+
+Full run launched: `RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench12/results
+EVALPLUS_MAX_NEW_TOKENS=8192 benchmarks/run-humaneval.sh qwen38-nodrafter
+qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'`.
+Watcher running (`results/mem-qwen38-nodrafter-evalplus.log`). Output:
+`results/qwen38-nodrafter/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
+
+**Gate on this block**: if this EvalPlus lands below the control row
+(fresh number from `qwen38-gguf-blind-medium`, next-next block), drop
+`qwen38-nodrafter-mendel` and say so in one line — no Mendel block for
+this build in that case. — running.
