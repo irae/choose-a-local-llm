@@ -287,3 +287,39 @@ The first request against this server (before the creep started, one
 `common-rules.md` rule 2; the creep's own 4k row (14.95 tok/s) is the
 recorded shallow number.
 
+### `bonsai-fork-f16` agent task — Mendel guided, thinking high
+
+Ran under a fresh model id, `bonsai-prism-f16` (not `bonsai-prism`, to
+avoid a branch-name collision with the earlier, already-scored q4_0
+KV row — see `state.md`). `MENDEL_CONTEXT_WINDOW=131072`, reserve
+8192. Branch `bonsai-prism-f16-high-guided-v3-issue-13`, `end_reason:
+complete`, 194.7 min elapsed, 2 commits, 1 hook-rejected commit
+attempt, 1 compaction, 0 tooling nudges, 1 model nudge, 376 tool
+calls, 74 tool errors, peak context 127120/131072. Loop verdict: ok,
+worst ratio 0.33 on tool call (confirmed twice: mid-run by hand
+against the events file, and by the worker's own `worker.json` at
+close — the built-in check's `session.jsonl` write worked this time).
+
+Scored on Opus, per `PLAN.md`'s scoring rule:
+
+**Score 36 raw, 12.5 capped** (cap = 100 × 1/8 libraries done).
+Libraries done: 1 of 8 (chalk only). Worst defect: **critical** — the
+chalk-removal commit dropped `rimraf` from
+`packages/mendel-pipeline/package.json` while `test/helpers/index.js`
+still requires it, and the lockfile commit carried the drop; `eslint .`
+fails at the tip (clean at base) because the pre-commit hook only
+checked staged files. Second critical: 7 of 8 libraries never started.
+The model's own closing claims (`TASKS.md` ticking all 32 sub-items,
+"all 8 dependencies replaced") are both false — the bulk tick was one
+edit written before the first commit, not verified against real
+progress.
+
+Result committed to `mendel-benchmark`'s `benchmark` branch, commit
+`73b9bd3` (results JSON/CSV, regenerated `report-guided.html`,
+redacted session log, `SESSIONS.md`). No other branch touched. This
+repo does not carry the row's data directly — the config note in the
+site comparison names the build.
+
+`bonsai-fork-f16` block is fully done: ladder, creep, agent task, all
+committed.
+
