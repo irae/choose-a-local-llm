@@ -135,3 +135,12 @@ for this session per the owner, and the fix belongs in
 no loop, at 108k ctx / ~85 min elapsed. Will re-run the same manual
 check at close instead of trusting the script's built-in one for this
 row. Coordinator: file this against `mendel-benchmark` separately.
+
+**Live repetition-loop guard added, not just a close-time check.**
+Since the built-in check only fires at close and its file path is
+broken (above), running `benchmarks/loop-check.py` in a poll loop
+every 180s against the real events file directly, for the duration of
+this row: `pi` pid 55582, `run-worker.sh` pid 55209. Kills both the
+moment any kind reads other than `ok`. Re-armed at each heartbeat
+since a single poll loop caps at 60 min and this row can run up to
+300.
