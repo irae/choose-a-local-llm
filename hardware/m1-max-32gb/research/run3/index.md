@@ -105,11 +105,11 @@ Five rules hold across every item in this run:
   at effort low, against the medium row's 87
   (../qwen38-configs.md, "Reasoning effort"). Research named this
   level, so it is tested.
-- [ ] `qwen38-effort-xhigh-smoke` — the same row, Mendel smoke at
+- [x] `qwen38-effort-xhigh-smoke` — the same row, Mendel smoke at
   effort xhigh. Research named this level too. Public evidence runs
   against the report that medium is worst, which makes the pair more
   interesting, not less.
-- [ ] `compaction-qwen38` — the window ladder on Qwen3.8 GGUF Q4_K_M,
+- [x] `compaction-qwen38` — the window ladder on Qwen3.8 GGUF Q4_K_M,
   f16 KV, `-c 49152`, effort medium (../compaction-experiment.md). Two
   baseline runs, then up to three rungs, two repeats each.
 - [ ] `compaction-gemma12` — the same ladder on Gemma-4-12B,

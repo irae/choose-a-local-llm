@@ -121,6 +121,23 @@ effort"). Same row, `-c 49152`, only `--reasoning-effort` moves.
 | --- | --: | --: | --- | --- | --: | --- |
 | low | 13 | 1 | ok:1.00 | yes | 91 | pass |
 
+## `compaction-qwen38`
+
+Baseline, twice, `xtend-wide` task, cap 2700s, reserve 8192:
+
+| run | calls | commits | compactions | peak | wall_s | verdict |
+| --- | --: | --: | --: | --: | --: | --- |
+| 1 | 9 | 1 | 0 | 5738 | 136 | pass |
+| 2 | 13 | 1 | 0 | 8360 | 900 | pass |
+
+P (larger peak) = 8360, far under the 20000-token line where pi's
+compaction can fire at all (`docs/compaction.md`, `keepRecentTokens`
+default 20000). Per the ladder's own stop rule (stop when `T` under
+8192), the first rung (`0.8P` = 6688) is already under the floor: no
+rung ran. **No compaction observed.** This model is too token-efficient
+at the `xtend-wide` task for the experiment to test its compaction
+behavior; the task would need to grow to produce a real reading.
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table

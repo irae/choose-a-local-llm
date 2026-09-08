@@ -22,3 +22,13 @@ that produced it.
 | `qwen38_unsloth_q3kxl_clean` | 49198 | `qwen38-unsloth-q3kxl-creep` |
 | `qwen38_atomicchat_iq3s_clean` | 98338 (list ceiling, no stop hit) | `qwen38-atomicchat-iq3s-creep` |
 | `qwen38_ista_iq3s_mtp_clean` | 114718 | `qwen38-ista-iq3s-mtp-creep` |
+
+## `compaction-qwen38`, handing-over note
+
+Baseline peak (P) = 8360 (runs: 5738, 8360). Both far under the 20000
+line where pi's compaction can fire at all. Per the ladder rule (stop
+when `T` under 8192), the first rung (`0.8P` = 6688) is already under
+the floor, so no rung ran. No compaction observed for this model on
+`xtend-wide` at the default window. The task needs to grow (more
+files, or a task that forces more re-reads) before this experiment can
+say anything about Qwen3.8's compaction behavior.
