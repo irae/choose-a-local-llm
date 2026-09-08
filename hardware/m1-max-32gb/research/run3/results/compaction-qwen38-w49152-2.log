@@ -1,0 +1,7 @@
+mendel-smoke: model qwen3.8-27b, thinking medium, task xtend-wide, cap 2700s
+mendel-smoke: everything lands in /Users/irae/.local/share/choose-a-local-llm/evidence/run3-compaction/qwen38-w49152-2
+mendel-smoke: fixture ready (xtend-wide, 12 files, 102315 bytes under lib), one commit, clean tree
+mendel-smoke: compaction settings {"enabled": true, "reserveTokens": 8192}
+mendel-smoke: pi config pinned at /Users/irae/.local/share/choose-a-local-llm/evidence/run3-compaction/qwen38-w49152-2/pi-agent
+mendel-smoke: pi exited 0 after 900s, session /Users/irae/.local/share/choose-a-local-llm/evidence/run3-compaction/qwen38-w49152-2/session/2026-09-08T02-25-48-480Z_01a07ed5-fdc0-7ac1-8941-70d7c234e198.jsonl
+SMOKE-MENDEL model=qwen3.8-27b level=medium task=xtend-wide window=default calls=13 distinct=13 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=8360 commits=1 clean=yes end=stop wall_s=900 verdict=pass
