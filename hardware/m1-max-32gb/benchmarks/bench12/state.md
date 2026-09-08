@@ -155,4 +155,17 @@ every 180s against the real events file directly, for the duration of
 this row: `pi` pid 55582, `run-worker.sh` pid 55209. Kills both the
 moment any kind reads other than `ok`. Re-armed at each heartbeat
 since a single poll loop caps at 60 min and this row can run up to
-300.
+300. Never fired — the run finished on its own first.
+
+**`bonsai-prism-f16` guided-high run closed clean.** `end_reason:
+complete`, started 13:10, ended ~16:25 (about 195 min, well inside the
+300-min wall clock). 2 commits, 1 compaction, 1 model nudge
+(uncommitted changes at the very end). This time the built-in
+`session.jsonl` write worked — `loop verdict ok, worst ratio 0.33 on
+tool call`, matching the manual mid-run check. `tool_calls 376`,
+`peak_context 127120` (window 131072, no overflow). Scoring dispatched
+to a subagent on Opus per `PLAN.md`'s scoring rule (never a smaller
+model); result lands in `mendel-benchmark`'s `benchmark` branch, not
+here — this repo never carries Mendel scores directly. Server stopped
+(pid 54961), no Mendel Daemon process was running. Wired recovery
+starts. Next block: `qwen38-ista-evalplus`.
