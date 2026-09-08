@@ -118,7 +118,7 @@ Five rules hold across every item in this run:
   thinking off. Runs only if its smoke line says `pass`.
 - [x] `compaction-gemma26` — the same ladder on Gemma-26B GGUF at f16.
   Runs only if its smoke line says `pass`.
-- [ ] `strip-qwen38-pair` — one load pair with and without the mmproj
+- [x] `strip-qwen38-pair` — one load pair with and without the mmproj
   on `bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, same `-c`, KV type and
   drafter on both sides (../strip-modules.md). About ten minutes,
   unattended. This pair runs first of the three; the other two are

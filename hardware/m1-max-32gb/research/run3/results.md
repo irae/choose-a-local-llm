@@ -200,6 +200,21 @@ just does worse work under the reduced window on this task. Per the
 ladder's stop rule (two failures at one rung), the ladder stops here.
 **No `contextWindow` floor found for Gemma-26B** on `xtend-wide`.
 
+## `strip-qwen38-pair`
+
+`bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, f16, `-c 49152`, drafter on both
+sides.
+
+| side | wired delta | tok/s (warmup) | tok/s (2nd) | creep @ 32818 |
+| --- | --: | --: | --: | --: |
+| without mmproj | 22511 MB | 17.04 | 17.04 | 16.41 |
+| with mmproj | 23686 MB | 17.04 | 17.05 | 16.40 |
+
+Wired delta (`with - without`) = **1175 MB**, at or above the mmproj
+file size (928 MB). tok/s and creep speed match within noise (both
+under 1%). Pass rule met: **memory only, already taken.** Projector
+compute-buffer cost on Metal = 1175 - 928 = **247 MB**.
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table
