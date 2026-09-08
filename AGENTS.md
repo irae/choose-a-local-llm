@@ -170,29 +170,44 @@ Benchmark work:
 - **Push only on owner request.** Never push on your own initiative,
   and never offer to publish. The owner asks when they want it.
   When the owner asks for a push or for stop-and-sync, push `master`.
-  Refusing a requested push loses data; do it. The one standing
-  exception is the run branch during a run, below.
+  Refusing a requested push loses data; do it. There are two standing
+  exceptions, both below: the run branch during a run, and the
+  coordinator's merge of a reported run into `master`. Both push
+  without asking.
 - **Only the agent whose worktree has master checked out may merge into
   master.** Git enforces this: a branch lives in one worktree at a time,
   so any other worktree gets the merge refused. If you are not on
   master, commit on your branch and stop.
 - **A run branch is temporary; the coordinator merges it at every
-  block.** Planning a run (writing `bench<N>/AGENT.md`) happens on
-  `master`. When the run starts on the benchmark machine, create a
-  branch for it (for example `run11`) in its own worktree and commit
+  block.** This covers **every** run branch, a bench run (`run<N>`)
+  and a research run (`research<N>`) alike. Planning a run (writing
+  `bench<N>/AGENT.md` or the research run's kit) happens on `master`.
+  When the run starts on the benchmark machine, create a branch for it
+  (for example `run11` or `research3`) in its own worktree and commit
   the run's progress there. The runner pushes the run branch to origin
   after every block commit and reports the block to the coordinator;
-  the coordinator merges `origin/run<N>` into `master` at each report,
-  so the site updates while the run goes on. The runner never merges
-  `master` itself unless the coordinator says so. At run close the
-  branch is merged one last time and deleted, on origin too. The
-  branch exists only so a benchmark run and site work can proceed at
-  the same time, each in its own worktree. All other communication
-  between agents goes through `master`.
-- **Stop and sync, when the owner asks to stop a run and merge.** The
-  goal state: all work is on `master`, `master` is on `origin/master`,
-  no run branch remains anywhere, no run worktree remains. Follow these
-  steps in order:
+  the coordinator merges that branch into `master` at each report and
+  pushes `master`, so the site updates while the run goes on. The
+  runner never merges `master` itself unless the coordinator says so.
+  The branch exists only so a run and site work can proceed at the
+  same time, each in its own worktree. All other communication between
+  agents goes through `master`.
+- **A merge is never a question for the owner.** The coordinator
+  merges on report, without asking, for a bench run and a research run
+  alike. The owner reads results on `master`, so a finished run that
+  sits unmerged on a branch is a run they cannot read.
+- **A reported run leaves no branch behind.** When the run's last block
+  is reported, merge it one last time, then delete the branch locally
+  and on origin, and remove its worktree. Follow the stop-and-sync
+  steps below; they are the same steps. The end state after any run is
+  the same: every result on `master`, `master` pushed, and `git
+  ls-remote --heads origin` listing `master` alone. A branch on origin
+  that belongs to no running run is a defect; delete it.
+- **Stop and sync**, at a run's close and whenever the owner asks to
+  stop a run and merge. Read `run<N>` below as the run's own branch
+  name, `research<N>` included. The goal state: all work is on
+  `master`, `master` is on `origin/master`, no run branch remains
+  anywhere, no run worktree remains. Follow these steps in order:
   1. Commit all open work on the run branch, including `state.md` with
      a handing-over section. `git status` must be clean.
   2. Go to the master worktree. Run `git pull --ff-only origin master`.
