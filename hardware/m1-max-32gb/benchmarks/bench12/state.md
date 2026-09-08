@@ -101,6 +101,20 @@ Deviation: none.
 
 `bonsai_fork_f16_clean` = **131072** (no ceiling found up to the `-c`
 boundary; deepest step 131098 still decoded at 9.67 tok/s, above the
-8 tok/s floor). See `results.md`, `bonsai-fork-f16`. Next: the Mendel
-guided-high agent task at `MENDEL_CONTEXT_WINDOW=131072`, same server
-still up (pid 44336, port 8081).
+8 tok/s floor). See `results.md`, `bonsai-fork-f16`.
+
+**Needs coordinator: the agent task step of `bonsai-fork-f16` did not
+run.** `run-worker.sh` derives its branch name from the model alias
+alone (`bonsai-prism-high-guided-v3-issue-13`), with no version bump.
+That branch already exists, scored, from the earlier q4_0 KV run
+(`mendel-benchmark` commit `c403b07`, "Score bonsai-prism guided high:
+wall_clock partial ... 31.5"). Deleting a git branch is a destructive
+action this session's permissions block; I did not force it. Ladder
+and creep for `bonsai-fork-f16` are done and committed; only the
+agent-task row is missing. Skipping per the owner's own rule (never
+halt the run; skipping beats blocking) and moving to the next block.
+Candidate fix for the coordinator: delete
+`bonsai-prism-high-guided-v3-issue-13` locally and on `origin` (score
+already safe in git history), then re-run
+`MENDEL_CONTEXT_WINDOW=131072 ./run-worker.sh bonsai-prism pi guided high`.
+Stopping the bonsai-prism server now; wired recovery starts.
