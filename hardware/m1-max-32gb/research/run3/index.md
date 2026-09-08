@@ -131,7 +131,7 @@ Five rules hold across every item in this run:
   `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` at `-c 49152`, drafter
   removed on both sides. Optional. Gemma-12B has no pair: its 175 MB
   sits below the noise of `vm_stat` between runs.
-- [ ] `strip-qwen38-nodrafter-creep` — ladder and creep on the Qwen3.8
+- [x] `strip-qwen38-nodrafter-creep` — ladder and creep on the Qwen3.8
   row with `--spec-type draft-mtp` removed, everything else unchanged.
   The projector pairs above measure a saving the served rows already
   take, so they change no pick. The drafter is the arm that can: the

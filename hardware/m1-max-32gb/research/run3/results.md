@@ -236,6 +236,29 @@ Search down in 8192 steps: `-c 204800` loads and serves fine (with
 `--offline`, now cached); `-c 212992` OOMs. **The boundary is the full
 row's own `-c`** — one 8192 step below it works.
 
+## `strip-qwen38-nodrafter-creep`
+
+`unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL`, f16 KV, `--spec-type draft-mtp`
+removed, everything else unchanged. Ladder cleared at `-c 131072`
+(1849 tokens, EOS, 13.95 tok/s — the with-drafter row measured 13.55
+at the same depth).
+
+Creep ran the whole depth list clean, no stop, see
+`results/creep-strip-qwen38-nodrafter.tsv`:
+
+4k @ 13.8 → 8k @ 13.4 → 16k @ 13.0 → 25k @ 12.4 → 33k @ 12.1 → 41k @
+11.7 → 49k @ 11.3 → 66k @ 10.6 → 82k @ 10.0 → 98k @ 9.5 → 115k @ 9.0 →
+131k @ 8.6 tok/s. Wired ~23.1-23.2 GB throughout, no swap growth.
+
+**The trade, answered.** With the drafter, this row mem-stopped at
+49198 tokens. Without it, the same row ran clean past 131072 — the
+list's own boundary, not a measured ceiling. Dropping the drafter buys
+this build well over 2.6x the clean depth, at a shallow-speed cost of
+roughly a wash (13.55 → 13.95 at 131k prompt) and a deep-speed cost of
+about 9.14 → 8.58 tok/s at ~131k used. For a task that needs depth over
+shallow throughput, dropping the drafter is the better trade on this
+build.
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table
