@@ -112,6 +112,15 @@ All three pass the handed `xtend` task at their own creep window: the
 task-lossless 3-bit claim survives an agent loop for all three
 candidates. All three are candidates for the coordinator's bench pick.
 
+## Effort levels, control row
+
+Against the medium row's 87 (`../qwen38-configs.md`, "Reasoning
+effort"). Same row, `-c 49152`, only `--reasoning-effort` moves.
+
+| level | calls | commits | loop | clean | wall_s | verdict |
+| --- | --: | --: | --- | --- | --: | --- |
+| low | 13 | 1 | ok:1.00 | yes | 91 | pass |
+
 ## The two gates
 
 `qwen38-creep-gate` and `qwen38-evalplus-gate` each write their table

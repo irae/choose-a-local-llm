@@ -100,7 +100,7 @@ Five rules hold across every item in this run:
 - [x] `qwen38-ista-iq3s-mtp-mendel-smoke` — the same, under the same
   gate. This is the clean test of whether a "task-lossless" 3-bit
   claim survives an agent loop.
-- [ ] `qwen38-effort-low-smoke` — the row we serve today
+- [x] `qwen38-effort-low-smoke` — the row we serve today
   (`bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, f16, `-c 49152`), Mendel smoke
   at effort low, against the medium row's 87
   (../qwen38-configs.md, "Reasoning effort"). Research named this
