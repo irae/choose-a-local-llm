@@ -1,5 +1,14 @@
 # Run 12 — state
 
+Started 2026-09-08. `tool-check` pinned `local-llm-eval-tools` at
+`2344f00`. Wired limit confirmed 25000 (per `AGENT.md`; the machine
+file's 24000/22000 is stale, a known false positive on preflight).
+
+`gemma12_2x_clean` = 8222 tokens per slot at `-c 770048` (the ladder's
+own practical top, not a measured failure — wired reached ~25.2 GB
+with ~68 MB free, so the search stopped rather than risk a lockup).
+See `results.md`.
+
 Draft kit, not started as a scored run. Pre-block prep landed
 2026-09-07: wired 24000 ceilings for Qwen3.6 GGUF q8_0 and f16,
 found while debugging a `local-llm-eval-tools` compaction issue on

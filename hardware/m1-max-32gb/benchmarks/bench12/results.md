@@ -131,3 +131,51 @@ several unbroken sweeps stacked with no gap to reproduce, which is not
 how a normal scoring block runs. Recommend the coordinator re-reads
 this section before finalizing the wired-limit line; the case for
 24000 over 25000 is weaker than the earlier section suggested.
+
+## `gemma12-gguf-2slot` — Gemma-12B GGUF, two slots
+
+Ladder: `unsloth/gemma-4-12b-it-GGUF:Q4_K_XL`, f16 KV, `--parallel 2`,
+real 4096-token completions on both slots at each rung.
+
+| `-c` | slot0 result | slot1 result | wired |
+| --- | --- | --- | --: |
+| 262144 | served, 4096 tok, hit cap | served, 789 tok, EOS | — |
+| 278528 | served | served | — |
+| 294912 | served | served | — |
+| 393216 | served | served | — |
+| 524288 | served | served | ~20.5 GB |
+| 655360 | served | served | ~23.0 GB |
+| 671744 | served | served | ~23.3 GB |
+| 688128 | served | served | ~23.3 GB |
+| 704512 | served | served | ~24.0 GB |
+| 720896 | served | served | ~24.3 GB |
+| 737280 | served | served | ~24.6 GB |
+| 753664 | served | served | ~24.9 GB |
+| **770048** | served | served | ~25.2 GB, ~68 MB free |
+
+Stopped climbing at 770048: wired reached the machine's practical
+ceiling with almost no free memory left, and pushing further risked a
+system-level lockup rather than a clean OOM. Treated as the ladder's
+top rather than searching for a true failure point.
+
+Content note: slot0's raw-completion output ("Write a Python function
+that parses ISO dates.") was degenerate ("1.1.1.1...") at every rung,
+including the lowest (262144) — this is a property of the raw
+`/completion` endpoint with no chat template on this prompt, not a
+memory or depth effect, and does not affect the ladder or creep
+measurement (both only read `.timings`, never content).
+
+Round-robin creep at `-c 770048`, `N_CONTEXTS=2`, see
+`results/creep-gemma12-gguf-2x-f16.tsv`:
+
+| depth | tok/s (A) | tok/s (B) |
+| --: | --: | --: |
+| 4114 | 25.0 | 24.7 |
+| 8222 | 23.81 | 23.89 |
+| 16386 | 22.96 | 22.86 |
+
+Stop: swap grew 144 MB by depth 16386 on slot B. **Clean per-slot
+depth: 8222** — far short of the ladder's 770048, because the KV
+allocation for both slots at that `-c` already consumes nearly all of
+the wired budget before any real depth is used.
+
