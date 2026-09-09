@@ -45,6 +45,21 @@ score, at medium; the agent rows are what it lacks.
   run13` (or `cd` into it if it exists), then `cd
   ../choose-a-local-llm-run13`. Verify with `pwd` and `git worktree
   list`. Every command of this run happens there.
+- **Branches, exactly.** You work on `run13` and only on `run13`. The
+  coordinator works on `master`. When the coordinator says to pull,
+  merge or take an update, it always means the same two commands from
+  your `run13` worktree:
+
+  ```bash
+  git fetch origin
+  git merge origin/master
+  ```
+
+  Then push `run13`. **Never check out `master`, never merge `run13`
+  into `master`, and never push `master`.** The coordinator merges your
+  branch into `master` at each report. A commit hash the coordinator
+  gives you is a commit on `master`; verify you have it with `git log
+  --oneline -1 origin/master` after the fetch.
 - Then `docs/methodology/checklist.md`, whole, once per session.
   `tools/preflight.sh` first, every line `ok` before a block starts.
 - **The machine file is the stale side.**
