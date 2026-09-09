@@ -62,7 +62,7 @@ Two more rules that stop a wrong reading:
 USAGE. Run from the repo root, with the EvalPlus venv's python (the
 tool imports evalplus and openai, and calls `evalplus.evaluate`):
 
-    SMOKE_CALIBRATION=benchmarks/calibration-<current-config>.json \\
+    SMOKE_CALIBRATION=hardware/<hardware-id>/calibrations/calibration-<current-config>.json \\
       benchmarks/evalplus-smoke.py <label> <model-id-as-served> [extra-body-json]
 
 The third argument is the same extra body `run-humaneval.sh` takes; it

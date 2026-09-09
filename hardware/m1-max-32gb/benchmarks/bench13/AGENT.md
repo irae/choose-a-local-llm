@@ -248,6 +248,14 @@ score". **EvalPlus serves the fastest config at shallow depth**, from
 `ista-nmax-shallow`, which need not be `ista_serving`. Say which it
 used.
 
+Calibration files moved on 2026-09-09: they are a measurement of this
+machine, so they live at `hardware/m1-max-32gb/calibrations/` and no
+longer beside the tool. `calibrate.py` now requires the directory:
+
+```bash
+CALIBRATION_DIR=hardware/m1-max-32gb/calibrations benchmarks/calibrate.py <config> <model-id> [extra-body-json]
+```
+
 Calibrate first. **A calibration that does not converge is a stop and
 ask**, not a value: two `length` stops there have preceded a run that
 spent hours and returned empties. Then the full set, at effort low.

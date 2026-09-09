@@ -51,7 +51,10 @@ its budget and returned empties.
 
 ## Steps
 
-1. Calibrate (above). Calibration files: `benchmarks/calibration-*.json`.
+1. Calibrate (above). Calibration files live under the setup, at
+   `hardware/<hardware-id>/calibrations/`, because a calibration is a
+   measurement of one machine. `calibrate.py` takes the directory from
+   `CALIBRATION_DIR`.
 2. Start the config's server on port 8081, warm up, start the run
    watcher (`benchmarks/run-watch.sh`, [checklist](./checklist.md)
    step 6: the memory record and the crash signal, exit 42 on a dead
@@ -99,7 +102,7 @@ never calibrated. A candidate that needs a bigger budget to pass is a
 candidate that costs more.
 
 ```bash
-SMOKE_CALIBRATION=benchmarks/calibration-CURRENT_CONFIG.json \
+SMOKE_CALIBRATION=hardware/<hardware-id>/calibrations/calibration-CURRENT_CONFIG.json \
   benchmarks/evalplus-smoke.py LABEL MODEL_ID_AS_SERVED [extra-body-json]
 ```
 
