@@ -294,4 +294,8 @@ EVALPLUS_MAX_NEW_TOKENS=8886 benchmarks/run-humaneval.sh qwen38-atomicchat
 qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'`.
 Watcher running (`results/mem-qwen38-atomicchat-evalplus.log`).
 Output: `results/qwen38-atomicchat/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
-— running.
+
+**Closed.** 164/164 problems, 0 empty, wall 3:10:32. **base 0.988,
+plus 0.927**, 100% completion rate. Comparison against the control row
+deferred to `qwen38-gguf-blind-medium`, next block. Server stopped.
+Wired recovery starts. Next block: `qwen38-gguf-blind-medium`.

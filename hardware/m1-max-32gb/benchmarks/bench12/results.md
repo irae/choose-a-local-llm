@@ -394,3 +394,34 @@ Every MLX entry above is unreferenced by this run (this run serves no
 MLX row: every MLX item moved to `../unscheduled/`), but nothing else
 deleted this pass, per the coordinator's instruction ("Delete nothing
 else this pass").
+
+## `qwen38-atomicchat-evalplus` — AtomicChat AD-IQ3_S, full EvalPlus
+
+`AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, MTP drafter active
+(`--spec-type draft-mtp --spec-draft-n-max 3`, carried over from the
+control's own sweep, n-max not yet confirmed for this build — see the
+deferred-sweep note in `state.md`), f16 KV, `--parallel 1`, `-c 106496`
+(ladder cleared at this value, research run 3, same wired limit
+25000), thinking medium, wired 25000.
+
+Calibration: 10/10 converge, max completion 5924 tokens, budget
+max(5924×1.5, 8192) = **8886**.
+`benchmarks/calibration-qwen38-atomicchat.json`.
+
+Full run: `RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench12/results
+EVALPLUS_MAX_NEW_TOKENS=8886 benchmarks/run-humaneval.sh qwen38-atomicchat
+qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'`.
+
+| metric | value |
+| --- | --: |
+| HumanEval base | 0.988 |
+| HumanEval plus | 0.927 |
+| completion rate | 100% |
+| empty | 0/164 |
+| wall | 3:10:32 |
+
+Files: `results/qwen38-atomicchat/humaneval/`,
+`results/server-qwen38-atomicchat-evalplus.log`.
+
+Comparison against the control row deferred to `qwen38-gguf-blind-medium`
+(this run's own control re-measurement, at pi's current 8192 reserve).
