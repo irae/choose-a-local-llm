@@ -550,9 +550,11 @@ before/after/comments columns." (`3f1b158c`, 2026-08-31).
 
 A run consumes the runner's context. These four rules keep it small.
 
-1. **The wakeup cadence stays at 20 minutes.** Do not shorten it to
-   watch a step land. A shorter cadence buys nothing and costs one
-   turn every time ([checklist](./checklist.md), step 7).
+1. **The wakeup cadence is 20 minutes or more, never less.** Do not
+   shorten it to watch a step land. A shorter cadence buys nothing and
+   costs the owner one turn and its tokens every time
+   ([checklist](./checklist.md), step 7). When a block is long and
+   quiet, a longer gap is better, not worse.
 2. **A background monitor reports on an event, never on a timer.** It
    exits 42 with the reason on stdout when the thing it watches dies or
    finishes. It prints one event line. It does not poll the agent, and

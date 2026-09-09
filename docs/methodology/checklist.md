@@ -147,8 +147,16 @@ the block names at the point it is needed.
 
 ## During the run
 
-7. **Keep the idle monitor.** Schedule a wakeup ≤20 minutes after
-   starting any block. At every wakeup verify REAL output growth
+7. **Keep the idle monitor.** Schedule a wakeup **20 minutes or more**
+   after starting any block. **Never less than 20 minutes**, and never
+   shortened to watch a step land. Every wakeup costs the owner a turn
+   and its tokens, and buys nothing a background monitor does not
+   already report on an event
+   ([status lines](./status-lines.md), "Context budget", rule 1).
+   A longer gap is always allowed; a shorter one is a defect.
+   (Corrected 2026-09-09. This step read "≤20 minutes" from 2026-08-30,
+   which says the opposite and is why runners have been waking early.)
+   At every wakeup verify REAL output growth
    (result-file line count, not process liveness), because a server
    can die or hang while the process lives and `/health` returns 200.
    If output stopped: read the server log for the death signatures

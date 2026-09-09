@@ -20,8 +20,8 @@ best-evidenced of the three, `ISTA-DASLab/…:IQ3_S-mtp`.
 
 - `ista-nmax-shallow`
 - `ista-nodrafter-creep`
-- `ista-serving-pick`
 - `ista-nmax-deep`
+- `ista-serving-pick` — **coordinator gate: stop, report, wait**
 - `ista-smoke-xhigh`
 - `ista-mendel-xhigh`
 - `ista-smoke-low`
@@ -141,28 +141,31 @@ step: depth, tok/s, wired MB, free MB, swap delta. A sweep that ends
 with no stop condition records `gatedBy: untested`, never `mem` or
 `speed`, and its deepest step is a list end and not a ceiling.
 
-## `ista-serving-pick`
+## `ista-serving-pick` — a coordinator gate, not a block
 
-A task, not a judgment. Read the two blocks above and the measured
-drafter row in Essentials, and write `ista_serving` (drafter flags and
-`-c`) and `ista_window` in `state.md`.
+**The runner does not run this and does not choose.** When
+`ista-nmax-deep` is committed and pushed, report to the coordinator and
+stop. The coordinator reads the two creeps and the deep sweep, writes
+`ista_serving` and `ista_window` into `state.md`, and tells you to
+continue. Everything below this line waits for those two values.
 
-**The rule** (`context-creep.md`, "Picking the config a block will
-serve"): take the faster config at the depth the task actually uses,
-**unless the slower one removes a compaction**. The last agent run of
-this build peaked at 89386 tokens, so a window above roughly 96K
-removes no compaction and buys nothing. Break a tie on decode speed at
-that depth.
-
-Write the pick and the one-line reason. If the no-drafter arm is both
-deeper and faster at depth, say so plainly: that would overturn the
-planning expectation, which is that the drafter wins here.
+This gate sits here because the choice needs the run's history and the
+project's goals, which a block does not carry
+(`benchmarks/PLANNING.md`, "A runner measures, a coordinator decides").
 
 ## `ista-nmax-deep`
 
-Step 4. Same shape as `ista-nmax-shallow`, but at the working depth of
-the config `ista-serving-pick` chose, not at 4K. Cells `n1` to `n4`,
-skipping `none` if the pick has no drafter.
+Step 4, and it runs **before** any pick, because the pick needs it.
+
+**Fixed `-c 122880` for every cell**, so the cells differ only in the
+drafter and nothing is confounded by allocation size. That value fits
+the heaviest cell with margin: `n4` measured 22546 MB at load at
+`-c 106496`, and 16384 more tokens of f16 KV adds about 1074 MB, which
+leaves roughly 1.4 GB under the 25000 limit.
+
+**Measure at depth 98338**, the first standard step above the 89386
+peak the last agent run of this build reached. One measurement per
+cell at that depth, not a full creep.
 
 **Run every cell: `none`, `n1`, `n2`, `n3`, `n4`.** Do not drop cells on
 the shallow table's ranking. This build's own server log from research
