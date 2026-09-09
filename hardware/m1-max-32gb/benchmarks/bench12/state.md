@@ -275,3 +275,23 @@ drafter setting it ran with — if the sweep picks something other than
 3, re-check the window still serves before either Mendel block.
 Neither build's EvalPlus block is blocked by this; both n-max sweeps
 run before their own Mendel block, not before EvalPlus.
+
+## `qwen38-atomicchat-evalplus` — running
+
+Served `AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, MTP drafter confirmed
+active at load, f16 KV, `--parallel 1`, `-c 106496` (ladder cleared at
+this value, research run 3, same wired limit 25000).
+`results/server-qwen38-atomicchat-evalplus.log`. n-max sweep for this
+build deferred to before `qwen38-atomicchat-mendel`, see the note
+above.
+
+Calibration: 10/10 converge (`stop`), max completion 5924 tokens,
+budget = max(5924×1.5, 8192) = **8886**.
+`benchmarks/calibration-qwen38-atomicchat.json`.
+
+Full run launched: `RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench12/results
+EVALPLUS_MAX_NEW_TOKENS=8886 benchmarks/run-humaneval.sh qwen38-atomicchat
+qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'`.
+Watcher running (`results/mem-qwen38-atomicchat-evalplus.log`).
+Output: `results/qwen38-atomicchat/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
+— running.
