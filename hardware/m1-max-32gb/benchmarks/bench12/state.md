@@ -445,4 +445,17 @@ own `trap_a.ok` flag reads `true` while its own captured output says
 coordinator, not fixed mid-run; the scorer read the real output, not
 the wrong flag.
 
-Server stopped. Wired recovery starts. Next block: `qwen38-atomicchat-mendel`.
+Server stopped. Wired recovery starts.
+
+## `qwen38-atomicchat-mendel`
+
+Long-prompt completion check at window 98304: ~97001-token prompt
+(tokenized via `/tokenize`), real completion. **PASS** — 24 tokens,
+coherent one-sentence summary, `stop_type eos` normal finish.
+
+Served under fresh alias `qwen3.8-27b-atomicchat`, `-c 106496`, window
+98304, n-max 3 (confirmed by this run's own sweep). `gh auth status`
+passed, no branch collision, no invalid attempt this time (the loop
+guard's empty-output bug is already fixed from the ISTA block).
+Watcher and the fixed guard running.
+`results/server-qwen38-atomicchat-mendel.log`. — running.
