@@ -298,4 +298,19 @@ Output: `results/qwen38-atomicchat/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
 **Closed.** 164/164 problems, 0 empty, wall 3:10:32. **base 0.988,
 plus 0.927**, 100% completion rate. Comparison against the control row
 deferred to `qwen38-gguf-blind-medium`, next block. Server stopped.
-Wired recovery starts. Next block: `qwen38-gguf-blind-medium`.
+Wired recovery starts.
+
+## `qwen38-gguf-blind-medium` — ladder, running
+
+`bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, MTP n-max 3, f16 KV, `--parallel 1`,
+wired 25000. Old published ceiling (49152) was measured at wired
+24000 (run 9); real ladder from `-c 49152` upward in 8192 steps, real
+4096-token completions.
+
+| `-c` | result | tok/s | draft accept |
+| --- | --- | --: | --: |
+| 49152 | served, 4096 tok, `stop_type limit` | 20.32 | 3070/3075 (99.8%) |
+| 57344 | testing | - | - |
+
+Files: `results/server-qwen38-gguf-blind-medium-c49152.log`,
+`results/server-qwen38-gguf-blind-medium-c57344.log`. — running.
