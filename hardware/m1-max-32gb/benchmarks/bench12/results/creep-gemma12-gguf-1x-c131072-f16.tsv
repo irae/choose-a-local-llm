@@ -1,0 +1,15 @@
+llama-server, endpoint=completion thinking=n/a (no template) contexts=1 pause=60s
+start: wired 11489 MB, free 16031 MB, swap used 536 MB
+context	depth_tokens	decode_toks	wired_mb	free_mb	swap_delta_mb	compress_pages	decompress_pages	step_seconds
+A	4114	25.01	12024	15180	-8	0	356	18
+A	8222	24.09	12009	14837	-8	0	143	19
+A	16386	22.82	12024	14728	-8	0	39	39
+A	24602	21.66	12014	14077	-16	0	2108	46
+A	32818	20.55	12017	13468	-24	0	1320	52
+A	40982	19.48	12016	13111	-24	0	249	58
+A	49198	18.63	12015	12663	-24	0	404	64
+A	65578	17.01	12031	12152	-32	0	1538	142
+A	81958	15.72	12015	11778	-32	0	1500	166
+A	98338	14.55	12030	11215	-32	0	2418	190
+A	114718	13.59	12017	10828	-32	0	246	213
+STOP: request failed at depth 131098 on context A: HTTP Error 400: Bad Request
