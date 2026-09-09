@@ -242,3 +242,16 @@ prefix each step with its slot letter), and the updated `AGENT.md`
 (AtomicChat replaces the nodrafter build, a drafter file is now an
 allowed unasked download, a projector-cleanup task rides alongside the
 next GPU block).
+
+**Open item, owner asked to schedule before `qwen38-atomicchat-mendel`
+starts, not before its EvalPlus block:** the AtomicChat build has
+never had an `n-max` sweep of its own. Every number for it so far
+(`qwen38-atomicchat-iq3s-creep`, research run 3) ran at
+`--spec-draft-n-max 3` only, carried over from the control row's own
+sweep (`docs/setups/m1-max-32gb/benchmarks/qwen3.8-27b.md`, n-max
+1/2/3/4/6, peak at 3). EvalPlus scores at temperature 0, pass@1, so
+decode speed and `n-max` do not change its score — this build's
+EvalPlus can run as planned. But Mendel's wall-clock budget (300 min)
+is decode-speed sensitive, so the right `n-max` for AtomicChat
+specifically should be confirmed with its own sweep before
+`qwen38-atomicchat-mendel` starts.
