@@ -540,3 +540,27 @@ both untouched.
 **Bug found: `score.mjs`'s `trap_a.ok` flag reads `true` while its own
 captured output says `THREW`.** Flagged for the coordinator, not
 fixed mid-run.
+
+## `qwen38-atomicchat-mendel` — Mendel blind, thinking medium — INVALID
+
+Long-prompt completion check at window 98304: PASS. Served under
+fresh alias `qwen3.8-27b-atomicchat`, `-c 106496`, window 98304,
+n-max 3.
+
+Branch `qwen3.8-27b-atomicchat-medium-issue-13`. **`end_reason
+repetition_loop`**: pi's own built-in detector, 5 identical `bash`
+tool calls (`grep -rn "rimraf\|require('tmp')\|require(\"tmp\")" test/`,
+an empty search — `test/` holds neither), first at 11:03:49Z, fired
+11:04:32Z. **Invalid per `AGENT.md`'s own rule, no retry this run.**
+
+A partial score (74 raw, 37.5 capped, 3/8) exists on `mendel-benchmark`'s
+`benchmark` branch (commit `134b1d6`), computed by a scorer working
+from `PLAN.md`'s general partial-run rule, not this run's stricter
+repetition-loop invalid rule. Left as real data on that branch, but
+this run's own tables treat the row as invalid, not partial.
+
+**Detector gap found**: `loop-check.py`'s 60-line sliding window
+diluted 5 repeated calls against 189 total calls to a 0.62 ratio,
+"ok" — well above the 0.10 threshold, so it missed a collapse pi's
+own live detector caught. A real gap between the two detectors,
+filed for the coordinator, not fixed mid-run.

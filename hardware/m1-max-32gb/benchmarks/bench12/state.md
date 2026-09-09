@@ -458,4 +458,89 @@ Served under fresh alias `qwen3.8-27b-atomicchat`, `-c 106496`, window
 passed, no branch collision, no invalid attempt this time (the loop
 guard's empty-output bug is already fixed from the ISTA block).
 Watcher and the fixed guard running.
-`results/server-qwen38-atomicchat-mendel.log`. — running.
+`results/server-qwen38-atomicchat-mendel.log`.
+
+**Invalid: `end_reason repetition_loop`.** Not a `qwen38-nodrafter-evalplus`-style
+gate drop, and not the live guard's own kind of stop — pi's own
+built-in repetition detector fired for real: 5 identical `bash` tool
+calls in a row (`grep -rn "rimraf\|require('tmp')\|require(\"tmp\")"
+test/`, a directory holding neither), first at 11:03:49, detector
+fired at 11:04:32. `AGENT.md`'s own essentials rule: **a run that ends
+on `repetition_loop` is invalid, with the repeated unit and the count
+recorded, no retry this run.**
+
+A scoring subagent, working from `mendel-benchmark`'s own `PLAN.md`
+only (it does not carry this run's stricter invalid-run rule), scored
+it anyway as a normal partial: 74 raw, 37.5 capped (3/8: uuid, xtend,
+urlsafe-base64 done; rimraf near-done but the root `package.json`
+still declares it, so it doesn't count; glob, chalk, tmp, shasum
+untouched). That score is committed on `mendel-benchmark`'s
+`benchmark` branch (`134b1d6`) as real data, left as-is — but **this
+run's own record treats the row as invalid, not partial-scored**,
+per `AGENT.md`. The loop-check.py ratio (0.62, "ok") missed this
+collapse entirely — a 5-call repeat sits well inside its 60-line
+window alongside 189 other calls, diluted below the 0.10 threshold.
+That is a real detector-sensitivity gap, separate from the empty-output
+bug found earlier, filed for the coordinator, not fixed mid-run.
+
+No retry this run (`AGENT.md`'s own rule for a `repetition_loop` end).
+
+## `retry-sweep`
+
+Checked every row this run for a killed/interrupted state with no
+valid replacement. One candidate: `qwen3.8-27b-ista`'s first attempt
+(zero commits, killed in seconds by the loop guard's own empty-output
+bug) — already superseded by a clean, scored retry
+(`qwen3.8-27b-ista2`, 76.5/100). Nothing else was killed or
+interrupted; `qwen38-atomicchat-mendel`'s invalid row ended on
+`repetition_loop`, which this run's own rule bars from a retry.
+**Nothing to retry. `retry-sweep` closes empty.**
+
+## Handing over
+
+Every block of this run, in order:
+
+| block | result |
+| --- | --- |
+| `tool-check` | pass, `local-llm-eval-tools` pinned `2344f00` |
+| `gemma12-gguf-2slot` | clean depth **81958**/slot (creep-judged; the ladder's 770048 was a load ceiling, not a window) |
+| `gemma12-gguf-1slot-131072` | clean depth **114718** (window verdict, `-c` boundary) |
+| `bonsai-fork-f16` | creep: no ceiling to 131072, 9.67 tok/s at 131k (speed verdict). Agent task: **12.5/100** capped, 1/8, critical defect |
+| `qwen38-ista-evalplus` | 164/164, **base 0.976 / plus 0.945**, 1 empty |
+| `qwen38-nodrafter-evalplus` | **dropped mid-run** by the coordinator's plan update (`de79d22`) — the config was never a real candidate; partial data (39/164) kept, not scored |
+| `qwen38-atomicchat-evalplus` | 164/164, **base 0.988 / plus 0.927**, 0 empty (replaced the dropped nodrafter block) |
+| `qwen38-gguf-blind-medium` | ladder: `-c 73728` served, `81920` OOMs. Creep: clean ceiling 65578. Mendel (control re-run, reserve 8192): **76/100**, 8/8, critical (trap A, `fs.promises.glob` `.then()` bug) |
+| `qwen38-ista-mendel` | one invalid attempt (loop-guard bug, superseded). Retry: **76.5/100**, 8/8, critical (same trap-A shape) |
+| `qwen38-atomicchat-mendel` | **invalid**, `end_reason repetition_loop` (pi's own detector, 5 identical calls). A general-purpose partial score (37.5/100, 3/8) exists on `mendel-benchmark` but this run's own tables do not count it |
+| `retry-sweep` | nothing to retry, closes empty |
+
+**Gate and loop-stop events, what they dropped and why:**
+- `qwen38-nodrafter-evalplus` dropped: superseded by `qwen38-atomicchat-evalplus` per the coordinator's mid-run plan update, not a quality gate.
+- `qwen38-atomicchat-mendel` invalid: `repetition_loop`, per `AGENT.md`'s own rule, no retry.
+- One invalid `qwen3.8-27b-ista` attempt: my own live loop-guard bug (empty `loop-check.py` output treated as "not ok"), fixed immediately, retried clean.
+
+**Open items for the coordinator/owner:**
+1. `qwen38-gguf-blind-medium`'s control re-run (76) landed below the
+   published control (87) on a real trap-A regression, not noise.
+   Which row is canonical is an owner decision.
+2. `score.mjs`'s `trap_a.ok` flag reads `true` while its own captured
+   output says `THREW`, on the ISTA row — a real scoring-tool bug.
+3. `loop-check.py`'s 60-line window missed a real 5-call repetition
+   collapse (atomicchat row) that pi's own live detector caught —
+   diluted below the 0.10 threshold by 189 other calls. A detector
+   sensitivity gap, not the empty-output bug (already fixed).
+4. AtomicChat's Mendel row (invalid) still needs its EvalPlus-quality
+   read: its own EvalPlus (0.988/0.927) already passed, so the config
+   itself is not in question — only this one Mendel attempt failed.
+5. Both this run's Qwen3.8 Mendel rows (ista2, atomicchat) ran at
+   effort medium. `origin/master`'s `8a0764f` (merged into this run
+   near the end) bans medium for Qwen3.8 going forward. Both rows
+   started before that rule landed; per the coordinator's own
+   instruction, their scores stand.
+
+**Machine state left behind:** wired limit 25000 (confirmed via
+`sysctl`), no `llama-server` process, no Mendel Daemon process, GPU
+idle. Evidence archived: 81 files to
+`~/.local/share/choose-a-local-llm/evidence/run12`.
+
+Run12 is done. Nothing further to run without new instructions.
