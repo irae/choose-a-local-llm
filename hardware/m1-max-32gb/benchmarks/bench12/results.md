@@ -352,3 +352,45 @@ Files: `results/qwen38-ista-mtp/humaneval/`,
 
 Comparison against the control row deferred to `qwen38-gguf-blind-medium`
 (this run's own control re-measurement, at pi's current 8192 reserve).
+
+## Projector cleanup and model cache inventory
+
+Deleted (symlink + underlying blob), per the coordinator's mid-run
+handoff note (`de79d22`): every served row in this run passes
+`--no-mmproj`, so no projector file is needed.
+
+| file | size | model |
+| --- | --: | --- |
+| `mmproj-Qwen3.8-27B-bf16.gguf` | 888M | `bartowski/Qwen3.8-27B-GGUF` |
+| `mmproj-BF16.gguf` | 1.1G | `unsloth/gemma-4-26b-a4b-it-GGUF` |
+| `mmproj-BF16.gguf` | 861M | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF` |
+
+~2.9 GB freed. `unsloth/Qwen3.8-27B-GGUF`'s own mmproj was NOT
+touched, per the coordinator's note (kept as the K-quant control for
+the i-quant speed question, alongside the model file itself).
+
+Model cache inventory, `~/.cache/huggingface/hub`:
+
+| model | revision | size |
+| --- | --- | --: |
+| `prism-ml/Ternary-Bonsai-27B-gguf` | `abbae72` | 29G |
+| `unsloth/Qwen3.6-35B-A3B-MTP-GGUF` | `5bc3e23` | 21G |
+| `mlx-community/Qwen3.6-35B-A3B-4bit` | `38740b8` | 19G |
+| `bartowski/Qwen3.8-27B-GGUF` | `f0eec4a` | 17G |
+| `unsloth/gemma-4-26b-a4b-it-GGUF` | `c099eb4` | 16G |
+| `mlx-community/Qwen3.8-27B-4bit` | `3e6447f` | 15G |
+| `unsloth/Qwen3.8-27B-GGUF` | `4ca7207` | 14G |
+| `mlx-community/gemma-4-26b-a4b-it-4bit` | `0d77464` | 14G |
+| `AtomicChat/Qwen3.8-27B-GGUF` | `ca10ebc` | 13G |
+| `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` | `d562806` | 11G |
+| `prism-ml/Ternary-Bonsai-27B-mlx-2bit` | `70f75f3` | 7.9G |
+| `unsloth/gemma-4-12b-it-GGUF` | `fc034cf` | 7.5G |
+| `mlx-community/gemma-4-12B-it-4bit` | `73bcf09` | 6.3G |
+| `mlx-community/Qwen3.8-27B-MTP-4bit` | `b643c01` | 253M |
+| `lmstudio-community/gemma-4-12B-it-MLX-4bit` | `f45bda5` | 31M |
+| `mlx-community/gemma-4-12B-it-qat-OptiQ-4bit` | `63912b8` | 76K |
+
+Every MLX entry above is unreferenced by this run (this run serves no
+MLX row: every MLX item moved to `../unscheduled/`), but nothing else
+deleted this pass, per the coordinator's instruction ("Delete nothing
+else this pass").
