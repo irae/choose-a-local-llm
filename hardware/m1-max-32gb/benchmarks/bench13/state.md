@@ -28,6 +28,14 @@ handing-over section.
   with the data on hand. Every later block depends on `ista_serving`
   and `ista_window`, so the run is gated here until the coordinator
   answers.
+- Merged `origin/master` twice more while waiting: `6645657` (moved
+  `ista-nmax-deep` ahead of the pick, fixed `-c 122880`, one
+  measurement per cell at depth 98338) and `e1711c7` (named the
+  branch rule in `AGENT.md`'s Essentials).
+- `ista-nmax-deep` done, all five cells at `-c 122880`, depth 98338:
+  table in `results.md`. Acceptance at depth is close to the shallow
+  block's numbers, not the 1.000 the coordinator's research-run-3 log
+  showed for `n3`; said so in `results.md`.
 
 ## Values this run sets
 
@@ -40,5 +48,5 @@ that produced it.
 | `ista_nodrafter_c` | `163840`, ceiling 147478 @ 8.30 tok/s | `ista-nodrafter-creep` |
 | `ista_serving` | | `ista-serving-pick` |
 | `ista_window` | | `ista-serving-pick` |
-| `ista_evalplus_serving` | | `ista-nmax-shallow` |
+| `ista_evalplus_serving` | `none` (fastest at shallow depth, 14.44 tok/s) | `ista-nmax-shallow` |
 | `ista_temperature` | | read from `~/.local/share/mendel-benchmark/` |

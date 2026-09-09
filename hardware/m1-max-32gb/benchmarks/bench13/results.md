@@ -86,3 +86,41 @@ grew past its start value; the compaction spikes at 49198 and 65578
 for six steps, so neither is a stop condition on its own. The swept
 range reached the planned bound, `-c 163840`, so this is a ceiling, not
 a list end. Ceiling: **147478 tokens at 8.30 tok/s**.
+
+## `ista-serving-pick`
+
+Flagged to the coordinator as a planning defect: this block asked the
+runner to choose between configs. Held with the data on hand; no
+values written by the runner. The coordinator later moved
+`ista-nmax-deep` ahead of this block, since the pick needs that
+block's numbers.
+
+## `ista-nmax-deep`
+
+Same build, f16 KV, `--parallel 1`, fixed `-c 122880` for every cell
+(fits the heaviest cell, `n4`, with about 1.4 GB under the 25000
+limit). One 256-token completion per cell at depth 98338 (filler text
+plus "Write a Python function that parses ISO dates."), temperature 0.
+Logs: `results/server-ista-nmax-deep-<cell>.log`.
+
+| cell | decode tok/s | draft proposed | draft accepted | acceptance | wired (MB) |
+| --- | --- | --- | --- | --- | --- |
+| `none` | 9.50 | — | — | — | 21233 |
+| `n1` | 9.03 | 137 | 118 | 86.1% | 22954 |
+| `n2` | 8.32 | 198 | 156 | 78.8% | 23110 |
+| `n3` | 7.89 | 245 | 173 | 70.6% | 23231 |
+| `n4` | 7.00 | 293 | 181 | 61.8% | 23339 |
+
+The `none` cell's prompt was served from cache (`prompt_n` 13, not
+98601): the `n1`-`n4` cells each ran the first request against a fresh
+server, so their `prompt_n` was the full 98601; `none`'s first attempt
+with the same filler text and no trailing instruction produced an
+empty completion (EOS at `predicted_n` 1) and was re-sent with the
+instruction appended, which then hit the server's cache from the
+earlier attempt. All five cells reached the same depth.
+
+Acceptance at this depth: 86.1% (`n1`) down to 61.8% (`n4`), close to
+the shallow block's 89.6% to 64.4% range and far from the 1.000 the
+coordinator's research-run-3 log showed for `n3`. Decode speed falls
+past `none` at every step here too, the same shape as the shallow
+block. No swap growth on any cell.
