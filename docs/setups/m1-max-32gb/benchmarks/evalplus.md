@@ -12,7 +12,9 @@ type its config serves.
 <!-- gen:evalplus-table:start -->
 | model | mode | pass@1 base | pass@1 plus | empty | completion |
 |---|---|--:|--:|--:|--:|
-| [Qwen3.8-27B](./qwen3.8-27b.md) | effort medium | 0.982 | 0.939 | 0/164 | 100% |
+| [Qwen3.8-27B (MLX 4-bit, unquantized KV)](./qwen3.8-27b.md) | effort medium | 0.982 | 0.939 | 0/164 | 100% |
+| [Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV)](./qwen3.8-27b.md) | effort medium | 0.976 | 0.945 | 1/164 | 99% |
+| [Qwen3.8-27B (GGUF AD-IQ3_S, AtomicChat, f16 KV)](./qwen3.8-27b.md) | effort medium | 0.988 | 0.927 | 0/164 | 100% |
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | thinking on | 0.939 | 0.921 | 5/164 | 97% |
 | [Qwen3.6-35B-A3B (GGUF UD-Q4_K_XL, q8_0 KV)](./qwen3.6-35b-a3b.md) | thinking off | 0.951 | 0.915 | 0/164 | 100% |
 | [Ternary-Bonsai-27B (fork q4+bias)](./bonsai-27b.md) | thinking on | 0.927 | 0.890 | 4/164 | 98% |
