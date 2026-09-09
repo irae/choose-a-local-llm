@@ -193,6 +193,12 @@ included. "Max ctx" is the context window the harness had for the run.
 | Ternary Bonsai-27B | blind | GGUF⁴, q4 KV | high | 64k | **12.5/100** (raw 60.5) | 1/8 libraries; typoed the repo path, self-scoped to chalk; a penalized retry is pending |
 | Ternary Bonsai-27B | guided | GGUF⁴, f16 KV, no drafter | high | 131k | **12.5/100** (raw 36) | complete, 1/8 libraries; 376 tool calls and 74 tool errors at a 127k peak context |
 
+The AtomicChat AD-IQ3_S build has no row here. Its blind run ended on a
+repetition loop, five identical searches of a directory that held
+nothing it wanted, with three of eight libraries done. A run that ends
+that way is invalid and never scores, so the build has an EvalPlus
+score and no agent score.
+
 ⏳ Pending a re-run, low priority. Every Qwen3.6 agent score ran on a
 harness window this machine no longer serves: at wired 24000 the model
 tops out at `-c 40960`, and these runs had 98K and 120K. The depth and

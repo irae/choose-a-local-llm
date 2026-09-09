@@ -30,10 +30,10 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
   0.988 base on the AtomicChat 3-bit build and 0.945 plus on the ISTA
   3-bit build, both at 100% completion. The model to send hard problems
   to.
-- **llama at f16 KV holds 15 tok/s to 49K**, the largest context this
-  machine loads for it, at the MLX speed with almost twice the MLX
-  window. MLX holds 14 to 17 tok/s across its whole window and OOMs
-  between 28K and 30K.
+- **llama at f16 KV holds 13.7 tok/s to 65.5K on the 4-bit build, and
+  9.7 tok/s to 114.7K on the ISTA 3-bit build.** Both beat the MLX
+  window by a wide margin. MLX holds 14 to 17 tok/s across its whole
+  window and OOMs between 28K and 30K.
 - Weak point: the slowest model on this hardware (19.7 tok/s ceiling),
   with poor prompt processing (~123 tok/s).
 
@@ -90,7 +90,7 @@ llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
   --jinja --port 8081
 ```
 
-**#5 — Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium.** A second 3-bit build of the same model, revision `ca10ebc`. Measured 2026-09-08 at wired limit 25000. Its sweep reached 98338 at 10.3 tok/s and never hit a stop condition, so that depth is where the sweep ended and not a ceiling this machine refused to pass. `n-max 3` is this build's own value, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.988/0.927, no empty completions, the best base score of any local build here and its own score, not a carried one. Its Mendel run is pending.
+**#5 — Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium.** A second 3-bit build of the same model, revision `ca10ebc`. Measured 2026-09-08 at wired limit 25000. Its sweep reached 98338 at 10.3 tok/s and never hit a stop condition, so that depth is where the sweep ended and not a ceiling this machine refused to pass. `n-max 3` is this build's own value, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.988/0.927, no empty completions, the best base score of any local build here and its own score, not a carried one. Its Mendel blind run is invalid: it ended on a repetition loop after five identical searches, with three of eight libraries done, so this build has no agent score.
 
 ```bash
 llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \
@@ -105,18 +105,35 @@ llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \
 ## Model details and findings
 
 **The window decides whether it finishes engineering tasks.** The
-Mendel blind task needs about 46K of context. The GGUF at f16 holds 49K
-at 15 tok/s and completed it: 87 of 100, 10 commits in 129 minutes, peak
-context 45,705 of the 49,152 window, no loop; points went on a
-lockfile-only install and on commit craft. It is the highest valid blind
-score of any local model here; the next is Qwen3.6 GGUF at 63. The MLX
-build holds 26K at the same speed, and every run on it was partial or
-invalid: blind at effort medium 80 partial, blind at low 67.5 partial,
-guided at low 34 with three server crashes, then a retry invalid after
-three attempts, two of them Metal OOM crashes when the context grew past
-the 26,624-token window. The llama row is the daily-driver candidate for
-hard problems; its own EvalPlus score is pending, so its cell carries
-the MLX score. The MLX row stays the low-memory option.
+Mendel blind task needs about 46K of context. The 4-bit GGUF at f16
+completed it: 87 of 100, 10 commits in 129 minutes, peak context 45,705
+of a 49,152 window, no loop; points went on a lockfile-only install and
+on commit craft. It is the highest valid blind score of any local model
+here; the next is Qwen3.6 GGUF at 63. The MLX build holds 26K at the
+same speed, and every run on it was partial or invalid: blind at effort
+medium 80 partial, blind at low 67.5 partial, guided at low 34 with
+three server crashes, then a retry invalid after three attempts, two of
+them Metal OOM crashes when the context grew past the 26,624-token
+window. The MLX row stays the low-memory option.
+
+**The 87 has not been reproduced.** That row ran with a 16384-token
+harness reserve. Re-run on 2026-09-08 at the 8192 reserve every row
+uses now, on a 65,536 window, the same build scored 76 and failed trap
+A. Both rows stand, because the reserve and the window differ, and
+neither is a repeat of the other.
+
+**Three bits look free on this hardware, on one comparison.** The ISTA
+3-bit build scored 76.5 against that 76, failed trap A in the same
+shape, and reached 114.7K of clean context against 65.5K. The second
+3-bit build, AtomicChat, has the best EvalPlus base of any local config
+here and no agent score at all: its blind run ended on a repetition
+loop, five identical searches of a directory that held nothing it
+wanted, three of eight libraries done. A run that ends that way is
+invalid and never scores.
+
+**Every Qwen3.8 row here ran at effort medium**, which is the setting
+this model is no longer tested at. Nothing above is a measurement of
+the model at its own default.
 
 **The equilibrium moved to llama at f16 KV.** At q8_0 KV llama crossed
 the 8 tok/s floor at about 19K, so MLX won on usable speed. At f16 KV

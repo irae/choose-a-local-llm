@@ -42,6 +42,8 @@ the model did; they are not reproducible on this machine today.
 | model | serving | score | worst defect |
 |---|---|--:|---|
 | [qwen3.8-27b](../reports/qwen3.8-27b.md) | llama-server | **87/100** | minor |
+| qwen3.8-27b (ISTA IQ3_S-mtp) | llama-server | **76.5/100** | critical |
+| qwen3.8-27b (reserve 8192) | llama-server | **76/100** | critical |
 | [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **63/100** | critical |
 | [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **47.5/100** | critical |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **37.5/100** (partial) | medium |
@@ -114,4 +116,5 @@ same frozen prompt; a blind-guided pair can land at different times.
 | [Gemma-4-12B (llama.cpp, off)](../reports/gemma-4-12b-it.md) | pi | **37.5/100** (partial) |
 | [bonsai-prism](../reports/bonsai-27b.md) | pi | **31.5/100** (partial) |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **12.5/100** (partial) |
+| bonsai-prism (f16 KV) | pi | **12.5/100** (partial) |
 <!-- gen:mendel-guided:end -->
