@@ -164,10 +164,15 @@ Step 4. Same shape as `ista-nmax-shallow`, but at the working depth of
 the config `ista-serving-pick` chose, not at 4K. Cells `n1` to `n4`,
 skipping `none` if the pick has no drafter.
 
-This exists because a shallow optimum need not hold at depth:
-acceptance changes with context, and the one sweep of 2026-09-08 ran at
-`-c 4096` and was never checked deeper. If it changes the `n-max`,
-update `ista_serving` and say so in one line.
+**Run every cell: `none`, `n1`, `n2`, `n3`, `n4`.** Do not drop cells on
+the shallow table's ranking. This build's own server log from research
+run 3 shows draft acceptance reaching **1.000 at mean draft length
+3.94** at depth, against 68.4% for `n3` at 4K. A cold short prompt is
+the drafter's worst case; the agent task never runs there, so the deep
+numbers are the only ones that decide.
+
+**This block reports a table and no pick.** `ista-serving-pick` is
+where the choice is made, by the coordinator.
 
 ## `ista-smoke-xhigh`
 

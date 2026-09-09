@@ -74,6 +74,28 @@ the agent into a script and wastes the run: run 11 measured an 82K
 clean depth in its first block and then, by the runbook's own words,
 ran the Mendel pair on a 49152 window.
 
+## A runner measures, a coordinator decides
+
+**No block asks a runner for a pick, a verdict, or a recommendation.**
+A block produces a table and the conditions it was measured under. The
+choice between configurations is a separate task, taken by the
+coordinator, against the goals of the project. A runbook that writes
+"pick the best" has moved a decision to the one agent that cannot see
+why it is being made.
+
+**A coordinator never adopts a runner's conclusion as a finding.** Take
+its numbers; re-derive the meaning. A runner sees one block, not the
+run, not the model's history, and not what the project is for. It will
+report a real measurement with a wrong reading attached, and the
+reading is the part that reaches the site.
+
+This is written from a failure on 2026-09-09. A shallow sweep at 4K
+reported "the drafter never pays" and the coordinator repeated it,
+edited a method page to match, and cut cells from a later block, all
+within minutes. The same build's own server log already showed draft
+acceptance reaching 1.000 at depth, where the agent task actually runs.
+The measurement was right and every conclusion drawn from it was wrong.
+
 ## The thinking level is chosen, never inherited
 
 **Qwen3.8-27B is never run at effort medium. Ever.** (Owner rule,

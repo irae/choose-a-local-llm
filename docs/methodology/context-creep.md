@@ -187,18 +187,24 @@ answer.
 1. **Shallow drafter sweep.** One short completion per cell at a
    shallow depth: no drafter, then the drafter at each `n-max` worth
    trying. Record decode speed, draft acceptance, mean draft length,
-   **and wired memory at load**. Pick the `n-max` on speed with
-   acceptance. Minutes, not hours. **Memory is not flat across
+   **and wired memory at load**. Report the table; pick nothing.
+   Minutes, not hours. **Memory is not flat across
    `n-max`**, measured 2026-09-09 on one dense 27B model at 3 bits:
    turning the drafter on cost about 1.9 GB, and each extra draft token
    cost a further 150 to 160 MB. So the head is the large fixed cost and
    the draft context grows with `n-max`, and both come out of the KV
    budget. Record the wired column per cell; do not assume the shape.
-   **Sweep down as well as up.** On that build decode fell at every
-   step past `n1`, because per-token acceptance dropped faster than
-   draft length grew: 89.6% at `n1`, 68.4% at `n3`, 64.4% at `n4`. An
-   earlier sweep started at `n3` and only went up, so it never saw that
-   the optimum was below its own starting point.
+   **Sweep down as well as up**, because the optimum can sit below the
+   value a previous run chose.
+   **A shallow sweep does not pick anything.** It bounds the cells the
+   deep sweep runs, and nothing else. On that same build, acceptance at
+   4K fell from 89.6% at `n1` to 64.4% at `n4`, which reads as a
+   drafter that never pays. At depth the same build's server log shows
+   acceptance climbing to **1.000 at mean draft length 3.94** and
+   holding there: the model becomes predictable as context grows, so
+   the longer draft turns free. A cold short prompt is the drafter's
+   worst case and the agent task never runs there. **Carry every cell
+   into step 4 and decide from the deep numbers.**
 2. **Full creep with the drafter**, at the `n-max` step 1 picked. This
    gives the boundary, the depth curve, and the wired figure step 3
    needs.
