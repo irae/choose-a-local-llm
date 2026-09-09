@@ -310,7 +310,9 @@ wired 25000. Old published ceiling (49152) was measured at wired
 | `-c` | result | tok/s | draft accept |
 | --- | --- | --: | --: |
 | 49152 | served, 4096 tok, `stop_type limit` | 20.32 | 3070/3075 (99.8%) |
-| 57344 | testing | - | - |
+| 57344 | served, 4096 tok, `stop_type limit` | 20.37 | 3070/3075 (99.8%) |
+| 65536 | testing | - | - |
 
 Files: `results/server-qwen38-gguf-blind-medium-c49152.log`,
-`results/server-qwen38-gguf-blind-medium-c57344.log`. — running.
+`results/server-qwen38-gguf-blind-medium-c57344.log`,
+`results/server-qwen38-gguf-blind-medium-c65536.log`. — running.
