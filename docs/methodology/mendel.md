@@ -39,7 +39,12 @@ base commit, thinking as the config will run, a 25-minute cap, unscored.
 The tool is `benchmarks/mendel-smoke.sh <pi-model-id> <thinking-level>`.
 It answers one question: can this config do agent work at all. Pass is
 one commit with a clean working tree, no repetition loop, inside the
-cap. A fail means no full run for that config; the smoke line goes in
+cap.
+
+**The thinking level is part of the config, so each level gets its own
+smoke.** A config scored at two levels needs two smokes, not one. A
+smoke at one level says nothing about another: the level changes how
+much the model thinks, which is what the smoke measures. A fail means no full run for that config; the smoke line goes in
 the results and the config is dropped or sent back to research.
 
 It gates lists the way the EvalPlus smoke does: several candidates get

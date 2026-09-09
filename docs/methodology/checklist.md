@@ -110,6 +110,14 @@ the block names at the point it is needed.
    with `lms server start` if it is not. `lms load` does not start it
    and `lms ps` does not reveal it. Never trust JIT
    ([server lore](./server-lore.md)).
+5b. **Before any creep, pull the sweep tool and record its hash**
+   ([context creep](./context-creep.md), "Install"). This belongs to
+   the creep, not to the runbook: **a runbook never carries a
+   `tool-check` block.** Pull once before the session's first creep,
+   record `git -C ~/code/local-llm-eval-tools rev-parse --short HEAD`
+   in `state.md`, and write that hash beside every sweep result of the
+   session. Do not pull again between creeps of one session; a tool
+   that changes mid-session makes its own rows non-comparable.
 6. **Start the run watcher before the block, read exit 42, stop it
    after.** A sweep watches itself; a scoring run has exactly one
    watcher. For every scoring run (EvalPlus, Mendel, polyglot) start

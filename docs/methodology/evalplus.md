@@ -34,6 +34,21 @@ score as failures (up to 38% of scores lost before this was found).
 4. Never reuse a thinking-on budget for a thinking-off pass, or across
    models.
 
+## Which serving config to score
+
+**The fastest at shallow depth, always.** The problems are short and
+nothing here reaches depth, so a larger window buys nothing and speed
+is the whole cost of the gate. Where a model has a drafter, that is
+normally the drafter on, at the `n-max` its shallow sweep picked
+([context creep](./context-creep.md), "The order for a model with a
+drafter"). An agent run picks differently, on depth; the two tests do
+not have to serve the same config, and each row says which it used.
+
+A non-converging calibration is this gate's early warning. It costs ten
+problems to see, and a full run costs hours, so read it before starting
+one: two `length` stops in a calibration have preceded a run that spent
+its budget and returned empties.
+
 ## Steps
 
 1. Calibrate (above). Calibration files: `benchmarks/calibration-*.json`.

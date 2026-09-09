@@ -178,6 +178,43 @@ server dead. If a config prefills that slowly, raise `STALL_S` for it,
 and record the value you used beside the sweep — a ceiling measured with
 a changed `STALL_S` must say so.
 
+## The order for a model with a drafter
+
+Four steps, in this order. Two sweeps and two creeps answer the whole
+serving question for one build, and every later block inherits the
+answer.
+
+1. **Shallow drafter sweep.** One short completion per cell at a
+   shallow depth: no drafter, then the drafter at each `n-max` worth
+   trying. Record decode speed, draft acceptance, mean draft length,
+   **and wired memory at load**. Pick the `n-max` on speed with
+   acceptance. Minutes, not hours. The wired column also settles
+   whether memory moves with `n-max` at all: the drafter's cost is its
+   head plus its own draft context, both paid once at load, so expect
+   it flat and record it rather than assuming it.
+2. **Full creep with the drafter**, at the `n-max` step 1 picked. This
+   gives the boundary, the depth curve, and the wired figure step 3
+   needs.
+3. **Full creep without the drafter.** Estimate its `-c` first:
+   the memory the drafter frees, divided by the model's KV bytes per
+   token, is how many more tokens fit. **Probe that value once, then
+   bisect against the largest `-c` already known to serve.** Two rungs
+   is typical. Climbing in 8192 steps from a known-good value wastes an
+   hour to learn what arithmetic already said.
+4. **Deep `n-max` sweep**, at the working depth of whichever config
+   won. A shallow optimum does not carry to depth: acceptance changes
+   with context, and one sweep of 2026-09-08 ran at `-c 4096` and its
+   answer was never checked deeper.
+
+**Picking the config a block will serve.** For a short-prompt test such
+as [EvalPlus](./evalplus.md), take the fastest at shallow depth; the
+work never reaches depth, so window is irrelevant and speed is the
+whole cost. For an agent run, take the faster config at the depth the
+task actually uses, **unless the slower one removes a compaction**.
+Window only pays when it removes one: a compaction costs a
+summarisation turn and a re-read, minutes, while a few percent of
+decode costs seconds per turn.
+
 ## Steps
 
 0. The cache type is already picked ([KV cache pick](./kv-cache-pick.md)).
