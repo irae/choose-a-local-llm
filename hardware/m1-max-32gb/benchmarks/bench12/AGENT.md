@@ -412,6 +412,29 @@ row: each block records its build, its revision and its flags in
 `results.md` and in the row's config note, and the coordinator settles
 the identity when it publishes.
 
+**Both builds serve with their MTP drafter, and each needs its own
+`n-max` before its Mendel block.** The drafter never changes what the
+model writes at temperature 0, so it costs neither build an EvalPlus
+arm ([common rules](../../../../docs/methodology/common-rules.md),
+rule 11). It does set decode speed, and Mendel ends a run at 300
+minutes, so the wrong `n-max` turns a finished row into a partial.
+
+The control row's sweep peaked at `n-max 3`, but that sweep belongs to
+a different build. The head ships inside each build, so its acceptance
+belongs to that build. Both research creeps already logged theirs:
+
+| build | draft acceptance | mean len |
+| --- | --: | --: |
+| ista gsq-iq3s | 0.78 on the first long task, then 0.94 to 1.00 | 3.33 to 3.94 |
+| atomicchat ad-iq3s | 0.78 on the first long task, then 1.00 | 3.33 to 4.00 |
+
+Both sit near full acceptance at a mean length close to 4, so the only
+useful direction is **upward**. Sweep two points above the creep's
+value, take the fastest, and stop. Do not sweep downward: at this
+acceptance a smaller `n-max` can only cost speed. Record the sweep and
+the value chosen in `results.md`, and put the value in the row's config
+note.
+
 **Both builds serve above 120K, so llama.cpp issue 27756 applies**: a
 silent end-of-sequence past about 130K looks exactly like a finished
 turn. Before each Mendel block starts, run one long-prompt completion
@@ -424,7 +447,9 @@ the window is too deep: step the window down by 8192 and check again.
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
 | files | fixed | `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, `--no-mmproj` | research run 3 |
-| KV type, drafter | fixed | f16, built-in MTP head | research run 3 |
+| KV type | fixed | f16 | research run 3 |
+| drafter | fixed | `--spec-type draft-mtp`, the head inside the `-mtp` file | research run 3 |
+| `n-max` | derived | `<planning>` the value its creep ran, whose log shows mean draft length reaching 4.00 | its own sweep, below |
 | thinking | fixed | effort `medium`, the control row's level | run 3, one level per candidate |
 | `-c` | derived | `<planning>` 131072, the ladder cleared it | ladder at this run's limit |
 | window | derived | `<planning>` 114688, clean depth 114718 | clean depth at the ladder's `-c` |
@@ -438,7 +463,9 @@ empty and wall in `results.md`.
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
 | files | fixed | `AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, `--no-mmproj` | research run 3 |
-| KV type, drafter | fixed | f16, MTP head in the build | research run 3 |
+| KV type | fixed | f16 | research run 3 |
+| drafter | fixed | `--spec-type draft-mtp`, the head inside the build | research run 3 |
+| `n-max` | derived | `<planning>` the value its creep ran, whose log shows mean draft length reaching 4.00 | its own sweep, below |
 | thinking | fixed | effort `medium`, the control row's level | run 3, one level per candidate |
 | `-c` | derived | `<planning>` 106496, the ladder cleared it | ladder at this run's limit |
 | window | derived | `<planning>` 98304, clean depth 98338 | clean depth at the ladder's `-c` |

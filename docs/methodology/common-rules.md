@@ -61,3 +61,22 @@ timings, prompt-cache reuse, the KV type decision) live in
 9. **After tests, check for leftovers and clean up** (the checklist has
    the commands). Do not delete model files or tools early — keep
    variants for debugging until many successes.
+11. **The drafter is a speed decision, never a quality one, and it is
+   per build.** A speculative decoder accepts a draft token only when
+   it matches the token the target model would have picked, so at
+   temperature 0 the served text is the text the model produces without
+   a drafter. Two runs can still differ by a token on a near tie,
+   because a different batch shape changes the order of the float
+   reductions. So a drafter setting never earns its own
+   [EvalPlus](./evalplus.md) arm and never earns a second agent run for
+   quality. What it changes is decode speed, memory, and therefore the
+   depth the model reaches. Decide it from a
+   [creep](./context-creep.md) and a short `n-max` sweep, per build:
+   the head ships inside the build, so its acceptance rate belongs to
+   that build and never carries over from another build of the same
+   model. **A creep's window is only valid for the drafter setting it
+   ran with.** Record that setting beside the depth, and serve the same
+   setting in every block that uses the window. The server prints
+   `draft acceptance` and `mean len` per task, so read those before
+   sweeping: at an acceptance near 1.00 the only useful direction is a
+   larger `n-max`, and a smaller one can only cost speed.
