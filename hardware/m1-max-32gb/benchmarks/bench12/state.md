@@ -458,4 +458,29 @@ Served under fresh alias `qwen3.8-27b-atomicchat`, `-c 106496`, window
 passed, no branch collision, no invalid attempt this time (the loop
 guard's empty-output bug is already fixed from the ISTA block).
 Watcher and the fixed guard running.
-`results/server-qwen38-atomicchat-mendel.log`. — running.
+`results/server-qwen38-atomicchat-mendel.log`.
+
+**Invalid: `end_reason repetition_loop`.** Not a `qwen38-nodrafter-evalplus`-style
+gate drop, and not the live guard's own kind of stop — pi's own
+built-in repetition detector fired for real: 5 identical `bash` tool
+calls in a row (`grep -rn "rimraf\|require('tmp')\|require(\"tmp\")"
+test/`, a directory holding neither), first at 11:03:49, detector
+fired at 11:04:32. `AGENT.md`'s own essentials rule: **a run that ends
+on `repetition_loop` is invalid, with the repeated unit and the count
+recorded, no retry this run.**
+
+A scoring subagent, working from `mendel-benchmark`'s own `PLAN.md`
+only (it does not carry this run's stricter invalid-run rule), scored
+it anyway as a normal partial: 74 raw, 37.5 capped (3/8: uuid, xtend,
+urlsafe-base64 done; rimraf near-done but the root `package.json`
+still declares it, so it doesn't count; glob, chalk, tmp, shasum
+untouched). That score is committed on `mendel-benchmark`'s
+`benchmark` branch (`134b1d6`) as real data, left as-is — but **this
+run's own record treats the row as invalid, not partial-scored**,
+per `AGENT.md`. The loop-check.py ratio (0.62, "ok") missed this
+collapse entirely — a 5-call repeat sits well inside its 60-line
+window alongside 189 other calls, diluted below the 0.10 threshold.
+That is a real detector-sensitivity gap, separate from the empty-output
+bug found earlier, filed for the coordinator, not fixed mid-run.
+
+No retry this run (`AGENT.md`'s own rule for a `repetition_loop` end).
