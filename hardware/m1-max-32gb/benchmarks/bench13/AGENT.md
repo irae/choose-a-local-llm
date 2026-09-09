@@ -183,11 +183,14 @@ peak the last agent run of this build reached. One measurement per
 cell at that depth, not a full creep.
 
 **Run every cell: `none`, `n1`, `n2`, `n3`, `n4`.** Do not drop cells on
-the shallow table's ranking. This build's own server log from research
-run 3 shows draft acceptance reaching **1.000 at mean draft length
-3.94** at depth, against 68.4% for `n3` at 4K. A cold short prompt is
-the drafter's worst case; the agent task never runs there, so the deep
-numbers are the only ones that decide.
+the shallow table's ranking. The shallow numbers are measured where a
+drafter does worst, and the agent task never runs there, so only the
+deep numbers decide.
+
+**Every cell serves a fresh server and a full prefill.** A cell whose
+prompt is answered from a previous cell's cache is not comparable with
+the others and is re-run, not reported. Check `prompt_n` in the server
+log: it must be the full prompt, not a handful of tokens.
 
 **This block reports a table and no pick.** `ista-serving-pick` is
 where the choice is made, by the coordinator.

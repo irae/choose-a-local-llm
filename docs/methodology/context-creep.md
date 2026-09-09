@@ -197,14 +197,17 @@ answer.
    **Sweep down as well as up**, because the optimum can sit below the
    value a previous run chose.
    **A shallow sweep does not pick anything.** It bounds the cells the
-   deep sweep runs, and nothing else. On that same build, acceptance at
-   4K fell from 89.6% at `n1` to 64.4% at `n4`, which reads as a
-   drafter that never pays. At depth the same build's server log shows
-   acceptance climbing to **1.000 at mean draft length 3.94** and
-   holding there: the model becomes predictable as context grows, so
-   the longer draft turns free. A cold short prompt is the drafter's
-   worst case and the agent task never runs there. **Carry every cell
-   into step 4 and decide from the deep numbers.**
+   deep sweep runs, and nothing else. Carry every cell into step 4 and
+   decide from the deep numbers.
+   **Read `draft acceptance` in a server log against its own sample
+   size.** That line reports one task's accepted-over-generated. A step
+   that generated 47 tokens and accepted all 47 prints 1.000 and means
+   almost nothing; a task that generated 1536 and accepted 1195 prints
+   0.778 and means a great deal. Acceptance measured on 2026-09-09 at
+   depth 98338 ran 86.1% at `n1` down to 61.8% at `n4`, within a few
+   points of the same build's shallow figures. **Acceptance did not
+   improve with depth on that model**, and a claim that it did came
+   from reading a handful of 47-token steps as if they were the curve.
 2. **Full creep with the drafter**, at the `n-max` step 1 picked. This
    gives the boundary, the depth curve, and the wired figure step 3
    needs.
