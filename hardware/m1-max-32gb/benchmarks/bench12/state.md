@@ -399,3 +399,31 @@ measurement says n-max 3 is still correct. No window re-check needed
 (the served n-max does not change from what the creeps already ran
 at). `qwen38-ista-mendel` and `qwen38-atomicchat-mendel` can proceed
 at n-max 3, windows 114688 and 98304 respectively, as already planned.
+
+## `qwen38-ista-mendel`
+
+Long-prompt completion check (issue 27756 guard) at window 114688:
+~114001-token prompt (tokenized via the server's `/tokenize`
+endpoint), real completion request. **PASS** — 27 tokens, coherent
+one-sentence summary of the repeated pangram, `stop_type eos` (normal
+finish, not the failure signature of `tokens_predicted=1` with empty
+content).
+
+Served under a fresh pi alias, `qwen3.8-27b-ista` (`qwen3.8-27b`'s own
+Mendel branch was already used by the control re-run above), `-c
+131072`, window 114688, n-max 3.
+
+**Bug in my own live loop guard, self-inflicted, one invalid row.**
+The guard's kill condition (`grep -qv " ok$"` on `loop-check.py`'s
+output) treated empty output as "not ok" — but `loop-check.py` prints
+nothing when the events file is too small for its 60-line window.
+First attempt (`qwen3.8-27b-ista`) got killed within seconds of
+starting, zero commits, invalid per the Mendel invalid-run rule.
+Left that worktree/branch/session alone (no cleanup mid-run). Fixed
+the guard (`[ -n "$out" ] && echo "$out" | grep -qv " ok$"`, only acts
+on real, non-empty non-ok output) and confirmed the fix against the
+dead run's own events file before retrying. Retried immediately under
+another fresh alias, `qwen3.8-27b-ista2` (server still up, no reload
+needed) — new branch `qwen3.8-27b-ista2-medium-issue-13`, no
+collision. Watcher and the fixed guard running.
+— running.
