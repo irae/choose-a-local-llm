@@ -47,6 +47,18 @@ handing-over section.
   32768` is the coordinator's own call, flagged as unmeasured on this
   build; the first `ista-evalplus-low` request confirms it works
   before the full set.
+- `ista-smoke-xhigh` done: pass, 182s, one commit, clean tree, no
+  loop. Full line in `results.md`.
+- Long-prompt completion check done (mandatory, `ista_window` above
+  120K): real content at depth 144510, not a silent EOS. Safe to run.
+- Flagged the pi model id before `ista-mendel-xhigh`: `AGENT.md` named
+  the bare `qwen3.8-27b`, which is a different, non-ISTA build in
+  `~/.pi/agent/models.json` and would have made the row
+  indistinguishable from the 4-bit control's. Coordinator corrected
+  the runbook (`758e3cd`) to `qwen3.8-27b-ista`. Merged.
+- `ista-mendel-xhigh` running: branch `qwen3.8-27b-ista-xhigh-issue-13`,
+  no collision. `MENDEL_CONTEXT_WINDOW=147456` pinned. Watcher started
+  (`RUNWATCH_MEM_LOG` `/tmp/run13-mendel-xhigh-mem.log`).
 
 ## Values this run sets
 

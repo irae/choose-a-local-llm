@@ -128,3 +128,50 @@ from a short generation (tens of tokens) is not comparable with one
 from a substantial generation. Decode speed falls past `none` at every
 step here too, the same shape as the shallow block. No swap growth on
 any cell.
+
+## Coordinator's serving pick
+
+`ista_serving`: no drafter, `-c 163840`. `ista_window`: 147456. No
+drafter beats every drafter cell on both speed and window at every
+setting tried, so there is no trade to weigh.
+
+## `ista-smoke-xhigh`
+
+Served `ista_serving` (no drafter, `-c 163840`, f16 KV). Pi model id
+`qwen3.8-27b` for the smoke, since a smoke is unscored and produces no
+row (the coordinator confirmed this stands after the id question
+below). `benchmarks/mendel-smoke.sh qwen3.8-27b xhigh`, cap 1500s.
+
+```
+SMOKE-MENDEL model=qwen3.8-27b level=xhigh task=xtend window=default calls=10 distinct=10 longest_run=1 loop=ok:0.73 compactions=0 splits=0 peak=5536 commits=1 clean=yes end=stop wall_s=182 verdict=pass
+```
+
+Pass: one commit, clean tree, no loop, 182s inside the cap.
+
+## `ista-mendel-xhigh`
+
+Pi model id: `qwen3.8-27b-ista`, not the bare `qwen3.8-27b`. The
+runbook named the bare id; flagged to the coordinator before starting
+because `run-worker.sh` derives the branch name and the row's `model`
+field from it, and the bare id would have made this row
+indistinguishable from the 4-bit control's rows. The coordinator
+corrected the runbook (`758e3cd`) and confirmed `qwen3.8-27b-ista`.
+That entry's `contextWindow` (114688) is stale for this build; no
+other field needed correcting, and `MENDEL_CONTEXT_WINDOW` overrides
+`contextWindow` at run time, never the entry itself.
+
+**Long-prompt completion check** (mandatory, `ista_window` above
+120K): a real request at prompt depth 144510 tokens on `ista_serving`
+returned real content (292 chars, `stop_type` "limit"), not a silent
+empty completion. Safe to run Mendel at this window.
+
+```
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=147456 ./run-worker.sh qwen3.8-27b-ista pi blind xhigh
+```
+
+Branch `qwen3.8-27b-ista-xhigh-issue-13`, no collision with run 12's
+`qwen3.8-27b-ista-medium-issue-13` or
+`qwen3.8-27b-ista2-medium-issue-13`. Worker confirmed `contextWindow
+147456 pinned on provider llama`. Run in progress; watcher running
+(`RUNWATCH_OUTPUT`
+`mendel-benchmark/scratchpad/benchmark/runs/qwen3.8-27b-ista-xhigh-blind-events.jsonl`).
