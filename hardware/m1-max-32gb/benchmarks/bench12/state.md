@@ -312,9 +312,16 @@ wired 25000. Old published ceiling (49152) was measured at wired
 | 49152 | served, 4096 tok, `stop_type limit` | 20.32 | 3070/3075 (99.8%) |
 | 57344 | served, 4096 tok, `stop_type limit` | 20.37 | 3070/3075 (99.8%) |
 | 65536 | served, 4096 tok, `stop_type limit` | 20.38 | 3070/3075 (99.8%) |
-| 73728 | testing | - | - |
+| 73728 | served, 4096 tok, `stop_type limit` | 20.40 | 3070/3075 (99.8%) |
+| 81920 | **OOM**, `kIOGPUCommandBufferCallbackErrorOutOfMemory`, "model loaded" printed anyway, every completion 500 `Compute error` | - | - |
+
+**Ladder value: `-c 73728`.** Nearly identical tok/s (20.32-20.40) and
+draft acceptance (99.8%) at every served step — decode speed is flat
+across this whole range, so the ladder is purely a memory boundary
+here. Killed the 81920 server, restarted clean at 73728. Creep running
+now at that `-c`, `DEPTH_LIST` capped at 73728.
 
 Files: `results/server-qwen38-gguf-blind-medium-c49152.log`,
-`results/server-qwen38-gguf-blind-medium-c57344.log`,
-`results/server-qwen38-gguf-blind-medium-c65536.log`,
-`results/server-qwen38-gguf-blind-medium-c73728.log`. — running.
+`-c57344.log`, `-c65536.log`, `-c73728.log`, `-c81920.log`,
+`-final.log` (the restart), `results/creep-qwen38-gguf-blind-medium.tsv`.
+— running.
