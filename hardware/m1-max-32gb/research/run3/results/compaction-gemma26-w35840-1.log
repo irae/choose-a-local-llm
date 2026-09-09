@@ -1,0 +1,9 @@
+mendel-smoke: model gemma-4-26b-a4b, thinking off, task xtend-wide, cap 2700s
+mendel-smoke: everything lands in /Users/irae/.local/share/choose-a-local-llm/evidence/run3-compaction/gemma26-w35840-1
+mendel-smoke: fixture ready (xtend-wide, 12 files, 102315 bytes under lib), one commit, clean tree
+mendel-smoke: compaction settings {"enabled": true, "reserveTokens": 8192}
+mendel-smoke: contextWindow 35840 pinned on provider llama
+mendel-smoke: pi config pinned at /Users/irae/.local/share/choose-a-local-llm/evidence/run3-compaction/gemma26-w35840-1/pi-agent
+mendel-smoke: pi exited 0 after 168s, session /Users/irae/.local/share/choose-a-local-llm/evidence/run3-compaction/gemma26-w35840-1/session/2026-09-08T07-16-43-644Z_01a07fe0-55fb-7bed-a27c-0b738686d270.jsonl
+mendel-smoke: the summaries pi wrote are in /Users/irae/.local/share/choose-a-local-llm/evidence/run3-compaction/gemma26-w35840-1/summaries.md
+SMOKE-MENDEL model=gemma-4-26b-a4b level=off task=xtend-wide window=35840 calls=27 distinct=27 longest_run=1 loop=ok:1.00 compactions=0 splits=1 peak=34484 commits=0 clean=no end=stop wall_s=168 verdict=fail

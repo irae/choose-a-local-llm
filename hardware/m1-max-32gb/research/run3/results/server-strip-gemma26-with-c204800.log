@@ -1,0 +1,35 @@
+0.00.083.813 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.084.008 W srv  llama_server: -----------------
+0.00.084.010 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.084.010 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.084.010 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.084.010 W srv  llama_server: -----------------
+0.00.085.622 I srv    load_model: loading model 'unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL'
+0.00.981.308 E llama_init_from_model: failed to initialize the context: Gemma4Assistant requires ctx_other to be set (this warning is normal during memory fitting)
+0.01.013.062 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model
+0.01.370.578 W load: control-looking token:     50 '<|tool_response>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.01.373.600 W load: control-looking token:    212 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.01.377.520 W load: control-looking token:      1 '<eos>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.01.381.111 W load: special_eog_ids contains '<|tool_response>', removing '</s>' token from EOG list
+0.02.846.225 I cmn          init: llama threadpool init, n_threads = 8
+0.02.901.788 I common_speculative_init_result: loading draft model '/Users/irae/.cache/huggingface/hub/models--unsloth--gemma-4-26b-a4b-it-GGUF/snapshots/c099eb48e663fd284577b04978a94ffccb261841/mtp-gemma-4-26B-A4B-it.gguf'
+0.03.254.434 W load: control-looking token:     50 '<|tool_response>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.03.257.495 W load: control-looking token:    212 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.03.265.018 W load: special_eog_ids contains '<|tool_response>', removing '</s>' token from EOG list
+0.03.312.450 W llama_kv_cache: layer   3: sharing with layer 29. k = 0x7bdef0000, v = 0x7d6ef0000
+0.03.312.471 W llama_kv_cache: layer   0: sharing with layer 28. k = 0x801ef0000, v = 0x8024f0000
+0.03.312.471 W llama_kv_cache: layer   1: sharing with layer 28. k = 0x801ef0000, v = 0x8024f0000
+0.03.312.472 W llama_kv_cache: layer   2: sharing with layer 28. k = 0x801ef0000, v = 0x8024f0000
+0.03.756.703 I srv    load_model: loaded multimodal model, '/Users/irae/.cache/huggingface/hub/models--unsloth--gemma-4-26b-a4b-it-GGUF/snapshots/c099eb48e663fd284577b04978a94ffccb261841/mmproj-BF16.gguf'
+0.03.840.667 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 204800, kv_unified = 'false'
+0.03.948.423 I srv  llama_server: model loaded
+0.03.948.430 I srv  llama_server: listening on http://127.0.0.1:8081
+0.16.175.542 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.16.175.559 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.16.451.691 I slot print_timing: id  0 | task 0 | prompt eval time =      48.81 ms /     2 tokens (   24.41 ms per token,    40.97 tokens per second)
+0.16.451.694 I slot print_timing: id  0 | task 0 |        eval time =     227.18 ms /     8 tokens (   32.45 ms per token,    30.81 tokens per second)
+0.16.451.694 I slot print_timing: id  0 | task 0 |       total time =     275.99 ms /    10 tokens
+0.16.451.694 I slot print_timing: id  0 | task 0 |    graphs reused =          3
+0.16.451.697 I slot print_timing: id  0 | task 0 | draft acceptance = 0.16667 (    2 accepted /    12 generated), mean len =  1.40
+0.16.451.715 I slot      release: id  0 | task 0 | stop processing: n_tokens = 9, truncated = 0
+0.27.394.262 I srv    operator(): operator(): cleaning up before exit...

@@ -1,0 +1,8 @@
+mendel-smoke: model qwen3.8-27b, thinking low, task xtend, cap 1500s
+mendel-smoke: everything lands in /tmp/mendel-smoke-effort-low
+mendel-smoke: fixture ready (xtend, 2 files, 310 bytes under lib), one commit, clean tree
+mendel-smoke: compaction settings {"enabled": true, "reserveTokens": 8192}
+mendel-smoke: base URL pinned on provider llama
+mendel-smoke: pi config pinned at /tmp/mendel-smoke-effort-low/pi-agent
+mendel-smoke: pi exited 0 after 91s, session /tmp/mendel-smoke-effort-low/session/2026-09-08T01-23-38-025Z_01a07e9d-11a9-7521-a104-c809e0c972b4.jsonl
+SMOKE-MENDEL model=qwen3.8-27b level=low task=xtend window=default calls=13 distinct=10 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=4050 commits=1 clean=yes end=stop wall_s=91 verdict=pass

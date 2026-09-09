@@ -1,8 +1,66 @@
 # Run 12 — Gemma-12B two-slot window, Bonsai on the fork at f16, the two promoted Qwen3.8 3-bit builds (Mac)
 
-Ready to start, 2026-09-08. The coordinator gated this run on research
-run 3 and re-ordered it. Block values marked `<planning>` are the
-planning-time snapshot and the run replaces them.
+**Part done, 2026-09-08. You are taking over mid-run.** Block values
+marked `<planning>` are the planning-time snapshot and the run replaces
+them.
+
+## Where this run stands
+
+Three blocks are finished and their evidence is on the `run12` branch.
+Do not run them again.
+
+| block | result |
+| --- | --- |
+| `tool-check` | `local-llm-eval-tools` pinned at `2344f00` |
+| `gemma12-gguf-2slot` | per-slot clean depth **81958**, creep-judged |
+| `gemma12-gguf-1slot-131072` | clean depth **114718**, `-c` boundary at 131072, HTTP 400 and not an OOM |
+
+**Start at `bonsai-fork-f16`.** Read `state.md` first: it carries the
+two-slot redo in full, including why the first reading of 8222 was a
+load ceiling and not a window.
+
+**Before your first block, merge master into this branch.** The
+coordinator says so, which the standing rule requires:
+
+```bash
+git merge origin/master
+```
+
+Master carries research run 3's results and three method rules written
+after this run started. Two of them change what you do:
+
+- `docs/methodology/mendel.md`, "Comparing two builds of one model".
+  Every Mendel block of this run puts `peak_context` and `tool_calls`
+  in the comparison table beside the score. Never match the windows of
+  two builds.
+- `docs/methodology/mendel.md`, the duplicate rule in the house rules.
+  The three Qwen3.8 Mendel blocks below all run under the harness alias
+  `qwen3.8-27b`, blind, at effort medium, which already has a row. They
+  are **not** duplicates: two are different builds and one is the
+  control re-run at the corrected reserve. Run all three.
+- `docs/methodology/status-lines.md`, the creep line. A round-robin
+  creep prefixes every step with its slot letter.
+
+## Cleanup, alongside your first block
+
+Start the first GPU block, then delete these three projector files
+while it runs. Nothing this run serves needs them: every row passes
+`--no-mmproj`.
+
+| file | size |
+| --- | --: |
+| Qwen3.8 `mmproj-f16` | 928 MB |
+| Gemma-26B `mmproj-BF16` | ~1195 MB |
+| Qwen3.6 `mmproj-F16` | 899 MB |
+
+Then inventory the model cache and report what it holds: files, sizes,
+revisions, and which ones no served row references. Delete nothing else
+this pass. Keep `unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL`; it is the
+K-quant control for the i-quant speed question.
+
+Record the deletion in `results.md`. A missing projector changes what a
+later OOM means, and `--offline` skips an uncached side-file with no
+error.
 
 You are the runner, on the Mac. Read this file, then the pages each
 block names at its start, and nothing else. Write all prose in
@@ -134,15 +192,15 @@ above it ends, and nothing in this run waits for the owner. Each name
 below is the block's mnemonic; its section is lower in this file,
 under that name, in whatever order the file keeps them.
 
-- `tool-check`
-- `gemma12-gguf-2slot`
-- `gemma12-gguf-1slot-131072`
-- `bonsai-fork-f16`
+- `tool-check` — **done**
+- `gemma12-gguf-2slot` — **done**
+- `gemma12-gguf-1slot-131072` — **done**
+- `bonsai-fork-f16` — start here
 - `qwen38-ista-evalplus`
-- `qwen38-nodrafter-evalplus`
+- `qwen38-atomicchat-evalplus`
 - `qwen38-gguf-blind-medium`
 - `qwen38-ista-mendel`
-- `qwen38-nodrafter-mendel`
+- `qwen38-atomicchat-mendel`
 - `retry-sweep`
 
 Why this order. The two Gemma-12B blocks are the window measurements
@@ -160,16 +218,19 @@ unreadable number.
 
 Research run 3 measured every Qwen3.8 3-bit candidate level with the
 control on EvalPlus and clean on the Mendel smoke, so quality did not
-separate them. Depth did. The two picks are the two deepest:
+separate them. Depth did. The two picks are the two deepest builds
+that carry both smokes:
 
 | build | clean depth | tok/s at depth | evidence |
 | --- | --: | --: | --- |
-| unsloth q3kxl, drafter dropped | over 131072, no stop | 8.58 at 131k | creep only |
 | ista iq3s-mtp | 114718 | 9.67 | both smokes pass |
 | atomicchat iq3s | 98338, no stop | 10.26 | both smokes pass |
 
-`AtomicChat/…:AD-IQ3_S` is deferred, not dropped. It keeps its two
-smokes and goes to the head of the next run.
+The unsloth build with its drafter dropped is **not** in this run. Its
+research creep reached 131098 with no stop, but that config had only a
+creep, and the strip item that produced it was meant for the served
+4-bit row, not for an untested 3-bit build. It is not a candidate and
+it gets no scoring block (owner, 2026-09-08).
 
 Two blocks are dropped at planning time, in the owner's own drop
 order: `gemma26-gguf-blind-high` first, then `qwen36-gguf-guided-high`.
@@ -372,32 +433,22 @@ Read `docs/methodology/evalplus.md`. Calibrate first, then run the
 full set against the control row's published score. Record base, plus,
 empty and wall in `results.md`.
 
-### `qwen38-nodrafter-evalplus` — unsloth UD-Q3_K_XL, drafter dropped, full EvalPlus
+### `qwen38-atomicchat-evalplus` — AtomicChat AD-IQ3_S, full EvalPlus
 
 | parameter | kind | value | source |
 | --- | --- | --- | --- |
-| files | fixed | `unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL`, `--no-mmproj` | research run 3 |
-| KV type, drafter | fixed | f16, **no `--spec-type draft-mtp`** | `strip-qwen38-nodrafter-creep` |
+| files | fixed | `AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, `--no-mmproj` | research run 3 |
+| KV type, drafter | fixed | f16, MTP head in the build | research run 3 |
 | thinking | fixed | effort `medium`, the control row's level | run 3, one level per candidate |
-| `-c` | derived | `<planning>` 131072, the ladder cleared it | ladder at this run's limit |
-| window | derived | `<planning>` 126976 | see the note below |
+| `-c` | derived | `<planning>` 106496, the ladder cleared it | ladder at this run's limit |
+| window | derived | `<planning>` 98304, clean depth 98338 | clean depth at the ladder's `-c` |
 
-This config has a creep and no smoke of its own. Its EvalPlus is its
-first quality evidence, so it carries a gate:
+Read `docs/methodology/evalplus.md`. Calibrate first, then run the
+full set against the control row's published score. Record base, plus,
+empty and wall in `results.md`.
 
-**If this EvalPlus lands below the control row, drop
-`qwen38-nodrafter-mendel` and start the next block.** Say in one line
-that the gate dropped it.
-
-Its creep ran the whole depth list clean and never hit a stop, so
-131072 is the list's boundary, not a measured ceiling. The planning
-window is one 8192 step under the ladder value, because the real
-ceiling is unknown and issue 27756 sits just above it. The ladder and
-the long-prompt check replace both numbers.
-
-The same build with the drafter mem-stopped at 49198. Without it the
-row ran clean past 131072, over 2.6 times the depth, at 8.58 tok/s.
-That trade is what these two blocks price.
+Its creep never hit a stop condition, so 98338 is the end of the depth
+list and not a measured ceiling. The ladder replaces both numbers.
 
 ### `qwen38-ista-mendel` — ISTA IQ3_S-mtp, blind, effort medium
 
@@ -412,17 +463,18 @@ Score per `PLAN.md` "How to score a run". The config note carries the
 build, the revision, `f16 KV`, the `-c`, the window and `wired 25000`,
 and says the row is the ISTA build, not the row we serve today.
 
-### `qwen38-nodrafter-mendel` — unsloth UD-Q3_K_XL, no drafter, blind, effort medium
+### `qwen38-atomicchat-mendel` — AtomicChat AD-IQ3_S, blind, effort medium
 
-Runs only when `qwen38-nodrafter-evalplus` came back at or above the
-control row. Same server as that block, long-prompt check first.
+Same server as `qwen38-atomicchat-evalplus`, at that block's derived
+`-c`. Run the long-prompt completion check first.
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<this block's window> ./run-worker.sh qwen3.8-27b pi blind medium
 ```
 
-The config note says the build, the revision, `f16 KV`, the `-c`, the
-window, `no MTP drafter`, and `wired 25000`.
+Score per `PLAN.md` "How to score a run". The config note carries the
+build, the revision, `f16 KV`, the `-c`, the window and `wired 25000`,
+and says the row is the AtomicChat build, not the row we serve today.
 
 ## The reserve re-run
 
@@ -458,8 +510,12 @@ cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<this block's wind
 - Qwen3.8 effort levels and quants, strip modules, the compaction
   experiment and the container trials: research run 3
   (`hardware/m1-max-32gb/research/run3/index.md`), which is finished.
-- `AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, deferred with both smokes
-  passed. It goes to the head of the next run.
+- `unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL` with its drafter dropped. The
+  strip item that produced it was meant for the served 4-bit row, so
+  the config is not a candidate and gets no scoring block. Its creep
+  stands as a measurement (owner, 2026-09-08).
+- The drafter question itself, as a speed-against-depth trade on the
+  served 4-bit rows. Creeps only, and a later research run owns it.
 - `qwen36-gguf-guided-high` and `gemma26-gguf-blind-high`, the two
   reserve re-runs dropped at planning time.
 - The Gemma-26B row with its MTP drafter dropped. Its research creep

@@ -99,6 +99,13 @@ So `qwen-3.8-27b q3kxl/f16`, `qwen-3.6-35b-a3b q8/high`,
 `gemma-4-12b 2slot`. The benchmark mode is not a model parameter: it
 belongs to the task word, `simulator(mendel-guided)`.
 
+When two publishers ship the same quant name for one model, the quant
+name alone is not a build tag. Add the publisher's own prefix from the
+file name until the tags differ: `ad-iq3s` and `gsq-iq3s`, not `iq3s`
+twice. One model can carry several builds at once, so a tag that
+collides names two different sets of weights and makes every number on
+the line unreadable.
+
 ### The task word comes first
 
 A short line opens with the task, not with the model, because the
@@ -159,10 +166,17 @@ what runs next, and `state.md` carries the rest.
 ```
 creep qwen-3.8-27b q3kxl/f16 ctx 128k: 4k @ 14.4 → ... → 32k @ 12.1 → 41k @ 10.9 → 49k @ 12.5 tok/s, wired 24.5GB. still running.
 creep gemma-4-12b 2slot ctx 256k: 4k @ 48.2 → ... → 98k @ 31.7 → 114k @ 29.4 tok/s, wired 21.8GB. still running.
+creep gemma-4-12b 2slot ctx 256k: A@49k@18.63 → B@49k@18.63 → A@66k@17.02 tok/s, wired 21.8GB. still running.
 ```
 
 At most four steps, first and last mandatory, `...` for the rest. The
 last field is the state: `still running`, or the stop reason.
+
+A round-robin creep sweeps two or more slots, so it reaches the same
+depth once per slot. Prefix every step with its slot letter, the letter
+the creep tool prints in its `context` column: `A@49k@18.63 →
+B@49k@18.63`. Without the letter, two steps at one depth read as a
+repeat or as a mistake.
 
 The close prints every step, the verdict and the ceiling:
 
