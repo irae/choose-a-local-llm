@@ -324,4 +324,34 @@ now at that `-c`, `DEPTH_LIST` capped at 73728.
 Files: `results/server-qwen38-gguf-blind-medium-c49152.log`,
 `-c57344.log`, `-c65536.log`, `-c73728.log`, `-c81920.log`,
 `-final.log` (the restart), `results/creep-qwen38-gguf-blind-medium.tsv`.
-— running.
+
+**Creep closed.** 4k @ 19.97 → 8k @ 18.21 → 16k @ 16.08 → 25k @ 17.22 →
+33k @ 16.40 → 41k @ 15.61 → 49k @ 14.97 → 57k @ 14.30 → 66k @ 13.71 →
+74k @ 13.15 tok/s. One large compress/decompress spike at 41k
+(622894/383166 pages, swap Δ 0) — flagged, not accepted at face
+value, matches the known false-positive pattern from this run's
+pre-block prep (zero real swap growth). The real stop landed at the
+final depth, 73742: swap grew 2365 MB, a genuine **mem** verdict, not
+a false positive (real swap growth this time, unlike 41k).
+
+**Clean ceiling: 65578 tokens, 13.71 tok/s. Mendel window: 65536**
+(rounded down to 4096).
+
+**Mendel blind-medium: branch collision, same workaround as bonsai.**
+`qwen3.8-27b-medium-issue-13` already exists — the old published
+control row at pi's old 16384 reserve. Left it alone. Added a sibling
+pi model entry `qwen3.8-27b-reserve8192` (copy of `qwen3.8-27b`,
+`contextWindow` 65536), re-served under that alias
+(`results/server-qwen38-gguf-blind-medium-mendel.log`), ran the worker
+against it: new branch `qwen3.8-27b-reserve8192-medium-issue-13`, no
+collision. `gh auth status` passed before starting.
+
+Reserve 8192 (pi's own default already matches; this row is the
+"first row ran at 16384" re-run per the reserve-re-run section of
+`AGENT.md`, config note: "re-run at reserveTokens 8192; first row ran
+at 16384"). Watcher running
+(`results/mem-qwen38-gguf-blind-medium.log`). Live repetition-loop
+guard armed (polls `loop-check.py` against the real events file every
+180s, kills pi+worker on any non-`ok` verdict) — same setup as
+bonsai, re-armed each heartbeat since a poll loop caps at 60 min. —
+running.

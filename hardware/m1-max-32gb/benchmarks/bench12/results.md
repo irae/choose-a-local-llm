@@ -425,3 +425,42 @@ Files: `results/qwen38-atomicchat/humaneval/`,
 
 Comparison against the control row deferred to `qwen38-gguf-blind-medium`
 (this run's own control re-measurement, at pi's current 8192 reserve).
+
+## `qwen38-gguf-blind-medium` — ladder and creep
+
+`bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, MTP n-max 3, f16 KV, `--parallel 1`,
+wired 25000. Old published ceiling (49152) was measured at wired
+24000 (run 9); real ladder from `-c 49152` upward in 8192 steps, real
+4096-token completions.
+
+| `-c` | result | tok/s | draft accept |
+| --- | --- | --: | --: |
+| 49152 | served | 20.32 | 3070/3075 (99.8%) |
+| 57344 | served | 20.37 | 3070/3075 (99.8%) |
+| 65536 | served | 20.38 | 3070/3075 (99.8%) |
+| 73728 | served | 20.40 | 3070/3075 (99.8%) |
+| 81920 | **OOM**, `kIOGPUCommandBufferCallbackErrorOutOfMemory` | - | - |
+
+**Ladder value: `-c 73728`.** Flat decode speed and draft acceptance
+across the whole served range — purely a memory boundary here.
+
+Creep, `-c 73728`, `results/creep-qwen38-gguf-blind-medium.tsv`:
+
+| depth | tok/s | wired MB | swap Δ | compress | decompress |
+| --: | --: | --: | --: | --: | --: |
+| 4114 | 19.97 | 25400 | 0 | 0 | 104 |
+| 8222 | 18.21 | 25427 | 0 | 0 | 248 |
+| 16386 | 16.08 | 25410 | 0 | 0 | 257 |
+| 24602 | 17.22 | 25390 | 0 | 9 | 299 |
+| 32818 | 16.40 | 25383 | 0 | 5674 | 310 |
+| 40982 | 15.61 | 25386 | 0 | 622894 | 383166 |
+| 49198 | 14.97 | 25386 | 0 | 0 | 9841 |
+| 57362 | 14.30 | 25367 | 0 | 27413 | 3004 |
+| 65578 | 13.71 | 25404 | -56 | 183975 | 68144 |
+| 73742 | 13.15 | 25380 | 2365 | 997023 | 857207 |
+
+**mem** verdict at 73742 (swap grew 2365 MB, real growth). The 40982
+compress/decompress spike is flagged, not accepted at face value: zero
+swap growth there, matching the known false-positive pattern from this
+run's pre-block prep. **Clean ceiling: 65578 tokens, 13.71 tok/s.
+Mendel window: 65536.**
