@@ -255,3 +255,23 @@ EvalPlus can run as planned. But Mendel's wall-clock budget (300 min)
 is decode-speed sensitive, so the right `n-max` for AtomicChat
 specifically should be confirmed with its own sweep before
 `qwen38-atomicchat-mendel` starts.
+
+**Update from the coordinator (`origin/master` commit `8364148`,
+merged): the sweep applies to ISTA too, not only AtomicChat.** Neither
+build ever had its own `n-max` sweep; both served at `--spec-draft-n-max 3`
+carried over from the control row's sweep, a different build. New
+rule, `docs/methodology/common-rules.md` rule 11: a drafter setting is
+a speed decision, never a quality one, so it earns no EvalPlus arm,
+but it does gate a Mendel row against the 300-minute wall. Both
+research creeps already logged near-100% draft acceptance at a mean
+length near 4 (ista: 0.78 first task, then 0.94-1.00, mean len
+3.33-3.94; atomicchat: 0.78 first task, then 1.00, mean len 3.33-4.00)
+— **so the sweep goes up only, never down**: two points above 3 (4 and
+6, mirroring the control row's own sweep steps), take the fastest,
+stop. `AGENT.md`'s parameter tables now name `--spec-type draft-mtp`
+as a fixed flag for both blocks (previously undocumented) and `n-max`
+as derived from this sweep. A creep's window is only valid for the
+drafter setting it ran with — if the sweep picks something other than
+3, re-check the window still serves before either Mendel block.
+Neither build's EvalPlus block is blocked by this; both n-max sweeps
+run before their own Mendel block, not before EvalPlus.
