@@ -192,6 +192,13 @@ Benchmark work:
   The branch exists only so a run and site work can proceed at the
   same time, each in its own worktree. All other communication between
   agents goes through `master`.
+- **Name the branch every time, in both directions.** The coordinator
+  is on `master`; a runner is on its run branch. "Pull", "merge" and
+  "take the update" mean different things to each, so neither says them
+  bare. A coordinator writes `git fetch origin && git merge
+  origin/master`, from your run worktree. A runner writes which branch
+  it pushed and its commit. A bare "merge master" has each agent guess
+  which branch moves, and the guesses differ.
 - **A merge is never a question for the owner.** The coordinator
   merges on report, without asking, for a bench run and a research run
   alike. The owner reads results on `master`, so a finished run that
