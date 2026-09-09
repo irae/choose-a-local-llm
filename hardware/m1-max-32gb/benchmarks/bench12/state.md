@@ -353,5 +353,49 @@ at 16384"). Watcher running
 (`results/mem-qwen38-gguf-blind-medium.log`). Live repetition-loop
 guard armed (polls `loop-check.py` against the real events file every
 180s, kills pi+worker on any non-`ok` verdict) — same setup as
-bonsai, re-armed each heartbeat since a poll loop caps at 60 min. —
-running.
+bonsai, re-armed each heartbeat since a poll loop caps at 60 min.
+
+**Closed.** `end_reason: complete`, ~98 min, 12 commits, 2 tooling
+stall nudges ("no events for 10 min, turn aborted"), 0 model nudges, 1
+compaction, `tool_calls 173`, `peak_context 60261/65536`. Loop verdict
+ok, worst ratio 0.52 on tool call.
+
+Scored on Opus: **76 raw = capped (8/8, cap does not bite). Worst
+defect: critical** — trap A failed: `apply-extra-options.js` keeps a
+`.then()` chain on `fs.promises.glob`, which returns an AsyncIterator,
+not a Promise; the branch throws `TypeError` on the real repro, and no
+test covers the file so the suite passes vacuously. The published
+control (reserve 16384) passed this same trap with `fs.globSync`.
+Second defect (medium): trap B left, rimraf still required in two
+`legacy-packages/mendel-requirify` test files, seen in two greps and
+judged out of scope. No `reruns` penalty (harness correction, not a
+model retry, per the Mendel retry rule).
+
+**Flag for the coordinator, not the runner's call: this row (76) is
+lower than the published control (87, reserve 16384).** The two
+scores are not noise — the new row hit a real critical bug the old
+row did not (trap A). Which row is canonical (the harness-corrected
+76, or the original 87) needs an owner decision; both are now on
+`benchmark` (`104a75e`, branch `qwen3.8-27b-reserve8192-medium-issue-13`,
+old branch `qwen3.8-27b-medium-issue-13` untouched).
+
+Server stopped. Wired recovery starts.
+
+## n-max sweeps, ISTA and AtomicChat (deferred item, now closed)
+
+One real completion each (1024 tokens, same coding prompt, `-c 4096`,
+temperature 0), n-max 4 and 6, against each build's own n-max 3 creep
+baseline (shallow depth, research run 3):
+
+| build | n-max 3 (creep) | n-max 4 | n-max 6 |
+| --- | --: | --: | --: |
+| ista gsq-iq3s | 15.1 tok/s | 13.14 tok/s (75.5% accept) | 11.27 tok/s (63.3% accept) |
+| atomicchat ad-iq3s | 15.79 tok/s | 12.92 tok/s (74.5% accept) | 11.13 tok/s (62.8% accept) |
+
+**Both builds: n-max 3 stays the value.** Sweeping up made both
+builds slower, so the control row's peak transfers to both after all
+— the concern that it might not was reasonable to raise, but the
+measurement says n-max 3 is still correct. No window re-check needed
+(the served n-max does not change from what the creeps already ran
+at). `qwen38-ista-mendel` and `qwen38-atomicchat-mendel` can proceed
+at n-max 3, windows 114688 and 98304 respectively, as already planned.

@@ -464,3 +464,42 @@ compress/decompress spike is flagged, not accepted at face value: zero
 swap growth there, matching the known false-positive pattern from this
 run's pre-block prep. **Clean ceiling: 65578 tokens, 13.71 tok/s.
 Mendel window: 65536.**
+
+## `qwen38-gguf-blind-medium` — Mendel blind, thinking medium (control re-run)
+
+Ran under a fresh model id, `qwen3.8-27b-reserve8192` (not
+`qwen3.8-27b`, to avoid a branch-name collision with the published
+control row at reserve 16384 — see `state.md`). `MENDEL_CONTEXT_WINDOW=65536`,
+reserve 8192. Branch `qwen3.8-27b-reserve8192-medium-issue-13`,
+`end_reason: complete`, ~98 min, 12 commits, 2 tooling stall nudges, 1
+compaction, `tool_calls 173`, `peak_context 60261/65536`. Loop verdict
+ok, worst ratio 0.52.
+
+Scored on Opus: **76/100, 8/8, no cap.** Worst defect critical (trap A
+failed: `fs.promises.glob` `.then()` chain, `TypeError` on the real
+repro, uncovered by tests). Second defect medium (trap B left,
+rimraf still required in two test files). No `reruns` penalty
+(harness correction, not a model retry).
+
+**Below the published control's 87** (reserve 16384) — a real
+regression (trap A), not measurement noise. Which row is canonical is
+an owner decision, flagged in `state.md`, not decided here. Both rows
+live on `mendel-benchmark`'s `benchmark` branch: this row at commit
+`104a75e`, the old row untouched at `qwen3.8-27b-medium-issue-13`.
+
+## n-max sweeps — ISTA and AtomicChat
+
+One real completion each (1024 tokens, coding prompt, `-c 4096`,
+temperature 0), n-max 4 and 6, sweeping up only from the creep's
+n-max 3 (per `common-rules.md` rule 11 and the coordinator's
+`8364148`):
+
+| build | n-max 3 (creep, shallow) | n-max 4 | n-max 6 |
+| --- | --: | --: | --: |
+| ista gsq-iq3s | 15.1 tok/s | 13.14 tok/s (75.5%) | 11.27 tok/s (63.3%) |
+| atomicchat ad-iq3s | 15.79 tok/s | 12.92 tok/s (74.5%) | 11.13 tok/s (62.8%) |
+
+**n-max 3 stays the served value for both builds** — sweeping up
+only made both slower. `qwen38-ista-mendel` and
+`qwen38-atomicchat-mendel` proceed at n-max 3, windows 114688 and
+98304.
