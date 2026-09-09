@@ -61,22 +61,29 @@ timings, prompt-cache reuse, the KV type decision) live in
 9. **After tests, check for leftovers and clean up** (the checklist has
    the commands). Do not delete model files or tools early — keep
    variants for debugging until many successes.
-11. **The drafter is a speed decision, never a quality one, and it is
-   per build.** A speculative decoder accepts a draft token only when
-   it matches the token the target model would have picked, so at
-   temperature 0 the served text is the text the model produces without
-   a drafter. Two runs can still differ by a token on a near tie,
-   because a different batch shape changes the order of the float
-   reductions. So a drafter setting never earns its own
-   [EvalPlus](./evalplus.md) arm and never earns a second agent run for
-   quality. What it changes is decode speed, memory, and therefore the
-   depth the model reaches. Decide it from a
-   [creep](./context-creep.md) and a short `n-max` sweep, per build:
-   the head ships inside the build, so its acceptance rate belongs to
+11. **The drafter is a speed and memory decision, never a quality one,
+   and it is per build.** A speculative decoder accepts a draft token
+   only when it matches the token the target model would have picked,
+   so it preserves the model's output distribution. **At temperature 0
+   that means identical text**, which is why a drafter setting never
+   earns its own [EvalPlus](./evalplus.md) arm: that test runs at
+   temperature 0. **Above temperature 0 it means the same distribution,
+   not the same run.** Two agent runs that differ only in drafter
+   setting are two samples, so neither confirms nor refutes a quality
+   difference, and neither is worth spending an agent run on.
+   What the setting does change is decode speed, memory, and therefore
+   the depth the model reaches. **Dropping the drafter frees memory
+   that becomes KV cache**, measured at about 2 GB on one dense 27B
+   model, which at f16 is roughly 32K more tokens of window. That is
+   the trade to price: shallow speed against depth.
+   Decide it from a [creep](./context-creep.md) and a sweep, per build.
+   The head ships inside the build, so its acceptance rate belongs to
    that build and never carries over from another build of the same
-   model. **A creep's window is only valid for the drafter setting it
-   ran with.** Record that setting beside the depth, and serve the same
-   setting in every block that uses the window. The server prints
-   `draft acceptance` and `mean len` per task, so read those before
-   sweeping: at an acceptance near 1.00 the only useful direction is a
-   larger `n-max`, and a smaller one can only cost speed.
+   model. **The sweep runs in both directions and includes no drafter
+   at all.** A larger `n-max` can only buy speed; a smaller one, and
+   dropping the drafter, buys memory and therefore window. Sweeping
+   upward alone answers half the question, which this project did once
+   and had to redo.
+   **A creep's window is only valid for the drafter setting it ran
+   with.** Record that setting beside the depth, and serve the same
+   setting in every block that uses the window.

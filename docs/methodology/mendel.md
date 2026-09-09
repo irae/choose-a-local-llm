@@ -147,7 +147,17 @@ window ladder and the summary rubric live in
   message without a tool call whose lines repeat in shape (the
   `loop-check.py` measure over a 60-line window, under 0.10), or on a
   one-character flood of 2000 characters or more. The end reasons are
-  `repetition_loop` and `degenerate_output`; the row is invalid. Every
+  `repetition_loop` and `degenerate_output`; the row is a **valid
+  partial**, never invalid. A loop is the model's own failure, so it
+  counts, and a later retry of it pays the model-caused penalty. The
+  stop exists to save the wall clock, not to void the row: a run that
+  loops for three hours to a timeout produces the same result and
+  wastes the night. A row is invalid only when it has zero commits, or
+  when a serving or harness collapse ended the model's real
+  participation (Mendel `PLAN.md`, "Completion cap, invalid runs, and
+  the score line"). Corrected 2026-09-09; this page had said invalid,
+  against the benchmark law, and three rows were voided on that
+  reading. Every
   loop the project saw before the rule, with its timing, is in
   `hardware/m1-max-32gb/research/loop-signatures.md`. The rule is in
   the Mendel `PLAN.md`.

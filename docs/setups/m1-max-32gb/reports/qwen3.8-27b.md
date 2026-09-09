@@ -90,7 +90,7 @@ llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
   --jinja --port 8081
 ```
 
-**#5 — Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium.** A second 3-bit build of the same model, revision `ca10ebc`. Measured 2026-09-08 at wired limit 25000. Its sweep reached 98338 at 10.3 tok/s and never hit a stop condition, so that depth is where the sweep ended and not a ceiling this machine refused to pass. `n-max 3` is this build's own value, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.988/0.927, no empty completions, the best base score of any local build here and its own score, not a carried one. Its Mendel blind run is invalid: it ended on a repetition loop after five identical searches, with three of eight libraries done, so this build has no agent score.
+**#5 — Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium.** A second 3-bit build of the same model, revision `ca10ebc`. Measured 2026-09-08 at wired limit 25000. Its sweep reached 98338 at 10.3 tok/s and never hit a stop condition, so that depth is where the sweep ended and not a ceiling this machine refused to pass. `n-max 3` is this build's own value, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.988/0.927, no empty completions, the best base score of any local build here and its own score, not a carried one. Mendel blind at effort medium: 37.5/100 capped from 74 raw, partial at three of eight libraries. It ended on a repetition loop, five identical searches of a directory that held nothing it wanted.
 
 ```bash
 llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \
@@ -126,10 +126,11 @@ neither is a repeat of the other.
 3-bit build scored 76.5 against that 76, failed trap A in the same
 shape, and reached 114.7K of clean context against 65.5K. The second
 3-bit build, AtomicChat, has the best EvalPlus base of any local config
-here and no agent score at all: its blind run ended on a repetition
-loop, five identical searches of a directory that held nothing it
-wanted, three of eight libraries done. A run that ends that way is
-invalid and never scores.
+here and the weakest agent row: 37.5 capped from 74 raw, partial at
+three of eight libraries. It ended on a repetition loop, five identical
+searches of a directory that held nothing it wanted. A strong
+single-turn score did not survive the agent loop, which this project
+keeps finding.
 
 **Every Qwen3.8 row here ran at effort medium**, which is the setting
 this model is no longer tested at. Nothing above is a measurement of

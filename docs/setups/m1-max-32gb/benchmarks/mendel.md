@@ -47,8 +47,10 @@ the model did; they are not reproducible on this machine today.
 | [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **63/100** | critical |
 | [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **47.5/100** | critical |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **37.5/100** (partial) | medium |
+| qwen3.8-27b (AtomicChat AD-IQ3_S) | llama-server | **37.5/100** (partial) | medium |
 | [Qwen3.8-27B (mlx, low)](../reports/qwen3.8-27b.md) | mlx_lm.server | **12.5/100** (partial) | minor |
 | [bonsai-prism](../reports/bonsai-27b.md) | llama-server | **12.5/100** | critical |
+| [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **12.5/100** (partial) | critical |
 <!-- gen:mendel-local:end -->
 
 Run notes for the two partials are in the
@@ -115,6 +117,7 @@ same frozen prompt; a blind-guided pair can land at different times.
 | [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **46.5/100** |
 | [Gemma-4-12B (llama.cpp, off)](../reports/gemma-4-12b-it.md) | pi | **37.5/100** (partial) |
 | [bonsai-prism](../reports/bonsai-27b.md) | pi | **31.5/100** (partial) |
+| [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | pi | **25/100** (partial) |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **12.5/100** (partial) |
 | bonsai-prism (f16 KV) | pi | **12.5/100** (partial) |
 <!-- gen:mendel-guided:end -->
