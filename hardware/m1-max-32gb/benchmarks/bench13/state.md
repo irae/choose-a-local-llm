@@ -16,6 +16,12 @@ handing-over section.
 - Sweep tool: `local-llm-eval-tools` was on a stale branch
   (`creep-ab-verdict`) whose remote ref had been deleted after merge.
   Switched to `master`, pulled. `creep_tool_hash`: `e38c467`.
+- `ista-nmax-shallow` done: table in `results.md`. Coordinator
+  corrected the block's own output (no pick, table only) and set
+  `ista-nmax-deep` back to all five cells.
+- `ista-nodrafter-creep` done: `-c 163840` served the probe clean, no
+  bisection needed. Ceiling 147478 tokens at 8.30 tok/s, verdict
+  speed. Full table in `results.md`.
 
 ## Values this run sets
 
@@ -25,7 +31,7 @@ that produced it.
 | name | value | block |
 | --- | --- | --- |
 | `creep_tool_hash` | `e38c467` | the session's first creep |
-| `ista_nodrafter_c` | | `ista-nodrafter-creep` |
+| `ista_nodrafter_c` | `163840`, ceiling 147478 @ 8.30 tok/s | `ista-nodrafter-creep` |
 | `ista_serving` | | `ista-serving-pick` |
 | `ista_window` | | `ista-serving-pick` |
 | `ista_evalplus_serving` | | `ista-nmax-shallow` |
