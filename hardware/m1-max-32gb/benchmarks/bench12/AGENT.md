@@ -4,6 +4,16 @@
 marked `<planning>` are the planning-time snapshot and the run replaces
 them.
 
+**(2026-09-09: every Qwen3.8 block here says effort medium, and that
+was a planning defect. Medium is banned for this model from this date.
+The blocks already run keep their rows. `qwen38-atomicchat-mendel`, if
+it has not started, does not run at medium: stop and ask. We do not
+want parity with the medium rows and we will not compare medium against
+medium. Not running medium matters more than parity. A model's first
+run uses that model's own default, xhigh here. See
+`benchmarks/PLANNING.md`, "The thinking level is chosen, never
+inherited".)**
+
 ## Where this run stands
 
 Three blocks are finished and their evidence is on the `run12` branch.

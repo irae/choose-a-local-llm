@@ -1,5 +1,13 @@
 # Run 9 — KV cache type, daggered sweeps, thinking-off rows (Mac)
 
+**(2026-09-09: this runbook puts Qwen3.8 at effort medium. Do not
+follow that part, and do not copy it into a new runbook. Medium is
+banned for this model from this date. We do not want parity with the
+medium rows and we will not compare medium against medium. Not running
+medium matters more than parity. A model's first run uses that model's
+own default, xhigh here. See `benchmarks/PLANNING.md`, "The thinking
+level is chosen, never inherited".)**
+
 You are the runner, on the Mac, during the day with the owner nearby.
 Read this file, then the pages it links, and nothing else. Write all
 prose in ASD-STE100 Simplified Technical English.

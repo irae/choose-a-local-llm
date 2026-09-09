@@ -1,5 +1,13 @@
 # Night 5 — prepared 2026-08-30
 
+**(2026-09-09: this runbook puts Qwen3.8 at effort medium. Do not
+follow that part, and do not copy it into a new runbook. Medium is
+banned for this model from this date. We do not want parity with the
+medium rows and we will not compare medium against medium. Not running
+medium matters more than parity. A model's first run uses that model's
+own default, xhigh here. See `benchmarks/PLANNING.md`, "The thinking
+level is chosen, never inherited".)**
+
 Read first: `HANDOFF.md`, `benchmarks/bench4/state.md` (what night 4 finished),
 `benchmarks/bench4/lmstudio-forensics.md` (LM Studio rules that still apply),
 `docs/methodology.md`. Execution rules are night 4's, unchanged: STE
