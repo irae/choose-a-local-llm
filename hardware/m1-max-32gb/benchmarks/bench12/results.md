@@ -503,3 +503,33 @@ n-max 3 (per `common-rules.md` rule 11 and the coordinator's
 only made both slower. `qwen38-ista-mendel` and
 `qwen38-atomicchat-mendel` proceed at n-max 3, windows 114688 and
 98304.
+
+## `qwen38-ista-mendel` — Mendel blind, thinking medium
+
+Long-prompt completion check at window 114688: PASS (27-token coherent
+summary, `stop_type eos` normal finish). Served under fresh alias
+`qwen3.8-27b-ista` (control's own alias already used); one invalid
+row (`qwen3.8-27b-ista`, killed in seconds by a bug in the runner's
+own live loop guard, zero commits, left untouched, no penalty),
+retried clean under `qwen3.8-27b-ista2`. `-c 131072`, window 114688,
+n-max 3 (confirmed by this run's own sweep, not the control's).
+
+Branch `qwen3.8-27b-ista2-medium-issue-13`, `end_reason: complete`, 17
+commits, `tool_calls 195`, `peak_context 89386/114688`. Loop verdict
+ok, worst ratio 0.52.
+
+**Score: 76.5/100, 8/8, no cap.** Worst defect critical: trap A failed
+(`apply-extra-options.js` swaps to `require('fs').promises` but keeps
+the `.then()` chain, `TypeError` on the real repro). Same failure
+shape as the control re-run's own trap A. Config note: build, revision,
+f16 KV, `-c 131072`, window 114688, `n-max 3`, `wired 25000`, not the
+row we serve today.
+
+Result on `mendel-benchmark`'s `benchmark` branch, commit
+`79e5f0976cfea3e1f2ad86bb9f8bbf964bfd8fa0`. Dead branch
+`qwen3.8-27b-ista-medium-issue-13` and the published control branch
+both untouched.
+
+**Bug found: `score.mjs`'s `trap_a.ok` flag reads `true` while its own
+captured output says `THREW`.** Flagged for the coordinator, not
+fixed mid-run.

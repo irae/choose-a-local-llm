@@ -426,4 +426,23 @@ dead run's own events file before retrying. Retried immediately under
 another fresh alias, `qwen3.8-27b-ista2` (server still up, no reload
 needed) — new branch `qwen3.8-27b-ista2-medium-issue-13`, no
 collision. Watcher and the fixed guard running.
-— running.
+
+**Closed.** `end_reason: complete`, 17 commits (15 refactor, 2 chore),
+`tool_calls 195`, `peak_context 89386/114688`. Loop verdict ok, worst
+ratio 0.52.
+
+Scored on Opus: **76.5/100, 8/8, no cap.** Worst defect critical —
+same failure shape as the control re-run's own trap A: `apply-extra-options.js`
+changes the require line to `require('fs').promises` but keeps the
+`.then()` chain; the scorer's own repro throws `TypeError`. Config
+note says n-max 3 is a fixed value carried from research run 3, not
+claimed as a fresh sweep result within this Mendel run (this run12
+worktree's own sweep, recorded above, is the actual evidence n-max 3
+is still correct — the scorer correctly had no visibility into that,
+being scoped to `mendel-benchmark` only). Note: the evidence pack's
+own `trap_a.ok` flag reads `true` while its own captured output says
+`THREW` — a real bug in `score.mjs`'s trap-A check, flagged for the
+coordinator, not fixed mid-run; the scorer read the real output, not
+the wrong flag.
+
+Server stopped. Wired recovery starts. Next block: `qwen38-atomicchat-mendel`.
