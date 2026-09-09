@@ -56,7 +56,16 @@ def main():
         api_key="none", base_url="http://127.0.0.1:8081/v1", timeout=3600.0
     )
 
-    out_path = f"benchmarks/calibration-{config_name}.json"
+    # A calibration is a measurement of one setup: its wall_s per problem
+    # is that machine's, so it lives under the setup, not beside the tool.
+    out_dir = os.environ.get("CALIBRATION_DIR")
+    if not out_dir:
+        sys.exit(
+            "CALIBRATION_DIR is not set. Point it at the setup's calibration "
+            "directory, for example hardware/<hardware-id>/calibrations."
+        )
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, f"calibration-{config_name}.json")
     rows = []
     if os.path.exists(out_path):
         with open(out_path) as f:

@@ -4,7 +4,9 @@ Method: 10 fixed HumanEval problems (0, 10, 26, 32, 38, 53, 76, 99, 124, 145),
 `max_tokens=30000`, temperature 0, same prompt EvalPlus's OpenAI backend
 builds. Budget = highest observed `completion_tokens` x 1.5, rounded up to
 the next multiple of 1024. Floor 8192, cap 30000. Raw per-request data in
-`benchmarks/calibration-<config>.json`.
+`hardware/<hardware-id>/calibrations/calibration-<config>.json`.
+A calibration is a measurement of one setup, so it lives under that
+setup and not beside this tool.
 
 | config | observed max completion_tokens | chosen budget | reasoning location | anomalies |
 |---|---|---|---|---|
