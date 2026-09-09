@@ -41,6 +41,12 @@ handing-over section.
   0.778, in line with this run's numbers. Re-ran `none` on a fresh
   server with the filler and instruction in one request, `prompt_n`
   98610: 9.496 tok/s, wired 21227 MB, confirms the original row.
+- Coordinator's gate released: no drafter wins on both speed and
+  window, no trade to weigh. `ista_serving`, `ista_window` and
+  `ista_evalplus_serving` set below. `ista_evalplus_serving`'s `-c
+  32768` is the coordinator's own call, flagged as unmeasured on this
+  build; the first `ista-evalplus-low` request confirms it works
+  before the full set.
 
 ## Values this run sets
 
@@ -51,7 +57,7 @@ that produced it.
 | --- | --- | --- |
 | `creep_tool_hash` | `e38c467` | the session's first creep |
 | `ista_nodrafter_c` | `163840`, ceiling 147478 @ 8.30 tok/s | `ista-nodrafter-creep` |
-| `ista_serving` | | `ista-serving-pick` |
-| `ista_window` | | `ista-serving-pick` |
-| `ista_evalplus_serving` | `none` (fastest at shallow depth, 14.44 tok/s) | `ista-nmax-shallow` |
+| `ista_serving` | no drafter (no `--spec-type`, no `--spec-draft-n-max`), `-c 163840` | coordinator gate |
+| `ista_window` | `147456` | coordinator gate |
+| `ista_evalplus_serving` | no drafter, `-c 32768` (coordinator's call, unmeasured on this build until confirmed) | coordinator gate |
 | `ista_temperature` | | read from `~/.local/share/mendel-benchmark/` |
