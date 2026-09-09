@@ -31,6 +31,17 @@ MB per extra step. It is not flat here, against the drafter's
 head-plus-draft-context cost model.
 
 Decode speed falls with every step past `n1`: acceptance drops faster
-than draft length grows, so a longer draft costs more than it wins.
-`n1` matches `none` within noise (14.35 vs 14.44 tok/s) and beats every
-deeper cell. Pick: `n1`.
+than draft length grows, so a longer draft costs more than it wins at
+this shallow depth.
+
+No cell had a separate warmup completion before its measured one; the
+256-token request reported here was each cell's first request. Every
+cell carries the same graph-setup cost, so the ranking across cells
+still holds, but these tok/s numbers are not directly comparable with
+a creep's rows, which warm up first.
+
+This build's `n3` cell here reads 12.41 tok/s at depth 256, against
+15.1 tok/s at `-c 4096` on 2026-09-08 and 15.09 tok/s at depth 4114 in
+research run 3, same config otherwise. The gap points to allocation
+size, not used depth, taxing decode on this model well below the 262K
+mark where that effect first showed.
