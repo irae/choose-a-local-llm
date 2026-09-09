@@ -34,8 +34,13 @@ handing-over section.
   branch rule in `AGENT.md`'s Essentials).
 - `ista-nmax-deep` done, all five cells at `-c 122880`, depth 98338:
   table in `results.md`. Acceptance at depth is close to the shallow
-  block's numbers, not the 1.000 the coordinator's research-run-3 log
-  showed for `n3`; said so in `results.md`.
+  block's numbers.
+- Merged `origin/master` again: `67f3e36`. The coordinator's
+  research-run-3 read was wrong: those 1.000-acceptance lines were
+  47-token steps, and the real figure on a substantial generation is
+  0.778, in line with this run's numbers. Re-ran `none` on a fresh
+  server with the filler and instruction in one request, `prompt_n`
+  98610: 9.496 tok/s, wired 21227 MB, confirms the original row.
 
 ## Values this run sets
 

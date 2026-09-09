@@ -111,16 +111,20 @@ Logs: `results/server-ista-nmax-deep-<cell>.log`.
 | `n3` | 7.89 | 245 | 173 | 70.6% | 23231 |
 | `n4` | 7.00 | 293 | 181 | 61.8% | 23339 |
 
-The `none` cell's prompt was served from cache (`prompt_n` 13, not
-98601): the `n1`-`n4` cells each ran the first request against a fresh
-server, so their `prompt_n` was the full 98601; `none`'s first attempt
-with the same filler text and no trailing instruction produced an
-empty completion (EOS at `predicted_n` 1) and was re-sent with the
-instruction appended, which then hit the server's cache from the
-earlier attempt. All five cells reached the same depth.
+The first `none` attempt was served from cache (`prompt_n` 13, not
+98601), because the filler text with no trailing instruction produced
+an empty completion (EOS at `predicted_n` 1) on the first try, and the
+re-send with the instruction appended hit that server's own cache.
+`none` was re-run on a fresh server with the filler and the trailing
+instruction in one request: `prompt_n` 98610, decode 9.496 tok/s, wired
+21227 MB, matching the cache-served reading (9.50 tok/s, 21233 MB)
+within rounding. The table above is unchanged; the re-run confirms the
+`none` row rather than replacing it.
 
 Acceptance at this depth: 86.1% (`n1`) down to 61.8% (`n4`), close to
-the shallow block's 89.6% to 64.4% range and far from the 1.000 the
-coordinator's research-run-3 log showed for `n3`. Decode speed falls
-past `none` at every step here too, the same shape as the shallow
-block. No swap growth on any cell.
+the shallow block's 89.6% to 64.4% range. `docs/methodology/mendel.md`
+now carries the sample-size trap this surfaced: an acceptance rate
+from a short generation (tens of tokens) is not comparable with one
+from a substantial generation. Decode speed falls past `none` at every
+step here too, the same shape as the shallow block. No swap growth on
+any cell.
