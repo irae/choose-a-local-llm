@@ -218,7 +218,27 @@ qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'`.
 Watcher running (`results/mem-qwen38-nodrafter-evalplus.log`). Output:
 `results/qwen38-nodrafter/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
 
-**Gate on this block**: if this EvalPlus lands below the control row
-(fresh number from `qwen38-gguf-blind-medium`, next-next block), drop
-`qwen38-nodrafter-mendel` and say so in one line — no Mendel block for
-this build in that case. — running.
+**Superseded mid-run, not scored.** `origin/master`'s `de79d22`
+("Run 12 hands over mid-run: AtomicChat takes the second seat...")
+landed while this block was in flight, 39/164 problems done, 0 empty
+so far. The coordinator dropped this config from the run entirely: it
+came from a strip item meant for the served 4-bit row, not a real
+3-bit candidate, and gets no scoring block. `qwen38-atomicchat-evalplus`
+takes its place. Stopped the run, the watcher and the server the
+moment the merge surfaced this (pid 54139/54667/49133). **Partial data
+kept, not discarded**, per the owner: `benchmarks/calibration-qwen38-nodrafter.json`,
+`results/qwen38-nodrafter/` (39/164 problems), `results/server-qwen38-nodrafter-evalplus.log`,
+`results/mem-qwen38-nodrafter-evalplus.log` all stay committed as an
+abandoned partial, not deleted. Its creep (from research run 3) still
+stands as a real measurement per the coordinator's note; only the
+EvalPlus/Mendel scoring blocks are gone.
+
+Merged `origin/master` into `run12` (commits up to `c6348cf`) per the
+coordinator's handoff note before continuing. Picked up: research run
+3's full results, three new method rules (Mendel comparison table
+carries `peak_context`/`tool_calls`; the three Qwen3.8 Mendel blocks
+are not duplicates of the published row; round-robin creep lines
+prefix each step with its slot letter), and the updated `AGENT.md`
+(AtomicChat replaces the nodrafter build, a drafter file is now an
+allowed unasked download, a projector-cleanup task rides alongside the
+next GPU block).
