@@ -282,6 +282,15 @@ Benchmark work:
   runner records the value it used and its source in `state.md` and
   the row's config note. Which parameters are fixed and which are
   derived: `benchmarks/PLANNING.md`, "Fixed and derived parameters".
+- **Qwen3.8-27B is never run at effort medium. Ever** (owner rule,
+  2026-09-09). Not planned, not re-run, not for parity with an old
+  medium row. **Not running medium matters more than parity.** A block
+  that names medium for this model is a planning defect: stop and ask,
+  and do not serve it. **A model's first run uses the model's own
+  published default**, which for Qwen3.8 is **xhigh**. A control row's
+  level is not a default. The full rule and why it keeps failing:
+  `benchmarks/PLANNING.md`, "The thinking level is chosen, never
+  inherited".
 - **A gate or a stop-and-ask goes to the coordinator first** (owner
   rule, 2026-09-07). The runner messages the coordinator session with
   the block, the condition and the candidate answer, and keeps the

@@ -40,7 +40,7 @@ deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 <!-- gen:models-evaluated:start -->
 | # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.8-27B | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939/100% |
+| 1 | Qwen3.8-27B | 104k | untested | 15.8 → 10.3 | 24.1 GB | 0.988/0.927/100% |
 | 2 | Gemma-4-12B | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% |
 | 3 | Qwen3.6-35B-A3B | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921/97% |
 | 4 | Ternary-Bonsai-27B | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% |

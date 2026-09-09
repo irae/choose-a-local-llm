@@ -18,6 +18,15 @@ Five rules hold across every item in this run:
   smoke, then the EvalPlus smoke. A second level enters the run only
   when a research item names that level itself, and then it is its own
   line in the list below.
+
+  **(2026-09-09: this rule is withdrawn. It is what put every new
+  Qwen3.8 build on effort medium again, because the control row was
+  medium and nobody chose the level. A level inherited from a control
+  row is a level nobody picked. Qwen3.8 is never run at medium again,
+  and a model's first run uses that model's own default, xhigh here.
+  We do not want parity with the medium rows. Not running medium
+  matters more than parity. See `benchmarks/PLANNING.md`, "The
+  thinking level is chosen, never inherited".)**
 - **The KV cache is f16.** This hardware is slow at a quantized KV
   cache. Use q8_0 only where a build cannot reach a needed depth at
   f16, and say so in the row.

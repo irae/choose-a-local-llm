@@ -32,8 +32,8 @@ Two rules to read the tables by:
 | [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | GGUF, MTP, f16 KV | 60.3 → 17.3 | 197k | mem |
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | MLX, unquantized KV, thinking on | 53.3 → 42.0 | 37k | mem |
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | GGUF, MTP, q8_0 KV, thinking on | 36.7 → 19.7 | 33k | mem |
-| [Qwen3.8-27B](./qwen3.8-27b.md) | MLX, unquantized KV, compaction ~26k, effort medium | 17 → 15.3 | 28k | mem |
-| [Qwen3.8-27B](./qwen3.8-27b.md) | GGUF, MTP, f16 KV, effort medium | 20.0 → 15.0 | 49k | mem |
+| [Qwen3.8-27B](./qwen3.8-27b.md) | MLX 4-bit, unquantized KV, effort medium | 17 → 15.3 | 28k | mem |
+| [Qwen3.8-27B](./qwen3.8-27b.md) | GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 15.8 → 10.3 | 104k | untested |
 <!-- gen:decode-summary:end -->
 
 ## MLX-side engines: flat curves, hard memory ceilings

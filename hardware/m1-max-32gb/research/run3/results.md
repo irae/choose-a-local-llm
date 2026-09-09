@@ -101,6 +101,13 @@ came from the machine's free memory and not from the wired limit.
 
 Tool: `local-llm-eval-tools` commit `2344f00`.
 
+**(2026-09-09: every Qwen3.8 candidate below ran at effort medium,
+inherited from the control row. That inheritance rule is withdrawn and
+medium is banned for this model from this date. We do not want parity
+with these rows and we will not compare medium against medium. Not
+running medium matters more than parity. A model's first run uses that
+model's own default, xhigh here.)**
+
 ## The three EvalPlus smokes
 
 Control (`bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, f16, `-c 49152`, medium,

@@ -29,7 +29,14 @@ first that yields a completed run:
 3. **Reasoning effort: low and xhigh, not medium.** The community
    reports (owner, 2026-09-06) that effort medium is the worst of this
    model's settings for agent work: it thinks too much and does not
-   reach a conclusion. Low and xhigh are the two to try. Every scored
+   reach a conclusion. Low and xhigh are the two to try.
+
+   **(2026-09-09: medium is now banned outright for this model, not
+   merely deprioritised. No run plans it again, whatever the desk
+   evidence below says. We do not want parity with the medium rows and
+   we will not compare medium against medium. Not running medium
+   matters more than having a comparable row. The first run of a model
+   uses that model's own default, which here is xhigh.)** Every scored
    row here ran medium (the llama blind 87 included) or low on the MLX
    build, and the MTP acceptance sweep on the report page shows medium
    only as the fastest decode. The owner also pointed at

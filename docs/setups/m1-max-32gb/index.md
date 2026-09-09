@@ -108,11 +108,12 @@ scope.
 
 ## Current state
 
-As of 2026-09-07.
+As of 2026-09-09.
 
 - Candidates for real coding use, by what the measurements support:
-  Qwen3.8 on llama-server at f16 KV (`-c 49152`) is the only local model
-  that finished the agent task; Gemma-26B on llama-server at f16 KV
+  Qwen3.8 on llama-server at f16 KV is the only local model that
+  finished the agent task, and three of its builds now have their own
+  rows, a 4-bit and two 3-bit; Gemma-26B on llama-server at f16 KV
   (`-c 212992`) is the deep-context candidate and the fastest of the
   large models; Bonsai is the cheapest in memory and the only one that
   serves two slots under 11 GB; Gemma-12B holds the deepest window on

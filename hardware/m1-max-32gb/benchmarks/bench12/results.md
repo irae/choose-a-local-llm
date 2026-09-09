@@ -426,6 +426,13 @@ Files: `results/qwen38-atomicchat/humaneval/`,
 Comparison against the control row deferred to `qwen38-gguf-blind-medium`
 (this run's own control re-measurement, at pi's current 8192 reserve).
 
+**(2026-09-09: every Qwen3.8 block of this run ran at effort medium,
+and that was wrong. Medium is banned for this model from this date. We
+do not want parity with these rows and we will not compare medium
+against medium. Not running medium matters more than parity, so these
+rows keep their numbers and earn no re-run at medium to match them. A
+model's first run uses that model's own default, xhigh here.)**
+
 ## `qwen38-gguf-blind-medium` — ladder and creep
 
 `bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, MTP n-max 3, f16 KV, `--parallel 1`,

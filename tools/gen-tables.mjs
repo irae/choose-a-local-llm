@@ -211,7 +211,7 @@ function sortRows(rows) {
   })
 }
 
-const GATED_BY = new Set(['mem', 'speed'])
+const GATED_BY = new Set(['mem', 'speed', 'untested'])
 
 function checkRows(rows, setup) {
   for (const r of rows) {

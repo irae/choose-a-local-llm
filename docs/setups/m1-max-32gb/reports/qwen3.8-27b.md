@@ -4,9 +4,9 @@ Backends: llama-server, mlx-lm · [Qwen3.8-27B MLX 4-bit on Hugging Face](https:
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
-  <div class="kpi"><b>0.982 / 0.939 / 100%</b><span>EvalPlus, effort medium — best score</span></div>
-  <div class="kpi"><b>87 / 100</b><span>Mendel blind, effort medium (GGUF f16), complete, no bug defect</span></div>
-  <div class="kpi"><b>49K</b><span>GGUF f16 KV ceiling, 20.0 tok/s at 4K, 15.0 there</span></div>
+  <div class="kpi"><b>0.988 / 0.945 / 100%</b><span>EvalPlus, effort medium — best base is the AtomicChat 3-bit GGUF, best plus is the ISTA 3-bit GGUF</span></div>
+  <div class="kpi"><b>87 / 100</b><span>Mendel blind, effort medium, 4-bit GGUF f16 at reserve 16384; the same build re-run at reserve 8192 scored 76</span></div>
+  <div class="kpi"><b>115K</b><span>deepest clean GGUF f16 KV depth, the 3-bit ISTA build, 9.7 tok/s there</span></div>
   <div class="kpi"><b>28K</b><span>MLX memory ceiling</span></div>
 </div>
 <!-- gen:model-kpis:end -->
@@ -16,12 +16,20 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 ## Highlights
 
 - **The first local model to finish the agent task.** On llama-server at
-  f16 KV and `-c 49152` the Mendel blind run scores 87 of 100: all eight
-  libraries replaced, no bug defect, all three traps handled. Every
-  earlier attempt, all on the MLX build, was partial or invalid.
+  f16 KV the 4-bit GGUF build scores 87 of 100 on the Mendel blind run:
+  all eight libraries replaced, no bug defect, all three traps handled.
+  Every earlier attempt, all on the MLX build, was partial or invalid.
+  That row used a 16384-token harness reserve. The same build re-run on
+  2026-09-08 at the current 8192 reserve scored 76 and failed trap A,
+  so the 87 has not been reproduced under the harness we run today.
+- **Three bits cost no measurable agent score here.** The ISTA 3-bit
+  GGUF build scores 76.5 against the 4-bit build's 76 under the same
+  reserve, and it fails trap A in the same shape. It also reaches
+  114.7K of clean context where the 4-bit build reaches 65.5K.
 - **The best quality score of any config measured here.** EvalPlus
-  0.982 / 0.939 / 100%, zero empty completions. The model to send hard
-  problems to.
+  0.988 base on the AtomicChat 3-bit build and 0.945 plus on the ISTA
+  3-bit build, both at 100% completion. The model to send hard problems
+  to.
 - **llama at f16 KV holds 15 tok/s to 49K**, the largest context this
   machine loads for it, at the MLX speed with almost twice the MLX
   window. MLX holds 14 to 17 tok/s across its whole window and OOMs
@@ -34,9 +42,11 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
 |--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.8-27B, MLX, unquantized KV, compaction ~26k, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% |
-| 2 | Qwen3.8-27B, MLX, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% |
-| 3 | Qwen3.8-27B, GGUF, MTP, f16 KV, effort medium | 49k | mem | 20.0 → 15.0 | 23.5 GB | 0.982/0.939/100% |
+| 1 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% |
+| 2 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% |
+| 3 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 72k | mem | 20.0 → 13.7 | 25.4 GB | 0.982/0.939/100% |
+| 4 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium | 128k | mem | 15.1 → 9.7 | 24.2 GB | 0.976/0.945/100% |
+| 5 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8 → 10.3 | 24.1 GB | 0.988/0.927/100% |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -44,27 +54,49 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); EvalPlus at effort me
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Qwen3.8-27B, MLX, unquantized KV, compaction ~26k, effort medium.** Set the harness compaction threshold at ~26K.
+**#1 — Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium.** Set the harness compaction threshold at ~26K.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --reasoning-effort medium --port 8081
 ```
 
-**#2 — Qwen3.8-27B, MLX, unquantized KV, effort low.** Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth.
+**#2 — Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low.** Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --chat-template-args '{"reasoning_effort":"low"}' --prompt-cache-size 2 --port 8081
 ```
 
-**#3 — Qwen3.8-27B, GGUF, MTP, f16 KV, effort medium.** pi id `qwen3.8-27b`. Measured 2026-09-05 at f16 KV, the KV pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant's own score is pending. Mendel blind at effort medium: 87/100, complete.
+**#3 — Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium.** pi id `qwen3.8-27b`. Re-measured 2026-09-08 at wired limit 25000: `-c 73728` serves, `-c 81920` OOMs at load, and decode and draft acceptance stay flat across the whole served range, so the boundary is memory alone. Clean depth 65578 at 13.7 tok/s. The older `-c 49152` was the ceiling at wired 24000. The EvalPlus score is still the MLX effort-medium run, carried by the shared-score rule; this build has no full EvalPlus of its own, so it cannot be read against the two 3-bit builds below, which do. Mendel blind at effort medium: 87/100 at reserve 16384 and window 49152, and 76/100 on the 2026-09-08 re-run at reserve 8192 and window 65536. The two are different configurations, not a repeat: the second failed trap A, which the first passed.
 
 ```bash
 llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
   --alias qwen3.8-27b --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
-  -ngl 999 -fa on -c 49152 \
+  -ngl 999 -fa on -c 73728 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
+```
+
+**#4 — Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium.** A 3-bit build of the same model, revision `d562806`. Measured 2026-09-08 at wired limit 25000. Clean depth 114718 at 9.7 tok/s, the only measured ceiling of the three 3-bit builds tried; `-c 131072` serves. `n-max 3` is this build's own value, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.976/0.945, one empty at budget 8192, its own score and not a carried one. Mendel blind at effort medium: 76.5/100, complete 8/8, window 114688. It failed trap A in the same shape as the 4-bit row's own re-run, so on this hardware the 3 bits cost no measurable agent score against a control measured the same way.
+
+```bash
+llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
+  --alias qwen3.8-27b --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
+  -ngl 999 -fa on -c 131072 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
+```
+
+**#5 — Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium.** A second 3-bit build of the same model, revision `ca10ebc`. Measured 2026-09-08 at wired limit 25000. Its sweep reached 98338 at 10.3 tok/s and never hit a stop condition, so that depth is where the sweep ended and not a ceiling this machine refused to pass. `n-max 3` is this build's own value, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.988/0.927, no empty completions, the best base score of any local build here and its own score, not a carried one. Its Mendel run is pending.
+
+```bash
+llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \
+  --alias qwen3.8-27b --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
+  -ngl 999 -fa on -c 106496 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
 ```
@@ -126,8 +158,9 @@ re-testing on future llama.cpp releases.
 
 | need | config | tok/s | context |
 |---|---|--:|--:|
-| **Hard problems, agent work** | llama-server + MTP n=3, f16 KV, `-c 49152` | 20.0 shallow, 15.0 at 49K | 49K, the largest `-c` that loads |
-| **Low memory** | mlx_lm.server, f16 KV, compaction at ~26K | 14-17 across the window | to ~28K ceiling |
+| **Hard problems, agent work** | llama-server + MTP n=3, f16 KV, Q4_K_M bartowski, `-c 73728` | 20.0 shallow, 13.7 at 65.5K | 65.5K clean, `-c 73728` the largest that loads |
+| **Long tasks** | llama-server + MTP n=3, f16 KV, IQ3_S-mtp ISTA, `-c 131072` | 15.1 shallow, 9.7 at 114.7K | 114.7K clean |
+| **Low memory** | mlx_lm.server, unquantized KV | 14-17 across the window | to ~28K ceiling |
 
 ## Quality — EvalPlus HumanEval+
 
@@ -159,13 +192,18 @@ The MLX build gives a 26624-token window. That window stopped the low-effort run
 
 The llama arm, in the shape of
 [the comparison table](../comparison.md#decode-speed-vs-used-context-the-8-tok-s-usability-floor).
-Slow creep 2026-09-05, wired limit 24000.
+Slow creep 2026-09-08, wired limit 25000. Every row is f16 KV with the
+MTP drafter at n-max 3, which each build's own sweep confirmed.
 
 | config | @ 4-8K | @ 16K | @ 33K | @ 49K | capped by |
 |---|--:|--:|--:|--:|---|
-| **llama+MTP, f16 KV, `-c 49152`** | **20.0** | **16.0** | **16.4** | **15.0** | mem — 49152 is the largest `-c` that loads; 15.0 tok/s there |
+| **llama, Q4_K_M bartowski, `-c 73728`** | **20.0** | **16.1** | **16.4** | **15.0** | mem — swap grew at 73.7K; clean to 65578 at 13.7 tok/s |
+| llama, AD-IQ3_S AtomicChat, `-c 106496` | 15.8 | 14.8 | 13.7 | 12.7 | untested — swept to 98338 at 10.3 tok/s and never hit a stop |
+| llama, IQ3_S-mtp ISTA, `-c 131072` | 15.1 | 14.7 | 13.7 | 12.7 | mem — swap grew at 131.1K; clean to 114718 at 9.7 tok/s |
 
-Wired memory 23.5 GB at 49K.
+Wired memory 25.4 GB for the 4-bit build, 24.1 to 24.2 GB for the two
+3-bit builds. The 4-bit build runs against the wired limit the whole
+way; the 3-bit builds keep about 1 GB of headroom.
 
 ### MLX, its own creep (2026-08-29, wired limit 24000)
 

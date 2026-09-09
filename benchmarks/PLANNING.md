@@ -74,6 +74,27 @@ the agent into a script and wastes the run: run 11 measured an 82K
 clean depth in its first block and then, by the runbook's own words,
 ran the Mendel pair on a 49152 window.
 
+## The thinking level is chosen, never inherited
+
+**Qwen3.8-27B is never run at effort medium. Ever.** (Owner rule,
+2026-09-09.) No block plans it, no re-run reaches for it, and no
+argument about comparing like with like brings it back. **Not running
+medium matters more than parity.** A row that cannot be compared to an
+old medium row is the intended outcome, not a cost.
+
+**A model's first run uses the model's own published default.** For
+Qwen3.8 that default is **xhigh**. A control row's level is not a
+default and never becomes one.
+
+This rule exists because the opposite rule was written down and then
+followed for days. "One effort or thinking level per candidate: the
+level its control row already uses" reads as sound planning and is how
+every new Qwen3.8 build ended up on medium again, run after run, while
+the owner was asking for something else in the same conversations. A
+level inherited from a control row is a level nobody chose. **Write the
+level in the block, with the reason it was picked, and never copy it
+from the row you are measuring against.**
+
 Two kinds of parameter, and the runbook says which is which:
 
 - **Fixed** parameters are identity. The model files, revision and

@@ -1,9 +1,9 @@
 {
   "setup": "m1-max-32gb",
-  "wiredLimit": 24000,
+  "wiredLimit": 25000,
   "rows": [
     {
-      "config": "Qwen3.8-27B, MLX, unquantized KV, compaction ~26k, effort medium",
+      "config": "Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium",
       "maxCtx": "28k",
       "gatedBy": "mem",
       "tokShallow": "17",
@@ -22,7 +22,7 @@
       }
     },
     {
-      "config": "Qwen3.8-27B, MLX, unquantized KV, effort low",
+      "config": "Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low",
       "maxCtx": "28k",
       "gatedBy": "mem",
       "tokShallow": "17",
@@ -35,21 +35,59 @@
       "note": "Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth."
     },
     {
-      "config": "Qwen3.8-27B, GGUF, MTP, f16 KV, effort medium",
-      "maxCtx": "49k",
+      "config": "Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium",
+      "maxCtx": "72k",
       "gatedBy": "mem",
       "tokShallow": "20.0",
-      "tokDeep": "15.0",
-      "memory": "23.5 GB",
+      "tokDeep": "13.7",
+      "memory": "25.4 GB",
       "evalplus": "0.982/0.939/100%",
       "id": "qwen38-gguf-medium",
       "hidden": false,
-      "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 49152 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b`. Measured 2026-09-05 at f16 KV, the KV pick: 49152 is the largest `-c` that loads under wired limit 24000; 65536 and above OOM at load. The EvalPlus score is the MLX effort-medium run, carried by the shared-score rule; the GGUF quant's own score is pending. Mendel blind at effort medium: 87/100, complete.",
+      "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 73728 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.8-27b`. Re-measured 2026-09-08 at wired limit 25000: `-c 73728` serves, `-c 81920` OOMs at load, and decode and draft acceptance stay flat across the whole served range, so the boundary is memory alone. Clean depth 65578 at 13.7 tok/s. The older `-c 49152` was the ceiling at wired 24000. The EvalPlus score is still the MLX effort-medium run, carried by the shared-score rule; this build has no full EvalPlus of its own, so it cannot be read against the two 3-bit builds below, which do. Mendel blind at effort medium: 87/100 at reserve 16384 and window 49152, and 76/100 on the 2026-09-08 re-run at reserve 8192 and window 65536. The two are different configurations, not a repeat: the second failed trap A, which the first passed.",
       "pi": {
         "provider": "llama",
         "id": "qwen3.8-27b",
-        "contextWindow": 49152,
+        "contextWindow": 65536,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium",
+      "maxCtx": "128k",
+      "gatedBy": "mem",
+      "tokShallow": "15.1",
+      "tokDeep": "9.7",
+      "memory": "24.2 GB",
+      "evalplus": "0.976/0.945/100%",
+      "id": "qwen38-gguf-ista-iq3s",
+      "hidden": false,
+      "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 131072 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "A 3-bit build of the same model, revision `d562806`. Measured 2026-09-08 at wired limit 25000. Clean depth 114718 at 9.7 tok/s, the only measured ceiling of the three 3-bit builds tried; `-c 131072` serves. `n-max 3` is this build's own value, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.976/0.945, one empty at budget 8192, its own score and not a carried one. Mendel blind at effort medium: 76.5/100, complete 8/8, window 114688. It failed trap A in the same shape as the 4-bit row's own re-run, so on this hardware the 3 bits cost no measurable agent score against a control measured the same way.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b",
+        "contextWindow": 114688,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium",
+      "maxCtx": "104k",
+      "gatedBy": "untested",
+      "tokShallow": "15.8",
+      "tokDeep": "10.3",
+      "memory": "24.1 GB",
+      "evalplus": "0.988/0.927/100%",
+      "id": "qwen38-gguf-atomicchat-iq3s",
+      "hidden": false,
+      "command": "llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 106496 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "A second 3-bit build of the same model, revision `ca10ebc`. Measured 2026-09-08 at wired limit 25000. Its sweep reached 98338 at 10.3 tok/s and never hit a stop condition, so that depth is where the sweep ended and not a ceiling this machine refused to pass. `n-max 3` is this build's own value, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.988/0.927, no empty completions, the best base score of any local build here and its own score, not a carried one. Its Mendel run is pending.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b",
+        "contextWindow": 98304,
         "maxTokens": 8192
       }
     },
@@ -511,8 +549,8 @@
       ],
       "stats": {
         "evalplus": {
-          "value": "0.982 / 0.939 / 100%",
-          "label": "EvalPlus, effort medium \u2014 best score"
+          "value": "0.988 / 0.945 / 100%",
+          "label": "EvalPlus, effort medium \u2014 best base is the AtomicChat 3-bit GGUF, best plus is the ISTA 3-bit GGUF"
         },
         "shallow": {
           "value": "17 tok/s",
@@ -522,17 +560,13 @@
           "value": "28K",
           "label": "MLX memory ceiling"
         },
-        "compaction": {
-          "value": "~26K",
-          "label": "pi compaction setting"
-        },
         "ggufFloor": {
-          "value": "49K",
-          "label": "GGUF f16 KV ceiling, 20.0 tok/s at 4K, 15.0 there"
+          "value": "115K",
+          "label": "deepest clean GGUF f16 KV depth, the 3-bit ISTA build, 9.7 tok/s there"
         },
         "mendelBlind": {
           "value": "87 / 100",
-          "label": "Mendel blind, effort medium (GGUF f16), complete, no bug defect"
+          "label": "Mendel blind, effort medium, 4-bit GGUF f16 at reserve 16384; the same build re-run at reserve 8192 scored 76"
         },
         "empties": {
           "value": "0/164",
@@ -544,10 +578,26 @@
   "evalplusRuns": [
     {
       "slug": "qwen3.8-27b",
-      "model": "Qwen3.8-27B",
+      "model": "Qwen3.8-27B (MLX 4-bit, unquantized KV)",
       "mode": "effort medium",
       "base": "0.982",
       "plus": "0.939",
+      "empty": "0/164"
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV)",
+      "mode": "effort medium",
+      "base": "0.976",
+      "plus": "0.945",
+      "empty": "1/164"
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF AD-IQ3_S, AtomicChat, f16 KV)",
+      "mode": "effort medium",
+      "base": "0.988",
+      "plus": "0.927",
       "empty": "0/164"
     },
     {
