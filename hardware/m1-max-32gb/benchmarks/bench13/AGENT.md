@@ -214,7 +214,7 @@ publisher ships. Serve `ista_serving`. Run the long-prompt completion
 check first if `ista_window` is above 120K, and record it.
 
 ```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<ista_window> ./run-worker.sh qwen3.8-27b pi blind xhigh
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<ista_window> ./run-worker.sh qwen3.8-27b-ista pi blind xhigh
 ```
 
 xhigh thinks more than medium, so expect a longer run and a higher peak
@@ -236,7 +236,7 @@ The same as `ista-mendel-xhigh`, at **effort low**, only if its smoke
 passed.
 
 ```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<ista_window> ./run-worker.sh qwen3.8-27b pi blind low
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<ista_window> ./run-worker.sh qwen3.8-27b-ista pi blind low
 ```
 
 Done, for the pair: one comparison table with **score, `peak_context`
