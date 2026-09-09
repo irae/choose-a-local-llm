@@ -19,6 +19,12 @@ config. Common rules and the run loop apply
   memory, which raises the measured ceiling (verified on the reference
   setup: about 2K extra tokens on a 35B MoE MLX config). A no-pause sweep
   understates the ceiling a real harness reaches.
+  **The pause is not overhead to trim.** It was 25 s first and gave worse
+  results than 60 s on this hardware, so 60 s is a measured value, not a
+  round number. It also keeps the chip off a thermal ramp that a
+  back-to-back sweep would build and a real agent session never would.
+  A creep that drops the pause to save wall clock is measuring a machine
+  nobody serves from.
 
 ## Install
 
@@ -180,47 +186,60 @@ a changed `STALL_S` must say so.
 
 ## The order for a model with a drafter
 
-Four steps, in this order. Two sweeps and two creeps answer the whole
-serving question for one build, and every later block inherits the
-answer.
+**One creep per configuration, with the tool, and nothing else.** No
+bespoke fixed-depth sweep. The configurations are: no drafter, then the
+drafter at each `n-max` worth trying.
 
-1. **Shallow drafter sweep.** One short completion per cell at a
-   shallow depth: no drafter, then the drafter at each `n-max` worth
-   trying. Record decode speed, draft acceptance, mean draft length,
-   **and wired memory at load**. Report the table; pick nothing.
-   Minutes, not hours. **Memory is not flat across
-   `n-max`**, measured 2026-09-09 on one dense 27B model at 3 bits:
-   turning the drafter on cost about 1.9 GB, and each extra draft token
-   cost a further 150 to 160 MB. So the head is the large fixed cost and
-   the draft context grows with `n-max`, and both come out of the KV
-   budget. Record the wired column per cell; do not assume the shape.
-   **Sweep down as well as up**, because the optimum can sit below the
-   value a previous run chose.
-   **A shallow sweep does not pick anything.** It bounds the cells the
-   deep sweep runs, and nothing else. Carry every cell into step 4 and
-   decide from the deep numbers.
-   **Read `draft acceptance` in a server log against its own sample
-   size.** That line reports one task's accepted-over-generated. A step
-   that generated 47 tokens and accepted all 47 prints 1.000 and means
-   almost nothing; a task that generated 1536 and accepted 1195 prints
-   0.778 and means a great deal. Acceptance measured on 2026-09-09 at
-   depth 98338 ran 86.1% at `n1` down to 61.8% at `n4`, within a few
-   points of the same build's shallow figures. **Acceptance did not
-   improve with depth on that model**, and a claim that it did came
-   from reading a handful of 47-token steps as if they were the curve.
-2. **Full creep with the drafter**, at the `n-max` step 1 picked. This
-   gives the boundary, the depth curve, and the wired figure step 3
-   needs.
-3. **Full creep without the drafter.** Estimate its `-c` first:
-   the memory the drafter frees, divided by the model's KV bytes per
-   token, is how many more tokens fit. **Probe that value once, then
-   bisect against the largest `-c` already known to serve.** Two rungs
-   is typical. Climbing in 8192 steps from a known-good value wastes an
-   hour to learn what arithmetic already said.
-4. **Deep `n-max` sweep**, at the working depth of whichever config
-   won. A shallow optimum does not carry to depth: acceptance changes
-   with context, and one sweep of 2026-09-08 ran at `-c 4096` and its
-   answer was never checked deeper.
+**Why the creep is not the expensive option.** The token cost of
+reaching a depth is fixed and neither strategy avoids it. Measured on
+one dense 27B model at 3 bits, 2026-09-09: the creep spent 1050 s of
+compute arriving at depth 98338 through ten steps, and a single cold
+prefill to that same depth took about 1080 s. The same. Append-only
+growth does not save prefill time, so **measuring on the way up is
+nearly free**, and a run that prefills to one depth and takes a single
+reading has paid a full creep's price for one point instead of ten.
+
+Cost of comparing five configurations on that model:
+
+| strategy | wall clock | points | ceilings | seconds per point |
+| --- | --: | --: | --: | --: |
+| creep per config, full list | 245 min | 70 | 5 | 210 |
+| creep per config, stopped at 98K | 138 min | 50 | 0 | 165 |
+| one fixed-depth reading per config | 92 min | 5 | 0 | 1107 |
+
+The fixed-depth shape saves under an hour and costs the depth curve,
+every ceiling, and the memory column. It is dominated, and it needs
+per-run scripting that `CONVENTIONS.md` forbids in a run folder.
+
+**The shallow comparison is the creep's own first rows.** Do not run a
+separate shallow block: rows 4K and 8K cost about 35 s each and give
+the same reading. To abandon a configuration that is clearly out, stop
+its creep after those rows; the cost already paid is the two cheap
+steps.
+
+Three things a drafter creep must record, learned the hard way:
+
+- **Memory is not flat across `n-max`.** Turning the drafter on cost
+  about 1.9 GB on that build, and each extra draft token a further 150
+  to 160 MB, all of it out of the KV budget. So each `n-max` has its
+  own ceiling. Record wired at load per configuration.
+- **Sweep down as well as up.** The optimum can sit below the value a
+  previous run chose. One earlier comparison started at `n3`, went up
+  only, and never saw that every step down was faster.
+- **Read `draft acceptance` against its own sample size.** That log
+  line reports one task's accepted-over-generated. A step that
+  generated 47 tokens and accepted all 47 prints 1.000 and means almost
+  nothing; a task that generated 1536 and accepted 1195 prints 0.778
+  and means a great deal. Acceptance on that build ran 86.1% at `n1`
+  down to 61.8% at `n4` and **did not improve with depth**, against a
+  claim that it did which came from reading 47-token steps as a curve.
+
+**Estimating the `-c` for a configuration you have not served.** The
+memory the drafter frees, divided by the model's KV bytes per token, is
+how many more tokens fit. **Probe that value once, then bisect against
+the largest `-c` already known to serve.** Two rungs is typical.
+Climbing in 8192 steps from a known-good value spends an hour to learn
+what the arithmetic already said.
 
 **Picking the config a block will serve.** For a short-prompt test such
 as [EvalPlus](./evalplus.md), take the fastest at shallow depth; the
