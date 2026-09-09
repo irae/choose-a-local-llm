@@ -22,6 +22,12 @@ handing-over section.
 - `ista-nodrafter-creep` done: `-c 163840` served the probe clean, no
   bisection needed. Ceiling 147478 tokens at 8.30 tok/s, verdict
   speed. Full table in `results.md`.
+- `ista-serving-pick` blocked: this block asks the runner to choose
+  between configs, which now belongs to the coordinator (a block
+  reports a measurement, not a choice). Flagged to the coordinator
+  with the data on hand. Every later block depends on `ista_serving`
+  and `ista_window`, so the run is gated here until the coordinator
+  answers.
 
 ## Values this run sets
 
