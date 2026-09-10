@@ -301,13 +301,19 @@ shallow depth from `ista-nmax-shallow`, no drafter. `-c 32768` is the
 coordinator's own call (not measured by any shallow-depth sweep);
 confirmed serving with one real completion before calibrating.
 
-Calibration (`benchmarks/calibrate.py`, `CALIBRATION_DIR=hardware/m1-max-32gb/calibrations`):
-observed max 30000 (cap; 1/10 problems, `HumanEval/99`, hit it, empty
-content). The other 9 finished with `finish_reason: stop`, non-empty
-content, but three (`HumanEval/32` 27411, `HumanEval/76` 23507,
-`HumanEval/145` 22621) ran 22K-27K reasoning tokens before stopping
-naturally. One length stop is below the two-stop non-convergence
-threshold, so this proceeds; the long tail is recorded in
-`benchmarks/calibration.md` for the coordinator's attention. Chosen
-budget: 30000 (formula gives 45000, cap wins). Calibration wall time
-about 2h10min.
+**First calibration attempt was invalid.** It ran `calibrate.py`
+without the extra-body argument, so no `reasoning_effort` was sent,
+and this build's chat template defaults to `xhigh` when unset. The
+numbers below (observed max 30000, one length stop, three 22K-27K
+outliers) describe the build at xhigh, not low. That file is kept as
+`calibration-qwen38-ista-mtp-low-MISLABELED-actually-xhigh.json`.
+The coordinator held the full run over the projected cost (13.9
+min/problem average, ~35h for 164) before this was found; a corrected
+low calibration is running now with `reasoning_effort` set explicitly.
+
+Original (mislabeled) numbers, kept for the record: observed max 30000
+(cap; 1/10 problems, `HumanEval/99`, hit it, empty content). The other
+9 finished with `finish_reason: stop`, non-empty content, but three
+(`HumanEval/32` 27411, `HumanEval/76` 23507, `HumanEval/145` 22621) ran
+22K-27K reasoning tokens before stopping naturally. Wall time about
+2h10min for 10 problems.

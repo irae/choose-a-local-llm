@@ -94,7 +94,26 @@ handing-over section.
   done: 1/10 length stops (`HumanEval/99`), below the two-stop
   non-convergence threshold; three other problems ran 22K-27K
   reasoning tokens before stopping naturally, a long tail flagged in
-  `benchmarks/calibration.md`. Budget 30000. Starting the full set.
+  `benchmarks/calibration.md`. Budget 30000. Launched the full set.
+- Coordinator held the full run: 10 problems at ~13.9 min average
+  projects to ~35h for 164, against medium's 3h07 at budget 8192.
+  Asked for the raw wall_s and token counts from both calibrations.
+- **Bug found while pulling those numbers**: the "low" calibration ran
+  `calibrate.py` with no extra-body argument, so no `reasoning_effort`
+  was sent. The chat template defaults to `xhigh` when unset (read
+  from `meta.json`'s `server_context.props.model_info.chat_template`).
+  So the calibration I reported as "low" ran at xhigh. Stopped the
+  xhigh calibration I had just started to keep the machine busy (it
+  would have duplicated this by accident), renamed the mislabeled file
+  to `calibration-qwen38-ista-mtp-low-MISLABELED-actually-xhigh.json`,
+  and re-ran the low calibration with the `reasoning_effort` argument
+  passed explicitly this time. The full EvalPlus run's own
+  `run-humaneval.sh` call did carry the argument correctly (verified:
+  `EVALPLUS_EXTRA_BODY` was set from the third CLI argument, which I
+  did pass); only the standalone `calibrate.py` invocation was wrong.
+  Mendel's smoke/mendel-low runs are unaffected: pi's harness sets the
+  thinking level through its own CLI flag and `thinkingLevelMap`, a
+  different code path from `calibrate.py`'s `extra_body`.
 
 ## Values this run sets
 
