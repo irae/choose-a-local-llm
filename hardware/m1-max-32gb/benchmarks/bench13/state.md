@@ -56,9 +56,18 @@ handing-over section.
   `~/.pi/agent/models.json` and would have made the row
   indistinguishable from the 4-bit control's. Coordinator corrected
   the runbook (`758e3cd`) to `qwen3.8-27b-ista`. Merged.
-- `ista-mendel-xhigh` running: branch `qwen3.8-27b-ista-xhigh-issue-13`,
-  no collision. `MENDEL_CONTEXT_WINDOW=147456` pinned. Watcher started
-  (`RUNWATCH_MEM_LOG` `/tmp/run13-mendel-xhigh-mem.log`).
+- `ista-mendel-xhigh` done: branch `qwen3.8-27b-ista-xhigh-issue-13`,
+  17 commits, loop ok (0.38), 109.4 min, peak context 117,940/147,456,
+  no compaction. Scored on `claude-opus-5`: 74.5/100 by the literal
+  rubric formula, 80.5 under an alternate convention two prior rows
+  used; flagged to the coordinator, not resolved here. Full matrix in
+  `results.md`.
+- `ista_temperature` read from the run's own `meta.json`
+  (`server_context.props.default_generation_settings.params`):
+  temperature 1.0, top_p 0.95. `AGENT.md`'s
+  `~/.local/share/mendel-benchmark/` path does not exist on this
+  machine; the sampling values are recorded in `<slug>-meta.json`
+  instead (`PLAN.md`, "Pinned thinking level and sampling").
 
 ## Values this run sets
 
@@ -72,4 +81,4 @@ that produced it.
 | `ista_serving` | no drafter (no `--spec-type`, no `--spec-draft-n-max`), `-c 163840` | coordinator gate |
 | `ista_window` | `147456` | coordinator gate |
 | `ista_evalplus_serving` | no drafter, `-c 32768` (coordinator's call, unmeasured on this build until confirmed) | coordinator gate |
-| `ista_temperature` | | read from `~/.local/share/mendel-benchmark/` |
+| `ista_temperature` | temperature 1.0, top_p 0.95 (from `<slug>-meta.json`, not the AGENT.md path, which does not exist) | `ista-mendel-xhigh` |

@@ -172,6 +172,50 @@ cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=147456 ./run-worke
 Branch `qwen3.8-27b-ista-xhigh-issue-13`, no collision with run 12's
 `qwen3.8-27b-ista-medium-issue-13` or
 `qwen3.8-27b-ista2-medium-issue-13`. Worker confirmed `contextWindow
-147456 pinned on provider llama`. Run in progress; watcher running
-(`RUNWATCH_OUTPUT`
-`mendel-benchmark/scratchpad/benchmark/runs/qwen3.8-27b-ista-xhigh-blind-events.jsonl`).
+147456 pinned on provider llama`.
+
+Worker ended clean: 17 commits, loop verdict ok, worst ratio 0.38 on a
+tool call, wall time 109.4 min. Context never reached the window: peak
+usage 117,940 tokens against 147,456, no compaction.
+
+Config note: `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, rev
+`d562806`, no drafter, f16 KV, `-c 163840`, window 147456, wired 25000,
+temperature 1.0, top_p 0.95 (read from the run's own `meta.json`, since
+`~/.local/share/mendel-benchmark/` does not exist on this machine).
+
+Scored on `claude-opus-5` per `PLAN.md`, against `RUBRIC.md` unchanged,
+citing `scratchpad/benchmark/runs/qwen3.8-27b-ista-xhigh-issue-13-evidence.json`:
+
+| # | Criterion | Score | Evidence |
+| --- | --- | --- | --- |
+| 1 | Bugs remaining | 10/25 | trap A hit (critical, `.then()` on an AsyncIterator, `THREW: TypeError`); trap B hit (medium, stale `rimraf` refs in `mendel-requirify`); trap C not hit |
+| 2 | Task completion | 16/20 | all 8 libraries done; the model found trap B by its own grep and chose to leave it, calling `legacy-packages` out of scope |
+| 3 | node_modules pruned | 8/8 | reinstalled before nearly every commit; lockfile shrank, no root devDeps left |
+| 4 | Prettier & ESLint | 5/5 | both pass, the model ran both itself 20 times |
+| 5 | Commit craft | 8/12 | 15 of 17 subjects `refactor(...)`, 2 `chore`; no multi-package commit, no `--no-verify`, no `git add -A`, no TASKS.md leak |
+| 6 | Right the first time | 8/8 | 17 commits, no repair commit; the model's own JSON/prettier checks caught two broken edits before staging |
+| 7 | Test discipline | 10/10 | per-package test after every commit, full suite at commits 5, 10, 15, the mandated cadence |
+| 8 | House conventions | 5/5 | 40 files, +90/-192 (96 of the deletions the lockfile); no drive-by changes |
+| 9 | Task list | 2/4 | sub-items came from a real grep sweep, but the whole tree was written upfront and ticks came in large batches, not per commit |
+| 10 | Truncation | 2.5/3 | 52 of 77 noisy commands truncated (68%) |
+
+**Total 74.5/100.**
+
+**Open question, flagged to the coordinator, not resolved here:**
+criterion 1 by the literal rubric formula (critical 3 + medium 2) gives
+10/25. Two earlier rows with the same trap-A-plus-trap-B pair
+(`qwen3.8-27b-ista2-medium`, `deepseek-v4-pro-0813` v1.1) recorded 16,
+counting the critical only. If that is the intended convention, this
+cell is 16/25 and the total is 80.5/100.
+
+The model's claim that the recurring `mendel-full-example` karma
+failure is a pre-existing environment issue was checked and confirmed:
+the broken `node_modules/.bin/mendel` symlink is a worktree artifact
+(`node_modules` symlinked from the main repo), no commit on this branch
+touches `examples/full-example` or `node_modules`, and the model
+diagnosed it itself in the session.
+
+Full score line: `Qwen3.8-27B (ISTA IQ3_S-mtp, xhigh) — 74.5 | bugs 10,
+completion 16, node_modules 8, lint 5, commits 8, first-time 8, tests
+10, conventions 5, task list 2, truncation 2.5 | 8/8 libraries, 17
+commits, 109.4 min, $0 (local)`.
