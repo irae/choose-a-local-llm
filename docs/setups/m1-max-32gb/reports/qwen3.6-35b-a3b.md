@@ -142,16 +142,16 @@ so MTP numbers there read below the py/js bench.
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
-|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
-| guided-v3.0 | llama-q8_0-high-ctx.112k ⏳ | **83** | 8/8/done | 91.9 | 12,712k | 94k | 1 | 285 | 16 |  |
-| guided-v2.1 | llama-q8_0-default-ctx.96k | **65.5** | 8/8/done | 75.6 | 12,081k | 94k | 0 | 251 | 8 |  |
-| blind-v1.1 | llama-q8_0-high-ctx.96k | **63** | 8/8/done | 79.2 | 7,933k | 94k | 0 | 203 | 13 |  |
-| guided-v3.0 | llama-q8_0-off-ctx.80k | **62.5** | 8/8/done | 89.4 | 13,045k | 78k | 1 | 264 | 16 |  |
-| guided-v3.0 | llama-q8_0-off-ctx.48k | **46.5** | 8/8/done | 95.6 | 9,473k | 52k | 12 | 299 | 7 |  |
-| blind-v1.0 | llama-q8_0-default-ctx.96k | **41.5** | 8/8/done | 132.0 | 10,090k | 94k | 1 | 258 | 13 |  |
+| test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
+| guided-v3.0 | UD-Q4_K_XL unsloth | llama-q8_0-high-ctx.112k ⏳ | **83** | 8/8/done | 91.9 | 12,712k | 94k | 1 | 285 | 16 |  |
+| guided-v2.1 | UD-Q4_K_XL unsloth | llama-q8_0-default-ctx.96k | **65.5** | 8/8/done | 75.6 | 12,081k | 94k | 0 | 251 | 8 |  |
+| blind-v1.1 | UD-Q4_K_XL unsloth | llama-q8_0-high-ctx.96k | **63** | 8/8/done | 79.2 | 7,933k | 94k | 0 | 203 | 13 |  |
+| guided-v3.0 | UD-Q4_K_XL unsloth | llama-q8_0-off-ctx.80k | **62.5** | 8/8/done | 89.4 | 13,045k | 78k | 1 | 264 | 16 |  |
+| guided-v3.0 | UD-Q4_K_XL unsloth | llama-q8_0-off-ctx.48k | **46.5** | 8/8/done | 95.6 | 9,473k | 52k | 12 | 299 | 7 |  |
+| blind-v1.0 | UD-Q4_K_XL unsloth | llama-q8_0-default-ctx.96k | **41.5** | 8/8/done | 132.0 | 10,090k | 94k | 1 | 258 | 13 |  |
 
-The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
+The build cell names the quant and its publisher. The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 
 ⏳ this row ran on a 122880-token harness window; at wired 25000 the q8_0 arm serves `-c 98304`, so the window is out of reach. The score stands as a record; a re-run at the served window is pending, at low priority. [What the machine serves at wired 25000](../index.md#the-wired-limit-25000).
 <!-- gen:model-mendel:end -->

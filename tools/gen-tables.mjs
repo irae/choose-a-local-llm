@@ -123,6 +123,25 @@ function thinkingLevel(branch) {
 
 const SERVING_SHORT = { 'llama-server': 'llama', 'mlx_lm.server': 'mlx', 'lm-studio': 'lmstudio' }
 
+const BARE_BUILDS = {
+  'qwen3.6-35b-a3b': 'UD-Q4_K_XL unsloth',
+  'gemma-4-26b-a4b': 'UD-Q4_K_XL unsloth',
+  'gemma-4-12b': 'Q4_K_XL unsloth',
+  'bonsai-prism': 'Q2_g64 prism fork',
+  'prism-ml/Ternary-Bonsai-27B-gguf': 'Q2_g64 prism fork',
+}
+
+function mendelBuild(r) {
+  const id = r.model_id || r.model
+  if (id === 'google/gemma-4-12b') return r.serving === 'lm-studio' ? 'MLX 4-bit LM Studio' : 'Q4_K_XL unsloth'
+  if (BARE_BUILDS[id]) return BARE_BUILDS[id]
+  const tagged = id.match(/^([^/]+)\/[^:]+:(.+)$/)
+  if (tagged) return `${tagged[2]} ${tagged[1].replace(/-DASLab$/, '')}`
+  const mlx = id.match(/-(\d+bit)$/)
+  if (mlx) return `MLX ${mlx[1].replace('bit', '-bit')}`
+  return id.replace(/^.*\//, '')
+}
+
 function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
   const distrust = (r) => untrusted.find((u) =>
     (!u.serving || u.serving === r.serving) && (!u.branch || new RegExp(u.branch).test(r.branch)))
@@ -155,8 +174,8 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
     return `${SERVING_SHORT[r.serving] || esc(r.serving)}${kv}-${thinkingLevel(r.branch)}-ctx.${window}`
   }
   const header = [
-    '| test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |',
-    '|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|',
+    '| test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |',
+    '|---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|',
   ]
   const body = tagged.map(({ r, test }) => {
     const done = r.libraries_done === '' ? 8 : Number(r.libraries_done)
@@ -168,6 +187,7 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
     const loop = r['telemetry.loop_flag'] === 'LOOP' ? esc(r['telemetry.loop_kind'] || 'yes') : ''
     return [
       `${test}-${esc(r.prompt_version)}`,
+      esc(mendelBuild(r)),
       config(r) + (distrust(r) ? ` ${distrust(r).marker || '†'}` : ''),
       score,
       `${done}/8/${state}`,
@@ -183,7 +203,7 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
   const used = untrusted.filter((u) => tagged.some(({ r }) => distrust(r) === u))
   const kvNote = [
     '',
-    'The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.',
+    'The build cell names the quant and its publisher. The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.',
   ]
   const legend = used.length
     ? [

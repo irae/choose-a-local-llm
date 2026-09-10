@@ -190,19 +190,19 @@ matches the PQ2_0 variant.
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
-|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
-| blind-v1.0 | mlx-unquantized-default-ctx.56k | **37.5** (raw 58) | 3/8/partial | 101.8 | 887k | 28k | 0 | 53 | 3 |  |
-| blind-v1.1 | mlx-unquantized-low-ctx.56k | **37.5** (raw 55) | 3/8/partial | 300.0 | 3,555k | 52k | 0 | 135 | 4 | thinking |
-| guided-v2.1 | mlx-unquantized-default-ctx.56k | **37.5** (raw 69) | 3/8/partial | 230.3 | 2,142k | 51k | 0 | 94 | 3 |  |
-| guided-v3.0 | llama-q4_0-high-ctx.64k | **31.5** | 3/8/partial | 300.0 | 0k | 63k | 10 | 343 | 3 |  |
-| blind-v1.1 | llama-q4_0-high-ctx.64k | **12.5** (raw 60.5) | 1/8/done | 43.1 | 1,718k | 51k | 0 | 76 | 2 |  |
-| guided-v3.0 | mlx-unquantized-low-ctx.56k | **12.5** (raw 59) | 1/8/partial | 300.0 | 3,619k | 46k | 0 | 122 | 1 |  |
-| guided-v3.0 | llama-f16-high-ctx.128k | **12.5** | 1/8/partial | 194.7 | 21,049k | 127k | 1 | 376 | 2 |  |
-| guided-v3.0 | mlx-unquantized-off-ctx.56k | **0** (raw 27) | 0/8/invalid | 83.5 | 48k | 5k | 0 | 10 | 0 |  |
-| guided-v3.0 | mlx-unquantized-off-ctx.56k | **0** (raw 25) | 0/8/invalid | 186.9 | 1,969k | 27k | 0 | 105 | 0 | tool call |
+| test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
+| blind-v1.0 | MLX 2-bit | mlx-unquantized-default-ctx.56k | **37.5** (raw 58) | 3/8/partial | 101.8 | 887k | 28k | 0 | 53 | 3 |  |
+| blind-v1.1 | MLX 2-bit | mlx-unquantized-low-ctx.56k | **37.5** (raw 55) | 3/8/partial | 300.0 | 3,555k | 52k | 0 | 135 | 4 | thinking |
+| guided-v2.1 | MLX 2-bit | mlx-unquantized-default-ctx.56k | **37.5** (raw 69) | 3/8/partial | 230.3 | 2,142k | 51k | 0 | 94 | 3 |  |
+| guided-v3.0 | Q2_g64 prism fork | llama-q4_0-high-ctx.64k | **31.5** | 3/8/partial | 300.0 | 0k | 63k | 10 | 343 | 3 |  |
+| blind-v1.1 | Q2_g64 prism fork | llama-q4_0-high-ctx.64k | **12.5** (raw 60.5) | 1/8/done | 43.1 | 1,718k | 51k | 0 | 76 | 2 |  |
+| guided-v3.0 | MLX 2-bit | mlx-unquantized-low-ctx.56k | **12.5** (raw 59) | 1/8/partial | 300.0 | 3,619k | 46k | 0 | 122 | 1 |  |
+| guided-v3.0 | Q2_g64 prism fork | llama-f16-high-ctx.128k | **12.5** | 1/8/partial | 194.7 | 21,049k | 127k | 1 | 376 | 2 |  |
+| guided-v3.0 | MLX 2-bit | mlx-unquantized-off-ctx.56k | **0** (raw 27) | 0/8/invalid | 83.5 | 48k | 5k | 0 | 10 | 0 |  |
+| guided-v3.0 | MLX 2-bit | mlx-unquantized-off-ctx.56k | **0** (raw 25) | 0/8/invalid | 186.9 | 1,969k | 27k | 0 | 105 | 0 | tool call |
 
-The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
+The build cell names the quant and its publisher. The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).

@@ -150,15 +150,15 @@ The two GGUF rows share the thinking-on score; the MLX row keeps its own.
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
-|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
-| guided-v3.0 | llama-f16-high-ctx.208k | **57** | 7/8/partial | 115.1 | 24,803k | 209k | 2 | 269 | 13 |  |
-| blind-v1.1 | llama-f16-high-ctx.208k | **47.5** | 8/8/done | 80.8 | 23,832k | 209k | 1 | 246 | 21 |  |
-| blind-v1.0 | llama-q8_0-default-ctx.256k | **38** | 8/8/partial | 104.0 | 8,150k | 142k | 0 | 115 | 9 |  |
-| guided-v3.0 | llama-f16-off-ctx.208k | **25** | 2/8/partial | 20.4 | 2,605k | 73k | 0 | 91 | 3 | tool call |
-| blind-v1.1 | llama-f16-off-ctx.208k | **12.5** | 1/8/partial | 28.0 | 8,053k | 136k | 0 | 120 | 7 | tool call |
+| test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
+| guided-v3.0 | UD-Q4_K_XL unsloth | llama-f16-high-ctx.208k | **57** | 7/8/partial | 115.1 | 24,803k | 209k | 2 | 269 | 13 |  |
+| blind-v1.1 | UD-Q4_K_XL unsloth | llama-f16-high-ctx.208k | **47.5** | 8/8/done | 80.8 | 23,832k | 209k | 1 | 246 | 21 |  |
+| blind-v1.0 | UD-Q4_K_XL unsloth | llama-q8_0-default-ctx.256k | **38** | 8/8/partial | 104.0 | 8,150k | 142k | 0 | 115 | 9 |  |
+| guided-v3.0 | UD-Q4_K_XL unsloth | llama-f16-off-ctx.208k | **25** | 2/8/partial | 20.4 | 2,605k | 73k | 0 | 91 | 3 | tool call |
+| blind-v1.1 | UD-Q4_K_XL unsloth | llama-f16-off-ctx.208k | **12.5** | 1/8/partial | 28.0 | 8,053k | 136k | 0 | 120 | 7 | tool call |
 
-The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
+The build cell names the quant and its publisher. The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).

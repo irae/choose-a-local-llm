@@ -247,20 +247,20 @@ xhigh in 109 minutes; its full run is pending.
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
-|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
-| blind-v1.1 | llama-f16-medium-ctx.48k | **87** | 8/8/done | 129.3 | 5,947k | 46k | 4 | 210 | 10 |  |
-| blind-v1.1 | llama-f16-xhigh-ctx.144k | **80.5** | 8/8/done | 109.4 | 10,819k | 118k | 0 | 193 | 17 |  |
-| blind-v1.1 | llama-f16-medium-ctx.112k | **76.5** | 8/8/done | 135.2 | 7,890k | 89k | 0 | 195 | 17 |  |
-| blind-v1.1 | llama-f16-medium-ctx.64k | **76** | 8/8/done | 97.8 | 5,008k | 60k | 1 | 173 | 12 |  |
-| guided-v2.1 | mlx-unquantized-low-ctx.26k † | **75** (raw 84) | 6/8/partial | 153.8 | 1,123k | 23k | 0 | 95 | 6 |  |
-| blind-v1.1 | llama-f16-low-ctx.144k | **66** | 7/8/partial | 163.3 | 11,426k | 130k | 0 | 214 | 15 |  |
-| blind-v1.0 | mlx-unquantized-default-ctx.26k † | **37.5** (raw 80) | 3/8/partial | 253.5 | 1,777k | 24k | 0 | 135 | 6 |  |
-| blind-v1.1 | llama-f16-medium-ctx.96k | **37.5** | 3/8/partial | 59.8 | 7,025k | 70k | 0 | 189 | 7 |  |
-| blind-v1.1 | mlx-unquantized-low-ctx.26k † | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
-| guided-v3.0 | mlx-unquantized-low-ctx.?k † | **0** (raw 34) | 0/8/invalid | 261.3 | 1,254k | 30k | 0 | 48 | 0 |  |
+| test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
+| blind-v1.1 | Q4_K_M bartowski | llama-f16-medium-ctx.48k | **87** | 8/8/done | 129.3 | 5,947k | 46k | 4 | 210 | 10 |  |
+| blind-v1.1 | IQ3_S-mtp ISTA | llama-f16-xhigh-ctx.144k | **80.5** | 8/8/done | 109.4 | 10,819k | 118k | 0 | 193 | 17 |  |
+| blind-v1.1 | IQ3_S-mtp ISTA | llama-f16-medium-ctx.112k | **76.5** | 8/8/done | 135.2 | 7,890k | 89k | 0 | 195 | 17 |  |
+| blind-v1.1 | Q4_K_M bartowski | llama-f16-medium-ctx.64k | **76** | 8/8/done | 97.8 | 5,008k | 60k | 1 | 173 | 12 |  |
+| guided-v2.1 | MLX 4-bit | mlx-unquantized-low-ctx.26k † | **75** (raw 84) | 6/8/partial | 153.8 | 1,123k | 23k | 0 | 95 | 6 |  |
+| blind-v1.1 | IQ3_S-mtp ISTA | llama-f16-low-ctx.144k | **66** | 7/8/partial | 163.3 | 11,426k | 130k | 0 | 214 | 15 |  |
+| blind-v1.0 | MLX 4-bit | mlx-unquantized-default-ctx.26k † | **37.5** (raw 80) | 3/8/partial | 253.5 | 1,777k | 24k | 0 | 135 | 6 |  |
+| blind-v1.1 | AD-IQ3_S AtomicChat | llama-f16-medium-ctx.96k | **37.5** | 3/8/partial | 59.8 | 7,025k | 70k | 0 | 189 | 7 |  |
+| blind-v1.1 | MLX 4-bit | mlx-unquantized-low-ctx.26k † | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
+| guided-v3.0 | MLX 4-bit | mlx-unquantized-low-ctx.?k † | **0** (raw 34) | 0/8/invalid | 261.3 | 1,254k | 30k | 0 | 48 | 0 |  |
 
-The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
+The build cell names the quant and its publisher. The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 
 † a 26624-token window with a 16384-token output budget, our config arithmetic, not the model
 <!-- gen:model-mendel:end -->
