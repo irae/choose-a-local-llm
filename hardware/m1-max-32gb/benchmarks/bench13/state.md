@@ -58,10 +58,11 @@ handing-over section.
   the runbook (`758e3cd`) to `qwen3.8-27b-ista`. Merged.
 - `ista-mendel-xhigh` done: branch `qwen3.8-27b-ista-xhigh-issue-13`,
   17 commits, loop ok (0.38), 109.4 min, peak context 117,940/147,456,
-  no compaction. Scored on `claude-opus-5`: 74.5/100 by the literal
-  rubric formula, 80.5 under an alternate convention two prior rows
-  used; flagged to the coordinator, not resolved here. Full matrix in
-  `results.md`.
+  no compaction. Scored on `claude-opus-5`: 80.5/100 (coordinator's
+  ruling on criterion 1 — count the critical only, since trap B is
+  criterion 2's own named finding). Full matrix in `results.md`.
+- `ista-smoke-low` done: pass, 139s, one commit, clean tree, no loop.
+  Full line in `results.md`. Next: `ista-mendel-low`.
 - `ista_temperature` read from the run's own `meta.json`
   (`server_context.props.default_generation_settings.params`):
   temperature 1.0, top_p 0.95. `AGENT.md`'s

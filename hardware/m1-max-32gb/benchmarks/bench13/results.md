@@ -188,7 +188,7 @@ citing `scratchpad/benchmark/runs/qwen3.8-27b-ista-xhigh-issue-13-evidence.json`
 
 | # | Criterion | Score | Evidence |
 | --- | --- | --- | --- |
-| 1 | Bugs remaining | 10/25 | trap A hit (critical, `.then()` on an AsyncIterator, `THREW: TypeError`); trap B hit (medium, stale `rimraf` refs in `mendel-requirify`); trap C not hit |
+| 1 | Bugs remaining | 16/25 | trap A hit (critical, `.then()` on an AsyncIterator, `THREW: TypeError`), 25 − 3×3. Trap B is an incomplete migration, not a runtime bug (the model kept both the `require` and the declaration, nothing breaks); scored under criterion 2, not counted twice here. Trap C not hit |
 | 2 | Task completion | 16/20 | all 8 libraries done; the model found trap B by its own grep and chose to leave it, calling `legacy-packages` out of scope |
 | 3 | node_modules pruned | 8/8 | reinstalled before nearly every commit; lockfile shrank, no root devDeps left |
 | 4 | Prettier & ESLint | 5/5 | both pass, the model ran both itself 20 times |
@@ -199,14 +199,13 @@ citing `scratchpad/benchmark/runs/qwen3.8-27b-ista-xhigh-issue-13-evidence.json`
 | 9 | Task list | 2/4 | sub-items came from a real grep sweep, but the whole tree was written upfront and ticks came in large batches, not per commit |
 | 10 | Truncation | 2.5/3 | 52 of 77 noisy commands truncated (68%) |
 
-**Total 74.5/100.**
+**Total 80.5/100.**
 
-**Open question, flagged to the coordinator, not resolved here:**
-criterion 1 by the literal rubric formula (critical 3 + medium 2) gives
-10/25. Two earlier rows with the same trap-A-plus-trap-B pair
-(`qwen3.8-27b-ista2-medium`, `deepseek-v4-pro-0813` v1.1) recorded 16,
-counting the critical only. If that is the intended convention, this
-cell is 16/25 and the total is 80.5/100.
+Coordinator's ruling on criterion 1: count the critical only, 16/25,
+total 80.5. Trap B is criterion 2's own named finding ("found the
+`mendel-requirify` reference"); counting it again under criterion 1
+double-charges one miss. The two prior rows the scorer cited are the
+rubric applied correctly, not a drifting convention.
 
 The model's claim that the recurring `mendel-full-example` karma
 failure is a pre-existing environment issue was checked and confirmed:
@@ -215,7 +214,18 @@ the broken `node_modules/.bin/mendel` symlink is a worktree artifact
 touches `examples/full-example` or `node_modules`, and the model
 diagnosed it itself in the session.
 
-Full score line: `Qwen3.8-27B (ISTA IQ3_S-mtp, xhigh) — 74.5 | bugs 10,
+Full score line: `Qwen3.8-27B (ISTA IQ3_S-mtp, xhigh) — 80.5 | bugs 16,
 completion 16, node_modules 8, lint 5, commits 8, first-time 8, tests
 10, conventions 5, task list 2, truncation 2.5 | 8/8 libraries, 17
 commits, 109.4 min, $0 (local)`.
+
+## `ista-smoke-low`
+
+Same as `ista-smoke-xhigh`, served `ista_serving`, pi model id
+`qwen3.8-27b-ista`.
+
+```
+SMOKE-MENDEL model=qwen3.8-27b-ista level=low task=xtend window=default calls=9 distinct=9 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=4577 commits=1 clean=yes end=stop wall_s=139 verdict=pass
+```
+
+Pass: one commit, clean tree, no loop, 139s inside the cap.
