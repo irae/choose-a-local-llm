@@ -218,19 +218,31 @@ markdown between the `<!-- gen:models-evaluated:start -->` /
 `<!-- gen:models-evaluated:end -->` markers; the next `docs:tables` run
 overwrites it. `npm run docs:check` fails the build if either copy has
 drifted from the JSON, so a forgotten regeneration cannot reach the
-site. The generator sorts rows by EvalPlus score (pass@1 base,
-descending), then by Max ctx (descending) for ties: highest scores at
-the top, and within a tie the deepest context. `pending` scores sort to
-the bottom.
+site. The generator sorts rows by the average of the two quality
+scores, the EvalPlus base pass@1 times 100 and the Mendel blind score,
+descending. A row with only one of the two sorts after every row with
+both, by its EvalPlus score; Max ctx (descending) breaks ties. Nothing
+else moves a row up: speed, window and memory are read from the row,
+not ranked.
 
 - **Columns, in order**: # | Config | Max ctx | Gated by¹ |
-  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus². The `#`
-  column numbers the rows of that page, top to bottom; every page
-  counts its own.
-- **The homepage table holds one line per model** (the major name
-  before the first comma), showing that model's best complete row.
+  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus² | Mendel³.
+  The `#` column numbers the rows of that page, top to bottom; every
+  page counts its own.
+- **The `mendel` cell is curated in `models.json`**, like `evalplus`:
+  the config's Mendel blind score at that thinking level on the
+  current prompt version, out of 100, with `(partial)` where the run
+  did not finish; `pending` when no valid blind run exists; `invalid`
+  when every attempt was invalid. It is never shared across levels or
+  serving configs. Guided scores stay on the Mendel page. Footnote ³
+  lives on the header.
+- **The homepage table holds one line per build** (the first two
+  parts of the config: model, then runtime and quant with its
+  publisher), showing that build's best complete row by the same sort.
+  A model with three builds gets three lines.
 - **The comparison table holds every config row but suppresses any row
-  with a pending cell.** Pending work is visible on the model pages,
+  with a pending cell**, the Mendel cell excepted: a pending Mendel
+  shows as `pending`. Other pending work is visible on the model pages,
   not on the comparison.
 - **Per-model tables keep the order the rows have in `models.json`**
   (no re-sort), so their `#` numbers are stable. All references to a
@@ -273,9 +285,10 @@ the bottom.
   not give tok/s its own separate explanation.
 - **A row served by a custom binary or fork gets its own footnote**,
   attached directly to the Runtime abbreviation in Config (for example
-  "MLX³"), not to any other cell. The same fork reuses its number across
-  every row that uses it. Number them ³, ⁴, ... in the order they first
-  appear in the table (¹ and ² are reserved for the header footnotes).
+  "MLX⁴"), not to any other cell. The same fork reuses its number across
+  every row that uses it. Number them ⁴, ⁵, ... in the order they first
+  appear in the table (¹, ² and ³ are reserved for the header
+  footnotes).
 - **Each footnote is its own paragraph below the table**: a blank line
   between ¹, ², ³, and so on, not one run-on block.
 - **Multi-agent configs** show the slot count in **Max ctx** as

@@ -35,13 +35,13 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
-|--:|---|--:|:--:|--:|--:|--:|
-| 1 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% |
-| 2 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% |
-| 3 | Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% |
-| 4 | Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% |
-| 5 | Ternary-Bonsai-27B, GGUF⁴, f16 KV, no drafter, thinking on | 131k | untested | 15.0 → 9.7 | 18.6 GB | pending |
+| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
+|--:|---|--:|:--:|--:|--:|--:|--:|
+| 1 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% | 37.5 (partial) |
+| 2 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% | pending |
+| 3 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% | 12.5 |
+| 4 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% | pending |
+| 5 | Ternary-Bonsai-27B, GGUF⁵, f16 KV, no drafter, thinking on | 131k | untested | 15.0 → 9.7 | 18.6 GB | pending | pending |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -63,7 +63,7 @@ mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#3 — Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, thinking on.** The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).
+**#3 — Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on.** The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
@@ -75,7 +75,7 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --jinja --port 8081
 ```
 
-**#4 — Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, 2 slots, thinking on.**
+**#4 — Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on.**
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
@@ -87,7 +87,7 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --jinja --port 8081
 ```
 
-**#5 — Ternary-Bonsai-27B, GGUF⁴, f16 KV, no drafter, thinking on.** pi id `bonsai-prism-f16`. Measured 2026-09-08 at wired limit 25000, fork revision `abbae72`. The fork at f16 KV has no speed floor inside `-c 131072`: 15.0 tok/s at 4K and 9.67 at 131K, the `-c` boundary itself, with wired flat at 18.3 GB and zero swap growth. The q4_0 KV rows floor at 33K, so the cache type was the floor, not the weights. No larger `-c` was tried. EvalPlus is pending: the f16 cache does not carry the calibrated q4 row's score. Mendel guided at thinking high: 12.5/100 capped from 36 raw, one of eight libraries, 376 tool calls and 74 tool errors at a 127K peak context.
+**#5 — Ternary-Bonsai-27B, GGUF⁵, f16 KV, no drafter, thinking on.** pi id `bonsai-prism-f16`. Measured 2026-09-08 at wired limit 25000, fork revision `abbae72`. The fork at f16 KV has no speed floor inside `-c 131072`: 15.0 tok/s at 4K and 9.67 at 131K, the `-c` boundary itself, with wired flat at 18.3 GB and zero swap growth. The q4_0 KV rows floor at 33K, so the cache type was the floor, not the weights. No larger `-c` was tried. EvalPlus is pending: the f16 cache does not carry the calibrated q4 row's score. Mendel guided at thinking high: 12.5/100 capped from 36 raw, one of eight libraries, 376 tool calls and 74 tool errors at a 127K peak context.
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \

@@ -37,11 +37,11 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
-|--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 41k | mem | 55.1 → 37.4 | 24.6 GB | 0.939/0.921/97% |
-| 2 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 82k | speed | 36.5 → 9.2 | 25.8 GB | 0.939/0.921/97% |
-| 3 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 41k | mem | 69.1 → 52.6 | 25.1 GB | 0.939/0.921/97% |
+| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
+|--:|---|--:|:--:|--:|--:|--:|--:|
+| 1 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 41k | mem | 55.1 → 37.4 | 24.6 GB | 0.939/0.921/97% | pending |
+| 2 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 82k | speed | 36.5 → 9.2 | 25.8 GB | 0.939/0.921/97% | 63 |
+| 3 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 41k | mem | 69.1 → 52.6 | 25.1 GB | 0.939/0.921/97% | pending |
 <!-- gen:model-table:end -->
 
 ## Configs

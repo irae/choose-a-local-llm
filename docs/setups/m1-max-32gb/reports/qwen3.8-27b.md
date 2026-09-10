@@ -43,15 +43,15 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |
-|--:|---|--:|:--:|--:|--:|--:|
-| 1 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% |
-| 2 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% |
-| 3 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 72k | mem | 20.0 → 13.7 | 25.4 GB | 0.982/0.939/100% |
-| 4 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium | 128k | mem | 15.1 → 9.7 | 24.2 GB | 0.976/0.945/99% |
-| 5 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort xhigh | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.945/0.921/97% |
-| 6 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.976/0.933/99% |
-| 7 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8 → 10.3 | 24.1 GB | 0.988/0.927/100% |
+| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
+|--:|---|--:|:--:|--:|--:|--:|--:|
+| 1 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% | pending |
+| 2 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% | 12.5 (partial) |
+| 3 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 72k | mem | 20.0 → 13.7 | 25.4 GB | 0.982/0.939/100% | 87 |
+| 4 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium | 128k | mem | 15.1 → 9.7 | 24.2 GB | 0.976/0.945/99% | 76.5 |
+| 5 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort xhigh | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.945/0.921/97% | 80.5 |
+| 6 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.976/0.933/99% | 66 (partial) |
+| 7 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8 → 10.3 | 24.1 GB | 0.988/0.927/100% | 37.5 (partial) |
 <!-- gen:model-table:end -->
 
 ## Configs

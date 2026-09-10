@@ -229,8 +229,24 @@ function parseScore(evalplus) {
   return m ? parseFloat(m[1]) : -1
 }
 
+function parseMendel(mendel) {
+  const m = String(mendel ?? '').match(/^([\d.]+)/)
+  return m ? parseFloat(m[1]) : null
+}
+
+function composite(r) {
+  const e = parseScore(r.evalplus)
+  const m = parseMendel(r.mendel)
+  if (e < 0 || m === null) return null
+  return (e * 100 + m) / 2
+}
+
 function sortRows(rows) {
   return [...rows].sort((a, b) => {
+    const ca = composite(a)
+    const cb = composite(b)
+    if (ca !== null && cb !== null && ca !== cb) return cb - ca
+    if ((ca === null) !== (cb === null)) return ca === null ? 1 : -1
     const scoreDiff = parseScore(b.evalplus) - parseScore(a.evalplus)
     if (scoreDiff !== 0) return scoreDiff
     return parseCtx(b.maxCtx) - parseCtx(a.maxCtx)
@@ -245,6 +261,9 @@ function checkRows(rows, setup) {
     if (!GATED_BY.has(r.gatedBy)) {
       throw new Error(`${setup}: row ${r.id} has gatedBy "${r.gatedBy}"; allowed: ${[...GATED_BY].join(', ')}`)
     }
+    if (typeof r.mendel !== 'string' || !r.mendel) {
+      throw new Error(`${setup}: row ${r.id} has no mendel cell; write a score, "pending" or "invalid"`)
+    }
   }
 }
 
@@ -257,9 +276,9 @@ function hasPending(r) {
 function renderTable(rows, { footnotes = true, sort = true } = {}) {
   const header = [
     footnotes
-      ? '| # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² |'
-      : '| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus |',
-    '|--:|---|--:|:--:|--:|--:|--:|',
+      ? '| # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² | Mendel³ |'
+      : '| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |',
+    '|--:|---|--:|:--:|--:|--:|--:|--:|',
   ]
   const ordered = sort ? sortRows(rows) : rows
   let anyStale = false
@@ -274,7 +293,7 @@ function renderTable(rows, { footnotes = true, sort = true } = {}) {
     const config = r.abandoned
       ? `*${r.config}* ${r.abandoned.marker || '💀'}`
       : r.config
-    return `| ${i + 1} | ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} | ${cell(r, 'memory')} | ${cell(r, 'evalplus')} |`
+    return `| ${i + 1} | ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} | ${cell(r, 'memory')} | ${cell(r, 'evalplus')} | ${cell(r, 'mendel')} |`
   })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']
@@ -295,11 +314,15 @@ function majorName(config) {
   return config.split(',')[0].trim()
 }
 
+function buildName(config) {
+  return config.split(',').slice(0, 2).map((s) => s.trim()).join(', ')
+}
+
 function renderHomeTable(data) {
   const seen = []
   const groups = new Map()
   for (const r of data.rows) {
-    const name = majorName(r.config)
+    const name = buildName(r.config)
     if (!groups.has(name)) {
       groups.set(name, [])
       seen.push(name)
@@ -310,7 +333,8 @@ function renderHomeTable(data) {
     const rows = groups.get(name)
     const complete = rows.filter((r) => !hasPending(r))
     const pick = sortRows(complete.length ? complete : rows)[0]
-    return { ...pick, config: name }
+    const rest = pick.config.split(',').slice(2).map((s) => s.trim()).join(', ')
+    return { ...pick, config: rest ? `${name}, ${rest}` : name }
   })
   return renderTable(best)
 }
