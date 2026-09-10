@@ -7,12 +7,22 @@
 # the real gate prompt, not an approximation.
 #
 # Usage: calibrate.py <config-name> <model-id> [extra-body-json]
+#
+# Every row records requested_extra_body and resolved_reasoning_effort.
+# The resolved value is what the server will render: the requested
+# reasoning_effort when the extra body carries one, else the default the
+# server's chat template declares (read from GET /props), else null.
+# A calibration file can then never disagree with its own name.
 import json
 import os
+import re
 import sys
 import time
+import urllib.request
 
 import openai
+
+BASE_URL = "http://127.0.0.1:8081"
 
 PROBLEM_IDS = [
     "HumanEval/0", "HumanEval/10", "HumanEval/26", "HumanEval/32",
@@ -43,6 +53,31 @@ def load_problems():
     return by_id
 
 
+def template_default_effort():
+    try:
+        with urllib.request.urlopen(BASE_URL + "/props", timeout=30) as r:
+            props = json.load(r)
+    except Exception as e:
+        print(f"event\tprops_unavailable\t{e}", flush=True)
+        return None
+    template = (props.get("model_info") or {}).get("chat_template") or props.get(
+        "chat_template"
+    ) or ""
+    m = re.search(r"reasoning_effort\s*\|\s*default\(\s*['\"](\w+)['\"]", template)
+    return m.group(1) if m else None
+
+
+def resolve_effort(extra_body, template_default):
+    requested = ((extra_body or {}).get("chat_template_kwargs") or {}).get(
+        "reasoning_effort"
+    )
+    if requested:
+        return requested, "requested"
+    if template_default:
+        return template_default, "template_default"
+    return None, "unknown"
+
+
 def main():
     if len(sys.argv) < 3:
         print("usage: calibrate.py <config-name> <model-id> [extra-body-json]")
@@ -53,7 +88,15 @@ def main():
 
     problems = load_problems()
     client = openai.OpenAI(
-        api_key="none", base_url="http://127.0.0.1:8081/v1", timeout=3600.0
+        api_key="none", base_url=BASE_URL + "/v1", timeout=3600.0
+    )
+    resolved_effort, effort_source = resolve_effort(
+        extra_body, template_default_effort()
+    )
+    print(
+        f"event\treasoning_effort\tresolved={resolved_effort}\tsource={effort_source}"
+        f"\trequested_extra_body={json.dumps(extra_body)}",
+        flush=True,
     )
 
     # A calibration is a measurement of one setup: its wall_s per problem
@@ -117,6 +160,9 @@ def main():
             "has_separate_reasoning_field": bool(reasoning),
             "has_inline_think_tag": has_inline_think,
             "wall_s": round(dt, 1),
+            "requested_extra_body": extra_body,
+            "resolved_reasoning_effort": resolved_effort,
+            "resolved_reasoning_effort_source": effort_source,
         }
         rows.append(row)
         print(json.dumps(row), flush=True)

@@ -256,12 +256,23 @@ machine, so they live at `hardware/m1-max-32gb/calibrations/` and no
 longer beside the tool. `calibrate.py` now requires the directory:
 
 ```bash
-CALIBRATION_DIR=hardware/m1-max-32gb/calibrations benchmarks/calibrate.py <config> <model-id> [extra-body-json]
+CALIBRATION_DIR=hardware/m1-max-32gb/calibrations benchmarks/calibrate.py qwen38-ista-mtp-low qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"low"}}'
 ```
+
+The extra-body argument is mandatory on the calibration and on the
+full run. Without it the chat template resolves its own default, xhigh
+for this build, and the file is mislabeled. Check that every row's
+`resolved_reasoning_effort` reads `low` before you read the budget.
 
 Calibrate first. **A calibration that does not converge is a stop and
 ask**, not a value: two `length` stops there have preceded a run that
-spent hours and returned empties. Then the full set, at effort low.
+spent hours and returned empties. Then the full set, at effort low:
+
+```bash
+RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench13/results \
+  EVALPLUS_MAX_NEW_TOKENS=<budget> \
+  benchmarks/run-humaneval.sh ista-evalplus-low qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"low"}}'
+```
 
 Record base, plus, empty and wall in `results.md`, against this build's
 own medium score of 0.976 / 0.945 / 100%, one empty.
@@ -271,6 +282,17 @@ own medium score of 0.976 / 0.945 / 100%, one empty.
 The same, at **effort xhigh**. Last on purpose: xhigh is the level most
 likely to need a large budget and to return empties, and its
 calibration is where that shows.
+
+```bash
+CALIBRATION_DIR=hardware/m1-max-32gb/calibrations benchmarks/calibrate.py qwen38-ista-mtp-xhigh qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'
+RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench13/results \
+  EVALPLUS_MAX_NEW_TOKENS=<budget> \
+  benchmarks/run-humaneval.sh ista-evalplus-xhigh qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'
+```
+
+Pass the extra body here too, even though xhigh is the template's own
+default. A resolved level that was requested is a record; one that was
+inherited is a guess.
 
 Both EvalPlus blocks run at temperature 0, that test's own convention
 and not this run's serving temperature.

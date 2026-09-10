@@ -54,7 +54,14 @@ its budget and returned empties.
 1. Calibrate (above). Calibration files live under the setup, at
    `hardware/<hardware-id>/calibrations/`, because a calibration is a
    measurement of one machine. `calibrate.py` takes the directory from
-   `CALIBRATION_DIR`.
+   `CALIBRATION_DIR`. **Pass the thinking mode or reasoning level
+   explicitly on every call**, in the extra-body argument, for the
+   calibration and for the full run alike. It is not optional: a call
+   with no extra body gets the chat template's own default, which can be
+   a different level from the one the file is named for. Every row
+   records `requested_extra_body` and `resolved_reasoning_effort`; check
+   that the resolved value matches the file name before you read the
+   budget.
 2. Start the config's server on port 8081, warm up, start the run
    watcher (`benchmarks/run-watch.sh`, [checklist](./checklist.md)
    step 6: the memory record and the crash signal, exit 42 on a dead
