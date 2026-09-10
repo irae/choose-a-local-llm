@@ -69,6 +69,21 @@ handing-over section.
   `~/.local/share/mendel-benchmark/` path does not exist on this
   machine; the sampling values are recorded in `<slug>-meta.json`
   instead (`PLAN.md`, "Pinned thinking level and sampling").
+- Coordinator confirmed this is the first Mendel row this project
+  publishes with sampling recorded, and traced it to llama-server
+  reading `general.sampling.*` from the model file. Confirmed
+  `~/code/mendel-benchmark` was on the old worker (`134b1d6`); pulled
+  to `154b9af` after `ista-mendel-low` closed, before writing rows
+  (coordinator's ordering, to avoid a conflict with two upstream
+  commits that also touch `results.json`/`results.csv`).
+- `ista-mendel-low` done: branch `qwen3.8-27b-ista-low-issue-13`, 15
+  commits, loop ok (0.30), 163.3 min, peak context 130,154/147,456, no
+  compaction. Scored on `claude-opus-5`: 66/100 (trap A and trap C both
+  hit, trap B excluded per the settled convention). Comparison table
+  in `results.md`: xhigh wins on score and spends less context doing
+  it.
+- Writing both the xhigh and low rows to `mendel-benchmark` next, on
+  `154b9af`, then `generate-report.mjs` and push `benchmark`.
 
 ## Values this run sets
 

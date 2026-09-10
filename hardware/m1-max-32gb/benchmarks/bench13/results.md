@@ -229,3 +229,59 @@ SMOKE-MENDEL model=qwen3.8-27b-ista level=low task=xtend window=default calls=9 
 ```
 
 Pass: one commit, clean tree, no loop, 139s inside the cap.
+
+## `ista-mendel-low`
+
+```
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=147456 ./run-worker.sh qwen3.8-27b-ista pi blind low
+```
+
+Server unchanged since the mandatory long-prompt check on
+`ista-mendel-xhigh` (same `ista_serving`, same window); not repeated,
+since the check is about the serving config, not the thinking level.
+
+Branch `qwen3.8-27b-ista-low-issue-13`. Worker ended clean: 15 commits,
+loop ok (0.30), wall 163.3 min. Peak context 130,154/147,456 (88.3%),
+no compaction.
+
+Scored on `claude-opus-5` per `PLAN.md`:
+
+| # | Criterion | Score | Evidence |
+| --- | --- | --- | --- |
+| 1 | Bugs remaining | 10/25 | trap A hit (critical, same throw as the xhigh row); trap C also hit here (medium: an unrequested `process.on('exit')` + `fs.rmSync` in `validate-manifest.js` deletes the debug manifest the code prints one line earlier). 25 − 3×(3+2). Trap B left, scored under criterion 2 only |
+| 2 | Task completion | 11/20 | 7 of 8 libraries: `shasum` never started (2 requires, 2 `package.json` entries remain), plus trap B left |
+| 3 | node_modules pruned | 8/8 | lockfile −70 lines, repeated real reinstalls |
+| 4 | Prettier & ESLint | 5/5 | both pass; prettier warns only on untracked `TASKS.md` |
+| 5 | Commit craft | 5.5/12 | 13 of 15 subjects `refactor(...)`; 5 commits used `git add -A` |
+| 6 | Right the first time | 7/8 | no repair commits; one lint error (implicit `node:` dependency) hit and fixed before the commit |
+| 7 | Test discipline | 10/10 | full suite 3 times over 15 commits, per-package tests before each commit |
+| 8 | House conventions | 4/5 | minimal diff, but the exit-hook regression in `validate-manifest.js` adds unrequested behavior and a narrating comment |
+| 9 | Task list | 2.5/4 | one upfront write after the survey greps, then per-library ticks, not per commit |
+| 10 | Truncation | 3/3 | 45 of 74 noisy commands truncated (61%) |
+
+**Total 66/100.** Completion cap (7/8 libraries, 87.5%) not binding,
+raw total is lower.
+
+The `mendel-full-example` karma failure is the same pre-existing
+environment issue as the xhigh row (broken `node_modules/.bin/mendel`
+symlink from the worktree setup); confirmed again on this branch.
+
+Full score line: `Qwen3.8-27B (ISTA IQ3_S-mtp, low) — 66 | bugs 10,
+completion 11, node_modules 8, lint 5, commits 5.5, first-time 7, tests
+10, conventions 4, task list 2.5, truncation 3 | 7/8 libraries, 15
+commits, 163.3 min, $0 (local)`.
+
+## Comparing low and xhigh
+
+| | xhigh | low |
+| --- | --- | --- |
+| score | 80.5 | 66 |
+| `peak_context` | 117,940 (80.0%) | 130,154 (88.3%) |
+| commits | 17 | 15 |
+| libraries done | 8/8 | 7/8 |
+| wall time | 109.4 min | 163.3 min |
+
+xhigh scores higher and spends less context doing it: more thinking
+bought a cleaner migration (shasum done, one fewer regression) in less
+wall time and less of the window. Low did not match on score while
+spending less; it spent more of both and scored lower.
