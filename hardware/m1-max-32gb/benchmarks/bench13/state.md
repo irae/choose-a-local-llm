@@ -256,3 +256,31 @@ lowercase name from the original download, unaffected.
 
 Step 6 (checksum audit of every other GGUF repo in the cache) held:
 the xhigh gate has not closed yet.
+
+**Step 6, run anyway on owner decision, gate still open.** Same
+procedure, five more repos, sequential, checked the gate's jsonl
+count between each (it kept growing: 128 to 130 to 130 to 131 to 132
+across the five repos, never stalled). No downloads needed; every
+file already present hashed clean.
+
+| repo | file | expected oid | computed sha256 | result |
+| --- | --- | --- | --- | --- |
+| `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` | `Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf` | `58fd826723939933dc86f45b7fe04545cbc2de1c70f6fe2cdd3858c87a98c12f` | same | match |
+| `AtomicChat/Qwen3.8-27B-GGUF` | `Qwen3.8-27B-AD-IQ3_S.gguf` | `3e30f93acafc11705a8e4891a0b2aa3c138ffcaf2ca832b1c6a11ea4b5b7b620` | same | match |
+| `unsloth/Qwen3.8-27B-GGUF` | `Qwen3.8-27B-UD-Q3_K_XL.gguf` | `8c2a45ff85e7674ca185ec8eb6cdeab0e617ed9d8018caed0b64380eb2a67a5e` | same | match |
+| `unsloth/Qwen3.8-27B-GGUF` | `mmproj-BF16.gguf` | `83ee4f4f205fa514161778c41df1ea14144faa0f713510893b63c2395f5c2d53` | same | match |
+| `unsloth/Qwen3.8-27B-GGUF` | `MTP/mtp-Qwen3.8-27B-Q4_0.gguf` | `50d9ce5a6da381bbcfb31061cf73df94a90e6faf8efeddee379a9cb8f1501c6e` | same | match |
+| `unsloth/gemma-4-12b-it-GGUF` | `gemma-4-12b-it-UD-Q4_K_XL.gguf` | `90fd944d227e9d9b68e7e2c7d5b57b79d4c66ed521b0919fbbd932cf834f6f8e` | same | match |
+| `unsloth/gemma-4-12b-it-GGUF` | `mmproj-BF16.gguf` | `2e269f906eb15169ee9ce880ea649bd6d42d4964c21f8ede10d0d0efc738bcbb` | same | match |
+| `unsloth/gemma-4-12b-it-GGUF` | `mtp-gemma-4-12b-it.gguf` | `145db9094bc0f85f1701e255a2ed216dcc9800fc8bc8631ad00905b456bd451b` | same | match |
+| `prism-ml/Ternary-Bonsai-27B-gguf` | `Ternary-Bonsai-27B-PQ2_0.gguf` | `e4781999f1997ef97ce0c58d05750835acc999d18d83ee6489ba7ac7b14cb5f6` | same | match |
+| `prism-ml/Ternary-Bonsai-27B-gguf` | `Ternary-Bonsai-27B-Q2_0.gguf` | `868c11714cf8fe47f5ec9eeb2be0ab1a337112886f92ee0ede6b855c4fa31757` | same | match |
+| `prism-ml/Ternary-Bonsai-27B-gguf` | `Ternary-Bonsai-27B-Q2_g64.gguf` | `59a45d1ecef702b14531b06d22949f33b25c1897da31a8c0b298e01e4d9138eb` | same | match |
+| `prism-ml/Ternary-Bonsai-27B-gguf` | `Ternary-Bonsai-27B-dspark-Q4_1.gguf` | `c4810091d244eddc61a0cc4966e584b0959f141e3c66c0d371a6652d9f647da9` | same | match |
+| `prism-ml/Ternary-Bonsai-27B-gguf` | `Ternary-Bonsai-27B-dspark-bf16.gguf` | `d5ce05b0e7e23804279fb0b451e330e71c06d977657802a0e22d71433f30dbad` | same | match |
+
+All five repos pass. No mismatch across any file: every main model
+file, drafter/MTP head, projector, and Bonsai variant on this machine
+matches its publisher's LFS oid exactly. `unsloth/Qwen3.8-27B-GGUF`'s
+MTP head sits in a `MTP/` subfolder not shown by a root-level tree
+call; fetched its oid from the subfolder path directly.
