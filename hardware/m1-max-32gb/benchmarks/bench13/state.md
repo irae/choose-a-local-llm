@@ -131,6 +131,19 @@ handing-over section.
   If this spans into a later run, resume from that path with the same
   `RESULTS_BASE` and run name; `evalplus.codegen` skips existing
   `task_id`s on restart.
+- Status, on the manager's request (2026-09-10): no fresh
+  `qwen38-ista-mtp-xhigh` calibration ran. One was started (pid 1701)
+  and killed within seconds, before it produced any row, once the
+  mislabeling bug was found. No new xhigh calibration is needed or
+  queued; the renamed file on disk
+  (`calibration-qwen38-ista-mtp-xhigh.json`, with its
+  `.resolved-effort.txt`) is the valid one, already committed
+  (`13542b2`). `ista-evalplus-low`: 39/164 task_ids in the completions
+  jsonl, elapsed 27:21, 0 length stops so far (max generation 2380
+  tokens against the 8192 budget). Not stopped. Noted for later: master
+  has a new `calibrate.py` that records `requested_extra_body` and
+  `resolved_reasoning_effort` per row; will use it on the next fresh
+  calibration, not mid-run.
 
 ## Values this run sets
 
