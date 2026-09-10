@@ -2,7 +2,7 @@
 
 ## Highlights
 
-- **Wired limit: 24000 MB, resets on reboot.** Re-run the sysctl before
+- **Wired limit: 25000 MB, resets on reboot.** Re-run the sysctl before
   any model work. This machine is a model server, not a workstation,
   while it serves the models under test: a run drives free memory to
   near zero and the desktop stops responding. We do not consider a
@@ -10,8 +10,10 @@
 - **Every model has a depth curve, a KV pick and an EvalPlus score.**
   The decode-vs-used-context table on the
   [comparison page](./comparison.md) is this project's main artifact.
-- **Two local models finish the agent task.** Qwen3.8 on llama-server at
-  f16 KV scores 87 of 100 blind, Gemma-26B 47.5, both complete.
+- **Two local models finish the agent task.** Qwen3.8 on llama-server
+  at f16 KV scores 80.5 of 100 blind at the model's own default level,
+  on its ISTA 3-bit build served without a drafter; Gemma-26B scores
+  47.5. Both complete.
 - **The rule:** MLX barely slows down but OOMs hard; llama holds its
   speed deeper at f16 KV, and its ceiling is the largest `-c` that
   loads.
@@ -19,11 +21,11 @@
 ## Setup
 
 ```bash
-sudo sysctl iogpu.wired_limit_mb=24000
+sudo sysctl iogpu.wired_limit_mb=25000
 ```
 
 **This resets on reboot.** Re-run it before any model work. See
-[the wired limit](#the-wired-limit-24000).
+[the wired limit](#the-wired-limit-25000).
 
 - Servers always listen on port 8081. Port 8080 is the DB admin UI. LM Studio
   serves on 1234.
@@ -108,83 +110,85 @@ scope.
 
 ## Current state
 
-As of 2026-09-09.
+As of 2026-09-10.
 
 - Candidates for real coding use, by what the measurements support:
   Qwen3.8 on llama-server at f16 KV is the only local model that
-  finished the agent task, and three of its builds now have their own
-  rows, a 4-bit and two 3-bit; Gemma-26B on llama-server at f16 KV
+  finishes the agent task, and the row to use is its ISTA 3-bit build
+  served without a drafter at `-c 163840`, the only row scored at the
+  model's own default level; Gemma-26B on llama-server at f16 KV
   (`-c 212992`) is the deep-context candidate and the fastest of the
-  large models; Bonsai is the cheapest in memory and the only one that
-  serves two slots under 11 GB; Gemma-12B holds the deepest window on
-  llama-server. Nothing here is a decision; none of these has been used
-  for real work yet. Qwen3.6 is the fastest shallow decoder, and with
-  f16 KV it holds 56 tok/s at 33K.
+  large models; Bonsai is the cheapest in memory, the only one that
+  serves two slots under 11 GB, and at f16 KV on the fork it has no
+  speed floor to 131K; Gemma-12B holds the deepest window on
+  llama-server and two 82K slots in 13.8 GB. Nothing here is a
+  decision; none of these has been used for real work yet. Qwen3.6 is
+  the fastest shallow decoder, 52.6 tok/s at 41K with f16 KV, and its
+  q8_0 arm holds an 82K window.
 - Every GGUF row carries the largest `-c` that serves a real request of
   the size the work will send, and the KV type the pick chose: f16 on
-  Qwen3.8, Gemma-26B and Gemma-12B, and now on Qwen3.6 as well, where
-  f16 loads at a smaller `-c` and decodes 2.8x faster at depth than
-  q8_0. The q8_0 row stays for its larger window.
+  every model. On Qwen3.6 the q8_0 row stays for its window, more than
+  twice the f16 arm's, at 2.8x the cost in speed at 33K.
+- The drafter is measured per build, not assumed. On the Qwen3.8 ISTA
+  build it loses at every depth and is off; on the 4-bit build and on
+  Qwen3.6 it wins shallow and stays on.
 - Bonsai extras: the PrismML fork is installed at `~/prism-llama/`. Its
-  desktop profile holds q4 KV at 9.8 GB flat with a 30K floor, and serves
+  desktop profile holds q4 KV at 9.8 GB flat with a 33K floor, and serves
   2×48K slots at 9.8 tok/s each. The DSpark drafter helps only at
   shallow context, so it is not used for scoring.
-- pi wiring: qwen3.8 llama at a 49152 window, qwen3.6 llama at 32768
-  (what wired 24000 serves), gemma-26b llama at 212992, bonsai-mlx at
-  48K, qwen3.8-mlx at 26K; `maxTokens` 8192 on every entry.
+- pi wiring, generated from the site data: qwen3.8-27b-ista llama at
+  147456, qwen3.8-27b llama at 65536, qwen3.6-35b-a3b llama at 81920,
+  gemma-4-26b-a4b llama at 212992, gemma-4-12b llama at 262144 and
+  gemma-4-12b-2x at 81920, bonsai-prism-f16 at 131072, bonsai-mlx at
+  57344, qwen3.8-mlx at 26624; `maxTokens` 8192 on every entry.
 
-## Latest benchmark run, closed 2026-09-07
+## Latest benchmark runs, 2026-09-08 to 2026-09-10
 
-Every number here was measured at wired limit 25000, a trial value for
-that run. **The trial ended: 24000 stands** (below), so these numbers
-stay out of the tables above and the current Qwen3.6 rows are the
-2026-09-07 re-measurement at 24000. Raw evidence and the full report:
-`hardware/m1-max-32gb/benchmarks/bench11/` in the repo.
+Every number here was measured at wired limit 25000, the standing
+value. Raw evidence: `hardware/m1-max-32gb/benchmarks/bench12/` and
+`bench13/` in the repo.
 
-- Qwen3.6 GGUF, q8_0 KV: `-c 98304` loads and serves a real
-  completion; every `-c` from 100864 up loads but OOMs on the first
-  completion. Slow creep at 98304 on a clean machine: clean depth
-  81958 at 9.24 tok/s, floor hit at 98K. f16 KV loads at `-c 40960`.
-  At 24000 the same arms serve `-c 40960` and `-c 33792`, so the
-  extra 1000 MB of wired limit bought this model a much larger q8_0
-  window and about 7K more tokens at f16.
-- Qwen3.6 MLX 4-bit: ceiling 40982 at 37.4 tok/s, then the generation
-  thread died on a Metal OOM while the models endpoint kept answering.
-- Mendel, thinking off: Gemma-26B guided and blind both ended on the
-  live loop stop (invalid, five identical edits). Gemma-12B GGUF blind
-  ended with zero commits on a tool-schema loop, 24 of 28 edit calls
-  malformed the same way (invalid). Qwen3.6 GGUF guided completed 8/8
-  at 46.5 on a 49152 window with twelve compactions; a retry on the
-  81920 window the creep supports is queued, no penalty, the better
-  row stands. Qwen3.6 GGUF blind runs last on the same window.
-- Mendel, thinking on: Gemma-26B guided completed 7/8 at 57 on its
-  third attempt. The first two were killed by a system-wide memory
-  squeeze from a macOS media indexing process, not by the model; the
-  run paused until the owner stopped that process.
-- Qwen3.6 MLX blind and guided were skipped: no pi entry exists for
-  that model, and the runbook makes a missing entry a stop.
-- The Bonsai fork guided at thinking high ran past the 300-minute cap
-  because the runner's abort never settled the turn; stopped by hand
-  at 469 minutes and scored on the first 300: 3/8 at 31.5, a
-  wall-clock partial. The runner now kills pi five minutes after an
-  ignored abort.
-- **The window decides the score.** The Qwen3.6 guided retry on the
-  81920-token window its own creep supports scored 62.5 with 8/8
-  libraries, against 46.5 for the same config on a 49152-token window
-  with twelve compactions. Both rows are published; the config note of
-  each names its window.
-- Qwen3.6 blind at thinking off did not run. It moves to the next run
-  on the same window.
+- The three Qwen3.8 3-bit builds got their own EvalPlus scores at
+  effort medium: ISTA 0.976 / 0.945 with one empty, AtomicChat 0.988 /
+  0.927 with none. The 4-bit control, re-measured at 25000, serves
+  `-c 73728` and creeps clean to 65578; re-run on the agent task at the
+  8192 reserve it scored 76 and failed trap A, below its published 87
+  at the old reserve. The ISTA build tied it at 76.5; AtomicChat ended
+  on a repetition loop after three libraries.
+- **Every one of those rows ran at effort medium, inherited from the
+  control row and never chosen.** Medium is no longer run on Qwen3.8; a
+  model's first run uses its own published default. The rows keep
+  their numbers and get no re-run.
+- The ISTA build was then measured at its default. A five-cell drafter
+  sweep at two depths put no drafter ahead on speed every time, so the
+  row is served without one: `-c 163840`, clean to 147478 at 8.30
+  tok/s, speed-gated, zero swap. On the agent task at effort xhigh it
+  scored 80.5, complete, in 109 minutes; at effort low 66, partial,
+  in 163 minutes and more of the window. Both rows record temperature
+  1.0 and top_p 0.95, the first rows on this machine with sampling
+  recorded. Its EvalPlus at low is running and xhigh follows.
+- Gemma-12B on two slots at f16 KV with no drafter holds 82K per slot
+  in 13.8 GB, and no `-c` moves that: a larger allocation loads and
+  stops on swap at the same depth. Judged by the creep, never by a
+  short completion at load.
+- The Bonsai fork at f16 KV has no speed floor inside `-c 131072`, 9.67
+  tok/s there in 18.3 GB; at q4_0 KV it floors at 33K. Its guided
+  agent row at f16 finished one library.
+- Two scoring-tool gaps were found and filed, not fixed mid-run: the
+  scorer reported trap A as passed while its own captured output said
+  the repro threw, and the offline loop check diluted a five-call
+  repetition that the live detector caught.
 
 ## Open work
 
+- The ISTA build's EvalPlus at effort low (running) and xhigh. The
+  4-bit Qwen3.8 GGUF's own EvalPlus score and its agent row at effort
+  xhigh.
 - Qwen3.6 blind at thinking off, on the 81920-token window. Qwen3.6 on
   the MLX server, blind and guided: it has no agent row at all.
-- The Qwen3.8 GGUF quant's own EvalPlus score, and a thinking-on score
-  for Gemma-12B.
+- A thinking-on EvalPlus score for Gemma-12B. The Bonsai fork's
+  EvalPlus at f16 KV.
 - A Bonsai guided row at thinking off. The bonsai-prism q4 A/B.
-- Gemma-12B at two slots: the largest `-c` that serves both, and the
-  round-robin creep beside a one-slot run at the same per-slot window.
 - Aider tier 2, driven from another computer. Docker does not fit here.
 - A benchmark user account that starves the media indexing daemon
   (below).
@@ -226,27 +230,30 @@ calibrated per model from measured reasoning length; every corrected score
 went up. Superseded numbers under the old cap live on
 [the historical page](./historical.md), never on a current page.
 
-## The wired limit: 24000
+## The wired limit: 25000
 
-**Settled 2026-09-07: 24000 stands.** A benchmark run served at 25000
-for a full session with no panic and no lockup, and it bought Qwen3.6
-a larger window. Against that, 25000 produced real swap growth under
-back-to-back sweeps with no recovery gap, while six creeps at 24000 on
-the same model, two KV types and two tools showed zero swap growth.
-Swap ends a measurement and can end a run, so the machine keeps the
-value that never swapped. The re-measurement at 24000 is on the
-model's own pages; the 25000 numbers stay in the earlier benchmark
-record.
+**Settled 2026-09-08: 25000 stands.** On 2026-09-07 the value was set
+back to 24000 after swap growth at 25000, and the same day's follow-up
+showed where that growth came from: several sweeps stacked on one
+long-lived server with no recovery gap. Every single-sweep creep on a
+fresh server at 25000, on both KV types of the same model, came back
+with zero swap growth, and two full benchmark runs then held 25000
+with no panic, no lockup and no swap on any fresh-server creep. The
+extra 1000 MB bought Qwen3.6 its 98304-token q8_0 window against 40960,
+and the Qwen3.8 ISTA build its 163840 against 131072. Rows measured at
+24000 before 2026-09-06 keep their numbers and say so in their config
+notes until a re-measurement lands.
 
 Measured on this machine (Qwen3.6-35B MLX, per-process `vmmap` tracking):
 
-- **At about 24000 MB and above, the sysctl stops mattering.** Physical
-  RAM binds first: free RAM runs to near zero before the process reaches
-  the sysctl, and the crash point no longer responds to sysctl changes
-  (25000 and 24000 give the same ceiling). This regime reaches the
-  machine's true context maxima, but the near-zero free RAM is what
-  locks up the keyboard and causes visual glitches. **24000 is the
-  standing value**; anything higher buys nothing.
+- **At about 24000 MB and above, the sysctl stops being the first
+  limit.** Physical RAM binds first: free RAM runs to near zero before
+  the process reaches the sysctl, and an MLX server's crash point moves
+  little between 24000 and 25000. This regime reaches the machine's
+  true context maxima, but the near-zero free RAM is what locks up the
+  keyboard and causes visual glitches. A llama-server allocation does
+  respond to the extra 1000 MB, which is where the larger windows above
+  come from. **25000 is the standing value.**
 - **Below about 24000 MB the sysctl gates cleanly.** The model process
   hits the limit, gets a Metal OOM, and dies or rejects the request,
   while macOS keeps gigabytes free and the machine stays responsive.
@@ -258,6 +265,7 @@ Measured on this machine (Qwen3.6-35B MLX, per-process `vmmap` tracking):
   server, driven by agents from another machine, with the minimal
   local system.
 
-Every published number states the limit it was measured under, and only
-24000 numbers appear on the current site pages. Superseded measurements
-move to [the historical page](./historical.md).
+Every published number states the limit it was measured under. A row
+measured at 24000 stays on the current pages, labeled, until the same
+config is re-measured at 25000; a row replaced by a re-measurement
+moves to [the historical page](./historical.md).

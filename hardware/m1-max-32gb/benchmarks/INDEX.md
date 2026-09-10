@@ -7,6 +7,79 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench12, 2026-09-07 to 2026-09-09 ([state](bench12/state.md), [results](bench12/results.md))
+
+- Runbook: [bench12/AGENT.md](bench12/AGENT.md). The three Qwen3.8
+  3-bit builds from research run 3 scored on the full gate, the 4-bit
+  control re-measured at wired 25000, Gemma-12B on two slots, and the
+  Bonsai fork at f16 KV. Every Qwen3.8 block ran at effort medium,
+  inherited from the control row; medium is banned for this model from
+  2026-09-09 and these rows keep their numbers with no re-run.
+- **A `-c` that loads is not a window.** Two Gemma-12B slots load at
+  `-c 770048` and serve a short completion, and that config's own creep
+  stopped on swap at 16K. Judged by the creep, the per-slot ceiling is
+  81958 at every `-c` from 221184 up; `-c 196608` runs that depth clean.
+  The ladder rule in `benchmarks/PLANNING.md` still reads the other way.
+- **The Bonsai fork's floor was the cache type.** At f16 KV with no
+  drafter the fork ran clean to `-c 131072` at 9.67 tok/s, 18.3 GB
+  flat, zero swap; at q4_0 KV it floors at 33K. Its guided agent row at
+  f16 scored 12.5 capped, one library in 195 minutes.
+- **Both 3-bit builds pass the gate with their own scores.** ISTA
+  IQ3_S-mtp 0.976 / 0.945, one empty; AtomicChat AD-IQ3_S 0.988 / 0.927,
+  none. The 4-bit control still carries the MLX score and has no full
+  run of its own.
+- **Three bits cost no measurable agent score, on one comparison.** The
+  4-bit control re-run at the 8192 reserve on a 65536 window scored 76
+  and failed trap A, below the published 87 at reserve 16384; the ISTA
+  build scored 76.5 on a 114688 window and failed trap A the same way.
+  AtomicChat ended on a repetition loop after three libraries, 37.5
+  capped; the loop is the model's own, so the row is a valid partial.
+- **The wired limit question closed at 25000.** Swap growth at 25000
+  appeared only under back-to-back sweeps on one long-lived server;
+  every single-sweep creep on a fresh server, at both KV types, came
+  back clean. The 4-bit control serves `-c 73728` at 25000 and creeps
+  clean to 65578.
+- **Two tool gaps.** `score.mjs` reported trap A as passed while its
+  own captured output said the repro threw; `loop-check.py`'s 60-line
+  window diluted a five-call repetition to a clean ratio that pi's own
+  live detector caught. Both are filed, neither fixed mid-run.
+- **A run-time loop guard with an empty-output bug** voided one ISTA
+  attempt in seconds; fixed and retried under a fresh alias, since the
+  worker derives the branch and the row's model field from the pi id.
+
+## research run 3, 2026-09-07 to 2026-09-08 ([index](../research/run3/index.md), [state](../research/run3/state.md), [results](../research/run3/results.md))
+
+- The Qwen3.8 3-bit candidates, the drafter question, the compaction
+  ladder and the projector strip pairs, all at wired 25000, GGUF only,
+  research stopping at the two smokes.
+- **The drafter is a trade against depth.** The unsloth UD-Q3_K_XL
+  build mem-stopped at 49198 with its drafter and ran clean past
+  131072, the list's end, without it, at 13.95 against 13.55 tok/s
+  shallow and 8.58 against 9.14 deep, with wired 2 GB lower and the
+  swap delta negative the whole way.
+- **A list end is not a ceiling.** Three of five creeps never hit a stop
+  condition; their depth is a floor under the true ceiling. The depth
+  list had to grow before the next run.
+- **All three 3-bit builds pass both smokes level with the control.**
+  ISTA IQ3_S-mtp was the only measured ceiling of the three, 114718 at
+  9.67 tok/s, a swap stop at 131098. Effort low and xhigh on the control
+  row both pass the Mendel smoke clean, so the level is not a
+  robustness lever on this task; only a scored run separates them.
+- **The compaction ladder reads Gemma-12B only.** Its `contextWindow`
+  floor on `xtend-wide` is 23552, the first rung with two clean passes.
+  Gemma-26B found no floor: both runs at the first rung ended with the
+  model believing the task done and no commit, with compaction never
+  firing. Qwen3.8 is too token-efficient at that task to reach a rung.
+  Bonsai MLX was skipped for want of the MLX margin rule's window.
+- **The projector costs memory only, already taken.** Wired deltas of
+  1175 MB on Qwen3.8 and 1196 MB on Qwen3.6, at or above the file size,
+  with speed unchanged; the Qwen3.8 projector's Metal compute-buffer
+  cost is 247 MB. Gemma-26B with its projector OOMs at the row's own
+  `-c 212992` and loads one 8192 step below it. `--offline` on an
+  uncached projector fails silent, not loud.
+- **Gemma-26B without its drafter** ran clean to 196618, the list's end,
+  at 18.57 tok/s and 23.9 GB, about 1.7 GB under the with-drafter row.
+
 ## bench11, 2026-09-06 to 2026-09-07 ([state](bench11/state.md), [results](bench11/results.md), [report](bench11/report.md))
 
 - Runbook: [bench11/AGENT.md](bench11/AGENT.md). Every missing Mendel
@@ -130,6 +203,30 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
   in agentic use and Metal OOMs the generation thread while `/health`
   stays 200. Open problem: a smaller window or an earlier compaction.
 - **Bonsai Mendel thinking off (block C) was deferred to run 10.**
+
+## research run 2, 2026-09-04 ([state](../research/run2/state.md), [results](../research/run2/results.md))
+
+- The Gemma-12B loop, the Gemma-4 chat templates, the KV type and the
+  drafter on llama.cpp, and the detectors the loop needed.
+- **Two LM Studio entries were one model on the site.** The good
+  Gemma-12B score came from an entry with thinking off that cannot be
+  turned on; all three Mendel rows came from another entry, gone from
+  the store. The owner ruled Gemma-12B on MLX or LM Studio out for
+  thinking-on agent work; GGUF stays. Usable configuration: llama-server,
+  f16 KV, no MTP, thinking off, to the trained window above the floor.
+- **The fixed chat template does not prevent the thought loop.** Post-fix
+  arms looped one of two; pre-fix arms looped three of three. Every
+  local MLX container ships the template Google replaced on 2026-07-15.
+- **DRY hides the repetition loop instead of stopping it**: 1133
+  shape-identical lines inside one tool call, every path corrupted, read
+  as clean by every exact-match detector. A near-duplicate detector that
+  normalises letters and digits separates the arms.
+- **The KV type is not the speed gap on Gemma-12B**, f16 beats q8_0 by
+  the page's own estimate; the py gap against the published number is
+  drafter acceptance, which no published row records.
+- **The Qwen3.8 MLX window arithmetic cannot hold**: `maxTokens` 16384
+  and `contextWindow` 26624 fail past a 10240-token prompt; 8192 was
+  proposed and later adopted as the harness reserve.
 
 ## research run 1, 2026-09-03 ([state](../research/run1/state.md), [results](../research/run1/results/))
 

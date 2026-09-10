@@ -31,10 +31,11 @@ scoreboard per version.
 Each row names the serving path and the harness window. The KV cache type
 of a run is in its config note in the Mendel report.
 
-Every Qwen3.6-35B-A3B score below is pending a re-run, at low priority:
-those runs used harness windows of 48K to 120K, and at wired limit
-24000 the model serves `-c 40960`. The scores stay as records of what
-the model did; they are not reproducible on this machine today.
+One Qwen3.6-35B-A3B score below, the guided 83 at thinking high, is
+pending a re-run at low priority: it ran on a 120K harness window, and
+at wired limit 25000 the model serves `-c 98304`. The score stays as a
+record of what the model did; the other Qwen3.6 rows ran on windows
+the machine serves today.
 
 ## Local models — blind test
 
@@ -42,14 +43,14 @@ the model did; they are not reproducible on this machine today.
 | model | serving | score | worst defect |
 |---|---|--:|---|
 | [qwen3.8-27b](../reports/qwen3.8-27b.md) | llama-server | **87/100** | minor |
-| qwen3.8-27b (ISTA IQ3_S-mtp, xhigh) | llama-server | **80.5/100** | critical |
-| qwen3.8-27b (ISTA IQ3_S-mtp) | llama-server | **76.5/100** | critical |
-| qwen3.8-27b (reserve 8192) | llama-server | **76/100** | critical |
-| qwen3.8-27b (ISTA IQ3_S-mtp, low) | llama-server | **66/100** (partial) | critical |
+| [qwen3.8-27b (ISTA IQ3_S-mtp, xhigh)](../reports/qwen3.8-27b.md) | llama-server | **80.5/100** | critical |
+| [qwen3.8-27b (ISTA IQ3_S-mtp)](../reports/qwen3.8-27b.md) | llama-server | **76.5/100** | critical |
+| [qwen3.8-27b (reserve 8192)](../reports/qwen3.8-27b.md) | llama-server | **76/100** | critical |
+| [qwen3.8-27b (ISTA IQ3_S-mtp, low)](../reports/qwen3.8-27b.md) | llama-server | **66/100** (partial) | critical |
 | [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **63/100** | critical |
 | [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **47.5/100** | critical |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **37.5/100** (partial) | medium |
-| qwen3.8-27b (AtomicChat AD-IQ3_S) | llama-server | **37.5/100** (partial) | medium |
+| [qwen3.8-27b (AtomicChat AD-IQ3_S)](../reports/qwen3.8-27b.md) | llama-server | **37.5/100** (partial) | medium |
 | [Qwen3.8-27B (mlx, low)](../reports/qwen3.8-27b.md) | mlx_lm.server | **12.5/100** (partial) | minor |
 | [bonsai-prism](../reports/bonsai-27b.md) | llama-server | **12.5/100** | critical |
 | [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **12.5/100** (partial) | critical |
@@ -79,8 +80,11 @@ Three scored rows above are scheduled for a re-run: Qwen3.8-27B GGUF
 blind (87), Gemma-4-26B-A4B GGUF blind (47.5) and Qwen3.6-35B-A3B
 guided (83). They compacted under the harness's old reserve of 16384
 tokens; since 2026-09-06 the harness reserves 8192, the answer budget.
-Each keeps its row until the fresh one lands. The Qwen3.8 re-run
-waits for the reasoning-effort question on that model.
+Each keeps its row until the fresh one lands. The 87 ran at effort
+medium, which Qwen3.8 is no longer run at; its fresh row is the 4-bit
+build at effort xhigh. The rows at xhigh (80.5) and low (66) above are
+the ISTA 3-bit build at the 8192 reserve, on a 147456 window, with
+sampling recorded: temperature 1.0, top_p 0.95.
 
 ## Cloud reference — blind test
 
@@ -121,5 +125,5 @@ same frozen prompt; a blind-guided pair can land at different times.
 | [bonsai-prism](../reports/bonsai-27b.md) | pi | **31.5/100** (partial) |
 | [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | pi | **25/100** (partial) |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **12.5/100** (partial) |
-| bonsai-prism (f16 KV) | pi | **12.5/100** (partial) |
+| [bonsai-prism (f16 KV)](../reports/bonsai-27b.md) | pi | **12.5/100** (partial) |
 <!-- gen:mendel-guided:end -->

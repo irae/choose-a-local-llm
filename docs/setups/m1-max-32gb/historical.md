@@ -15,7 +15,8 @@ show what changed and why.
 
 - **Retired memory limit.** Many rows were measured at
   `iogpu.wired_limit_mb=27000`, which made the machine too slow for normal
-  use. The current limit is 24000, so every context maximum here is too high.
+  use, and some at 24000, which the current 25000 replaced. A context
+  maximum here is either too high or too low for the standing limit.
 - **Wrong axis.** Several tables measure *allocated* context, which is
   storage, not speed. The depth sweeps replaced this with decode speed
   against *used* context — the number that decides whether a config is
@@ -29,6 +30,25 @@ show what changed and why.
 For numbers you can act on, go to [the comparison page](./comparison.md).
 Full raw archives, with their eras labeled, live in the benchmarks pages.
 :::
+
+## Qwen3.6-35B-A3B rows at the retired 24000 limit (superseded 2026-09-10)
+
+Measured 2026-09-07 at `iogpu.wired_limit_mb=24000`, the standing value
+until the limit moved to 25000. Replaced on the current pages by the
+25000 measurements of 2026-09-06 and 2026-09-07, which serve larger
+windows on every arm. Kept here because the 24000 numbers were the
+site's current rows for three days.
+
+| config | largest `-c` that serves | creep | wired at the deepest row |
+|---|--:|---|--:|
+| GGUF, MTP, f16 KV | 33792 (33920 OOMs) | no ceiling found to 32818, 56.0 tok/s there; 67.7 at 4K | 24.9 GB |
+| GGUF, MTP, q8_0 KV | 40960 (49920 passes a one-token probe, then OOMs on the first real step) | 36.7 at 4K, 19.7 at 32818, stopped there on the memory-compression rule with zero swap; the stop was under review | 24.8 GB |
+| MLX 4-bit, unquantized KV (2026-08-29) | no `-c` | 53.3 at 4K, 42.0 at 37K, then a Metal OOM before 41K | 18.7 GB |
+
+What replaced them: at 25000 the f16 arm serves `-c 40960` (69.1 at 4K,
+52.6 at 41K, no ceiling found), the q8_0 arm serves `-c 98304` (36.5 at
+4K, 9.24 at 82K, speed floor at 98K), and MLX reaches 41K at 37.4
+tok/s in 24.6 GB.
 
 ## The 22000 "in use" wired limit (retired 2026-09-06)
 

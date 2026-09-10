@@ -59,7 +59,13 @@ const MENDEL_SLUGS = {
   'Gemma-4-12B (low)': 'gemma-4-12b-it',
   'Gemma-4-12B (llama.cpp, off)': 'gemma-4-12b-it',
   'bonsai-prism': 'bonsai-27b',
+  'bonsai-prism (f16 KV)': 'bonsai-27b',
   'qwen3.8-27b': 'qwen3.8-27b',
+  'qwen3.8-27b (reserve 8192)': 'qwen3.8-27b',
+  'qwen3.8-27b (ISTA IQ3_S-mtp)': 'qwen3.8-27b',
+  'qwen3.8-27b (ISTA IQ3_S-mtp, xhigh)': 'qwen3.8-27b',
+  'qwen3.8-27b (ISTA IQ3_S-mtp, low)': 'qwen3.8-27b',
+  'qwen3.8-27b (AtomicChat AD-IQ3_S)': 'qwen3.8-27b',
 }
 
 function mendelName(r) {
@@ -138,7 +144,7 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
     if (!Number.isFinite(n) || v === '') return '—'
     return `${Math.round(n / 1000).toLocaleString('en-US')}k`
   }
-  const ladder = [26624, 32768, 49152, 57344, 65536, 81920, 98304, 131072, 163840, 212992, 262144]
+  const ladder = [26624, 32768, 49152, 57344, 65536, 81920, 98304, 114688, 131072, 147456, 163840, 212992, 262144]
   const config = (r) => {
     const peak = Number(r['telemetry.peak_context'])
     const pct = Number(r['telemetry.window_pct'])

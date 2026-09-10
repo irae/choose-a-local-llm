@@ -30,8 +30,8 @@ Two rules to read the tables by:
 | [Gemma-4-12B](./gemma-4-12b-it.md) | GGUF, f16 KV, no drafter, thinking off | 24.64 → 8.86 | 245k | mem |
 | [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | MLX, unquantized KV | 51 → 12.8 | 70k | mem |
 | [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | GGUF, MTP, f16 KV | 60.3 → 17.3 | 197k | mem |
-| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | MLX, unquantized KV, thinking on | 53.3 → 42.0 | 37k | mem |
-| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | GGUF, MTP, q8_0 KV, thinking on | 36.7 → 19.7 | 33k | mem |
+| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | MLX, unquantized KV, thinking on | 55.1 → 37.4 | 41k | mem |
+| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | GGUF, MTP, q8_0 KV, thinking on | 36.5 → 9.2 | 82k | speed |
 | [Qwen3.8-27B](./qwen3.8-27b.md) | MLX 4-bit, unquantized KV, effort medium | 17 → 15.3 | 28k | mem |
 | [Qwen3.8-27B](./qwen3.8-27b.md) | GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 15.8 → 10.3 | 104k | untested |
 <!-- gen:decode-summary:end -->
@@ -74,35 +74,48 @@ llama runtimes creep down steadily and cross the floor while memory
 stays comfortable. The curve ends at the floor or at the window — never
 in a crash.
 
-| used tokens | Qwen3.6 +MTP, q8_0 KV† | Gemma-26B +MTP, f16 KV† | Qwen3.8 +MTP, f16 KV† | Gemma-12B +MTP, q8_0 KV | Gemma-12B f16 KV, no drafter | Bonsai fork, q4_0 KV† | Bonsai fork, q4_0 KV, 1 of 2 slots |
-|--:|--:|--:|--:|--:|--:|--:|--:|
-| 4K | 44.5 | 23.5 | 14.1 | 13.8 | 24.6 | 14.6 | 14.9 |
-| 8K | — | — | 12.8 | 8.7 | 24.1 | — | 13.2 |
-| 16K | 30.1 | 11.2 | 8.6 | *6.5 — floor at 16K* | 22.7 | 10.6 | 10.8 |
-| 24-25K | — | *8.0 — floor ~24K* | *7.3 — floor ~19K* | | 21.6 | 9.0 | 9.2 |
-| 32-33K | 18.8 | | | | 20.6 | *7.8 — floor ~30K* | *7.9 — floor ~32K* |
-| 49K | 13.5 | | | | 18.8 | | |
-| 65K | 10.7 | | | | 17.4 | | |
-| 90K | **8.1 — window end** | | | | | | |
-| 98K | | | | | 14.9 | | |
-| 131K | | | | | 13.0 | | |
-| 180K | | | | | 10.7 | | |
-| 213K | | | | | 9.7 | | |
-| 245K | | | | | **8.9 — window end** | | |
+| used tokens | Qwen3.6 +MTP, f16 KV | Qwen3.6 +MTP, q8_0 KV | Gemma-26B +MTP, f16 KV | Qwen3.8 4-bit +MTP, f16 KV | Qwen3.8 ISTA 3-bit, f16 KV, no drafter | Gemma-12B f16 KV, no drafter | Gemma-12B f16 KV, no drafter, 1 of 2 slots | Gemma-12B +MTP, q8_0 KV | Bonsai fork, f16 KV, no drafter | Bonsai fork, q4_0 KV + bias |
+|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| 4K | 69.1 | 36.5 | 60.3 | 20.0 | 14.1 | 24.6 | 25.0 | 13.8 | 15.0 | 14.8 |
+| 8K | 71.3 | 44.1 | — | 18.2 | 13.8 | 24.1 | 24.1 | 8.7 | 16.3 | 13.2 |
+| 16K | 65.7 | 31.2 | 56.5 | 16.1 | 13.3 | 22.7 | 22.8 | *6.5 — floor at 16K* | 15.6 | 10.8 |
+| 24-25K | 61.0 | 24.2 | — | 17.2 | 12.8 | 21.6 | 21.5 | | 15.1 | 9.1 |
+| 32-33K | 56.5 | 19.6 | 45.9 | 16.4 | 12.4 | 20.6 | 20.6 | | 14.5 | *7.9 — floor at 33K* |
+| 41K | **52.6 — window end** | 16.6 | — | 15.6 | 12.0 | 19.5 | 19.5 | | 13.9 | |
+| 49K | | 14.3 | 45.9 | 15.0 | 11.5 | 18.8 | 18.6 | | 13.4 | |
+| 65K | | 11.2 | — | **13.7 — last clean, swap past it** | 10.9 | 17.4 | 16.9 | | 12.5 | |
+| 82K | | **9.2 — last above the floor** | — | | 10.2 | 15.7 | **15.7 — last clean per slot, swap past it** | | 11.5 | |
+| 98K | | *7.9 — floor* | — | | 9.7 | 14.9 | | | 10.8 | |
+| 115K | | | 26.4 | | 9.2 | 13.6 | | | 10.2 | |
+| 131K | | | — | | 8.7 | 13.0 | | | **9.7 — window end, no floor found** | |
+| 147K | | | — | | **8.3 — last above the floor** | — | | | | |
+| 164K | | | — | | *7.9 — floor* | — | | | | |
+| 180K | | | — | | | 10.7 | | | | |
+| 197K | | | **17.3 — last step, `-c` 212992 the largest that loads** | | | — | | | | |
+| 213K | | | | | | 9.7 | | | | |
+| 245K | | | | | | **8.9 — window end** | | | | |
 
-† measured at the retired 25000 wired limit; re-run pending.
+The Qwen3.6, Qwen3.8 GGUF, Bonsai f16 and Gemma-12B two-slot columns
+ran at wired limit 25000 between 2026-09-06 and 2026-09-09; the
+Gemma-26B, Gemma-12B one-slot and Bonsai q4_0 columns at 24000 between
+2026-08-30 and 2026-09-05.
 
-Two configs measured here never cross the floor inside their whole
-window: Qwen3.6 on llama, with 96K of usable depth, and Gemma-12B on
-llama with f16 KV and no drafter, which holds 8.9 tok/s at the model's
-own 245K. The same Gemma-12B server with q8_0 KV floors at 16K — a 3.2x
-gap at 16K between two KV types of one config.
+Four configs measured here never cross the floor inside their whole
+window: Qwen3.6 on llama at f16 KV, Gemma-26B on llama, the Bonsai fork
+at f16 KV, and Gemma-12B on llama with f16 KV and no drafter, which
+holds 8.9 tok/s at the model's own 245K. The same Gemma-12B server with
+q8_0 KV floors at 16K, a 3.2x gap at 16K between two KV types of one
+config, and the same Bonsai fork at q4_0 KV floors at 33K.
 
 ## What this test caught
 
-- **Speculative decoding costs depth.** On the Bonsai fork, the DSpark
-  drafter lifts shallow decode but drops the floor from ~30K to ~20-23K
-  and adds 4-5 GB. Free speed shallow, real cost deep — measure both.
+- **Speculative decoding costs depth, and on one build it costs speed
+  too.** On the Bonsai fork, the DSpark drafter lifts shallow decode but
+  drops the floor from ~30K to ~20-23K and adds 4-5 GB. On the Qwen3.8
+  ISTA 3-bit build the MTP drafter loses at every depth, 12.4 against
+  14.4 tok/s at depth 256 and 7.9 against 9.5 at 98K, and dropping it
+  moved the served window from 131072 to 163840. Measure the drafter per
+  build, at two depths.
 - **A fake 44K OOM.** mlx_lm.server pools several multi-GB KV caches
   and acts like a memory leak; `--prompt-cache-size 2` removed the fake
   ceiling. A server can also keep answering `/health` 200 after its

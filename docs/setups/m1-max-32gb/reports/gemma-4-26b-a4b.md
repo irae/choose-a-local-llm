@@ -18,7 +18,9 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 - **The GGUF at f16 KV is the secondary-model pick.** Thinking off it
   scores 0.976 / 0.945 / 100% on EvalPlus, 0 empty, in 19 minutes. On the
   Mendel blind task at thinking high it scores 47.5 of 100, complete,
-  all eight libraries, one critical trap hit.
+  all eight libraries, one critical trap hit; guided at thinking high
+  it scores 57, seven of eight. Thinking off it loops on the agent
+  task: both thinking-off rows ended on five identical edit calls.
 - **The fastest depth curve on this machine.** 60.3 tok/s at 4K and 17.3
   at 197K, the largest context this machine loads for it. Two slots hold
   101K each: 66.6 tok/s at 4K, 33.6 at 82K on one slot with the other
@@ -116,8 +118,16 @@ on the GGUF at f16, same budget. Every empty completion still had budget
 left, so this is model behaviour, not a harness limit. Like Gemma-12B,
 this model does not share a score across its two quants.
 
-Pending: Mendel at thinking off, guided and blind, and Mendel guided at
-thinking on.
+**Thinking off is where the agent task breaks.** Both thinking-off
+rows, guided and blind, ended on the harness's live loop stop after
+five identical edit calls: 25 capped from 44 raw with two libraries
+done, and 12.5 from 21 with one. The loop is the model's own failure,
+so both rows count as partials. The guided row at thinking high the
+same week completed seven of eight at 57, on its third attempt; the
+first two were killed by a system-wide memory squeeze from a macOS
+media indexing process, not by the model. On the single-turn gate
+thinking off is the better setting; on the agent loop it is the worse
+one.
 
 ## Which to pick for a coding task
 

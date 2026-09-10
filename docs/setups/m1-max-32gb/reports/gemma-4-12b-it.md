@@ -7,7 +7,7 @@ Backends: llama-server, LM Studio MLX engine · [GGUF on Hugging Face](https://h
   <div class="kpi"><b>245K</b><span>llama f16 depth, 8.86 tok/s</span></div>
   <div class="kpi"><b>24.64 tok/s</b><span>llama f16, shallow</span></div>
   <div class="kpi"><b>0.976 / 0.939 / 100%</b><span>EvalPlus, thinking off (GGUF)</span></div>
-  <div class="kpi"><b>4×49K</b><span>llama f16 slots, one swept, 25.1 GB</span></div>
+  <div class="kpi"><b>2×82K</b><span>llama f16 slots, no drafter, both swept, 13.8 GB; four slots hold 49K each</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
@@ -30,10 +30,11 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 - **The KV type sets the depth on this model, not the weights.** With
   q8_0 KV the same server drops under the 8 tok/s floor by 16K. With f16
   KV it is 3.2x faster at 16K and stays usable eight times deeper.
-- **Four slots at f16 KV hold 49K each**: 42.9 tok/s at 4K and 27.7 at
-  49K on one slot with the other three idle, in 25.1 GB wired, before
-  swap growth ended the sweep. The old "four 256K slots in 16.9 GB" was
-  an allocation at q8_0, not a measured depth.
+- **Two slots at f16 KV hold 82K each, and no `-c` moves that.** With
+  no drafter, both slots swept in turn, the clean per-slot depth is
+  81958 tokens at 15.7 tok/s in 13.8 GB wired. Every larger allocation
+  loads, up to 770048, and stops on swap growth at the step past 82K.
+  Four slots with the drafter hold 49K each in 25.1 GB.
 
 ## All configs — this model
 
@@ -44,6 +45,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 | 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% |
 | 3 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939/100% |
 | 4 | Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939/100% |
+| 5 | Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off | 2x82k | mem | 25.0 → 15.7 | 13.8 GB | 0.976/0.939/100% |
 
 💀 LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned. [Why this runtime is not a candidate](../lmstudio-retired.md).
 
@@ -93,6 +95,16 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
 ```
+
+**#5 — Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off.** pi id `gemma-4-12b-2x`. Measured 2026-09-08 at wired limit 25000, both slots swept in turn. The clean per-slot depth is 81958 tokens, and it does not move with `-c`: at every allocation from 221184 up, the sweep stopped on swap growth at the step past 81958, and at `-c 196608` the same depth ran clean to the slot's own window. A larger `-c` loads (770048 serves a short completion) and buys no depth. Two slots hold about 71 percent of the single slot's 114718 clean depth at `-c 131072`. The EvalPlus score is the single-slot config's, same weights and cache type.
+
+```bash
+llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
+  --alias gemma-4-12b-2x --no-mmproj --parallel 2 \
+  -ngl 999 -fa on -c 196608 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
+```
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
@@ -126,6 +138,16 @@ load at 163,840 each (`-c 655360`); the next step up fails on compute
 buffers at the first real request, which a trivial warmup does not
 show.
 
+**A `-c` that loads is not a window, and two slots prove it.** At
+`-c 770048` the server loads two slots and serves a short completion,
+but its own creep stopped on swap growth at 16K, because the KV
+allocation ate the wired budget before any depth was used. Judged by
+the creep instead, the per-slot ceiling is 81958 tokens at every
+allocation from 221184 up, and `-c 196608` runs that depth clean to
+its own window boundary. One slot at `-c 131072` creeps to 114718 at
+13.6 tok/s, so two slots hold about 71 percent of one slot's depth.
+A larger `-c` than the creep needs buys no depth, only KV allocation.
+
 **The context window cannot be pinned on the MLX path.** The engine
 ignores every context-length setting for this model: CLI flags, REST
 body, per-model config file, app default. Auto-fit computes the window
@@ -149,7 +171,7 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 | test | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
 | guided-v3.0 | llama-f16-off-ctx.256k | **37.5** (raw 58) | 3/8/partial | 97.6 | 6,453k | 125k | 0 | 132 | 3 | text |
-| blind-v1.1 | lmstudio-unquantized-high-ctx.160k 💀 | **0** (raw 30.5) | 0/8/invalid | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
+| blind-v1.1 | lmstudio-unquantized-high-ctx.144k 💀 | **0** (raw 30.5) | 0/8/invalid | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
 | blind-v1.1 | llama-f16-off-ctx.256k | **0** | 0/8/invalid | 80.3 | 9,994k | 179k | 0 | 92 | 0 |  |
 | guided-v3.0 | lmstudio-unquantized-high-ctx.160k 💀 | **0** (raw 30) | 0/8/invalid | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
 | guided-v3.0 | lmstudio-unquantized-low-ctx.160k 💀 | **0** (raw 29.5) | 0/8/invalid | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
@@ -165,20 +187,24 @@ The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
 One row per configuration, the same shape as
 [the comparison table](../comparison.md#decode-speed-vs-used-context-the-8-tok-s-usability-floor).
-Measured 2026-09-04 at wired limit 24000, thinking off on every row.
-llama-server uses the raw completion endpoint with the allocation
-always above the deepest step; LM Studio uses the chat endpoint with
-four slots. Pause 25 s per step.
+Measured 2026-09-04 at wired limit 24000, thinking off on every row;
+the two-slot row 2026-09-08 at wired limit 25000. llama-server uses the
+raw completion endpoint with the allocation always above the deepest
+step; LM Studio uses the chat endpoint with four slots. Pause 25 s per
+step on the 2026-09-04 rows, 60 s on the two-slot row.
 
-| config | @ 4K | @ 16K | @ 33K | @ 65K | @ 131K | @ 245K | capped by |
-|---|--:|--:|--:|--:|--:|--:|---|
-| **llama, f16 KV, no drafter** | **24.6** | **22.7** | **20.6** | **17.4** | **12.7** | **8.86** | mem — the trained window ends at 262144; 14.9 at 98K, 10.7 at 180K, 9.7 at 213K |
-| *LM Studio MLX engine, f16 KV* 💀 | *34.2* | *32.1* | *30.6* | *27.1* | *23.2* | | mem — last stable 131K; the engine grows into the wired cap and swap starts. [Retired here](../lmstudio-retired.md) |
-| llama, q8_0 KV + MTP | 13.8 | 6.5 | | | | | speed — under the 8 tok/s floor by 16K |
+| config | @ 4K | @ 16K | @ 33K | @ 65K | @ 82K | @ 131K | @ 245K | capped by |
+|---|--:|--:|--:|--:|--:|--:|--:|---|
+| **llama, f16 KV, no drafter** | **24.6** | **22.7** | **20.6** | **17.4** | | **12.7** | **8.86** | mem — the trained window ends at 262144; 14.9 at 98K, 10.7 at 180K, 9.7 at 213K |
+| llama, f16 KV, no drafter, 2 slots, `-c 196608` | 25.0 | 22.8 | 20.6 | 16.9 | 15.7 | | | mem — swap grew at the step past 82K on every larger `-c`; 82K per slot is the ceiling |
+| *LM Studio MLX engine, f16 KV* 💀 | *34.2* | *32.1* | *30.6* | *27.1* | | *23.2* | | mem — last stable 131K; the engine grows into the wired cap and swap starts. [Retired here](../lmstudio-retired.md) |
+| llama, q8_0 KV + MTP | 13.8 | 6.5 | | | | | | speed — under the 8 tok/s floor by 16K |
 
 Cells are blank past a config's cap, or where no step was measured at
 that depth. Wired memory at the deepest row: 13.9 GB on llama f16,
-17.2 GB on the LM Studio engine, 10.5 GB on llama q8_0.
+13.8 GB on two slots, 17.2 GB on the LM Studio engine, 10.5 GB on
+llama q8_0. The two-slot row is slot A; slot B read within 0.2 tok/s
+of it at every step.
 
 
 ---

@@ -23,14 +23,14 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 - **The only multi-agent setup that leaves the machine free**: 2×48K
   fork slots, 10.0 GB shallow and 10.9 GB at the floor — but window is
   not usable depth: the fork's speed floor is ~30K used tokens.
-- **The fork was never served with f16 KV, and that is where its floor
-  comes from.** The scored config's speed floor is 33K used tokens, 9.6
-  GB flat — the calibration bias and rotation flag do not move it
-  versus the plain q4 proxy. Quantized KV costs this machine 2 to 4
-  microseconds per cached token against 0.2 to 0.3 for f16, so the
-  floor near 30K is the cache type, not the weights. A creep at f16 is
-  queued
-  ([the arithmetic](../benchmarks/bonsai-27b.md#fork-with-f16-kv-never-measured-and-the-first-thing-to-measure)).
+- **The fork's floor was the cache type, not the weights.** At q4_0 KV
+  the scored config crosses the 8 tok/s floor at 33K used tokens. At
+  f16 KV with no drafter the same fork holds 15.0 tok/s at 4K and 9.67
+  at 131K, the `-c` boundary itself, with wired flat at 18.3 GB and
+  zero swap growth; no floor was found. Its one agent row at f16,
+  guided at thinking high, scored 12.5 capped from 36 raw, one of
+  eight libraries, at a 127K peak context. Its EvalPlus score is
+  pending.
 
 ## All configs — this model
 
@@ -41,6 +41,7 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 | 2 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% |
 | 3 | Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% |
 | 4 | Ternary-Bonsai-27B, GGUF⁴, q4_0 KV + bias, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% |
+| 5 | Ternary-Bonsai-27B, GGUF⁴, f16 KV, no drafter, thinking on | 131k | untested | 15.0 → 9.7 | 18.6 GB | pending |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -85,17 +86,40 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \
   --jinja --port 8081
 ```
+
+**#5 — Ternary-Bonsai-27B, GGUF⁴, f16 KV, no drafter, thinking on.** pi id `bonsai-prism-f16`. Measured 2026-09-08 at wired limit 25000, fork revision `abbae72`. The fork at f16 KV has no speed floor inside `-c 131072`: 15.0 tok/s at 4K and 9.67 at 131K, the `-c` boundary itself, with wired flat at 18.3 GB and zero swap growth. The q4_0 KV rows floor at 33K, so the cache type was the floor, not the weights. No larger `-c` was tried. EvalPlus is pending: the f16 cache does not carry the calibrated q4 row's score. Mendel guided at thinking high: 12.5/100 capped from 36 raw, one of eight libraries, 376 tool calls and 74 tool errors at a 127K peak context.
+
+```bash
+LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
+  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \
+  --alias bonsai-prism-f16 \
+  -ngl 999 -fa on -c 131072 --parallel 1 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
+```
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
 
-**Window is not usable depth** on the fork. It allocates huge windows in
-little memory (the full 262K trained window fits in 17.1 GB with q8 KV)
-and never OOMs inside them — but decode crosses the 8 tok/s floor at
-~30K used tokens. MLX is the opposite: fastest at every depth it
-reaches, and memory-limited at ~58K. For one agent that needs depth,
-MLX (#1) wins on both axes; the fork's niches are the light desktop
-(#2) and multi-agent slots (#3).
+**Window is not usable depth** on the fork at a quantized cache. It
+allocates huge windows in little memory (the full 262K trained window
+fits in 17.1 GB with q8 KV) and never OOMs inside them, but at q4_0 KV
+decode crosses the 8 tok/s floor at 33K used tokens. At f16 KV the
+floor is gone: the creep at `-c 131072` ran clean to the boundary at
+9.67 tok/s, in 18.3 GB, and no larger `-c` has been tried. MLX is
+fastest at every depth it reaches and memory-limited at ~58K. For one
+agent that needs depth, the fork at f16 (#5) now holds more than twice
+the MLX window at a lower speed; MLX (#1) is the faster arm to 58K;
+the q4_0 rows (#3, #4) are the light desktop and the multi-agent
+slots.
+
+**The f16 fork has one agent row, and it is a poor one.** Guided at
+thinking high on a 131072 window, reserve 8192, it scored 36 raw and
+12.5 capped: one of eight libraries in 195 minutes, 376 tool calls and
+74 tool errors, one commit that dropped a package another file still
+required. The depth was there, at a 127K peak context, and the model
+did not use it. Its EvalPlus score is pending; the calibrated q4 row's
+score does not carry to a different cache type.
 
 **The quality number was wrong at first, and the correction was the biggest
 of any model.** Ternary Bonsai is PrismML's quality-oriented compression of
@@ -152,8 +176,9 @@ matches the PQ2_0 variant.
 | need | config | tok/s (used depth) | gated by |
 |---|---|--:|---|
 | **Depth + speed, one agent** | MLX #1 | 24.5 shallow; 17.27 at 58K | mem: OOM ~58-60K |
-| **Light desktop, one agent** | fork scored #2 | 14.8 shallow, 7.9 at 33K | speed: floor 33K used |
-| **Two agents** | fork 2×48K #3 | 14.94 shallow, 7.78 at 33K, one slot decoding | speed: slot floor 33K used |
+| **Max depth, one agent** | fork f16 KV #5 | 15.0 shallow; 9.67 at 131K | untested: no floor inside `-c 131072` |
+| **Light desktop, one agent** | fork scored #3 | 14.8 shallow, 7.9 at 33K | speed: floor 33K used |
+| **Two agents** | fork 2×48K #4 | 14.94 shallow, 7.78 at 33K, one slot decoding | speed: slot floor 33K used |
 
 ## Quality — EvalPlus HumanEval+
 
@@ -173,6 +198,7 @@ matches the PQ2_0 variant.
 | guided-v3.0 | llama-q4_0-high-ctx.64k | **31.5** | 3/8/partial | 300.0 | 0k | 63k | 10 | 343 | 3 |  |
 | blind-v1.1 | llama-q4_0-high-ctx.64k | **12.5** (raw 60.5) | 1/8/done | 43.1 | 1,718k | 51k | 0 | 76 | 2 |  |
 | guided-v3.0 | mlx-unquantized-low-ctx.56k | **12.5** (raw 59) | 1/8/partial | 300.0 | 3,619k | 46k | 0 | 122 | 1 |  |
+| guided-v3.0 | llama-f16-high-ctx.128k | **12.5** | 1/8/partial | 194.7 | 21,049k | 127k | 1 | 376 | 2 |  |
 | guided-v3.0 | mlx-unquantized-off-ctx.56k | **0** (raw 27) | 0/8/invalid | 83.5 | 48k | 5k | 0 | 10 | 0 |  |
 | guided-v3.0 | mlx-unquantized-off-ctx.56k | **0** (raw 25) | 0/8/invalid | 186.9 | 1,969k | 27k | 0 | 105 | 0 | tool call |
 
@@ -234,6 +260,32 @@ costs almost nothing (floor matches config 2's single-slot floor and
 the plain-q4 proxy). Both slots decoding at once — the worst case, not
 the reported number — ran 9.8/9.9 tok/s each, aggregate 19.7 (from an
 earlier pass, predates the bias flags).
+
+## Config 5 (fork, f16 KV, no drafter) — slow creep, `-c 131072`, wired limit 25000, measured 2026-09-08
+
+Fork revision `abbae72`, `LLAMA_ATTN_ROT_DISABLE=1`, one slot, 60 s
+pause per step. The first request on the server was a 4096-token
+warmup at 16.93 tok/s, discarded.
+
+| depth (used tokens) | decode tok/s | wired |
+|---|--:|--:|
+| 4K | 14.95 | 18.3 GB |
+| 8K | 16.25 | 18.3 GB |
+| 16K | 15.62 | 18.3 GB |
+| 25K | 15.07 | 18.3 GB |
+| 33K | 14.45 | 18.3 GB |
+| 41K | 13.92 | 18.3 GB |
+| 49K | 13.40 | 18.3 GB |
+| 66K | 12.50 | 18.3 GB |
+| 82K | 11.45 | 18.6 GB |
+| 98K | 10.76 | 18.6 GB |
+| 115K | 10.24 | 18.2 GB |
+| **131K** | **9.67 — the `-c` boundary, no floor found** | 18.2 GB |
+
+Swap never grew; the delta went slightly negative as the sweep went
+deeper. Against the q4_0 rows this is the same weights, the same fork
+and the same machine, with the cache type the only change, and the
+33K floor is gone.
 
 ---
 

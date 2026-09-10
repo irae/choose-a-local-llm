@@ -29,7 +29,7 @@ flow is binding.
 
 ### M1 Max, 32 GB
 
-Apple Silicon, wired limit 24000 MB. Five models, three runtimes:
+Apple Silicon, wired limit 25000 MB. Five models, three runtimes:
 llama-server, mlx_lm.server, and the PrismML llama.cpp fork. LM Studio
 was tried and retired.
 Depth sweeps and EvalPlus scores are complete for every model; two
@@ -42,7 +42,7 @@ deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 |--:|---|--:|:--:|--:|--:|--:|
 | 1 | Qwen3.8-27B | 104k | untested | 15.8 → 10.3 | 24.1 GB | 0.988/0.927/100% |
 | 2 | Gemma-4-12B | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% |
-| 3 | Qwen3.6-35B-A3B | 37k | mem | 53.3 → 42.0 | 18.7 GB | 0.939/0.921/97% |
+| 3 | Qwen3.6-35B-A3B | 82k | speed | 36.5 → 9.2 | 25.8 GB | 0.939/0.921/97% |
 | 4 | Ternary-Bonsai-27B | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% |
 | 5 | Gemma-4-26B-A4B | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% |
 <!-- gen:models-evaluated:end -->
