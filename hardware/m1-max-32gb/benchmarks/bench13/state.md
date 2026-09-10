@@ -201,6 +201,13 @@ handing-over section.
   prior partial evaluate attempt (there is none yet here). Apply the
   `reliability_guard` venv fix before evaluating if this resumes on a
   fresh venv.
+- **Resumed.** Owner asked for a warmup first: killed LM Studio (was
+  not running), preflight all `ok`, then a slow creep to 32768 on
+  `ista_evalplus_serving` as a machine warmup, not a scored sweep —
+  clean all the way, swap flat, `no ceiling found up to 32768`.
+  `run-humaneval.sh` correctly skipped all 76 completed `task_id`s
+  (confirmed in `codegen.log`, `(resuming from 1)` on each) and picked
+  up at `HumanEval/76`. Fresh watcher started, `RUNWATCH_SILENCE=2700`.
 
 ## Values this run sets
 
