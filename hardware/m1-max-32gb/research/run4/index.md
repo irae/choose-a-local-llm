@@ -1,23 +1,21 @@
 # Research run 4, task list
 
-Not started. The runbook (`AGENT.md`) and the rest of the kit appear
-when the run starts. Items are one file each in `../`, named by
-mnemonic and never numbered. **This list is the order.** The executor
-checks the items off here as it goes and writes results beside the
-item (`../<mnemonic>/results.md`).
+Ready to start, 2026-09-10. Items are one file each in `../`, named
+by mnemonic and never numbered. **This list is the order.** The
+executor checks the items off here as it goes and writes results in
+`results.md`.
 
 Everything here runs at wired 25000, the standing limit. Items that
 wait on a decision, on a download, or on the MLX margin rule live in
 `../unscheduled/`, which has no index and no order.
 
-The rules of research run 3 hold, less the withdrawn one: the KV cache
-is f16; every candidate gets a context creep; a gate is a task, never a
-decision taken as one result lands; no full Mendel run and no full
-EvalPlus run; GGUF only; the thinking level is chosen, never inherited.
+This run does one thing: it validates `llama-benchy` as the project's
+reader of decode speed at depth, on the one build whose creeps are
+already on disk. The measurements that follow from a pass are
+benchmark run 14's, not this run's, so the owner can switch models
+once and keep two agents on the machine.
 
-- [ ] `benchy-ab` — `llama-benchy` against the creep on the Qwen3.8 ISTA
-  build, no drafter and n-max 3, four depths, at the serving sampling
-  and at temperature 0, acceptance recorded per cell
-  (`../benchy-ab.md`). **First on purpose**: the creep's drafter speeds
-  past 16K are a 100 percent acceptance artifact, and every drafter
-  table on the site reads from them until this item says what to trust.
+- [ ] `benchy-ab` — `llama-benchy` against the two ISTA creeps on
+  disk: no drafter at 4K, 49K and 98K; n-max 3 at 98K; server-default
+  sampling; acceptance recorded per cell (`../benchy-ab.md`). Pass
+  criteria and the values it sets for run 14 are in the item.
