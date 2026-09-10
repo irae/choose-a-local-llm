@@ -222,3 +222,37 @@ that produced it.
 | `ista_window` | `147456` | coordinator gate |
 | `ista_evalplus_serving` | no drafter, `-c 32768`; confirmed serving, calibrated (corrected), budget 8192 | `ista-evalplus-low` |
 | `ista_temperature` | temperature 1.0, top_p 0.95 (from `<slug>-meta.json`, not the AGENT.md path, which does not exist) | `ista-mendel-xhigh` |
+
+## Projector restore and checksum audit
+
+Owner request, done disk-only, sequential, alongside the running
+`ista-evalplus-xhigh` gate (checked the gate's jsonl line count grew
+between each repo; it was mid a long completion for the middle stretch,
+confirmed alive via the server log each time, never stalled). Did not
+touch the `OBLITERATUS` files under LM Studio's cache; those are the
+owner's own. Checksums came from the Hugging Face API's LFS `oid`
+per file at the pinned revision, saved to
+`results/checksums-<repo-short>.txt`. Downloaded the missing projector
+with `hf download <repo> <file> --revision <rev>` (the `hf` CLI lives
+in `~/.venvs/local-llm-bench`; no `huggingface-cli` or `hf` on the bare
+`PATH`). Computed sha256 on every `.gguf` in each snapshot by following
+the symlink to its blob, never trusting the blob filename.
+
+| repo | file | expected oid | computed sha256 | result |
+| --- | --- | --- | --- | --- |
+| `bartowski/Qwen3.8-27B-GGUF` | `Qwen3.8-27B-Q4_K_M.gguf` | `e103abf9d914d1d7b2f2592f055f2759a71195c350a01c135f71aaae86bca52b` | same | match |
+| `bartowski/Qwen3.8-27B-GGUF` | `mmproj-Qwen3.8-27B-bf16.gguf` | `e43a597863a21bfa48b0fbd4553a771ae4117e25bb172e66f1dbc3fc6d037131` | same | match |
+| `unsloth/Qwen3.6-35B-A3B-MTP-GGUF` | `Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf` | `55983c5a75a1ab969824077b3bb3de4146e82a9234072b48ad4e8f92ad3fe9f1` | same | match |
+| `unsloth/Qwen3.6-35B-A3B-MTP-GGUF` | `mmproj-BF16.gguf` | `da63cb47a76763c712393f8a017070188a304fa39f8aeea6edc629ed7b975cfa` | same | match |
+| `unsloth/gemma-4-26b-a4b-it-GGUF` | `gemma-4-26B-A4B-it-UD-Q4_K_XL.gguf` | `ef728c8e0c337fd1067b947af006e38a9ef2419e56feced4fd29b4bf0636e30c` | same | match |
+| `unsloth/gemma-4-26b-a4b-it-GGUF` | `mmproj-BF16.gguf` | `41926ed5f1403cf5add23b0684992805ea6f97253096132e769e65646b8cef9d` | same | match |
+| `unsloth/gemma-4-26b-a4b-it-GGUF` | `mtp-gemma-4-26B-A4B-it.gguf` | `6326fb9f5e487aa8dcdd313a091e3c67724cb2a666ec3b7d2895b5b26d93ed1b` | same | match |
+
+All three repos pass. No mismatch, so no delete-and-redownload step
+ran (step 5 of the request). Note on the `unsloth/gemma-4-26b-a4b-it-GGUF`
+API path: the repo's real casing is `gemma-4-26B-A4B-it-GGUF` (the
+lowercase form 307-redirects); the local snapshot directory keeps the
+lowercase name from the original download, unaffected.
+
+Step 6 (checksum audit of every other GGUF repo in the cache) held:
+the xhigh gate has not closed yet.
