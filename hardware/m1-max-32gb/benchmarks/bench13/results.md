@@ -354,3 +354,43 @@ venv (see above); the row carries that condition.
 Against this build's own medium score of 0.976 / 0.945 / 100% (one
 empty). Level with medium on base, one problem worse on plus (a difference of
 one problem, not a percentage per the reading rule), same empty count.
+
+## `ista-evalplus-xhigh`
+
+Same serving config as low (no drafter, `-c 32768`, f16 KV), budget
+30000, `reasoning_effort: xhigh` passed explicitly. Owner paused the
+run once mid-way (at 76/164) for a machine rest; resumed cleanly with
+`evalplus.codegen`'s own `task_id` skip, no partial work lost (stopped
+right at the start of a fresh problem, never mid-generation). Active
+wall time, pause excluded: window 1 (0-75) 238.2 min, window 2 (76-163)
+about 345 min, **total about 9h43m active**.
+
+164/164 codegen'd. **5 confirmed runaways** (hit the exact 30000-token
+generation cap, empty content) out of 164 — a 3.0% rate, matching the
+calibration's 1/10 (10%) direction but far below its magnitude; the
+larger sample landed lower.
+
+`reliability_guard` venv fix from the low block still in place;
+`evaluate.py` ran clean the first time.
+
+**Result: pass@1 0.945 (base) / 0.921 (plus), 5/164 empty**, against
+this build's own medium score of 0.976 / 0.945 / 100% (one empty).
+Worse than medium on both metrics and five times the empty rate — this
+model runs longer, less-converged completions at its own default
+thinking level than at medium on tiny, single-turn problems, the same
+direction the xhigh calibration first showed.
+
+## Comparing effort levels on EvalPlus
+
+| | medium (bench12) | low | xhigh |
+| --- | --- | --- | --- |
+| base pass@1 | 0.976 | 0.976 | 0.945 |
+| plus pass@1 | 0.945 | 0.933 | 0.921 |
+| empty | 1/164 | 1/164 | 5/164 |
+| budget | 8192 | 8192 | 30000 |
+
+Low matches medium on base and trails narrowly on plus. xhigh trails
+both and has by far the highest empty rate, despite (or because of)
+the largest budget: more thinking does not help on tasks this short,
+and can hurt when the model does not converge inside even a 30000-token
+cap.

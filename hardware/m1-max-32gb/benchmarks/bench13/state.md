@@ -170,6 +170,51 @@ handing-over section.
   (`RUNWATCH_MEM_LOG` `/tmp/run13-evalplus-xhigh-mem.log`). Applying
   the `reliability_guard` venv fix before evaluating; do not skip it
   again.
+- First watcher declared the server dead at the default `SILENCE`
+  600s: a false positive. The server was confirmed alive and actively
+  generating (task 265799, 24871 tokens, 13.42 tok/s at the time) — a
+  single generation on this raw completion path (no streaming) can run
+  30+ minutes at xhigh's runaway lengths, past the default silence
+  window. Restarted the watcher with `RUNWATCH_SILENCE=2700` (45 min),
+  recorded here since a ceiling measured with a changed silence value
+  must say so (`context-creep.md`'s rule for `STALL_S`, applied the
+  same way to this scoring run's watcher).
+- **Owner paused `ista-evalplus-xhigh` for later resume.** Stopped
+  codegen at the moment a completion landed (right at the start of the
+  following problem, never mid-generation), so no partial work was
+  lost. Progress at pause: **76/164 task_ids** in
+  `hardware/m1-max-32gb/benchmarks/bench13/results/ista-evalplus-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`,
+  2 confirmed runaways (cap hits) so far. Server stopped
+  (`ista_evalplus_serving`, no drafter, `-c 32768`, f16 KV). To
+  resume: start that server, confirm it serves, then re-run the same
+  command — `evalplus.codegen` skips existing `task_id`s and continues
+  with 76-163:
+
+  ```bash
+  RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench13/results EVALPLUS_MAX_NEW_TOKENS=30000 \
+    benchmarks/run-humaneval.sh ista-evalplus-xhigh qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'
+  ```
+
+  Start a fresh watcher with `RUNWATCH_SILENCE=2700` (not the
+  default), for the same reason recorded above. Delete the stale
+  `_eval_results.json` before `evalplus.evaluate` if one exists from a
+  prior partial evaluate attempt (there is none yet here). Apply the
+  `reliability_guard` venv fix before evaluating if this resumes on a
+  fresh venv.
+- **Resumed.** Owner asked for a warmup first: killed LM Studio (was
+  not running), preflight all `ok`, then a slow creep to 32768 on
+  `ista_evalplus_serving` as a machine warmup, not a scored sweep —
+  clean all the way, swap flat, `no ceiling found up to 32768`.
+  `run-humaneval.sh` correctly skipped all 76 completed `task_id`s
+  (confirmed in `codegen.log`, `(resuming from 1)` on each) and picked
+  up at `HumanEval/76`. Fresh watcher started, `RUNWATCH_SILENCE=2700`.
+- `ista-evalplus-xhigh` done: 164/164, 5 confirmed runaways (3.0%),
+  9h43m active wall (pause excluded). `evaluate.py` clean on the first
+  pass this time (venv fix from the low block held). Result: pass@1
+  0.945/0.921, 5/164 empty — worse than medium on both metrics and
+  five times medium's empty rate. Full comparison table in
+  `results.md`. Server stopped. **This is the last block of AGENT.md's
+  order**; the run's own work is done.
 
 ## Values this run sets
 
@@ -184,3 +229,104 @@ that produced it.
 | `ista_window` | `147456` | coordinator gate |
 | `ista_evalplus_serving` | no drafter, `-c 32768`; confirmed serving, calibrated (corrected), budget 8192 | `ista-evalplus-low` |
 | `ista_temperature` | temperature 1.0, top_p 0.95 (from `<slug>-meta.json`, not the AGENT.md path, which does not exist) | `ista-mendel-xhigh` |
+
+## Projector restore and checksum audit
+
+Owner request, done disk-only, sequential, alongside the running
+`ista-evalplus-xhigh` gate (checked the gate's jsonl line count grew
+between each repo; it was mid a long completion for the middle stretch,
+confirmed alive via the server log each time, never stalled). Did not
+touch the `OBLITERATUS` files under LM Studio's cache; those are the
+owner's own. Checksums came from the Hugging Face API's LFS `oid`
+per file at the pinned revision, saved to
+`results/checksums-<repo-short>.txt`. Downloaded the missing projector
+with `hf download <repo> <file> --revision <rev>` (the `hf` CLI lives
+in `~/.venvs/local-llm-bench`; no `huggingface-cli` or `hf` on the bare
+`PATH`). Computed sha256 on every `.gguf` in each snapshot by following
+the symlink to its blob, never trusting the blob filename.
+
+| repo | file | expected oid | computed sha256 | result |
+| --- | --- | --- | --- | --- |
+| `bartowski/Qwen3.8-27B-GGUF` | `Qwen3.8-27B-Q4_K_M.gguf` | `e103abf9d914d1d7b2f2592f055f2759a71195c350a01c135f71aaae86bca52b` | same | match |
+| `bartowski/Qwen3.8-27B-GGUF` | `mmproj-Qwen3.8-27B-bf16.gguf` | `e43a597863a21bfa48b0fbd4553a771ae4117e25bb172e66f1dbc3fc6d037131` | same | match |
+| `unsloth/Qwen3.6-35B-A3B-MTP-GGUF` | `Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf` | `55983c5a75a1ab969824077b3bb3de4146e82a9234072b48ad4e8f92ad3fe9f1` | same | match |
+| `unsloth/Qwen3.6-35B-A3B-MTP-GGUF` | `mmproj-BF16.gguf` | `da63cb47a76763c712393f8a017070188a304fa39f8aeea6edc629ed7b975cfa` | same | match |
+| `unsloth/gemma-4-26b-a4b-it-GGUF` | `gemma-4-26B-A4B-it-UD-Q4_K_XL.gguf` | `ef728c8e0c337fd1067b947af006e38a9ef2419e56feced4fd29b4bf0636e30c` | same | match |
+| `unsloth/gemma-4-26b-a4b-it-GGUF` | `mmproj-BF16.gguf` | `41926ed5f1403cf5add23b0684992805ea6f97253096132e769e65646b8cef9d` | same | match |
+| `unsloth/gemma-4-26b-a4b-it-GGUF` | `mtp-gemma-4-26B-A4B-it.gguf` | `6326fb9f5e487aa8dcdd313a091e3c67724cb2a666ec3b7d2895b5b26d93ed1b` | same | match |
+
+All three repos pass. No mismatch, so no delete-and-redownload step
+ran (step 5 of the request). Note on the `unsloth/gemma-4-26b-a4b-it-GGUF`
+API path: the repo's real casing is `gemma-4-26B-A4B-it-GGUF` (the
+lowercase form 307-redirects); the local snapshot directory keeps the
+lowercase name from the original download, unaffected.
+
+Step 6 (checksum audit of every other GGUF repo in the cache) held:
+the xhigh gate has not closed yet.
+
+**Step 6, run anyway on owner decision, gate still open.** Same
+procedure, five more repos, sequential, checked the gate's jsonl
+count between each (it kept growing: 128 to 130 to 130 to 131 to 132
+across the five repos, never stalled). No downloads needed; every
+file already present hashed clean.
+
+| repo | file | expected oid | computed sha256 | result |
+| --- | --- | --- | --- | --- |
+| `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` | `Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf` | `58fd826723939933dc86f45b7fe04545cbc2de1c70f6fe2cdd3858c87a98c12f` | same | match |
+| `AtomicChat/Qwen3.8-27B-GGUF` | `Qwen3.8-27B-AD-IQ3_S.gguf` | `3e30f93acafc11705a8e4891a0b2aa3c138ffcaf2ca832b1c6a11ea4b5b7b620` | same | match |
+| `unsloth/Qwen3.8-27B-GGUF` | `Qwen3.8-27B-UD-Q3_K_XL.gguf` | `8c2a45ff85e7674ca185ec8eb6cdeab0e617ed9d8018caed0b64380eb2a67a5e` | same | match |
+| `unsloth/Qwen3.8-27B-GGUF` | `mmproj-BF16.gguf` | `83ee4f4f205fa514161778c41df1ea14144faa0f713510893b63c2395f5c2d53` | same | match |
+| `unsloth/Qwen3.8-27B-GGUF` | `MTP/mtp-Qwen3.8-27B-Q4_0.gguf` | `50d9ce5a6da381bbcfb31061cf73df94a90e6faf8efeddee379a9cb8f1501c6e` | same | match |
+| `unsloth/gemma-4-12b-it-GGUF` | `gemma-4-12b-it-UD-Q4_K_XL.gguf` | `90fd944d227e9d9b68e7e2c7d5b57b79d4c66ed521b0919fbbd932cf834f6f8e` | same | match |
+| `unsloth/gemma-4-12b-it-GGUF` | `mmproj-BF16.gguf` | `2e269f906eb15169ee9ce880ea649bd6d42d4964c21f8ede10d0d0efc738bcbb` | same | match |
+| `unsloth/gemma-4-12b-it-GGUF` | `mtp-gemma-4-12b-it.gguf` | `145db9094bc0f85f1701e255a2ed216dcc9800fc8bc8631ad00905b456bd451b` | same | match |
+| `prism-ml/Ternary-Bonsai-27B-gguf` | `Ternary-Bonsai-27B-PQ2_0.gguf` | `e4781999f1997ef97ce0c58d05750835acc999d18d83ee6489ba7ac7b14cb5f6` | same | match |
+| `prism-ml/Ternary-Bonsai-27B-gguf` | `Ternary-Bonsai-27B-Q2_0.gguf` | `868c11714cf8fe47f5ec9eeb2be0ab1a337112886f92ee0ede6b855c4fa31757` | same | match |
+| `prism-ml/Ternary-Bonsai-27B-gguf` | `Ternary-Bonsai-27B-Q2_g64.gguf` | `59a45d1ecef702b14531b06d22949f33b25c1897da31a8c0b298e01e4d9138eb` | same | match |
+| `prism-ml/Ternary-Bonsai-27B-gguf` | `Ternary-Bonsai-27B-dspark-Q4_1.gguf` | `c4810091d244eddc61a0cc4966e584b0959f141e3c66c0d371a6652d9f647da9` | same | match |
+| `prism-ml/Ternary-Bonsai-27B-gguf` | `Ternary-Bonsai-27B-dspark-bf16.gguf` | `d5ce05b0e7e23804279fb0b451e330e71c06d977657802a0e22d71433f30dbad` | same | match |
+
+All five repos pass. No mismatch across any file: every main model
+file, drafter/MTP head, projector, and Bonsai variant on this machine
+matches its publisher's LFS oid exactly. `unsloth/Qwen3.8-27B-GGUF`'s
+MTP head sits in a `MTP/` subfolder not shown by a root-level tree
+call; fetched its oid from the subfolder path directly.
+
+## Handing over
+
+Every block in `AGENT.md`'s order ran: `ista-nmax-shallow`,
+`ista-nodrafter-creep`, `ista-serving-pick` (coordinator gate),
+`ista-nmax-deep`, `ista-smoke-xhigh`, `ista-mendel-xhigh`,
+`ista-smoke-low`, `ista-mendel-low`, `ista-evalplus-low`,
+`ista-evalplus-xhigh`. Nothing was dropped from the tail.
+
+Findings, in one line each:
+
+- No drafter beats every drafter cell on both speed and window at
+  every setting tried on this build; `ista_serving` is no drafter,
+  `-c 163840`, window 147456.
+- Mendel: xhigh scores 80.5/100, 8/8 libraries, 109.4 min. low scores
+  66/100, 7/8 libraries, ended on a turn_timeout (partial), 163.3 min.
+  xhigh wins on score while spending less context.
+- EvalPlus: medium (bench12) 0.976/0.945, low 0.976/0.933, xhigh
+  0.945/0.921 with 5x medium's empty rate. This model does not benefit
+  from more thinking on short single-turn problems, and can regress.
+- Two harness bugs fixed in-session: a `RUNWATCH_SILENCE` default too
+  short for this model's longest completions (raised to 2700s for
+  scoring-run watchers on this build), and a macOS `reliability_guard`
+  `setrlimit` bug in `~/.venvs/local-llm-bench` (already fixed
+  elsewhere, not in this venv; fixed here too).
+- Owner-directed disk audit (outside the run's own order, run alongside
+  the xhigh gate): restored three missing projector files and
+  confirmed, by sha256, that every GGUF on this machine (eight repos,
+  main models, drafter/MTP heads, projectors, every quant checked)
+  matches its publisher's checksum. No mismatch found.
+
+Machine state: server stopped, wired memory should recover on its own.
+No stray `llama-server`, `run_codegen_wrapper`, or `run-watch.sh`
+processes (confirmed). Worktree `../choose-a-local-llm-run13`, branch
+`run13`, left in place for the coordinator to review and merge.
+
+Next: the coordinator adds the findings to
+`hardware/m1-max-32gb/benchmarks/INDEX.md`, writes `report.md`, writes
+the derived values into `models.json` and the site, and publishes.
