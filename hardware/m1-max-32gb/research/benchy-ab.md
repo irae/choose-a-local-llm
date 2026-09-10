@@ -3,7 +3,11 @@
 Status: draft 2026-09-10. Origin: the drafter table on the Qwen3.8 ISTA
 build, where the creep read 10.30 tok/s at 98K with the drafter at
 n-max 3 and a real-prompt cell read 7.89. Needs hardware: yes, about
-three hours on the Mac, one build, two serving configs.
+two hours on the Mac, one build, two serving configs. **The A side is
+already measured**: the no-drafter creep of 2026-09-09
+(`benchmarks/bench13/results/creep-ista-nodrafter.tsv`) and the n-max 3
+creep of 2026-09-08 (`run3/results/creep-qwen38-ista-iq3s-mtp.tsv`),
+with their server logs. Only the benchy side runs.
 
 ## The problem this item answers
 
@@ -133,7 +137,32 @@ new block, generates 64 tokens and pauses 60 s. A `llama-benchy` run
 over four depths costs one prefill of the deepest depth, about 30
 minutes at 90 tok/s for 147K, plus four generations of 256 tokens per
 depth at 8 to 14 tok/s, about 20 minutes, plus the pauses. About an
-hour per arm and per temperature, four runs, about four hours for the
-A/B. After adoption a drafter question on a new build costs one
-benchy run per `n-max` cell at two or three depths, about 40 minutes
-each, against a creep that reads the wrong number in 48.
+hour per arm and per temperature. The creeps are already on disk, so
+the A/B is two benchy runs at the serving sampling, about two hours,
+plus the optional temperature-0 pair. After adoption a drafter
+question on a new build costs one benchy run per `n-max` cell at two
+or three depths, about 40 minutes each, against a creep that reads
+the wrong number in 48.
+
+## Beyond the A/B: benchy as the adapter, the creep as the monitor
+
+If the A/B passes, the two tools can become one. `llama-benchy` gives
+the ladder when it is passed the whole depth list, and `--emit-progress`
+streams one JSON event per completed test, so a monitor beside it can
+read each rung's tok/s as it lands. Everything the creep owns that
+benchy lacks is monitor work: the 60 s pause, the `vm_stat` sample per
+rung, the floor, swap-growth and compression stops, the server-log
+liveness read, the dead-server exit 42. That is the shape
+`CONVENTIONS.md` already asks for, one module owns the method and a
+thin adapter owns the backend: the method module keeps the stop rules
+and the memory record, and benchy becomes the adapter that fills the
+context and reads the speed. The cleanest cut is rung by rung: the
+monitor calls benchy with one `--depth` at a time, reads the result,
+samples memory, applies the stop rules, pauses, and goes on; prefix
+reuse keeps each rung cheap.
+
+What is lost and has to be decided: the creep's round-robin
+`N_CONTEXTS`, which the two-slot rows use, has no benchy equivalent
+(`--concurrency` runs slots in parallel, which is a different
+measurement), and benchy is a third-party moving target that needs a
+pinned version. Neither blocks the A/B; both block a replacement.
