@@ -158,6 +158,18 @@ handing-over section.
   `_eval_results.json` (or `evaluate` reuses the cached zero), re-ran
   evaluation only. Real result: pass@1 0.976/0.933, 1/164 empty,
   level with medium (0.976/0.945, one empty) on base.
+- Coordinator confirmed the xhigh calibration is a skip, not a
+  resume: 10 rows, 9 `stop`, 1 `length` (`HumanEval/99`, 30000 cap,
+  empty), one length stop under the two-stop threshold. Started the
+  full xhigh gate: `RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench13/results`,
+  budget 30000, `reasoning_effort: xhigh` passed explicitly, same
+  server as the low gate (no drafter, `-c 32768`, f16 KV). Completions
+  land at `hardware/m1-max-32gb/benchmarks/bench13/results/ista-evalplus-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
+  If this spans into a later run, resume from that path with the same
+  `RESULTS_BASE` and run name. Watcher running
+  (`RUNWATCH_MEM_LOG` `/tmp/run13-evalplus-xhigh-mem.log`). Applying
+  the `reliability_guard` venv fix before evaluating; do not skip it
+  again.
 
 ## Values this run sets
 

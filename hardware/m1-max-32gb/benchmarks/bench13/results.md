@@ -348,7 +348,9 @@ exemption to all three `setrlimit` calls in that venv's
 zero, and re-ran evaluation only (codegen samples were never touched,
 no need to redo codegen).
 
-**Result: pass@1 0.976 (base) / 0.933 (plus), 1/164 empty**, against
-this build's own medium score of 0.976 / 0.945 / 100% (one empty).
-Level with medium on base, one problem worse on plus (a difference of
+**Result: pass@1 0.976 (base) / 0.933 (plus), 1/164 empty**, under a
+`reliability_guard` macOS `setrlimit` fix applied to this session's
+venv (see above); the row carries that condition.
+Against this build's own medium score of 0.976 / 0.945 / 100% (one
+empty). Level with medium on base, one problem worse on plus (a difference of
 one problem, not a percentage per the reading rule), same empty count.
