@@ -179,6 +179,28 @@ handing-over section.
   recorded here since a ceiling measured with a changed silence value
   must say so (`context-creep.md`'s rule for `STALL_S`, applied the
   same way to this scoring run's watcher).
+- **Owner paused `ista-evalplus-xhigh` for later resume.** Stopped
+  codegen at the moment a completion landed (right at the start of the
+  following problem, never mid-generation), so no partial work was
+  lost. Progress at pause: **76/164 task_ids** in
+  `hardware/m1-max-32gb/benchmarks/bench13/results/ista-evalplus-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`,
+  2 confirmed runaways (cap hits) so far. Server stopped
+  (`ista_evalplus_serving`, no drafter, `-c 32768`, f16 KV). To
+  resume: start that server, confirm it serves, then re-run the same
+  command — `evalplus.codegen` skips existing `task_id`s and continues
+  with 76-163:
+
+  ```bash
+  RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench13/results EVALPLUS_MAX_NEW_TOKENS=30000 \
+    benchmarks/run-humaneval.sh ista-evalplus-xhigh qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'
+  ```
+
+  Start a fresh watcher with `RUNWATCH_SILENCE=2700` (not the
+  default), for the same reason recorded above. Delete the stale
+  `_eval_results.json` before `evalplus.evaluate` if one exists from a
+  prior partial evaluate attempt (there is none yet here). Apply the
+  `reliability_guard` venv fix before evaluating if this resumes on a
+  fresh venv.
 
 ## Values this run sets
 
