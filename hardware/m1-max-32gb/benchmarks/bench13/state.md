@@ -208,6 +208,13 @@ handing-over section.
   `run-humaneval.sh` correctly skipped all 76 completed `task_id`s
   (confirmed in `codegen.log`, `(resuming from 1)` on each) and picked
   up at `HumanEval/76`. Fresh watcher started, `RUNWATCH_SILENCE=2700`.
+- `ista-evalplus-xhigh` done: 164/164, 5 confirmed runaways (3.0%),
+  9h43m active wall (pause excluded). `evaluate.py` clean on the first
+  pass this time (venv fix from the low block held). Result: pass@1
+  0.945/0.921, 5/164 empty — worse than medium on both metrics and
+  five times medium's empty rate. Full comparison table in
+  `results.md`. Server stopped. **This is the last block of AGENT.md's
+  order**; the run's own work is done.
 
 ## Values this run sets
 
@@ -284,3 +291,42 @@ file, drafter/MTP head, projector, and Bonsai variant on this machine
 matches its publisher's LFS oid exactly. `unsloth/Qwen3.8-27B-GGUF`'s
 MTP head sits in a `MTP/` subfolder not shown by a root-level tree
 call; fetched its oid from the subfolder path directly.
+
+## Handing over
+
+Every block in `AGENT.md`'s order ran: `ista-nmax-shallow`,
+`ista-nodrafter-creep`, `ista-serving-pick` (coordinator gate),
+`ista-nmax-deep`, `ista-smoke-xhigh`, `ista-mendel-xhigh`,
+`ista-smoke-low`, `ista-mendel-low`, `ista-evalplus-low`,
+`ista-evalplus-xhigh`. Nothing was dropped from the tail.
+
+Findings, in one line each:
+
+- No drafter beats every drafter cell on both speed and window at
+  every setting tried on this build; `ista_serving` is no drafter,
+  `-c 163840`, window 147456.
+- Mendel: xhigh scores 80.5/100, 8/8 libraries, 109.4 min. low scores
+  66/100, 7/8 libraries, ended on a turn_timeout (partial), 163.3 min.
+  xhigh wins on score while spending less context.
+- EvalPlus: medium (bench12) 0.976/0.945, low 0.976/0.933, xhigh
+  0.945/0.921 with 5x medium's empty rate. This model does not benefit
+  from more thinking on short single-turn problems, and can regress.
+- Two harness bugs fixed in-session: a `RUNWATCH_SILENCE` default too
+  short for this model's longest completions (raised to 2700s for
+  scoring-run watchers on this build), and a macOS `reliability_guard`
+  `setrlimit` bug in `~/.venvs/local-llm-bench` (already fixed
+  elsewhere, not in this venv; fixed here too).
+- Owner-directed disk audit (outside the run's own order, run alongside
+  the xhigh gate): restored three missing projector files and
+  confirmed, by sha256, that every GGUF on this machine (eight repos,
+  main models, drafter/MTP heads, projectors, every quant checked)
+  matches its publisher's checksum. No mismatch found.
+
+Machine state: server stopped, wired memory should recover on its own.
+No stray `llama-server`, `run_codegen_wrapper`, or `run-watch.sh`
+processes (confirmed). Worktree `../choose-a-local-llm-run13`, branch
+`run13`, left in place for the coordinator to review and merge.
+
+Next: the coordinator adds the findings to
+`hardware/m1-max-32gb/benchmarks/INDEX.md`, writes `report.md`, writes
+the derived values into `models.json` and the site, and publishes.
