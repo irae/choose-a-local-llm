@@ -1,0 +1,3 @@
+resolved_reasoning_effort: low
+Passed explicitly: calibrate.py qwen38-ista-mtp-low qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"low"}}'
+Confirmed by the fast, non-runaway numbers this run produced (avg 95.4s, max 3634 completion_tokens), which match the shape of the medium calibration, not the xhigh one.

@@ -293,3 +293,64 @@ xhigh scores higher and spends less context doing it: more thinking
 bought a cleaner migration (shasum done, one fewer regression) in less
 wall time and less of the window. Low did not match on score while
 spending less; it spent more of both and scored lower.
+
+## `ista-evalplus-low`
+
+**Serving config, per "Which serving config to score":** fastest at
+shallow depth from `ista-nmax-shallow`, no drafter. `-c 32768` is the
+coordinator's own call (not measured by any shallow-depth sweep);
+confirmed serving with one real completion before calibrating.
+
+**First calibration attempt named "low" was actually xhigh.** It ran
+`calibrate.py` without the extra-body argument, so no
+`reasoning_effort` was sent, and this build's chat template defaults
+`resolved_reasoning_effort` to `xhigh` when unset. The coordinator held
+the full run over the projected cost (13.9 min/problem average, ~35h
+for 164) before this was found. That file is kept, renamed to
+`calibration-qwen38-ista-mtp-xhigh.json`, with a sibling
+`.resolved-effort.txt` note citing the chat template line. It is a
+valid xhigh calibration: observed max 30000 (cap; 1/10 problems,
+`HumanEval/99`, hit it, empty content), the other 9 `stop`, non-empty,
+three (`HumanEval/32` 27411, `HumanEval/76` 23507, `HumanEval/145`
+22621) ran 22K-27K reasoning tokens before stopping naturally, wall
+time about 2h10min for 10 problems. Worth noting on its own: this
+build scores 80.5 on Mendel at xhigh with agent tools, 8/8 in 109
+minutes, yet the same effort runs 22K-30K tokens on 4 of 10
+single-turn problems with no tools.
+
+**Corrected low calibration**, `reasoning_effort` passed explicitly:
+all 10 `stop`, non-empty, no runaways. Max 3634 (`HumanEval/145`), avg
+95.4s/problem, close to medium's 86.4s. Budget: 8192 (floor; 3634×1.5
+rounds to 6144, below floor). Every calibration file from here on
+carries a sibling `.resolved-effort.txt` recording what
+`server_context.props` actually resolved, not just the config name.
+
+**Full run.** `RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench13/results`,
+budget 8192, `reasoning_effort: low` passed explicitly. 164/164
+codegen'd, wall about 2h23min, 1 runaway (`HumanEval/99` style pattern,
+hit the 8192-token cap, empty content) — matches the coordinator's
+"real range depends on the runaway rate" framing, and the fast path
+held for the rest.
+
+**`evalplus.evaluate` failed on every problem the first time**,
+reporting `pass@1: 0.000` for both base and plus — a harness bug, not
+a model result. Root cause: `reliability_guard()`'s `RLIMIT_AS` and
+`RLIMIT_DATA` calls raise `ValueError: current limit exceeds maximum
+limit` on macOS (a real kernel limitation, not a config problem;
+EvalPlus already exempts Darwin from the same issue for
+`RLIMIT_STACK` a few lines below, but missed the other two). This
+exact fix is documented in `hardware/m1-max-32gb/benchmarks/bench1/state.md`, applied
+to a different venv (`~/.local/pipx/venvs/evalplus/`); this session's
+venv (`~/.venvs/local-llm-bench/`) never got it. Extended the Darwin
+exemption to all three `setrlimit` calls in that venv's
+`evalplus/eval/utils.py`, deleted the stale (all-failed)
+`_eval_results.json` so `evalplus.evaluate` would not reuse the cached
+zero, and re-ran evaluation only (codegen samples were never touched,
+no need to redo codegen).
+
+**Result: pass@1 0.976 (base) / 0.933 (plus), 1/164 empty**, under a
+`reliability_guard` macOS `setrlimit` fix applied to this session's
+venv (see above); the row carries that condition.
+Against this build's own medium score of 0.976 / 0.945 / 100% (one
+empty). Level with medium on base, one problem worse on plus (a difference of
+one problem, not a percentage per the reading rule), same empty count.

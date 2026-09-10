@@ -89,6 +89,87 @@ handing-over section.
 - Both rows written to `mendel-benchmark` on `154b9af`, `generate-report.mjs`
   run, `results.csv` appended by hand (the generator does not write
   it), pushed `benchmark` at `f14a235`.
+- `ista-evalplus-low`: server at `ista_evalplus_serving` (no drafter,
+  `-c 32768`) confirmed serving with a real completion. Calibration
+  done: 1/10 length stops (`HumanEval/99`), below the two-stop
+  non-convergence threshold; three other problems ran 22K-27K
+  reasoning tokens before stopping naturally, a long tail flagged in
+  `benchmarks/calibration.md`. Budget 30000. Launched the full set.
+- Coordinator held the full run: 10 problems at ~13.9 min average
+  projects to ~35h for 164, against medium's 3h07 at budget 8192.
+  Asked for the raw wall_s and token counts from both calibrations.
+- **Bug found while pulling those numbers**: the "low" calibration ran
+  `calibrate.py` with no extra-body argument, so no `reasoning_effort`
+  was sent. The chat template defaults to `xhigh` when unset (read
+  from `meta.json`'s `server_context.props.model_info.chat_template`).
+  So the calibration I reported as "low" ran at xhigh. Stopped the
+  xhigh calibration I had just started to keep the machine busy (it
+  would have duplicated this by accident), renamed the mislabeled file
+  to `calibration-qwen38-ista-mtp-low-MISLABELED-actually-xhigh.json`,
+  and re-ran the low calibration with the `reasoning_effort` argument
+  passed explicitly this time. The full EvalPlus run's own
+  `run-humaneval.sh` call did carry the argument correctly (verified:
+  `EVALPLUS_EXTRA_BODY` was set from the third CLI argument, which I
+  did pass); only the standalone `calibrate.py` invocation was wrong.
+  Mendel's smoke/mendel-low runs are unaffected: pi's harness sets the
+  thinking level through its own CLI flag and `thinkingLevelMap`, a
+  different code path from `calibrate.py`'s `extra_body`.
+- Coordinator's ruling: keep the low calibration once it finishes, do
+  not re-calibrate xhigh (the mislabeled file is a valid xhigh
+  calibration, renamed to `calibration-qwen38-ista-mtp-xhigh.json`),
+  start the full low gate and expect to stop/resume it. The 35h
+  projection was wrong: the set is bimodal, and medium's fast path
+  (86.4s/problem) held for 9 of 10 low problems, so the real range is
+  roughly 8-36h depending on the runaway rate across all 164.
+- Corrected low calibration done: all 10 `stop`, non-empty, no
+  runaways, avg 95.4s/problem. Budget 8192 (floor). Both calibration
+  files now carry a sibling `.resolved-effort.txt` recording what
+  `server_context.props` actually resolved.
+- Starting the full low gate: `RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench13/results`,
+  run name `ista-evalplus-low`. Completions land at
+  `hardware/m1-max-32gb/benchmarks/bench13/results/ista-evalplus-low/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
+  If this spans into a later run, resume from that path with the same
+  `RESULTS_BASE` and run name; `evalplus.codegen` skips existing
+  `task_id`s on restart.
+- Status, on the manager's request (2026-09-10): no fresh
+  `qwen38-ista-mtp-xhigh` calibration ran. One was started (pid 1701)
+  and killed within seconds, before it produced any row, once the
+  mislabeling bug was found. No new xhigh calibration is needed or
+  queued; the renamed file on disk
+  (`calibration-qwen38-ista-mtp-xhigh.json`, with its
+  `.resolved-effort.txt`) is the valid one, already committed
+  (`13542b2`). `ista-evalplus-low`: 39/164 task_ids in the completions
+  jsonl, elapsed 27:21, 0 length stops so far (max generation 2380
+  tokens against the 8192 budget). Not stopped. Noted for later: master
+  has a new `calibrate.py` that records `requested_extra_body` and
+  `resolved_reasoning_effort` per row; will use it on the next fresh
+  calibration, not mid-run.
+- `ista-evalplus-low` done: 164/164 codegen'd, 1 runaway (hit the 8192
+  cap, empty content), wall about 2h23min.
+  `evalplus.evaluate` failed on every problem the first pass:
+  `pass@1: 0.000` both base and plus, a harness bug. Root cause:
+  `reliability_guard()`'s `RLIMIT_AS`/`RLIMIT_DATA` calls raise
+  `ValueError: current limit exceeds maximum limit` on macOS, the
+  same bug bench1 documented and fixed in a different venv
+  (`~/.local/pipx/venvs/evalplus/`); this session's venv
+  (`~/.venvs/local-llm-bench/`) never got the patch. Extended the
+  Darwin exemption to all three `setrlimit` calls in that venv's
+  installed `evalplus/eval/utils.py`, deleted the stale
+  `_eval_results.json` (or `evaluate` reuses the cached zero), re-ran
+  evaluation only. Real result: pass@1 0.976/0.933, 1/164 empty,
+  level with medium (0.976/0.945, one empty) on base.
+- Coordinator confirmed the xhigh calibration is a skip, not a
+  resume: 10 rows, 9 `stop`, 1 `length` (`HumanEval/99`, 30000 cap,
+  empty), one length stop under the two-stop threshold. Started the
+  full xhigh gate: `RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench13/results`,
+  budget 30000, `reasoning_effort: xhigh` passed explicitly, same
+  server as the low gate (no drafter, `-c 32768`, f16 KV). Completions
+  land at `hardware/m1-max-32gb/benchmarks/bench13/results/ista-evalplus-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
+  If this spans into a later run, resume from that path with the same
+  `RESULTS_BASE` and run name. Watcher running
+  (`RUNWATCH_MEM_LOG` `/tmp/run13-evalplus-xhigh-mem.log`). Applying
+  the `reliability_guard` venv fix before evaluating; do not skip it
+  again.
 
 ## Values this run sets
 
@@ -101,5 +182,5 @@ that produced it.
 | `ista_nodrafter_c` | `163840`, ceiling 147478 @ 8.30 tok/s | `ista-nodrafter-creep` |
 | `ista_serving` | no drafter (no `--spec-type`, no `--spec-draft-n-max`), `-c 163840` | coordinator gate |
 | `ista_window` | `147456` | coordinator gate |
-| `ista_evalplus_serving` | no drafter, `-c 32768` (coordinator's call, unmeasured on this build until confirmed) | coordinator gate |
+| `ista_evalplus_serving` | no drafter, `-c 32768`; confirmed serving, calibrated (corrected), budget 8192 | `ista-evalplus-low` |
 | `ista_temperature` | temperature 1.0, top_p 0.95 (from `<slug>-meta.json`, not the AGENT.md path, which does not exist) | `ista-mendel-xhigh` |
