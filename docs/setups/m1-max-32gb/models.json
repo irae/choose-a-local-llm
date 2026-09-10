@@ -98,11 +98,11 @@
       "tokShallow": "14.1",
       "tokDeep": "8.3",
       "memory": "24.4 GB",
-      "evalplus": "pending",
+      "evalplus": "0.976/0.933/99%",
       "id": "qwen38-gguf-ista-nodrafter-low",
       "hidden": false,
       "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 163840 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at low is running; its calibration converged on all 10 problems with a 3634-token maximum, budget 8192."
+      "note": "Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at effort low, scored 2026-09-10 at budget 8192 on the same build served at `-c 32768`: 0.976/0.933, one empty, in 2h23; level with the medium row on base and one problem lower on plus. The calibration converged on all 10 problems with a 3634-token maximum."
     },
     {
       "config": "Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium",
@@ -630,7 +630,7 @@
       "stats": {
         "evalplus": {
           "value": "0.988 / 0.945",
-          "label": "EvalPlus, effort medium \u2014 best base is the AtomicChat 3-bit GGUF (100%), best plus is the ISTA 3-bit GGUF (99%); the ISTA build at xhigh and low is pending"
+          "label": "EvalPlus, effort medium \u2014 best base is the AtomicChat 3-bit GGUF (100%), best plus is the ISTA 3-bit GGUF (99%); the ISTA build scores 0.976 / 0.933 / 99% at effort low, and xhigh is pending"
         },
         "shallow": {
           "value": "17 tok/s",
@@ -687,6 +687,14 @@
       "base": "0.988",
       "plus": "0.927",
       "empty": "0/164"
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
+      "mode": "effort low",
+      "base": "0.976",
+      "plus": "0.933",
+      "empty": "1/164"
     },
     {
       "slug": "qwen3.6-35b-a3b",

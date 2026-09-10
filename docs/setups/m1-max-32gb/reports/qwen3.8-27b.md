@@ -4,7 +4,7 @@ Backends: llama-server, mlx-lm · [Qwen3.8-27B MLX 4-bit on Hugging Face](https:
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
-  <div class="kpi"><b>0.988 / 0.945</b><span>EvalPlus, effort medium — best base is the AtomicChat 3-bit GGUF (100%), best plus is the ISTA 3-bit GGUF (99%); the ISTA build at xhigh and low is pending</span></div>
+  <div class="kpi"><b>0.988 / 0.945</b><span>EvalPlus, effort medium — best base is the AtomicChat 3-bit GGUF (100%), best plus is the ISTA 3-bit GGUF (99%); the ISTA build scores 0.976 / 0.933 / 99% at effort low, and xhigh is pending</span></div>
   <div class="kpi"><b>80.5 / 100</b><span>Mendel blind, effort xhigh, the model's own default: ISTA 3-bit GGUF f16 KV, no drafter, 147K window, complete; the same build at effort low scored 66, partial</span></div>
   <div class="kpi"><b>147K</b><span>deepest clean GGUF f16 KV depth, the 3-bit ISTA build without its drafter, 8.3 tok/s there</span></div>
   <div class="kpi"><b>28K</b><span>MLX memory ceiling</span></div>
@@ -30,8 +30,9 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
   grows.
 - **The best quality score of any config measured here.** EvalPlus
   0.988 base on the AtomicChat 3-bit build and 0.945 plus on the ISTA
-  3-bit build, both at effort medium. The ISTA build's scores at xhigh
-  and low are pending.
+  3-bit build, both at effort medium. At effort low the ISTA build
+  scores 0.976 / 0.933 / 99%, level with its medium row on base; its
+  xhigh score is pending.
 - Weak point: the slowest model on this hardware (20 tok/s shallow on
   the 4-bit GGUF, 14 on the 3-bit), with poor prompt processing (~123
   tok/s). MLX holds 14 to 17 tok/s across its window and OOMs between
@@ -47,7 +48,7 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
 | 3 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 72k | mem | 20.0 → 13.7 | 25.4 GB | 0.982/0.939/100% |
 | 4 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium | 128k | mem | 15.1 → 9.7 | 24.2 GB | 0.976/0.945/99% |
 | 5 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort xhigh | 147k | speed | 14.1 → 8.3 | 24.4 GB | pending |
-| 6 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low | 147k | speed | 14.1 → 8.3 | 24.4 GB | pending |
+| 6 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.976/0.933/99% |
 | 7 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8 → 10.3 | 24.1 GB | 0.988/0.927/100% |
 <!-- gen:model-table:end -->
 
@@ -102,7 +103,7 @@ llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
   --jinja --port 8081
 ```
 
-**#6 — Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low.** Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at low is running; its calibration converged on all 10 problems with a 3634-token maximum, budget 8192.
+**#6 — Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low.** Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at effort low, scored 2026-09-10 at budget 8192 on the same build served at `-c 32768`: 0.976/0.933, one empty, in 2h23; level with the medium row on base and one problem lower on plus. The calibration converged on all 10 problems with a 3634-token maximum.
 
 ```bash
 llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
@@ -227,17 +228,21 @@ re-testing on future llama.cpp releases.
 | llama-server AD-IQ3_S AtomicChat, f16 KV, effort medium, budget 8886 | **0.988** | 0.927 | 0/164 | 100% |
 | mlx_lm.server 4-bit, unquantized KV, effort medium, budget 8192 | 0.982 | 0.939 | 0/164 | 100% |
 | llama-server IQ3_S-mtp ISTA, f16 KV, effort medium, budget 8192 | 0.976 | **0.945** | 1/164 | 99% |
-| llama-server IQ3_S-mtp ISTA, no drafter, f16 KV, effort low, budget 8192 | pending | pending | | |
+| llama-server IQ3_S-mtp ISTA, no drafter, f16 KV, effort low, budget 8192 | 0.976 | 0.933 | 1/164 | 99% |
 | llama-server IQ3_S-mtp ISTA, no drafter, f16 KV, effort xhigh, budget 30000 | pending | pending | | |
 
 The 4-bit GGUF carries the MLX score under the shared-score rule and
-has no full run of its own. The two pending rows are the ISTA build at
-the levels this model is now run at; their calibrations differ by an
-order of magnitude. At low all ten sample problems stopped by
-themselves, the longest at 3,634 tokens. At xhigh four of ten ran 22K
-to 30K reasoning tokens on single-turn problems with no tools, and one
-hit the 30000-token cap, on the same build that finishes the agent
-task at xhigh in 109 minutes.
+has no full run of its own. The two last rows are the ISTA build at
+the levels this model is now run at. **Effort low scores level with
+medium on base and one problem lower on plus**, with the same single
+empty, in 2h23 against medium's 3h07; the calibration converged on all
+ten sample problems, the longest at 3,634 tokens. Its evaluation ran
+under a fix to EvalPlus's process limits on macOS, the same fix the
+first run on this machine needed, applied to the run's venv before
+scoring. At xhigh the calibration ran 22K to 30K reasoning tokens on
+four of ten single-turn problems with no tools, and one hit the
+30000-token cap, on the same build that finishes the agent task at
+xhigh in 109 minutes; its full run is pending.
 
 ## Agentic quality — Mendel
 
