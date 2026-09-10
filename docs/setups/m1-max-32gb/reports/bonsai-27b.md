@@ -38,8 +38,8 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
 |--:|---|--:|:--:|--:|--:|--:|--:|
 | 1 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% | 37.5 (partial) |
-| 2 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% | pending |
-| 3 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% | 12.5 |
+| 2 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% | 12.5 |
+| 3 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% | pending |
 | 4 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% | pending |
 | 5 | Ternary-Bonsai-27B, GGUF⁵, f16 KV, no drafter, thinking on | 131k | untested | 15.0 → 9.7 | 18.6 GB | pending | pending |
 <!-- gen:model-table:end -->
@@ -56,14 +56,7 @@ mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#2 — Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off.** Extra body per request: `{"chat_template_kwargs":{"enable_thinking":false}}`. Curve shared with the thinking-on row: same server, same weights.
-
-```bash
-mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
-  --prompt-cache-size 2 --port 8081
-```
-
-**#3 — Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on.** The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).
+**#2 — Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on.** The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
@@ -73,6 +66,13 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --cache-type-k q4_0 --cache-type-v q4_0 \
   --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \
   --jinja --port 8081
+```
+
+**#3 — Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off.** Extra body per request: `{"chat_template_kwargs":{"enable_thinking":false}}`. Curve shared with the thinking-on row: same server, same weights.
+
+```bash
+mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
+  --prompt-cache-size 2 --port 8081
 ```
 
 **#4 — Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on.**
@@ -110,7 +110,7 @@ floor is gone: the creep at `-c 131072` ran clean to the boundary at
 fastest at every depth it reaches and memory-limited at ~58K. For one
 agent that needs depth, the fork at f16 (#5) now holds more than twice
 the MLX window at a lower speed; MLX (#1) is the faster arm to 58K;
-the q4_0 rows (#3, #4) are the light desktop and the multi-agent
+the q4_0 rows (#2, #4) are the light desktop and the multi-agent
 slots.
 
 **The f16 fork has one agent row, and it is a poor one.** Guided at
@@ -177,7 +177,7 @@ matches the PQ2_0 variant.
 |---|---|--:|---|
 | **Depth + speed, one agent** | MLX #1 | 24.5 shallow; 17.27 at 58K | mem: OOM ~58-60K |
 | **Max depth, one agent** | fork f16 KV #5 | 15.0 shallow; 9.67 at 131K | untested: no floor inside `-c 131072` |
-| **Light desktop, one agent** | fork scored #3 | 14.8 shallow, 7.9 at 33K | speed: floor 33K used |
+| **Light desktop, one agent** | fork scored #2 | 14.8 shallow, 7.9 at 33K | speed: floor 33K used |
 | **Two agents** | fork 2×48K #4 | 14.94 shallow, 7.78 at 33K, one slot decoding | speed: slot floor 33K used |
 
 ## Quality — EvalPlus HumanEval+

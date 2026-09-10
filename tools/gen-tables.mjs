@@ -368,7 +368,7 @@ function modelRows(data, model) {
     (r) => r.config.startsWith(model.rowMatch) && !r.hidden && !r.retired,
   )
   const extra = (model.extraRows || []).filter((r) => !r.hidden && !r.retired)
-  return [...rows, ...extra]
+  return sortRows([...rows, ...extra])
 }
 
 function retiredRows(data, model) {

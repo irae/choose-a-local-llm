@@ -41,11 +41,11 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
 |--:|---|--:|:--:|--:|--:|--:|--:|
-| 1 | *Gemma-4-12B, LMS, unquantized KV, thinking off* 💀 | *131k* | *mem* | *34.19* → *23.23* | *17.2 GB* | *0.909/0.872/100%* | *invalid* |
-| 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% | invalid |
-| 3 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939/100% | pending |
-| 4 | Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939/100% | pending |
-| 5 | Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off | 2x82k | mem | 25.0 → 15.7 | 13.8 GB | 0.976/0.939/100% | pending |
+| 1 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% | invalid |
+| 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off | 2x82k | mem | 25.0 → 15.7 | 13.8 GB | 0.976/0.939/100% | pending |
+| 3 | Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939/100% | pending |
+| 4 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939/100% | pending |
+| 5 | *Gemma-4-12B, LMS, unquantized KV, thinking off* 💀 | *131k* | *mem* | *34.19* → *23.23* | *17.2 GB* | *0.909/0.872/100%* | *invalid* |
 
 💀 LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned. [Why this runtime is not a candidate](../lmstudio-retired.md).
 
@@ -57,14 +57,7 @@ Retired entries: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Gemma-4-12B, LMS, unquantized KV, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
-
-```bash
-~/.cache/lm-studio/bin/lms server start --port 8081
-~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y
-```
-
-**#2 — Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off.** pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.
+**#1 — Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off.** pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -74,18 +67,17 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#3 — Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off.** The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep.
+**#2 — Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off.** pi id `gemma-4-12b-2x`. Measured 2026-09-08 at wired limit 25000, both slots swept in turn. The clean per-slot depth is 81958 tokens, and it does not move with `-c`: at every allocation from 221184 up, the sweep stopped on swap growth at the step past 81958, and at `-c 196608` the same depth ran clean to the slot's own window. A larger `-c` loads (770048 serves a short completion) and buys no depth. Two slots hold about 71 percent of the single slot's 114718 clean depth at `-c 131072`. The EvalPlus score is the single-slot config's, same weights and cache type.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
-  --alias gemma-4-12b --no-mmproj \
-  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \
-  -ngl 999 -fa on -c 262144 \
-  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --alias gemma-4-12b-2x --no-mmproj --parallel 2 \
+  -ngl 999 -fa on -c 196608 \
+  --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
 ```
 
-**#4 — Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off.** pi id `gemma-4-12b-4x`. Measured 2026-09-05 at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper.
+**#3 — Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off.** pi id `gemma-4-12b-4x`. Measured 2026-09-05 at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -96,14 +88,22 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#5 — Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off.** pi id `gemma-4-12b-2x`. Measured 2026-09-08 at wired limit 25000, both slots swept in turn. The clean per-slot depth is 81958 tokens, and it does not move with `-c`: at every allocation from 221184 up, the sweep stopped on swap growth at the step past 81958, and at `-c 196608` the same depth ran clean to the slot's own window. A larger `-c` loads (770048 serves a short completion) and buys no depth. Two slots hold about 71 percent of the single slot's 114718 clean depth at `-c 131072`. The EvalPlus score is the single-slot config's, same weights and cache type.
+**#4 — Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off.** The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
-  --alias gemma-4-12b-2x --no-mmproj --parallel 2 \
-  -ngl 999 -fa on -c 196608 \
-  --cache-type-k f16 --cache-type-v f16 \
+  --alias gemma-4-12b --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \
+  -ngl 999 -fa on -c 262144 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
+```
+
+**#5 — Gemma-4-12B, LMS, unquantized KV, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
+
+```bash
+~/.cache/lm-studio/bin/lms server start --port 8081
+~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y
 ```
 <!-- gen:model-configs:end -->
 

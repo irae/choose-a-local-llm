@@ -232,9 +232,10 @@ not ranked.
 - **The `mendel` cell is curated in `models.json`**, like `evalplus`:
   the config's Mendel blind score at that thinking level on the
   current prompt version, out of 100, with `(partial)` where the run
-  did not finish; `pending` when no valid blind run exists; `invalid`
-  when every attempt was invalid. It is never shared across levels or
-  serving configs. Guided scores stay on the Mendel page. Footnote ³
+  did not finish; `pending` when no valid blind run exists and one is
+  planned; `not run` when none is planned, with the reason in the
+  row's note; `invalid` when every attempt was invalid. It is never
+  shared across levels or serving configs. Guided scores stay on the Mendel page. Footnote ³
   lives on the header.
 - **The homepage table holds one line per build** (the first two
   parts of the config: model, then runtime and quant with its
@@ -244,10 +245,12 @@ not ranked.
   with a pending cell**, the Mendel cell excepted: a pending Mendel
   shows as `pending`. Other pending work is visible on the model pages,
   not on the comparison.
-- **Per-model tables keep the order the rows have in `models.json`**
-  (no re-sort), so their `#` numbers are stable. All references to a
-  config on that page use its `#` number. There is no "Suggested for"
-  column; seat suggestions live only in the setup overview and in
+- **Per-model tables use the same sort as every other table**, so a
+  row's `#` number moves when a score lands. Prose on the page may
+  name a config by its `#` number, and whoever changes a score
+  re-checks every `#N` on that page in the same commit; the generator
+  only catches a number past the row count. There is no "Suggested
+  for" column; seat suggestions live only in the setup overview and in
   analysis/decision prose.
 - **One row per config; a model shows every runtime that has sweep
   data** (MLX and GGUF rows side by side), grouped by model.
