@@ -324,3 +324,31 @@ all 10 `stop`, non-empty, no runaways. Max 3634 (`HumanEval/145`), avg
 rounds to 6144, below floor). Every calibration file from here on
 carries a sibling `.resolved-effort.txt` recording what
 `server_context.props` actually resolved, not just the config name.
+
+**Full run.** `RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench13/results`,
+budget 8192, `reasoning_effort: low` passed explicitly. 164/164
+codegen'd, wall about 2h23min, 1 runaway (`HumanEval/99` style pattern,
+hit the 8192-token cap, empty content) — matches the coordinator's
+"real range depends on the runaway rate" framing, and the fast path
+held for the rest.
+
+**`evalplus.evaluate` failed on every problem the first time**,
+reporting `pass@1: 0.000` for both base and plus — a harness bug, not
+a model result. Root cause: `reliability_guard()`'s `RLIMIT_AS` and
+`RLIMIT_DATA` calls raise `ValueError: current limit exceeds maximum
+limit` on macOS (a real kernel limitation, not a config problem;
+EvalPlus already exempts Darwin from the same issue for
+`RLIMIT_STACK` a few lines below, but missed the other two). This
+exact fix is documented in `hardware/m1-max-32gb/benchmarks/bench1/state.md`, applied
+to a different venv (`~/.local/pipx/venvs/evalplus/`); this session's
+venv (`~/.venvs/local-llm-bench/`) never got it. Extended the Darwin
+exemption to all three `setrlimit` calls in that venv's
+`evalplus/eval/utils.py`, deleted the stale (all-failed)
+`_eval_results.json` so `evalplus.evaluate` would not reuse the cached
+zero, and re-ran evaluation only (codegen samples were never touched,
+no need to redo codegen).
+
+**Result: pass@1 0.976 (base) / 0.933 (plus), 1/164 empty**, against
+this build's own medium score of 0.976 / 0.945 / 100% (one empty).
+Level with medium on base, one problem worse on plus (a difference of
+one problem, not a percentage per the reading rule), same empty count.

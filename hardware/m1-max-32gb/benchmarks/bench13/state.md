@@ -144,6 +144,20 @@ handing-over section.
   has a new `calibrate.py` that records `requested_extra_body` and
   `resolved_reasoning_effort` per row; will use it on the next fresh
   calibration, not mid-run.
+- `ista-evalplus-low` done: 164/164 codegen'd, 1 runaway (hit the 8192
+  cap, empty content), wall about 2h23min.
+  `evalplus.evaluate` failed on every problem the first pass:
+  `pass@1: 0.000` both base and plus, a harness bug. Root cause:
+  `reliability_guard()`'s `RLIMIT_AS`/`RLIMIT_DATA` calls raise
+  `ValueError: current limit exceeds maximum limit` on macOS, the
+  same bug bench1 documented and fixed in a different venv
+  (`~/.local/pipx/venvs/evalplus/`); this session's venv
+  (`~/.venvs/local-llm-bench/`) never got the patch. Extended the
+  Darwin exemption to all three `setrlimit` calls in that venv's
+  installed `evalplus/eval/utils.py`, deleted the stale
+  `_eval_results.json` (or `evaluate` reuses the cached zero), re-ran
+  evaluation only. Real result: pass@1 0.976/0.933, 1/164 empty,
+  level with medium (0.976/0.945, one empty) on base.
 
 ## Values this run sets
 
