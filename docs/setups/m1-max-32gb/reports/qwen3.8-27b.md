@@ -161,7 +161,9 @@ window, the same build scored 76 and failed trap A. Both rows stand as
 different configurations, and neither is a repeat of the other. The
 MLX build holds 26K at the same speed, and every run on it was partial
 or invalid, two of them Metal OOM crashes when the context grew past
-the 26,624-token window. The MLX row stays the low-memory option.
+the 26,624-token window. A 26K window cannot hold a task that needs
+46K, at any effort level, so no further agent run is planned on the
+MLX build; it stays a single-turn option in 22 GB.
 
 **Three bits look free on this hardware, on one comparison.** At
 effort medium the ISTA 3-bit build scored 76.5 against the 4-bit
@@ -221,7 +223,7 @@ re-testing on future llama.cpp releases.
 |---|---|--:|--:|
 | **Agent work at the model's default** | llama-server, no drafter, f16 KV, IQ3_S-mtp ISTA, `-c 163840`, effort xhigh | 14.1 shallow, 8.3 at 147K | 147K clean, harness window 147456 |
 | **Shallow speed on llama** | llama-server + MTP n=3, f16 KV, Q4_K_M bartowski, `-c 73728` | 20.0 shallow, 13.7 at 65.5K | 65.5K clean, `-c 73728` the largest that loads |
-| **Low memory** | mlx_lm.server, unquantized KV | 14-17 across the window | to ~28K ceiling |
+| **Single-turn work in less memory** | mlx_lm.server, unquantized KV | 14-17 across the window | to ~28K ceiling; too small for the agent task |
 
 ## Quality — EvalPlus HumanEval+
 
