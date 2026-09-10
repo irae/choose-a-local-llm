@@ -89,6 +89,12 @@ handing-over section.
 - Both rows written to `mendel-benchmark` on `154b9af`, `generate-report.mjs`
   run, `results.csv` appended by hand (the generator does not write
   it), pushed `benchmark` at `f14a235`.
+- `ista-evalplus-low`: server at `ista_evalplus_serving` (no drafter,
+  `-c 32768`) confirmed serving with a real completion. Calibration
+  done: 1/10 length stops (`HumanEval/99`), below the two-stop
+  non-convergence threshold; three other problems ran 22K-27K
+  reasoning tokens before stopping naturally, a long tail flagged in
+  `benchmarks/calibration.md`. Budget 30000. Starting the full set.
 
 ## Values this run sets
 
@@ -101,5 +107,5 @@ that produced it.
 | `ista_nodrafter_c` | `163840`, ceiling 147478 @ 8.30 tok/s | `ista-nodrafter-creep` |
 | `ista_serving` | no drafter (no `--spec-type`, no `--spec-draft-n-max`), `-c 163840` | coordinator gate |
 | `ista_window` | `147456` | coordinator gate |
-| `ista_evalplus_serving` | no drafter, `-c 32768` (coordinator's call, unmeasured on this build until confirmed) | coordinator gate |
+| `ista_evalplus_serving` | no drafter, `-c 32768`; confirmed serving, calibrated, budget 30000 | `ista-evalplus-low` |
 | `ista_temperature` | temperature 1.0, top_p 0.95 (from `<slug>-meta.json`, not the AGENT.md path, which does not exist) | `ista-mendel-xhigh` |

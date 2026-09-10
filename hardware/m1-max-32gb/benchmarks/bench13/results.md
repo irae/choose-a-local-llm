@@ -293,3 +293,21 @@ xhigh scores higher and spends less context doing it: more thinking
 bought a cleaner migration (shasum done, one fewer regression) in less
 wall time and less of the window. Low did not match on score while
 spending less; it spent more of both and scored lower.
+
+## `ista-evalplus-low`
+
+**Serving config, per "Which serving config to score":** fastest at
+shallow depth from `ista-nmax-shallow`, no drafter. `-c 32768` is the
+coordinator's own call (not measured by any shallow-depth sweep);
+confirmed serving with one real completion before calibrating.
+
+Calibration (`benchmarks/calibrate.py`, `CALIBRATION_DIR=hardware/m1-max-32gb/calibrations`):
+observed max 30000 (cap; 1/10 problems, `HumanEval/99`, hit it, empty
+content). The other 9 finished with `finish_reason: stop`, non-empty
+content, but three (`HumanEval/32` 27411, `HumanEval/76` 23507,
+`HumanEval/145` 22621) ran 22K-27K reasoning tokens before stopping
+naturally. One length stop is below the two-stop non-convergence
+threshold, so this proceeds; the long tail is recorded in
+`benchmarks/calibration.md` for the coordinator's attention. Chosen
+budget: 30000 (formula gives 45000, cap wins). Calibration wall time
+about 2h10min.
