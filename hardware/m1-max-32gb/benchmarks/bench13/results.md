@@ -240,9 +240,17 @@ Server unchanged since the mandatory long-prompt check on
 `ista-mendel-xhigh` (same `ista_serving`, same window); not repeated,
 since the check is about the serving config, not the thinking level.
 
-Branch `qwen3.8-27b-ista-low-issue-13`. Worker ended clean: 15 commits,
-loop ok (0.30), wall 163.3 min. Peak context 130,154/147,456 (88.3%),
-no compaction.
+Branch `qwen3.8-27b-ista-low-issue-13`. 15 commits, loop ok (0.30),
+wall 163.3 min. Peak context 130,154/147,456 (88.3%), no compaction.
+
+**Correction:** the run's `meta.json` reads `end_reason: turn_timeout`
+(cut off mid the post-commit-15 full-suite check, 25.2 min against the
+25-min turn cap), not a clean stop as the worker log's "done" line
+implied. Marked `partial: true` in the published row. All 15 commits
+are intentional and `TASKS.md` is fully checked; one tooling nudge
+fired earlier (10-minute silence, turn aborted), no model nudges, no
+respawns. Caught by the subagent that wrote the published row, not by
+this session's own read of the worker log.
 
 Scored on `claude-opus-5` per `PLAN.md`:
 

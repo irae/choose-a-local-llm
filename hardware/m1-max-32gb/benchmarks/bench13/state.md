@@ -82,8 +82,13 @@ handing-over section.
   hit, trap B excluded per the settled convention). Comparison table
   in `results.md`: xhigh wins on score and spends less context doing
   it.
-- Writing both the xhigh and low rows to `mendel-benchmark` next, on
-  `154b9af`, then `generate-report.mjs` and push `benchmark`.
+- Correction on `ista-mendel-low`: its `meta.json` reads `end_reason
+  turn_timeout`, not the clean stop the worker log's "done" line
+  implied. Marked `partial: true` in the published row. Caught by the
+  subagent that wrote the row, not by this session's own read.
+- Both rows written to `mendel-benchmark` on `154b9af`, `generate-report.mjs`
+  run, `results.csv` appended by hand (the generator does not write
+  it), pushed `benchmark` at `f14a235`.
 
 ## Values this run sets
 
