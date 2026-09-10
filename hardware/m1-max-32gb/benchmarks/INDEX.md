@@ -7,6 +7,40 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench13, 2026-09-09 to 2026-09-10 ([state](bench13/state.md), [results](bench13/results.md), [report](bench13/report.md))
+
+- Runbook: [bench13/AGENT.md](bench13/AGENT.md). One build, the ISTA
+  3-bit Qwen3.8, at f16 KV and wired 25000: the drafter question at two
+  depths, then Mendel and EvalPlus at the model's own default and at
+  low, with medium banned.
+- **No drafter beats every drafter cell at every depth.** Ten cells at
+  depth 256 and 98338; acceptance falls from 90 to 64 percent as the
+  draft grows. The served row is no drafter, `-c 163840`, clean to
+  147478 at 8.30 tok/s, speed-gated with zero swap.
+- **The creep's drafter speeds are a 100 percent acceptance artifact.**
+  The creep's template continuation lets a drafter accept every draft
+  from 25K down, so the n-max 3 creep read 10.30 at 98K where a real
+  prompt reads 7.89. No-drafter creeps are unaffected. A drafter's
+  speed needs a real prompt; research run 4 opens with the tool change.
+- **xhigh wins the agent task, 80.5 against low's 66**, in less time
+  and less context, the highest local row at a level still run. Low
+  ended on the 25-minute turn cap during a test suite.
+- **xhigh loses the single-turn gate**: 0.945 / 0.921 with five
+  completions at the 30000-token cap, against low's 0.976 / 0.933 and
+  medium's 0.976 / 0.945. Thinking helps with tools and hurts without
+  them on this model.
+- **Sampling recorded for the first time**: temperature 1.0, top_p
+  0.95, from the server's resolved parameters in `meta.json`.
+- **A calibration ran at the wrong level by omission.** No extra body
+  meant the chat template's default, xhigh, under a file named low.
+  `calibrate.py` now records the requested and resolved level per row.
+- **Two fixed timers that xhigh outgrew**: the turn cap cut a
+  legitimate turn on a 147K window, and the watcher's 600 s silence
+  window declared a live server dead mid-completion.
+- **Every GGUF on the machine matches its publisher's sha256**, checked
+  alongside the run after the three projectors run 12 deleted were
+  restored.
+
 ## bench12, 2026-09-07 to 2026-09-09 ([state](bench12/state.md), [results](bench12/results.md))
 
 - Runbook: [bench12/AGENT.md](bench12/AGENT.md). The three Qwen3.8

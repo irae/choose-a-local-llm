@@ -167,7 +167,9 @@ value. Raw evidence: `hardware/m1-max-32gb/benchmarks/bench12/` and
   in 163 minutes and more of the window. Both rows record temperature
   1.0 and top_p 0.95, the first rows on this machine with sampling
   recorded. Its EvalPlus at effort low reads 0.976 / 0.933 / 99%,
-  level with its medium row on base; xhigh is running.
+  level with its medium row on base; at xhigh 0.945 / 0.921 / 97%,
+  with five completions that never converged inside a 30000-token cap.
+  The level that wins the agent task loses the single-turn gate.
 - Gemma-12B on two slots at f16 KV with no drafter holds 82K per slot
   in 13.8 GB, and no `-c` moves that: a larger allocation loads and
   stops on swap at the same depth. Judged by the creep, never by a
@@ -182,8 +184,8 @@ value. Raw evidence: `hardware/m1-max-32gb/benchmarks/bench12/` and
 
 ## Open work
 
-- The ISTA build's EvalPlus at effort xhigh (running). The 4-bit
-  Qwen3.8 GGUF's own EvalPlus score and its agent row at effort xhigh.
+- The 4-bit Qwen3.8 GGUF's own EvalPlus score and its agent row at
+  effort xhigh.
 - Qwen3.6 blind at thinking off, on the 81920-token window. Qwen3.6 on
   the MLX server, blind and guided: it has no agent row at all.
 - A thinking-on EvalPlus score for Gemma-12B. The Bonsai fork's
