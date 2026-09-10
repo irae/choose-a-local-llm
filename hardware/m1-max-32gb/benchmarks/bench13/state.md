@@ -170,6 +170,15 @@ handing-over section.
   (`RUNWATCH_MEM_LOG` `/tmp/run13-evalplus-xhigh-mem.log`). Applying
   the `reliability_guard` venv fix before evaluating; do not skip it
   again.
+- First watcher declared the server dead at the default `SILENCE`
+  600s: a false positive. The server was confirmed alive and actively
+  generating (task 265799, 24871 tokens, 13.42 tok/s at the time) — a
+  single generation on this raw completion path (no streaming) can run
+  30+ minutes at xhigh's runaway lengths, past the default silence
+  window. Restarted the watcher with `RUNWATCH_SILENCE=2700` (45 min),
+  recorded here since a ceiling measured with a changed silence value
+  must say so (`context-creep.md`'s rule for `STALL_S`, applied the
+  same way to this scoring run's watcher).
 
 ## Values this run sets
 
