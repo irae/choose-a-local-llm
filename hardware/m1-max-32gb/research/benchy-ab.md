@@ -161,8 +161,8 @@ monitor calls benchy with one `--depth` at a time, reads the result,
 samples memory, applies the stop rules, pauses, and goes on; prefix
 reuse keeps each rung cheap.
 
-What is lost and has to be decided: the creep's round-robin
-`N_CONTEXTS`, which the two-slot rows use, has no benchy equivalent
-(`--concurrency` runs slots in parallel, which is a different
-measurement), and benchy is a third-party moving target that needs a
-pinned version. Neither blocks the A/B; both block a replacement.
+The replacement is its own item, `unscheduled/benchy-monitor.md`, and
+waits on this one. The creep's round-robin contexts, which the two-slot
+rows use, have no benchy equivalent; the owner accepts the parallel
+measurement as the fallback, and `unscheduled/benchy-round-robin.md`
+keeps the idle-slot number through a fork and an upstream pull request.
