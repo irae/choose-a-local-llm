@@ -1,5 +1,21 @@
 # Mendel sampling audit
 
+**Answered 2026-09-09, after this audit was written.** A run's own
+`meta.json` carries the values, at
+`server_context.props.default_generation_settings.params`. That is the
+server's resolved sampling, not pi's entry, so it is the authoritative
+record of what a row was served with. Read on run 13:
+**temperature 1.0, top_p 0.95** — llama-server's defaults, which it
+takes from the model file's own `general.sampling.*` metadata.
+
+This audit missed it because it searched for `--temp` flags on command
+lines and for `model_info`, and the field sits under `server_context`.
+The conclusion below stands for every run whose `meta.json` no longer
+exists, which is every run before this one. It is wrong about runs
+whose `meta.json` survives: for those, the sampling is recoverable and
+nobody needs to guess.
+
+
 This page answers one question: what temperature and top_p/top_k did
 each Mendel run use. We never wrote these values on any published row.
 This audit tries to recover them after the fact.
