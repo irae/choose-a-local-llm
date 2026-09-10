@@ -1,0 +1,8 @@
+resolved_reasoning_effort: xhigh
+NOT passed explicitly: calibrate.py qwen38-ista-mtp-low qwen3.8-27b (no extra-body argument), originally run and named for "low".
+calibrate.py sends no reasoning_effort when the extra-body argument is absent. This build's chat template
+(read from meta.json's server_context.props.model_info.chat_template) defaults
+resolved_reasoning_effort to 'xhigh' when reasoning_effort is unset:
+  {%- set resolved_reasoning_effort = reasoning_effort|default('xhigh') %}
+So this file is a valid xhigh calibration, resolved by the template rather than requested by the caller.
+Renamed from calibration-qwen38-ista-mtp-low-MISLABELED-actually-xhigh.json (bench13, 2026-09-10).

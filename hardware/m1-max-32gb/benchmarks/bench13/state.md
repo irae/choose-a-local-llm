@@ -114,6 +114,23 @@ handing-over section.
   Mendel's smoke/mendel-low runs are unaffected: pi's harness sets the
   thinking level through its own CLI flag and `thinkingLevelMap`, a
   different code path from `calibrate.py`'s `extra_body`.
+- Coordinator's ruling: keep the low calibration once it finishes, do
+  not re-calibrate xhigh (the mislabeled file is a valid xhigh
+  calibration, renamed to `calibration-qwen38-ista-mtp-xhigh.json`),
+  start the full low gate and expect to stop/resume it. The 35h
+  projection was wrong: the set is bimodal, and medium's fast path
+  (86.4s/problem) held for 9 of 10 low problems, so the real range is
+  roughly 8-36h depending on the runaway rate across all 164.
+- Corrected low calibration done: all 10 `stop`, non-empty, no
+  runaways, avg 95.4s/problem. Budget 8192 (floor). Both calibration
+  files now carry a sibling `.resolved-effort.txt` recording what
+  `server_context.props` actually resolved.
+- Starting the full low gate: `RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench13/results`,
+  run name `ista-evalplus-low`. Completions land at
+  `hardware/m1-max-32gb/benchmarks/bench13/results/ista-evalplus-low/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
+  If this spans into a later run, resume from that path with the same
+  `RESULTS_BASE` and run name; `evalplus.codegen` skips existing
+  `task_id`s on restart.
 
 ## Values this run sets
 
@@ -126,5 +143,5 @@ that produced it.
 | `ista_nodrafter_c` | `163840`, ceiling 147478 @ 8.30 tok/s | `ista-nodrafter-creep` |
 | `ista_serving` | no drafter (no `--spec-type`, no `--spec-draft-n-max`), `-c 163840` | coordinator gate |
 | `ista_window` | `147456` | coordinator gate |
-| `ista_evalplus_serving` | no drafter, `-c 32768`; confirmed serving, calibrated, budget 30000 | `ista-evalplus-low` |
+| `ista_evalplus_serving` | no drafter, `-c 32768`; confirmed serving, calibrated (corrected), budget 8192 | `ista-evalplus-low` |
 | `ista_temperature` | temperature 1.0, top_p 0.95 (from `<slug>-meta.json`, not the AGENT.md path, which does not exist) | `ista-mendel-xhigh` |

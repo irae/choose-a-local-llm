@@ -301,19 +301,26 @@ shallow depth from `ista-nmax-shallow`, no drafter. `-c 32768` is the
 coordinator's own call (not measured by any shallow-depth sweep);
 confirmed serving with one real completion before calibrating.
 
-**First calibration attempt was invalid.** It ran `calibrate.py`
-without the extra-body argument, so no `reasoning_effort` was sent,
-and this build's chat template defaults to `xhigh` when unset. The
-numbers below (observed max 30000, one length stop, three 22K-27K
-outliers) describe the build at xhigh, not low. That file is kept as
-`calibration-qwen38-ista-mtp-low-MISLABELED-actually-xhigh.json`.
-The coordinator held the full run over the projected cost (13.9
-min/problem average, ~35h for 164) before this was found; a corrected
-low calibration is running now with `reasoning_effort` set explicitly.
+**First calibration attempt named "low" was actually xhigh.** It ran
+`calibrate.py` without the extra-body argument, so no
+`reasoning_effort` was sent, and this build's chat template defaults
+`resolved_reasoning_effort` to `xhigh` when unset. The coordinator held
+the full run over the projected cost (13.9 min/problem average, ~35h
+for 164) before this was found. That file is kept, renamed to
+`calibration-qwen38-ista-mtp-xhigh.json`, with a sibling
+`.resolved-effort.txt` note citing the chat template line. It is a
+valid xhigh calibration: observed max 30000 (cap; 1/10 problems,
+`HumanEval/99`, hit it, empty content), the other 9 `stop`, non-empty,
+three (`HumanEval/32` 27411, `HumanEval/76` 23507, `HumanEval/145`
+22621) ran 22K-27K reasoning tokens before stopping naturally, wall
+time about 2h10min for 10 problems. Worth noting on its own: this
+build scores 80.5 on Mendel at xhigh with agent tools, 8/8 in 109
+minutes, yet the same effort runs 22K-30K tokens on 4 of 10
+single-turn problems with no tools.
 
-Original (mislabeled) numbers, kept for the record: observed max 30000
-(cap; 1/10 problems, `HumanEval/99`, hit it, empty content). The other
-9 finished with `finish_reason: stop`, non-empty content, but three
-(`HumanEval/32` 27411, `HumanEval/76` 23507, `HumanEval/145` 22621) ran
-22K-27K reasoning tokens before stopping naturally. Wall time about
-2h10min for 10 problems.
+**Corrected low calibration**, `reasoning_effort` passed explicitly:
+all 10 `stop`, non-empty, no runaways. Max 3634 (`HumanEval/145`), avg
+95.4s/problem, close to medium's 86.4s. Budget: 8192 (floor; 3634×1.5
+rounds to 6144, below floor). Every calibration file from here on
+carries a sibling `.resolved-effort.txt` recording what
+`server_context.props` actually resolved, not just the config name.
