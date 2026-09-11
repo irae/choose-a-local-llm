@@ -4,8 +4,9 @@ arm="$1"; shift
 out="hardware/m1-max-32gb/research/run4/results"
 date '+%Y-%m-%d %H:%M:%S' > "$out/benchy-$arm.start"
 grep -c print_timing "$out/server-benchy-$arm.log" >> "$out/benchy-$arm.start"
+book="${BOOK_URL:-}"
 llama-benchy --base-url http://127.0.0.1:8081/v1 --model qwen3.8-27b \
-  --tokenizer Qwen/Qwen3.8-27B \
+  --tokenizer Qwen/Qwen3.8-27B ${book:+--book-url "$book"} \
   --pp 512 --tg 256 --depth "$@" \
   --runs 2 \
   --post-run-cmd "sleep 60; vm_stat | head -12 >> $out/benchy-$arm-vm.log; sysctl vm.swapusage >> $out/benchy-$arm-vm.log" \

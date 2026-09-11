@@ -1,0 +1,29 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+llama-benchy (0.4.0)
+Date: 2026-09-10 22:45:30
+Benchmarking model: qwen3.8-27b at http://127.0.0.1:8081/v1
+Concurrency levels: [1]
+Downloading book from http://127.0.0.1:8089/corpus-mendel-js.txt...
+Saved text to cache: /Users/irae/.cache/llama-benchy/a81b1efe77f495bd374a7bc846ab9099.txt
+Total tokens available in text corpus: 152204
+Warming up...
+Warmup (User only) complete. Delta: 51 tokens (Server: 72, Local: 21)
+Warmup (System+Probe) complete. Delta: 52 tokens (Server: 74, Local context: 21, Probe: 1)
+
+Running coherence test...
+Coherence test PASSED.
+Measuring latency using mode: api...
+Average latency (api): 0.74 ms
+Running test: pp=512, tg=256, depth=98304, concurrency=1
+  Warmup (batch size 1)...
+  No complete token_ids in response, using stream usage token count
+  Run 1/2 (batch size 1)...
+  Run 2/2 (batch size 1)...
+Saving results to hardware/m1-max-32gb/research/run4/results/benchy-n3-code.md in MD format...
+
+
+
+llama-benchy (0.4.0)
+date: 2026-09-10 22:45:30 | latency mode: api
+benchy exit 0
+2026-09-10 23:47:45

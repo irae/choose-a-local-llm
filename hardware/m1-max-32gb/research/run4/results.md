@@ -114,3 +114,73 @@ percent acceptance is not near 7.89 at 60 to 80 percent. The `none`
 arm passes on all three cells. The failing criterion is the corpus's
 acceptance, not the tool: the tool's readings track acceptance, and
 the corpus-memorised failure mode did not occur.
+
+### Arm `n3`, code corpus: same server plus `--cache-ram 0`, depth 98304
+
+Gate answer from the coordinator (2026-09-10 22:40): the tool passed,
+the prose corpus did not; re-run the `n3` 98k cell once with a code
+corpus, serve with `--cache-ram 0` (measurement runs only, the
+published command does not change), pass if the counted requests read
+acceptance between 60 and 80 percent and the mean lands within 10
+percent of 7.89.
+
+Corpus: the `.js` files under `~/code/mendel`, path order, without
+`node_modules`, `.git`, lockfiles and minified files, each file
+preceded by a `// file: <path>` line, cut after the file that crossed
+150K tokens. 288 of 392 files, 152099 tokens by the Qwen tokenizer,
+613339 bytes, sha256
+`f4cbe063ef231d753e736b60107b6601705a1acb448b05d9f8b8afbdfcec583c`.
+Builder: `results/build-corpus.py`; file: `results/corpus-mendel-js.txt`.
+`--book-url` goes through `requests.get`, so a local path or a
+`file://` URL does not work; `python3 -m http.server 8089 --bind
+127.0.0.1` in `results/` served it and
+`--book-url http://127.0.0.1:8089/corpus-mendel-js.txt` worked.
+Benchy strips nothing from a text without the Gutenberg marker.
+
+Server: the `n3` command plus `--cache-ram 0`. The log has no
+`prompt cache` line on this arm. Benchy ran 22:45 to 23:47. The
+probe before benchy (80-token code prompt, 200 out) read 12.39 tok/s
+at 0.682 acceptance.
+
+| depth | corpus | server prompt | benchy tok/s | sd | real-prompt cell | diff | acceptance (runs) | acceptance (warmup) | flags |
+|--:|---|--:|--:|--:|--:|--:|--:|--:|---|
+| 98304 | prose workload (default book) | 98817 | 6.03 | 0.37 | 7.89 | -23.6% | 41.3%, 51.3% | 69.6% | published shape |
+| 98304 | code (mendel `.js`) | 98815 | 5.62 | 0.18 | 7.89 | -28.8% | 38.3%, 43.1% | 32.0% | `--cache-ram 0` |
+
+Per request on the code corpus (`eval time`, 256 tokens, then
+`draft acceptance`):
+
+| request | tok/s | acceptance | mean draft len |
+|---|--:|--:|--:|
+| warmup, task 115 | 4.96 | 0.320 (124/387) | 1.95 |
+| run 1, task 298 | 5.44 | 0.383 (136/355) | 2.14 |
+| run 2, task 469 | 5.79 | 0.431 (143/332) | 2.29 |
+
+Prefill 87.2 tok/s per request. Memory: wired 23.4 to 23.6 GB, swap
+used 874 MB at the first sample and 762 MB at the last, no growth.
+
+Reading. The code corpus did not lift acceptance; it fell from 41 to
+51 percent to 38 to 43. Both corpora sit well under the 60 to 80
+band, while the shallow probes on the same servers read 52 to 68
+percent. The 7.89 cell this band comes from
+(bench13 `ista-nmax-deep`) was one 256-token completion at
+temperature 0 on a code task. Benchy passes no temperature, so every
+benchy request samples at the server's default, and a sampled token
+is one the drafter guessed less often. The band was set from an
+unsampled shot; benchy reads the sampled workload, which is the one
+the agent runs serve (no Mendel run ever passed a temperature). The
+tool reads what it is pointed at. Whether the target band is the
+right one is the coordinator's call; one temperature-0 benchy cell
+through `--extra-body` would confirm the cause, which this item does
+not allow.
+
+Files: `results/benchy-n3-code.md`, `results/benchy-n3-code.stdout.log`,
+`results/benchy-n3-code-vm.log`, `results/server-benchy-n3-code.log`,
+`results/corpus-mendel-js.txt`, `results/build-corpus.py`.
+
+### Verdict, after the code-corpus cell
+
+**fail**, on the coordinator's cell criterion: 5.62 ± 0.18 tok/s at
+38 to 43 percent acceptance, not within 10 percent of 7.89 at 60 to
+80. The `none` arm stands as a pass. The prose cell stays as its own
+row above.

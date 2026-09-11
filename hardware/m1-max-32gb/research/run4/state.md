@@ -16,9 +16,9 @@ that produced it.
 | --- | --- | --- |
 | `benchy_version` | `llama-benchy 0.4.0` (pipx, Python 3.14.7) | `benchy-ab` |
 | `benchy_tokenizer` | `Qwen/Qwen3.8-27B` (Hugging Face repo, cached locally) | `benchy-ab` |
-| `benchy_corpus` | default (benchy's Sherlock Holmes text, 144480 tokens) | `benchy-ab` |
-| `benchy_invocation` | `llama-benchy --base-url http://127.0.0.1:8081/v1 --model qwen3.8-27b --tokenizer Qwen/Qwen3.8-27B --pp 512 --tg 256 --depth <depths> --runs 2 --post-run-cmd 'sleep 60; vm_stat \| head -12 >> <vm log>' --format md --save-result <result md>` (no `--warmup-runs`: not a flag in 0.4.0, default warmup is one request per test) | `benchy-ab` |
-| `benchy_pass` | `no`: the `n3` cell at 98k read 6.03 ± 0.37 tok/s at 41 to 51 percent acceptance, not near 7.89 at 60 to 80. The `none` arm passed every cell within 2.3 percent. The tool tracks acceptance; the default corpus drafts worse than the agent runs. | `benchy-ab` |
+| `benchy_corpus` | code: `results/corpus-mendel-js.txt`, the `.js` files of `~/code/mendel` in path order with `// file:` headers, 152099 Qwen tokens, sha256 `f4cbe063ef231d753e736b60107b6601705a1acb448b05d9f8b8afbdfcec583c`, served with `python3 -m http.server 8089 --bind 127.0.0.1` from `results/` and passed as `--book-url http://127.0.0.1:8089/corpus-mendel-js.txt` (a local path or `file://` does not work: benchy fetches with `requests.get`). The `none` arm and the prose `n3` row used benchy's default book (144480 tokens). | `benchy-ab` |
+| `benchy_invocation` | `llama-benchy --base-url http://127.0.0.1:8081/v1 --model qwen3.8-27b --tokenizer Qwen/Qwen3.8-27B --book-url http://127.0.0.1:8089/corpus-mendel-js.txt --pp 512 --tg 256 --depth <depths> --runs 2 --post-run-cmd 'sleep 60; vm_stat \| head -12 >> <vm log>; sysctl vm.swapusage >> <vm log>' --format md --save-result <result md>` (no `--warmup-runs`: not a flag in 0.4.0, default warmup is one request per test). Server flag for measurement runs only: `--cache-ram 0`, so the server keeps no prompt-cache snapshot in host RAM; the published serving command does not carry it. | `benchy-ab` |
+| `benchy_pass` | `no`: the `n3` cell at 98k with the code corpus read 5.62 ± 0.18 tok/s at 38 to 43 percent acceptance, not within 10 percent of 7.89 at 60 to 80. The prose cell read 6.03 ± 0.37 at 41 to 51. The `none` arm passed every cell within 2.3 percent. The 7.89 band is a temperature-0 shot; benchy samples at the server default. | `benchy-ab` |
 
 ## Session 1, 2026-09-10 (executor: Claude Fable 5.1, Mac)
 
@@ -118,5 +118,59 @@ Studio not started. `llama-benchy` 0.4.0 stays installed under
 Face cache (22 MB). Nothing else installed.
 
 Evidence: `results/` on branch `research4`, archived with
+`tools/archive-evidence.sh` to
+`~/.local/share/choose-a-local-llm/evidence/research4/`.
+
+### benchy-ab qwen-3.8-27b gsq-iq3s/f16 arm n3 code corpus ctx 128k
+
+`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp` rev `d562806`, MTP
+n-max 3, one slot, f16 KV, `-c 131072`, `--cache-ram 0`, wired
+25000. `llama-benchy` 0.4.0, tokenizer `Qwen/Qwen3.8-27B`, corpus
+`results/corpus-mendel-js.txt` (152099 tokens, sha256 `f4cbe063...`)
+through `--book-url http://127.0.0.1:8089/corpus-mendel-js.txt`,
+pp 512, tg 256, 2 runs after 1 warmup. Started 22:45, closed 23:47.
+
+| depth | benchy tok/s | sd | real-prompt cell | acceptance (runs) | acceptance (warmup) | wired MB |
+|--:|--:|--:|--:|--:|--:|--:|
+| 98k | 5.62 | 0.18 | 7.89 | 38.3%, 43.1% | 32.0% | 23600 |
+
+**fail** on the coordinator's criterion (60 to 80 percent, within 10
+percent of 7.89). Per-request tok/s: 4.96, 5.44, 5.79.
+Files: `results/benchy-n3-code.md`, `results/server-benchy-n3-code.log`,
+`results/benchy-n3-code-vm.log`.
+Deviation: none. No `prompt cache` line with `--cache-ram 0`; swap
+used 874 to 762 MB across the arm. Wired returned to 1776 MB five
+seconds after the kill.
+Finding: the 7.89 cell was a temperature-0 shot; benchy samples at
+the server default, and acceptance under sampling reads 32 to 51
+percent at 98k on both corpora against 52 to 68 percent on the
+shallow probes. The reading is in `results.md`.
+
+## Handing over, session 1, 2026-09-11 00:00 (supersedes the 22:45 section)
+
+What ran after the gate answer: the `n3` 98k cell once more with the
+code corpus and `--cache-ram 0`. It failed the cell criterion (5.62
+± 0.18 at 38 to 43 percent). Verdict line in `results.md`: **fail**.
+The `none` arm stands as a pass; the prose cell stays as its own row.
+`benchy_pass` is `no`.
+
+Gate for the coordinator: the pass band comes from a temperature-0
+shot and benchy measures sampled decode, which is what the agent
+runs serve. Candidate answer: keep `benchy_pass` `no` for run 14's
+gate until the owner decides whether the drafter's number at depth
+should be read at the server's sampling (benchy, 5.6 to 6.0 at 98k,
+under the 9.47 of no drafter) or at temperature 0 (the 7.89 shot).
+If the sampled number is the one, benchy has already given it and
+the `n3` criterion is the thing to change, not the tool or the
+corpus.
+
+Machine state: no `llama-server`, no `mlx_lm`, no `llama-benchy`,
+no `http.server` process. Wired 1776 MB. Swap used 445 MB (258 MB at
+preflight). Wired limit 25000. LM Studio not started. `llama-benchy`
+0.4.0 stays under `pipx`; the `Qwen/Qwen3.8-27B` tokenizer files
+stay in the Hugging Face cache; benchy cached both corpora under
+`~/.cache/llama-benchy/`. Nothing else installed.
+
+Evidence: `results/` on branch `research4`, archived again with
 `tools/archive-evidence.sh` to
 `~/.local/share/choose-a-local-llm/evidence/research4/`.
