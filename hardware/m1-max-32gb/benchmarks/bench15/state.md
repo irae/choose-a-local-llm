@@ -206,6 +206,23 @@ that produced it.
 | `bartowski_evalplus_xhigh` | | `bartowski-evalplus-xhigh` |
 | `qwen36_f16_c` | 65536 | `qwen36-f16-ladder-creep` |
 | `qwen36_f16_clean` | 65578 | `qwen36-f16-ladder-creep` |
-| `qwen36_f16_on` | | `qwen36-f16-mendel-on` |
+| `qwen36_f16_on` | 50/100 | `qwen36-f16-mendel-on` |
 | `vision_qwen36_c` | 65536 | `vision-ladder` |
 | `vision_gemma26_c` | 204800 | `vision-ladder` |
+
+## Session 1 continued — bartowski-evalplus-xhigh starts
+
+Coordinator's gate answer: budget 30000, start the full set now with
+the calibration already in hand. Started block
+`bartowski-evalplus-xhigh`: server up (pid 36308), rev `f0eec4a`
+confirmed, warmed up.
+`RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench15/results
+EVALPLUS_MAX_NEW_TOKENS=30000 benchmarks/run-humaneval.sh
+bartowski-evalplus-xhigh qwen3.8-27b
+'{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'`, pid 37258.
+Watcher started (pid 37757), `results/run-watch-evalplus.log`,
+watching
+`results/bartowski-evalplus-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
+Expect about ten hours; the owner may pause it between problems and
+resume via the codegen's own task_id skip (not an interruption for
+`retry-sweep`).
