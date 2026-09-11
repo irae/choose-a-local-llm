@@ -117,5 +117,17 @@ against the q4km build's faster path); the 65536 cell took roughly 11
 minutes per request. Swap flat, no growth. This is the last of the
 three benchy blocks. Results also written to `results.md`.
 Files: `results/benchy-qwen38-bartowski-drafter.md`, `results/server-benchy-qwen38-bartowski-drafter.log`.
+
+### qwen36-smoke-off
+
+`gh auth status` passed. Served the `benchy-qwen36-q8-drafter` config unchanged: q8_0 KV, drafter n-max 3, `-c 98304`, wired 25000. Verified with a real 400-token completion before the smoke.
+
+```
+smoke: simulator(mendel-blind) qwen-3.6-35b-a3b q8/off: 10 calls, 1 commit, clean, 20s. pass.
+```
+
+10 calls, 7 distinct, longest repeat run 1, loop ok, 0 compactions, peak ctx 3727, 1 commit, clean tree, wall 20s. Pass, inside the cap.
+Files: `results/mendel-smoke-qwen36-off.log`.
+Deviation: none.
 Deviation: none.
 
