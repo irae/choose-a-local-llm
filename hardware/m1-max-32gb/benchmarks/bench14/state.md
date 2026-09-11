@@ -129,5 +129,21 @@ smoke: simulator(mendel-blind) qwen-3.6-35b-a3b q8/off: 10 calls, 1 commit, clea
 10 calls, 7 distinct, longest repeat run 1, loop ok, 0 compactions, peak ctx 3727, 1 commit, clean tree, wall 20s. Pass, inside the cap.
 Files: `results/mendel-smoke-qwen36-off.log`.
 Deviation: none.
+
+### qwen36-mendel-blind-off — running
+
+`gh auth status` re-checked, passed. The `benchy-qwen36-q8-drafter` server (q8_0 KV, drafter n-max 3, `-c 98304`, wired 25000), unchanged from the smoke. Prompt blind v1.1, base commit `2652ed6`. Window **81920** (the 82K cell of `benchy-qwen36-q8-drafter` read 13.01 tok/s, well above the 8 tok/s floor, so no stop-and-ask condition). Branch `qwen3.6-35b-a3b-off-issue-13`, new. Started 03:12. Run watcher started right after the harness's own warmup, default `RUNWATCH_SILENCE`.
+
+| field | value |
+|---|--:|
+| score | - |
+| tasks | -/8 |
+| worst defect | - |
+| stop reason | - |
+| peak ctx | - |
+
+still running.
+Files: `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-events.jsonl`, `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-meta.json`, `results/run-watch-qwen36-off.log`.
+Deviation: none.
 Deviation: none.
 
