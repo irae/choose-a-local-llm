@@ -275,5 +275,65 @@ Sets `qwen38_bartowski_sampling` = temperature 1, top_p 0.95 (server
 default, read from
 `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-xhigh-blind-meta.json`,
 no sampling parameter passed by this run).
+
+**Published** to `~/code/mendel-benchmark`, branch `benchmark`, commit
+`0a26b45`. The two publish subagents shared a worktree and, briefly, a
+scratch script path (`/tmp/add-row.mjs`), which caused two collided
+writes; the second subagent caught it (a branch-field mismatch),
+verified no work was lost (the duplicate row was byte-identical to
+the already-committed one), moved its script to a private path, and
+pushed clean. Worth remembering: give parallel publish subagents
+their own scratch paths next time.
+
+The subagent verified the score independently and corrected three
+telemetry numbers against the handed-down brief: `compactions` is 3
+(not the unstated 0 assumed), `tool_errors` 23/272 calls,
+`wall_clock_min` 213.3. It flagged one item for the coordinator to
+rule on: three `tmp`-migration test files add an unrequested
+`process.on('exit')` cleanup hook outside RUBRIC.md's named Trap C
+file; it did not score this as a defect (Trap C names one file only)
+but logged the question in the row's `notes`. It also flagged
+`PLAN.md`'s "Versioned outputs" section as stale: the second output
+path it names, `docs/superpowers/issue13-model-bakeoff.html`, does not
+exist in this repo.
+
+## Handing over, session 1 close, 2026-09-11
+
+All eight blocks in `AGENT.md`'s order are closed:
+`benchy-gate` → `benchy-qwen36-f16-nodrafter` (partial, retried and
+closed) → `benchy-qwen36-q8-drafter` → `benchy-qwen38-bartowski-drafter`
+→ `qwen36-smoke-off` → `qwen36-mendel-blind-off` (scored 50.5/100,
+published) → `qwen38-bartowski-smoke-xhigh` →
+`qwen38-bartowski-mendel-xhigh` (scored 93/100, published).
+`retry-sweep` has nothing outstanding: the run's only partial was the
+f16-nodrafter deep cell, already retried at the coordinator's answer
+and closed.
+
+Machine state: `llama-server` and the corpus `http.server` are both
+stopped; `pgrep -fl llama-server` is empty. Wired memory recovered to
+baseline after the last server stop. No LM Studio, no Docker touched
+this session.
+
+Findings for the coordinator to fold into `INDEX.md`/`report.md`/
+`models.json`/the site (this run does not publish those itself):
+- The two GGUF q8_0/f16 drafter rows both beat their site figures at
+  every depth (qwen3.6 q8: +19.7% to +40.8%; the 82K cell holds well
+  above the 8 tok/s floor). The f16 no-drafter arm and the bartowski
+  4-bit drafter arm both read below their site figures (-27% to -41%).
+- Two Mendel rows scored: qwen3.6-35b-a3b thinking off, 50.5/100,
+  worst defect critical (a real bug the model missed, not a benchmark
+  artifact); qwen3.8-27b bartowski thinking xhigh, 93/100, worst
+  defect medium. Both published to `mendel-benchmark`'s `benchmark`
+  branch (`5c197e8`, `0a26b45`).
+- Deviations worth a permanent fix, not just this run's log: the
+  `--depth` flag in `llama-benchy` 0.4.0 needs space-separated values,
+  not comma-joined (this run's own mistake, caught and fixed);
+  `score.mjs`'s `trap_a.ok` reads from process exit code, not the
+  verdict string, so a scorer trusting the flag alone misses a real
+  defect (confirmed on two separate runs); `score.mjs`'s
+  `runtime_checks.prettier.ok` counts warnings on files the prompt
+  itself forbids committing; `PLAN.md`'s report-generation command
+  names a docs output path that does not exist in the repo.
+Files: `hardware/m1-max-32gb/benchmarks/bench14/results.md`, this file.
 Deviation: none.
 
