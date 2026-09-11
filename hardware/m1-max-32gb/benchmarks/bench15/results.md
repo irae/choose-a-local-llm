@@ -279,3 +279,29 @@ throughout, no clear trend with depth. Swap flat at 475.94M, no
 growth.
 Files: `results/benchy-qwen36-n1.md`, `results/benchy-qwen36-n1-vm.log`,
 `results/server-benchy-qwen36-n1.log`.
+
+### Gemma-26B, `-c 204800`, `--ubatch-size 2048`, no drafter
+
+Depths: 4096, 98304 (half of `-c`, already a clean multiple of 8192
+after rounding down: 204800/2=102400 → 98304), 203776 (`-c` − 1024).
+The earlier worry that the corpus (`corpus-mendel-js.txt`, ~152204
+tokens by an earlier report) was too short for the 203776 depth did
+not hold — the prefill ran cleanly past that point with no error or
+truncation.
+
+| depth | benchy tok/s |
+|--:|---|
+| 4096 | 53.11 ± 0.02 |
+| 98304 | 28.28 ± 0.01 |
+| 203776 | 19.24 ± 0.76 |
+
+Swap stayed flat to slightly falling (475.94M → 451.94M of 2048M) —
+no growth. This arm took by far the longest of the block: each depth
+runs a warmup plus two counted requests, and at ~204k tokens each
+prefill pass alone took roughly 15-20 minutes even with `-ub 2048`.
+Files: `results/benchy-gemma26-nodraft.md`,
+`results/benchy-gemma26-nodraft-vm.log`,
+`results/server-benchy-gemma26-nodraft.log`.
+
+`vision-benchy` closed. All three arms done, no pick per the block's
+own rule.
