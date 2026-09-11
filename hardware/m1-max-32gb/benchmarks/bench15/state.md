@@ -92,6 +92,19 @@ Starting block `vision-ladder-up`. Qwen3.6 failed its first rung
 212992`, same failure mode) — `vision_gemma26_c` stays 204800. Full
 evidence in `results.md`. Block closed, neither value moved.
 
+Coordinator's arm pick: Qwen3.6 runs both no-drafter and `n-max 1` at
+`-c 65536`; Gemma-26B runs no-drafter only at `-c 204800`/ubatch 2048
+(lowering `-c` to fit a drafter is a different configuration, not
+this block). Three benchy servers total.
+
+Starting block `vision-benchy`. Corpus server up on :8089. Deviation:
+AGENT.md's own example command passes `--depth` as a comma-joined
+string (`--depth <depths>`); `llama-benchy --help` shows `--depth
+DEPTH [DEPTH ...]` — space-separated, not comma-separated. A
+comma-separated call errors immediately (`invalid int value`).
+Every call in this block uses space-separated depths instead. Not a
+stop-and-ask; the run did not wait.
+
 Starting block `vision-drafter-shallow`.
 
 Qwen3.6 table closed: no-drafter 50.36 tok/s mean; the model card's
