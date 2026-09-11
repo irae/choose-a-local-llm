@@ -206,5 +206,21 @@ smoke: simulator(mendel-blind) qwen-3.8-27b bartowski-q4km/f16/xhigh: 10 calls, 
 10 calls, 10 distinct, longest repeat run 1, loop ok, 0 compactions, peak ctx 5283, 1 commit, clean tree, wall 150s. Pass.
 Files: `results/mendel-smoke-qwen38-bartowski-xhigh.log`.
 Deviation: none.
+
+### qwen38-bartowski-mendel-xhigh — running
+
+`gh auth status` re-checked, passed. The `benchy-qwen38-bartowski-drafter` server (f16 KV, drafter n-max 3, `-c 73728`, wired 25000), unchanged from the smoke. Prompt blind v1.1, base commit `2652ed6`. Window **65536**. Branch `qwen3.8-27b-xhigh-issue-13`, new. Started 04:01. Run watcher started with `RUNWATCH_SILENCE=2700` (this model's xhigh turns run past the 600s default).
+
+| field | value |
+|---|--:|
+| score | - |
+| tasks | -/8 |
+| worst defect | - |
+| stop reason | - |
+| peak ctx | - |
+
+still running. The 300-minute wall gives a partial, which is a row and not a failure.
+Files: `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-xhigh-blind-events.jsonl`, `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-xhigh-blind-meta.json`, `results/run-watch-qwen38-xhigh.log`.
+Deviation: none.
 Deviation: none.
 
