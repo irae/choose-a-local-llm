@@ -226,3 +226,11 @@ watching
 Expect about ten hours; the owner may pause it between problems and
 resume via the codegen's own task_id skip (not an interruption for
 `retry-sweep`).
+
+Coordinator correction (not a deviation): an xhigh completion on this
+model runs past the watcher's 600s default silence window, which gave
+run 13 a false dead-server verdict. Stopped the first watcher (pid
+37757, silence 600s default) and restarted with `RUNWATCH_SILENCE=2700`
+(pid 43035), same server log, same output file, same base URL and
+model. Server (pid 36308) and the codegen run (pid 37258) were not
+touched.

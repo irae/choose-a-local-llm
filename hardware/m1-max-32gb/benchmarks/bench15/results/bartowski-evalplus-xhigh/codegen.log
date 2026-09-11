@@ -4,3 +4,4 @@ Sanitized code outputs will be saved to /Users/irae/code/choose-a-local-llm-run1
 Raw outputs will be saved to /Users/irae/code/choose-a-local-llm-run15/hardware/m1-max-32gb/benchmarks/bench15/results/bartowski-evalplus-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.raw.jsonl
 Codegen: HumanEval/0 @ qwen3.8-27b
 Codegen: HumanEval/1 @ qwen3.8-27b
+Codegen: HumanEval/2 @ qwen3.8-27b
