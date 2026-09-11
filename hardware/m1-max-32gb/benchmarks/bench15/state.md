@@ -58,6 +58,31 @@ blind on`, pid 43368. Branch `qwen3.6-35b-a3b-f16-on-issue-13` (none
 existed). Watcher started (pid 44515),
 `results/run-watch-mendel-qwen36-on.log`.
 
+Block `qwen36-f16-mendel-on` closed. `end_reason: complete`, 33 min
+wall, well inside the 300-min cap. Scored by subagent: **50/100**,
+worst defect critical (trap A, `.then()` over `fs.promises.glob`).
+`qwen36_f16_on` = 50/100, peak_context 61485/65536 (93.8%, corrected
+from an earlier 45332 closing-read). Published to
+`~/code/mendel-benchmark` branch `benchmark`, commit `57722e8`. Full
+detail in `results.md`. Server and watcher stopped, wired recovered
+before the next block.
+
+Starting block `vision-ladder`. Page image built (deviation:
+`textutil -convert pdf` unsupported on this machine, no PDF filter in
+`cupsfilter` either — fell back to `qlmanage -t` directly on the RTF,
+skipping the PDF step entirely; image verified to show the whole
+table). Server A (Qwen3.6 f16, `-c 65536`) served both requests clean.
+Server B (Gemma-26B, `-c 204800`) crashed on the image chunk at the
+default ubatch (512) — `n_ubatch >= n_tokens` assertion — fixed by
+`--ubatch-size 2048`; both requests then served (the filled one hit
+`max_tokens` still reasoning, `finish_reason: length`, no crash — not
+judged, per the block's own rule).
+
+Block `vision-ladder` closed. `vision_qwen36_c` = 65536,
+`vision_gemma26_c` = 204800. Full table in `results.md`.
+
+Starting block `bartowski-evalplus-xhigh`.
+
 ## Values this run sets
 
 The runner writes each value here as it measures it, with the block
@@ -69,5 +94,5 @@ that produced it.
 | `qwen36_f16_c` | 65536 | `qwen36-f16-ladder-creep` |
 | `qwen36_f16_clean` | 65578 | `qwen36-f16-ladder-creep` |
 | `qwen36_f16_on` | | `qwen36-f16-mendel-on` |
-| `vision_qwen36_c` | | `vision-ladder` |
-| `vision_gemma26_c` | | `vision-ladder` |
+| `vision_qwen36_c` | 65536 | `vision-ladder` |
+| `vision_gemma26_c` | 204800 | `vision-ladder` |

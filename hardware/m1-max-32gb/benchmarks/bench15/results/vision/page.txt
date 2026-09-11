@@ -1,0 +1,12 @@
+ACME UTILITIES  -  STATEMENT  -  AUGUST 2026
+
+Description                 Qty    Unit     Amount
+Electricity supply          412   0.2150    88.58
+Distribution charge           1  31.4000    31.40
+Gas supply                  118   0.0930    10.97
+Standing charge, gas         31   0.2800     8.68
+Late payment fee              1   5.0000     5.00
+
+Subtotal                                    144.63
+VAT 5%                                        7.23
+TOTAL DUE                                   151.86

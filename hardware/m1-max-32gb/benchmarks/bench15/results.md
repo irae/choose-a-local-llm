@@ -42,3 +42,101 @@ clean depth).
 Files: `results/creep-qwen36-f16-nodrafter.tsv`,
 `results/server-qwen36-f16-c65536.log`.
 Deviation: none.
+
+## `qwen36-f16-mendel-on`
+
+`unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` rev `5bc3e23`,
+`--no-mmproj`, f16 KV, no drafter, one slot, `-c 65536`, wired 25000.
+Window 65536 (largest multiple of 8192 at or under `qwen36_f16_clean`
+65578). Branch `qwen3.6-35b-a3b-f16-on-issue-13`. Model:
+`qwen3.6-35b-a3b-f16 (unsloth UD-Q4_K_XL, no drafter, on)`.
+`end_reason: complete`. 211 tool calls, 2 compactions (both `overflow`,
+at 14:11:03Z and 14:26:42Z), wall clock about 33 min (well inside the
+300-min cap), `peak_context` 45332/65536 (69.2%) at close, sampling
+temperature 1 / top_p 0.95 (server default, no sampling parameter
+passed).
+
+**Scored** by a subagent. Score **50/100**. Worst defect **critical**,
+trap A: `apply-extra-options.js` keeps `.then()` over
+`fs.promises.glob` at all three call sites; the repro throws
+`TypeError ... .then is not a function`. The model used
+`fs.globSync` correctly in four other files but never checked the
+return type at this one. No test covers the file. The model never
+read the root `package.json` (rimraf and tmp still declared) and
+never ran `pnpm install/remove/add` (trap root devDeps); never opened
+`legacy-packages/` or grepped `rimraf` repo-wide (trap B, never seen).
+Trap C passes; the chalk v1.1 port is correct.
+
+**Verified `peak_context`: 61485** (93.8% of the 65536 window) —
+corrects the 45332 closing-read value first written here, which was
+after compaction. The subagent derived 61485 from the assistant-message
+usage records, the field `PLAN.md` defines as the counter.
+
+Harness fault, unscored: one turn at 14:11:03Z produced 1 output token
+with partial thinking and no tool call (an output-limit alarm below
+budget), which forced the first compaction — not a model defect.
+
+Published to `~/code/mendel-benchmark`, branch `benchmark`, commit
+`57722e8`.
+Files: `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-f16-on-blind-events.jsonl`,
+`~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-f16-on-blind-meta.json`,
+`results/mendel-qwen36-f16-on.log`, `results/run-watch-mendel-qwen36-on.log`.
+Deviation: none.
+
+## `vision-ladder`
+
+A measurement, no gate and no verdict.
+
+**The page image.** `hardware/m1-max-32gb/benchmarks/bench15/results/vision/page.png`,
+sha256 `864f41d0220c1ba64c9f9f8eec21871da6c523ef325713231ea3f18b814a7480`,
+1400×1400. Shows the whole table.
+
+Deviation: `textutil -convert pdf` is not a supported format on this
+machine (`textutil -help` lists `txt, rtf, rtfd, html, doc, docx, odt,
+wordml, webarchive` — no `pdf`). `cupsfilter` has no text/rtf or
+text/html to PDF filter installed either. Fallback used instead of the
+runbook's PDF step: `textutil -convert rtf page.txt -output page.rtf`,
+then `qlmanage -t -s 1400 -o . page.rtf` directly — QuickLook
+thumbnails an RTF file the same way it thumbnails a PDF, so the PDF
+step is skippable on this machine. The resulting PNG shows the whole
+table cleanly (verified by reading the image). Not a stop-and-ask; the
+run did not wait.
+
+| server | `-c` | loaded | served | wired load MB | wired after MB | prompt tok (filler) | prompt tok (no filler) | image tok (diff) | decode tok/s |
+|---|--:|:--:|:--:|--:|--:|--:|--:|--:|--:|
+| Qwen3.6 f16, vision | 65536 | yes | yes | 25680 | 25678 | 8983 | 1978 | 7005 | 48.5 |
+| Gemma-26B f16, vision | 204800 | yes | yes | 25678 | 26618 | 7894 | 889 | 7005 | 51.3 |
+
+Qwen3.6 server: projector confirmed loaded (`load_model: loaded
+multimodal model, '.../mmproj-BF16.gguf'`). Prompt eval 16094.62 ms /
+8983 tokens (558.14 tok/s) on the filled request; eval time 7937.30 ms
+/ 386 tokens (48.51 tok/s) decode. No-filler request: prompt eval
+7451.32 ms / 1978 tokens (265.46 tok/s), eval 7735.78 ms / 400 tokens
+(51.58 tok/s) decode. Replies: `results/vision/reply-qwen36-c65536.json`,
+`results/vision/reply-qwen36-c65536-nofiller.json` — both read the
+table correctly (electricity, distribution, gas, standing charge, late
+fee, subtotal, VAT, total), not judged further.
+
+Gemma-26B server: projector confirmed loaded the same way. **Deviation:**
+the first attempt at default `--ubatch-size` (512) crashed the server
+on the filled request (`src/llama-context.cpp:1724:
+GGML_ASSERT((cparams.causal_attn || cparams.n_ubatch >= n_tokens_all)
+&& "non-causal attention requires n_ubatch >= n_tokens") failed`) —
+the image chunk needs a bigger ubatch than the default. Restarted at
+`--ubatch-size 2048`, same `-c 204800`, and the request served clean.
+This flag is a batching parameter, not part of the block's fixed
+identity (files, revision, KV type), so it was changed without a
+stop-and-ask; the run did not wait. On the filled request: prompt eval
+15550.60 ms / 7894 tokens (507.63 tok/s); the reply hit `max_tokens`
+400 still inside its own reasoning (`finish_reason: length`, empty
+`content`, 400 tokens of `reasoning_content`) — the server served it,
+the model just did not finish reasoning in budget, so no JSON to judge.
+No-filler request: prompt eval 6635.46 ms / 882 tokens (132.92 tok/s,
+7 tokens cache-read), eval 7232.47 ms / 400 tokens (55.17 tok/s), same
+`length` stop. Replies: `results/vision/reply-gemma26-c204800.json`,
+`results/vision/reply-gemma26-c204800-nofiller.json` — not judged
+further, per the block's own rule.
+
+`vision_qwen36_c` = 65536 (first probe served; no step-down needed).
+`vision_gemma26_c` = 204800 (first probe served, after the ubatch
+fix; no step-down needed).

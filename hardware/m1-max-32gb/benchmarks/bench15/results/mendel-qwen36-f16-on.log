@@ -3,3 +3,5 @@ HEAD is now at 2652ed6 chore: stop node SIGSEGV/SIGILL crashes in parallel tap r
 qwen3.6-35b-a3b-f16-on: worktree ready at /Users/irae/code/mendel-benchmark/../mendel-bench-qwen3.6-35b-a3b-f16-on, starting pi
 worker: contextWindow 65536 pinned on provider llama
 worker: compaction {"enabled": true, "reserveTokens": 8192}
+qwen3.6-35b-a3b-f16-on: loop verdict ok, worst ratio 0.23 on tool call
+qwen3.6-35b-a3b-f16-on: done
