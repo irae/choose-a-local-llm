@@ -1,0 +1,135 @@
+0.00.079.458 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.079.635 W srv  llama_server: -----------------
+0.00.079.637 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.079.637 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.079.637 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.079.637 W srv  llama_server: -----------------
+0.00.081.260 I srv    load_model: loading model 'unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL'
+0.02.680.662 I cmn          init: llama threadpool init, n_threads = 8
+0.02.735.852 I common_speculative_init_result: creating MTP draft context against the target model '/Users/irae/.cache/huggingface/hub/models--unsloth--Qwen3.6-35B-A3B-MTP-GGUF/snapshots/5bc3e238d916f48a861bac2f8a1990a0e9b7e98d/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf'
+0.02.766.464 W load_hparams: Qwen-VL models require at minimum 1024 image tokens to function correctly on grounding tasks
+0.02.766.469 W load_hparams: if you encounter problems with accuracy, try adding --image-min-tokens 1024
+0.02.766.469 W load_hparams: more info: https://github.com/ggml-org/llama.cpp/issues/16842
+
+0.03.081.941 I srv    load_model: loaded multimodal model, '/Users/irae/.cache/huggingface/hub/models--unsloth--Qwen3.6-35B-A3B-MTP-GGUF/snapshots/5bc3e238d916f48a861bac2f8a1990a0e9b7e98d/mmproj-BF16.gguf'
+0.03.113.591 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.03.113.610 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.03.113.614 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 65536, kv_unified = 'false'
+0.03.142.337 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.03.142.339 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.03.146.079 W srv          init: chat template supports preserving reasoning, it is enabled by default (may use more tokens, disable via --no-reasoning-preserve)
+0.03.146.086 I srv  llama_server: model loaded
+0.03.146.088 I srv  llama_server: listening on http://127.0.0.1:8081
+0.17.506.093 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.17.506.121 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.17.506.268 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.506.276 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.339 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.510.342 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.342 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.510.343 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.369 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.510.369 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.369 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.510.370 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.370 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.510.370 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.371 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.510.371 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.371 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.510.371 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.372 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.510.372 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.372 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.510.372 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.373 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.510.373 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.375 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.510.376 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.510.376 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+0.17.510.377 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+0.17.510.377 E process_ubatch: failed to compute graph, compute status: -1
+0.17.510.378 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+0.17.510.424 E llama_decode: failed to decode, ret = -3
+0.17.510.436 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+0.17.510.437 E srv    send_error: task id = 0, error: Compute error.
+0.17.510.439 I slot      release: id  0 | task 0 | stop processing: n_tokens = 34, truncated = 0
+0.17.510.454 W srv          stop: cancel task, id_task = 0
+0.17.510.563 E srv  update_slots: decode() failed: Compute error.
+0.17.569.431 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 358667067178
+0.17.569.460 I slot launch_slot_: id  0 | task 3 | processing task, is_child = 0
+0.17.569.631 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.569.639 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.569.640 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.569.642 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.569.650 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.569.650 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.569.650 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.569.650 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.569.651 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.569.651 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.569.651 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.569.651 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.569.652 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.569.652 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.569.652 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.569.653 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.569.653 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.569.653 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.569.653 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.569.654 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.569.654 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.569.655 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.569.655 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+0.17.569.656 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+0.17.569.656 E process_ubatch: failed to compute graph, compute status: -1
+0.17.569.656 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+0.17.569.709 E llama_decode: failed to decode, ret = -3
+0.17.569.721 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+0.17.569.722 E srv    send_error: task id = 3, error: Compute error.
+0.17.569.724 I slot      release: id  0 | task 3 | stop processing: n_tokens = 34, truncated = 0
+0.17.569.740 W srv          stop: cancel task, id_task = 3
+0.17.570.430 E srv  update_slots: decode() failed: Compute error.
+0.17.628.095 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 358667126463
+0.17.628.125 I slot launch_slot_: id  0 | task 6 | processing task, is_child = 0
+0.17.628.311 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.628.318 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.628.318 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.628.319 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.628.327 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.628.327 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.628.328 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.628.328 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.628.328 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.628.329 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.628.329 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.628.329 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.628.329 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.628.330 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.628.330 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.628.330 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.628.331 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.628.331 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.628.331 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.628.332 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.628.333 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.17.628.333 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.17.628.333 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+0.17.628.334 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+0.17.628.334 E process_ubatch: failed to compute graph, compute status: -1
+0.17.628.335 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+0.17.628.385 E llama_decode: failed to decode, ret = -3
+0.17.628.393 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+0.17.628.393 E srv    send_error: task id = 6, error: Compute error.
+0.17.628.395 I slot      release: id  0 | task 6 | stop processing: n_tokens = 34, truncated = 0
+0.17.628.417 W srv          stop: cancel task, id_task = 6
+0.17.628.896 E srv  update_slots: decode() failed: Compute error.
+0.22.164.033 I srv    operator(): operator(): cleaning up before exit...
+0.22.164.724 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.22.164.733 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.22.165.056 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.22.165.059 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.22.168.023 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.22.168.033 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.22.168.735 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.22.168.737 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
