@@ -113,8 +113,9 @@ Compaction thresholds come from the floor table below, not from the window.
 ## Per-model reports
 
 - [Qwen3.8-27B](./reports/qwen3.8-27b.md): strongest base model,
-  slowest on this hardware; the ISTA 3-bit build on llama f16 finishes
-  the agent task at the model's own default (80.5 blind)
+  slowest on this hardware; on llama at f16 KV it finishes the agent
+  task at the model's own default, 93 blind on the 4-bit build and
+  80.5 on the ISTA 3-bit build
 - [Gemma-4-26B-A4B](./reports/gemma-4-26b-a4b.md): MoE+MTP, fastest
   Python, 197K at f16 KV on one slot, 47.5 blind on the agent task
 - [Qwen3.6-35B-A3B](./reports/qwen3.6-35b-a3b.md): MoE+MTP, fastest JS,
