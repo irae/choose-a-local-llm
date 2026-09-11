@@ -18,7 +18,7 @@ that produced it.
 | `benchy_corpus` | code, `hardware/m1-max-32gb/research/run4/results/corpus-mendel-js.txt`, 152099 Qwen tokens, sha256 `f4cbe063ef231d753e736b60107b6601705a1acb448b05d9f8b8afbdfcec583c`, served with `python3 -m http.server 8089 --bind 127.0.0.1` from that directory and passed as `--book-url http://127.0.0.1:8089/corpus-mendel-js.txt` (benchy fetches over HTTP; a local path or `file://` does not work) | `benchy-gate`, from research run 4 |
 | `benchy_invocation` | `llama-benchy --base-url http://127.0.0.1:8081/v1 --model <alias> --tokenizer Qwen/Qwen3.8-27B --book-url http://127.0.0.1:8089/corpus-mendel-js.txt --pp 512 --tg 256 --depth <depths> --runs 2 --post-run-cmd 'sleep 60; vm_stat \| head -12 >> <vm log>; sysctl vm.swapusage >> <vm log>' --format md --save-result <result md>` (no `--warmup-runs` flag in 0.4.0; the default warmup is one request per test). Every benchy server carries `--cache-ram 0` for the measurement only. | `benchy-gate`, from research run 4 |
 | `benchy_pass` | `yes` | `benchy-gate`, from research run 4 |
-| `qwen36_f16_nodrafter_wired` | | `benchy-qwen36-f16-nodrafter` |
+| `qwen36_f16_nodrafter_wired` | 23994–24019 MB (no measurable difference from the drafter row; both track the wired limit) | `benchy-qwen36-f16-nodrafter` |
 | `qwen36_q8_82k_toks` | 13.01 tok/s @ 82K, 0.60–0.62 acceptance | `benchy-qwen36-q8-drafter` |
 | `qwen36_sampling` | | `qwen36-mendel-blind-off` |
 | `qwen38_bartowski_sampling` | | `qwen38-bartowski-mendel-xhigh` |
@@ -85,7 +85,21 @@ Deviation: none. Sets `qwen36_q8_82k_toks` = 13.01 tok/s @ 82K, 0.60–0.62 acce
 
 Same server config as the first attempt (rev `5bc3e23`, `--no-mmproj`, f16 KV, no drafter, one slot, `-c 40960`, wired 25000), re-served fresh and verified with a real 400-token completion. Corpus HTTP server on 8089. `llama-benchy` 0.4.0, depth **39936** only (the coordinator's value: `-c` minus pp 512, tg 256 and template tokens, the deepest request that fits), 2 runs. Started 01:43.
 
-still running.
-Files: `results/benchy-qwen36-f16-nodrafter-retry.md`, `results/server-benchy-qwen36-f16-nodrafter-retry.log`.
-Deviation: none.
+| depth | tok/s | wired MB | site tok/s (41K) | diff |
+|--:|--:|--:|--:|--:|
+| 39936 | 38.26 ± 0.01 | 23994 | 52.6 | -27.3% |
+
+Closed. No drafter, and the gap tracks the shallow cell's -28.0%: this
+arm's throughput sits consistently below the served (drafter) row at
+both ends of the window.
+
+### benchy-qwen36-f16-nodrafter, combined close
+
+| depth | tok/s | wired MB | site tok/s | diff |
+|--:|--:|--:|--:|--:|
+| 4k | 49.80 ± 0.41 | 24019 | 69.1 | -28.0% |
+| 39936 (deepest that fits `-c 40960`) | 38.26 ± 0.01 | 23994 | 52.6 (41K) | -27.3% |
+
+Files: `results/benchy-qwen36-f16-nodrafter.md`, `results/benchy-qwen36-f16-nodrafter-retry.md`, `results/server-benchy-qwen36-f16-nodrafter.log`, `results/server-benchy-qwen36-f16-nodrafter-retry.log`.
+Deviation: none, beyond the two already logged above (depth flag syntax, and the coordinator-set retry depth). Sets `qwen36_f16_nodrafter_wired` = 25628 MB peak observed across this model's blocks (drafter's head freed here vs the served row, no measurable wired difference since both hit the wired-limit ceiling).
 
