@@ -90,7 +90,9 @@ between problems and resume it.
 - Commit on `run15` as results land. Push at every block close and
   message the coordinator session "local-llm
   manager/coordinator/orchestrator" with the block, the config, the
-  result line and the commit id. Never run a bare `git stash`.
+  result line and the commit id. **No message between pushes**: no
+  live progress, no status counts (owner rule, 2026-09-11). Never
+  run a bare `git stash`.
 - Every gate and every stop-and-ask goes to the coordinator session
   with the block, the condition and your candidate answer. Keep the
   GPU busy with the next block that does not depend on it.

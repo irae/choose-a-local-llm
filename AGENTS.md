@@ -169,6 +169,10 @@ Benchmark work:
   rule", the owner has said so in those words. A confirmed rule is
   committed here or in the page it belongs to; `HANDOFF.md` and a
   runbook never hold one.
+- **A runner reports to the coordinator only when the runbook has it
+  push to origin** (owner rule, 2026-09-11): a block close, a gate,
+  a stop-and-ask. No live progress messages, no status counts
+  between pushes. Every runbook and every dispatch prompt says so.
 - **The agent benchmark is called simulator(mendel) in every rule and
   runbook** (owner, 2026-09-11). The Mendel runner is being replaced;
   the published pages keep the word Mendel until the new runner lands.
