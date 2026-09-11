@@ -136,3 +136,19 @@
 10.43.891.176 I slot print_timing: id  0 | task 565 |       total time =   25162.62 ms /  7807 tokens
 10.43.891.176 I slot print_timing: id  0 | task 565 |    graphs reused =        562
 10.43.892.092 I slot      release: id  0 | task 565 | stop processing: n_tokens = 62371, truncated = 0
+12.40.216.472 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 342913451885
+12.40.525.702 I slot launch_slot_: id  0 | task 635 | processing task, is_child = 0
+12.43.865.521 I slot print_timing: id  0 | task 635 | prompt processing, n_tokens =   2986, progress = 0.85, t =   3.34 s / 894.07 tokens per second
+12.44.434.818 I slot print_timing: id  0 | task 635 | prompt processing, n_tokens =   3249, progress = 0.93, t =   3.91 s / 831.14 tokens per second
+12.44.878.533 I slot print_timing: id  0 | task 635 | prompt processing, n_tokens =   3498, progress = 1.00, t =   4.35 s / 803.62 tokens per second
+12.48.319.529 I slot print_timing: id  0 | task 635 | n_gen =    152, tg =  50.24 t/s, tg_3s =  50.58 t/s
+12.48.923.356 I slot print_timing: id  0 | task 635 | prompt eval time =    4788.51 ms /  3502 tokens (    1.37 ms per token,   731.33 tokens per second)
+12.48.923.358 I slot print_timing: id  0 | task 635 |        eval time =    3609.13 ms /   183 tokens (   19.83 ms per token,    50.43 tokens per second)
+12.48.923.360 I slot print_timing: id  0 | task 635 |       total time =    8397.64 ms /  3685 tokens
+12.48.923.360 I slot print_timing: id  0 | task 635 |    graphs reused =        742
+12.48.923.508 I slot      release: id  0 | task 635 | stop processing: n_tokens = 3684, truncated = 0
+12.49.566.270 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.610 (> 0.100 thold), f_keep = 1.000
+12.49.566.501 I slot launch_slot_: id  0 | task 823 | processing task, is_child = 0
+12.55.897.956 I slot print_timing: id  0 | task 823 | n_gen =    147, tg =  48.47 t/s, tg_3s =  48.80 t/s
+12.58.912.418 I slot print_timing: id  0 | task 823 | n_gen =    293, tg =  48.45 t/s, tg_3s =  48.43 t/s
+13.01.920.068 I slot print_timing: id  0 | task 823 | n_gen =    438, tg =  48.37 t/s, tg_3s =  48.21 t/s

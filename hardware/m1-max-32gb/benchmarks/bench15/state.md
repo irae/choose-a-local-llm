@@ -50,7 +50,13 @@ DEPTH_LIST, no ceiling found, `gatedBy: untested`). Deepest clean depth
 65578. See `results.md` for the full table. Server (pid 40217) kept
 running at `-c 65536` for the next block, same config.
 
-Starting block `qwen36-f16-mendel-on`.
+Starting block `qwen36-f16-mendel-on`. `gh auth status` ok. Window =
+largest multiple of 8192 at or under `qwen36_f16_clean` (65578) =
+65536. Server (pid 40217) kept from the block above, same config.
+`MENDEL_CONTEXT_WINDOW=65536 ./run-worker.sh qwen3.6-35b-a3b-f16 pi
+blind on`, pid 43368. Branch `qwen3.6-35b-a3b-f16-on-issue-13` (none
+existed). Watcher started (pid 44515),
+`results/run-watch-mendel-qwen36-on.log`.
 
 ## Values this run sets
 

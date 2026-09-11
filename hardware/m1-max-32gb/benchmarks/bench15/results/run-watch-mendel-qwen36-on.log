@@ -1,0 +1,1 @@
+run-watch: log=hardware/m1-max-32gb/benchmarks/bench15/results/server-qwen36-f16-c65536.log output=/Users/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-f16-on-blind-events.jsonl url=http://127.0.0.1:8081 silence=600s probe_timeout=300s poll=10s mem_log=/tmp/run15-mendel-qwen36-on-mem.log mem_interval=20s
