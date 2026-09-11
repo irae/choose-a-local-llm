@@ -38,7 +38,19 @@ Pulled the sweep tool: `local-llm-eval-tools` at `e38c467`.
 New order: `qwen36-f16-ladder-creep`, `qwen36-f16-mendel-on`,
 `vision-ladder`, `bartowski-evalplus-xhigh`, `retry-sweep`.
 
+Note: `hardware/m1-max-32gb/calibrations/calibration-qwen38-gguf-xhigh.json`
+holds only 1 of 10 problems (the calibration task was stopped for the
+order change). Not a valid calibration. Re-run it in full when the
+`bartowski-evalplus-xhigh` block starts.
+
 Starting block `qwen36-f16-ladder-creep`.
+
+Block `qwen36-f16-ladder-creep` closed. Served `-c` 65536 (top of
+DEPTH_LIST, no ceiling found, `gatedBy: untested`). Deepest clean depth
+65578. See `results.md` for the full table. Server (pid 40217) kept
+running at `-c 65536` for the next block, same config.
+
+Starting block `qwen36-f16-mendel-on`.
 
 ## Values this run sets
 
@@ -48,8 +60,8 @@ that produced it.
 | name | value | block |
 | --- | --- | --- |
 | `bartowski_evalplus_xhigh` | | `bartowski-evalplus-xhigh` |
-| `qwen36_f16_c` | | `qwen36-f16-ladder-creep` |
-| `qwen36_f16_clean` | | `qwen36-f16-ladder-creep` |
+| `qwen36_f16_c` | 65536 | `qwen36-f16-ladder-creep` |
+| `qwen36_f16_clean` | 65578 | `qwen36-f16-ladder-creep` |
 | `qwen36_f16_on` | | `qwen36-f16-mendel-on` |
 | `vision_qwen36_c` | | `vision-ladder` |
 | `vision_gemma26_c` | | `vision-ladder` |
