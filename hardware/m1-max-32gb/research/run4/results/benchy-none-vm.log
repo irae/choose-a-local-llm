@@ -1,0 +1,108 @@
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               27645.
+Pages active:                            193779.
+Pages inactive:                          188773.
+Pages speculative:                         4678.
+Pages throttled:                              0.
+Pages wired down:                       1550456.
+Pages purgeable:                           2722.
+"Translation faults":                1505856727.
+Pages copy-on-write:                  100672076.
+Pages zero filled:                    731518143.
+Pages reactivated:                     77473388.
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                                7737.
+Pages active:                            170002.
+Pages inactive:                          161674.
+Pages speculative:                        10088.
+Pages throttled:                              0.
+Pages wired down:                       1544357.
+Pages purgeable:                           5015.
+"Translation faults":                1506233179.
+Pages copy-on-write:                  100720956.
+Pages zero filled:                    731683968.
+Pages reactivated:                     77535467.
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               27784.
+Pages active:                            116590.
+Pages inactive:                          106912.
+Pages speculative:                         8536.
+Pages throttled:                              0.
+Pages wired down:                       1544716.
+Pages purgeable:                            528.
+"Translation faults":                1506585624.
+Pages copy-on-write:                  100725333.
+Pages zero filled:                    731900586.
+Pages reactivated:                     77618492.
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               27906.
+Pages active:                             96101.
+Pages inactive:                           81989.
+Pages speculative:                        13173.
+Pages throttled:                              0.
+Pages wired down:                       1537317.
+Pages purgeable:                              4.
+"Translation faults":                1507764562.
+Pages copy-on-write:                  100742805.
+Pages zero filled:                    732817980.
+Pages reactivated:                     77753722.
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               28488.
+Pages active:                             89055.
+Pages inactive:                           87945.
+Pages speculative:                          173.
+Pages throttled:                              0.
+Pages wired down:                       1568823.
+Pages purgeable:                            496.
+"Translation faults":                1509754728.
+Pages copy-on-write:                  100766328.
+Pages zero filled:                    734233681.
+Pages reactivated:                     77962045.
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               28845.
+Pages active:                             92463.
+Pages inactive:                           89348.
+Pages speculative:                         2222.
+Pages throttled:                              0.
+Pages wired down:                       1549339.
+Pages purgeable:                             44.
+"Translation faults":                1511294557.
+Pages copy-on-write:                  100805916.
+Pages zero filled:                    735024629.
+Pages reactivated:                     78178508.
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               26232.
+Pages active:                             93748.
+Pages inactive:                           82134.
+Pages speculative:                        10650.
+Pages throttled:                              0.
+Pages wired down:                       1544336.
+Pages purgeable:                            460.
+"Translation faults":                1515009768.
+Pages copy-on-write:                  100877583.
+Pages zero filled:                    737428188.
+Pages reactivated:                     78511897.
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               26813.
+Pages active:                             92158.
+Pages inactive:                           88601.
+Pages speculative:                         2773.
+Pages throttled:                              0.
+Pages wired down:                       1554288.
+Pages purgeable:                            280.
+"Translation faults":                1518882788.
+Pages copy-on-write:                  100973005.
+Pages zero filled:                    740158988.
+Pages reactivated:                     78720193.
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               29582.
+Pages active:                             91366.
+Pages inactive:                           89564.
+Pages speculative:                          861.
+Pages throttled:                              0.
+Pages wired down:                       1549445.
+Pages purgeable:                              4.
+"Translation faults":                1522441751.
+Pages copy-on-write:                  101008194.
+Pages zero filled:                    742733239.
+Pages reactivated:                     78843000.
