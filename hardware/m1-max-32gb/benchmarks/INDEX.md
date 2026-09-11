@@ -7,6 +7,26 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench14, 2026-09-11 ([state](bench14/state.md), [results](bench14/results.md), [report](bench14/report.md))
+
+- Runbook: [bench14/AGENT.md](bench14/AGENT.md). Three GGUF rows read
+  with `llama-benchy` on real code text at the server's own sampling,
+  and two Mendel rows at levels the site did not have.
+- **The drafter is a per-model answer.** On Qwen3.6 q8_0 it reads 43.7
+  at 4K and 13.0 at 82K at 54 to 85 percent acceptance, above the
+  creep; without it the f16 arm reads 49.8 and 38.3 at 40K. On the
+  4-bit Qwen3.8 it reads 11.8 and 8.6 at 65.5K, 40 percent under the
+  creep and slower shallow than the ISTA 3-bit build with no drafter.
+- **The 4-bit Qwen3.8 at effort xhigh scores 93 on Mendel**, complete,
+  no critical defect, the best local agent row. Qwen3.6 with thinking
+  off scores 50.5 blind with a missed runtime trap.
+- **A benchy request needs 768 tokens of headroom under `-c`**; the
+  deepest cell on a window is `-c` minus 1024.
+- **Four harness faults in the benchmark repo**: trap A read from the
+  exit code, prettier counting forbidden files, the rubric diff range
+  drifting with master, a dead report path in `PLAN.md`. Filed in the
+  run's `state.md`, none fixed mid-run.
+
 ## bench13, 2026-09-09 to 2026-09-10 ([state](bench13/state.md), [results](bench13/results.md), [report](bench13/report.md))
 
 - Runbook: [bench13/AGENT.md](bench13/AGENT.md). One build, the ISTA
