@@ -25,12 +25,17 @@ context tokens. That last block is a measurement, not a gate.
 - `qwen36-f16-ladder-creep`
 - `qwen36-f16-mendel-on`
 - `vision-ladder`
-- `bartowski-evalplus-xhigh`
+- `vision-ladder-up`
+- `vision-drafter-shallow`
+- `vision-benchy`
+- `bartowski-evalplus-xhigh` — **holds until the coordinator's word;
+  its calibration is done, the budget is the coordinator's call**
 - `retry-sweep`
 
-EvalPlus runs last because it is the long block, about ten hours,
-and the owner may pause it between problems and resume it; the
-short blocks land their results first.
+The three vision blocks were added on 2026-09-11 after `vision-ladder`
+closed, on the owner's order: they run before EvalPlus. EvalPlus is
+the long block, about ten hours or more, and the owner may pause it
+between problems and resume it.
 
 ## Essentials
 
@@ -252,6 +257,90 @@ tokens with and without the filler, image tokens (the difference),
 decode tok/s, and the reply saved to its file. The replies are kept
 and not judged. Write `vision_qwen36_c` and `vision_gemma26_c` in
 `state.md`.
+
+## `vision-ladder-up`
+
+`vision-ladder` served both servers at their first `-c` and never
+looked higher, so neither value is a ceiling. This block climbs.
+Same two servers as `vision-ladder`, projector on, no drafter, f16
+KV, `--parallel 1`, wired 25000, Gemma-26B with `--ubatch-size 2048`.
+The rung test is the `vision-ladder` request with the filler (the
+page image plus 4096 tokens of text), served with real content.
+
+- **Qwen3.6**: start at `-c 73728` and climb in 8192 steps until a
+  `-c` fails to load or fails the request; the served `-c` is the
+  largest that passed. Do not climb past 131072.
+- **Gemma-26B**: probe `-c 212992` once. Research run 3 saw the
+  projector OOM there with the drafter on; this arm has no drafter.
+  If it serves, the served `-c` is 212992, the row's own text `-c`,
+  and the climb stops there (the model's own window is near). If it
+  fails, 204800 stands.
+
+A `-c` that loads and fails the request is not a rung. Record every
+rung: `-c`, loaded, served, wired MB at load and after, and the
+image token count (it should stay 7005). Write `vision_qwen36_c` and
+`vision_gemma26_c` again in `state.md` with the new values.
+
+## `vision-drafter-shallow`
+
+Five cells per model at depth 256, the shape of run 13's shallow
+drafter sweep: no drafter, then `--spec-type draft-mtp
+--spec-draft-n-max` 1, 2, 3, 4. Each cell is a fresh server at the
+`vision_*_c` from the block above, projector on, f16 KV; the request
+is the `vision-ladder` request without the filler (page image plus
+the prompt), `max_tokens` 256, three requests per cell, the first a
+warmup. Read decode tok/s and, on the drafter cells, the `draft
+acceptance` line from the server log per counted request.
+
+The Qwen3.6 model card says the projector and the MTP drafter do not
+work together. If a Qwen3.6 drafter cell refuses to load or the
+request fails, record it as such and stop that model's drafter
+cells; its benchy drafter arm is then "none, the server refuses".
+
+Done: one table per model, one row per cell: n-max, tok/s per
+counted request, mean, acceptance, wired MB at load. **A table and
+no pick.** The coordinator names each model's drafter arm for the
+next block; message it with the two tables and wait, the GPU is idle
+for minutes only.
+
+## `vision-benchy`
+
+Vanilla `llama-benchy` 0.4.0, the run 14 invocation, on each vision
+server: the code corpus over the local `http.server`, `--cache-ram
+0` on the server, no sampling parameter, no image in the benchy
+prompts (benchy sends text; the projector is loaded and idle). Two
+arms per model: no drafter, and the drafter arm the coordinator
+named after `vision-drafter-shallow`. Four servers at most, each at
+its model's `vision_*_c`, Gemma-26B with `--ubatch-size 2048`.
+
+Depths per model: 4096, half of `vision_*_c` rounded down to a
+multiple of 8192, and `vision_*_c` minus 1024 (a benchy request
+adds 768 tokens over the depth).
+
+```bash
+llama-benchy --base-url http://127.0.0.1:8081/v1 --model vision \
+  --tokenizer <tokenizer> \
+  --book-url http://127.0.0.1:8089/corpus-mendel-js.txt \
+  --pp 512 --tg 256 --depth <depths> \
+  --runs 2 \
+  --post-run-cmd 'sleep 60; vm_stat | head -12 >> hardware/m1-max-32gb/benchmarks/bench15/results/benchy-<mnemonic>-vm.log; sysctl vm.swapusage >> hardware/m1-max-32gb/benchmarks/bench15/results/benchy-<mnemonic>-vm.log' \
+  --format md --save-result hardware/m1-max-32gb/benchmarks/bench15/results/benchy-<mnemonic>.md
+```
+
+Tokenizers: Qwen3.6 uses `Qwen/Qwen3.6-35B-A3B`, Gemma-26B uses
+`google/gemma-4-26b-a4b-it`, each the base model repo the quant's
+card names; both are a tokenizer download of a few MB, approved for
+this run. The corpus is
+`hardware/m1-max-32gb/research/run4/results/corpus-mendel-js.txt`;
+serve its directory with `python3 -m http.server 8089 --bind
+127.0.0.1` and stop it after the block. A benchy block costs about
+three times a creep: benchy re-prefills the full depth on every
+request.
+
+Done, per server: one table in `results.md` with depth, benchy tok/s
+and its standard deviation, the text row's tok/s at the nearest
+depth where one exists, and acceptance on drafter cells. Swap beside
+every cell. **A table and no pick.**
 
 ## `bartowski-evalplus-xhigh`
 
