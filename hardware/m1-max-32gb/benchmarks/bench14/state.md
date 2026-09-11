@@ -21,7 +21,7 @@ that produced it.
 | `qwen36_f16_nodrafter_wired` | 23994–24019 MB (no measurable difference from the drafter row; both track the wired limit) | `benchy-qwen36-f16-nodrafter` |
 | `qwen36_q8_82k_toks` | 13.01 tok/s @ 82K, 0.60–0.62 acceptance | `benchy-qwen36-q8-drafter` |
 | `qwen36_sampling` | temperature 1, top_p 0.95 (server default) | `qwen36-mendel-blind-off` |
-| `qwen38_bartowski_sampling` | | `qwen38-bartowski-mendel-xhigh` |
+| `qwen38_bartowski_sampling` | temperature 1, top_p 0.95 (server default) | `qwen38-bartowski-mendel-xhigh` |
 
 ## Session 1, 2026-09-11 (runner: Claude Sonnet 5, Mac)
 
@@ -237,5 +237,28 @@ per block; each publish is out-of-band from this run's own worktree
 and branch (`run14` here never touches `master` or the mendel-benchmark
 repo's `benchmark` branch push permissions beyond what the subagent
 does there directly).
+
+**Scored** by a subagent on `claude-opus-5`. Score **93/100** (raw 93,
+cap 100 at 8/8 libraries). Worst defect **medium**: Trap B left —
+`legacy-packages/mendel-requirify` still requires and declares
+`rimraf`; the model found it by its own grep and judged it out of
+scope. No critical defect. Trap A passed for real this time (a
+`globToFiles()` helper correctly drains the async iterator before any
+`.then()` call). Trap C passed. Chalk migration follows the v1.1
+contract (`enableColor` removed, plain `util.styleText`). 17 commits,
+all clean `chore`, single-package, no hook bypass, no TASKS.md leak.
+
+Benchmark/harness faults flagged: `score.mjs`'s
+`runtime_checks.prettier.ok = false` is a scoring artifact — the only
+warning is the uncommitted `TASKS.md` scratch file the prompt itself
+forbids committing; the tool should skip untracked files. The 2
+tooling nudges were stall auto-recoveries, correctly unscored.
+`mendel-full-example` karma and an FSEvents flake are pre-existing
+baselines, not regressions.
+
+Sets `qwen38_bartowski_sampling` = temperature 1, top_p 0.95 (server
+default, read from
+`~/.local/share/mendel-benchmark/runs/qwen3.8-27b-xhigh-blind-meta.json`,
+no sampling parameter passed by this run).
 Deviation: none.
 

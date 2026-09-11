@@ -107,3 +107,23 @@ Smoke: `smoke: simulator(mendel-blind) qwen-3.8-27b bartowski-q4km/f16/xhigh: 10
 
 Served on the `benchy-qwen38-bartowski-drafter` config (f16 KV, drafter n-max 3, `-c 73728`, wired 25000). `qwen38-bartowski-mendel-xhigh` may run next.
 Files: `results/mendel-smoke-qwen38-bartowski-xhigh.log`.
+
+## qwen38-bartowski-mendel-xhigh
+
+Mendel blind, thinking effort xhigh (this model's own published default), on the `benchy-qwen38-bartowski-drafter` server (f16 KV, drafter n-max 3, `-c 73728`, wired 25000). Prompt blind v1.1, base `2652ed6`, window 65536. Branch `qwen3.8-27b-xhigh-issue-13`. Sampling: temperature 1, top_p 0.95 (server default, read from the run's `meta.json`).
+
+```
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=65536 ./run-worker.sh qwen3.8-27b pi blind xhigh
+```
+
+Scored by a subagent on `claude-opus-5`. Completed on its own (`end_reason: complete`), not a wall-clock partial. 2 tooling nudges (stall auto-recoveries), 0 model nudges, loop ok, 17 commits. `peak_context` (counter) 61572, inside the configured 65536 window.
+
+| test | model | serving | score | worst defect |
+|---|---|---|--:|---|
+| blind | qwen3.8-27b, bartowski Q4_K_M -c 73728, thinking xhigh | llama-server | 93/100, 8/8 libraries | medium |
+
+Worst defect: Trap B left — `legacy-packages/mendel-requirify` still requires and declares `rimraf`; the model found it by its own grep and judged it out of scope, same deduction the sibling rows made. No critical defect. Trap A passed for real this time (a `globToFiles()` helper drains the async iterator correctly before any `.then()`). Trap C passed. Chalk migration follows the v1.1 contract. 17 clean single-package `chore` commits, no hook bypass, no TASKS.md leak.
+
+Benchmark/harness faults flagged, separate from the model's score: `score.mjs`'s `runtime_checks.prettier.ok = false` is a scoring-tool artifact — the only warning is the uncommitted `TASKS.md` scratch file the prompt itself forbids committing; the tool should skip untracked files. The 2 tooling nudges were stall auto-recoveries, correctly unscored. `mendel-full-example` karma and an FSEvents flake are pre-existing baselines, not regressions from this run.
+
+Files: `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-xhigh-blind-session.jsonl`, `~/code/mendel-benchmark/scratchpad/benchmark/runs/qwen3.8-27b-xhigh-issue-13-evidence.json`, `results/mendel-smoke-qwen38-bartowski-xhigh.log`.
