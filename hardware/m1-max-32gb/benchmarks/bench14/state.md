@@ -36,3 +36,16 @@ No `llama-server`, no LM Studio, no Docker before the first server.
 `yes`, so the four benchy values above are copied in and the three
 benchy blocks may run.
 
+### benchy-qwen36-f16-nodrafter — running
+
+`unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` rev `5bc3e23`, `--no-mmproj`, f16 KV, no drafter, one slot, `-c 40960`, wired 25000. Verified with a real 400-token completion before the sweep, not a one-token probe. Corpus HTTP server on 8089. `llama-benchy` 0.4.0, tokenizer `Qwen/Qwen3.8-27B`, code corpus, pp 512, tg 256, depths 4096 and 40960, 2 runs. Started 00:14.
+
+| depth | tok/s | wired MB | site tok/s | diff |
+|--:|--:|--:|--:|--:|
+| 4k | - | - | 69.1 | - |
+| 40960 | - | - | 52.6 | - |
+
+still running.
+Files: `results/benchy-qwen36-f16-nodrafter.md`, `results/server-benchy-qwen36-f16-nodrafter.log`.
+Deviation: none.
+
