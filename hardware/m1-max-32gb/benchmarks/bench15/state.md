@@ -106,7 +106,37 @@ server stayed up and healthy both times (cleanly cancelled the
 in-flight task, unaffected tok/s afterward), and `calibrate.py`'s
 resume-by-`task_id` picked up cleanly both times with no data lost.
 Resumed again from problem 8. Flagged to the coordinator as a
-machine-health note, not a run blocker.
+machine-health note, not a run blocker. (Two more of the same benign
+kill happened on problems 8 and 10, each resumed the same way with no
+further investigation, no data lost.)
+
+Calibration complete, 10/10, every row confirmed
+`resolved_reasoning_effort: xhigh`.
+
+| task_id | completion_tokens | finish_reason |
+|---|--:|---|
+| HumanEval/0 | 1073 | stop |
+| HumanEval/10 | 11697 | stop |
+| HumanEval/26 | 377 | stop |
+| HumanEval/32 | 30000 | length (capped) |
+| HumanEval/38 | 1192 | stop |
+| HumanEval/53 | 290 | stop |
+| HumanEval/76 | 6198 | stop |
+| HumanEval/99 | 30000 | length (capped) |
+| HumanEval/124 | 3643 | stop |
+| HumanEval/145 | 28564 | stop |
+
+Two problems (`HumanEval/32`, `HumanEval/99`) hit the 30000-token cap
+— AGENT.md's stop-and-ask condition. Gate sent to the coordinator
+session "local-llm manager/coordinator/orchestrator" with the full
+table and a candidate answer: budget 30000 (matches the runbook's own
+single-cap/ISTA-precedent value; `HumanEval/145`'s 28564 stop shows
+the model does converge near that ceiling on its own). Holding the
+full EvalPlus run until the coordinator answers. Server (pid 93405)
+kept loaded. Nothing queued behind this block to fill the wait —
+`retry-sweep` has nothing to retry yet, every earlier block closed
+clean — so the GPU sits loaded-but-idle, which is the explicit
+stop-and-ask exception to the no-idle rule.
 
 ## Values this run sets
 

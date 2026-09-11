@@ -117,5 +117,56 @@
     },
     "resolved_reasoning_effort": "xhigh",
     "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/99",
+    "completion_tokens": 30000,
+    "finish_reason": "length",
+    "content_empty": true,
+    "content_len": 0,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 1708.0,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "xhigh"
+      }
+    },
+    "resolved_reasoning_effort": "xhigh",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/124",
+    "completion_tokens": 3643,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1506,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 224.7,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "xhigh"
+      }
+    },
+    "resolved_reasoning_effort": "xhigh",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/145",
+    "completion_tokens": 28564,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 656,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 2056.9,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "xhigh"
+      }
+    },
+    "resolved_reasoning_effort": "xhigh",
+    "resolved_reasoning_effort_source": "requested"
   }
 ]
