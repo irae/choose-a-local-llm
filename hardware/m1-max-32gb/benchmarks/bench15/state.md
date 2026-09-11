@@ -92,6 +92,19 @@ Starting block `vision-ladder-up`. Qwen3.6 failed its first rung
 212992`, same failure mode) — `vision_gemma26_c` stays 204800. Full
 evidence in `results.md`. Block closed, neither value moved.
 
+Coordinator's arm pick: Qwen3.6 runs both no-drafter and `n-max 1` at
+`-c 65536`; Gemma-26B runs no-drafter only at `-c 204800`/ubatch 2048
+(lowering `-c` to fit a drafter is a different configuration, not
+this block). Three benchy servers total.
+
+Starting block `vision-benchy`. Corpus server up on :8089. Deviation:
+AGENT.md's own example command passes `--depth` as a comma-joined
+string (`--depth <depths>`); `llama-benchy --help` shows `--depth
+DEPTH [DEPTH ...]` — space-separated, not comma-separated. A
+comma-separated call errors immediately (`invalid int value`).
+Every call in this block uses space-separated depths instead. Not a
+stop-and-ask; the run did not wait.
+
 Starting block `vision-drafter-shallow`.
 
 Qwen3.6 table closed: no-drafter 50.36 tok/s mean; the model card's
@@ -109,7 +122,24 @@ tested, inferred fail.
 Full tables in `results.md`. Sent both to the coordinator session
 "local-llm manager/coordinator/orchestrator" per the block's own
 gate; holding for the coordinator's drafter-arm pick per model
-before `vision-benchy` starts. Server loaded, rev
+before `vision-benchy` starts.
+
+Coordinator answer: Qwen3.6 runs both no-drafter and `n-max 1`
+(`-c 65536`); Gemma-26B runs no-drafter only (`-c 204800`/ubatch
+2048). Three benchy servers.
+
+`vision-benchy` closed, all three arms done:
+- Qwen3.6 no-drafter: 48.84 (4k) → 39.74 (32.8k) → 33.12 (64.5k) tok/s.
+- Qwen3.6 n-max 1: 53.88 → 43.68 → 33.85 tok/s, acceptance 0.78-0.94,
+  faster than no-drafter at every depth.
+- Gemma-26B no-drafter: 53.11 (4k) → 28.28 (98.3k) → 19.24 (203.8k)
+  tok/s. The corpus-too-short worry (an earlier report of ~152204
+  tokens available) did not hold; the deepest depth ran clean.
+
+No swap growth on any arm. Full tables in `results.md`. Corpus
+http.server (:8089) and the last vision server stopped. Vision work
+(`vision-ladder`, `vision-ladder-up`, `vision-drafter-shallow`,
+`vision-benchy`) is complete. Server loaded, rev
 `f0eec4a` confirmed, warmed up.
 
 Deviation: the harness's own background-task monitor killed the

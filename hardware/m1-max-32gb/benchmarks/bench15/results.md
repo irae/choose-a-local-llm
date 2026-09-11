@@ -232,3 +232,76 @@ A table and no pick.
 Files: `results/server-vision-gemma26-drafter-nodraft.log`,
 `results/server-vision-gemma26-drafter-n1.log`.
 Deviation: none.
+
+## `vision-benchy`
+
+Coordinator's arm pick: Qwen3.6 runs no-drafter and `n-max 1` (both
+`-c 65536`); Gemma-26B runs no-drafter only (`-c 204800`, `--ubatch-size
+2048`). `llama-benchy` 0.4.0, `--cache-ram 0` on the server, no
+sampling parameter, `--pp 512 --tg 256 --runs 2`. Corpus served from
+`hardware/m1-max-32gb/research/run4/results/corpus-mendel-js.txt` on
+`:8089`.
+
+Deviation: `llama-benchy --depth` takes space-separated ints
+(`--depth DEPTH [DEPTH ...]`), not the comma-joined string AGENT.md's
+own example shows. A comma-separated call errors immediately
+(`invalid int value`). Every call below uses space-separated depths.
+
+### Qwen3.6, `-c 65536`, no drafter
+
+Depths: 4096, 32768 (half of `-c`), 64512 (`-c` − 1024).
+
+| depth | benchy tok/s | text-row tok/s at nearest depth |
+|--:|---|---|
+| 4096 | 48.84 ± 0.01 | 50.36 (no-drafter, drafter-shallow table, depth 256 request — not the same depth, informational only) |
+| 32768 | 39.74 ± 0.01 | — |
+| 64512 | 33.12 ± 0.01 | 33.64 (creep table, depth 65578) |
+
+Swap: 483.94M → 475.94M used (2048M total) across the run — no
+growth.
+Files: `results/benchy-qwen36-nodraft.md`,
+`results/benchy-qwen36-nodraft-vm.log`,
+`results/server-benchy-qwen36-nodraft.log`.
+
+### Qwen3.6, `-c 65536`, `n-max 1`
+
+Same depths.
+
+| depth | benchy tok/s | acceptance (sampled, range across the run) |
+|--:|---|---|
+| 4096 | 53.88 ± 0.60 | 0.94–0.85 |
+| 32768 | 43.68 ± 0.30 | 0.79–0.87 |
+| 64512 | 33.85 ± 0.22 | 0.78–0.87 |
+
+Faster than no-drafter at every depth measured (53.9 vs 48.8 shallow,
+33.9 vs 33.1 deep). Acceptance stayed in the high 0.7s to low 0.9s
+throughout, no clear trend with depth. Swap flat at 475.94M, no
+growth.
+Files: `results/benchy-qwen36-n1.md`, `results/benchy-qwen36-n1-vm.log`,
+`results/server-benchy-qwen36-n1.log`.
+
+### Gemma-26B, `-c 204800`, `--ubatch-size 2048`, no drafter
+
+Depths: 4096, 98304 (half of `-c`, already a clean multiple of 8192
+after rounding down: 204800/2=102400 → 98304), 203776 (`-c` − 1024).
+The earlier worry that the corpus (`corpus-mendel-js.txt`, ~152204
+tokens by an earlier report) was too short for the 203776 depth did
+not hold — the prefill ran cleanly past that point with no error or
+truncation.
+
+| depth | benchy tok/s |
+|--:|---|
+| 4096 | 53.11 ± 0.02 |
+| 98304 | 28.28 ± 0.01 |
+| 203776 | 19.24 ± 0.76 |
+
+Swap stayed flat to slightly falling (475.94M → 451.94M of 2048M) —
+no growth. This arm took by far the longest of the block: each depth
+runs a warmup plus two counted requests, and at ~204k tokens each
+prefill pass alone took roughly 15-20 minutes even with `-ub 2048`.
+Files: `results/benchy-gemma26-nodraft.md`,
+`results/benchy-gemma26-nodraft-vm.log`,
+`results/server-benchy-gemma26-nodraft.log`.
+
+`vision-benchy` closed. All three arms done, no pick per the block's
+own rule.
