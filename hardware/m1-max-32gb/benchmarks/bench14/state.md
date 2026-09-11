@@ -20,7 +20,7 @@ that produced it.
 | `benchy_pass` | `yes` | `benchy-gate`, from research run 4 |
 | `qwen36_f16_nodrafter_wired` | 23994–24019 MB (no measurable difference from the drafter row; both track the wired limit) | `benchy-qwen36-f16-nodrafter` |
 | `qwen36_q8_82k_toks` | 13.01 tok/s @ 82K, 0.60–0.62 acceptance | `benchy-qwen36-q8-drafter` |
-| `qwen36_sampling` | | `qwen36-mendel-blind-off` |
+| `qwen36_sampling` | temperature 1, top_p 0.95 (server default) | `qwen36-mendel-blind-off` |
 | `qwen38_bartowski_sampling` | | `qwen38-bartowski-mendel-xhigh` |
 
 ## Session 1, 2026-09-11 (runner: Claude Sonnet 5, Mac)
@@ -160,5 +160,51 @@ retains some of the model, close to but above the 1798 MB session
 baseline). Score to follow in the next entry.
 Files: `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-events.jsonl`, `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-session.jsonl`, `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-meta.json`, `results/run-watch-qwen36-off.log`.
 Deviation: `peak_context` overshoot above the configured window, and the evidence pack's write location — both noted above.
+
+**Scored** by a subagent on `claude-opus-5`. Score **50.5/100** (raw
+50.5, cap 100 at 8/8 libraries done). Worst defect **critical**: Trap A
+was missed (`fs/promises` glob kept a `.then()` call that throws at
+runtime; no test covers the file, so the suites stayed green). A
+second critical: the root `package.json` still declares `rimraf` and
+`tmp`, though the model's own summary claims every dependency was
+removed. One medium defect: the CLI colour option prompt v1.1 asks to
+remove is still present, and the header bars lose colour on a TTY.
+Trap B fixed correctly, Trap C handled correctly. Per-criterion table
+and full evidence in the subagent's report; window is `chat`, ask the
+coordinator to recall it if needed.
+
+Benchmark/harness faults the subagent flagged, separate from the
+model's own score:
+- `peak_context` (97823) over the configured window (81920), matching
+  the deviation already logged above.
+- `score.mjs`'s `runtime_checks.trap_a.ok` reads `true` from process
+  exit code while the actual output is `THREW: TypeError` — a scorer
+  trusting the flag alone would miss the run's worst defect. Bug in
+  the scoring tool, not in this run.
+- RUBRIC.md's default diff command (`master..branch`) picks up
+  unrelated drift because `master` moved past this run's base commit
+  `2652ed6`; diffed from the recorded base, the branch touches only
+  the 40 task files. A rubric-following scorer without this note would
+  misread the diff.
+- A dirty-worktree reset after a compaction lost then redid work; the
+  harness's `baseline_dirty` field was empty, so the subagent scored
+  the lost work against the model, flagging that a dirty baseline is a
+  possible alternative cause it could not rule out.
+
+Sets `qwen36_sampling` = temperature 1, top_p 0.95 (read from
+`~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-meta.json`,
+the server's own default, no sampling parameter passed by this run).
+
+### qwen38-bartowski-smoke-xhigh
+
+`gh auth status` re-checked, passed. Served the `benchy-qwen38-bartowski-drafter` config unchanged: f16 KV, drafter n-max 3, `-c 73728`, wired 25000. Verified with a real 400-token completion before the smoke.
+
+```
+smoke: simulator(mendel-blind) qwen-3.8-27b bartowski-q4km/f16/xhigh: 10 calls, 1 commit, clean, 150s. pass.
+```
+
+10 calls, 10 distinct, longest repeat run 1, loop ok, 0 compactions, peak ctx 5283, 1 commit, clean tree, wall 150s. Pass.
+Files: `results/mendel-smoke-qwen38-bartowski-xhigh.log`.
+Deviation: none.
 Deviation: none.
 
