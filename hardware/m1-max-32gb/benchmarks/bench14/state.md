@@ -81,3 +81,11 @@ Swap used stayed flat (437 → 421 MB), no growth during the sweep.
 Files: `results/benchy-qwen36-q8-drafter.md`, `results/server-benchy-qwen36-q8-drafter.log`, `results/benchy-qwen36-q8-drafter-vm.log`.
 Deviation: none. Sets `qwen36_q8_82k_toks` = 13.01 tok/s @ 82K, 0.60–0.62 acceptance.
 
+### benchy-qwen36-f16-nodrafter retry, deep cell — running
+
+Same server config as the first attempt (rev `5bc3e23`, `--no-mmproj`, f16 KV, no drafter, one slot, `-c 40960`, wired 25000), re-served fresh and verified with a real 400-token completion. Corpus HTTP server on 8089. `llama-benchy` 0.4.0, depth **39936** only (the coordinator's value: `-c` minus pp 512, tg 256 and template tokens, the deepest request that fits), 2 runs. Started 01:43.
+
+still running.
+Files: `results/benchy-qwen36-f16-nodrafter-retry.md`, `results/server-benchy-qwen36-f16-nodrafter-retry.log`.
+Deviation: none.
+
