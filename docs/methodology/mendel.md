@@ -37,15 +37,19 @@ two files (`xtend` with `Object.assign`, the task research run 1 built
 and run 2 used, `hardware/m1-max-32gb/research/run2/results/mendel-probe-xtend.md`), same
 base commit, thinking as the config will run, a 25-minute cap, unscored.
 The tool is `benchmarks/mendel-smoke.sh <pi-model-id> <thinking-level>`.
-It answers one question: can this config do agent work at all. Pass is
-one commit with a clean working tree, no repetition loop, inside the
-cap.
+It answers one question: does this build, on this runtime and serving
+config, load and drive the simulator at all. Pass is one commit with a
+clean working tree, no repetition loop, inside the cap.
 
-**The thinking level is part of the config, so each level gets its own
-smoke.** A config scored at two levels needs two smokes, not one. A
-smoke at one level says nothing about another: the level changes how
-much the model thinks, which is what the smoke measures. A fail means no full run for that config; the smoke line goes in
-the results and the config is dropped or sent back to research.
+**One smoke per build, runtime and serving config, the first time it
+meets the simulator** (owner rule, 2026-09-11). A smoke is not
+repeated for another thinking level, another harness window or a
+fresh alias of the same server: a model that loads at a given context
+and drives the simulator does so at every level, and a level-shaped
+failure such as a repetition loop ends the full run itself within
+minutes, as a valid row. A fail means no full run for that config;
+the smoke line goes in the results and the config is dropped or sent
+back to research.
 
 It gates lists the way the EvalPlus smoke does: several candidates get
 the smoke in one session, and only the passes go on to a full run of

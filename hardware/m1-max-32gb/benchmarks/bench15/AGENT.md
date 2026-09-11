@@ -23,14 +23,14 @@ that arm serves.
 
 - `bartowski-smoke-xhigh-r2`
 - `bartowski-mendel-xhigh-r2`
-- `ista-smoke-xhigh-r2`
-- `ista-mendel-xhigh-r2`
-- `qwen36-f16-smoke-on`
-- `qwen36-f16-mendel-on`
+- `qwen36-f16-mendel-on` — **waits on the coordinator's word**; do
+  not start it on your own
 - `retry-sweep`
 
-If the run falls behind, drop from the tail: `qwen36-f16-mendel-on`
-first. The two repeats are what the run is for.
+The ISTA second draw was dropped by the owner on 2026-09-11 (no
+tie-breakers) after the run started; the bartowski draw, already
+running, runs to its end. After it closes, stop and wait for the
+coordinator.
 
 ## Essentials
 
@@ -146,52 +146,11 @@ temperature and top_p read from the run's `meta.json`. Verify
 `peak_context` with the counter before the row commits. The
 300-minute wall gives a partial, which is a row and not a failure.
 
-## `ista-smoke-xhigh-r2`
+## `qwen36-f16-mendel-on`
 
-Serve the ISTA build exactly as run 13 did, under the new alias.
-Fixed: `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp` rev
-`d562806`, `--no-mmproj`, f16 KV, no drafter, `--parallel 1`,
-`-c 163840`, wired 25000.
-
-```bash
-llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
-  --alias qwen3.8-27b-ista-r2 --no-mmproj --parallel 1 \
-  -ngl 999 -fa on -c 163840 \
-  --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081 --offline 2>&1 \
-  | tee hardware/m1-max-32gb/benchmarks/bench15/results/server-ista-r2.log
-```
-
-pi entry `qwen3.8-27b-ista-r2`: provider `llama`, `contextWindow`
-147456, `maxTokens` 8192, the same table as `qwen3.8-27b-ista`.
-
-```bash
-benchmarks/mendel-smoke.sh qwen3.8-27b-ista-r2 xhigh 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench15/results/mendel-smoke-ista-r2.log
-```
-
-A fail means `ista-mendel-xhigh-r2` does not run.
-
-## `ista-mendel-xhigh-r2`
-
-The second draw of the 80.5. Mendel blind at **effort xhigh**.
-Fixed: the `ista-smoke-xhigh-r2` server, prompt blind v1.1, base
-commit `2652ed6`. Derived: window **147456**, the same window as the
-first draw (run 13). The long-prompt completion check at 144510
-tokens passed on this server in run 13; it does not repeat.
-
-```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=147456 ./run-worker.sh qwen3.8-27b-ista-r2 pi blind xhigh
-```
-
-Branch `qwen3.8-27b-ista-r2-xhigh-issue-13`; no branch of that name
-exists. The watcher runs with `RUNWATCH_SILENCE=2700`. Row `model`
-value: `qwen3.8-27b-ista-r2 (ISTA IQ3_S-mtp, xhigh, second draw)`.
-The config note carries the files, revision, `f16 KV`, `-c 163840`,
-no drafter, window 147456, `wired 25000`, and the temperature and
-top_p from the run's `meta.json`. Verify `peak_context` with the
-counter before the row commits.
-
-## `qwen36-f16-smoke-on`
+**Not before the coordinator says so.** No smoke: the build, the
+runtime and the simulator have met on this machine already
+(`docs/methodology/mendel.md`, "The smoke").
 
 Serve the Qwen3.6 f16 arm without its drafter, the server run 14 read
 at 49.8 tok/s at 4K and 38.3 at 40K. Fixed:
@@ -214,18 +173,9 @@ reserve; this task needs about 46K of context, so the harness will
 compact. That is the measurement: what this arm's window buys on
 the agent task.
 
-```bash
-benchmarks/mendel-smoke.sh qwen3.6-35b-a3b-f16 on 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench15/results/mendel-smoke-qwen36-f16.log
-```
-
-A fail means `qwen36-f16-mendel-on` does not run.
-
-## `qwen36-f16-mendel-on`
-
 Mendel blind at **thinking on**, the level whose q8_0 row scored 63,
-the higher of that row's two levels. Fixed: the `qwen36-f16-smoke-on`
-server, prompt blind v1.1, base commit `2652ed6`. Derived: window
-**32768**.
+the higher of that row's two levels. Fixed: the server above, prompt
+blind v1.1, base commit `2652ed6`. Derived: window **32768**.
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=32768 ./run-worker.sh qwen3.6-35b-a3b-f16 pi blind on
