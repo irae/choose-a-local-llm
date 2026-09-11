@@ -19,7 +19,7 @@ that produced it.
 | `benchy_invocation` | `llama-benchy --base-url http://127.0.0.1:8081/v1 --model <alias> --tokenizer Qwen/Qwen3.8-27B --book-url http://127.0.0.1:8089/corpus-mendel-js.txt --pp 512 --tg 256 --depth <depths> --runs 2 --post-run-cmd 'sleep 60; vm_stat \| head -12 >> <vm log>; sysctl vm.swapusage >> <vm log>' --format md --save-result <result md>` (no `--warmup-runs` flag in 0.4.0; the default warmup is one request per test). Every benchy server carries `--cache-ram 0` for the measurement only. | `benchy-gate`, from research run 4 |
 | `benchy_pass` | `yes` | `benchy-gate`, from research run 4 |
 | `qwen36_f16_nodrafter_wired` | | `benchy-qwen36-f16-nodrafter` |
-| `qwen36_q8_82k_toks` | | `benchy-qwen36-q8-drafter` |
+| `qwen36_q8_82k_toks` | 13.01 tok/s @ 82K, 0.60–0.62 acceptance | `benchy-qwen36-q8-drafter` |
 | `qwen36_sampling` | | `qwen36-mendel-blind-off` |
 | `qwen38_bartowski_sampling` | | `qwen38-bartowski-mendel-xhigh` |
 
@@ -71,12 +71,13 @@ is needed and only one server runs at a time.
 
 | depth | tok/s | wired MB | site tok/s | diff | acceptance |
 |--:|--:|--:|--:|--:|--:|
-| 4k | - | - | 36.5 | - | - |
-| 49152 | - | - | 14.3 | - | - |
-| 81920 | - | - | 9.24 | - | - |
+| 4k | 43.68 ± 0.82 | 25628 | 36.5 | +19.7% | 0.60–0.85 (last 2 runs) |
+| 49152 | 19.23 ± 0.87 | 25628 | 14.3 | +34.5% | 0.54–0.59 |
+| 81920 | 13.01 ± 0.16 | 25628 | 9.24 | +40.8% | 0.60–0.62 |
 
-still running. The 82K cell decides whether the row's window still
-sits above the 8 tok/s floor on real text.
-Files: `results/benchy-qwen36-q8-drafter.md`, `results/server-benchy-qwen36-q8-drafter.log`.
-Deviation: none.
+Closed 27:24 elapsed. The 82K cell reads 13.01 tok/s on real text,
+above the 8 tok/s floor by a wide margin: the row's window still holds.
+Swap used stayed flat (437 → 421 MB), no growth during the sweep.
+Files: `results/benchy-qwen36-q8-drafter.md`, `results/server-benchy-qwen36-q8-drafter.log`, `results/benchy-qwen36-q8-drafter-vm.log`.
+Deviation: none. Sets `qwen36_q8_82k_toks` = 13.01 tok/s @ 82K, 0.60–0.62 acceptance.
 
