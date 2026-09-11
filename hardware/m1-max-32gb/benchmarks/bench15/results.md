@@ -209,3 +209,26 @@ Files: `results/server-vision-qwen36-drafter-nodraft.log`,
 `results/server-vision-qwen36-drafter-n2.log`,
 `results/server-vision-qwen36-drafter-n3.log`.
 Deviation: none.
+
+### Gemma-26B, `-c 204800`, `--ubatch-size 2048`
+
+No-drafter cell served clean. Every drafter cell (`n-max 1` first)
+failed to serve — same OOM signature (`Insufficient Memory`,
+`Compute error`, `ret = -3`) as `vision-ladder-up`'s failed climb.
+Unlike Qwen3.6, even `n-max 1` has no headroom left at this model's
+own `-c` (204800 already leaves less margin than Qwen3.6's 65536).
+**`n-max 2`, `3`, `4` were not tested — inferred to fail the same
+way**, not a measurement.
+
+| n-max | tok/s (2 counted) | mean | acceptance | wired MB at load |
+|--:|---|--:|---|--:|
+| none | 54.30, 54.27 | 54.29 | — | 25470 |
+| 1 | fail (OOM, Compute error) | — | — | — |
+| 2 | not tested, inferred fail | — | — | — |
+| 3 | not tested, inferred fail | — | — | — |
+| 4 | not tested, inferred fail | — | — | — |
+
+A table and no pick.
+Files: `results/server-vision-gemma26-drafter-nodraft.log`,
+`results/server-vision-gemma26-drafter-n1.log`.
+Deviation: none.

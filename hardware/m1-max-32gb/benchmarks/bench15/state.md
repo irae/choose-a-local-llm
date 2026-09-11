@@ -92,7 +92,24 @@ Starting block `vision-ladder-up`. Qwen3.6 failed its first rung
 212992`, same failure mode) — `vision_gemma26_c` stays 204800. Full
 evidence in `results.md`. Block closed, neither value moved.
 
-Starting block `vision-drafter-shallow`. Server loaded, rev
+Starting block `vision-drafter-shallow`.
+
+Qwen3.6 table closed: no-drafter 50.36 tok/s mean; the model card's
+claim that projector+MTP drafter don't work together did not hold —
+`n-max 1` loaded and served (54.77 tok/s mean, faster than
+no-drafter, acceptance 0.889/0.693), `n-max 2` and `3` both OOM'd on
+the real request (same signature as `vision-ladder-up`'s failed
+climbs); `n-max 4` not tested, inferred to fail the same way (memory
+cost grows monotonically with `n-max`).
+
+Gemma-26B table closed: no-drafter 54.29 tok/s mean; `n-max 1` OOM'd
+immediately (no headroom left at `-c 204800`); `n-max 2-4` not
+tested, inferred fail.
+
+Full tables in `results.md`. Sent both to the coordinator session
+"local-llm manager/coordinator/orchestrator" per the block's own
+gate; holding for the coordinator's drafter-arm pick per model
+before `vision-benchy` starts. Server loaded, rev
 `f0eec4a` confirmed, warmed up.
 
 Deviation: the harness's own background-task monitor killed the
