@@ -52,6 +52,7 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
 | 5 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8 → 10.3 | 24.1 GB | 0.988/0.927/100% | 37.5 (partial) |
 | 6 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% | 12.5 (partial) |
 | 7 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% | not run |
+| 8 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort xhigh | 72k | mem | 11.8 → 8.6 | 25.0 GB | pending | 93 |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -124,6 +125,17 @@ mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --reasoning-effort medium --port 8081
+```
+
+**#8 — Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort xhigh.** Curve shared with the effort-medium row: same server, same weights; the harness sets the level per request. Mendel blind at effort xhigh, the model's own default, measured 2026-09-11: 93/100, complete 8/8, on the 65536 window, no critical defect, one medium, peak context 61572, sampling temperature 1.0 and top_p 0.95 from the server default. The highest Mendel score of any local row. No EvalPlus run exists at this level on a 4-bit build, so the cell is pending.
+
+```bash
+llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
+  --alias qwen3.8-27b --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
+  -ngl 999 -fa on -c 73728 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
 ```
 <!-- gen:model-configs:end -->
 
@@ -255,6 +267,7 @@ machine needed, applied to the run's venv before scoring.
 <!-- gen:model-mendel:start -->
 | test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
+| blind-v1.1 | Q4_K_M bartowski | llama-f16-xhigh-ctx.64k | **93** | 8/8/done | 213.3 | 10,077k | 62k | 3 | 272 | 17 |  |
 | blind-v1.1 | Q4_K_M bartowski | llama-f16-medium-ctx.48k | **87** | 8/8/done | 129.3 | 5,947k | 46k | 4 | 210 | 10 |  |
 | blind-v1.1 | IQ3_S-mtp ISTA | llama-f16-xhigh-ctx.144k | **80.5** | 8/8/done | 109.4 | 10,819k | 118k | 0 | 193 | 17 |  |
 | blind-v1.1 | IQ3_S-mtp ISTA | llama-f16-medium-ctx.112k | **76.5** | 8/8/done | 135.2 | 7,890k | 89k | 0 | 195 | 17 |  |

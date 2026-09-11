@@ -57,6 +57,20 @@
       }
     },
     {
+      "config": "Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort xhigh",
+      "maxCtx": "72k",
+      "gatedBy": "mem",
+      "tokShallow": "11.8",
+      "tokDeep": "8.6",
+      "memory": "25.0 GB",
+      "evalplus": "pending",
+      "mendel": "93",
+      "id": "qwen38-gguf-xhigh",
+      "hidden": false,
+      "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 73728 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Curve shared with the effort-medium row: same server, same weights; the harness sets the level per request. Mendel blind at effort xhigh, the model's own default, measured 2026-09-11: 93/100, complete 8/8, on the 65536 window, no critical defect, one medium, peak context 61572, sampling temperature 1.0 and top_p 0.95 from the server default. The highest Mendel score of any local row. No EvalPlus run exists at this level on a 4-bit build, so the cell is pending."
+    },
+    {
       "config": "Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium",
       "maxCtx": "128k",
       "gatedBy": "mem",
