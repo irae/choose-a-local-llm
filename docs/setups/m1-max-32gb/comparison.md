@@ -9,8 +9,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
   across its 3-bit GGUF builds; on the Mendel blind task at effort
   xhigh the 4-bit GGUF scores 93 of 100 on a 65K window and the ISTA
   3-bit build 80.5 on a 147K window, both complete, one run each. Send
-  hard problems to one of those rows; a second run of each decides
-  the order.
+  hard problems to one of those rows.
 - **Secondary-model pick, best big window, and best depth:** Gemma-26B
   on llama-server at f16 KV gives 60.3 tok/s at 4K and 17.3 at 197K,
   the largest context this machine loads for it; 0.976 / 0.945 / 100%

@@ -162,6 +162,13 @@ Benchmark work:
 
 ## Standing rules
 
+- **A rule exists only after the owner confirms it as a rule** (owner
+  rule, 2026-09-11). A critique, a discussion, a brainstorm or a
+  reading of the data is a decision for the current run or the
+  current conversation, never a rule. Before an agent writes "owner
+  rule", the owner has said so in those words. A confirmed rule is
+  committed here or in the page it belongs to; `HANDOFF.md` and a
+  runbook never hold one.
 - **Method pages never name a model.** `docs/methodology/` is reusable
   by anyone. Models, runtimes, commands and numbers of one machine
   live under `docs/setups/<setup>/`. Say "one dense 12B model on the

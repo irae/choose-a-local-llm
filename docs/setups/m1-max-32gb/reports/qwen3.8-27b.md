@@ -21,10 +21,9 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
   libraries, no critical defect, three traps handled, 213 minutes,
   three compactions. The ISTA 3-bit GGUF without its drafter on a 147K
   window scores 80.5 at the same level, complete, with one critical
-  trap; at effort low it scores 66, partial. One run of this task
-  carries about ten points of noise, so the two builds are not yet
-  ordered. Every earlier row ran at effort medium, which this model is
-  no longer tested at.
+  trap; at effort low it scores 66, partial. Both are single runs.
+  Every earlier row ran at effort medium, which this model is no
+  longer tested at.
 - **Dropping the drafter buys the 3-bit build depth and speed.**
   Without it the ISTA build serves `-c 163840` and holds 8.3 tok/s at
   147K of clean context; with it, 9.7 at 115K. The drafter is slower at

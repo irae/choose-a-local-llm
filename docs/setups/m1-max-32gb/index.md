@@ -116,8 +116,8 @@ As of 2026-09-11.
   Qwen3.8 on llama-server at f16 KV is the only local model that
   finishes the agent task at its own default level, on two rows: the
   4-bit build with its drafter at `-c 73728` scored 93, the ISTA 3-bit
-  build without a drafter at `-c 163840` scored 80.5, one run each and
-  not yet ordered; Gemma-26B on llama-server at f16 KV
+  build without a drafter at `-c 163840` scored 80.5, one run each;
+  Gemma-26B on llama-server at f16 KV
   (`-c 212992`) is the deep-context candidate and the fastest of the
   large models; Bonsai is the cheapest in memory, the only one that
   serves two slots under 11 GB, and at f16 KV on the fork it has no
