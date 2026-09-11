@@ -195,6 +195,21 @@ Sets `qwen36_sampling` = temperature 1, top_p 0.95 (read from
 `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-meta.json`,
 the server's own default, no sampling parameter passed by this run).
 
+**Published** to `~/code/mendel-benchmark`, branch `benchmark`, commit
+`5c197e8` (pushed to `origin/benchmark`, `f14a235..5c197e8`; `master`
+untouched). The publish subagent independently re-derived all ten
+scores and agreed with 50.5. It found two more items worth recording:
+six of eight `applyStyle` call sites omit the third `enabled`
+argument, so `styleText` never runs on most of the CLI output — worse
+than "loses colour," most of the port is dead code — recorded as its
+own medium defect; and it cleared a false alarm on the `mendel-deps`
+glob swap (looked wrong, correct on inspection) while flagging a real
+minor defect (an unrequested `Resolver` `basedir` → `cwd` swap that
+still passes tests on a path-suffix match, so it is a semantics
+change, not yet a failure). No CSV writer script exists in
+mendel-benchmark; the subagent appended by hand and verified the
+format by byte-comparing a re-derived existing row.
+
 ### qwen38-bartowski-smoke-xhigh
 
 `gh auth status` re-checked, passed. Served the `benchy-qwen38-bartowski-drafter` config unchanged: f16 KV, drafter n-max 3, `-c 73728`, wired 25000. Verified with a real 400-token completion before the smoke.
