@@ -74,6 +74,14 @@ apply on top of them.
   published 45.0 py tok/s for that reason alone). Sweep the draft
   depth per model AND per mode: the optimum shifts with output style
   (thinking on/off) and with depth.
+- **A drafter's tok/s at depth comes from a real-text reader at the
+  server's own sampling.** The creep sends a fixed prompt and one
+  short completion, so on a drafter row its tok/s is a ceiling test
+  only: a memorised or unsampled completion accepts almost every
+  draft. The number a row publishes at depth comes from a reader that
+  sends real text and lets the server sample (research run 4:
+  `llama-benchy`), with acceptance beside every cell. A
+  temperature-0 shot is not that number; it reads high.
 
 ## How a sweep runs
 

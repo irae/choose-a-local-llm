@@ -99,11 +99,20 @@ that line, with this run's alias, depths and file names. The shape:
 ```bash
 llama-benchy --base-url http://127.0.0.1:8081/v1 --model <alias> \
   --tokenizer <benchy_tokenizer for this model's base> \
+  --book-url http://127.0.0.1:8089/corpus-mendel-js.txt \
   --pp 512 --tg 256 --depth <block's depths> \
-  --runs 2 --warmup-runs 1 \
-  --post-run-cmd 'sleep 60; vm_stat | head -12 >> hardware/m1-max-32gb/benchmarks/bench14/results/benchy-<mnemonic>-vm.log' \
+  --runs 2 \
+  --post-run-cmd 'sleep 60; vm_stat | head -12 >> hardware/m1-max-32gb/benchmarks/bench14/results/benchy-<mnemonic>-vm.log; sysctl vm.swapusage >> hardware/m1-max-32gb/benchmarks/bench14/results/benchy-<mnemonic>-vm.log' \
   --format md --save-result hardware/m1-max-32gb/benchmarks/bench14/results/benchy-<mnemonic>.md
 ```
+
+The corpus is the code text research run 4 built:
+`hardware/m1-max-32gb/research/run4/results/corpus-mendel-js.txt`
+(sha256 in `benchy_corpus`). Benchy fetches `--book-url` over HTTP,
+so serve that directory first with
+`python3 -m http.server 8089 --bind 127.0.0.1` and stop it after the
+block. Every benchy server command below carries `--cache-ram 0` for
+the measurement only; the published serving command does not.
 
 No `--extra-body`. Keep the server log; for every cell, read the
 `draft acceptance` line of the matching request and put it beside the
@@ -136,7 +145,7 @@ Derived: `-c 40960`, the largest that serves a real request at f16
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --alias qwen3.6-35b-a3b --no-mmproj --parallel 1 \
   -ngl 999 -fa on -c 40960 \
-  --cache-type-k f16 --cache-type-v f16 \
+  --cache-type-k f16 --cache-type-v f16 --cache-ram 0 \
   --jinja --port 8081 --offline 2>&1 \
   | tee hardware/m1-max-32gb/benchmarks/bench14/results/server-benchy-qwen36-f16-nodrafter.log
 ```
@@ -157,7 +166,7 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --alias qwen3.6-35b-a3b --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
   -ngl 999 -fa on -c 98304 \
-  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --cache-type-k q8_0 --cache-type-v q8_0 --cache-ram 0 \
   --jinja --port 8081 --offline 2>&1 \
   | tee hardware/m1-max-32gb/benchmarks/bench14/results/server-benchy-qwen36-q8-drafter.log
 ```
@@ -179,7 +188,7 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
   --alias qwen3.8-27b --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
   -ngl 999 -fa on -c 73728 \
-  --cache-type-k f16 --cache-type-v f16 \
+  --cache-type-k f16 --cache-type-v f16 --cache-ram 0 \
   --jinja --port 8081 --offline 2>&1 \
   | tee hardware/m1-max-32gb/benchmarks/bench14/results/server-benchy-qwen38-bartowski-drafter.log
 ```
