@@ -110,28 +110,32 @@ scope.
 
 ## Current state
 
-As of 2026-09-10.
+As of 2026-09-11.
 
 - Candidates for real coding use, by what the measurements support:
   Qwen3.8 on llama-server at f16 KV is the only local model that
-  finishes the agent task, and the row to use is its ISTA 3-bit build
-  served without a drafter at `-c 163840`, the only row scored at the
-  model's own default level; Gemma-26B on llama-server at f16 KV
+  finishes the agent task at its own default level, on two rows: the
+  4-bit build with its drafter at `-c 73728` scored 93, the ISTA 3-bit
+  build without a drafter at `-c 163840` scored 80.5, one run each and
+  not yet ordered; Gemma-26B on llama-server at f16 KV
   (`-c 212992`) is the deep-context candidate and the fastest of the
   large models; Bonsai is the cheapest in memory, the only one that
   serves two slots under 11 GB, and at f16 KV on the fork it has no
   speed floor to 131K; Gemma-12B holds the deepest window on
   llama-server and two 82K slots in 13.8 GB. Nothing here is a
   decision; none of these has been used for real work yet. Qwen3.6 is
-  the fastest shallow decoder, 52.6 tok/s at 41K with f16 KV, and its
-  q8_0 arm holds an 82K window.
+  the fastest decoder at depth, 38.3 tok/s at 40K with f16 KV and no
+  drafter on real text, and its q8_0 arm holds an 82K window at 13.0.
 - Every GGUF row carries the largest `-c` that serves a real request of
   the size the work will send, and the KV type the pick chose: f16 on
   every model. On Qwen3.6 the q8_0 row stays for its window, more than
   twice the f16 arm's, at 2.8x the cost in speed at 33K.
-- The drafter is measured per build, not assumed. On the Qwen3.8 ISTA
-  build it loses at every depth and is off; on the 4-bit build and on
-  Qwen3.6 it wins shallow and stays on.
+- The drafter is measured per build, on real text at the server's
+  sampling, never assumed. On the Qwen3.8 ISTA build it loses at every
+  depth and is off. On Qwen3.6 q8_0 it reads above the creep at every
+  depth and stays on. On the 4-bit Qwen3.8 it reads 11.8 shallow and
+  8.6 at 65.5K with the drafter, under the ISTA build without one; its
+  no-drafter arm is unread, so the row keeps the drafter for now.
 - Bonsai extras: the PrismML fork is installed at `~/prism-llama/`. Its
   desktop profile holds q4 KV at 9.8 GB flat with a 33K floor, and serves
   2×48K slots at 9.8 tok/s each. The DSpark drafter helps only at
@@ -142,12 +146,22 @@ As of 2026-09-10.
   gemma-4-12b-2x at 81920, bonsai-prism-f16 at 131072, bonsai-mlx at
   57344, qwen3.8-mlx at 26624; `maxTokens` 8192 on every entry.
 
-## Latest benchmark runs, 2026-09-08 to 2026-09-10
+## Latest benchmark runs, 2026-09-08 to 2026-09-11
 
 Every number here was measured at wired limit 25000, the standing
-value. Raw evidence: `hardware/m1-max-32gb/benchmarks/bench12/` and
-`bench13/` in the repo.
+value. Raw evidence: `hardware/m1-max-32gb/benchmarks/bench12/` to
+`bench14/` in the repo.
 
+- Three GGUF drafter rows were read with `llama-benchy` on real code
+  text at the server's own sampling, with draft acceptance beside
+  every cell. A creep on a drafter row reads a ceiling, because its
+  text lets the drafter accept every draft. Qwen3.6 q8_0 with its
+  drafter reads 43.7 at 4K and 13.0 at 82K, above the creep; the
+  Qwen3.6 f16 arm without its drafter 49.8 and 38.3 at 40K; the 4-bit
+  Qwen3.8 with its drafter 11.8 and 8.6 at 65.5K, 40 percent under
+  the creep. The 4-bit Qwen3.8 at effort xhigh scored 93 on the agent
+  task, complete, the best local row; Qwen3.6 at thinking off scored
+  50.5 blind.
 - The three Qwen3.8 3-bit builds got their own EvalPlus scores at
   effort medium: ISTA 0.976 / 0.945 with one empty, AtomicChat 0.988 /
   0.927 with none. The 4-bit control, re-measured at 25000, serves
@@ -184,10 +198,12 @@ value. Raw evidence: `hardware/m1-max-32gb/benchmarks/bench12/` and
 
 ## Open work
 
-- The 4-bit Qwen3.8 GGUF's own EvalPlus score and its agent row at
-  effort xhigh.
-- Qwen3.6 blind at thinking off, on the 81920-token window. Qwen3.6 on
-  the MLX server, blind and guided: it has no agent row at all.
+- A second Mendel run of the two local leaders at effort xhigh, the
+  4-bit and the ISTA Qwen3.8, to order them; the Qwen3.6 f16 arm
+  without its drafter on the agent task. The 4-bit Qwen3.8 GGUF's own
+  EvalPlus score.
+- Qwen3.6 on the MLX server, blind and guided: it has no agent row at
+  all.
 - A thinking-on EvalPlus score for Gemma-12B. The Bonsai fork's
   EvalPlus at f16 KV.
 - A Bonsai guided row at thinking off. The bonsai-prism q4 A/B.

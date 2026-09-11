@@ -28,12 +28,14 @@ Two rules to read the tables by:
 | [Ternary-Bonsai-27B](./bonsai-27b.md) | MLX, unquantized KV, bounded cache, thinking on | 24.5 → 17.3 | 58k | mem |
 | [Ternary-Bonsai-27B](./bonsai-27b.md) | GGUF⁵, q4_0 KV + bias, thinking on | 14.8 → 7.9 | 33k | speed |
 | [Gemma-4-12B](./gemma-4-12b-it.md) | GGUF, f16 KV, no drafter, thinking off | 24.64 → 8.86 | 245k | mem |
-| [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | GGUF, MTP, f16 KV | 60.3 → 17.3 | 197k | mem |
+| [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | GGUF, MTP, f16 KV | 60.3† → 17.3† | 197k | mem |
 | [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | MLX, unquantized KV | 51 → 12.8 | 70k | mem |
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | GGUF, MTP, q8_0 KV, thinking on | 43.7 → 13.0 | 82k | speed |
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | MLX, unquantized KV, thinking on | 55.1 → 37.4 | 41k | mem |
 | [Qwen3.8-27B](./qwen3.8-27b.md) | GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 11.8 → 8.6 | 72k | mem |
 | [Qwen3.8-27B](./qwen3.8-27b.md) | MLX 4-bit, unquantized KV, effort low | 17 → 15.3 | 28k | mem |
+
+† from an earlier serving config or method; re-run pending.
 <!-- gen:decode-summary:end -->
 
 ## MLX-side engines: flat curves, hard memory ceilings

@@ -5,23 +5,26 @@ Backends: llama-server, mlx-lm · [Qwen3.8-27B MLX 4-bit on Hugging Face](https:
 <!-- gen:model-kpis:start -->
 <div class="kpis">
   <div class="kpi"><b>0.988 / 0.945</b><span>EvalPlus, effort medium — best base is the AtomicChat 3-bit GGUF (100%), best plus is the ISTA 3-bit GGUF (99%); the ISTA build scores 0.976 / 0.933 / 99% at effort low and 0.945 / 0.921 / 97% at xhigh</span></div>
-  <div class="kpi"><b>80.5 / 100</b><span>Mendel blind, effort xhigh, the model's own default: ISTA 3-bit GGUF f16 KV, no drafter, 147K window, complete; the same build at effort low scored 66, partial</span></div>
+  <div class="kpi"><b>93 / 100</b><span>Mendel blind, effort xhigh, the model's own default: 4-bit GGUF f16 KV with its drafter, 65K window, complete, no critical defect; the ISTA 3-bit build at xhigh scored 80.5 on a 147K window, complete</span></div>
   <div class="kpi"><b>147K</b><span>deepest clean GGUF f16 KV depth, the 3-bit ISTA build without its drafter, 8.3 tok/s there</span></div>
   <div class="kpi"><b>28K</b><span>MLX memory ceiling</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds measured at f16 KV and wired limit 25000 on 2026-09-08; the ISTA build without its drafter measured, run on Mendel at effort xhigh and low, and sampled 2026-09-09 to 2026-09-10.
+Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds measured at f16 KV and wired limit 25000 on 2026-09-08; the ISTA build without its drafter measured, run on Mendel at effort xhigh and low, and sampled 2026-09-09 to 2026-09-10; the 4-bit build read on real text at the server's sampling and run on Mendel at effort xhigh on 2026-09-11.
 
 ## Highlights
 
 - **At its own default level the model finishes the agent task at
-  80.5.** The ISTA 3-bit GGUF, served without its drafter at f16 KV on
-  a 147K window, scores 80.5 of 100 on the Mendel blind task at effort
-  xhigh: all eight libraries, one critical trap, 109 minutes, no
-  compaction. The same build at effort low scores 66, partial, and
-  spends more time and more context doing it. Every earlier row ran at
-  effort medium, which this model is no longer tested at.
+  93.** The 4-bit GGUF with its drafter at f16 KV on a 65K window
+  scores 93 of 100 on the Mendel blind task at effort xhigh: all eight
+  libraries, no critical defect, three traps handled, 213 minutes,
+  three compactions. The ISTA 3-bit GGUF without its drafter on a 147K
+  window scores 80.5 at the same level, complete, with one critical
+  trap; at effort low it scores 66, partial. One run of this task
+  carries about ten points of noise, so the two builds are not yet
+  ordered. Every earlier row ran at effort medium, which this model is
+  no longer tested at.
 - **Dropping the drafter buys the 3-bit build depth and speed.**
   Without it the ISTA build serves `-c 163840` and holds 8.3 tok/s at
   147K of clean context; with it, 9.7 at 115K. The drafter is slower at
@@ -35,10 +38,11 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
   low reads 0.976 / 0.933 / 99%, level with medium on base, and xhigh
   reads 0.945 / 0.921 / 97% with five completions that never converged
   inside a 30000-token cap.
-- Weak point: the slowest model on this hardware (20 tok/s shallow on
-  the 4-bit GGUF, 14 on the 3-bit), with poor prompt processing (~123
-  tok/s). MLX holds 14 to 17 tok/s across its window and OOMs between
-  28K and 30K.
+- Weak point: the slowest model on this hardware. On real text at the
+  server's sampling the 4-bit GGUF with its drafter reads 11.8 tok/s
+  shallow and 8.6 at 65.5K, and the 3-bit without one 14 shallow and
+  8.3 at 147K; prompt processing is poor (~123 tok/s). MLX holds 14 to
+  17 tok/s across its window and OOMs between 28K and 30K.
 
 ## All configs — this model
 
@@ -47,12 +51,14 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
 |--:|---|--:|:--:|--:|--:|--:|--:|
 | 1 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 72k | mem | 11.8 → 8.6 | 25.0 GB | 0.982/0.939/100% | 87 |
 | 2 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort xhigh | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.945/0.921/97% | 80.5 |
-| 3 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium | 128k | mem | 15.1 → 9.7 | 24.2 GB | 0.976/0.945/99% | 76.5 |
+| 3 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium | 128k | mem | 15.1† → 9.7† | 24.2 GB | 0.976/0.945/99% | 76.5 |
 | 4 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.976/0.933/99% | 66 (partial) |
-| 5 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8 → 10.3 | 24.1 GB | 0.988/0.927/100% | 37.5 (partial) |
+| 5 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8† → 10.3† | 24.1 GB | 0.988/0.927/100% | 37.5 (partial) |
 | 6 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% | 12.5 (partial) |
 | 7 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% | not run |
 | 8 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort xhigh | 72k | mem | 11.8 → 8.6 | 25.0 GB | pending | 93 |
+
+† from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -170,7 +176,9 @@ peak context 45,705 of a 49,152 window, no loop; points went on a
 lockfile-only install and on commit craft. That row ran with a
 16384-token harness reserve; re-run at the 8192 reserve on a 65,536
 window, the same build scored 76 and failed trap A. Both rows stand as
-different configurations, and neither is a repeat of the other. The
+different configurations, and neither is a repeat of the other. At
+effort xhigh on that same 65,536 window the 4-bit build scored 93,
+complete, with three compactions and no critical defect. The
 MLX build holds 26K at the same speed, and every run on it was partial
 or invalid, two of them Metal OOM crashes when the context grew past
 the 26,624-token window. A 26K window cannot hold a task that needs
@@ -191,29 +199,24 @@ the agent loop, which this project keeps finding.
 inherited from a control row and never chosen, and this model is no
 longer run at it. The medium rows keep their numbers and earn no
 re-run; the rows at xhigh and low are the current measurement of the
-model, and the 4-bit build has no row at its default yet.
+model.
 
-**The equilibrium moved to llama at f16 KV.** At q8_0 KV llama crossed
-the 8 tok/s floor at about 19K, so MLX won on usable speed. At f16 KV
-the 4-bit build decodes 20.0 tok/s at 4K and 13.7 at 65.5K, and 73728
-is the largest `-c` this machine loads for it at wired 25000 (81920
-OOMs at load). The four-problem smoke read level with q8_0, so the
-cache type cost no answers. KV grows only about 0.8 GB per 16K tokens,
-because the hybrid DeltaNet layers keep no KV; only the full-attention
-layers do, which is why f16 fits.
+**The 4-bit build's drafter does not pay on real text.** The creep
+read this row at 20.0 tok/s shallow and 13.7 at 65.5K, on a text that
+let the drafter accept every draft. On real code text at the server's
+own sampling, draft acceptance sits at 37 to 63 percent and the row
+reads 11.8 at 4K and 8.6 at 65.5K, slower shallow than the 3-bit ISTA
+build with no drafter. Its no-drafter arm has not been read; the row
+keeps the drafter until a measurement says otherwise. Memory, not
+speed, still bounds it: 73728 is the largest `-c` this machine loads
+at wired 25000, and KV grows only about 0.8 GB per 16K tokens because
+the hybrid DeltaNet layers keep no KV.
 
 **The quality score is fair, and it is the project's best.** The output
 budget was calibrated to 8192 (its longest observed reasoning was about
 2.6K tokens) and the three empty completions left from an earlier,
 uncalibrated pass were regenerated. Zero empty completions remain. Full
 data: [the benchmarks](../benchmarks/qwen3.8-27b.md).
-
-**Medium reasoning effort is faster for a mechanical reason.** The MTP
-head predicts medium-effort text better than xhigh-effort text, so
-acceptance climbs from 58 to 61% to 73 to 81%. That is where the 21%
-per-token gain comes from. The n-max 3 result repeated exactly on a
-second run, and a second JS prompt matched within 0.3 tok/s, so the JS
-penalty comes from the language, not the task.
 
 **The old context maxima are withdrawn.** Every allocation figure for
 this model was measured at the retired 27000 wired limit. Those tables

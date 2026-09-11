@@ -43,14 +43,16 @@ deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 | 1 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 72k | mem | 11.8 → 8.6 | 25.0 GB | 0.982/0.939/100% | 87 |
 | 2 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort xhigh | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.945/0.921/97% | 80.5 |
 | 3 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.939/0.921/97% | 63 |
-| 4 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8 → 10.3 | 24.1 GB | 0.988/0.927/100% | 37.5 (partial) |
-| 5 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% | 47.5 |
+| 4 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8† → 10.3† | 24.1 GB | 0.988/0.927/100% | 37.5 (partial) |
+| 5 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV | 197k | mem | 60.3† → 17.3† | 25.6 GB | 0.884/0.860/89% | 47.5 |
 | 6 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% | 37.5 (partial) |
 | 7 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% | 12.5 (partial) |
 | 8 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% | 12.5 |
 | 9 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% | invalid |
 | 10 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 41k | mem | 55.1 → 37.4 | 24.6 GB | 0.939/0.921/97% | pending |
 | 11 | Gemma-4-26B-A4B, MLX, unquantized KV | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% | pending |
+
+† from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->
 
 ¹ Whichever limit hits first: the max memory a config fits in, the max

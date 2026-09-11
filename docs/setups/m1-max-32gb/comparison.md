@@ -1,15 +1,16 @@
 # Local coding models on M1 Max 32 GB
 
-Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, updated 2026-09-10
+Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, updated 2026-09-11
 
 ## Highlights
 
 - **Best quality, and the model that finishes the agent task at its own
   default level:** Qwen3.8-27B. 0.988 base and 0.945 plus on EvalPlus
-  across its 3-bit GGUF builds, and 80.5 of 100 on the Mendel blind
-  task at effort xhigh on the ISTA 3-bit build, served without its
-  drafter at f16 KV on a 147K window, all eight libraries. Send hard
-  problems to that row.
+  across its 3-bit GGUF builds; on the Mendel blind task at effort
+  xhigh the 4-bit GGUF scores 93 of 100 on a 65K window and the ISTA
+  3-bit build 80.5 on a 147K window, both complete, one run each. Send
+  hard problems to one of those rows; a second run of each decides
+  the order.
 - **Secondary-model pick, best big window, and best depth:** Gemma-26B
   on llama-server at f16 KV gives 60.3 tok/s at 4K and 17.3 at 197K,
   the largest context this machine loads for it; 0.976 / 0.945 / 100%
@@ -18,11 +19,12 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
   at 4K and still 8.86 at 245K, reaching the model's own 262,144
   window above the floor, in 13.9 GB.
 - **Fastest shallow decode, and the KV type is a window-against-speed
-  trade:** Qwen3.6-35B on llama. With f16 KV it holds 69.1 tok/s at 4K
-  and 52.6 at 41K, the largest window that loads; with q8_0 KV the same
-  server serves `-c 98304` and creeps to 82K at 9.24 tok/s. EvalPlus
-  0.951 / 0.915 / 100% with thinking off, and 62.5 guided on the agent
-  task at that setting.
+  trade:** Qwen3.6-35B on llama. With f16 KV and no drafter it reads
+  49.8 tok/s at 4K and 38.3 at 40K on real text, the largest window
+  that loads; with q8_0 KV and its drafter the same files serve
+  `-c 98304` and read 13.0 at 82K. EvalPlus 0.951 / 0.915 / 100% with
+  thinking off; on the agent task 63 blind with thinking on and 50.5
+  blind at thinking off.
 - **Cheapest in memory, and most parallel:** Ternary Bonsai-27B gives
   27B-class quality from 8 GB of weights and the flattest curve of any
   model, but has never finished the agent task. On the prism fork it
@@ -41,27 +43,29 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
 |--:|---|--:|:--:|--:|--:|--:|--:|
 | 1 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 72k | mem | 11.8 → 8.6 | 25.0 GB | 0.982/0.939/100% | 87 |
 | 2 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort xhigh | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.945/0.921/97% | 80.5 |
-| 3 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium | 128k | mem | 15.1 → 9.7 | 24.2 GB | 0.976/0.945/99% | 76.5 |
+| 3 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium | 128k | mem | 15.1† → 9.7† | 24.2 GB | 0.976/0.945/99% | 76.5 |
 | 4 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.976/0.933/99% | 66 (partial) |
 | 5 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.939/0.921/97% | 63 |
 | 6 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking off | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.951/0.915/100% | 50.5 |
-| 7 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8 → 10.3 | 24.1 GB | 0.988/0.927/100% | 37.5 (partial) |
-| 8 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV | 197k | mem | 60.3 → 17.3 | 25.6 GB | 0.884/0.860/89% | 47.5 |
+| 7 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8† → 10.3† | 24.1 GB | 0.988/0.927/100% | 37.5 (partial) |
+| 8 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV | 197k | mem | 60.3† → 17.3† | 25.6 GB | 0.884/0.860/89% | 47.5 |
 | 9 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% | 37.5 (partial) |
 | 10 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% | 12.5 (partial) |
 | 11 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% | 12.5 |
 | 12 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% | not run |
 | 13 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% | invalid |
 | 14 | Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off | 2x82k | mem | 25.0 → 15.7 | 13.8 GB | 0.976/0.939/100% | pending |
-| 15 | Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939/100% | pending |
-| 16 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939/100% | pending |
+| 15 | Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off | 4x49k | mem | 42.9† → 27.7† | 25.1 GB | 0.976/0.939/100% | pending |
+| 16 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8† → 6.5† | 10.5 GB | 0.976/0.939/100% | pending |
 | 17 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 41k | mem | 55.1 → 37.4 | 24.6 GB | 0.939/0.921/97% | pending |
 | 18 | Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on | 41k | mem | 49.8 → 38.3 | 24.0 GB | 0.939/0.921/97% | pending |
-| 19 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 41k | mem | 69.1 → 52.6 | 25.1 GB | 0.939/0.921/97% | pending |
+| 19 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 41k | mem | 69.1† → 52.6† | 25.1 GB | 0.939/0.921/97% | pending |
 | 20 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% | pending |
 | 21 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% | pending |
-| 22 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots | 2x82k | mem | 66.6 → 33.6 | 25.3 GB | 0.884/0.860/89% | pending |
+| 22 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots | 2x82k | mem | 66.6† → 33.6† | 25.3 GB | 0.884/0.860/89% | pending |
 | 23 | Gemma-4-26B-A4B, MLX, unquantized KV | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% | pending |
+
+† from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->
 
 ¹ Two values. **mem**: memory ended the curve, whether the server did
@@ -135,10 +139,11 @@ keep the fast sweep of 2026-08-28.
 | **Gemma-26B llama (f16 KV, MTP, `-c 212992`)** | 60.3 | 56.5 | 45.9 | 45.9 | 26.4 (115K), 17.3 (197K) | mem — 212992 is the largest `-c` that loads; 17.3 tok/s at 197K | 0.976/0.945/100% off, 0.884/0.860/89% on |
 | **Gemma-26B MLX (f16 KV)** | 51.1 | 43.5 | 35.6 | 28.8 | 12.8 (70K) | mem — stable to 70K, 12.8 tok/s there | 0.713/0.701/72% |
 | **Qwen3.6-35B MLX (f16 KV)** | 55.1 | 47.8 | 38.3 | | 37.4 (41K) | mem — stable to 41K, 37.4 tok/s there, then a Metal OOM | pending |
-| **Qwen3.6-35B llama (f16 KV, MTP, `-c 40960`)** | 69.1 | 65.7 | 56.5 | | 52.6 (41K) | mem — 40960 is the largest `-c` that serves a real request; no ceiling found inside it | 0.951/0.915/100% off, 0.939/0.921/97% on |
-| Qwen3.6-35B llama (q8_0 KV, MTP, `-c 98304`) | 36.5 | 31.2 | 19.6 | 14.3 | 11.2 (66K), 9.24 (82K) | speed — 7.86 at 98K, under the floor; zero swap | 0.951/0.915/100% off, 0.939/0.921/97% on |
+| Qwen3.6-35B llama (f16 KV, MTP, `-c 40960`) | 69.1 | 65.7 | 56.5 | | 52.6 (41K) | mem — 40960 is the largest `-c` that serves a real request; no ceiling found inside it; a creep with the drafter, a ceiling until read on real text | 0.951/0.915/100% off, 0.939/0.921/97% on |
+| **Qwen3.6-35B llama (f16 KV, no drafter, `-c 40960`)** | 49.8 | | | | 38.3 (40K) | mem — 40960 is the largest `-c` that serves a real request; read on real text at the server's sampling | 0.951/0.915/100% off, 0.939/0.921/97% on |
+| Qwen3.6-35B llama (q8_0 KV, MTP, `-c 98304`) | 43.7 | 31.2 | 19.6 | 19.2 | 11.2 (66K), 13.0 (82K) | speed — 7.86 at 98K, under the floor; zero swap; the 4K, 49K and 82K cells read on real text with acceptance 54 to 85 percent, the others are creep readings | 0.951/0.915/100% off, 0.939/0.921/97% on |
 | Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 17.3 (58K) | mem — stable to 58K, 17.3 tok/s there | 0.915/0.884/97% |
-| **Qwen3.8 llama Q4_K_M, bartowski (f16 KV, MTP, `-c 73728`)** | 20.0 | 16.1 | 16.4 | 15.0 | | mem — 73728 is the largest `-c` that loads; clean to 65.5K at 13.7 tok/s | 0.982/0.939/100% (MLX score) |
+| **Qwen3.8 llama Q4_K_M, bartowski (f16 KV, MTP, `-c 73728`)** | 11.8 | 16.1 | 16.4 | 15.0 | 8.6 (65.5K) | mem — 73728 is the largest `-c` that loads; the 4K and 65.5K cells read on real text with acceptance 37 to 63 percent, the others are creep readings | 0.982/0.939/100% (MLX score) |
 | **Qwen3.8 llama IQ3_S-mtp, ISTA GSQ-RCO (f16 KV, no drafter, `-c 163840`)** | 14.1 | 13.3 | 12.4 | 11.5 | 10.2 (82K), 8.3 (147K) | speed — 8.30 at 147K, under the floor at 164K; zero swap | 0.976/0.933/99% low, 0.945/0.921/97% xhigh |
 | Qwen3.8 llama IQ3_S-mtp, ISTA GSQ-RCO (f16 KV, MTP, `-c 131072`) | 15.1 | 14.7 | 13.7 | 12.7 | 11.0 (82K) | mem — clean to 114.7K at 9.7 tok/s | 0.976/0.945/99% |
 | Qwen3.8 llama AD-IQ3_S, AtomicChat (f16 KV, MTP, `-c 106496`) | 15.8 | 14.8 | 13.7 | 12.7 | 11.0 (82K) | untested — swept to 98.3K at 10.3 tok/s and never hit a stop | 0.988/0.927/100% |

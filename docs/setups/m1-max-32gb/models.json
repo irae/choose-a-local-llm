@@ -86,6 +86,7 @@
       "evalplus": "0.976/0.945/99%",
       "mendel": "76.5",
       "id": "qwen38-gguf-ista-iq3s",
+      "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 131072 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "A 3-bit build of the same model, revision `d562806`, with its drafter on. Measured 2026-09-08 at wired limit 25000. Clean depth 114718 at 9.7 tok/s; `-c 131072` serves. `n-max 3` is the best drafter setting on this build, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.976/0.945, one empty at budget 8192, its own score and not a carried one. Mendel blind at effort medium: 76.5/100, complete 8/8, window 114688. It failed trap A in the same shape as the 4-bit row's own re-run. The drafter costs this build speed at every depth, so the two no-drafter rows below are the served pick; this row stays as the drafter measurement and the medium score.",
@@ -146,6 +147,7 @@
       "evalplus": "0.988/0.927/100%",
       "mendel": "37.5 (partial)",
       "id": "qwen38-gguf-atomicchat-iq3s",
+      "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 106496 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "A second 3-bit build of the same model, revision `ca10ebc`. Measured 2026-09-08 at wired limit 25000. Its sweep reached 98338 at 10.3 tok/s and never hit a stop condition, so that depth is where the sweep ended and not a ceiling this machine refused to pass. `n-max 3` is this build's own value, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.988/0.927, no empty completions, the best base score of any local build here and its own score, not a carried one. Mendel blind at effort medium: 37.5/100 capped from 74 raw, partial at three of eight libraries. It ended on a repetition loop, five identical searches of a directory that held nothing it wanted.",
@@ -240,6 +242,7 @@
       "evalplus": "0.939/0.921/97%",
       "mendel": "pending",
       "id": "qwen36-gguf-f16",
+      "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 40960 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000: `-c 40960` serves; 44032, 47104, 53248 and 65536 all load and then OOM on the first real completion. The creep found no ceiling to 40982, at 52.6 tok/s there and zero swap growth. At wired 24000 this arm loads only `-c 33792`. The cache type is worth 2.8x at 33K against the q8_0 row, for a window less than half its size."
@@ -267,6 +270,7 @@
       "evalplus": "0.884/0.860/89%",
       "mendel": "47.5",
       "id": "gemma26-gguf",
+      "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 212992 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-26b-a4b`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete.",
@@ -287,6 +291,7 @@
       "evalplus": "0.884/0.860/89%",
       "mendel": "pending",
       "id": "gemma26-gguf-2x",
+      "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 202752 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-26b-a4b-2x`. Measured 2026-09-05 at f16 KV: 202752 is the largest `-c` that serves a real 4096-token completion (208896 and above fail on compute buffers or at load), 101376 per slot. One slot swept with the other loaded and idle: no speed or memory stop before the slot window; the deepest row is 82K at 33.6 tok/s. The EvalPlus score is the single-slot f16 config's, same weights and cache type."
@@ -355,6 +360,7 @@
       "evalplus": "0.976/0.939/100%",
       "mendel": "pending",
       "id": "gemma12-gguf-off",
+      "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
       "note": "The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep."
@@ -369,6 +375,7 @@
       "evalplus": "0.976/0.939/100%",
       "mendel": "pending",
       "id": "gemma12-gguf-4x",
+      "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-4x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \\\n  -ngl 999 -fa on -c 655360 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-12b-4x`. Measured 2026-09-05 at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper."
@@ -674,11 +681,11 @@
         },
         "depthGgufQ8": {
           "value": "82K",
-          "label": "GGUF q8_0 KV clean depth, 9.24 tok/s, speed floor at 98K"
+          "label": "GGUF q8_0 KV clean depth, 13.0 tok/s on real text with the drafter, speed floor at 98K"
         },
         "shallowGguf": {
           "value": "69.1 tok/s",
-          "label": "decode, shallow (GGUF, f16 KV)"
+          "label": "decode, shallow (GGUF, f16 KV, creep with the drafter: a ceiling; 49.8 on real text without it)"
         },
         "mendelGuided": {
           "value": "62.5 / 100",
@@ -728,8 +735,8 @@
           "label": "deepest clean GGUF f16 KV depth, the 3-bit ISTA build without its drafter, 8.3 tok/s there"
         },
         "mendelBlind": {
-          "value": "80.5 / 100",
-          "label": "Mendel blind, effort xhigh, the model's own default: ISTA 3-bit GGUF f16 KV, no drafter, 147K window, complete; the same build at effort low scored 66, partial"
+          "value": "93 / 100",
+          "label": "Mendel blind, effort xhigh, the model's own default: 4-bit GGUF f16 KV with its drafter, 65K window, complete, no critical defect; the ISTA 3-bit build at xhigh scored 80.5 on a 147K window, complete"
         },
         "mendelMedium": {
           "value": "87 / 100",

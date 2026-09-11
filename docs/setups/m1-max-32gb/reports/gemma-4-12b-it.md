@@ -43,9 +43,11 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 |--:|---|--:|:--:|--:|--:|--:|--:|
 | 1 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% | invalid |
 | 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off | 2x82k | mem | 25.0 → 15.7 | 13.8 GB | 0.976/0.939/100% | pending |
-| 3 | Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off | 4x49k | mem | 42.9 → 27.7 | 25.1 GB | 0.976/0.939/100% | pending |
-| 4 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8 → 6.5 | 10.5 GB | 0.976/0.939/100% | pending |
+| 3 | Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off | 4x49k | mem | 42.9† → 27.7† | 25.1 GB | 0.976/0.939/100% | pending |
+| 4 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8† → 6.5† | 10.5 GB | 0.976/0.939/100% | pending |
 | 5 | *Gemma-4-12B, LMS, unquantized KV, thinking off* 💀 | *131k* | *mem* | *34.19* → *23.23* | *17.2 GB* | *0.909/0.872/100%* | *invalid* |
+
+† from an earlier serving config or method; re-run pending.
 
 💀 LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned. [Why this runtime is not a candidate](../lmstudio-retired.md).
 

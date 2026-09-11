@@ -84,9 +84,11 @@ guided (83). They compacted under the harness's old reserve of 16384
 tokens; since 2026-09-06 the harness reserves 8192, the answer budget.
 Each keeps its row until the fresh one lands. The 87 ran at effort
 medium, which Qwen3.8 is no longer run at; its fresh row is the 4-bit
-build at effort xhigh. The rows at xhigh (80.5) and low (66) above are
-the ISTA 3-bit build at the 8192 reserve, on a 147456 window, with
-sampling recorded: temperature 1.0, top_p 0.95.
+build at effort xhigh, 93 above, complete on a 65536 window at the
+8192 reserve. The rows at xhigh (80.5) and low (66) above are the
+ISTA 3-bit build at the 8192 reserve, on a 147456 window. Every row
+from 2026-09-09 on records its sampling: temperature 1.0, top_p 0.95,
+the server's default.
 
 ## Cloud reference — blind test
 
