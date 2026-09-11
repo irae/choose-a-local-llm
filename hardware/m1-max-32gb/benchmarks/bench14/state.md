@@ -109,10 +109,13 @@ Deviation: none, beyond the two already logged above (depth flag syntax, and the
 
 | depth | tok/s | wired MB | site tok/s | diff | acceptance |
 |--:|--:|--:|--:|--:|--:|
-| 4k | - | - | 20.0 | - | - |
-| 65536 | - | - | 13.7 | - | - |
+| 4k | 11.77 ± 1.09 | 25022 | 20.0 | -41.2% | 0.46–0.54 |
+| 65536 | 8.57 ± 1.39 | 25022 | 13.7 | -37.4% | 0.37–0.63 |
 
-still running.
+Closed 43:46 elapsed. Slow prefill throughout (100–128 tok/s pp,
+against the q4km build's faster path); the 65536 cell took roughly 11
+minutes per request. Swap flat, no growth. This is the last of the
+three benchy blocks. Results also written to `results.md`.
 Files: `results/benchy-qwen38-bartowski-drafter.md`, `results/server-benchy-qwen38-bartowski-drafter.log`.
 Deviation: none.
 
