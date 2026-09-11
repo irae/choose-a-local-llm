@@ -219,11 +219,22 @@ markdown between the `<!-- gen:models-evaluated:start -->` /
 overwrites it. `npm run docs:check` fails the build if either copy has
 drifted from the JSON, so a forgotten regeneration cannot reach the
 site. The generator sorts rows by the average of the two quality
-scores, the EvalPlus base pass@1 times 100 and the Mendel blind score,
-descending. A row with only one of the two sorts after every row with
-both, by its EvalPlus score; Max ctx (descending) breaks ties. Nothing
-else moves a row up: speed, window and memory are read from the row,
-not ranked.
+scores, the EvalPlus base pass@1 times 100 and the simulator(mendel)
+blind score, descending. A row with only one of the two sorts after
+every row with both, by its EvalPlus score; Max ctx (descending)
+breaks ties. Nothing else moves a row up: speed, window, memory and
+completeness are read from the row, not ranked.
+
+**Completeness is a score, not a flag** (owner, 2026-09-11). Three
+measurements count, one point each: tok/s (shallow → deep), EvalPlus,
+and simulator(mendel). A `pending` tok/s cell, a `pending` EvalPlus
+cell, or a simulator(mendel) cell that is not a number (`pending`,
+`not run`, `invalid`) loses its point. A `(partial)` score is a
+number and counts. A row at 3 of 3 is complete.
+
+The published pages keep the word Mendel for now; the rules and the
+runbooks say simulator(mendel), the name of the runner that replaces
+it.
 
 - **Columns, in order**: # | Config | Max ctx | Gated by¹ |
   tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus² | Mendel³.
@@ -241,12 +252,18 @@ not ranked.
   parts of the config: model, then runtime and quant with its
   publisher), showing that build's best complete row by the same sort.
   A model with three builds gets three lines.
-- **The comparison table holds every config row but suppresses any row
-  with a pending cell**, the Mendel cell excepted: a pending Mendel
-  shows as `pending`. Other pending work is visible on the model pages,
-  not on the comparison.
+- **The comparison page holds two tables.** The first, inside the
+  `gen:models-evaluated` markers, holds every complete row. After the
+  footnotes and legends comes the second, inside the
+  `gen:models-evaluated-partial` markers: every row at 40 percent
+  completeness or more that is not complete, in the same sort, with
+  `#` continuing the count. A row under 40 percent stays on its model
+  page only.
 - **Per-model tables use the same sort as every other table**, so a
-  row's `#` number moves when a score lands. Prose on the page may
+  row's `#` number moves when a score lands. The page shows every
+  visible row of the model in two tables inside one marker pair: the
+  complete rows first, then one note line, then every other row, `#`
+  continuing; the Configs blocks follow the same order. Prose on the page may
   name a config by its `#` number, and whoever changes a score
   re-checks every `#N` on that page in the same commit; the generator
   only catches a number past the row count. There is no "Suggested

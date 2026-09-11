@@ -47,6 +47,11 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
 |--:|---|--:|:--:|--:|--:|--:|--:|
 | 1 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.939/0.921/97% | 63 |
 | 2 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking off | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.951/0.915/100% | 50.5 |
+
+Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.
+
+| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
+|--:|---|--:|:--:|--:|--:|--:|--:|
 | 3 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 41k | mem | 55.1 → 37.4 | 24.6 GB | 0.939/0.921/97% | pending |
 | 4 | Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on | 41k | mem | 49.8 → 38.3 | 24.0 GB | 0.939/0.921/97% | pending |
 | 5 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 41k | mem | 69.1† → 52.6† | 25.1 GB | 0.939/0.921/97% | pending |

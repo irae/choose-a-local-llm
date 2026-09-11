@@ -38,6 +38,13 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
 |--:|---|--:|:--:|--:|--:|--:|--:|
 | 1 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV | 197k | mem | 60.3† → 17.3† | 25.6 GB | 0.884/0.860/89% | 47.5 |
+
+† from an earlier serving config or method; re-run pending.
+
+Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.
+
+| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
+|--:|---|--:|:--:|--:|--:|--:|--:|
 | 2 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots | 2x82k | mem | 66.6† → 33.6† | 25.3 GB | 0.884/0.860/89% | pending |
 | 3 | Gemma-4-26B-A4B, MLX, unquantized KV | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% | pending |
 

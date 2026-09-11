@@ -54,10 +54,15 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
 | 4 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.976/0.933/99% | 66 (partial) |
 | 5 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8† → 10.3† | 24.1 GB | 0.988/0.927/100% | 37.5 (partial) |
 | 6 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% | 12.5 (partial) |
-| 7 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% | not run |
-| 8 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort xhigh | 72k | mem | 11.8 → 8.6 | 25.0 GB | pending | 93 |
 
 † from an earlier serving config or method; re-run pending.
+
+Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.
+
+| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
+|--:|---|--:|:--:|--:|--:|--:|--:|
+| 7 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% | not run |
+| 8 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort xhigh | 72k | mem | 11.8 → 8.6 | 25.0 GB | pending | 93 |
 <!-- gen:model-table:end -->
 
 ## Configs

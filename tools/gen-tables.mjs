@@ -5,6 +5,10 @@ const CHECK = process.argv.includes('--check')
 
 const START = '<!-- gen:models-evaluated:start -->'
 const END = '<!-- gen:models-evaluated:end -->'
+const PARTIAL_START = '<!-- gen:models-evaluated-partial:start -->'
+const PARTIAL_END = '<!-- gen:models-evaluated-partial:end -->'
+const PARTIAL_NOTE =
+  'Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.'
 const KPI_START = '<!-- gen:model-kpis:start -->'
 const KPI_END = '<!-- gen:model-kpis:end -->'
 const MODEL_START = '<!-- gen:model-table:start -->'
@@ -236,6 +240,19 @@ function parseMendel(mendel) {
   return m ? parseFloat(m[1]) : null
 }
 
+function hasTok(r) {
+  return !['tokShallow', 'tokDeep'].some((k) => String(r[k]).includes('pending'))
+}
+
+function completeness(r) {
+  const parts = [hasTok(r), parseScore(r.evalplus) >= 0, parseMendel(r.mendel) !== null]
+  return parts.filter(Boolean).length / parts.length
+}
+
+function isComplete(r) {
+  return completeness(r) === 1
+}
+
 function composite(r) {
   const e = parseScore(r.evalplus)
   const m = parseMendel(r.mendel)
@@ -270,12 +287,10 @@ function checkRows(rows, setup) {
 }
 
 function hasPending(r) {
-  return ['maxCtx', 'gatedBy', 'tokShallow', 'tokDeep', 'memory', 'evalplus'].some(
-    (k) => String(r[k]).includes('pending'),
-  )
+  return !isComplete(r)
 }
 
-function renderTable(rows, { footnotes = true, sort = true } = {}) {
+function renderTable(rows, { footnotes = true, sort = true, start = 0 } = {}) {
   const header = [
     footnotes
       ? '| # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² | Mendel³ |'
@@ -295,7 +310,7 @@ function renderTable(rows, { footnotes = true, sort = true } = {}) {
     const config = r.abandoned
       ? `*${r.config}* ${r.abandoned.marker || '💀'}`
       : r.config
-    return `| ${i + 1} | ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} | ${cell(r, 'memory')} | ${cell(r, 'evalplus')} | ${cell(r, 'mendel')} |`
+    return `| ${start + i + 1} | ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} | ${cell(r, 'memory')} | ${cell(r, 'evalplus')} | ${cell(r, 'mendel')} |`
   })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']
@@ -370,7 +385,8 @@ function modelRows(data, model) {
     (r) => r.config.startsWith(model.rowMatch) && !r.hidden && !r.retired,
   )
   const extra = (model.extraRows || []).filter((r) => !r.hidden && !r.retired)
-  return sortRows([...rows, ...extra])
+  const sorted = sortRows([...rows, ...extra])
+  return [...sorted.filter(isComplete), ...sorted.filter((r) => !isComplete(r))]
 }
 
 function retiredRows(data, model) {
@@ -380,11 +396,19 @@ function retiredRows(data, model) {
 }
 
 function renderModelTable(data, model) {
-  const table = renderTable(modelRows(data, model), { footnotes: false, sort: false })
+  const rows = modelRows(data, model)
+  const complete = rows.filter(isComplete)
+  const rest = rows.filter((r) => !isComplete(r))
+  const parts = []
+  if (complete.length) parts.push(renderTable(complete, { footnotes: false, sort: false }))
+  if (rest.length) {
+    if (complete.length) parts.push('', PARTIAL_NOTE, '')
+    parts.push(renderTable(rest, { footnotes: false, sort: false, start: complete.length }))
+  }
   const lines = retiredRows(data, model).map(
     (r) => `Retired entries: ${r.config} — ${r.retired.reason} ([details](${r.retired.details})).`,
   )
-  return lines.length ? [table, '', ...lines].join('\n') : table
+  return lines.length ? [...parts, '', ...lines].join('\n') : parts.join('\n')
 }
 
 function renderModelConfigs(data, model) {
@@ -460,17 +484,21 @@ for (const dataFile of dataFiles) {
   // An abandoned row keeps its numbers on the model page only: the comparison
   // and the home table answer "what should I run", and it is not a candidate.
   const visible = data.rows.filter((r) => !r.hidden && !r.retired && !r.abandoned)
-  const comparisonTable = renderTable(visible.filter((r) => !hasPending(r)))
+  const completeRows = visible.filter(isComplete)
+  const partialRows = sortRows(visible.filter((r) => !isComplete(r) && completeness(r) >= 0.4))
+  const comparisonTable = renderTable(completeRows)
+  const partialTable = renderTable(partialRows, { sort: false, start: completeRows.length })
   const homeTable = renderHomeTable({ ...data, rows: visible })
 
   const targets = [
-    [`${setupDir}/comparison.md`, comparisonTable],
+    [`${setupDir}/comparison.md`, comparisonTable, [PARTIAL_START, PARTIAL_END, partialTable]],
     ['docs/index.md', homeTable],
   ]
 
-  for (const [target, table] of targets) {
+  for (const [target, table, partial] of targets) {
     const original = readFileSync(target, 'utf8')
-    const updated = applyTable(original, table)
+    let updated = applyTable(original, table)
+    if (partial) updated = applyBlock(updated, partial[0], partial[1], partial[2], target)
     if (updated === original) continue
     if (CHECK) {
       console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)

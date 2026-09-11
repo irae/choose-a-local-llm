@@ -169,6 +169,9 @@ Benchmark work:
   rule", the owner has said so in those words. A confirmed rule is
   committed here or in the page it belongs to; `HANDOFF.md` and a
   runbook never hold one.
+- **The agent benchmark is called simulator(mendel) in every rule and
+  runbook** (owner, 2026-09-11). The Mendel runner is being replaced;
+  the published pages keep the word Mendel until the new runner lands.
 - **Method pages never name a model.** `docs/methodology/` is reusable
   by anyone. Models, runtimes, commands and numbers of one machine
   live under `docs/setups/<setup>/`. Say "one dense 12B model on the

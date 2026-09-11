@@ -39,6 +39,11 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 |--:|---|--:|:--:|--:|--:|--:|--:|
 | 1 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% | 37.5 (partial) |
 | 2 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% | 12.5 |
+
+Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.
+
+| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
+|--:|---|--:|:--:|--:|--:|--:|--:|
 | 3 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% | pending |
 | 4 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% | pending |
 | 5 | Ternary-Bonsai-27B, GGUF⁵, f16 KV, no drafter, thinking on | 131k | untested | 15.0 → 9.7 | 18.6 GB | pending | pending |
