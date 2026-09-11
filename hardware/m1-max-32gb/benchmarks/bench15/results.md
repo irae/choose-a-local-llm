@@ -232,3 +232,33 @@ A table and no pick.
 Files: `results/server-vision-gemma26-drafter-nodraft.log`,
 `results/server-vision-gemma26-drafter-n1.log`.
 Deviation: none.
+
+## `vision-benchy`
+
+Coordinator's arm pick: Qwen3.6 runs no-drafter and `n-max 1` (both
+`-c 65536`); Gemma-26B runs no-drafter only (`-c 204800`, `--ubatch-size
+2048`). `llama-benchy` 0.4.0, `--cache-ram 0` on the server, no
+sampling parameter, `--pp 512 --tg 256 --runs 2`. Corpus served from
+`hardware/m1-max-32gb/research/run4/results/corpus-mendel-js.txt` on
+`:8089`.
+
+Deviation: `llama-benchy --depth` takes space-separated ints
+(`--depth DEPTH [DEPTH ...]`), not the comma-joined string AGENT.md's
+own example shows. A comma-separated call errors immediately
+(`invalid int value`). Every call below uses space-separated depths.
+
+### Qwen3.6, `-c 65536`, no drafter
+
+Depths: 4096, 32768 (half of `-c`), 64512 (`-c` − 1024).
+
+| depth | benchy tok/s | text-row tok/s at nearest depth |
+|--:|---|---|
+| 4096 | 48.84 ± 0.01 | 50.36 (no-drafter, drafter-shallow table, depth 256 request — not the same depth, informational only) |
+| 32768 | 39.74 ± 0.01 | — |
+| 64512 | 33.12 ± 0.01 | 33.64 (creep table, depth 65578) |
+
+Swap: 483.94M → 475.94M used (2048M total) across the run — no
+growth.
+Files: `results/benchy-qwen36-nodraft.md`,
+`results/benchy-qwen36-nodraft-vm.log`,
+`results/server-benchy-qwen36-nodraft.log`.
