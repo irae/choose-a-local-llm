@@ -81,7 +81,18 @@ judged, per the block's own rule).
 Block `vision-ladder` closed. `vision_qwen36_c` = 65536,
 `vision_gemma26_c` = 204800. Full table in `results.md`.
 
-Starting block `bartowski-evalplus-xhigh`. Server loaded, rev
+Coordinator answer: hold `bartowski-evalplus-xhigh` (budget decided
+after the vision work). Stopped the EvalPlus server. Owner added
+`vision-ladder-up`, `vision-drafter-shallow`, `vision-benchy` before
+it. Merged `origin/master` (`6658e34` → `ae1f314`), pushed `run15`.
+
+Starting block `vision-ladder-up`. Qwen3.6 failed its first rung
+(`-c 73728`, Insufficient Memory/Compute error on the real request) —
+`vision_qwen36_c` stays 65536. Gemma-26B failed its probe (`-c
+212992`, same failure mode) — `vision_gemma26_c` stays 204800. Full
+evidence in `results.md`. Block closed, neither value moved.
+
+Starting block `vision-drafter-shallow`. Server loaded, rev
 `f0eec4a` confirmed, warmed up.
 
 Deviation: the harness's own background-task monitor killed the

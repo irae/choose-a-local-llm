@@ -1,0 +1,78 @@
+0.00.204.405 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.204.759 W srv  llama_server: -----------------
+0.00.204.761 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.204.761 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.204.761 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.204.761 W srv  llama_server: -----------------
+0.00.206.704 I srv    load_model: loading model 'unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL'
+0.00.886.341 W model has unused tensor blk.40.attn_norm.weight (size = 8192 bytes) -- ignoring
+0.00.886.348 W model has unused tensor blk.40.post_attention_norm.weight (size = 8192 bytes) -- ignoring
+0.00.886.354 W model has unused tensor blk.40.attn_q.weight (size = 17825792 bytes) -- ignoring
+0.00.886.356 W model has unused tensor blk.40.attn_k.weight (size = 1114112 bytes) -- ignoring
+0.00.886.358 W model has unused tensor blk.40.attn_v.weight (size = 1114112 bytes) -- ignoring
+0.00.886.365 W model has unused tensor blk.40.attn_output.weight (size = 8912896 bytes) -- ignoring
+0.00.886.367 W model has unused tensor blk.40.attn_q_norm.weight (size = 1024 bytes) -- ignoring
+0.00.886.369 W model has unused tensor blk.40.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.886.371 W model has unused tensor blk.40.ffn_gate_inp.weight (size = 1048576 bytes) -- ignoring
+0.00.886.374 W model has unused tensor blk.40.ffn_down_exps.weight (size = 184549376 bytes) -- ignoring
+0.00.886.378 W model has unused tensor blk.40.ffn_gate_exps.weight (size = 150994944 bytes) -- ignoring
+0.00.886.380 W model has unused tensor blk.40.ffn_up_exps.weight (size = 150994944 bytes) -- ignoring
+0.00.886.383 W model has unused tensor blk.40.ffn_gate_inp_shexp.weight (size = 4096 bytes) -- ignoring
+0.00.886.385 W model has unused tensor blk.40.ffn_gate_shexp.weight (size = 1114112 bytes) -- ignoring
+0.00.886.387 W model has unused tensor blk.40.ffn_up_shexp.weight (size = 1114112 bytes) -- ignoring
+0.00.886.390 W model has unused tensor blk.40.ffn_down_shexp.weight (size = 1114112 bytes) -- ignoring
+0.00.886.393 W model has unused tensor blk.40.nextn.eh_proj.weight (size = 8912896 bytes) -- ignoring
+0.00.886.396 W model has unused tensor blk.40.nextn.enorm.weight (size = 8192 bytes) -- ignoring
+0.00.886.398 W model has unused tensor blk.40.nextn.hnorm.weight (size = 8192 bytes) -- ignoring
+0.00.886.405 W model has unused tensor blk.40.nextn.shared_head_norm.weight (size = 8192 bytes) -- ignoring
+0.13.431.315 I cmn          init: llama threadpool init, n_threads = 8
+0.13.504.757 W load_hparams: Qwen-VL models require at minimum 1024 image tokens to function correctly on grounding tasks
+0.13.504.760 W load_hparams: if you encounter problems with accuracy, try adding --image-min-tokens 1024
+0.13.504.760 W load_hparams: more info: https://github.com/ggml-org/llama.cpp/issues/16842
+
+0.14.017.218 I srv    load_model: loaded multimodal model, '/Users/irae/.cache/huggingface/hub/models--unsloth--Qwen3.6-35B-A3B-MTP-GGUF/snapshots/5bc3e238d916f48a861bac2f8a1990a0e9b7e98d/mmproj-BF16.gguf'
+0.14.048.390 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.14.048.397 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.14.048.400 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 73728, kv_unified = 'false'
+0.14.053.665 W srv          init: chat template supports preserving reasoning, it is enabled by default (may use more tokens, disable via --no-reasoning-preserve)
+0.14.053.673 I srv  llama_server: model loaded
+0.14.053.677 I srv  llama_server: listening on http://127.0.0.1:8081
+0.26.206.091 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.26.206.126 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.26.210.660 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.26.210.668 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.26.210.668 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.26.210.669 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.26.210.990 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.26.210.992 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.26.210.992 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.26.210.993 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.26.210.993 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.26.210.993 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.26.210.993 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.26.210.994 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.26.210.994 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.26.210.994 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.26.210.995 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.26.210.995 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.26.210.996 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.26.210.996 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.26.210.997 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.26.210.997 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.26.211.032 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.26.211.032 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.26.211.034 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+0.26.211.035 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+0.26.211.035 E process_ubatch: failed to compute graph, compute status: -1
+0.26.211.037 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+0.26.211.132 E llama_decode: failed to decode, ret = -3
+0.26.211.144 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+0.26.211.146 E srv    send_error: task id = 0, error: Compute error.
+0.26.211.150 I slot      release: id  0 | task 0 | stop processing: n_tokens = 2048, truncated = 0
+0.26.211.155 W srv          stop: cancel task, id_task = 0
+0.26.211.607 E srv  update_slots: decode() failed: Compute error.
+0.35.007.656 I srv    operator(): operator(): cleaning up before exit...
+0.35.007.985 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.35.007.990 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+0.35.008.292 E ggml_metal_synchronize: error: command buffer 0 failed with status 5
+0.35.008.294 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
