@@ -45,7 +45,14 @@ benchy blocks may run.
 | 4k | - | - | 69.1 | - |
 | 40960 | - | - | 52.6 | - |
 
-still running, restarted 00:36.
-Files: `results/benchy-qwen36-f16-nodrafter.md`, `results/server-benchy-qwen36-f16-nodrafter.log`.
-Deviation: the first launch passed `--depth 4096,40960` (comma-joined) and `llama-benchy` 0.4.0 rejects that: it wants space-separated values. The tool exited at once with no request sent, so nothing was measured on the bad invocation. Restarted with `--depth 4096 40960`; the server was never touched and stayed up the whole time.
+| depth | tok/s | wired MB | site tok/s | diff |
+|--:|--:|--:|--:|--:|
+| 4k | 49.80 ± 0.41 | 24019 | 69.1 | -28.0% |
+| 40960 | — (HTTP 400) | - | 52.6 | - |
+
+**window**, partial. Files: `results/benchy-qwen36-f16-nodrafter.md`, `results/server-benchy-qwen36-f16-nodrafter.log`.
+Deviation 1: the first launch passed `--depth 4096,40960` (comma-joined) and `llama-benchy` 0.4.0 rejects that: it wants space-separated values. The tool exited at once with no request sent, so nothing was measured on the bad invocation. Restarted with `--depth 4096 40960`; the server was never touched and stayed up the whole time.
+Deviation 2, stop-and-ask candidate: the `depth=40960` cell failed all three requests (warmup + 2 runs), HTTP 400, "request (41473 tokens) exceeds the available context size (40960 tokens)". `-c 40960` is the runbook's own derived ceiling, but benchy's request at a given depth adds its own pp/tg tokens on top of the depth, so a request AT the ceiling depth cannot fit inside a server serving exactly that ceiling. The `4096` cell measured clean: 49.80 ± 0.41 tok/s, 28.0% under the site's 69.1 (with-drafter, with-artifact) figure — a real gap, since this arm has no drafter and a different KV setup than that published row's nearest pair.
+My candidate answer: re-run the deep cell at a depth with headroom below the ceiling, e.g. `depth=40448` (`-c` minus roughly the pp+expected tg span), so the request fits inside `-c 40960` while still reading close to the deep end of the window. I did not re-run this on my own judgment; moving on to the next block and coming back to this one once the coordinator confirms the depth (or a different `-c`) to use.
+Server stopped, wired recovered to baseline before the next block started.
 
