@@ -6,6 +6,138 @@ Start here: read `AGENT.md`. The list at the top of that file is the
 order. Log every session below, and close each one with a
 handing-over section.
 
+## Session 1, 2026-09-11
+
+Worktree `../choose-a-local-llm-run15`, branch `run15`. Preflight: all
+`ok`. Starting numbers: wired 1674 MB, free 18329 MB, swap used 493 MB.
+Balloon needed (free under the 25600 MB threshold) — the first server
+load drives context up slowly, no synthetic balloon.
+
+Started block `bartowski-evalplus-xhigh`. Server up, model loaded,
+rev `f0eec4a` confirmed in the log.
+
+Deviation: `benchmarks/calibrate.py` has a `#!/usr/bin/env python3`
+shebang, so a direct call uses the system Python, which lacks
+`openai`. Ran it with the evalplus pipx venv's Python instead (the
+same fix `run-humaneval.sh` already applies to
+`run_codegen_wrapper.py`): `PYBIN="$(head -1 "$(command -v
+evalplus.codegen)" | sed 's/^#!//; s/ -E$//')"`, then `"$PYBIN"
+benchmarks/calibrate.py ...`. Not a stop-and-ask; the run did not
+wait.
+
+**Order change from the coordinator.** Before the calibration finished,
+the coordinator moved `bartowski-evalplus-xhigh` to last (commit
+`6658e34`). Stopped the calibration task and the server (pid 32036,
+started by this session). Merged `origin/master` into `run15`
+(`c287c6e` → `6658e34`), pushed `run15`. Ran `npm run pi:models`: the
+`qwen3.6-35b-a3b-f16` alias already matches the site data, its
+`thinkingLevelMap` already copied from the sibling `qwen3.6-35b-a3b`
+entry (`off`/`off`, `high`/`high`, rest `null`) — nothing to hand-copy.
+Pulled the sweep tool: `local-llm-eval-tools` at `e38c467`.
+
+New order: `qwen36-f16-ladder-creep`, `qwen36-f16-mendel-on`,
+`vision-ladder`, `bartowski-evalplus-xhigh`, `retry-sweep`.
+
+Note: `hardware/m1-max-32gb/calibrations/calibration-qwen38-gguf-xhigh.json`
+holds only 1 of 10 problems (the calibration task was stopped for the
+order change). Not a valid calibration. Re-run it in full when the
+`bartowski-evalplus-xhigh` block starts.
+
+Starting block `qwen36-f16-ladder-creep`.
+
+Block `qwen36-f16-ladder-creep` closed. Served `-c` 65536 (top of
+DEPTH_LIST, no ceiling found, `gatedBy: untested`). Deepest clean depth
+65578. See `results.md` for the full table. Server (pid 40217) kept
+running at `-c 65536` for the next block, same config.
+
+Starting block `qwen36-f16-mendel-on`. `gh auth status` ok. Window =
+largest multiple of 8192 at or under `qwen36_f16_clean` (65578) =
+65536. Server (pid 40217) kept from the block above, same config.
+`MENDEL_CONTEXT_WINDOW=65536 ./run-worker.sh qwen3.6-35b-a3b-f16 pi
+blind on`, pid 43368. Branch `qwen3.6-35b-a3b-f16-on-issue-13` (none
+existed). Watcher started (pid 44515),
+`results/run-watch-mendel-qwen36-on.log`.
+
+Block `qwen36-f16-mendel-on` closed. `end_reason: complete`, 33 min
+wall, well inside the 300-min cap. Scored by subagent: **50/100**,
+worst defect critical (trap A, `.then()` over `fs.promises.glob`).
+`qwen36_f16_on` = 50/100, peak_context 61485/65536 (93.8%, corrected
+from an earlier 45332 closing-read). Published to
+`~/code/mendel-benchmark` branch `benchmark`, commit `57722e8`. Full
+detail in `results.md`. Server and watcher stopped, wired recovered
+before the next block.
+
+Starting block `vision-ladder`. Page image built (deviation:
+`textutil -convert pdf` unsupported on this machine, no PDF filter in
+`cupsfilter` either — fell back to `qlmanage -t` directly on the RTF,
+skipping the PDF step entirely; image verified to show the whole
+table). Server A (Qwen3.6 f16, `-c 65536`) served both requests clean.
+Server B (Gemma-26B, `-c 204800`) crashed on the image chunk at the
+default ubatch (512) — `n_ubatch >= n_tokens` assertion — fixed by
+`--ubatch-size 2048`; both requests then served (the filled one hit
+`max_tokens` still reasoning, `finish_reason: length`, no crash — not
+judged, per the block's own rule).
+
+Block `vision-ladder` closed. `vision_qwen36_c` = 65536,
+`vision_gemma26_c` = 204800. Full table in `results.md`.
+
+Starting block `bartowski-evalplus-xhigh`. Server loaded, rev
+`f0eec4a` confirmed, warmed up.
+
+Deviation: the harness's own background-task monitor killed the
+xhigh calibration client process for host memory pressure (system-level
+"running low on memory" event) partway through problem 7 of 10. The
+server (pid 93405) was not affected — it kept running, cleanly
+cancelled the in-flight task, and stayed responsive at its normal
+speed (~14 tok/s). Swap was in heavy use at the time (`vm.swapusage`:
+1421.75M used of 2048M). `calibrate.py` resumes from its own output
+file by `task_id`, so the 6 already-done rows were kept (one,
+`HumanEval/32`, hit the 30000-token cap) and the run resumed from
+problem 7. Not a stop-and-ask; the run did not wait.
+
+Second interruption of the same kind, at problem 8 of 10. Investigated:
+this is not a machine fault. `ps aux` shows `llama-server` itself at
+59.1% of the machine's RAM (about 19 GB RSS, expected for a 27B q4
+model with `-c 32768`), nothing else abnormal running. The killed
+process each time is this session's own detached background-task
+monitor (the harness's own low-memory protection for its child
+processes), not the llama-server or the calibration's own data — the
+server stayed up and healthy both times (cleanly cancelled the
+in-flight task, unaffected tok/s afterward), and `calibrate.py`'s
+resume-by-`task_id` picked up cleanly both times with no data lost.
+Resumed again from problem 8. Flagged to the coordinator as a
+machine-health note, not a run blocker. (Two more of the same benign
+kill happened on problems 8 and 10, each resumed the same way with no
+further investigation, no data lost.)
+
+Calibration complete, 10/10, every row confirmed
+`resolved_reasoning_effort: xhigh`.
+
+| task_id | completion_tokens | finish_reason |
+|---|--:|---|
+| HumanEval/0 | 1073 | stop |
+| HumanEval/10 | 11697 | stop |
+| HumanEval/26 | 377 | stop |
+| HumanEval/32 | 30000 | length (capped) |
+| HumanEval/38 | 1192 | stop |
+| HumanEval/53 | 290 | stop |
+| HumanEval/76 | 6198 | stop |
+| HumanEval/99 | 30000 | length (capped) |
+| HumanEval/124 | 3643 | stop |
+| HumanEval/145 | 28564 | stop |
+
+Two problems (`HumanEval/32`, `HumanEval/99`) hit the 30000-token cap
+— AGENT.md's stop-and-ask condition. Gate sent to the coordinator
+session "local-llm manager/coordinator/orchestrator" with the full
+table and a candidate answer: budget 30000 (matches the runbook's own
+single-cap/ISTA-precedent value; `HumanEval/145`'s 28564 stop shows
+the model does converge near that ceiling on its own). Holding the
+full EvalPlus run until the coordinator answers. Server (pid 93405)
+kept loaded. Nothing queued behind this block to fill the wait —
+`retry-sweep` has nothing to retry yet, every earlier block closed
+clean — so the GPU sits loaded-but-idle, which is the explicit
+stop-and-ask exception to the no-idle rule.
+
 ## Values this run sets
 
 The runner writes each value here as it measures it, with the block
@@ -14,8 +146,8 @@ that produced it.
 | name | value | block |
 | --- | --- | --- |
 | `bartowski_evalplus_xhigh` | | `bartowski-evalplus-xhigh` |
-| `qwen36_f16_c` | | `qwen36-f16-ladder-creep` |
-| `qwen36_f16_clean` | | `qwen36-f16-ladder-creep` |
+| `qwen36_f16_c` | 65536 | `qwen36-f16-ladder-creep` |
+| `qwen36_f16_clean` | 65578 | `qwen36-f16-ladder-creep` |
 | `qwen36_f16_on` | | `qwen36-f16-mendel-on` |
-| `vision_qwen36_c` | | `vision-ladder` |
-| `vision_gemma26_c` | | `vision-ladder` |
+| `vision_qwen36_c` | 65536 | `vision-ladder` |
+| `vision_gemma26_c` | 204800 | `vision-ladder` |
