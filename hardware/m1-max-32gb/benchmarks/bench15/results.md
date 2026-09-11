@@ -140,3 +140,38 @@ further, per the block's own rule.
 `vision_qwen36_c` = 65536 (first probe served; no step-down needed).
 `vision_gemma26_c` = 204800 (first probe served, after the ubatch
 fix; no step-down needed).
+
+## `vision-ladder-up`
+
+Both servers, projector on, no drafter, f16 KV, `--parallel 1`, wired
+25000, Gemma-26B with `--ubatch-size 2048`. Rung test: the
+`vision-ladder` filled request, served with real content.
+
+**Qwen3.6.** Probed `-c 73728`. Load line said "model loaded" but the
+log also carried `error: Insufficient Memory
+(kIOGPUCommandBufferCallbackErrorOutOfMemory)` at load time — the
+known pitfall (a server can say "loaded" and still fail every real
+request). Sent the filled request to confirm: it failed
+(`llama_decode: failed to decode, ret = -3`, `Compute error`), no
+`usage` in the reply. `-c 73728` is not a served rung.
+`vision_qwen36_c` stays **65536**, the `vision-ladder` value; the
+climb closes at its first step.
+
+**Gemma-26B.** Probed `-c 212992` (`--ubatch-size 2048` carried over).
+Load line clean this time, no OOM at load. Sent the filled request:
+failed the same way (`Insufficient Memory`, `Compute error`, `ret =
+-3`) at `n_tokens = 7890`, no `usage` in the reply. `-c 212992` is not
+a served rung. `vision_gemma26_c` stays **204800**, the `vision-ladder`
+value.
+
+| server | `-c` tried | loaded (log line) | served (real request) | verdict |
+|---|--:|:--:|:--:|---|
+| Qwen3.6 f16, vision | 73728 | yes, with an OOM line at load | no — decode Compute error | not a rung, stays 65536 |
+| Gemma-26B f16, vision | 212992 | yes, clean | no — decode Compute error | not a rung, stays 204800 |
+
+Neither arm climbed. `vision_qwen36_c` = 65536, `vision_gemma26_c` =
+204800 (unchanged from `vision-ladder`).
+Files: `results/server-vision-qwen36-c73728.log`,
+`results/server-vision-gemma26-c212992.log`.
+Deviation: none (both failures are within the block's own "a `-c`
+that loads and fails the request is not a rung" rule).
