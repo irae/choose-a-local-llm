@@ -22,13 +22,15 @@ context tokens. That last block is a measurement, not a gate.
 
 **This list is the order.**
 
-- `bartowski-evalplus-xhigh`
 - `qwen36-f16-ladder-creep`
 - `qwen36-f16-mendel-on`
 - `vision-ladder`
+- `bartowski-evalplus-xhigh`
 - `retry-sweep`
 
-If the run falls behind, drop from the tail: `vision-ladder` first.
+EvalPlus runs last because it is the long block, about ten hours,
+and the owner may pause it between problems and resume it; the
+short blocks land their results first.
 
 ## Essentials
 
@@ -92,53 +94,6 @@ If the run falls behind, drop from the tail: `vision-ladder` first.
   `tools/archive-evidence.sh hardware/m1-max-32gb/benchmarks/bench15/results run15`.
 - Nothing of an interrupted run is cleaned up mid-run
   (`docs/methodology/mendel.md`, "No cleanup mid-run").
-
-## `bartowski-evalplus-xhigh`
-
-Read `docs/methodology/evalplus.md`, including "Which serving config
-to score". EvalPlus serves the fastest config at shallow depth, so
-this block serves the 4-bit build with its drafter at a small `-c`,
-as the ISTA build was served for its own EvalPlus. Fixed:
-`bartowski/Qwen3.8-27B-GGUF:Q4_K_M` rev `f0eec4a`, `--no-mmproj`, f16
-KV, drafter `--spec-type draft-mtp --spec-draft-n-max 3`, `--parallel
-1`, `-c 32768`, wired 25000.
-
-```bash
-llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
-  --alias qwen3.8-27b --no-mmproj \
-  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
-  -ngl 999 -fa on -c 32768 \
-  --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081 --offline 2>&1 \
-  | tee hardware/m1-max-32gb/benchmarks/bench15/results/server-bartowski-evalplus.log
-```
-
-Calibrate first, at **effort xhigh**, the model's own published
-default. The extra-body argument is mandatory on the calibration and
-on the full run; check that every calibration row's
-`resolved_reasoning_effort` reads `xhigh` before you read the budget.
-
-```bash
-CALIBRATION_DIR=hardware/m1-max-32gb/calibrations benchmarks/calibrate.py qwen38-gguf-xhigh qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'
-```
-
-Budget rule for this level: a calibration that converges on all ten
-problems gives its budget as usual. One problem at the 30000-token
-cap gives budget 30000, the value the ISTA build ran at this level.
-Two or more at the cap is a stop and ask. Then the full set:
-
-```bash
-RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench15/results \
-  EVALPLUS_MAX_NEW_TOKENS=<budget> \
-  benchmarks/run-humaneval.sh bartowski-evalplus-xhigh qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'
-```
-
-Expect about ten hours: at this level some completions run to the
-cap. The `reliability_guard` fix for macOS from run 13 must be in
-this run's EvalPlus venv before `evaluate.py`; a 0.000 on every
-problem is that fix missing, not a score. Record base, plus, empty
-count and wall in `results.md`. Write `bartowski_evalplus_xhigh` in
-`state.md`.
 
 ## `qwen36-f16-ladder-creep`
 
@@ -296,6 +251,53 @@ yes or no, wired MB at load, wired MB after the request, prompt
 tokens with and without the filler, image tokens (the difference),
 decode tok/s, and the reply saved to its file. The replies are kept
 and not judged. Write `vision_qwen36_c` and `vision_gemma26_c` in
+`state.md`.
+
+## `bartowski-evalplus-xhigh`
+
+Read `docs/methodology/evalplus.md`, including "Which serving config
+to score". EvalPlus serves the fastest config at shallow depth, so
+this block serves the 4-bit build with its drafter at a small `-c`,
+as the ISTA build was served for its own EvalPlus. Fixed:
+`bartowski/Qwen3.8-27B-GGUF:Q4_K_M` rev `f0eec4a`, `--no-mmproj`, f16
+KV, drafter `--spec-type draft-mtp --spec-draft-n-max 3`, `--parallel
+1`, `-c 32768`, wired 25000.
+
+```bash
+llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
+  --alias qwen3.8-27b --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
+  -ngl 999 -fa on -c 32768 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081 --offline 2>&1 \
+  | tee hardware/m1-max-32gb/benchmarks/bench15/results/server-bartowski-evalplus.log
+```
+
+Calibrate first, at **effort xhigh**, the model's own published
+default. The extra-body argument is mandatory on the calibration and
+on the full run; check that every calibration row's
+`resolved_reasoning_effort` reads `xhigh` before you read the budget.
+
+```bash
+CALIBRATION_DIR=hardware/m1-max-32gb/calibrations benchmarks/calibrate.py qwen38-gguf-xhigh qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'
+```
+
+Budget rule for this level: a calibration that converges on all ten
+problems gives its budget as usual. One problem at the 30000-token
+cap gives budget 30000, the value the ISTA build ran at this level.
+Two or more at the cap is a stop and ask. Then the full set:
+
+```bash
+RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench15/results \
+  EVALPLUS_MAX_NEW_TOKENS=<budget> \
+  benchmarks/run-humaneval.sh bartowski-evalplus-xhigh qwen3.8-27b '{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'
+```
+
+Expect about ten hours: at this level some completions run to the
+cap. The `reliability_guard` fix for macOS from run 13 must be in
+this run's EvalPlus venv before `evaluate.py`; a 0.000 on every
+problem is that fix missing, not a score. Record base, plus, empty
+count and wall in `results.md`. Write `bartowski_evalplus_xhigh` in
 `state.md`.
 
 ## `retry-sweep`
