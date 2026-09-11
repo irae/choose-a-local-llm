@@ -81,7 +81,19 @@ judged, per the block's own rule).
 Block `vision-ladder` closed. `vision_qwen36_c` = 65536,
 `vision_gemma26_c` = 204800. Full table in `results.md`.
 
-Starting block `bartowski-evalplus-xhigh`.
+Starting block `bartowski-evalplus-xhigh`. Server loaded, rev
+`f0eec4a` confirmed, warmed up.
+
+Deviation: the harness's own background-task monitor killed the
+xhigh calibration client process for host memory pressure (system-level
+"running low on memory" event) partway through problem 7 of 10. The
+server (pid 93405) was not affected — it kept running, cleanly
+cancelled the in-flight task, and stayed responsive at its normal
+speed (~14 tok/s). Swap was in heavy use at the time (`vm.swapusage`:
+1421.75M used of 2048M). `calibrate.py` resumes from its own output
+file by `task_id`, so the 6 already-done rows were kept (one,
+`HumanEval/32`, hit the 30000-token cap) and the run resumed from
+problem 7. Not a stop-and-ask; the run did not wait.
 
 ## Values this run sets
 

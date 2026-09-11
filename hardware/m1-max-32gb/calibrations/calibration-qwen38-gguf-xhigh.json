@@ -15,5 +15,90 @@
     },
     "resolved_reasoning_effort": "xhigh",
     "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/10",
+    "completion_tokens": 11697,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1817,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 838.1,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "xhigh"
+      }
+    },
+    "resolved_reasoning_effort": "xhigh",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/26",
+    "completion_tokens": 377,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 463,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 23.9,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "xhigh"
+      }
+    },
+    "resolved_reasoning_effort": "xhigh",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/32",
+    "completion_tokens": 30000,
+    "finish_reason": "length",
+    "content_empty": true,
+    "content_len": 0,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 2325.5,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "xhigh"
+      }
+    },
+    "resolved_reasoning_effort": "xhigh",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/38",
+    "completion_tokens": 1192,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 872,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 84.1,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "xhigh"
+      }
+    },
+    "resolved_reasoning_effort": "xhigh",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/53",
+    "completion_tokens": 290,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 143,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 19.7,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "xhigh"
+      }
+    },
+    "resolved_reasoning_effort": "xhigh",
+    "resolved_reasoning_effort_source": "requested"
   }
 ]
