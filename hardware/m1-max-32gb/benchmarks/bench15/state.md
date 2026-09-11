@@ -95,6 +95,19 @@ file by `task_id`, so the 6 already-done rows were kept (one,
 `HumanEval/32`, hit the 30000-token cap) and the run resumed from
 problem 7. Not a stop-and-ask; the run did not wait.
 
+Second interruption of the same kind, at problem 8 of 10. Investigated:
+this is not a machine fault. `ps aux` shows `llama-server` itself at
+59.1% of the machine's RAM (about 19 GB RSS, expected for a 27B q4
+model with `-c 32768`), nothing else abnormal running. The killed
+process each time is this session's own detached background-task
+monitor (the harness's own low-memory protection for its child
+processes), not the llama-server or the calibration's own data — the
+server stayed up and healthy both times (cleanly cancelled the
+in-flight task, unaffected tok/s afterward), and `calibrate.py`'s
+resume-by-`task_id` picked up cleanly both times with no data lost.
+Resumed again from problem 8. Flagged to the coordinator as a
+machine-health note, not a run blocker.
+
 ## Values this run sets
 
 The runner writes each value here as it measures it, with the block
