@@ -68,7 +68,13 @@
       "id": "qwen38-gguf-xhigh",
       "hidden": false,
       "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 73728 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "Curve shared with the effort-medium row: same server, same weights; the harness sets the level per request. Mendel blind at effort xhigh, the model's own default, measured 2026-09-11: 93/100, complete 8/8, on the 65536 window, no critical defect, one medium, peak context 61572, sampling temperature 1.0 and top_p 0.95 from the server default. The highest Mendel score of any local row. No EvalPlus run exists at this level on a 4-bit build, so the cell is pending."
+      "note": "Curve shared with the effort-medium row: same server, same weights; the harness sets the level per request. Mendel blind at effort xhigh, the model's own default, measured 2026-09-11: 93/100, complete 8/8, on the 65536 window, no critical defect, one medium, peak context 61572, sampling temperature 1.0 and top_p 0.95 from the server default. The highest Mendel score of any local row. No EvalPlus run exists at this level on a 4-bit build, so the cell is pending.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b-r2",
+        "contextWindow": 65536,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium",
@@ -122,7 +128,13 @@
       "id": "qwen38-gguf-ista-nodrafter-low",
       "hidden": false,
       "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 163840 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at effort low, scored 2026-09-10 at budget 8192 on the same build served at `-c 32768`: 0.976/0.933, one empty, in 2h23; level with the medium row on base and one problem lower on plus. The calibration converged on all 10 problems with a 3634-token maximum."
+      "note": "Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at effort low, scored 2026-09-10 at budget 8192 on the same build served at `-c 32768`: 0.976/0.933, one empty, in 2h23; level with the medium row on base and one problem lower on plus. The calibration converged on all 10 problems with a 3634-token maximum.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b-ista-r2",
+        "contextWindow": 147456,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium",
@@ -210,7 +222,13 @@
       "id": "qwen36-gguf-f16-nodrafter",
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 40960 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "The f16 KV arm without its drafter, read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 49.8 tok/s at 4K and 38.3 at 40K, the deepest request that fits `-c 40960`; wired 24.0 GB, the same as the drafter arm. A Mendel pair on this window is pending."
+      "note": "The f16 KV arm without its drafter, read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 49.8 tok/s at 4K and 38.3 at 40K, the deepest request that fits `-c 40960`; wired 24.0 GB, the same as the drafter arm. A Mendel pair on this window is pending.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.6-35b-a3b-f16",
+        "contextWindow": 32768,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on",
