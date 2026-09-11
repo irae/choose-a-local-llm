@@ -262,3 +262,20 @@ growth.
 Files: `results/benchy-qwen36-nodraft.md`,
 `results/benchy-qwen36-nodraft-vm.log`,
 `results/server-benchy-qwen36-nodraft.log`.
+
+### Qwen3.6, `-c 65536`, `n-max 1`
+
+Same depths.
+
+| depth | benchy tok/s | acceptance (sampled, range across the run) |
+|--:|---|---|
+| 4096 | 53.88 ± 0.60 | 0.94–0.85 |
+| 32768 | 43.68 ± 0.30 | 0.79–0.87 |
+| 64512 | 33.85 ± 0.22 | 0.78–0.87 |
+
+Faster than no-drafter at every depth measured (53.9 vs 48.8 shallow,
+33.9 vs 33.1 deep). Acceptance stayed in the high 0.7s to low 0.9s
+throughout, no clear trend with depth. Swap flat at 475.94M, no
+growth.
+Files: `results/benchy-qwen36-n1.md`, `results/benchy-qwen36-n1-vm.log`,
+`results/server-benchy-qwen36-n1.log`.

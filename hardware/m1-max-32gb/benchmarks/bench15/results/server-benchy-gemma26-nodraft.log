@@ -1,0 +1,11 @@
+0.00.088.193 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.088.404 W srv  llama_server: -----------------
+0.00.088.406 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.088.406 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.088.407 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.088.407 W srv  llama_server: -----------------
+0.00.089.777 I srv    load_model: loading model 'unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL'
+0.00.958.415 W load: control-looking token:     50 '<|tool_response>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.961.534 W load: control-looking token:    212 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.965.721 W load: control-looking token:      1 '<eos>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.971.257 W load: special_eog_ids contains '<|tool_response>', removing '</s>' token from EOG list
