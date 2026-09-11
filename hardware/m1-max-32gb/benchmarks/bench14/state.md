@@ -219,8 +219,23 @@ Deviation: none.
 | stop reason | - |
 | peak ctx | - |
 
-still running. The 300-minute wall gives a partial, which is a row and not a failure.
-Files: `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-xhigh-blind-events.jsonl`, `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-xhigh-blind-meta.json`, `results/run-watch-qwen38-xhigh.log`.
+Run completed 10:34 UTC (`end_reason: complete`, NOT a wall-clock partial — it
+finished on its own before the 300-minute wall). 2 tooling nudges
+(stall/silence auto-recoveries), 0 model nudges, loop verdict ok
+(worst ratio 0.30 on tool call), 17 commits. `peak_context` (counter)
+= **61572**, inside the configured 65536-token window this time (no
+overshoot, unlike the qwen36-off row). Server and watcher stopped,
+wired recovered. Scoring dispatched to a subagent on `claude-opus-5`.
+Files: `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-xhigh-blind-events.jsonl`, `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-xhigh-blind-session.jsonl`, `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-xhigh-blind-meta.json`, `results/run-watch-qwen38-xhigh.log`.
 Deviation: none.
+
+Owner request via the coordinator: publish the qwen36-off row (and,
+at this row's close, this row too) into `~/code/mendel-benchmark`'s
+`results.json`/`results.csv`/`report.html` on the `benchmark` branch,
+without stopping the GPU work. Dispatched to a separate opus subagent
+per block; each publish is out-of-band from this run's own worktree
+and branch (`run14` here never touches `master` or the mendel-benchmark
+repo's `benchmark` branch push permissions beyond what the subagent
+does there directly).
 Deviation: none.
 
