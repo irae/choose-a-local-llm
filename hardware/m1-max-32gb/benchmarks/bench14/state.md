@@ -45,7 +45,7 @@ benchy blocks may run.
 | 4k | - | - | 69.1 | - |
 | 40960 | - | - | 52.6 | - |
 
-still running.
+still running, restarted 00:36.
 Files: `results/benchy-qwen36-f16-nodrafter.md`, `results/server-benchy-qwen36-f16-nodrafter.log`.
-Deviation: none.
+Deviation: the first launch passed `--depth 4096,40960` (comma-joined) and `llama-benchy` 0.4.0 rejects that: it wants space-separated values. The tool exited at once with no request sent, so nothing was measured on the bad invocation. Restarted with `--depth 4096 40960`; the server was never touched and stayed up the whole time.
 
