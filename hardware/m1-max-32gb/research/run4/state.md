@@ -1,6 +1,7 @@
 # Research run 4 — state
 
-Created 2026-09-10 by the coordinator. Not started.
+Created 2026-09-10 by the coordinator. Session 1 ran 2026-09-10,
+19:55 to 22:45, and closed the one item.
 
 Start here: read `AGENT.md`, then `index.md`, which is the order.
 Log every session below, and close each one with a handing-over
@@ -13,11 +14,11 @@ that produced it.
 
 | name | value | item |
 | --- | --- | --- |
-| `benchy_version` | | `benchy-ab` |
-| `benchy_tokenizer` | | `benchy-ab` |
-| `benchy_corpus` | | `benchy-ab` |
-| `benchy_invocation` | | `benchy-ab` |
-| `benchy_pass` | | `benchy-ab` |
+| `benchy_version` | `llama-benchy 0.4.0` (pipx, Python 3.14.7) | `benchy-ab` |
+| `benchy_tokenizer` | `Qwen/Qwen3.8-27B` (Hugging Face repo, cached locally) | `benchy-ab` |
+| `benchy_corpus` | default (benchy's Sherlock Holmes text, 144480 tokens) | `benchy-ab` |
+| `benchy_invocation` | `llama-benchy --base-url http://127.0.0.1:8081/v1 --model qwen3.8-27b --tokenizer Qwen/Qwen3.8-27B --pp 512 --tg 256 --depth <depths> --runs 2 --post-run-cmd 'sleep 60; vm_stat \| head -12 >> <vm log>' --format md --save-result <result md>` (no `--warmup-runs`: not a flag in 0.4.0, default warmup is one request per test) | `benchy-ab` |
+| `benchy_pass` | `no`: the `n3` cell at 98k read 6.03 ± 0.37 tok/s at 41 to 51 percent acceptance, not near 7.89 at 60 to 80. The `none` arm passed every cell within 2.3 percent. The tool tracks acceptance; the default corpus drafts worse than the agent runs. | `benchy-ab` |
 
 ## Session 1, 2026-09-10 (executor: Claude Fable 5.1, Mac)
 
@@ -71,3 +72,51 @@ the cells stand. A first benchy attempt was stopped after its warmup
 to 2599. Wired returned to 1696 MB five seconds after the kill.
 Finding for run 14: `--cache-ram 0` would stop the snapshots; the
 creeps did not set it either, so this run kept the published shape.
+
+### benchy-ab qwen-3.8-27b gsq-iq3s/f16 arm n3 ctx 128k
+
+`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp` rev `d562806`, MTP
+n-max 3, one slot, f16 KV, `-c 131072`, wired 25000. `llama-benchy`
+0.4.0, tokenizer `Qwen/Qwen3.8-27B`, default corpus, pp 512, tg 256,
+2 runs after 1 warmup. Started 21:37, closed 22:39.
+
+| depth | benchy tok/s | sd | creep tok/s | real-prompt cell | acceptance (runs) | acceptance (warmup) | wired MB |
+|--:|--:|--:|--:|--:|--:|--:|--:|
+| 98k | 6.03 | 0.37 | 10.30 | 7.89 | 41.3%, 51.3% | 69.6% | 23400 |
+
+**fail** on the item's `n3` criterion: not near 7.89, acceptance under
+the 60 to 80 percent band. The warmup request, inside the band at
+69.6 percent, read 7.80. Per-request tok/s: 7.80, 5.67, 6.40.
+Files: `results/benchy-n3.md`, `results/server-benchy-n3.log`,
+`results/benchy-n3-vm.log`.
+Deviation: none. Swap used 906 to 922 MB across the arm, no growth.
+Wired returned to 1658 MB five seconds after the kill.
+
+## Handing over, session 1, 2026-09-10 22:45
+
+What ran: the one item, `benchy-ab`, both arms, in order. The `none`
+arm passed on all three cells (within 2.3 percent of the creep). The
+`n3` arm failed the item's criterion: 6.03 ± 0.37 tok/s at 41 to 51
+percent acceptance, against 7.89 at 60 to 80. Verdict line in
+`results.md`: **fail**. The tool did not fail: the drafter cell
+tracks acceptance request by request, and the memorised-corpus case
+(10.30 at over 95 percent) did not occur. The default corpus makes
+the drafter miss more than the agent runs do.
+
+Gate for the coordinator: whether `fail` on the corpus counts as
+fail on the tool for run 14's three benchy blocks. Candidate answer:
+run 14's benchy blocks wait, as the item says, until the coordinator
+either accepts benchy's default-corpus number as the drafter's
+prose-workload speed, or names a corpus rule (a code text through
+`--book-url`, one re-run of this cell) for research to test.
+
+Machine state: no `llama-server`, no `mlx_lm`, no `llama-benchy`
+process. Wired 1658 MB. Swap used 906 MB (258 MB at preflight; the
+growth happened on the `none` arm and stayed). Wired limit 25000. LM
+Studio not started. `llama-benchy` 0.4.0 stays installed under
+`pipx`; the `Qwen/Qwen3.8-27B` tokenizer files stay in the Hugging
+Face cache (22 MB). Nothing else installed.
+
+Evidence: `results/` on branch `research4`, archived with
+`tools/archive-evidence.sh` to
+`~/.local/share/choose-a-local-llm/evidence/research4/`.

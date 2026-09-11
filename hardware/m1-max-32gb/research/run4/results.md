@@ -63,3 +63,54 @@ cells. The arm did not sample swap; the `n3` arm does.
 
 Files: `results/benchy-none.md`, `results/benchy-none.stdout.log`,
 `results/benchy-none-vm.log`, `results/server-benchy-none.log`.
+
+### Arm `n3`: `--spec-type draft-mtp --spec-draft-n-max 3`, `-c 131072`, depth 98304
+
+Server: the published command shape with the two drafter flags.
+Creep pair: run3 `creep-qwen38-ista-iq3s-mtp.tsv` (2026-09-08), 10.30
+at 98338 with 100 percent acceptance; the real-prompt cell of the
+drafter table, 7.89 at 60 to 80 percent. Benchy ran 21:37 to 22:39.
+The post-run command also appended `sysctl vm.swapusage` on this arm.
+
+| depth | server prompt | benchy tok/s | sd | creep tok/s (depth) | diff | real-prompt cell | diff | acceptance |
+|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| 98304 | 98817 | 6.03 | 0.37 | 10.30 (98338) | -41.5% | 7.89 | -23.6% | 41.3% and 51.3% (runs), 69.6% (warmup) |
+
+Per request from the server log (`eval time`, 256 tokens, then
+`draft acceptance`):
+
+| request | tok/s | acceptance | mean draft len |
+|---|--:|--:|--:|
+| warmup, task 104 | 7.80 | 0.696 (172/247) | 3.07 |
+| run 1, task 239 | 5.67 | 0.413 (141/341) | 2.24 |
+| run 2, task 405 | 6.40 | 0.513 (154/300) | 2.54 |
+
+The probe before benchy, an 80-token code prompt with 200 tokens out,
+read 10.46 tok/s at 0.524 acceptance (task 0).
+
+Prefill 87.2 tok/s per request, the full depth every time. Memory:
+wired 23.3 to 23.4 GB, swap used 922 MB at the first sample and
+906 MB at the last, so no swap growth on this arm.
+
+Reading. The memorised-corpus case did not occur: no request reached
+95 percent acceptance and no cell read near the creep's 10.30. The
+tool reads the drafter the way the item wants, and the speed tracks
+the acceptance request by request: 7.80 at 70 percent, 6.40 at 51,
+5.67 at 41. The one request inside the 60 to 80 percent band read
+7.80, which is the real-prompt cell's 7.89 within 1.2 percent. But
+that request is the warmup, which benchy leaves out of its result,
+and the two counted runs sat at 41 and 51 percent, under the band.
+The default corpus makes this model draft worse than the agent runs
+do, so the benchy cell reads 6.03, under the no-drafter 9.47 at the
+same depth.
+
+Files: `results/benchy-n3.md`, `results/benchy-n3.stdout.log`,
+`results/benchy-n3-vm.log`, `results/server-benchy-n3.log`.
+
+### Verdict
+
+**fail**, on the `n3` criterion: 6.03 ± 0.37 tok/s at 41 to 51
+percent acceptance is not near 7.89 at 60 to 80 percent. The `none`
+arm passes on all three cells. The failing criterion is the corpus's
+acceptance, not the tool: the tool's readings track acceptance, and
+the corpus-memorised failure mode did not occur.

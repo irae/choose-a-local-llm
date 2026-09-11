@@ -15,7 +15,7 @@ already on disk. The measurements that follow from a pass are
 benchmark run 14's, not this run's, so the owner can switch models
 once and keep two agents on the machine.
 
-- [ ] `benchy-ab` — `llama-benchy` against the two ISTA creeps on
+- [x] `benchy-ab` — `llama-benchy` against the two ISTA creeps on
   disk: no drafter at 4K, 49K and 98K; n-max 3 at 98K; server-default
   sampling; acceptance recorded per cell (`../benchy-ab.md`). Pass
   criteria and the values it sets for run 14 are in the item.
