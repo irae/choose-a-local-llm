@@ -103,3 +103,16 @@ both ends of the window.
 Files: `results/benchy-qwen36-f16-nodrafter.md`, `results/benchy-qwen36-f16-nodrafter-retry.md`, `results/server-benchy-qwen36-f16-nodrafter.log`, `results/server-benchy-qwen36-f16-nodrafter-retry.log`.
 Deviation: none, beyond the two already logged above (depth flag syntax, and the coordinator-set retry depth). Sets `qwen36_f16_nodrafter_wired` = 25628 MB peak observed across this model's blocks (drafter's head freed here vs the served row, no measurable wired difference since both hit the wired-limit ceiling).
 
+### benchy-qwen38-bartowski-drafter — running
+
+`bartowski/Qwen3.8-27B-GGUF:Q4_K_M` rev `f0eec4a`, `--no-mmproj`, f16 KV, drafter `--spec-type draft-mtp --spec-draft-n-max 3`, one slot, `-c 73728`, wired 25000. Verified with a real 400-token completion before the sweep. Corpus HTTP server on 8089. `llama-benchy` 0.4.0, tokenizer `Qwen/Qwen3.8-27B` (this build's base model), code corpus, pp 512, tg 256, depths 4096 and 65536, 2 runs. Started 02:06.
+
+| depth | tok/s | wired MB | site tok/s | diff | acceptance |
+|--:|--:|--:|--:|--:|--:|
+| 4k | - | - | 20.0 | - | - |
+| 65536 | - | - | 13.7 | - | - |
+
+still running.
+Files: `results/benchy-qwen38-bartowski-drafter.md`, `results/server-benchy-qwen38-bartowski-drafter.log`.
+Deviation: none.
+
