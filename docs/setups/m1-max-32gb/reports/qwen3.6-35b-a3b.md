@@ -39,9 +39,11 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
 |--:|---|--:|:--:|--:|--:|--:|--:|
-| 1 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 82k | speed | 36.5 → 9.2 | 25.8 GB | 0.939/0.921/97% | 63 |
-| 2 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 41k | mem | 55.1 → 37.4 | 24.6 GB | 0.939/0.921/97% | pending |
-| 3 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 41k | mem | 69.1 → 52.6 | 25.1 GB | 0.939/0.921/97% | pending |
+| 1 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.939/0.921/97% | 63 |
+| 2 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking off | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.951/0.915/100% | 50.5 |
+| 3 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 41k | mem | 55.1 → 37.4 | 24.6 GB | 0.939/0.921/97% | pending |
+| 4 | Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on | 41k | mem | 49.8 → 38.3 | 24.0 GB | 0.939/0.921/97% | pending |
+| 5 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 41k | mem | 69.1 → 52.6 | 25.1 GB | 0.939/0.921/97% | pending |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -49,7 +51,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on.** pi id `qwen3.6-35b-a3b`. Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000 with a real completion as the ceiling test: `-c 98304` serves; every `-c` from 100864 up loads and then OOMs on the first real request. The creep runs clean to 81958 tokens at 9.24 tok/s and crosses the 8 tok/s floor at 98K, with zero swap growth on a fresh server. This is the arm with the window: the f16 KV row below is 2.8x faster at 33K and loads only `-c 40960`. Mendel at thinking off, guided: 62.5/100 on the 81920 window, complete, against 46.5 for the same config on a 49152 window with twelve compactions.
+**#1 — Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on.** pi id `qwen3.6-35b-a3b`. Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000 with a real completion as the ceiling test: `-c 98304` serves; every `-c` from 100864 up loads and then OOMs on the first real request. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 43.7 tok/s at 4K, 19.2 at 49K, 13.0 at 82K, draft acceptance 54 to 85 percent, wired 25.6 GB flat, zero swap growth. This is the arm with the window: the f16 KV rows below load only `-c 40960`. Mendel at thinking off, guided: 62.5/100 on the 81920 window, complete, against 46.5 for the same config on a 49152 window with twelve compactions.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
@@ -60,14 +62,35 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#2 — Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on.** Measured 2026-09-06 at wired limit 25000: last stable depth 40982 at 37.4 tok/s, then the generation thread died on a Metal OOM at the next step while the models endpoint kept answering. Wired memory grows with the session and peaked at 24.6 GB. At wired 24000 the same server stopped at 37K in 18.7 GB.
+**#2 — Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking off.** Curve shared with the thinking-on row: same server, same weights; the harness sets the thinking mode per request. Mendel blind at thinking off, measured 2026-09-11: 50.5/100, complete 8/8, on the 81920 window, one critical trap missed, sampling temperature 1.0 and top_p 0.95 from the server default.
+
+```bash
+llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
+  --alias qwen3.6-35b-a3b --no-mmproj \
+  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
+  -ngl 999 -fa on -c 98304 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081
+```
+
+**#3 — Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on.** Measured 2026-09-06 at wired limit 25000: last stable depth 40982 at 37.4 tok/s, then the generation thread died on a Metal OOM at the next step while the models endpoint kept answering. Wired memory grows with the session and peaked at 24.6 GB. At wired 24000 the same server stopped at 37K in 18.7 GB.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#3 — Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on.** Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000: `-c 40960` serves; 44032, 47104, 53248 and 65536 all load and then OOM on the first real completion. The creep found no ceiling to 40982, at 52.6 tok/s there and zero swap growth. At wired 24000 this arm loads only `-c 33792`. The cache type is worth 2.8x at 33K against the q8_0 row, for a window less than half its size.
+**#4 — Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on.** The f16 KV arm without its drafter, read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 49.8 tok/s at 4K and 38.3 at 40K, the deepest request that fits `-c 40960`; wired 24.0 GB, the same as the drafter arm. A Mendel pair on this window is pending.
+
+```bash
+llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
+  --alias qwen3.6-35b-a3b --no-mmproj --parallel 1 \
+  -ngl 999 -fa on -c 40960 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
+```
+
+**#5 — Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on.** Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000: `-c 40960` serves; 44032, 47104, 53248 and 65536 all load and then OOM on the first real completion. The creep found no ceiling to 40982, at 52.6 tok/s there and zero swap growth. At wired 24000 this arm loads only `-c 33792`. The cache type is worth 2.8x at 33K against the q8_0 row, for a window less than half its size.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
@@ -128,7 +151,7 @@ so MTP numbers there read below the py/js bench.
 | need | config | tok/s (py/js) | context |
 |---|---|--:|--:|
 | **Max speed at depth** | llama-server + MTP n=3, f16 KV, `-c 40960`, 1 slot | 69.1 at 4K, 52.6 at 41K | 41K, no ceiling found inside the largest `-c` that loads |
-| **Max window, agent work** | llama-server + MTP n=3, q8_0 KV, `-c 98304`, 1 slot | 36.5 at 4K, 9.24 at 82K | 82K clean, floor at 98K |
+| **Max window, agent work** | llama-server + MTP n=3, q8_0 KV, `-c 98304`, 1 slot | 43.7 at 4K, 13.0 at 82K | 82K clean, floor at 98K |
 | **Small option** | mlx_lm.server 4-bit, unquantized KV | 55.1 at 4K, 37.4 at 41K | 41K, then a Metal OOM |
 | **Multi-agent** | untested at limit 25000 | – | – |
 
@@ -169,9 +192,16 @@ swap growth on every row.
 | config | @ 4K | @ 8K | @ 16K | @ 25K | @ 33K | @ 41K | @ 49K | @ 66K | @ 82K | capped by |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|---|
 | **llama+MTP, f16 KV, `-c 40960`** | **69.1** | **71.3** | **65.7** | **61.0** | **56.5** | **52.6** | | | | mem — 40960 is the largest `-c` that serves a real request; no ceiling found inside it |
-| llama+MTP, q8_0 KV, `-c 98304` | 36.5 | 44.1 | 31.2 | 24.2 | 19.6 | 16.6 | 14.3 | 11.2 | 9.24 | speed — 7.86 at 98K, under the floor; 98304 is the largest `-c` that serves a real request |
+| llama+MTP, q8_0 KV, `-c 98304` | 43.7 | 44.1 | 31.2 | 24.2 | 19.6 | 16.6 | 19.2 | 11.2 | 13.0 | speed — 7.86 at 98K, under the floor; 98304 is the largest `-c` that serves a real request |
+| llama, no drafter, f16 KV, `-c 40960` | 49.8 | | | | | 38.3 | | | | mem — 40960 is the largest `-c` that serves; 38.3 read at 39936, the deepest request that fits |
 
-Wired memory at the deepest row: 25.1 GB on f16, 25.8 GB on q8_0. The
+The q8_0 cells at 4K, 49K and 82K and the whole no-drafter row were
+read 2026-09-11 with llama-benchy on real code text at the server's
+own sampling, draft acceptance 54 to 85 percent on the q8_0 row; the
+other cells are the creep's readings.
+
+Wired memory at the deepest row: 25.1 GB on f16, 25.6 GB on q8_0,
+24.0 GB on the no-drafter row. The
 24000 readings, `-c 33792` at f16 and `-c 40960` at q8_0 with its
 stop at 33K, are superseded and on [the historical page](../historical.md).
 

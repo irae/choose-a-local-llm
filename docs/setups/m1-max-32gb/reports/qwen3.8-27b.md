@@ -45,7 +45,7 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
 <!-- gen:model-table:start -->
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
 |--:|---|--:|:--:|--:|--:|--:|--:|
-| 1 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 72k | mem | 20.0 → 13.7 | 25.4 GB | 0.982/0.939/100% | 87 |
+| 1 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 72k | mem | 11.8 → 8.6 | 25.0 GB | 0.982/0.939/100% | 87 |
 | 2 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort xhigh | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.945/0.921/97% | 80.5 |
 | 3 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium | 128k | mem | 15.1 → 9.7 | 24.2 GB | 0.976/0.945/99% | 76.5 |
 | 4 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.976/0.933/99% | 66 (partial) |
@@ -59,7 +59,7 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium.** pi id `qwen3.8-27b`. Re-measured 2026-09-08 at wired limit 25000: `-c 73728` serves, `-c 81920` OOMs at load, and decode and draft acceptance stay flat across the whole served range, so the boundary is memory alone. Clean depth 65578 at 13.7 tok/s. The older `-c 49152` was the ceiling at wired 24000. The EvalPlus score is still the MLX effort-medium run, carried by the shared-score rule; this build has no full EvalPlus of its own, so it cannot be read against the two 3-bit builds below, which do. Mendel blind at effort medium: 87/100 at reserve 16384 and window 49152, and 76/100 on the 2026-09-08 re-run at reserve 8192 and window 65536. The two are different configurations, not a repeat: the second failed trap A, which the first passed.
+**#1 — Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium.** pi id `qwen3.8-27b`. Re-measured 2026-09-08 at wired limit 25000: `-c 73728` serves, `-c 81920` OOMs at load, and decode and draft acceptance stay flat across the whole served range, so the boundary is memory alone. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 11.8 tok/s at 4K and 8.6 at 65.5K, draft acceptance 37 to 63 percent, wired 25.0 GB, zero swap growth. The older `-c 49152` was the ceiling at wired 24000. The EvalPlus score is still the MLX effort-medium run, carried by the shared-score rule; this build has no full EvalPlus of its own, so it cannot be read against the two 3-bit builds below, which do. Mendel blind at effort medium: 87/100 at reserve 16384 and window 49152, and 76/100 on the 2026-09-08 re-run at reserve 8192 and window 65536. The two are different configurations, not a repeat: the second failed trap A, which the first passed.
 
 ```bash
 llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
@@ -222,7 +222,7 @@ re-testing on future llama.cpp releases.
 | need | config | tok/s | context |
 |---|---|--:|--:|
 | **Agent work at the model's default** | llama-server, no drafter, f16 KV, IQ3_S-mtp ISTA, `-c 163840`, effort xhigh | 14.1 shallow, 8.3 at 147K | 147K clean, harness window 147456 |
-| **Shallow speed on llama** | llama-server + MTP n=3, f16 KV, Q4_K_M bartowski, `-c 73728` | 20.0 shallow, 13.7 at 65.5K | 65.5K clean, `-c 73728` the largest that loads |
+| **Shallow speed on llama** | llama-server + MTP n=3, f16 KV, Q4_K_M bartowski, `-c 73728` | 11.8 shallow, 8.6 at 65.5K | 65.5K clean, `-c 73728` the largest that loads |
 | **Single-turn work in less memory** | mlx_lm.server, unquantized KV | 14-17 across the window | to ~28K ceiling; too small for the agent task |
 
 ## Quality — EvalPlus HumanEval+
@@ -285,7 +285,7 @@ build's own sweep confirmed as the best drafter setting.
 
 | config | @ 4-8K | @ 16K | @ 33K | @ 49K | @ 98K | capped by |
 |---|--:|--:|--:|--:|--:|---|
-| **llama, Q4_K_M bartowski, MTP, `-c 73728`** | **20.0** | **16.1** | **16.4** | **15.0** | | mem — swap grew at 73.7K; clean to 65578 at 13.7 tok/s |
+| **llama, Q4_K_M bartowski, MTP, `-c 73728`** | **11.8** | **16.1** | **16.4** | **15.0** | | mem — swap grew at 73.7K; clean to 65.5K at 8.6 tok/s. The 4K and 65.5K cells were read 2026-09-11 with llama-benchy on real code text at the server's own sampling, acceptance 37 to 63 percent; the others are the creep's readings |
 | llama, AD-IQ3_S AtomicChat, MTP, `-c 106496` | 15.8 | 14.8 | 13.7 | 12.7 | 10.3 | untested — swept to 98338 and never hit a stop |
 | llama, IQ3_S-mtp ISTA, MTP, `-c 131072` | 15.1 | 14.7 | 13.7 | 12.7 | 10.3 | mem — swap grew at 131.1K; clean to 114718 at 9.7 tok/s |
 | **llama, IQ3_S-mtp ISTA, no drafter, `-c 163840`** | **14.1** | **13.3** | **12.4** | **11.5** | **9.7** | speed — 8.30 at 147478, under the floor at 163858; zero swap the whole way |

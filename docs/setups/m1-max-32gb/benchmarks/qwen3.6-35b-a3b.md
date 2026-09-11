@@ -128,6 +128,25 @@ higher on base.
 
 - Thinking-off pass, for sub-agent use.
 
+## Real-text decode at the server's sampling (llama-benchy 0.4.0, 2026-09-11, wired limit 25000)
+
+`llama-benchy` sends 512 prompt tokens after a code-text conversation
+of the stated depth and reads 256 generated tokens, two runs after one
+warmup, no sampling parameter passed. Draft acceptance from the server
+log, per counted request. `--cache-ram 0` on the server for these
+readings only.
+
+| config | depth | tok/s | sd | acceptance | wired |
+|---|--:|--:|--:|--:|--:|
+| llama, no drafter, f16 KV, `-c 40960` | 4096 | 49.80 | 0.41 | no drafter | 24.0 GB |
+| llama, no drafter, f16 KV, `-c 40960` | 39936 | 38.26 | 0.01 | no drafter | 24.0 GB |
+| llama+MTP n-max 3, q8_0 KV, `-c 98304` | 4096 | 43.68 | 0.82 | 0.60–0.85 | 25.6 GB |
+| llama+MTP n-max 3, q8_0 KV, `-c 98304` | 49152 | 19.23 | 0.87 | 0.54–0.59 | 25.6 GB |
+| llama+MTP n-max 3, q8_0 KV, `-c 98304` | 81920 | 13.01 | 0.16 | 0.60–0.62 | 25.6 GB |
+
+The no-drafter deep cell sits at 39936: a benchy request adds its own
+768 tokens on top of the depth, so 40960 does not fit `-c 40960`.
+
 ## Depth sweeps (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
 Decode vs used context, synthetic continuation prompts, 8 tok/s early stop:

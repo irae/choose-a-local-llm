@@ -222,6 +222,28 @@ had scored it 0.970/0.939/98% (superseded, see
 [the historical page](../historical.md)). Zero empty completions. The
 strongest HumanEval+ result of the models scored so far.
 
+## Real-text decode at the server's sampling (llama-benchy 0.4.0, 2026-09-10 and 2026-09-11, wired limit 25000)
+
+`llama-benchy` sends 512 prompt tokens after a text conversation of
+the stated depth and reads 256 generated tokens, two runs after one
+warmup, no sampling parameter passed. Draft acceptance from the server
+log, per counted request. `--cache-ram 0` on the server where stated.
+
+| build | config | depth | corpus | tok/s | sd | acceptance | wired |
+|---|---|--:|---|--:|--:|--:|--:|
+| Q4_K_M bartowski | llama+MTP n-max 3, f16 KV, `-c 73728`, `--cache-ram 0` | 4096 | code | 11.77 | 1.09 | 0.46–0.54 | 25.0 GB |
+| Q4_K_M bartowski | llama+MTP n-max 3, f16 KV, `-c 73728`, `--cache-ram 0` | 65536 | code | 8.57 | 1.39 | 0.37–0.63 | 25.0 GB |
+| IQ3_S-mtp ISTA | llama, no drafter, f16 KV, `-c 163840` | 4096 | prose | 13.94 | 0.00 | no drafter | 24.5 GB |
+| IQ3_S-mtp ISTA | llama, no drafter, f16 KV, `-c 163840` | 49152 | prose | 11.36 | 0.05 | no drafter | 24.5 GB |
+| IQ3_S-mtp ISTA | llama, no drafter, f16 KV, `-c 163840` | 98304 | prose | 9.47 | 0.00 | no drafter | 24.5 GB |
+| IQ3_S-mtp ISTA | llama+MTP n-max 3, f16 KV, `-c 131072` | 98304 | prose | 6.03 | 0.37 | 0.41–0.51 | 23.4 GB |
+| IQ3_S-mtp ISTA | llama+MTP n-max 3, f16 KV, `-c 131072`, `--cache-ram 0` | 98304 | code | 5.62 | 0.18 | 0.38–0.43 | 23.5 GB |
+
+The ISTA no-drafter cells match the creep within 2.3 percent. The
+ISTA drafter cells sit under the no-drafter reading at the same
+depth, and under the creep's drafter reading, which a memorised
+continuation inflated.
+
 ## Depth sweeps (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
 Decode vs used context, append-only prompts, 8 tok/s early stop:
