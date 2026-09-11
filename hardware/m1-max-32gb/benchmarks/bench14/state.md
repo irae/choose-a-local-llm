@@ -142,8 +142,23 @@ Deviation: none.
 | stop reason | - |
 | peak ctx | - |
 
-still running.
-Files: `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-events.jsonl`, `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-meta.json`, `results/run-watch-qwen36-off.log`.
-Deviation: none.
+Run completed 06:52 (`end_reason: complete`, 0 respawns, 0 nudges, 2
+compactions both `overflow`, 10 commits). `peak_context` (counter) =
+**97823**, over the harness's configured 81920-token window; the
+server itself serves `-c 98304` so nothing crashed, but the window
+did not hold the ceiling it was set to. Flagged as a possible harness
+anomaly, not yet judged model vs. harness fault. `score.mjs` ran and
+wrote the evidence pack to
+`~/code/mendel-benchmark/scratchpad/benchmark/runs/qwen3.6-35b-a3b-off-issue-13-evidence.json`
+(PLAN.md names `~/.local/share/mendel-benchmark/runs/` as the usual
+location; the script wrote to the repo's scratchpad instead — a
+second small deviation, not chased further, the file exists and is
+readable). Scoring dispatched to a subagent on `claude-opus-5`,
+per PLAN.md's rule (never a smaller model). Server and watcher stopped
+while scoring runs elsewhere; wired recovered to 2293 MB (page cache
+retains some of the model, close to but above the 1798 MB session
+baseline). Score to follow in the next entry.
+Files: `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-events.jsonl`, `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-session.jsonl`, `~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-off-blind-meta.json`, `results/run-watch-qwen36-off.log`.
+Deviation: `peak_context` overshoot above the configured window, and the evidence pack's write location — both noted above.
 Deviation: none.
 
