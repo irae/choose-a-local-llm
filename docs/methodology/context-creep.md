@@ -81,7 +81,18 @@ apply on top of them.
   draft. The number a row publishes at depth comes from a reader that
   sends real text and lets the server sample (research run 4:
   `llama-benchy`), with acceptance beside every cell. A
-  temperature-0 shot is not that number; it reads high.
+  temperature-0 shot is not that number; it reads high. A row whose
+  published tok/s did not come from such a reader carries the stale
+  marker until one reads it (owner rule, 2026-09-12).
+- **Sweep the draft depth with a few fast readings, not a ladder**
+  (owner rule, 2026-09-12). Read each arm at two or three well-placed
+  depths, the shallow one and the row's deep one, and climb from no
+  drafter through n-max 1, 2, 3. Stop the climb as soon as an arm
+  reads slower than the one before it at every depth; when it is
+  slower at one depth and faster at another, take one more arm and
+  stop. The row's served n-max is always read. A full table of every
+  step at every depth costs a machine day and decides nothing the
+  short climb does not.
 
 ## How a sweep runs
 

@@ -25,15 +25,15 @@ Two rules to read the tables by:
 <!-- gen:decode-summary:start -->
 | best curve | tok/s (shallow → deep) | at | gated by |
 |---|--:|--:|---|
-| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" />](./bonsai-27b.md) | 24.5 → 17.3 | 58k | mem |
-| [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" />](./bonsai-27b.md) | 14.8 → 7.9 | 33k | speed |
-| [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" />](./gemma-4-12b-it.md) | 24.64 → 8.86 | 245k | mem |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" />](./bonsai-27b.md) | 24.5† → 17.3† | 58k | mem |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" />](./bonsai-27b.md) | 14.8† → 7.9† | 33k | speed |
+| [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" />](./gemma-4-12b-it.md) | 24.64† → 8.86† | 245k | mem |
 | [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" />](./gemma-4-26b-a4b.md) | 60.3† → 17.3† | 197k | mem |
-| [<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" />](./gemma-4-26b-a4b.md) | 51 → 12.8 | 70k | mem |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" />](./gemma-4-26b-a4b.md) | 51† → 12.8† | 70k | mem |
 | [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" />](./qwen3.6-35b-a3b.md) | 43.7 → 13.0 | 82k | speed |
-| [<ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" />](./qwen3.6-35b-a3b.md) | 55.1 → 37.4 | 41k | mem |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" />](./qwen3.6-35b-a3b.md) | 55.1† → 37.4† | 41k | mem |
 | [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" />](./qwen3.8-27b.md) | 11.8 → 8.6 | 72k | mem |
-| [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" />](./qwen3.8-27b.md) | 17 → 15.3 | 28k | mem |
+| [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" />](./qwen3.8-27b.md) | 17† → 15.3† | 28k | mem |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:decode-summary:end -->
