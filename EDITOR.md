@@ -245,10 +245,13 @@ it.
 
 - **Columns, in order**: Config | Max ctx | Gated by¹ |
   tok/s¹ | Memory (at max ctx) | EvalPlus² | Coding³.
-- **The tok/s cell is the `TokCell` component**: shallow, an arrow,
-  deep, in a fixed-width run padded with spaces so the decimal points
-  and the arrows line up down the column, at a slightly smaller size.
-  The stale dagger sits once, in the text font, before the run.
+- **The tok/s cell is the `TokCell` component**: shallow, a muted
+  arrow with no space around it, deep, each number rounded to one
+  decimal and padded with leading spaces to four characters, in a
+  fixed-width run so the decimal points and the arrows line up down
+  the column, at a slightly smaller size. The stale dagger sits once,
+  in the text font, before the run. The data keeps its own precision;
+  only the cell rounds.
   **The Config cell is the leftmost column of every table that has
   one**, generated or hand-written.
 - **The Config cell is the `ModelSpec` component** (owner,

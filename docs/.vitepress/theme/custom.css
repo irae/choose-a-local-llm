@@ -198,7 +198,8 @@
   font-size: 0.85em;
 }
 
-.vp-doc .tk-stale {
+.vp-doc .tk-stale,
+.vp-doc .tk-arrow {
   color: var(--vp-c-text-2);
 }
 
