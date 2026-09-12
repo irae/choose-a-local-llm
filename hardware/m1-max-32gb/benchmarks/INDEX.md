@@ -7,6 +7,29 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench15, 2026-09-11 to 2026-09-12 ([state](bench15/state.md), [results](bench15/results.md), [report](bench15/report.md))
+
+- Runbook: [bench15/AGENT.md](bench15/AGENT.md). The Qwen3.6 f16 arm
+  without its drafter measured and scored, two vision servers loaded
+  with their projector and read with benchy, and the 4-bit Qwen3.8
+  scored on EvalPlus at its own default level.
+- **The 4-bit Qwen3.8 at xhigh is complete and leads the local
+  rows**: EvalPlus 0.957 / 0.939 with six empties, all at the 30000
+  cap, beside its 93 on the agent task.
+- **Without its drafter the Qwen3.6 f16 arm serves `-c 65536`**,
+  clean to 65578 at 33.6 tok/s with no ceiling found, a window 60
+  percent larger than the drafter arm's; 50 on the agent task at
+  thinking on with two compactions.
+- **A page image costs 7005 tokens** on Qwen3.6 and on Gemma-26B at
+  1400 pixels; both serve it at their full text `-c` and fail one
+  step up; decode with the projector loaded matches the text rows.
+  Gemma-26B needs `--ubatch-size 2048` for the image chunk.
+- **Qwen3.6's drafter works beside the projector at n-max 1**,
+  against the model card, and wins at every depth; n-max 2 and above
+  and every Gemma-26B drafter cell run out of memory.
+- **Wired memory reads over the 25000 limit with a projector
+  loaded**, 25.7 to 26.6 GB, with no swap growth under benchy.
+
 ## bench14, 2026-09-11 ([state](bench14/state.md), [results](bench14/results.md), [report](bench14/report.md))
 
 - Runbook: [bench14/AGENT.md](bench14/AGENT.md). Three GGUF rows read

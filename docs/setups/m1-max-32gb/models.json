@@ -63,12 +63,12 @@
       "tokShallow": "11.8",
       "tokDeep": "8.6",
       "memory": "25.0 GB",
-      "evalplus": "pending",
+      "evalplus": "0.957/0.939/96%",
       "mendel": "93",
       "id": "qwen38-gguf-xhigh",
       "hidden": false,
       "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 73728 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "Curve shared with the effort-medium row: same server, same weights; the harness sets the level per request. Mendel blind at effort xhigh, the model's own default, measured 2026-09-11: 93/100, complete 8/8, on the 65536 window, no critical defect, one medium, peak context 61572, sampling temperature 1.0 and top_p 0.95 from the server default. The highest Mendel score of any local row. No EvalPlus run exists at this level on a 4-bit build, so the cell is pending."
+      "note": "Curve shared with the effort-medium row: same server, same weights; the harness sets the level per request. Mendel blind at effort xhigh, the model's own default, measured 2026-09-11: 93/100, complete 8/8, on the 65536 window, no critical defect, one medium, peak context 61572, sampling temperature 1.0 and top_p 0.95 from the server default. The highest Mendel score of any local row. EvalPlus at effort xhigh, scored 2026-09-12 at budget 30000 on the same build served at `-c 32768`: 0.957/0.939, six empty, every one a completion that hit the 30000-token cap, in 8h30 of active wall time; its own score, above the ISTA build's 0.945/0.921 at the same level."
     },
     {
       "config": "Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium",
@@ -202,21 +202,21 @@
     },
     {
       "config": "Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on",
-      "maxCtx": "41k",
-      "gatedBy": "mem",
-      "tokShallow": "49.8",
-      "tokDeep": "38.3",
-      "memory": "24.0 GB",
+      "maxCtx": "66k",
+      "gatedBy": "untested",
+      "tokShallow": "50.5",
+      "tokDeep": "33.6",
+      "memory": "25.0 GB",
       "evalplus": "0.939/0.921/97%",
-      "mendel": "pending",
+      "mendel": "50",
       "id": "qwen36-gguf-f16-nodrafter",
       "hidden": false,
-      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 40960 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "The f16 KV arm without its drafter, read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 49.8 tok/s at 4K and 38.3 at 40K, the deepest request that fits `-c 40960`; wired 24.0 GB, the same as the drafter arm. A Mendel pair on this window is pending.",
+      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b-f16 --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 65536 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.6-35b-a3b-f16`. The f16 KV arm without its drafter, laddered and creeped 2026-09-11 at wired limit 25000: `-c 65536` serves, the top of the depth list, and the creep ran clean to 65578 at 33.6 tok/s with no ceiling found, so the deepest step is a list end and not a ceiling. Without the drafter this arm holds a window 60 percent larger than the drafter arm's 40960. On real code text at the server's sampling it reads 49.8 at 4K and 38.3 at 40K. Mendel blind at thinking on, measured 2026-09-11: 50/100, complete 8/8, on the 65536 window, two compactions, one critical trap missed, 33 minutes, sampling temperature 1.0 and top_p 0.95 from the server default. With its vision projector loaded the same server serves `-c 65536` and one 1400-pixel page costs 7005 prompt tokens; see the benchmarks page.",
       "pi": {
         "provider": "llama",
         "id": "qwen3.6-35b-a3b-f16",
-        "contextWindow": 32768,
+        "contextWindow": 65536,
         "maxTokens": 8192
       }
     },

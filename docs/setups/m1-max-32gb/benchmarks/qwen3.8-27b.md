@@ -222,6 +222,25 @@ had scored it 0.970/0.939/98% (superseded, see
 [the historical page](../historical.md)). Zero empty completions. The
 strongest HumanEval+ result of the models scored so far.
 
+## Quality — EvalPlus HumanEval+, 4-bit GGUF at effort xhigh (2026-09-12, wired limit 25000)
+
+`bartowski/Qwen3.8-27B-GGUF:Q4_K_M` rev `f0eec4a`, drafter n-max 3,
+f16 KV, `-c 32768`, `reasoning_effort: xhigh` passed on every call,
+budget 30000 from a calibration where two of ten problems hit the
+cap, temperature 0.
+
+| metric | value |
+|---|--:|
+| pass@1 base | 0.957 |
+| pass@1 plus | 0.939 |
+| empty completions | 6/164 |
+| completion | 96% |
+| active wall | 8h30 |
+
+The six empties all ran to the 30000-token cap: HumanEval/2, 32, 91,
+99, 132, 134. The same build at effort medium carries the MLX
+0.982/0.939 score under the shared-score rule.
+
 ## Real-text decode at the server's sampling (llama-benchy 0.4.0, 2026-09-10 and 2026-09-11, wired limit 25000)
 
 `llama-benchy` sends 512 prompt tokens after a text conversation of

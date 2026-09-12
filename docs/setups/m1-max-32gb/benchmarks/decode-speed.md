@@ -32,7 +32,7 @@ Two rules to read the tables by:
 | [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | MLX, unquantized KV | 51 → 12.8 | 70k | mem |
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | GGUF, MTP, q8_0 KV, thinking on | 43.7 → 13.0 | 82k | speed |
 | [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | MLX, unquantized KV, thinking on | 55.1 → 37.4 | 41k | mem |
-| [Qwen3.8-27B](./qwen3.8-27b.md) | GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 11.8 → 8.6 | 72k | mem |
+| [Qwen3.8-27B](./qwen3.8-27b.md) | GGUF Q4_K_M (bartowski), MTP, f16 KV, effort xhigh | 11.8 → 8.6 | 72k | mem |
 | [Qwen3.8-27B](./qwen3.8-27b.md) | MLX 4-bit, unquantized KV, effort low | 17 → 15.3 | 28k | mem |
 
 † from an earlier serving config or method; re-run pending.

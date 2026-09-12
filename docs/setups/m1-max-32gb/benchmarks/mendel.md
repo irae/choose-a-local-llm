@@ -50,6 +50,7 @@ the machine serves today.
 | [qwen3.8-27b (ISTA IQ3_S-mtp, low)](../reports/qwen3.8-27b.md) | llama-server | **66/100** (partial) | critical |
 | [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **63/100** | critical |
 | [qwen3.6-35b-a3b (unsloth UD-Q4_K_XL, off)](../reports/qwen3.6-35b-a3b.md) | llama-server | **50.5/100** | critical |
+| [qwen3.6-35b-a3b-f16 (unsloth UD-Q4_K_XL, no drafter, on)](../reports/qwen3.6-35b-a3b.md) | llama-server | **50/100** | critical |
 | [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **47.5/100** | critical |
 | [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **37.5/100** (partial) | medium |
 | [qwen3.8-27b (AtomicChat AD-IQ3_S)](../reports/qwen3.8-27b.md) | llama-server | **37.5/100** (partial) | medium |

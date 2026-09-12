@@ -11,7 +11,7 @@ Backends: llama-server, mlx-lm · [Qwen3.6-35B-A3B-MTP GGUF on Hugging Face](htt
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); EvalPlus corrected 2026-08-29, thinking off scored 2026-09-06; all three arms re-measured with the slow creep at wired limit 25000 on 2026-09-06 and 2026-09-07; the thinking-off guided rows run the same days; the q8_0 arm and the f16 arm without its drafter read on real text at the server's sampling, and the thinking-off blind row scored, on 2026-09-11.
+Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); EvalPlus corrected 2026-08-29, thinking off scored 2026-09-06; all three arms re-measured with the slow creep at wired limit 25000 on 2026-09-06 and 2026-09-07; the thinking-off guided rows run the same days; the q8_0 arm and the f16 arm without its drafter read on real text at the server's sampling, and the thinking-off blind row scored, on 2026-09-11; the f16 arm without its drafter laddered, creeped, scored, and loaded with its vision projector the same day.
 
 ## Highlights
 
@@ -23,13 +23,14 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
 - **The KV type is a window-against-speed trade on this model.** At
   wired limit 25000 the q8_0 arm serves `-c 98304` and, on real text
   with its drafter, reads 43.7 tok/s at 4K and 13.0 at 82K, above the
-  floor across its whole window; the f16 arm loads only `-c 40960`
-  and reads 49.8 at 4K and 38.3 at 40K without its drafter. Every
-  larger `-c` on either arm loads and then OOMs on the first real
-  request. On the agent task the q8_0 arm scores 63 blind and 83
-  guided at thinking high, 50.5 blind and 62.5 guided at thinking off,
-  all on the 81920 window its creep supports; the same config on a
-  49152 window that compacted twelve times scored 46.5 guided.
+  floor across its whole window; the f16 arm without its drafter
+  serves `-c 65536`, clean to 66K at 33.6 tok/s with no ceiling found,
+  and with the drafter loads only 40960. On the agent task the q8_0
+  arm scores 63 blind and 83 guided at thinking high, 50.5 blind and
+  62.5 guided at thinking off, all on the 81920 window its creep
+  supports; the f16 arm scores 50 blind at thinking on with two
+  compactions on its 65536 window; the q8_0 config on a 49152 window
+  that compacted twelve times scored 46.5 guided.
 - **The drafter earns its place on this model.** With it, the q8_0
   arm decodes above the creep's own readings at every depth, at 54 to
   85 percent draft acceptance on real code text. The f16 arm's 69.1
@@ -47,13 +48,13 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
 |--:|---|--:|:--:|--:|--:|--:|--:|
 | 1 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.939/0.921/97% | 63 |
 | 2 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking off | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.951/0.915/100% | 50.5 |
+| 3 | Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on | 66k | untested | 50.5 → 33.6 | 25.0 GB | 0.939/0.921/97% | 50 |
 
 Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.
 
 | # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
 |--:|---|--:|:--:|--:|--:|--:|--:|
-| 3 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 41k | mem | 55.1 → 37.4 | 24.6 GB | 0.939/0.921/97% | pending |
-| 4 | Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on | 41k | mem | 49.8 → 38.3 | 24.0 GB | 0.939/0.921/97% | pending |
+| 4 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 41k | mem | 55.1 → 37.4 | 24.6 GB | 0.939/0.921/97% | pending |
 | 5 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 41k | mem | 69.1† → 52.6† | 25.1 GB | 0.939/0.921/97% | pending |
 
 † from an earlier serving config or method; re-run pending.
@@ -86,21 +87,21 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#3 — Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on.** Measured 2026-09-06 at wired limit 25000: last stable depth 40982 at 37.4 tok/s, then the generation thread died on a Metal OOM at the next step while the models endpoint kept answering. Wired memory grows with the session and peaked at 24.6 GB. At wired 24000 the same server stopped at 37K in 18.7 GB.
+**#3 — Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on.** pi id `qwen3.6-35b-a3b-f16`. The f16 KV arm without its drafter, laddered and creeped 2026-09-11 at wired limit 25000: `-c 65536` serves, the top of the depth list, and the creep ran clean to 65578 at 33.6 tok/s with no ceiling found, so the deepest step is a list end and not a ceiling. Without the drafter this arm holds a window 60 percent larger than the drafter arm's 40960. On real code text at the server's sampling it reads 49.8 at 4K and 38.3 at 40K. Mendel blind at thinking on, measured 2026-09-11: 50/100, complete 8/8, on the 65536 window, two compactions, one critical trap missed, 33 minutes, sampling temperature 1.0 and top_p 0.95 from the server default. With its vision projector loaded the same server serves `-c 65536` and one 1400-pixel page costs 7005 prompt tokens; see the benchmarks page.
+
+```bash
+llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
+  --alias qwen3.6-35b-a3b-f16 --no-mmproj --parallel 1 \
+  -ngl 999 -fa on -c 65536 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
+```
+
+**#4 — Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on.** Measured 2026-09-06 at wired limit 25000: last stable depth 40982 at 37.4 tok/s, then the generation thread died on a Metal OOM at the next step while the models endpoint kept answering. Wired memory grows with the session and peaked at 24.6 GB. At wired 24000 the same server stopped at 37K in 18.7 GB.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
   --prompt-cache-size 2 --port 8081
-```
-
-**#4 — Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on.** The f16 KV arm without its drafter, read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 49.8 tok/s at 4K and 38.3 at 40K, the deepest request that fits `-c 40960`; wired 24.0 GB, the same as the drafter arm. A Mendel pair on this window is pending.
-
-```bash
-llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
-  --alias qwen3.6-35b-a3b --no-mmproj --parallel 1 \
-  -ngl 999 -fa on -c 40960 \
-  --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081
 ```
 
 **#5 — Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on.** Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000: `-c 40960` serves; 44032, 47104, 53248 and 65536 all load and then OOM on the first real completion. The creep found no ceiling to 40982, at 52.6 tok/s there and zero swap growth. At wired 24000 this arm loads only `-c 33792`. The cache type is worth 2.8x at 33K against the q8_0 row, for a window less than half its size.
@@ -171,7 +172,7 @@ so MTP numbers there read below the py/js bench.
 
 | need | config | tok/s (py/js) | context |
 |---|---|--:|--:|
-| **Max speed at depth** | llama-server, no drafter, f16 KV, `-c 40960`, 1 slot | 49.8 at 4K, 38.3 at 40K | 40K, no ceiling found inside the largest `-c` that loads |
+| **Max speed at depth** | llama-server, no drafter, f16 KV, `-c 65536`, 1 slot | 50.5 at 4K, 33.6 at 66K | 66K clean, no ceiling found inside the depth list |
 | **Max window, agent work** | llama-server + MTP n=3, q8_0 KV, `-c 98304`, 1 slot | 43.7 at 4K, 13.0 at 82K | 82K clean, floor at 98K |
 | **Small option** | mlx_lm.server 4-bit, unquantized KV | 55.1 at 4K, 37.4 at 41K | 41K, then a Metal OOM |
 | **Multi-agent** | untested at limit 25000 | – | – |
@@ -193,6 +194,7 @@ so MTP numbers there read below the py/js bench.
 | blind-v1.1 | UD-Q4_K_XL unsloth | llama-q8_0-high-ctx.96k | **63** | 8/8/done | 79.2 | 7,933k | 94k | 0 | 203 | 13 |  |
 | guided-v3.0 | UD-Q4_K_XL unsloth | llama-q8_0-off-ctx.80k | **62.5** | 8/8/done | 89.4 | 13,045k | 78k | 1 | 264 | 16 |  |
 | blind-v1.1 | UD-Q4_K_XL unsloth | llama-q8_0-off-ctx.80k | **50.5** | 8/8/done | 40.0 | 6,996k | 98k | 2 | 190 | 10 |  |
+| blind-v1.1 | UD-Q4_K_XL unsloth | llama-f16-default-ctx.64k | **50** | 8/8/done | 33.0 | 7,344k | 61k | 2 | 211 | 13 |  |
 | guided-v3.0 | UD-Q4_K_XL unsloth | llama-q8_0-off-ctx.48k | **46.5** | 8/8/done | 95.6 | 9,473k | 52k | 12 | 299 | 7 |  |
 | blind-v1.0 | UD-Q4_K_XL unsloth | llama-q8_0-default-ctx.96k | **41.5** | 8/8/done | 132.0 | 10,090k | 94k | 1 | 258 | 13 |  |
 
@@ -215,7 +217,7 @@ swap growth on every row.
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|---|
 | **llama+MTP, f16 KV, `-c 40960`** | **69.1** | **71.3** | **65.7** | **61.0** | **56.5** | **52.6** | | | | mem — 40960 is the largest `-c` that serves a real request; no ceiling found inside it |
 | llama+MTP, q8_0 KV, `-c 98304` | 43.7 | 44.1 | 31.2 | 24.2 | 19.6 | 16.6 | 19.2 | 11.2 | 13.0 | speed — 7.86 at 98K, under the floor; 98304 is the largest `-c` that serves a real request |
-| llama, no drafter, f16 KV, `-c 40960` | 49.8 | | | | | 38.3 | | | | mem — 40960 is the largest `-c` that serves; 38.3 read at 39936, the deepest request that fits |
+| llama, no drafter, f16 KV, `-c 65536` | 50.5 | 48.4 | 46.2 | 43.7 | 41.5 | 39.3 | 37.2 | 33.6 | | untested — clean to 65578, the depth list's end, no ceiling found |
 
 The q8_0 cells at 4K, 49K and 82K and the whole no-drafter row were
 read 2026-09-11 with llama-benchy on real code text at the server's

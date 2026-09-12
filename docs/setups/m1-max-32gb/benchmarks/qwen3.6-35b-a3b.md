@@ -128,6 +128,59 @@ higher on base.
 
 - Thinking-off pass, for sub-agent use.
 
+## Ladder and creep — f16 KV, no drafter (2026-09-11, wired limit 25000)
+
+`unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` rev `5bc3e23`,
+`--no-mmproj`, no drafter, one slot. `-c 65536` served a real
+6001-token completion at 25027 MB wired; no larger `-c` was probed,
+65536 being the depth list's end.
+
+| depth | tok/s | wired MB | swap Δ |
+|--:|--:|--:|--:|
+| 4114 | 50.49 | 25027 | 0 |
+| 8222 | 48.41 | 25025 | 0 |
+| 16386 | 46.17 | 25010 | 0 |
+| 24602 | 43.71 | 25010 | 0 |
+| 32818 | 41.50 | 25009 | 0 |
+| 40982 | 39.32 | 25008 | 0 |
+| 49198 | 37.20 | 24967 | 0 |
+| 57362 | 35.03 | 24921 | 0 |
+| 65578 | 33.64 | 24921 | 0 |
+
+No ceiling found: the deepest step is the list's end. With the
+drafter the same arm loads only `-c 40960`.
+
+## Vision — the projector loaded (2026-09-11, wired limit 25000)
+
+Same files, projector `mmproj-BF16.gguf` loaded, f16 KV, one slot.
+The request carries one synthetic statement page, 1400×1400 PNG,
+plus a prompt; "filled" adds 4096 tokens of text.
+
+| `-c` | loaded | served | wired at load | wired after | prompt tokens, filled | prompt tokens, bare | image tokens |
+|--:|:--:|:--:|--:|--:|--:|--:|--:|
+| 65536 | yes | yes | 25680 MB | 25678 MB | 8983 | 1978 | 7005 |
+| 73728 | with an OOM line | no, compute error | | | | | |
+
+The reply read the whole table correctly on both requests. Drafter
+cells at depth 256 with the projector on, one warmup and two counted
+requests each:
+
+| n-max | tok/s | acceptance | wired at load |
+|--:|--:|--:|--:|
+| none | 50.33, 50.38 | — | 25476 MB |
+| 1 | 58.11, 51.42 | 0.889, 0.693 | 25555 MB |
+| 2 | out of memory on the request | | |
+| 3 | out of memory on the request | | |
+
+The model card says the projector and the drafter do not work
+together; n-max 1 works. `llama-benchy` 0.4.0 on the code corpus,
+projector loaded, no image in the prompts, `--cache-ram 0`:
+
+| arm | 4096 | 32768 | 64512 | acceptance |
+|---|--:|--:|--:|--:|
+| no drafter | 48.84 | 39.74 | 33.12 | — |
+| n-max 1 | 53.88 | 43.68 | 33.85 | 0.78 to 0.94 |
+
 ## Real-text decode at the server's sampling (llama-benchy 0.4.0, 2026-09-11, wired limit 25000)
 
 `llama-benchy` sends 512 prompt tokens after a code-text conversation

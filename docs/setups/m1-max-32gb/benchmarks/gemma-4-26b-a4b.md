@@ -90,6 +90,33 @@ model convergence limit, not a harness artifact. Matches the calibration
 signal (2/10 sample problems never finished reasoning at this budget) at
 full scale.
 
+## Vision — the projector loaded (2026-09-11, wired limit 25000)
+
+`unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, projector loaded, f16
+KV, no drafter, one slot, `--ubatch-size 2048`: at the default 512
+the server asserts on the image chunk, which needs a prefill batch at
+least as large as the image's token count. The request carries one
+synthetic statement page, 1400×1400 PNG, plus a prompt; "filled" adds
+4096 tokens of text.
+
+| `-c` | loaded | served | wired at load | wired after | prompt tokens, filled | prompt tokens, bare | image tokens |
+|--:|:--:|:--:|--:|--:|--:|--:|--:|
+| 204800 | yes | yes | 25678 MB | 26618 MB | 7894 | 889 | 7005 |
+| 212992 | yes | no, compute error | | | | | |
+
+Both replies hit the 400-token cap inside the model's reasoning, so
+no answer was read. No drafter fits beside the projector at this
+`-c`: n-max 1 fails the request out of memory. No-drafter cells at
+depth 256: 54.30 and 54.27 tok/s at 25470 MB wired. `llama-benchy`
+0.4.0 on the code corpus, projector loaded, no image in the prompts,
+`--cache-ram 0`:
+
+| depth | tok/s |
+|--:|--:|
+| 4096 | 53.11 |
+| 98304 | 28.28 |
+| 203776 | 19.24 |
+
 ## Depth sweeps (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
 | depth | llama+MTP, q8_0 KV (128K alloc) | mlx, f16 KV (`gemma-4-26b-a4b-it-4bit`) |

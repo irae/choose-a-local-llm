@@ -54,6 +54,7 @@ function parseCsv(text) {
 const MENDEL_SLUGS = {
   'qwen3.6-35b-a3b': 'qwen3.6-35b-a3b',
   'qwen3.6-35b-a3b (unsloth UD-Q4_K_XL, off)': 'qwen3.6-35b-a3b',
+  'qwen3.6-35b-a3b-f16 (unsloth UD-Q4_K_XL, no drafter, on)': 'qwen3.6-35b-a3b',
   'qwen3.8-27b (bartowski Q4_K_M, xhigh)': 'qwen3.8-27b',
   'gemma-4-26b-a4b': 'gemma-4-26b-a4b',
   'prism-ml/Ternary-Bonsai-27B-mlx-2bit': 'bonsai-27b',
