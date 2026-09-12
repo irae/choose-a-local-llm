@@ -46,11 +46,11 @@ deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 | <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | 104k | mem | <TokCell shallow="15.8" deep="10.3" stale /> | <ScoreCell value="0.988/0.927" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" /> |
 | <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **197k** | mem | <TokCell shallow="60.3" deep="17.3" stale top-shallow top-deep /> | <ScoreCell value="0.884/0.860" sub="89% completion" /> | <ScoreCell value="47.5" pill="mendel-blind" /> |
 | <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | **245k** | mem | <TokCell shallow="24.64" deep="8.86" stale /> | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" /> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" /> | 58k | mem | <TokCell shallow="24.5" deep="17.3" stale top-deep /> | <ScoreCell value="0.915/0.884" sub="97% completion" /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" /> | 53k | mem | <TokCell shallow="24.5" deep="17.3" stale top-deep /> | <ScoreCell value="0.915/0.884" sub="97% completion" /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" /> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | 33k | speed | <TokCell shallow="14.8" deep="7.9" stale /> | <ScoreCell value="0.927/0.890" sub="98% completion" /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" /> |
-| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> | 28k | mem | <TokCell shallow="17" deep="15.3" stale top-deep /> | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5" note="13%" pill="mendel-blind" /> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | 41k | mem | <TokCell shallow="55.1" deep="37.4" stale top-shallow top-deep /> | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" /> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | 70k | mem | <TokCell shallow="51" deep="12.8" stale top-shallow /> | <ScoreCell value="0.713/0.701" sub="72% completion" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> | 25k | mem | <TokCell shallow="17" deep="15.3" stale top-deep /> | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5" note="13%" pill="mendel-blind" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | 37k | mem | <TokCell shallow="55.1" deep="37.4" stale top-shallow top-deep /> | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | 66k | mem | <TokCell shallow="51" deep="12.8" stale top-shallow /> | <ScoreCell value="0.713/0.701" sub="72% completion" /> | <ScoreCell value="pending" /> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->
@@ -65,8 +65,9 @@ deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 
 - **Ctx**, the usable context: the deepest context the config served
   above the floor, set by Cap. The coding harness gets the same
-  window, rounded down to a multiple of 4096; on MLX it sits about 20
-  percent lower, because that runtime dies near its ceiling.
+  window, rounded down to a multiple of 4096. On MLX the cell shows
+  the harness window, 5 percent under the measured ceiling, because
+  that runtime often triggers macOS memory compression near it.
 - **Cap**, what stops the context from growing: memory holds the
   weights, the drafter, a vision adapter and the runtime's buffers,
   and what is left is context. Some models do not fit their trained
@@ -76,10 +77,11 @@ deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 - **tok/s**, decode speed shallow, near an empty context, then deep,
   at Ctx. Most tools report the shallow number only, but engineering
   work and long documents run at depth, where speed falls. A drafter
-  (MTP, speculative decoding) can help or hurt, and the answer
-  changes with depth, so every drafter row is read on real text with
-  its draft acceptance. See [the measurement
-  rules](./methodology/context-creep).
+  (MTP, speculative decoding) often changes the picture, and for some
+  models it can help at one depth and hurt at another; nobody knows
+  before measuring, so every drafter row is read on real text at
+  more than one draft depth, with its acceptance. See [the
+  measurement rules](./methodology/context-creep).
 - **EvalPlus**, scored once per model and thinking mode; runtimes
   serving the same model at a standard quant share the score.
   Aggressive quants (for example the prism fork's calibrated q4 KV)

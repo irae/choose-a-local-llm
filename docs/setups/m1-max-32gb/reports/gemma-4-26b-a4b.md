@@ -46,7 +46,7 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|--:|
 | <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **2x82k** | mem | <TokCell shallow="66.6" deep="33.6" stale top-shallow top-deep /> | **25.3 GB** | <ScoreCell value="0.884/0.860" sub="89% completion" top /> | <ScoreCell value="pending" /> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | **70k** | mem | <TokCell shallow="51" deep="12.8" stale top-shallow top-deep /> | **20.0 GB** | <ScoreCell value="0.713/0.701" sub="72% completion" top /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | **66k** | mem | <TokCell shallow="51" deep="12.8" stale top-shallow top-deep /> | **20.0 GB** | <ScoreCell value="0.713/0.701" sub="72% completion" top /> | <ScoreCell value="pending" /> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->

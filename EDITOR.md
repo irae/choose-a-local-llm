@@ -376,7 +376,10 @@ it.
   "Nx\<size\>", for example "2x48k", never in Config.
 - **Ctx** (the used-context point where a config first breaks): the
   cell must end with the number and its unit, never a trailing word like
-  "per slot".
+  "per slot". An `mlx_lm.server` row shows its harness window, the
+  row's `pi.contextWindow`, 5 percent under the measured ceiling
+  (`docs/methodology/mendel.md`, "Window and budget"), never the
+  ceiling; the note keeps the ceiling.
 - **tok/s is two numbers only**, shallow then deep, never a
   qualifier word like "solo" or "concurrent" in the cell. For a
   multi-slot config, the number is one slot decoding alone (see
