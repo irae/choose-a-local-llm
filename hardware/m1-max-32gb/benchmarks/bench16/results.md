@@ -70,8 +70,10 @@ in the generation thread, both run 1 and run 2, at prompt fill
 the known signature. **A dead deep cell is recorded as such, and the
 block is done.**
 Finding: this server's real ceiling sits under 39936 (not 40982 as
-last measured on 2026-09-06). Per the run's rule, the smoke window
-steps down 8192 from the planning value: `qwen36_mlx_window` becomes
-28672, not 36864.
+last measured on 2026-09-06). Coordinator gate (2026-09-12): the dead
+prompt was 40449 tokens, above the 36864 planning window, so it does
+not move `qwen36_mlx_window`; that value stays 36864 for the smoke. A
+death at 36864 itself, not this cell, would step the window down to
+28672.
 Files: `results/benchy-sweep-qwen36-mlx-nmax0.md`,
 `results/server-sweep-qwen36-mlx.log`.

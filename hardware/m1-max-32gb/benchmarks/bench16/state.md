@@ -18,7 +18,7 @@ Docker before the first server.
 
 | name | value | source block |
 |---|---|---|
-| `qwen36_mlx_window` | 28672 | `sweep-qwen36-mlx` deep cell died at 39936 (Metal OOM), so ceiling stepped down 8192 from the 5-percent-under-ceiling planning value 36864 |
+| `qwen36_mlx_window` | 36864 | planning value, 5 percent under the last measured ceiling. Coordinator gate (2026-09-12): the `sweep-qwen36-mlx` dead cell was a 40449-token prompt, above 36864, so it says nothing about the window; a step down applies only after a death at the window itself. If the smoke or the blind row dies at 36864, step down to 28672 and record the step here. |
 | `gemma26_mlx_window` | | `gemma26-mlx-smoke-high` |
 | `qwen36_mlx_on` | | `qwen36-mlx-mendel-blind-on` |
 | `gemma26_mlx_high` | | `gemma26-mlx-mendel-blind-high` |
