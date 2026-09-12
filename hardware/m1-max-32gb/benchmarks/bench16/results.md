@@ -146,3 +146,16 @@ server death. Per the run's rule, `gemma26-mlx-mendel-blind-high` does
 not run.
 Files: `results/mendel-smoke-gemma26-mlx-high.log`,
 `results/server-gemma26-mlx.log`.
+
+## `arms-qwen38-atomicchat`
+
+`AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, rev `ca10ebc`, `--no-mmproj`,
+f16 KV, `--parallel 1`, `-c 106496`, wired 25000. Climb per "The sweep
+rule". Depths: 4096, 98304.
+
+| arm | depth | benchy tok/s | sd | site tok/s | diff | acceptance | swap MB |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| no drafter | 4096 | 14.29 | 0.01 | 15.8 | -9.6% | — | 439.62, no growth |
+| no drafter | 98304 | 9.62 | 0.00 | 10.3 | -6.9% | — | 439.62, no growth |
+| n-max 3 (from `benchy-qwen38-atomicchat-drafter`) | 4096 | 8.10 | 0.05 | 15.8 | -48.7% | 35-42% | no growth |
+| n-max 3 (from `benchy-qwen38-atomicchat-drafter`) | 98304 | 7.43 | 0.34 | 10.3 | -27.9% | 60-69% | no growth |

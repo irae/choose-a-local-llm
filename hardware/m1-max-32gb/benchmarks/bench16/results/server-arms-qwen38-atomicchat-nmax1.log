@@ -1,0 +1,14 @@
+0.00.087.758 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.087.968 W srv  llama_server: -----------------
+0.00.087.969 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.087.969 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.087.969 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.087.969 W srv  llama_server: -----------------
+0.00.089.221 I srv    load_model: loading model 'AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S'
+0.02.658.508 I cmn          init: llama threadpool init, n_threads = 8
+0.02.819.990 I common_speculative_init_result: creating MTP draft context against the target model '/Users/irae/.cache/huggingface/hub/models--AtomicChat--Qwen3.8-27B-GGUF/snapshots/ca10ebceb1887be9d33b838770a36b39d75a8a4c/Qwen3.8-27B-AD-IQ3_S.gguf'
+0.03.109.149 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 106496, kv_unified = 'false'
+0.03.166.607 W srv          init: --cache-idle-slots requires --cache-ram, disabling
+0.03.171.391 W srv          init: chat template supports preserving reasoning, it is enabled by default (may use more tokens, disable via --no-reasoning-preserve)
+0.03.171.399 I srv  llama_server: model loaded
+0.03.171.400 I srv  llama_server: listening on http://127.0.0.1:8081
