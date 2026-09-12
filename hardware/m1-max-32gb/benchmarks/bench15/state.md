@@ -203,9 +203,61 @@ that produced it.
 
 | name | value | block |
 | --- | --- | --- |
-| `bartowski_evalplus_xhigh` | | `bartowski-evalplus-xhigh` |
+| `bartowski_evalplus_xhigh` | 0.957/0.939 | `bartowski-evalplus-xhigh` |
 | `qwen36_f16_c` | 65536 | `qwen36-f16-ladder-creep` |
 | `qwen36_f16_clean` | 65578 | `qwen36-f16-ladder-creep` |
-| `qwen36_f16_on` | | `qwen36-f16-mendel-on` |
+| `qwen36_f16_on` | 50/100 | `qwen36-f16-mendel-on` |
 | `vision_qwen36_c` | 65536 | `vision-ladder` |
 | `vision_gemma26_c` | 204800 | `vision-ladder` |
+
+## Session 1 continued — bartowski-evalplus-xhigh starts
+
+Coordinator's gate answer: budget 30000, start the full set now with
+the calibration already in hand. Started block
+`bartowski-evalplus-xhigh`: server up (pid 36308), rev `f0eec4a`
+confirmed, warmed up.
+`RESULTS_BASE=hardware/m1-max-32gb/benchmarks/bench15/results
+EVALPLUS_MAX_NEW_TOKENS=30000 benchmarks/run-humaneval.sh
+bartowski-evalplus-xhigh qwen3.8-27b
+'{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'`, pid 37258.
+Watcher started (pid 37757), `results/run-watch-evalplus.log`,
+watching
+`results/bartowski-evalplus-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl`.
+Expect about ten hours; the owner may pause it between problems and
+resume via the codegen's own task_id skip (not an interruption for
+`retry-sweep`).
+
+Owner correction: stop sending a coordinator message on every 20-minute
+status tick. The coordinator only hears from the runner at a real push
+(block close, gate, restart) — the tick's short status line stays in
+chat only, per `status-lines.md`. Applying this from here on.
+
+Coordinator correction (not a deviation): an xhigh completion on this
+model runs past the watcher's 600s default silence window, which gave
+run 13 a false dead-server verdict. Stopped the first watcher (pid
+37757, silence 600s default) and restarted with `RUNWATCH_SILENCE=2700`
+(pid 43035), same server log, same output file, same base URL and
+model. Server (pid 36308) and the codegen run (pid 37258) were not
+touched.
+
+Block `bartowski-evalplus-xhigh` closed. 164/164, base 0.957, plus
+0.939, 6/164 empty, active wall 8:30:20. `bartowski_evalplus_xhigh` =
+0.957/0.939 (see `results.md` for the full breakdown and both
+deviations: the four benign memory-guard kills of the calibration
+client, and the one watcher restart at `RUNWATCH_SILENCE=2700`).
+Server and watcher stopped.
+
+## Handing over, session 1 close, 2026-09-12
+
+Every block in the run's order is closed:
+`qwen36-f16-ladder-creep`, `qwen36-f16-mendel-on` (scored 50/100,
+published to mendel-benchmark), `vision-ladder`, `vision-ladder-up`,
+`vision-drafter-shallow`, `vision-benchy`, `bartowski-evalplus-xhigh`
+(scored 0.957/0.939). `retry-sweep` has nothing to do — every block
+closed clean, no killed or interrupted rows from this run. The run's
+real work is done.
+
+Machine state: no server running, no watcher running, GPU idle, wired
+at baseline. Evidence archived: `tools/archive-evidence.sh
+hardware/m1-max-32gb/benchmarks/bench15/results run15` — 36 files to
+`~/.local/share/choose-a-local-llm/evidence/run15`.
