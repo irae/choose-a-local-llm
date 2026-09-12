@@ -94,3 +94,21 @@ Both cells completed, no dead cell. The deep cell sits well above the
 8 tok/s floor and well above the site's own number.
 Files: `results/benchy-sweep-gemma26-mlx-nmax0.md`,
 `results/server-sweep-gemma26-mlx.log`.
+
+## `qwen36-mlx-smoke-on`
+
+`mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx_lm.server`,
+`--prompt-cache-size 2`, thinking on, wired 25000, window 36864 (the
+5-percent-under-ceiling planning value; the coordinator confirmed the
+`sweep-qwen36-mlx` dead cell does not move it, since that prompt was
+above this window).
+
+`SMOKE-MENDEL model=mlx-community/Qwen3.6-35B-A3B-4bit level=on
+task=xtend window=36864 calls=10 distinct=7 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=3723 commits=1 clean=yes end=stop wall_s=28
+verdict=pass`
+
+**Pass.** One commit, clean tree, no repetition loop, 28 s inside the
+1500 s cap. `qwen36-mlx-mendel-blind-on` runs next.
+Files: `results/mendel-smoke-qwen36-mlx-on.log`,
+`results/server-qwen36-mlx.log`.
