@@ -305,3 +305,40 @@ Files: `results/benchy-gemma26-nodraft.md`,
 
 `vision-benchy` closed. All three arms done, no pick per the block's
 own rule.
+
+## `bartowski-evalplus-xhigh`
+
+`bartowski/Qwen3.8-27B-GGUF:Q4_K_M` rev `f0eec4a`, `--no-mmproj`, f16
+KV, drafter `--spec-type draft-mtp --spec-draft-n-max 3`, `--parallel
+1`, `-c 32768`, wired 25000. Effort xhigh, budget 30000 (the
+coordinator's gate answer, on 2/10 calibration problems hitting the
+30000 cap).
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.957 |
+| HumanEval plus | 0.939 |
+| completion rate | 96.3% (158/164) |
+| empty | 6/164 |
+| active wall | 8:30:20 |
+
+Empty: `HumanEval/2`, `HumanEval/32`, `HumanEval/91`, `HumanEval/99`,
+`HumanEval/132`, `HumanEval/134`. `HumanEval/32` and `HumanEval/99`
+are the two calibration-known cap hits (30000 tokens, `finish_reason:
+length`); `HumanEval/2`, `HumanEval/91`, `HumanEval/132`, `HumanEval/134`
+are new, not seen in the 10-problem calibration sample — a real empty
+rate at this effort level, not chased to zero per `evalplus.md`.
+
+Two deviations recorded mid-run, both already in `state.md`: the
+calibration client was killed four times by the harness's own
+background-task memory guard (investigated as benign, `llama-server`
+itself stayed healthy at ~59% RAM each time, `calibrate.py`'s own
+resume-by-`task_id` picked up cleanly); and the run watcher was
+restarted once with `RUNWATCH_SILENCE=2700` (coordinator's correction
+for run 13's false-dead-server history on this model's long xhigh
+completions).
+
+Files: `results/bartowski-evalplus-xhigh/`,
+`results/server-bartowski-evalplus.log`,
+`results/run-watch-evalplus.log`.
+Deviation: none beyond the two already logged.
