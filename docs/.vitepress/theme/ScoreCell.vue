@@ -16,8 +16,8 @@ if (props.pill && !['mendel-blind', 'mendel-guided'].includes(props.pill)) {
   <span class="cs" :class="{ 'cs-top': top }">
     <span class="cs-value">{{ value }}</span>
     <span v-if="pill || sub" class="cs-sub">
-      <span v-if="pill" class="ms-pill cs-pill" :class="`cs-pill-${pill.replace('mendel-', '')}`">{{ pill }}</span>
       <template v-if="sub">{{ sub }}</template>
+      <span v-if="pill" class="ms-pill cs-pill" :class="`cs-pill-${pill.replace('mendel-', '')}`">{{ pill }}</span>
     </span>
   </span>
 </template>
