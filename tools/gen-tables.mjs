@@ -81,6 +81,114 @@ function mendelName(r) {
   return slug ? `[${short}](../reports/${slug}.md)` : short
 }
 
+// The spec cell: two lines, identity then serving details, rendered by
+// the ModelSpec component in docs/.vitepress/theme. A missing or
+// invalid field throws here or in the component at build time.
+const EFFORTS = ['off', 'on', 'low', 'medium', 'high', 'xhigh', 'max']
+
+function repoOf(row) {
+  if (row.spec?.repo) return row.spec.repo
+  const cmd = String(row.command || '').replace(/\\\n/g, ' ')
+  const m = cmd.match(/(?:-hf|--model)[= ]([\w.-]+\/[\w.-]+)/)
+  if (!m) throw new Error(`row ${row.id}: no Hugging Face repo in the command; add spec.repo`)
+  return m[1]
+}
+
+function specTag(spec, { hide = '', label = '', repo = '', top = false } = {}) {
+  for (const k of ['base', 'quant', 'server', 'publisher', 'kv']) {
+    if (!spec?.[k]) throw new Error(`spec ${label || JSON.stringify(spec)}: missing ${k}`)
+  }
+  const card = repo || spec.repo
+  if (!card) throw new Error(`spec ${label || spec.base}: missing repo`)
+  const hideEffort = hide.split(',').includes('effort')
+  if (!hideEffort && !EFFORTS.includes(spec.effort)) {
+    throw new Error(`spec ${label || spec.base}: effort "${spec.effort}" is not one of ${EFFORTS.join(', ')}`)
+  }
+  const attrs = [
+    `base="${spec.base}"`,
+    `quant="${spec.quant}"`,
+    `server="${spec.server}"`,
+    `publisher="${spec.publisher}"`,
+    `repo="${card}"`,
+    spec.drafter ? `drafter="${spec.drafter}"` : '',
+    `kv="${spec.kv}"`,
+    spec.effort && !hideEffort ? `effort="${spec.effort}"` : '',
+    hide ? `hide="${hide}"` : '',
+    top ? 'top' : '',
+  ].filter(Boolean)
+  return `<ModelSpec ${attrs.join(' ')} />`
+}
+
+function scoreTag(value, sub = '', top = false) {
+  const clean = (v) => String(v).replace(/"/g, '')
+  return `<ScoreCell value="${clean(value)}"${sub ? ` sub="${clean(sub)}"` : ''}${top ? ' top' : ''} />`
+}
+
+// The EvalPlus cell "base/plus/completion%" renders as the two scores
+// over the completion; the Mendel cell "score (partial NN%)" renders as
+// the score over the test name and, for a partial, the libraries done.
+function evalplusCell(text) {
+  const m = String(text).match(/^([\d.]+\/[\d.]+)\/(\d+%|—)$/)
+  return m ? { value: m[1], sub: m[2] === '—' ? '' : `${m[2]} completion` } : { value: String(text), sub: '' }
+}
+
+function mendelCellParts(text) {
+  const m = String(text).match(/^([\d.]+)(?:\s*\(partial\s*(\d+%)\))?$/)
+  if (!m) return { value: String(text), sub: 'mendel-blind' }
+  return { value: m[1], sub: m[2] ? `mendel-blind ${m[2]}` : 'mendel-blind' }
+}
+
+// Mendel rows come from the benchmark CSVs, which carry the alias, the
+// server, the KV type and the branch; the build and the drafter come
+// from this map, keyed by the CSV `model` value.
+const MENDEL_SPECS = {
+  'qwen3.6-35b-a3b': { base: 'Qwen3.6-35B-A3B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/Qwen3.6-35B-A3B-MTP-GGUF', drafter: 'mtp/3', effort: 'on', binary: true },
+  'qwen3.6-35b-a3b (unsloth UD-Q4_K_XL, off)': { base: 'Qwen3.6-35B-A3B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/Qwen3.6-35B-A3B-MTP-GGUF', drafter: 'mtp/3', binary: true },
+  'qwen3.6-35b-a3b-f16 (unsloth UD-Q4_K_XL, no drafter, on)': { base: 'Qwen3.6-35B-A3B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/Qwen3.6-35B-A3B-MTP-GGUF', drafter: '', effort: 'on', binary: true },
+  'gemma-4-26b-a4b': { base: 'Gemma-4-26B-A4B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/gemma-4-26b-a4b-it-GGUF', drafter: 'mtp/2', effort: 'on', binary: true },
+  'prism-ml/Ternary-Bonsai-27B-mlx-2bit': { base: 'Ternary-Bonsai-27B', quant: '2-bit', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-27B-mlx-2bit', drafter: '', effort: 'on', binary: true },
+  'Ternary-Bonsai-27B (mlx, low)': { base: 'Ternary-Bonsai-27B', quant: '2-bit', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-27B-mlx-2bit', drafter: '', binary: true },
+  'mlx-community/Qwen3.8-27B-4bit': { base: 'Qwen3.8-27B', quant: '4-bit', publisher: 'mlx-community', repo: 'mlx-community/Qwen3.8-27B-4bit', drafter: '', effort: 'medium' },
+  'Qwen3.8-27B (mlx, low)': { base: 'Qwen3.8-27B', quant: '4-bit', publisher: 'mlx-community', repo: 'mlx-community/Qwen3.8-27B-4bit', drafter: '' },
+  'gemma-4-12b': { base: 'Gemma-4-12B', quant: 'Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/gemma-4-12b-it-GGUF', drafter: '' },
+  'google/gemma-4-12b': { base: 'Gemma-4-12B', quant: '4-bit', publisher: 'lmstudio-community', repo: 'lmstudio-community/gemma-4-12B-it-MLX-4bit', drafter: '' },
+  'Gemma-4-12B (low)': { base: 'Gemma-4-12B', quant: '4-bit', publisher: 'lmstudio-community', repo: 'lmstudio-community/gemma-4-12B-it-MLX-4bit', drafter: '' },
+  'Gemma-4-12B (llama.cpp, off)': { base: 'Gemma-4-12B', quant: 'Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/gemma-4-12b-it-GGUF', drafter: '' },
+  'bonsai-prism': { base: 'Ternary-Bonsai-27B', quant: 'Q2_g64', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-27B-gguf', drafter: '', server: 'prism-llama', kv: 'q4_0+bias', binary: true },
+  'bonsai-prism (f16 KV)': { base: 'Ternary-Bonsai-27B', quant: 'Q2_g64', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-27B-gguf', drafter: '', server: 'prism-llama', binary: true },
+  'qwen3.8-27b': { base: 'Qwen3.8-27B', quant: 'Q4_K_M', publisher: 'bartowski', repo: 'bartowski/Qwen3.8-27B-GGUF', drafter: 'mtp/3' },
+  'qwen3.8-27b (reserve 8192)': { base: 'Qwen3.8-27B', quant: 'Q4_K_M', publisher: 'bartowski', repo: 'bartowski/Qwen3.8-27B-GGUF', drafter: 'mtp/3' },
+  'qwen3.8-27b (bartowski Q4_K_M, xhigh)': { base: 'Qwen3.8-27B', quant: 'Q4_K_M', publisher: 'bartowski', repo: 'bartowski/Qwen3.8-27B-GGUF', drafter: 'mtp/3' },
+  'qwen3.8-27b (ISTA IQ3_S-mtp)': { base: 'Qwen3.8-27B', quant: 'IQ3_S-mtp', publisher: 'ISTA-DASLab', repo: 'ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF', drafter: 'mtp/3' },
+  'qwen3.8-27b (ISTA IQ3_S-mtp, xhigh)': { base: 'Qwen3.8-27B', quant: 'IQ3_S-mtp', publisher: 'ISTA-DASLab', repo: 'ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF', drafter: '' },
+  'qwen3.8-27b (ISTA IQ3_S-mtp, low)': { base: 'Qwen3.8-27B', quant: 'IQ3_S-mtp', publisher: 'ISTA-DASLab', repo: 'ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF', drafter: '' },
+  'qwen3.8-27b (AtomicChat AD-IQ3_S)': { base: 'Qwen3.8-27B', quant: 'AD-IQ3_S', publisher: 'AtomicChat', repo: 'AtomicChat/Qwen3.8-27B-GGUF', drafter: 'mtp/3' },
+}
+
+const MENDEL_SERVER = { 'llama-server': 'llama-server', 'mlx_lm.server': 'mlx_lm.server', 'lm-studio': 'lms' }
+
+function mendelSpec(r) {
+  const m = MENDEL_SPECS[r.model]
+  if (!m) throw new Error(`Mendel row "${r.model}" has no entry in MENDEL_SPECS`)
+  const level = thinkingLevel(r.branch)
+  return {
+    base: m.base,
+    quant: m.quant,
+    server: m.server || MENDEL_SERVER[r.serving] || r.serving,
+    publisher: m.publisher,
+    drafter: m.drafter,
+    repo: m.repo,
+    kv: m.kv || (r.kv_type === 'unquantized' || !r.kv_type ? 'f16' : r.kv_type),
+    effort: level === 'default' ? m.effort : m.binary && level === 'high' ? 'on' : level,
+  }
+}
+
+function mendelCell(r) {
+  const slug = MENDEL_SLUGS[r.model]
+  const tag = specTag(mendelSpec(r), { label: r.model })
+  return slug ? `[${tag}](../reports/${slug}.md)` : tag
+}
+
 function mendelScore(r) {
   const done = r.libraries_done === '' ? 8 : Number(r.libraries_done)
   const cap = Math.min(Number(r.score_total), (100 * done) / 8)
@@ -95,14 +203,14 @@ function currentPromptVersion(rows) {
 
 function renderMendelLocal(rows) {
   const header = [
-    '| model | serving | score | worst defect |',
-    '|---|---|--:|---|',
+    '| config | score | worst defect |',
+    '|---|--:|---|',
   ]
   const sev = (d) => (d.match(/^(critical|medium|minor)/) || [])[1] || (d ? 'see report' : 'none found')
   const body = rows
     .filter((r) => r.local === 'True')
     .sort((a, b) => Math.min(b.score_total, (100 * (b.libraries_done === '' ? 8 : b.libraries_done)) / 8) - Math.min(a.score_total, (100 * (a.libraries_done === '' ? 8 : a.libraries_done)) / 8))
-    .map((r) => `| ${mendelName(r)} | ${r.serving} | ${mendelScore(r)} | ${sev(r.defects)} |`)
+    .map((r) => `| ${mendelCell(r)} | ${mendelScore(r)} | ${sev(r.defects)} |`)
   return [...header, ...body].join('\n')
 }
 
@@ -116,37 +224,16 @@ function renderMendelCloud(rows) {
 }
 
 function renderMendelGuided(rows) {
-  const header = ['| model | harness | score |', '|---|---|--:|']
+  const header = ['| config | harness | score |', '|---|---|--:|']
   const body = rows
     .sort((a, b) => Math.min(b.score_total, (100 * (b.libraries_done === '' ? 8 : b.libraries_done)) / 8) - Math.min(a.score_total, (100 * (a.libraries_done === '' ? 8 : a.libraries_done)) / 8))
-    .map((r) => `| ${mendelName(r)} | ${r.harness} | ${mendelScore(r)} |`)
+    .map((r) => `| ${r.local === 'True' ? mendelCell(r) : mendelName(r)} | ${r.harness} | ${mendelScore(r)} |`)
   return [...header, ...body].join('\n')
 }
 
 function thinkingLevel(branch) {
   const m = String(branch).match(/-(xhigh|high|medium|low|off)-/)
   return m ? m[1] : 'default'
-}
-
-const SERVING_SHORT = { 'llama-server': 'llama', 'mlx_lm.server': 'mlx', 'lm-studio': 'lmstudio' }
-
-const BARE_BUILDS = {
-  'qwen3.6-35b-a3b': 'UD-Q4_K_XL unsloth',
-  'gemma-4-26b-a4b': 'UD-Q4_K_XL unsloth',
-  'gemma-4-12b': 'Q4_K_XL unsloth',
-  'bonsai-prism': 'Q2_g64 prism fork',
-  'prism-ml/Ternary-Bonsai-27B-gguf': 'Q2_g64 prism fork',
-}
-
-function mendelBuild(r) {
-  const id = r.model_id || r.model
-  if (id === 'google/gemma-4-12b') return r.serving === 'lm-studio' ? 'MLX 4-bit LM Studio' : 'Q4_K_XL unsloth'
-  if (BARE_BUILDS[id]) return BARE_BUILDS[id]
-  const tagged = id.match(/^([^/]+)\/[^:]+:(.+)$/)
-  if (tagged) return `${tagged[2]} ${tagged[1].replace(/-DASLab$/, '')}`
-  const mlx = id.match(/-(\d+bit)$/)
-  if (mlx) return `MLX ${mlx[1].replace('bit', '-bit')}`
-  return id.replace(/^.*\//, '')
 }
 
 function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
@@ -176,15 +263,13 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
     const pct = Number(r['telemetry.window_pct'])
     const est = peak > 0 && pct > 0 ? (peak / pct) * 100 : 0
     const snapped = est ? ladder.reduce((a, b) => (Math.abs(b - est) < Math.abs(a - est) ? b : a)) : 0
-    const window = snapped ? `${Math.round(snapped / 1024)}k` : '?k'
-    const kv = r.kv_type ? `-${r.kv_type}` : ''
-    return `${SERVING_SHORT[r.serving] || esc(r.serving)}${kv}-${thinkingLevel(r.branch)}-ctx.${window}`
+    return snapped ? `${Math.round(snapped / 1024)}k` : '?k'
   }
   const header = [
-    '| test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |',
-    '|---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|',
+    '| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |',
+    '|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|',
   ]
-  const body = tagged.map(({ r, test }) => {
+  const line = ({ r, test }) => {
     const done = r.libraries_done === '' ? 8 : Number(r.libraries_done)
     const cap = capped(r)
     const raw = Number(r.score_total)
@@ -192,10 +277,10 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
     const minutes = r['telemetry.wall_clock_min'] === '' ? '—' : Number(r['telemetry.wall_clock_min']).toFixed(1)
     const state = r.invalid === 'True' ? 'invalid' : r.partial === 'True' ? 'partial' : 'done'
     const loop = r['telemetry.loop_flag'] === 'LOOP' ? esc(r['telemetry.loop_kind'] || 'yes') : ''
-    return [
+    return `| ${[
+      specTag(mendelSpec(r), { label: r.model }) + (distrust(r) ? ` ${distrust(r).marker || '†'}` : ''),
       `${test}-${esc(r.prompt_version)}`,
-      esc(mendelBuild(r)),
-      config(r) + (distrust(r) ? ` ${distrust(r).marker || '†'}` : ''),
+      config(r),
       score,
       `${done}/8/${state}`,
       minutes,
@@ -205,12 +290,17 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
       esc(r['telemetry.tool_calls'] || '0'),
       esc(r['telemetry.commits'] || '0'),
       loop,
-    ].join(' | ')
-  }).map((line) => `| ${line} |`)
+    ].join(' | ')} |`
+  }
+  const blind = tagged.filter((t) => t.test === 'blind').map(line)
+  const guided = tagged.filter((t) => t.test === 'guided').map(line)
+  const parts = []
+  if (blind.length) parts.push('Blind test:', '', ...header, ...blind)
+  if (guided.length) parts.push(...(blind.length ? [''] : []), 'Guided test:', '', ...header, ...guided)
   const used = untrusted.filter((u) => tagged.some(({ r }) => distrust(r) === u))
   const kvNote = [
     '',
-    'The build cell names the quant and its publisher. The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.',
+    'The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.',
   ]
   const legend = used.length
     ? [
@@ -220,7 +310,7 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
         ),
       ]
     : []
-  return [...header, ...body, ...kvNote, ...legend].join('\n')
+  return [...parts, ...kvNote, ...legend].join('\n')
 }
 
 function parseCtx(s) {
@@ -273,7 +363,7 @@ function sortRows(rows) {
   })
 }
 
-const GATED_BY = new Set(['mem', 'speed', 'untested'])
+const GATED_BY = new Set(['mem', 'speed'])
 
 function checkRows(rows, setup) {
   for (const r of rows) {
@@ -291,27 +381,52 @@ function hasPending(r) {
   return !isComplete(r)
 }
 
-function renderTable(rows, { footnotes = true, sort = true, start = 0 } = {}) {
+// Bold marks the best two of a column, and any further row within 15
+// percent of the column's span (best minus worst) of the second-best
+// value. Memory reads lower as better.
+function topSet(rows, read, { lower = false } = {}) {
+  const vals = rows.map((r) => read(r)).map((v) => (Number.isFinite(v) ? v : null))
+  const ranked = [...new Set(vals.filter((v) => v !== null))].sort((x, y) => (lower ? x - y : y - x))
+  if (!ranked.length) return new Set()
+  const second = ranked[Math.min(1, ranked.length - 1)]
+  const span = Math.abs(ranked[0] - ranked[ranked.length - 1])
+  const near = (v) => Math.abs(v - second) <= 0.15 * span && (lower ? v > second : v < second)
+  return new Set(rows.filter((r, i) => vals[i] !== null && (vals[i] === ranked[0] || vals[i] === second || near(vals[i]))))
+}
+
+function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = true } = {}) {
+  const fn = (n) => (footnotes ? n : '')
   const header = [
-    footnotes
-      ? '| # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² | Mendel³ |'
-      : '| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |',
-    '|--:|---|--:|:--:|--:|--:|--:|--:|',
+    `| Config | Max ctx | Gated by${fn('¹')} | tok/s<br>(shallow → deep) |${memory ? ' Memory<br>(at max ctx) |' : ''} EvalPlus${fn('²')} | Coding${fn('³')} |`,
+    `|---|--:|:--:|--:|${memory ? '--:|' : ''}--:|--:|`,
   ]
   const ordered = sort ? sortRows(rows) : rows
+  const num = (s) => parseFloat(String(s).replace(/[^\d.]/g, ''))
+  const top = {
+    maxCtx: topSet(ordered, (r) => parseCtx(r.maxCtx)),
+    tokShallow: topSet(ordered, (r) => num(r.tokShallow)),
+    tokDeep: topSet(ordered, (r) => num(r.tokDeep)),
+    memory: topSet(ordered, (r) => num(r.memory), { lower: true }),
+    evalplus: topSet(ordered, (r) => parseScore(r.evalplus) >= 0 ? parseScore(r.evalplus) : NaN),
+    mendel: topSet(ordered, (r) => parseMendel(r.mendel) ?? NaN),
+    composite: topSet(ordered, (r) => composite(r) ?? NaN),
+  }
   let anyStale = false
   const cell = (r, field) => {
     const stale = (r.stale || []).includes(field)
     if (stale) anyStale = true
     const value = `${r[field]}${stale ? '†' : ''}`
-    return r.abandoned ? `*${value}*` : value
+    const bold = top[field]?.has(r) ? `**${value}**` : value
+    return r.abandoned ? `*${bold}*` : bold
   }
   const body = ordered.map((r, i) => {
     const tok = `${cell(r, 'tokShallow')} → ${cell(r, 'tokDeep')}`
-    const config = r.abandoned
-      ? `*${r.config}* ${r.abandoned.marker || '💀'}`
-      : r.config
-    return `| ${start + i + 1} | ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} | ${cell(r, 'memory')} | ${cell(r, 'evalplus')} | ${cell(r, 'mendel')} |`
+    const spec = specTag(r.spec, { label: r.id, repo: repoOf(r), top: top.composite.has(r) })
+    const config = r.abandoned ? `${spec} ${r.abandoned.marker || '💀'}` : spec
+    const ev = evalplusCell(r.evalplus)
+    const md = mendelCellParts(r.mendel)
+    const stale = (f) => ((r.stale || []).includes(f) ? '†' : '')
+    return `| ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} |${memory ? ` ${cell(r, 'memory')} |` : ''} ${scoreTag(ev.value + stale('evalplus'), ev.sub, top.evalplus.has(r))} | ${scoreTag(md.value + stale('mendel'), md.sub, top.mendel.has(r))} |`
   })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']
@@ -354,7 +469,7 @@ function renderHomeTable(data) {
     const rest = pick.config.split(',').slice(2).map((s) => s.trim()).join(', ')
     return { ...pick, config: rest ? `${name}, ${rest}` : name }
   })
-  return renderTable(best)
+  return renderTable(best, { memory: false })
 }
 
 function applyBlock(content, startMark, endMark, block, target) {
@@ -376,7 +491,16 @@ function renderKpis(model) {
   const tiles = model.kpis.map((name) => {
     const stat = model.stats[name]
     if (!stat) throw new Error(`kpi "${name}" has no entry in stats`)
-    return `  <div class="kpi"><b>${stat.value}</b><span>${stat.label}</span></div>`
+    const limit = (field, max) => {
+      const text = String(stat[field] || '')
+      if (text.length > max) throw new Error(`kpi "${name}": ${field} is ${text.length} characters, the limit is ${max}: "${text}"`)
+      if (/[;—]/.test(text)) throw new Error(`kpi "${name}": ${field} reads as an explanation, not a qualifier: "${text}"`)
+    }
+    limit('value', 22)
+    limit('label', 44)
+    limit('sub', 44)
+    const sub = stat.sub ? `<small>${stat.sub}</small>` : ''
+    return `  <div class="kpi"><b>${stat.value}</b><span>${stat.label}</span>${sub}</div>`
   })
   return ['<div class="kpis">', ...tiles, '</div>'].join('\n')
 }
@@ -413,32 +537,41 @@ function renderModelTable(data, model) {
 }
 
 function renderModelConfigs(data, model) {
-  const blocks = modelRows(data, model).map((r, i) => {
-    const note = r.note ? ` ${r.note}` : ''
-    return ['**#' + (i + 1) + ' — ' + r.config + '.**' + note, '', '```bash', r.command, '```'].join('\n')
+  const blocks = modelRows(data, model).map((r) => {
+    const spec = specTag(r.spec, { label: r.id, repo: repoOf(r) })
+    return [spec, '', ...(r.note ? [r.note, ''] : []), '```bash', r.command, '```'].join('\n')
   })
   return blocks.join('\n\n')
 }
 
 function renderEvalplusTable(data) {
   const header = [
-    '| model | mode | pass@1 base | pass@1 plus | empty | completion |',
-    '|---|---|--:|--:|--:|--:|',
+    '| config | budget | pass@1 base | pass@1 plus | empty | completion |',
+    '|---|--:|--:|--:|--:|--:|',
   ]
   const completion = (empty) => {
     const m = /^(\d+)\/(\d+)$/.exec(empty || '')
     return m ? `${Math.round(((m[2] - m[1]) / m[2]) * 100)}%` : '—'
   }
-  const body = (data.evalplusRuns || []).map(
-    (r) => `| [${r.model}](./${r.slug}.md) | ${r.mode} | ${r.base} | ${r.plus} | ${r.empty} | ${completion(r.empty)} |`,
-  )
+  const runs = data.evalplusRuns || []
+  const specOf = (r) => {
+    if (r.spec) return specTag(r.spec, { label: r.model })
+    const row = data.rows.find((x) => x.id === r.row)
+    if (!row) throw new Error(`EvalPlus run "${r.model}" names no row and no spec`)
+    return specTag(row.spec, { label: row.id, repo: repoOf(row) })
+  }
+  const top = topSet(runs, (r) => parseFloat(r.base))
+  const body = runs.map((r) => {
+    if (!r.budget) throw new Error(`EvalPlus run "${r.model}" has no budget`)
+    return `| [${specOf(r)}](./${r.slug}.md) | ${r.budget} | ${top.has(r) ? `**${r.base}**` : r.base} | ${r.plus} | ${r.empty} | ${completion(r.empty)} |`
+  })
   return [...header, ...body].join('\n')
 }
 
 function renderDecodeSummary(data) {
   const header = [
-    '| model | best curve | tok/s (shallow → deep) | at | gated by |',
-    '|---|---|--:|--:|---|',
+    '| best curve | tok/s (shallow → deep) | at | gated by |',
+    '|---|--:|--:|---|',
   ]
   let anyStale = false
   const cell = (r, field) => {
@@ -456,23 +589,13 @@ function renderDecodeSummary(data) {
     return [...backends.values()].map((rows) => {
       const complete = rows.filter((r) => !hasPending(r))
       const pick = sortRows(complete.length ? complete : rows)[0]
-      const detail = pick.config.split(',').slice(1).join(',').trim() || '—'
-      return `| [${majorName(pick.config)}](./${slug}.md) | ${detail} | ${cell(pick, 'tokShallow')} → ${cell(pick, 'tokDeep')} | ${cell(pick, 'maxCtx')} | ${cell(pick, 'gatedBy')} |`
+      return `| [${specTag(pick.spec, { label: pick.id, repo: repoOf(pick) })}](./${slug}.md) | ${cell(pick, 'tokShallow')} → ${cell(pick, 'tokDeep')} | ${cell(pick, 'maxCtx')} | ${cell(pick, 'gatedBy')} |`
     })
   })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']
     : []
   return [...header, ...body, ...legend].join('\n')
-}
-
-function checkRefs(content, count, target) {
-  for (const m of content.matchAll(/#(\d+)/g)) {
-    const n = parseInt(m[1], 10)
-    if (n > count) {
-      throw new Error(`${target}: reference #${n} exceeds the ${count} visible config rows`)
-    }
-  }
 }
 
 const dataFiles = globSync('docs/setups/*/models.json')
@@ -487,8 +610,8 @@ for (const dataFile of dataFiles) {
   const visible = data.rows.filter((r) => !r.hidden && !r.retired && !r.abandoned)
   const completeRows = visible.filter(isComplete)
   const partialRows = sortRows(visible.filter((r) => !isComplete(r) && completeness(r) >= 0.4))
-  const comparisonTable = renderTable(completeRows)
-  const partialTable = renderTable(partialRows, { sort: false, start: completeRows.length })
+  const comparisonTable = renderTable(completeRows, { memory: false })
+  const partialTable = renderTable(partialRows, { sort: false, start: completeRows.length, memory: false })
   const homeTable = renderHomeTable({ ...data, rows: visible })
 
   const targets = [
@@ -541,7 +664,6 @@ for (const dataFile of dataFiles) {
     updated = applyBlock(updated, MODEL_START, MODEL_END, renderModelTable(data, model), target)
     updated = applyBlock(updated, CONFIGS_START, CONFIGS_END, renderModelConfigs(data, model), target)
     updated = applyBlock(updated, MODEL_MENDEL_START, MODEL_MENDEL_END, renderModelMendel(slug, mendelBlindAll, mendelGuidedAll, model.mendelUntrusted), target)
-    checkRefs(updated, modelRows(data, model).length, target)
     if (updated === original) continue
     if (CHECK) {
       console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)

@@ -1,7 +1,7 @@
 # Mendel — M1 Max 32 GB
 
-The agentic tier of the quality flow, after EvalPlus and before
-polyglot: one real repo task with known traps, scored on a 100-point
+The agentic tier of the quality flow, after EvalPlus: one real repo
+task with known traps, scored on a 100-point
 rubric — from the open-source
 [Mendel](https://github.com/irae/mendel/tree/benchmark) project, where
 the task, the rubric, and the raw results live. Method and house rules:
@@ -40,23 +40,23 @@ the machine serves today.
 ## Local models — blind test
 
 <!-- gen:mendel-local:start -->
-| model | serving | score | worst defect |
-|---|---|--:|---|
-| [qwen3.8-27b (bartowski Q4_K_M, xhigh)](../reports/qwen3.8-27b.md) | llama-server | **93/100** | medium |
-| [qwen3.8-27b](../reports/qwen3.8-27b.md) | llama-server | **87/100** | minor |
-| [qwen3.8-27b (ISTA IQ3_S-mtp, xhigh)](../reports/qwen3.8-27b.md) | llama-server | **80.5/100** | critical |
-| [qwen3.8-27b (ISTA IQ3_S-mtp)](../reports/qwen3.8-27b.md) | llama-server | **76.5/100** | critical |
-| [qwen3.8-27b (reserve 8192)](../reports/qwen3.8-27b.md) | llama-server | **76/100** | critical |
-| [qwen3.8-27b (ISTA IQ3_S-mtp, low)](../reports/qwen3.8-27b.md) | llama-server | **66/100** (partial) | critical |
-| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | llama-server | **63/100** | critical |
-| [qwen3.6-35b-a3b (unsloth UD-Q4_K_XL, off)](../reports/qwen3.6-35b-a3b.md) | llama-server | **50.5/100** | critical |
-| [qwen3.6-35b-a3b-f16 (unsloth UD-Q4_K_XL, no drafter, on)](../reports/qwen3.6-35b-a3b.md) | llama-server | **50/100** | critical |
-| [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **47.5/100** | critical |
-| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | mlx_lm.server | **37.5/100** (partial) | medium |
-| [qwen3.8-27b (AtomicChat AD-IQ3_S)](../reports/qwen3.8-27b.md) | llama-server | **37.5/100** (partial) | medium |
-| [Qwen3.8-27B (mlx, low)](../reports/qwen3.8-27b.md) | mlx_lm.server | **12.5/100** (partial) | minor |
-| [bonsai-prism](../reports/bonsai-27b.md) | llama-server | **12.5/100** | critical |
-| [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | llama-server | **12.5/100** (partial) | critical |
+| config | score | worst defect |
+|---|--:|---|
+| [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" />](../reports/qwen3.8-27b.md) | **93/100** | medium |
+| [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" />](../reports/qwen3.8-27b.md) | **87/100** | minor |
+| [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" />](../reports/qwen3.8-27b.md) | **80.5/100** | critical |
+| [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" />](../reports/qwen3.8-27b.md) | **76.5/100** | critical |
+| [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" />](../reports/qwen3.8-27b.md) | **76/100** | critical |
+| [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" />](../reports/qwen3.8-27b.md) | **66/100** (partial) | critical |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" />](../reports/qwen3.6-35b-a3b.md) | **63/100** | critical |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" />](../reports/qwen3.6-35b-a3b.md) | **50.5/100** | critical |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" />](../reports/qwen3.6-35b-a3b.md) | **50/100** | critical |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" />](../reports/gemma-4-26b-a4b.md) | **47.5/100** | critical |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="low" />](../reports/bonsai-27b.md) | **37.5/100** (partial) | medium |
+| [<ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" />](../reports/qwen3.8-27b.md) | **37.5/100** (partial) | medium |
+| [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" />](../reports/qwen3.8-27b.md) | **12.5/100** (partial) | minor |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" />](../reports/bonsai-27b.md) | **12.5/100** | critical |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" />](../reports/gemma-4-26b-a4b.md) | **12.5/100** (partial) | critical |
 <!-- gen:mendel-local:end -->
 
 Run notes for the two partials are in the
@@ -115,20 +115,20 @@ alongside the cloud anchors. More local guided runs are queued on the
 same frozen prompt; a blind-guided pair can land at different times.
 
 <!-- gen:mendel-guided:start -->
-| model | harness | score |
+| config | harness | score |
 |---|---|--:|
 | glm-5p3-flash | pi | **98/100** |
 | deepseek-v4-flash-0731 | pi | **97/100** |
 | gpt-5.6-luna | pi | **88.5/100** |
 | claude-sonnet-4.5 | pi | **88/100** |
-| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **83/100** |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" />](../reports/qwen3.6-35b-a3b.md) | pi | **83/100** |
 | Claude Haiku 4.5 | pi | **76/100** |
-| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **62.5/100** |
-| [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | pi | **57/100** (partial) |
-| [qwen3.6-35b-a3b](../reports/qwen3.6-35b-a3b.md) | pi | **46.5/100** |
-| [Gemma-4-12B (llama.cpp, off)](../reports/gemma-4-12b-it.md) | pi | **37.5/100** (partial) |
-| [bonsai-prism](../reports/bonsai-27b.md) | pi | **31.5/100** (partial) |
-| [gemma-4-26b-a4b](../reports/gemma-4-26b-a4b.md) | pi | **25/100** (partial) |
-| [Ternary-Bonsai-27B-mlx-2bit](../reports/bonsai-27b.md) | pi | **12.5/100** (partial) |
-| [bonsai-prism (f16 KV)](../reports/bonsai-27b.md) | pi | **12.5/100** (partial) |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" />](../reports/qwen3.6-35b-a3b.md) | pi | **62.5/100** |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" />](../reports/gemma-4-26b-a4b.md) | pi | **57/100** (partial) |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" />](../reports/qwen3.6-35b-a3b.md) | pi | **46.5/100** |
+| [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" />](../reports/gemma-4-12b-it.md) | pi | **37.5/100** (partial) |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" />](../reports/bonsai-27b.md) | pi | **31.5/100** (partial) |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" />](../reports/gemma-4-26b-a4b.md) | pi | **25/100** (partial) |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="low" />](../reports/bonsai-27b.md) | pi | **12.5/100** (partial) |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" />](../reports/bonsai-27b.md) | pi | **12.5/100** (partial) |
 <!-- gen:mendel-guided:end -->

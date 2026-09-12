@@ -2,7 +2,7 @@
 
 Tier 1 of the quality flow: cheap, execution-verified, sensitive to
 quantization damage. A gate, not a ranking. Survivors go to
-[Mendel](./mendel.md), then [polyglot](./polyglot.md). Common rules and
+[Mendel](./mendel.md). Common rules and
 the run loop apply ([common rules](./common-rules.md),
 [checklist](./checklist.md)).
 

@@ -4,10 +4,10 @@ Backends: llama-server, mlx-lm · [Qwen3.6-35B-A3B-MTP GGUF on Hugging Face](htt
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
-  <div class="kpi"><b>69.1 tok/s</b><span>decode, shallow (GGUF, f16 KV, creep with the drafter: a ceiling; 49.8 on real text without it)</span></div>
-  <div class="kpi"><b>41K</b><span>GGUF f16 KV depth, 52.6 tok/s, no ceiling found inside the largest `-c` that loads</span></div>
-  <div class="kpi"><b>0.951 / 0.915 / 100%</b><span>EvalPlus, thinking off (GGUF q8_0), 0 empty</span></div>
-  <div class="kpi"><b>41K</b><span>MLX last stable depth, 37.4 tok/s, then a Metal OOM</span></div>
+  <div class="kpi"><b>69.1 tok/s</b><span>decode at 4K, f16 KV with drafter, creep</span><small>49.8 on real text without the drafter</small></div>
+  <div class="kpi"><b>41K</b><span>f16 KV depth with drafter, 52.6 tok/s</span></div>
+  <div class="kpi"><b>0.951 / 0.915</b><span>EvalPlus base / plus, q8_0 KV, thinking off</span><small>100% completion</small></div>
+  <div class="kpi"><b>41K</b><span>MLX last stable depth, 37.4 tok/s</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
@@ -44,18 +44,18 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
-|--:|---|--:|:--:|--:|--:|--:|--:|
-| 1 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.939/0.921/97% | 63 |
-| 2 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking off | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.951/0.915/100% | 50.5 |
-| 3 | Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on | 66k | untested | 50.5 → 33.6 | 25.0 GB | 0.939/0.921/97% | 50 |
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Coding |
+|---|--:|:--:|--:|--:|--:|--:|
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" top /> | **82k** | speed | **43.7** → **13.0** | **25.6 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="63" sub="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" top /> | **82k** | speed | **43.7** → **13.0** | **25.6 GB** | <ScoreCell value="0.951/0.915" sub="100% completion" top /> | <ScoreCell value="50.5" sub="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" top /> | **66k** | mem | **50.5** → **33.6** | **25.0 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="50" sub="mendel-blind" top /> |
 
 Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.
 
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
-|--:|---|--:|:--:|--:|--:|--:|--:|
-| 4 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 41k | mem | 55.1 → 37.4 | 24.6 GB | 0.939/0.921/97% | pending |
-| 5 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 41k | mem | 69.1† → 52.6† | 25.1 GB | 0.939/0.921/97% | pending |
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Coding |
+|---|--:|:--:|--:|--:|--:|--:|
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | **41k** | mem | **55.1** → **37.4** | **24.6 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" /> | **41k** | mem | **69.1†** → **52.6†** | **25.1 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
@@ -65,7 +65,9 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on.** pi id `qwen3.6-35b-a3b`. Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000 with a real completion as the ceiling test: `-c 98304` serves; every `-c` from 100864 up loads and then OOMs on the first real request. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 43.7 tok/s at 4K, 19.2 at 49K, 13.0 at 82K, draft acceptance 54 to 85 percent, wired 25.6 GB flat, zero swap growth. This is the arm with the window: the f16 KV rows below load only `-c 40960`. Mendel at thinking off, guided: 62.5/100 on the 81920 window, complete, against 46.5 for the same config on a 49152 window with twelve compactions.
+<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" />
+
+pi id `qwen3.6-35b-a3b`. Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000 with a real completion as the ceiling test: `-c 98304` serves; every `-c` from 100864 up loads and then OOMs on the first real request. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 43.7 tok/s at 4K, 19.2 at 49K, 13.0 at 82K, draft acceptance 54 to 85 percent, wired 25.6 GB flat, zero swap growth. This is the arm with the window: the f16 KV rows below load only `-c 40960`. Mendel at thinking off, guided: 62.5/100 on the 81920 window, complete, against 46.5 for the same config on a 49152 window with twelve compactions.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
@@ -76,7 +78,9 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#2 — Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking off.** Curve shared with the thinking-on row: same server, same weights; the harness sets the thinking mode per request. Mendel blind at thinking off, measured 2026-09-11: 50.5/100, complete 8/8, on the 81920 window, one critical trap missed, sampling temperature 1.0 and top_p 0.95 from the server default.
+<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" />
+
+Curve shared with the thinking-on row: same server, same weights; the harness sets the thinking mode per request. Mendel blind at thinking off, measured 2026-09-11: 50.5/100, complete 8/8, on the 81920 window, one critical trap missed, sampling temperature 1.0 and top_p 0.95 from the server default.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
@@ -87,7 +91,9 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#3 — Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on.** pi id `qwen3.6-35b-a3b-f16`. The f16 KV arm without its drafter, laddered and creeped 2026-09-11 at wired limit 25000: `-c 65536` serves, the top of the depth list, and the creep ran clean to 65578 at 33.6 tok/s with no ceiling found, so the deepest step is a list end and not a ceiling. Without the drafter this arm holds a window 60 percent larger than the drafter arm's 40960. On real code text at the server's sampling it reads 49.8 at 4K and 38.3 at 40K. Mendel blind at thinking on, measured 2026-09-11: 50/100, complete 8/8, on the 65536 window, two compactions, one critical trap missed, 33 minutes, sampling temperature 1.0 and top_p 0.95 from the server default. With its vision projector loaded the same server serves `-c 65536` and one 1400-pixel page costs 7005 prompt tokens; see the benchmarks page.
+<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" />
+
+pi id `qwen3.6-35b-a3b-f16`. The f16 KV arm without its drafter, laddered and creeped 2026-09-11 at wired limit 25000: `-c 65536` serves, the top of the depth list, and the creep ran clean to 65578 at 33.6 tok/s with no ceiling found, so the deepest step is a list end and not a ceiling. Without the drafter this arm holds a window 60 percent larger than the drafter arm's 40960. On real code text at the server's sampling it reads 49.8 at 4K and 38.3 at 40K. Mendel blind at thinking on, measured 2026-09-11: 50/100, complete 8/8, on the 65536 window, two compactions, one critical trap missed, 33 minutes, sampling temperature 1.0 and top_p 0.95 from the server default. With its vision projector loaded the same server serves `-c 65536` and one 1400-pixel page costs 7005 prompt tokens; see the benchmarks page.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
@@ -97,14 +103,18 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#4 — Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on.** Measured 2026-09-06 at wired limit 25000: last stable depth 40982 at 37.4 tok/s, then the generation thread died on a Metal OOM at the next step while the models endpoint kept answering. Wired memory grows with the session and peaked at 24.6 GB. At wired 24000 the same server stopped at 37K in 18.7 GB.
+<ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" />
+
+Measured 2026-09-06 at wired limit 25000: last stable depth 40982 at 37.4 tok/s, then the generation thread died on a Metal OOM at the next step while the models endpoint kept answering. Wired memory grows with the session and peaked at 24.6 GB. At wired 24000 the same server stopped at 37K in 18.7 GB.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#5 — Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on.** Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000: `-c 40960` serves; 44032, 47104, 53248 and 65536 all load and then OOM on the first real completion. The creep found no ceiling to 40982, at 52.6 tok/s there and zero swap growth. At wired 24000 this arm loads only `-c 33792`. The cache type is worth 2.8x at 33K against the q8_0 row, for a window less than half its size.
+<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" />
+
+Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000: `-c 40960` serves; 44032, 47104, 53248 and 65536 all load and then OOM on the first real completion. The creep found no ceiling to 40982, at 52.6 tok/s there and zero swap growth. At wired 24000 this arm loads only `-c 33792`. The cache type is worth 2.8x at 33K against the q8_0 row, for a window less than half its size.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
@@ -179,26 +189,33 @@ so MTP numbers there read below the py/js bench.
 
 ## Quality — EvalPlus HumanEval+
 
-| config scored | budget | pass@1 base | pass@1 plus | empty completions | completion |
+| config | budget | pass@1 base | pass@1 plus | empty completions | completion |
 |---|--:|--:|--:|--:|--:|
-| llama-server + MTP, q8_0 KV, `-c 49152`, thinking off | 8192 | **0.951** | 0.915 | 0/164 | 100% |
-| llama-server + MTP, q8_0 KV, thinking on | 26624 | 0.939 | **0.921** | 5/164 | 97% |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" /> | 8192 | **0.951** | 0.915 | 0/164 | 100% |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | 26624 | 0.939 | **0.921** | 5/164 | 97% |
 
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
-|---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
-| guided-v3.0 | UD-Q4_K_XL unsloth | llama-q8_0-high-ctx.112k ⏳ | **83** | 8/8/done | 91.9 | 12,712k | 94k | 1 | 285 | 16 |  |
-| guided-v2.1 | UD-Q4_K_XL unsloth | llama-q8_0-default-ctx.96k | **65.5** | 8/8/done | 75.6 | 12,081k | 94k | 0 | 251 | 8 |  |
-| blind-v1.1 | UD-Q4_K_XL unsloth | llama-q8_0-high-ctx.96k | **63** | 8/8/done | 79.2 | 7,933k | 94k | 0 | 203 | 13 |  |
-| guided-v3.0 | UD-Q4_K_XL unsloth | llama-q8_0-off-ctx.80k | **62.5** | 8/8/done | 89.4 | 13,045k | 78k | 1 | 264 | 16 |  |
-| blind-v1.1 | UD-Q4_K_XL unsloth | llama-q8_0-off-ctx.80k | **50.5** | 8/8/done | 40.0 | 6,996k | 98k | 2 | 190 | 10 |  |
-| blind-v1.1 | UD-Q4_K_XL unsloth | llama-f16-default-ctx.64k | **50** | 8/8/done | 33.0 | 7,344k | 61k | 2 | 211 | 13 |  |
-| guided-v3.0 | UD-Q4_K_XL unsloth | llama-q8_0-off-ctx.48k | **46.5** | 8/8/done | 95.6 | 9,473k | 52k | 12 | 299 | 7 |  |
-| blind-v1.0 | UD-Q4_K_XL unsloth | llama-q8_0-default-ctx.96k | **41.5** | 8/8/done | 132.0 | 10,090k | 94k | 1 | 258 | 13 |  |
+Blind test:
 
-The build cell names the quant and its publisher. The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | blind-v1.1 | 96k | **63** | 8/8/done | 79.2 | 7,933k | 94k | 0 | 203 | 13 |  |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" /> | blind-v1.1 | 80k | **50.5** | 8/8/done | 40.0 | 6,996k | 98k | 2 | 190 | 10 |  |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" /> | blind-v1.1 | 64k | **50** | 8/8/done | 33.0 | 7,344k | 61k | 2 | 211 | 13 |  |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | blind-v1.0 | 96k | **41.5** | 8/8/done | 132.0 | 10,090k | 94k | 1 | 258 | 13 |  |
+
+Guided test:
+
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> ⏳ | guided-v3.0 | 112k | **83** | 8/8/done | 91.9 | 12,712k | 94k | 1 | 285 | 16 |  |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | guided-v2.1 | 96k | **65.5** | 8/8/done | 75.6 | 12,081k | 94k | 0 | 251 | 8 |  |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" /> | guided-v3.0 | 80k | **62.5** | 8/8/done | 89.4 | 13,045k | 78k | 1 | 264 | 16 |  |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" /> | guided-v3.0 | 48k | **46.5** | 8/8/done | 95.6 | 9,473k | 52k | 12 | 299 | 7 |  |
+
+The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 
 ⏳ this row ran on a 122880-token harness window; at wired 25000 the q8_0 arm serves `-c 98304`, so the window is out of reach. The score stands as a record; a re-run at the served window is pending, at low priority. [What the machine serves at wired 25000](../index.md#the-wired-limit-25000).
 <!-- gen:model-mendel:end -->
@@ -206,6 +223,8 @@ The build cell names the quant and its publisher. The config cell names the serv
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
 ## Decode speed vs used context
+
+<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" hide="drafter,kv,effort" />
 
 The llama arms share one depth ladder, so they share a table, in the
 shape of
@@ -215,9 +234,9 @@ swap growth on every row.
 
 | config | @ 4K | @ 8K | @ 16K | @ 25K | @ 33K | @ 41K | @ 49K | @ 66K | @ 82K | capped by |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|---|
-| **llama+MTP, f16 KV, `-c 40960`** | **69.1** | **71.3** | **65.7** | **61.0** | **56.5** | **52.6** | | | | mem — 40960 is the largest `-c` that serves a real request; no ceiling found inside it |
-| llama+MTP, q8_0 KV, `-c 98304` | 43.7 | 44.1 | 31.2 | 24.2 | 19.6 | 16.6 | 19.2 | 11.2 | 13.0 | speed — 7.86 at 98K, under the floor; 98304 is the largest `-c` that serves a real request |
-| llama, no drafter, f16 KV, `-c 65536` | 50.5 | 48.4 | 46.2 | 43.7 | 41.5 | 39.3 | 37.2 | 33.6 | | untested — clean to 65578, the depth list's end, no ceiling found |
+| **MTP n-max 3, f16 KV, `-c 40960`** | **69.1** | **71.3** | **65.7** | **61.0** | **56.5** | **52.6** | | | | mem — 40960 is the largest `-c` that serves a real request; no ceiling found inside it |
+| MTP n-max 3, q8_0 KV, `-c 98304` | 43.7 | 44.1 | 31.2 | 24.2 | 19.6 | 16.6 | 19.2 | 11.2 | 13.0 | speed — 7.86 at 98K, under the floor; 98304 is the largest `-c` that serves a real request |
+| no drafter, f16 KV, `-c 65536` | 50.5 | 48.4 | 46.2 | 43.7 | 41.5 | 39.3 | 37.2 | 33.6 | | untested — clean to 65578, the depth list's end, no ceiling found |
 
 The q8_0 cells at 4K, 49K and 82K and the whole no-drafter row were
 read 2026-09-11 with llama-benchy on real code text at the server's
@@ -242,7 +261,9 @@ unquantized and the server offers no KV option.
 Wired memory peaked at 24.6 GB. At wired 24000 the same server
 stopped at 37K in 18.7 GB ([historical](../historical.md)).
 
-## MTP draft depth sweep (32K, f16 KV)
+## MTP draft depth sweep (32K)
+
+<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" hide="drafter,effort" />
 
 | --spec-draft-n-max | py tok/s | py accept | js tok/s | js accept |
 |---|--:|--:|--:|--:|

@@ -4,10 +4,10 @@ Backends: mlx-lm, prism-llama fork · [Ternary-Bonsai-27B on Hugging Face](https
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
-  <div class="kpi"><b>24.5 tok/s</b><span>decode, shallow (MLX)</span></div>
-  <div class="kpi"><b>58K</b><span>max healthy depth, 17.3 tok/s (MLX)</span></div>
-  <div class="kpi"><b>0.927 / 0.890 / 98%</b><span>EvalPlus base/plus/completion (fork, calibrated q4)</span></div>
-  <div class="kpi"><b>2×48K</b><span>fork slots, 10.9 GB at the floor</span></div>
+  <div class="kpi"><b>24.5 tok/s</b><span>decode at 4K, MLX 2-bit</span></div>
+  <div class="kpi"><b>58K</b><span>deepest healthy step, MLX, 17.3 tok/s</span></div>
+  <div class="kpi"><b>0.927 / 0.890</b><span>EvalPlus base / plus, fork q4_0+bias</span><small>98% completion</small></div>
+  <div class="kpi"><b>2×48K</b><span>two fork slots, 10.9 GB at the floor</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
@@ -35,18 +35,18 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
-|--:|---|--:|:--:|--:|--:|--:|--:|
-| 1 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% | 37.5 (partial) |
-| 2 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% | 12.5 |
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Coding |
+|---|--:|:--:|--:|--:|--:|--:|
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" top /> | **58k** | mem | **24.5** → **17.3** | **22.5 GB** | <ScoreCell value="0.915/0.884" sub="97% completion" top /> | <ScoreCell value="37.5" sub="mendel-blind 38%" top /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" top /> | **33k** | speed | **14.8** → **7.9** | **9.6 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="12.5" sub="mendel-blind" top /> |
 
 Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.
 
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
-|--:|---|--:|:--:|--:|--:|--:|--:|
-| 3 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% | pending |
-| 4 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% | pending |
-| 5 | Ternary-Bonsai-27B, GGUF⁵, f16 KV, no drafter, thinking on | 131k | untested | 15.0 → 9.7 | 18.6 GB | pending | pending |
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Coding |
+|---|--:|:--:|--:|--:|--:|--:|
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | **58k** | mem | **24.5** → **17.3** | 22.5 GB | <ScoreCell value="0.927/0.902" sub="100% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | **2x48k** | speed | **14.9** → 7.8 | **10.9 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" /> | **131k** | mem | **15.0** → **9.7** | **18.6 GB** | <ScoreCell value="pending" /> | <ScoreCell value="pending" sub="mendel-blind" /> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -54,14 +54,18 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking on.** Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak.
+<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" />
+
+Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak.
 
 ```bash
 mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#2 — Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on.** The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).
+<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" />
+
+The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
@@ -73,14 +77,16 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --jinja --port 8081
 ```
 
-**#3 — Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off.** Extra body per request: `{"chat_template_kwargs":{"enable_thinking":false}}`. Curve shared with the thinking-on row: same server, same weights.
+<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" />
+
+Extra body per request: `{"chat_template_kwargs":{"enable_thinking":false}}`. Curve shared with the thinking-on row: same server, same weights.
 
 ```bash
 mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
   --prompt-cache-size 2 --port 8081
 ```
 
-**#4 — Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on.**
+<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" />
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
@@ -92,7 +98,9 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --jinja --port 8081
 ```
 
-**#5 — Ternary-Bonsai-27B, GGUF⁵, f16 KV, no drafter, thinking on.** pi id `bonsai-prism-f16`. Measured 2026-09-08 at wired limit 25000, fork revision `abbae72`. The fork at f16 KV has no speed floor inside `-c 131072`: 15.0 tok/s at 4K and 9.67 at 131K, the `-c` boundary itself, with wired flat at 18.3 GB and zero swap growth. The q4_0 KV rows floor at 33K, so the cache type was the floor, not the weights. No larger `-c` was tried. EvalPlus is pending: the f16 cache does not carry the calibrated q4 row's score. Mendel guided at thinking high: 12.5/100 capped from 36 raw, one of eight libraries, 376 tool calls and 74 tool errors at a 127K peak context.
+<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" />
+
+pi id `bonsai-prism-f16`. Measured 2026-09-08 at wired limit 25000, fork revision `abbae72`. The fork at f16 KV has no speed floor inside `-c 131072`: 15.0 tok/s at 4K and 9.67 at 131K, the `-c` boundary itself, with wired flat at 18.3 GB and zero swap growth. The q4_0 KV rows floor at 33K, so the cache type was the floor, not the weights. No larger `-c` was tried. EvalPlus is pending: the f16 cache does not carry the calibrated q4 row's score. Mendel guided at thinking high: 12.5/100 capped from 36 raw, one of eight libraries, 376 tool calls and 74 tool errors at a 127K peak context.
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
@@ -113,9 +121,9 @@ decode crosses the 8 tok/s floor at 33K used tokens. At f16 KV the
 floor is gone: the creep at `-c 131072` ran clean to the boundary at
 9.67 tok/s, in 18.3 GB, and no larger `-c` has been tried. MLX is
 fastest at every depth it reaches and memory-limited at ~58K. For one
-agent that needs depth, the fork at f16 (#5) now holds more than twice
-the MLX window at a lower speed; MLX (#1) is the faster arm to 58K;
-the q4_0 rows (#2, #4) are the light desktop and the multi-agent
+agent that needs depth, the fork at f16 KV now holds more than twice
+the MLX window at a lower speed; the MLX 2-bit row is the faster arm to 58K;
+the fork's q4_0 rows, one slot and two, are the light desktop and the multi-agent
 slots.
 
 **The f16 fork has one agent row, and it is a poor one.** Guided at
@@ -180,34 +188,41 @@ matches the PQ2_0 variant.
 
 | need | config | tok/s (used depth) | gated by |
 |---|---|--:|---|
-| **Depth + speed, one agent** | MLX #1 | 24.5 shallow; 17.27 at 58K | mem: OOM ~58-60K |
-| **Max depth, one agent** | fork f16 KV #5 | 15.0 shallow; 9.67 at 131K | untested: no floor inside `-c 131072` |
-| **Light desktop, one agent** | fork scored #2 | 14.8 shallow, 7.9 at 33K | speed: floor 33K used |
-| **Two agents** | fork 2×48K #4 | 14.94 shallow, 7.78 at 33K, one slot decoding | speed: slot floor 33K used |
+| **Depth + speed, one agent** | MLX 2-bit, thinking on | 24.5 shallow; 17.27 at 58K | mem: OOM ~58-60K |
+| **Max depth, one agent** | fork, f16 KV, no drafter | 15.0 shallow; 9.67 at 131K | mem: no floor inside `-c 131072` |
+| **Light desktop, one agent** | fork, q4_0 KV + bias, one slot | 14.8 shallow, 7.9 at 33K | speed: floor 33K used |
+| **Two agents** | fork, q4_0 KV + bias, 2×48K | 14.94 shallow, 7.78 at 33K, one slot decoding | speed: slot floor 33K used |
 
 ## Quality — EvalPlus HumanEval+
 
-| config scored | pass@1 base | pass@1 plus | empty completions | completion |
-|---|--:|--:|--:|--:|
-| fork, q4_0 KV + calibration bias, thinking on, budget 10240 #2 | 0.927 | 0.890 | 4/164 (~2%) | 98% |
-| MLX 2-bit, thinking on, budget 10240 #1 | 0.915 | 0.884 | 5/164 (~3%) | 97% |
+| config | budget | pass@1 base | pass@1 plus | empty completions | completion |
+|---|--:|--:|--:|--:|--:|
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | 10240 | 0.927 | 0.890 | 4/164 (~2%) | 98% |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" /> | 10240 | 0.915 | 0.884 | 5/164 (~3%) | 97% |
 
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
-|---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
-| blind-v1.0 | MLX 2-bit | mlx-unquantized-default-ctx.56k | **37.5** (raw 58) | 3/8/partial | 101.8 | 887k | 28k | 0 | 53 | 3 |  |
-| blind-v1.1 | MLX 2-bit | mlx-unquantized-low-ctx.56k | **37.5** (raw 55) | 3/8/partial | 300.0 | 3,555k | 52k | 0 | 135 | 4 | thinking |
-| guided-v2.1 | MLX 2-bit | mlx-unquantized-default-ctx.56k | **37.5** (raw 69) | 3/8/partial | 230.3 | 2,142k | 51k | 0 | 94 | 3 |  |
-| guided-v3.0 | Q2_g64 prism fork | llama-q4_0-high-ctx.64k | **31.5** | 3/8/partial | 300.0 | 0k | 63k | 10 | 343 | 3 |  |
-| blind-v1.1 | Q2_g64 prism fork | llama-q4_0-high-ctx.64k | **12.5** (raw 60.5) | 1/8/done | 43.1 | 1,718k | 51k | 0 | 76 | 2 |  |
-| guided-v3.0 | MLX 2-bit | mlx-unquantized-low-ctx.56k | **12.5** (raw 59) | 1/8/partial | 300.0 | 3,619k | 46k | 0 | 122 | 1 |  |
-| guided-v3.0 | Q2_g64 prism fork | llama-f16-high-ctx.128k | **12.5** | 1/8/partial | 194.7 | 21,049k | 127k | 1 | 376 | 2 |  |
-| guided-v3.0 | MLX 2-bit | mlx-unquantized-off-ctx.56k | **0** (raw 27) | 0/8/invalid | 83.5 | 48k | 5k | 0 | 10 | 0 |  |
-| guided-v3.0 | MLX 2-bit | mlx-unquantized-off-ctx.56k | **0** (raw 25) | 0/8/invalid | 186.9 | 1,969k | 27k | 0 | 105 | 0 | tool call |
+Blind test:
 
-The build cell names the quant and its publisher. The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" /> | blind-v1.0 | 56k | **37.5** (raw 58) | 3/8/partial | 101.8 | 887k | 28k | 0 | 53 | 3 |  |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="low" /> | blind-v1.1 | 56k | **37.5** (raw 55) | 3/8/partial | 300.0 | 3,555k | 52k | 0 | 135 | 4 | thinking |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | blind-v1.1 | 64k | **12.5** (raw 60.5) | 1/8/done | 43.1 | 1,718k | 51k | 0 | 76 | 2 |  |
+
+Guided test:
+
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" /> | guided-v2.1 | 56k | **37.5** (raw 69) | 3/8/partial | 230.3 | 2,142k | 51k | 0 | 94 | 3 |  |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | guided-v3.0 | 64k | **31.5** | 3/8/partial | 300.0 | 0k | 63k | 10 | 343 | 3 |  |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="low" /> | guided-v3.0 | 56k | **12.5** (raw 59) | 1/8/partial | 300.0 | 3,619k | 46k | 0 | 122 | 1 |  |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" /> | guided-v3.0 | 128k | **12.5** | 1/8/partial | 194.7 | 21,049k | 127k | 1 | 376 | 2 |  |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | guided-v3.0 | 56k | **0** (raw 27) | 0/8/invalid | 83.5 | 48k | 5k | 0 | 10 | 0 |  |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | guided-v3.0 | 56k | **0** (raw 25) | 0/8/invalid | 186.9 | 1,969k | 27k | 0 | 105 | 0 | tool call |
+
+The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).

@@ -4,10 +4,10 @@ Backends: llama-server, LM Studio MLX engine · [GGUF on Hugging Face](https://h
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
-  <div class="kpi"><b>245K</b><span>llama f16 depth, 8.86 tok/s</span></div>
-  <div class="kpi"><b>24.64 tok/s</b><span>llama f16, shallow</span></div>
-  <div class="kpi"><b>0.976 / 0.939 / 100%</b><span>EvalPlus, thinking off (GGUF)</span></div>
-  <div class="kpi"><b>2×82K</b><span>llama f16 slots, no drafter, both swept, 13.8 GB; four slots hold 49K each</span></div>
+  <div class="kpi"><b>245K</b><span>deepest step, llama f16 KV, 8.86 tok/s</span></div>
+  <div class="kpi"><b>24.64 tok/s</b><span>decode at 4K, llama f16 KV</span></div>
+  <div class="kpi"><b>0.976 / 0.939</b><span>EvalPlus base / plus, GGUF, thinking off</span><small>100% completion</small></div>
+  <div class="kpi"><b>2×82K</b><span>two llama slots at f16 KV, 13.8 GB</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
@@ -39,13 +39,13 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
-|--:|---|--:|:--:|--:|--:|--:|--:|
-| 1 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% | invalid |
-| 2 | Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off | 2x82k | mem | 25.0 → 15.7 | 13.8 GB | 0.976/0.939/100% | pending |
-| 3 | Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off | 4x49k | mem | 42.9† → 27.7† | 25.1 GB | 0.976/0.939/100% | pending |
-| 4 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8† → 6.5† | 10.5 GB | 0.976/0.939/100% | pending |
-| 5 | *Gemma-4-12B, LMS, unquantized KV, thinking off* 💀 | *131k* | *mem* | *34.19* → *23.23* | *17.2 GB* | *0.909/0.872/100%* | *invalid* |
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Coding |
+|---|--:|:--:|--:|--:|--:|--:|
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | **245k** | mem | 24.64 → 8.86 | **13.9 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="invalid" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | 2x82k | mem | 25.0 → 15.7 | **13.8 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="f16" effort="off" /> | 4x49k | mem | **42.9†** → **27.7†** | 25.1 GB | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" effort="off" /> | 16k | speed | 13.8† → 6.5† | **10.5 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" /> 💀 | ***131k*** | *mem* | ***34.19*** → ***23.23*** | *17.2 GB* | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | <ScoreCell value="invalid" sub="mendel-blind" /> |
 
 † from an earlier serving config or method; re-run pending.
 
@@ -59,7 +59,9 @@ Retired entries: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off.** pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.
+<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" />
+
+pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -69,7 +71,9 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#2 — Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off.** pi id `gemma-4-12b-2x`. Measured 2026-09-08 at wired limit 25000, both slots swept in turn. The clean per-slot depth is 81958 tokens, and it does not move with `-c`: at every allocation from 221184 up, the sweep stopped on swap growth at the step past 81958, and at `-c 196608` the same depth ran clean to the slot's own window. A larger `-c` loads (770048 serves a short completion) and buys no depth. Two slots hold about 71 percent of the single slot's 114718 clean depth at `-c 131072`. The EvalPlus score is the single-slot config's, same weights and cache type.
+<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" />
+
+pi id `gemma-4-12b-2x`. Measured 2026-09-08 at wired limit 25000, both slots swept in turn. The clean per-slot depth is 81958 tokens, and it does not move with `-c`: at every allocation from 221184 up, the sweep stopped on swap growth at the step past 81958, and at `-c 196608` the same depth ran clean to the slot's own window. A larger `-c` loads (770048 serves a short completion) and buys no depth. Two slots hold about 71 percent of the single slot's 114718 clean depth at `-c 131072`. The EvalPlus score is the single-slot config's, same weights and cache type.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -79,7 +83,9 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#3 — Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off.** pi id `gemma-4-12b-4x`. Measured 2026-09-05 at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper.
+<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="f16" effort="off" />
+
+pi id `gemma-4-12b-4x`. Measured 2026-09-05 at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -90,7 +96,9 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#4 — Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off.** The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep.
+<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" effort="off" />
+
+The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
@@ -101,7 +109,9 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#5 — Gemma-4-12B, LMS, unquantized KV, thinking off.** LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
+<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" />
+
+LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
 
 ```bash
 ~/.cache/lm-studio/bin/lms server start --port 8081
@@ -170,15 +180,22 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
-|---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
-| guided-v3.0 | Q4_K_XL unsloth | llama-f16-off-ctx.256k | **37.5** (raw 58) | 3/8/partial | 97.6 | 6,453k | 125k | 0 | 132 | 3 | text |
-| blind-v1.1 | MLX 4-bit LM Studio | lmstudio-unquantized-high-ctx.144k 💀 | **0** (raw 30.5) | 0/8/invalid | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
-| blind-v1.1 | Q4_K_XL unsloth | llama-f16-off-ctx.256k | **0** | 0/8/invalid | 80.3 | 9,994k | 179k | 0 | 92 | 0 |  |
-| guided-v3.0 | MLX 4-bit LM Studio | lmstudio-unquantized-high-ctx.160k 💀 | **0** (raw 30) | 0/8/invalid | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
-| guided-v3.0 | MLX 4-bit LM Studio | lmstudio-unquantized-low-ctx.160k 💀 | **0** (raw 29.5) | 0/8/invalid | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
+Blind test:
 
-The build cell names the quant and its publisher. The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="high" /> 💀 | blind-v1.1 | 144k | **0** (raw 30.5) | 0/8/invalid | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | blind-v1.1 | 256k | **0** | 0/8/invalid | 80.3 | 9,994k | 179k | 0 | 92 | 0 |  |
+
+Guided test:
+
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | guided-v3.0 | 256k | **37.5** (raw 58) | 3/8/partial | 97.6 | 6,453k | 125k | 0 | 132 | 3 | text |
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="high" /> 💀 | guided-v3.0 | 160k | **0** (raw 30) | 0/8/invalid | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="low" /> 💀 | guided-v3.0 | 160k | **0** (raw 29.5) | 0/8/invalid | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
+
+The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 
 💀 LM Studio is retired here: every agent run ended with zero commits. [Why this runtime is not a candidate](../lmstudio-retired.md).
 <!-- gen:model-mendel:end -->
@@ -186,6 +203,8 @@ The build cell names the quant and its publisher. The config cell names the serv
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
 ## Decode speed vs used context
+
+<ModelSpec base="Gemma-4-12B" effort="off" hide="quant,server,publisher,drafter,kv" />
 
 One row per configuration, the same shape as
 [the comparison table](../comparison.md#decode-speed-vs-used-context-the-8-tok-s-usability-floor).

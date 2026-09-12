@@ -4,10 +4,10 @@ Backends: llama-server, mlx-lm · [GGUF on Hugging Face](https://huggingface.co/
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
-  <div class="kpi"><b>197K</b><span>GGUF f16 KV ceiling, 60.3 tok/s at 4K, 17.3 there</span></div>
-  <div class="kpi"><b>0.976 / 0.945 / 100%</b><span>EvalPlus, thinking off (GGUF f16), 0 empty</span></div>
-  <div class="kpi"><b>0.884 / 0.860 / 89%</b><span>EvalPlus, thinking on (GGUF f16); MLX 0.713 / 0.701 / 72%</span></div>
-  <div class="kpi"><b>47.5 / 100</b><span>Mendel blind, thinking high (GGUF f16), complete</span></div>
+  <div class="kpi"><b>197K</b><span>GGUF f16 KV ceiling, 17.3 tok/s there</span></div>
+  <div class="kpi"><b>0.976 / 0.945</b><span>EvalPlus base / plus, GGUF, thinking off</span><small>100% completion</small></div>
+  <div class="kpi"><b>0.884 / 0.860</b><span>EvalPlus base / plus, GGUF, thinking on</span><small>89% completion</small></div>
+  <div class="kpi"><b>47.5 / 100</b><span>Mendel blind, GGUF f16 KV, thinking on</span><small>complete</small></div>
 </div>
 <!-- gen:model-kpis:end -->
 
@@ -35,18 +35,18 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
-|--:|---|--:|:--:|--:|--:|--:|--:|
-| 1 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV | 197k | mem | 60.3† → 17.3† | 25.6 GB | 0.884/0.860/89% | 47.5 |
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Coding |
+|---|--:|:--:|--:|--:|--:|--:|
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" top /> | **197k** | mem | **60.3†** → **17.3†** | **25.6 GB** | <ScoreCell value="0.884/0.860" sub="89% completion" top /> | <ScoreCell value="47.5" sub="mendel-blind" top /> |
 
 † from an earlier serving config or method; re-run pending.
 
 Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.
 
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
-|--:|---|--:|:--:|--:|--:|--:|--:|
-| 2 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots | 2x82k | mem | 66.6† → 33.6† | 25.3 GB | 0.884/0.860/89% | pending |
-| 3 | Gemma-4-26B-A4B, MLX, unquantized KV | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% | pending |
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Coding |
+|---|--:|:--:|--:|--:|--:|--:|
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **2x82k** | mem | **66.6†** → **33.6†** | **25.3 GB** | <ScoreCell value="0.884/0.860" sub="89% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | **70k** | mem | **51** → **12.8** | **20.0 GB** | <ScoreCell value="0.713/0.701" sub="72% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
@@ -56,7 +56,9 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Gemma-4-26B-A4B, GGUF, MTP, f16 KV.** pi id `gemma-4-26b-a4b`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete.
+<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" />
+
+pi id `gemma-4-26b-a4b`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete.
 
 ```bash
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
@@ -67,7 +69,9 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#2 — Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots.** pi id `gemma-4-26b-a4b-2x`. Measured 2026-09-05 at f16 KV: 202752 is the largest `-c` that serves a real 4096-token completion (208896 and above fail on compute buffers or at load), 101376 per slot. One slot swept with the other loaded and idle: no speed or memory stop before the slot window; the deepest row is 82K at 33.6 tok/s. The EvalPlus score is the single-slot f16 config's, same weights and cache type.
+<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" />
+
+pi id `gemma-4-26b-a4b-2x`. Measured 2026-09-05 at f16 KV: 202752 is the largest `-c` that serves a real 4096-token completion (208896 and above fail on compute buffers or at load), 101376 per slot. One slot swept with the other loaded and idle: no speed or memory stop before the slot window; the deepest row is 82K at 33.6 tok/s. The EvalPlus score is the single-slot f16 config's, same weights and cache type.
 
 ```bash
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
@@ -78,7 +82,7 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
-**#3 — Gemma-4-26B-A4B, MLX, unquantized KV.**
+<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" />
 
 ```bash
 mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \
@@ -148,31 +152,40 @@ one.
 
 ## Quality — EvalPlus HumanEval+
 
-| config scored | pass@1 base | pass@1 plus | empty completions | completion |
-|---|--:|--:|--:|--:|
-| llama-server UD-Q4_K_XL, f16 KV, thinking off, budget 8192 | 0.976 | 0.945 | 0/164 | 100% |
-| llama-server UD-Q4_K_XL, f16 KV, thinking on, budget 30000 | 0.884 | 0.860 | 18/164 | 89% |
-| mlx_lm.server 4-bit, f16 KV, thinking on, budget 30000 | 0.713 | 0.701 | 46/164 | 72% |
+| config | budget | pass@1 base | pass@1 plus | empty completions | completion |
+|---|--:|--:|--:|--:|--:|
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" /> | 8192 | 0.976 | 0.945 | 0/164 | 100% |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | 30000 | 0.884 | 0.860 | 18/164 | 89% |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | 30000 | 0.713 | 0.701 | 46/164 | 72% |
 
 The two GGUF rows share the thinking-on score; the MLX row keeps its own.
 
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
-|---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
-| guided-v3.0 | UD-Q4_K_XL unsloth | llama-f16-high-ctx.208k | **57** | 7/8/partial | 115.1 | 24,803k | 209k | 2 | 269 | 13 |  |
-| blind-v1.1 | UD-Q4_K_XL unsloth | llama-f16-high-ctx.208k | **47.5** | 8/8/done | 80.8 | 23,832k | 209k | 1 | 246 | 21 |  |
-| blind-v1.0 | UD-Q4_K_XL unsloth | llama-q8_0-default-ctx.256k | **38** | 8/8/partial | 104.0 | 8,150k | 142k | 0 | 115 | 9 |  |
-| guided-v3.0 | UD-Q4_K_XL unsloth | llama-f16-off-ctx.208k | **25** | 2/8/partial | 20.4 | 2,605k | 73k | 0 | 91 | 3 | tool call |
-| blind-v1.1 | UD-Q4_K_XL unsloth | llama-f16-off-ctx.208k | **12.5** | 1/8/partial | 28.0 | 8,053k | 136k | 0 | 120 | 7 | tool call |
+Blind test:
 
-The build cell names the quant and its publisher. The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | blind-v1.1 | 208k | **47.5** | 8/8/done | 80.8 | 23,832k | 209k | 1 | 246 | 21 |  |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="q8_0" effort="on" /> | blind-v1.0 | 256k | **38** | 8/8/partial | 104.0 | 8,150k | 142k | 0 | 115 | 9 |  |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" /> | blind-v1.1 | 208k | **12.5** | 1/8/partial | 28.0 | 8,053k | 136k | 0 | 120 | 7 | tool call |
+
+Guided test:
+
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | guided-v3.0 | 208k | **57** | 7/8/partial | 115.1 | 24,803k | 209k | 2 | 269 | 13 |  |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" /> | guided-v3.0 | 208k | **25** | 2/8/partial | 20.4 | 2,605k | 73k | 0 | 91 | 3 | tool call |
+
+The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:model-mendel:end -->
 
 The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
 
 ## Decode speed vs used context
+
+<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" hide="effort" />
 
 The two llama arms share one depth ladder, so they share a table, in
 the shape of
@@ -181,8 +194,8 @@ Slow creep 2026-09-05, wired limit 24000.
 
 | config | @ 4K | @ 16K | @ 24.5K | @ 33K | @ 49K | @ 66K | capped by |
 |---|--:|--:|--:|--:|--:|--:|---|
-| **llama+MTP, f16 KV, 1 slot, `-c 212992`** | **60.3** | **56.5** | | **45.9** | **45.9** | | mem — 212992 is the largest `-c` that loads; 26.4 at 115K and 17.3 at 197K, the deepest step |
-| llama+MTP, f16 KV, 2 slots, `-c 202752` | 66.6 | 60.8 | 52.6 | 50.6 | 36.1 | 34.4 | mem — 33.6 at 82K, the last row inside the slot window |
+| **1 slot, `-c 212992`** | **60.3** | **56.5** | | **45.9** | **45.9** | | mem — 212992 is the largest `-c` that loads; 26.4 at 115K and 17.3 at 197K, the deepest step |
+| 2 slots, `-c 202752` | 66.6 | 60.8 | 52.6 | 50.6 | 36.1 | 34.4 | mem — 33.6 at 82K, the last row inside the slot window |
 
 Cells are blank where no step was measured at that depth. Wired memory
 at the deepest row: 25.6 GB on one slot, 25.3 GB on two.
@@ -200,7 +213,9 @@ offers no KV option.
 Wired memory 20.0 GB at 70K. Full curves in
 [the benchmarks](../benchmarks/gemma-4-26b-a4b.md).
 
-## MTP draft depth sweep (32K, f16 KV)
+## MTP draft depth sweep (32K)
+
+<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" kv="f16" hide="drafter,effort" />
 
 Thinking ON (chat endpoint, `enable_thinking: true`, 1024 tokens):
 

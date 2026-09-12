@@ -12,6 +12,7 @@
       "evalplus": "0.982/0.939/100%",
       "mendel": "not run",
       "id": "qwen38-mlx-medium",
+      "spec": { "base": "Qwen3.8-27B", "quant": "4-bit", "server": "mlx_lm.server", "publisher": "mlx-community", "drafter": "", "kv": "f16", "effort": "medium" },
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --reasoning-effort medium --port 8081",
       "note": "Set the harness compaction threshold at ~26K. No Mendel run is planned: the agent task needs about 46K of context and this server holds 26K, so every attempt on this build was partial or invalid, and medium is no longer run on this model.",
@@ -30,8 +31,9 @@
       "tokDeep": "15.3",
       "memory": "22.0 GB",
       "evalplus": "0.976/0.927/100%",
-      "mendel": "12.5 (partial)",
+      "mendel": "12.5 (partial 13%)",
       "id": "qwen38-mlx-low",
+      "spec": { "base": "Qwen3.8-27B", "quant": "4-bit", "server": "mlx_lm.server", "publisher": "mlx-community", "drafter": "", "kv": "f16", "effort": "low" },
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --chat-template-args '{\"reasoning_effort\":\"low\"}' --prompt-cache-size 2 --port 8081",
       "note": "Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth."
@@ -46,6 +48,7 @@
       "evalplus": "0.982/0.939/100%",
       "mendel": "87",
       "id": "qwen38-gguf-medium",
+      "spec": { "base": "Qwen3.8-27B", "quant": "Q4_K_M", "server": "llama-server", "publisher": "bartowski", "drafter": "mtp/3", "kv": "f16", "effort": "medium" },
       "hidden": false,
       "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 73728 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `qwen3.8-27b`. Re-measured 2026-09-08 at wired limit 25000: `-c 73728` serves, `-c 81920` OOMs at load, and decode and draft acceptance stay flat across the whole served range, so the boundary is memory alone. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 11.8 tok/s at 4K and 8.6 at 65.5K, draft acceptance 37 to 63 percent, wired 25.0 GB, zero swap growth. The older `-c 49152` was the ceiling at wired 24000. The EvalPlus score is still the MLX effort-medium run, carried by the shared-score rule; this build has no full EvalPlus of its own, so it cannot be read against the two 3-bit builds below, which do. Mendel blind at effort medium: 87/100 at reserve 16384 and window 49152, and 76/100 on the 2026-09-08 re-run at reserve 8192 and window 65536. The two are different configurations, not a repeat: the second failed trap A, which the first passed.",
@@ -66,6 +69,7 @@
       "evalplus": "0.957/0.939/96%",
       "mendel": "93",
       "id": "qwen38-gguf-xhigh",
+      "spec": { "base": "Qwen3.8-27B", "quant": "Q4_K_M", "server": "llama-server", "publisher": "bartowski", "drafter": "mtp/3", "kv": "f16", "effort": "xhigh" },
       "hidden": false,
       "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 73728 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "Curve shared with the effort-medium row: same server, same weights; the harness sets the level per request. Mendel blind at effort xhigh, the model's own default, measured 2026-09-11: 93/100, complete 8/8, on the 65536 window, no critical defect, one medium, peak context 61572, sampling temperature 1.0 and top_p 0.95 from the server default. The highest Mendel score of any local row. EvalPlus at effort xhigh, scored 2026-09-12 at budget 30000 on the same build served at `-c 32768`: 0.957/0.939, six empty, every one a completion that hit the 30000-token cap, in 8h30 of active wall time; its own score, above the ISTA build's 0.945/0.921 at the same level."
@@ -80,6 +84,7 @@
       "evalplus": "0.976/0.945/99%",
       "mendel": "76.5",
       "id": "qwen38-gguf-ista-iq3s",
+      "spec": { "base": "Qwen3.8-27B", "quant": "IQ3_S-mtp", "server": "llama-server", "publisher": "ISTA-DASLab", "drafter": "mtp/3", "kv": "f16", "effort": "medium" },
       "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 131072 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -101,6 +106,7 @@
       "evalplus": "0.945/0.921/97%",
       "mendel": "80.5",
       "id": "qwen38-gguf-ista-nodrafter-xhigh",
+      "spec": { "base": "Qwen3.8-27B", "quant": "IQ3_S-mtp", "server": "llama-server", "publisher": "ISTA-DASLab", "drafter": "", "kv": "f16", "effort": "xhigh" },
       "hidden": false,
       "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 163840 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `qwen3.8-27b-ista`. The same build with the drafter off, measured 2026-09-09 at wired limit 25000. Without the drafter `-c 163840` serves, and the creep runs clean to 147478 tokens at 8.30 tok/s before the speed floor; swap never grew. The drafter is a loss on this build at every depth tried: at depth 256, no drafter reads 14.4 tok/s against 12.4 at n-max 3, and at depth 98338 it reads 9.5 against 7.9, so the no-drafter server is both faster and 33K deeper. Mendel blind at effort xhigh, the model's own default: 80.5/100, complete 8/8, one critical trap, 109 minutes, peak context 117,940 of a 147,456 window, no compaction. Sampling recorded for the first time on this machine: temperature 1.0, top_p 0.95, the values llama-server reads from the model file. EvalPlus at effort xhigh, scored 2026-09-10 at budget 30000 on the same build served at `-c 32768`: 0.945/0.921, five empty, every one a completion that hit the 30000-token cap, in about 9h43 of active wall time; below the medium and low rows on both metrics. More thinking does not help this model on short single-turn problems.",
@@ -119,8 +125,9 @@
       "tokDeep": "8.3",
       "memory": "24.4 GB",
       "evalplus": "0.976/0.933/99%",
-      "mendel": "66 (partial)",
+      "mendel": "66 (partial 88%)",
       "id": "qwen38-gguf-ista-nodrafter-low",
+      "spec": { "base": "Qwen3.8-27B", "quant": "IQ3_S-mtp", "server": "llama-server", "publisher": "ISTA-DASLab", "drafter": "", "kv": "f16", "effort": "low" },
       "hidden": false,
       "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 163840 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at effort low, scored 2026-09-10 at budget 8192 on the same build served at `-c 32768`: 0.976/0.933, one empty, in 2h23; level with the medium row on base and one problem lower on plus. The calibration converged on all 10 problems with a 3634-token maximum."
@@ -128,13 +135,14 @@
     {
       "config": "Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium",
       "maxCtx": "104k",
-      "gatedBy": "untested",
+      "gatedBy": "mem",
       "tokShallow": "15.8",
       "tokDeep": "10.3",
       "memory": "24.1 GB",
       "evalplus": "0.988/0.927/100%",
-      "mendel": "37.5 (partial)",
+      "mendel": "37.5 (partial 38%)",
       "id": "qwen38-gguf-atomicchat-iq3s",
+      "spec": { "base": "Qwen3.8-27B", "quant": "AD-IQ3_S", "server": "llama-server", "publisher": "AtomicChat", "drafter": "mtp/3", "kv": "f16", "effort": "medium" },
       "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 106496 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -156,6 +164,7 @@
       "evalplus": "0.939/0.921/97%",
       "mendel": "pending",
       "id": "qwen36-mlx-think",
+      "spec": { "base": "Qwen3.6-35B-A3B", "quant": "4-bit", "server": "mlx_lm.server", "publisher": "mlx-community", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \\\n  --prompt-cache-size 2 --port 8081",
       "note": "Measured 2026-09-06 at wired limit 25000: last stable depth 40982 at 37.4 tok/s, then the generation thread died on a Metal OOM at the next step while the models endpoint kept answering. Wired memory grows with the session and peaked at 24.6 GB. At wired 24000 the same server stopped at 37K in 18.7 GB.",
@@ -176,6 +185,7 @@
       "evalplus": "0.939/0.921/97%",
       "mendel": "63",
       "id": "qwen36-gguf-think",
+      "spec": { "base": "Qwen3.6-35B-A3B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "drafter": "mtp/3", "kv": "q8_0", "effort": "on" },
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
       "note": "pi id `qwen3.6-35b-a3b`. Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000 with a real completion as the ceiling test: `-c 98304` serves; every `-c` from 100864 up loads and then OOMs on the first real request. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 43.7 tok/s at 4K, 19.2 at 49K, 13.0 at 82K, draft acceptance 54 to 85 percent, wired 25.6 GB flat, zero swap growth. This is the arm with the window: the f16 KV rows below load only `-c 40960`. Mendel at thinking off, guided: 62.5/100 on the 81920 window, complete, against 46.5 for the same config on a 49152 window with twelve compactions.",
@@ -196,6 +206,7 @@
       "evalplus": "0.951/0.915/100%",
       "mendel": "50.5",
       "id": "qwen36-gguf-off",
+      "spec": { "base": "Qwen3.6-35B-A3B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "drafter": "mtp/3", "kv": "q8_0", "effort": "off" },
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
       "note": "Curve shared with the thinking-on row: same server, same weights; the harness sets the thinking mode per request. Mendel blind at thinking off, measured 2026-09-11: 50.5/100, complete 8/8, on the 81920 window, one critical trap missed, sampling temperature 1.0 and top_p 0.95 from the server default."
@@ -203,13 +214,14 @@
     {
       "config": "Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on",
       "maxCtx": "66k",
-      "gatedBy": "untested",
+      "gatedBy": "mem",
       "tokShallow": "50.5",
       "tokDeep": "33.6",
       "memory": "25.0 GB",
       "evalplus": "0.939/0.921/97%",
       "mendel": "50",
       "id": "qwen36-gguf-f16-nodrafter",
+      "spec": { "base": "Qwen3.6-35B-A3B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b-f16 --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 65536 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `qwen3.6-35b-a3b-f16`. The f16 KV arm without its drafter, laddered and creeped 2026-09-11 at wired limit 25000: `-c 65536` serves, the top of the depth list, and the creep ran clean to 65578 at 33.6 tok/s with no ceiling found, so the deepest step is a list end and not a ceiling. Without the drafter this arm holds a window 60 percent larger than the drafter arm's 40960. On real code text at the server's sampling it reads 49.8 at 4K and 38.3 at 40K. Mendel blind at thinking on, measured 2026-09-11: 50/100, complete 8/8, on the 65536 window, two compactions, one critical trap missed, 33 minutes, sampling temperature 1.0 and top_p 0.95 from the server default. With its vision projector loaded the same server serves `-c 65536` and one 1400-pixel page costs 7005 prompt tokens; see the benchmarks page.",
@@ -230,6 +242,7 @@
       "evalplus": "0.939/0.921/97%",
       "mendel": "pending",
       "id": "qwen36-gguf-f16",
+      "spec": { "base": "Qwen3.6-35B-A3B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "drafter": "mtp/3", "kv": "f16", "effort": "on" },
       "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 40960 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -245,6 +258,7 @@
       "evalplus": "0.713/0.701/72%",
       "mendel": "pending",
       "id": "gemma26-mlx",
+      "spec": { "base": "Gemma-4-26B-A4B", "quant": "4-bit", "server": "mlx_lm.server", "publisher": "mlx-community", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \\\n  --prompt-cache-size 2 --port 8081"
     },
@@ -258,6 +272,7 @@
       "evalplus": "0.884/0.860/89%",
       "mendel": "47.5",
       "id": "gemma26-gguf",
+      "spec": { "base": "Gemma-4-26B-A4B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "drafter": "mtp/2", "kv": "f16", "effort": "on" },
       "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 212992 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -279,6 +294,7 @@
       "evalplus": "0.884/0.860/89%",
       "mendel": "pending",
       "id": "gemma26-gguf-2x",
+      "spec": { "base": "Gemma-4-26B-A4B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "drafter": "mtp/2", "kv": "f16", "effort": "on" },
       "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 202752 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -286,6 +302,7 @@
     },
     {
       "id": "gemma12-lmstudio-think",
+      "spec": { "base": "Gemma-4-12B", "quant": "4-bit", "server": "lms", "publisher": "lmstudio-community", "repo": "lmstudio-community/gemma-4-12B-it-MLX-4bit", "drafter": "", "kv": "f16", "effort": "on" },
       "config": "Gemma-4-12B, LM Studio entry google/gemma-4-12b",
       "retired": {
         "date": "2026-09-04",
@@ -303,6 +320,7 @@
       "evalplus": "0.909/0.872/100%",
       "mendel": "invalid",
       "id": "gemma12-lmstudio-off",
+      "spec": { "base": "Gemma-4-12B", "quant": "4-bit", "server": "lms", "publisher": "lmstudio-community", "repo": "lmstudio-community/gemma-4-12B-it-MLX-4bit", "drafter": "", "kv": "f16", "effort": "off" },
       "hidden": false,
       "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y",
       "note": "LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only \u2014 in multi-turn tool work it loops on the thought channel.",
@@ -328,6 +346,7 @@
       "evalplus": "0.976/0.939/100%",
       "mendel": "invalid",
       "id": "gemma12-gguf-f16",
+      "spec": { "base": "Gemma-4-12B", "quant": "Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "drafter": "", "kv": "f16", "effort": "off" },
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.",
@@ -348,6 +367,7 @@
       "evalplus": "0.976/0.939/100%",
       "mendel": "pending",
       "id": "gemma12-gguf-off",
+      "spec": { "base": "Gemma-4-12B", "quant": "Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "drafter": "mtp/4", "kv": "q8_0", "effort": "off" },
       "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
@@ -363,6 +383,7 @@
       "evalplus": "0.976/0.939/100%",
       "mendel": "pending",
       "id": "gemma12-gguf-4x",
+      "spec": { "base": "Gemma-4-12B", "quant": "Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "drafter": "mtp/4", "kv": "f16", "effort": "off" },
       "stale": ["tokShallow", "tokDeep"],
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-4x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \\\n  -ngl 999 -fa on -c 655360 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -378,6 +399,7 @@
       "evalplus": "0.976/0.939/100%",
       "mendel": "pending",
       "id": "gemma12-gguf-2x",
+      "spec": { "base": "Gemma-4-12B", "quant": "Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "drafter": "", "kv": "f16", "effort": "off" },
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-2x --no-mmproj --parallel 2 \\\n  -ngl 999 -fa on -c 196608 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-12b-2x`. Measured 2026-09-08 at wired limit 25000, both slots swept in turn. The clean per-slot depth is 81958 tokens, and it does not move with `-c`: at every allocation from 221184 up, the sweep stopped on swap growth at the step past 81958, and at `-c 196608` the same depth ran clean to the slot's own window. A larger `-c` loads (770048 serves a short completion) and buys no depth. Two slots hold about 71 percent of the single slot's 114718 clean depth at `-c 131072`. The EvalPlus score is the single-slot config's, same weights and cache type.",
@@ -396,8 +418,9 @@
       "tokDeep": "17.3",
       "memory": "22.5 GB",
       "evalplus": "0.915/0.884/97%",
-      "mendel": "37.5 (partial)",
+      "mendel": "37.5 (partial 38%)",
       "id": "bonsai-mlx",
+      "spec": { "base": "Ternary-Bonsai-27B", "quant": "2-bit", "server": "mlx_lm.server", "publisher": "prism-ml", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
       "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
       "note": "Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak.",
@@ -418,6 +441,7 @@
       "evalplus": "0.927/0.902/100%",
       "mendel": "pending",
       "id": "bonsai-mlx-off",
+      "spec": { "base": "Ternary-Bonsai-27B", "quant": "2-bit", "server": "mlx_lm.server", "publisher": "prism-ml", "drafter": "", "kv": "f16", "effort": "off" },
       "hidden": false,
       "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
       "note": "Extra body per request: `{\"chat_template_kwargs\":{\"enable_thinking\":false}}`. Curve shared with the thinking-on row: same server, same weights."
@@ -432,6 +456,7 @@
       "evalplus": "0.927/0.890/98%",
       "mendel": "12.5",
       "id": "bonsai-fork-single",
+      "spec": { "base": "Ternary-Bonsai-27B", "quant": "Q2_g64", "server": "prism-llama", "publisher": "prism-ml", "repo": "prism-ml/Ternary-Bonsai-27B-gguf", "drafter": "", "kv": "q4_0+bias", "effort": "on" },
       "hidden": false,
       "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
       "note": "The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).",
@@ -452,19 +477,21 @@
       "evalplus": "0.927/0.890/98%",
       "mendel": "pending",
       "id": "bonsai-fork-2x",
+      "spec": { "base": "Ternary-Bonsai-27B", "quant": "Q2_g64", "server": "prism-llama", "publisher": "prism-ml", "repo": "prism-ml/Ternary-Bonsai-27B-gguf", "drafter": "", "kv": "q4_0+bias", "effort": "on" },
       "hidden": false,
       "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism-2x \\\n  -ngl 999 -fa on -c 98304 --parallel 2 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081"
     },
     {
       "config": "Ternary-Bonsai-27B, GGUF⁵, f16 KV, no drafter, thinking on",
       "maxCtx": "131k",
-      "gatedBy": "untested",
+      "gatedBy": "mem",
       "tokShallow": "15.0",
       "tokDeep": "9.7",
       "memory": "18.6 GB",
       "evalplus": "pending",
       "mendel": "pending",
       "id": "bonsai-fork-f16",
+      "spec": { "base": "Ternary-Bonsai-27B", "quant": "Q2_g64", "server": "prism-llama", "publisher": "prism-ml", "repo": "prism-ml/Ternary-Bonsai-27B-gguf", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
       "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism-f16 \\\n  -ngl 999 -fa on -c 131072 --parallel 1 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `bonsai-prism-f16`. Measured 2026-09-08 at wired limit 25000, fork revision `abbae72`. The fork at f16 KV has no speed floor inside `-c 131072`: 15.0 tok/s at 4K and 9.67 at 131K, the `-c` boundary itself, with wired flat at 18.3 GB and zero swap growth. The q4_0 KV rows floor at 33K, so the cache type was the floor, not the weights. No larger `-c` was tried. EvalPlus is pending: the f16 cache does not carry the calibrated q4 row's score. Mendel guided at thinking high: 12.5/100 capped from 36 raw, one of eight libraries, 376 tool calls and 74 tool errors at a 127K peak context.",
@@ -488,15 +515,16 @@
       "stats": {
         "decodeShallow": {
           "value": "24.5 tok/s",
-          "label": "decode, shallow (MLX)"
+          "label": "decode at 4K, MLX 2-bit"
         },
         "maxDepth": {
           "value": "58K",
-          "label": "max healthy depth, 17.3 tok/s (MLX)"
+          "label": "deepest healthy step, MLX, 17.3 tok/s"
         },
         "evalplus": {
-          "value": "0.927 / 0.890 / 98%",
-          "label": "EvalPlus base/plus/completion (fork, calibrated q4)"
+          "value": "0.927 / 0.890",
+          "label": "EvalPlus base / plus, fork q4_0+bias",
+          "sub": "98% completion"
         },
         "evalplusMlx": {
           "value": "0.915 / 0.884 / 97%",
@@ -504,7 +532,7 @@
         },
         "multiAgent": {
           "value": "2\u00d748K",
-          "label": "fork slots, 10.9 GB at the floor"
+          "label": "two fork slots, 10.9 GB at the floor"
         },
         "weights": {
           "value": "8 GB",
@@ -547,11 +575,11 @@
       "stats": {
         "agentDepth": {
           "value": "245K",
-          "label": "llama f16 depth, 8.86 tok/s"
+          "label": "deepest step, llama f16 KV, 8.86 tok/s"
         },
         "agentShallow": {
           "value": "24.64 tok/s",
-          "label": "llama f16, shallow"
+          "label": "decode at 4K, llama f16 KV"
         },
         "lmsCeiling": {
           "value": "131K",
@@ -566,8 +594,9 @@
           "label": "LM Studio auto-fit window at wired 24000"
         },
         "evalplusOff": {
-          "value": "0.976 / 0.939 / 100%",
-          "label": "EvalPlus, thinking off (GGUF)"
+          "value": "0.976 / 0.939",
+          "label": "EvalPlus base / plus, GGUF, thinking off",
+          "sub": "100% completion"
         },
         "evalplusOn": {
           "value": "pending",
@@ -575,7 +604,7 @@
         },
         "slots": {
           "value": "2\u00d782K",
-          "label": "llama f16 slots, no drafter, both swept, 13.8 GB; four slots hold 49K each"
+          "label": "two llama slots at f16 KV, 13.8 GB"
         },
         "shallowLlama": {
           "value": "35.6 tok/s",
@@ -605,8 +634,9 @@
           "label": "last stable depth, 12.8 tok/s (MLX)"
         },
         "evalplus": {
-          "value": "0.884 / 0.860 / 89%",
-          "label": "EvalPlus, thinking on (GGUF f16); MLX 0.713 / 0.701 / 72%"
+          "value": "0.884 / 0.860",
+          "label": "EvalPlus base / plus, GGUF, thinking on",
+          "sub": "89% completion"
         },
         "empties": {
           "value": "18/164",
@@ -618,15 +648,17 @@
         },
         "ggufFloor": {
           "value": "197K",
-          "label": "GGUF f16 KV ceiling, 60.3 tok/s at 4K, 17.3 there"
+          "label": "GGUF f16 KV ceiling, 17.3 tok/s there"
         },
         "evalplusOff": {
-          "value": "0.976 / 0.945 / 100%",
-          "label": "EvalPlus, thinking off (GGUF f16), 0 empty"
+          "value": "0.976 / 0.945",
+          "label": "EvalPlus base / plus, GGUF, thinking off",
+          "sub": "100% completion"
         },
         "mendelBlind": {
           "value": "47.5 / 100",
-          "label": "Mendel blind, thinking high (GGUF f16), complete"
+          "label": "Mendel blind, GGUF f16 KV, thinking on",
+          "sub": "complete"
         }
       }
     },
@@ -649,11 +681,11 @@
         },
         "depthGguf": {
           "value": "41K",
-          "label": "GGUF f16 KV depth, 52.6 tok/s, no ceiling found inside the largest `-c` that loads"
+          "label": "f16 KV depth with drafter, 52.6 tok/s"
         },
         "mlxCeiling": {
           "value": "41K",
-          "label": "MLX last stable depth, 37.4 tok/s, then a Metal OOM"
+          "label": "MLX last stable depth, 37.4 tok/s"
         },
         "memory": {
           "value": "24.6 GB",
@@ -664,8 +696,9 @@
           "label": "empty completions at full budget"
         },
         "evalplusOff": {
-          "value": "0.951 / 0.915 / 100%",
-          "label": "EvalPlus, thinking off (GGUF q8_0), 0 empty"
+          "value": "0.951 / 0.915",
+          "label": "EvalPlus base / plus, q8_0 KV, thinking off",
+          "sub": "100% completion"
         },
         "depthGgufQ8": {
           "value": "82K",
@@ -673,7 +706,8 @@
         },
         "shallowGguf": {
           "value": "69.1 tok/s",
-          "label": "decode, shallow (GGUF, f16 KV, creep with the drafter: a ceiling; 49.8 on real text without it)"
+          "label": "decode at 4K, f16 KV with drafter, creep",
+          "sub": "49.8 on real text without the drafter"
         },
         "mendelGuided": {
           "value": "62.5 / 100",
@@ -708,7 +742,8 @@
       "stats": {
         "evalplus": {
           "value": "0.988 / 0.945",
-          "label": "EvalPlus, effort medium \u2014 best base is the AtomicChat 3-bit GGUF (100%), best plus is the ISTA 3-bit GGUF (99%); the ISTA build scores 0.976 / 0.933 / 99% at effort low and 0.945 / 0.921 / 97% at xhigh"
+          "label": "EvalPlus best base and plus, 3-bit GGUFs",
+          "sub": "AtomicChat base, ISTA plus, effort medium"
         },
         "shallow": {
           "value": "17 tok/s",
@@ -716,15 +751,17 @@
         },
         "ceiling": {
           "value": "28K",
-          "label": "MLX memory ceiling"
+          "label": "MLX memory ceiling, 15.3 tok/s there"
         },
         "ggufFloor": {
           "value": "147K",
-          "label": "deepest clean GGUF f16 KV depth, the 3-bit ISTA build without its drafter, 8.3 tok/s there"
+          "label": "deepest clean depth, ISTA, no drafter",
+          "sub": "8.3 tok/s there"
         },
         "mendelBlind": {
           "value": "93 / 100",
-          "label": "Mendel blind, effort xhigh, the model's own default: 4-bit GGUF f16 KV with its drafter, 65K window, complete, no critical defect; the ISTA 3-bit build at xhigh scored 80.5 on a 147K window, complete"
+          "label": "Mendel blind, 4-bit GGUF, effort xhigh",
+          "sub": "complete, no critical defect"
         },
         "mendelMedium": {
           "value": "87 / 100",
@@ -746,6 +783,8 @@
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (MLX 4-bit, unquantized KV)",
       "mode": "effort medium",
+      "row": "qwen38-mlx-medium",
+      "budget": 8192,
       "base": "0.982",
       "plus": "0.939",
       "empty": "0/164"
@@ -754,6 +793,8 @@
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV)",
       "mode": "effort medium",
+      "row": "qwen38-gguf-ista-iq3s",
+      "budget": 8192,
       "base": "0.976",
       "plus": "0.945",
       "empty": "1/164"
@@ -762,6 +803,8 @@
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF AD-IQ3_S, AtomicChat, f16 KV)",
       "mode": "effort medium",
+      "row": "qwen38-gguf-atomicchat-iq3s",
+      "budget": 8886,
       "base": "0.988",
       "plus": "0.927",
       "empty": "0/164"
@@ -770,6 +813,8 @@
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
       "mode": "effort low",
+      "row": "qwen38-gguf-ista-nodrafter-low",
+      "budget": 8192,
       "base": "0.976",
       "plus": "0.933",
       "empty": "1/164"
@@ -778,6 +823,8 @@
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
       "mode": "effort xhigh",
+      "row": "qwen38-gguf-ista-nodrafter-xhigh",
+      "budget": 30000,
       "base": "0.945",
       "plus": "0.921",
       "empty": "5/164"
@@ -786,6 +833,8 @@
       "slug": "qwen3.6-35b-a3b",
       "model": "Qwen3.6-35B-A3B",
       "mode": "thinking on",
+      "row": "qwen36-gguf-think",
+      "budget": 26624,
       "base": "0.939",
       "plus": "0.921",
       "empty": "5/164"
@@ -794,6 +843,8 @@
       "slug": "qwen3.6-35b-a3b",
       "model": "Qwen3.6-35B-A3B (GGUF UD-Q4_K_XL, q8_0 KV)",
       "mode": "thinking off",
+      "row": "qwen36-gguf-off",
+      "budget": 8192,
       "base": "0.951",
       "plus": "0.915",
       "empty": "0/164"
@@ -802,6 +853,8 @@
       "slug": "bonsai-27b",
       "model": "Ternary-Bonsai-27B (fork q4+bias)",
       "mode": "thinking on",
+      "row": "bonsai-fork-single",
+      "budget": 10240,
       "base": "0.927",
       "plus": "0.890",
       "empty": "4/164"
@@ -810,6 +863,8 @@
       "slug": "bonsai-27b",
       "model": "Ternary-Bonsai-27B (MLX 2-bit)",
       "mode": "thinking on",
+      "row": "bonsai-mlx",
+      "budget": 10240,
       "base": "0.915",
       "plus": "0.884",
       "empty": "5/164"
@@ -818,6 +873,8 @@
       "slug": "gemma-4-12b-it",
       "model": "Gemma-4-12B (GGUF Q4_K_XL)",
       "mode": "thinking off",
+      "row": "gemma12-gguf-f16",
+      "budget": 8192,
       "base": "0.976",
       "plus": "0.939",
       "empty": "0/164"
@@ -826,6 +883,8 @@
       "slug": "gemma-4-12b-it",
       "model": "Gemma-4-12B (LM Studio MLX 4-bit)",
       "mode": "thinking off",
+      "row": "gemma12-lmstudio-off",
+      "budget": 30000,
       "base": "0.909",
       "plus": "0.872",
       "empty": "0/164"
@@ -834,6 +893,8 @@
       "slug": "gemma-4-26b-a4b",
       "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)",
       "mode": "thinking off",
+      "spec": { "base": "Gemma-4-26B-A4B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/gemma-4-26b-a4b-it-GGUF", "drafter": "mtp/2", "kv": "f16", "effort": "off" },
+      "budget": 8192,
       "base": "0.976",
       "plus": "0.945",
       "empty": "0/164"
@@ -842,6 +903,8 @@
       "slug": "gemma-4-26b-a4b",
       "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)",
       "mode": "thinking on",
+      "row": "gemma26-gguf",
+      "budget": 30000,
       "base": "0.884",
       "plus": "0.860",
       "empty": "18/164"
@@ -850,9 +913,21 @@
       "slug": "gemma-4-26b-a4b",
       "model": "Gemma-4-26B-A4B (MLX 4-bit)",
       "mode": "thinking on",
+      "row": "gemma26-mlx",
+      "budget": 30000,
       "base": "0.713",
       "plus": "0.701",
       "empty": "46/164"
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF Q4_K_M, bartowski, f16 KV)",
+      "mode": "effort xhigh",
+      "row": "qwen38-gguf-xhigh",
+      "budget": 30000,
+      "base": "0.957",
+      "plus": "0.939",
+      "empty": "6/164"
     }
   ]
 }

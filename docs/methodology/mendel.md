@@ -1,6 +1,6 @@
 # Mendel — the agentic benchmark
 
-Tier 2 of the quality flow, before [polyglot](./polyglot.md): a
+Tier 2 of the quality flow, the last: a
 real-repo agentic task from the open-source
 [Mendel](https://github.com/irae/mendel) project. One identical task
 (replace eight npm dependencies with native Node equivalents, with known

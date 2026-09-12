@@ -60,7 +60,6 @@ Site and process docs:
   - `docs/methodology/mendel.md`. Before a Mendel run. The real
     instructions live in the Mendel repo; this page says where, and
     gives the house rules (one at a time, daemon cleanup).
-  - `docs/methodology/polyglot.md`. Before an Aider polyglot run.
   - `docs/methodology/server-lore.md`. Before you touch any server,
     and first when a run stalls or a number looks impossible.
   - `docs/methodology/status-lines.md`. Before you report a run's

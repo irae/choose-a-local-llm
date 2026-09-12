@@ -13,7 +13,6 @@ split by task — read the page for the task you are about to do:
 | Set or re-find the macOS wired limit | [Wired limit](./methodology/wired-limit.md) |
 | Run an EvalPlus scoring pass | [EvalPlus](./methodology/evalplus.md) |
 | Run the Mendel agentic benchmark | [Mendel](./methodology/mendel.md) |
-| Run the Aider polyglot benchmark | [Polyglot](./methodology/polyglot.md) |
 | Report progress of a run, in chat or in a file | [Status lines](./methodology/status-lines.md) |
 | Touch a server, or debug a stall/crash | [Server lore](./methodology/server-lore.md) |
 
@@ -23,8 +22,7 @@ One question for one computer: which local model, runtime, and
 configuration should I code with? Speed alone does not pick a winner. A
 config must hold a usable decode speed at real agent depths (our floor:
 8 tok/s), fit in memory beside a harness, and pass the quality gates.
-EvalPlus gates every config; Mendel and Aider polyglot rank the
-survivors.
+EvalPlus gates every config; Mendel ranks the survivors.
 
 ## How we pick models (reasoning to reuse)
 
@@ -85,8 +83,7 @@ its page above.
 12. **Mendel**, the agentic benchmark, blind and guided per its plan.
     The plan sends very weak models to guided only and very strong
     ones to blind only.
-13. **Aider polyglot** for the survivors, hours per model.
-14. **Record every surface, commit, publish.**
+13. **Record every surface, commit, publish.**
 
 Steps 3 to 9 are HTTP against the server and need no harness. Steps 10
 to 13 go through pi. A runner drops a model at a gate on its own and

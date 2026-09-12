@@ -106,3 +106,97 @@
     );
   }
 }
+
+/* Model spec cell: one line of identity, one muted line of serving
+   details. The effort pill is the only colour in a table row. */
+.vp-doc .ms,
+.vp-doc .cs {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.15em;
+  line-height: 1.3;
+  vertical-align: middle;
+}
+
+.vp-doc .ms-name,
+.vp-doc .cs-value {
+  font-weight: 500;
+}
+
+.vp-doc .ms-top .ms-name,
+.vp-doc .cs-top .cs-value {
+  font-weight: 700;
+}
+
+.vp-doc .ms-sub {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  font-size: 0.82em;
+  color: var(--vp-c-text-2);
+}
+
+.vp-doc .cs-sub {
+  font-size: 0.82em;
+  color: var(--vp-c-text-2);
+}
+
+.vp-doc .ms-pill {
+  display: inline-block;
+  font-size: 0.78em;
+  line-height: 1.5;
+  padding: 0 0.45em;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 3px;
+  font-variant-numeric: tabular-nums;
+  color: var(--vp-c-text-2);
+  white-space: nowrap;
+}
+
+.vp-doc a.ms-publisher {
+  color: var(--vp-c-text-2);
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  font-weight: 400;
+}
+
+.vp-doc a.ms-publisher:hover {
+  color: var(--vp-c-brand-1);
+  text-decoration-color: var(--vp-c-brand-1);
+}
+
+.vp-doc .ms-effort {
+  --ms-tint: #7c8390;
+  color: var(--ms-tint);
+  border-color: color-mix(in srgb, var(--ms-tint) 45%, transparent);
+  background: color-mix(in srgb, var(--ms-tint) 12%, transparent);
+}
+
+.vp-doc .ms-effort-low { --ms-tint: #4f7fbf; }
+.vp-doc .ms-effort-medium { --ms-tint: #4c9a63; }
+.vp-doc .ms-effort-on,
+.vp-doc .ms-effort-high { --ms-tint: #b8912a; }
+.vp-doc .ms-effort-xhigh,
+.vp-doc .ms-effort-max { --ms-tint: #c25b6e; }
+
+.dark .vp-doc .ms-effort-low { --ms-tint: #7fa6d9; }
+.dark .vp-doc .ms-effort-medium { --ms-tint: #7dbb8f; }
+.dark .vp-doc .ms-effort-on,
+.dark .vp-doc .ms-effort-high { --ms-tint: #d0ad55; }
+.dark .vp-doc .ms-effort-xhigh,
+.dark .vp-doc .ms-effort-max { --ms-tint: #d98a9a; }
+
+/* A spec line under a section heading of a detail table. */
+.vp-doc h2 + p > .ms:only-child,
+.vp-doc h3 + p > .ms:only-child {
+  margin-top: -0.5rem;
+}
+
+.vp-doc .kpi small {
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--vp-c-text-3);
+}

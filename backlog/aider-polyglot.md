@@ -1,4 +1,9 @@
-# Aider polyglot — the ranking benchmark
+# Aider polyglot — the ranking tier, parked
+
+Status: unscheduled, parked by the owner on 2026-09-12. Filed from the
+method page it replaced; the site no longer names polyglot. Needs a
+driver machine beside the Mac (docker does not fit beside a loaded
+model) and a decision on which survivors go.
 
 The last tier of the quality flow, for gate survivors only: the **Aider
 polyglot benchmark** — 225 Exercism problems, 6 languages, 2 attempts
@@ -6,8 +11,8 @@ with test feedback, docker against your servers. Hours per model.
 
 ## Requirements
 
-- The config passed the [EvalPlus gate](./evalplus.md).
-- [Mendel](./mendel.md) is a soft filter, not a gate. The intent is to
+- The config passed the [EvalPlus gate](../docs/methodology/evalplus.md).
+- [Mendel](../docs/methodology/mendel.md) is a soft filter, not a gate. The intent is to
   send only the configs that do well on Mendel to polyglot, because
   polyglot costs hours per model. The owner can decide to run polyglot
   before Mendel is ready for a config, or for all gate survivors.

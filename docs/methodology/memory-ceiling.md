@@ -125,7 +125,7 @@ run, so record the starting value and watch for an increase.
 The consequence of growth depends on what is being measured. A
 throughput or ceiling number is invalid, because it timed the swap
 file, and the point where swap starts growing is the real ceiling. A
-judged score — Mendel, polyglot, EvalPlus — survives, because the
+judged score — Mendel, EvalPlus — survives, because the
 answer is graded rather than timed; record it as a deviation.
 
 **Why the balloon is optional.** Above a threshold of free memory the

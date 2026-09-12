@@ -4,10 +4,10 @@ Backends: llama-server, mlx-lm · [Qwen3.8-27B MLX 4-bit on Hugging Face](https:
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
-  <div class="kpi"><b>0.988 / 0.945</b><span>EvalPlus, effort medium — best base is the AtomicChat 3-bit GGUF (100%), best plus is the ISTA 3-bit GGUF (99%); the ISTA build scores 0.976 / 0.933 / 99% at effort low and 0.945 / 0.921 / 97% at xhigh</span></div>
-  <div class="kpi"><b>93 / 100</b><span>Mendel blind, effort xhigh, the model's own default: 4-bit GGUF f16 KV with its drafter, 65K window, complete, no critical defect; the ISTA 3-bit build at xhigh scored 80.5 on a 147K window, complete</span></div>
-  <div class="kpi"><b>147K</b><span>deepest clean GGUF f16 KV depth, the 3-bit ISTA build without its drafter, 8.3 tok/s there</span></div>
-  <div class="kpi"><b>28K</b><span>MLX memory ceiling</span></div>
+  <div class="kpi"><b>0.988 / 0.945</b><span>EvalPlus best base and plus, 3-bit GGUFs</span><small>AtomicChat base, ISTA plus, effort medium</small></div>
+  <div class="kpi"><b>93 / 100</b><span>Mendel blind, 4-bit GGUF, effort xhigh</span><small>complete, no critical defect</small></div>
+  <div class="kpi"><b>147K</b><span>deepest clean depth, ISTA, no drafter</span><small>8.3 tok/s there</small></div>
+  <div class="kpi"><b>28K</b><span>MLX memory ceiling, 15.3 tok/s there</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
@@ -48,23 +48,23 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
-|--:|---|--:|:--:|--:|--:|--:|--:|
-| 1 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort xhigh | 72k | mem | 11.8 → 8.6 | 25.0 GB | 0.957/0.939/96% | 93 |
-| 2 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 72k | mem | 11.8 → 8.6 | 25.0 GB | 0.982/0.939/100% | 87 |
-| 3 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort xhigh | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.945/0.921/97% | 80.5 |
-| 4 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium | 128k | mem | 15.1† → 9.7† | 24.2 GB | 0.976/0.945/99% | 76.5 |
-| 5 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.976/0.933/99% | 66 (partial) |
-| 6 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8† → 10.3† | 24.1 GB | 0.988/0.927/100% | 37.5 (partial) |
-| 7 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% | 12.5 (partial) |
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Coding |
+|---|--:|:--:|--:|--:|--:|--:|
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" top /> | 72k | mem | 11.8 → 8.6 | 25.0 GB | <ScoreCell value="0.957/0.939" sub="96% completion" /> | <ScoreCell value="93" sub="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" top /> | 72k | mem | 11.8 → 8.6 | 25.0 GB | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="87" sub="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" top /> | **147k** | speed | 14.1 → 8.3 | **24.4 GB** | <ScoreCell value="0.945/0.921" sub="97% completion" /> | <ScoreCell value="80.5" sub="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" top /> | **128k** | mem | **15.1†** → **9.7†** | **24.2 GB** | <ScoreCell value="0.976/0.945" sub="99% completion" top /> | <ScoreCell value="76.5" sub="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" /> | **147k** | speed | 14.1 → 8.3 | **24.4 GB** | <ScoreCell value="0.976/0.933" sub="99% completion" top /> | <ScoreCell value="66" sub="mendel-blind 88%" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | 104k | mem | **15.8†** → **10.3†** | **24.1 GB** | <ScoreCell value="0.988/0.927" sub="100% completion" top /> | <ScoreCell value="37.5" sub="mendel-blind 38%" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> | 28k | mem | **17** → **15.3** | **22.0 GB** | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5" sub="mendel-blind 13%" /> |
 
 † from an earlier serving config or method; re-run pending.
 
 Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.
 
-| # | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Mendel |
-|--:|---|--:|:--:|--:|--:|--:|--:|
-| 8 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% | not run |
+| Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Coding |
+|---|--:|:--:|--:|--:|--:|--:|
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" /> | **28k** | mem | **17** → **15.3** | **22.0 GB** | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" sub="mendel-blind" /> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -72,7 +72,9 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-**#1 — Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort xhigh.** Curve shared with the effort-medium row: same server, same weights; the harness sets the level per request. Mendel blind at effort xhigh, the model's own default, measured 2026-09-11: 93/100, complete 8/8, on the 65536 window, no critical defect, one medium, peak context 61572, sampling temperature 1.0 and top_p 0.95 from the server default. The highest Mendel score of any local row. EvalPlus at effort xhigh, scored 2026-09-12 at budget 30000 on the same build served at `-c 32768`: 0.957/0.939, six empty, every one a completion that hit the 30000-token cap, in 8h30 of active wall time; its own score, above the ISTA build's 0.945/0.921 at the same level.
+<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" />
+
+Curve shared with the effort-medium row: same server, same weights; the harness sets the level per request. Mendel blind at effort xhigh, the model's own default, measured 2026-09-11: 93/100, complete 8/8, on the 65536 window, no critical defect, one medium, peak context 61572, sampling temperature 1.0 and top_p 0.95 from the server default. The highest Mendel score of any local row. EvalPlus at effort xhigh, scored 2026-09-12 at budget 30000 on the same build served at `-c 32768`: 0.957/0.939, six empty, every one a completion that hit the 30000-token cap, in 8h30 of active wall time; its own score, above the ISTA build's 0.945/0.921 at the same level.
 
 ```bash
 llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
@@ -83,7 +85,9 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
   --jinja --port 8081
 ```
 
-**#2 — Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium.** pi id `qwen3.8-27b`. Re-measured 2026-09-08 at wired limit 25000: `-c 73728` serves, `-c 81920` OOMs at load, and decode and draft acceptance stay flat across the whole served range, so the boundary is memory alone. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 11.8 tok/s at 4K and 8.6 at 65.5K, draft acceptance 37 to 63 percent, wired 25.0 GB, zero swap growth. The older `-c 49152` was the ceiling at wired 24000. The EvalPlus score is still the MLX effort-medium run, carried by the shared-score rule; this build has no full EvalPlus of its own, so it cannot be read against the two 3-bit builds below, which do. Mendel blind at effort medium: 87/100 at reserve 16384 and window 49152, and 76/100 on the 2026-09-08 re-run at reserve 8192 and window 65536. The two are different configurations, not a repeat: the second failed trap A, which the first passed.
+<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" />
+
+pi id `qwen3.8-27b`. Re-measured 2026-09-08 at wired limit 25000: `-c 73728` serves, `-c 81920` OOMs at load, and decode and draft acceptance stay flat across the whole served range, so the boundary is memory alone. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 11.8 tok/s at 4K and 8.6 at 65.5K, draft acceptance 37 to 63 percent, wired 25.0 GB, zero swap growth. The older `-c 49152` was the ceiling at wired 24000. The EvalPlus score is still the MLX effort-medium run, carried by the shared-score rule; this build has no full EvalPlus of its own, so it cannot be read against the two 3-bit builds below, which do. Mendel blind at effort medium: 87/100 at reserve 16384 and window 49152, and 76/100 on the 2026-09-08 re-run at reserve 8192 and window 65536. The two are different configurations, not a repeat: the second failed trap A, which the first passed.
 
 ```bash
 llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
@@ -94,7 +98,9 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
   --jinja --port 8081
 ```
 
-**#3 — Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort xhigh.** pi id `qwen3.8-27b-ista`. The same build with the drafter off, measured 2026-09-09 at wired limit 25000. Without the drafter `-c 163840` serves, and the creep runs clean to 147478 tokens at 8.30 tok/s before the speed floor; swap never grew. The drafter is a loss on this build at every depth tried: at depth 256, no drafter reads 14.4 tok/s against 12.4 at n-max 3, and at depth 98338 it reads 9.5 against 7.9, so the no-drafter server is both faster and 33K deeper. Mendel blind at effort xhigh, the model's own default: 80.5/100, complete 8/8, one critical trap, 109 minutes, peak context 117,940 of a 147,456 window, no compaction. Sampling recorded for the first time on this machine: temperature 1.0, top_p 0.95, the values llama-server reads from the model file. EvalPlus at effort xhigh, scored 2026-09-10 at budget 30000 on the same build served at `-c 32768`: 0.945/0.921, five empty, every one a completion that hit the 30000-token cap, in about 9h43 of active wall time; below the medium and low rows on both metrics. More thinking does not help this model on short single-turn problems.
+<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" />
+
+pi id `qwen3.8-27b-ista`. The same build with the drafter off, measured 2026-09-09 at wired limit 25000. Without the drafter `-c 163840` serves, and the creep runs clean to 147478 tokens at 8.30 tok/s before the speed floor; swap never grew. The drafter is a loss on this build at every depth tried: at depth 256, no drafter reads 14.4 tok/s against 12.4 at n-max 3, and at depth 98338 it reads 9.5 against 7.9, so the no-drafter server is both faster and 33K deeper. Mendel blind at effort xhigh, the model's own default: 80.5/100, complete 8/8, one critical trap, 109 minutes, peak context 117,940 of a 147,456 window, no compaction. Sampling recorded for the first time on this machine: temperature 1.0, top_p 0.95, the values llama-server reads from the model file. EvalPlus at effort xhigh, scored 2026-09-10 at budget 30000 on the same build served at `-c 32768`: 0.945/0.921, five empty, every one a completion that hit the 30000-token cap, in about 9h43 of active wall time; below the medium and low rows on both metrics. More thinking does not help this model on short single-turn problems.
 
 ```bash
 llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
@@ -104,7 +110,9 @@ llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
   --jinja --port 8081
 ```
 
-**#4 — Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium.** A 3-bit build of the same model, revision `d562806`, with its drafter on. Measured 2026-09-08 at wired limit 25000. Clean depth 114718 at 9.7 tok/s; `-c 131072` serves. `n-max 3` is the best drafter setting on this build, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.976/0.945, one empty at budget 8192, its own score and not a carried one. Mendel blind at effort medium: 76.5/100, complete 8/8, window 114688. It failed trap A in the same shape as the 4-bit row's own re-run. The drafter costs this build speed at every depth, so the two no-drafter rows below are the served pick; this row stays as the drafter measurement and the medium score.
+<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" />
+
+A 3-bit build of the same model, revision `d562806`, with its drafter on. Measured 2026-09-08 at wired limit 25000. Clean depth 114718 at 9.7 tok/s; `-c 131072` serves. `n-max 3` is the best drafter setting on this build, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.976/0.945, one empty at budget 8192, its own score and not a carried one. Mendel blind at effort medium: 76.5/100, complete 8/8, window 114688. It failed trap A in the same shape as the 4-bit row's own re-run. The drafter costs this build speed at every depth, so the two no-drafter rows below are the served pick; this row stays as the drafter measurement and the medium score.
 
 ```bash
 llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
@@ -115,7 +123,9 @@ llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
   --jinja --port 8081
 ```
 
-**#5 — Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low.** Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at effort low, scored 2026-09-10 at budget 8192 on the same build served at `-c 32768`: 0.976/0.933, one empty, in 2h23; level with the medium row on base and one problem lower on plus. The calibration converged on all 10 problems with a 3634-token maximum.
+<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" />
+
+Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at effort low, scored 2026-09-10 at budget 8192 on the same build served at `-c 32768`: 0.976/0.933, one empty, in 2h23; level with the medium row on base and one problem lower on plus. The calibration converged on all 10 problems with a 3634-token maximum.
 
 ```bash
 llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
@@ -125,7 +135,9 @@ llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
   --jinja --port 8081
 ```
 
-**#6 — Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium.** A second 3-bit build of the same model, revision `ca10ebc`. Measured 2026-09-08 at wired limit 25000. Its sweep reached 98338 at 10.3 tok/s and never hit a stop condition, so that depth is where the sweep ended and not a ceiling this machine refused to pass. `n-max 3` is this build's own value, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.988/0.927, no empty completions, the best base score of any local build here and its own score, not a carried one. Mendel blind at effort medium: 37.5/100 capped from 74 raw, partial at three of eight libraries. It ended on a repetition loop, five identical searches of a directory that held nothing it wanted.
+<ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" />
+
+A second 3-bit build of the same model, revision `ca10ebc`. Measured 2026-09-08 at wired limit 25000. Its sweep reached 98338 at 10.3 tok/s and never hit a stop condition, so that depth is where the sweep ended and not a ceiling this machine refused to pass. `n-max 3` is this build's own value, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.988/0.927, no empty completions, the best base score of any local build here and its own score, not a carried one. Mendel blind at effort medium: 37.5/100 capped from 74 raw, partial at three of eight libraries. It ended on a repetition loop, five identical searches of a directory that held nothing it wanted.
 
 ```bash
 llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \
@@ -136,14 +148,18 @@ llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \
   --jinja --port 8081
 ```
 
-**#7 — Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low.** Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth.
+<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" />
+
+Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --chat-template-args '{"reasoning_effort":"low"}' --prompt-cache-size 2 --port 8081
 ```
 
-**#8 — Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium.** Set the harness compaction threshold at ~26K. No Mendel run is planned: the agent task needs about 46K of context and this server holds 26K, so every attempt on this build was partial or invalid, and medium is no longer run on this model.
+<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" />
+
+Set the harness compaction threshold at ~26K. No Mendel run is planned: the agent task needs about 46K of context and this server holds 26K, so every attempt on this build was partial or invalid, and medium is no longer run on this model.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
@@ -248,14 +264,14 @@ re-testing on future llama.cpp releases.
 
 ## Quality — EvalPlus HumanEval+
 
-| config scored | pass@1 base | pass@1 plus | empty completions | completion |
-|---|--:|--:|--:|--:|
-| llama-server AD-IQ3_S AtomicChat, f16 KV, effort medium, budget 8886 | **0.988** | 0.927 | 0/164 | 100% |
-| mlx_lm.server 4-bit, unquantized KV, effort medium, budget 8192 | 0.982 | 0.939 | 0/164 | 100% |
-| llama-server IQ3_S-mtp ISTA, f16 KV, effort medium, budget 8192 | 0.976 | **0.945** | 1/164 | 99% |
-| llama-server IQ3_S-mtp ISTA, no drafter, f16 KV, effort low, budget 8192 | 0.976 | 0.933 | 1/164 | 99% |
-| llama-server IQ3_S-mtp ISTA, no drafter, f16 KV, effort xhigh, budget 30000 | 0.945 | 0.921 | 5/164 | 97% |
-| llama-server Q4_K_M bartowski, MTP n-max 3, f16 KV, effort xhigh, budget 30000 | 0.957 | 0.939 | 6/164 | 96% |
+| config | budget | pass@1 base | pass@1 plus | empty completions | completion |
+|---|--:|--:|--:|--:|--:|
+| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | 8886 | **0.988** | 0.927 | 0/164 | 100% |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" /> | 8192 | 0.982 | 0.939 | 0/164 | 100% |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | 8192 | 0.976 | **0.945** | 1/164 | 99% |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" /> | 8192 | 0.976 | 0.933 | 1/164 | 99% |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" /> | 30000 | 0.945 | 0.921 | 5/164 | 97% |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" /> | 30000 | 0.957 | 0.939 | 6/164 | 96% |
 
 The 4-bit GGUF carries the MLX score under the shared-score rule and
 has no full run of its own. The two last rows are the ISTA build at
@@ -275,21 +291,28 @@ machine needed, applied to the run's venv before scoring.
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-| test | build | config | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
-|---|---|---|--:|---|--:|--:|--:|--:|--:|--:|---|
-| blind-v1.1 | Q4_K_M bartowski | llama-f16-xhigh-ctx.64k | **93** | 8/8/done | 213.3 | 10,077k | 62k | 3 | 272 | 17 |  |
-| blind-v1.1 | Q4_K_M bartowski | llama-f16-medium-ctx.48k | **87** | 8/8/done | 129.3 | 5,947k | 46k | 4 | 210 | 10 |  |
-| blind-v1.1 | IQ3_S-mtp ISTA | llama-f16-xhigh-ctx.144k | **80.5** | 8/8/done | 109.4 | 10,819k | 118k | 0 | 193 | 17 |  |
-| blind-v1.1 | IQ3_S-mtp ISTA | llama-f16-medium-ctx.112k | **76.5** | 8/8/done | 135.2 | 7,890k | 89k | 0 | 195 | 17 |  |
-| blind-v1.1 | Q4_K_M bartowski | llama-f16-medium-ctx.64k | **76** | 8/8/done | 97.8 | 5,008k | 60k | 1 | 173 | 12 |  |
-| guided-v2.1 | MLX 4-bit | mlx-unquantized-low-ctx.26k † | **75** (raw 84) | 6/8/partial | 153.8 | 1,123k | 23k | 0 | 95 | 6 |  |
-| blind-v1.1 | IQ3_S-mtp ISTA | llama-f16-low-ctx.144k | **66** | 7/8/partial | 163.3 | 11,426k | 130k | 0 | 214 | 15 |  |
-| blind-v1.0 | MLX 4-bit | mlx-unquantized-default-ctx.26k † | **37.5** (raw 80) | 3/8/partial | 253.5 | 1,777k | 24k | 0 | 135 | 6 |  |
-| blind-v1.1 | AD-IQ3_S AtomicChat | llama-f16-medium-ctx.96k | **37.5** | 3/8/partial | 59.8 | 7,025k | 70k | 0 | 189 | 7 |  |
-| blind-v1.1 | MLX 4-bit | mlx-unquantized-low-ctx.26k † | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
-| guided-v3.0 | MLX 4-bit | mlx-unquantized-low-ctx.?k † | **0** (raw 34) | 0/8/invalid | 261.3 | 1,254k | 30k | 0 | 48 | 0 |  |
+Blind test:
 
-The build cell names the quant and its publisher. The config cell names the server, the KV cache type, the thinking level and the harness window. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" /> | blind-v1.1 | 64k | **93** | 8/8/done | 213.3 | 10,077k | 62k | 3 | 272 | 17 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | blind-v1.1 | 48k | **87** | 8/8/done | 129.3 | 5,947k | 46k | 4 | 210 | 10 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" /> | blind-v1.1 | 144k | **80.5** | 8/8/done | 109.4 | 10,819k | 118k | 0 | 193 | 17 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | blind-v1.1 | 112k | **76.5** | 8/8/done | 135.2 | 7,890k | 89k | 0 | 195 | 17 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | blind-v1.1 | 64k | **76** | 8/8/done | 97.8 | 5,008k | 60k | 1 | 173 | 12 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" /> | blind-v1.1 | 144k | **66** | 7/8/partial | 163.3 | 11,426k | 130k | 0 | 214 | 15 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" /> † | blind-v1.0 | 26k | **37.5** (raw 80) | 3/8/partial | 253.5 | 1,777k | 24k | 0 | 135 | 6 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | blind-v1.1 | 96k | **37.5** | 3/8/partial | 59.8 | 7,025k | 70k | 0 | 189 | 7 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> † | blind-v1.1 | 26k | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
+
+Guided test:
+
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> † | guided-v2.1 | 26k | **75** (raw 84) | 6/8/partial | 153.8 | 1,123k | 23k | 0 | 95 | 6 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> † | guided-v3.0 | ?k | **0** (raw 34) | 0/8/invalid | 261.3 | 1,254k | 30k | 0 | 48 | 0 |  |
+
+The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 
 † a 26624-token window with a 16384-token output budget, our config arithmetic, not the model
 <!-- gen:model-mendel:end -->
@@ -300,6 +323,8 @@ The MLX build gives a 26624-token window. That window stopped the low-effort run
 
 ## Decode speed vs used context
 
+<ModelSpec base="Qwen3.8-27B" server="llama-server" kv="f16" hide="quant,publisher,drafter,effort" />
+
 The llama arm, in the shape of
 [the comparison table](../comparison.md#decode-speed-vs-used-context-the-8-tok-s-usability-floor).
 Slow creeps 2026-09-08 and 2026-09-09, wired limit 25000. Every row is
@@ -308,10 +333,10 @@ build's own sweep confirmed as the best drafter setting.
 
 | config | @ 4-8K | @ 16K | @ 33K | @ 49K | @ 98K | capped by |
 |---|--:|--:|--:|--:|--:|---|
-| **llama, Q4_K_M bartowski, MTP, `-c 73728`** | **11.8** | **16.1** | **16.4** | **15.0** | | mem — swap grew at 73.7K; clean to 65.5K at 8.6 tok/s. The 4K and 65.5K cells were read 2026-09-11 with llama-benchy on real code text at the server's own sampling, acceptance 37 to 63 percent; the others are the creep's readings |
-| llama, AD-IQ3_S AtomicChat, MTP, `-c 106496` | 15.8 | 14.8 | 13.7 | 12.7 | 10.3 | untested — swept to 98338 and never hit a stop |
-| llama, IQ3_S-mtp ISTA, MTP, `-c 131072` | 15.1 | 14.7 | 13.7 | 12.7 | 10.3 | mem — swap grew at 131.1K; clean to 114718 at 9.7 tok/s |
-| **llama, IQ3_S-mtp ISTA, no drafter, `-c 163840`** | **14.1** | **13.3** | **12.4** | **11.5** | **9.7** | speed — 8.30 at 147478, under the floor at 163858; zero swap the whole way |
+| **Q4_K_M bartowski, MTP n-max 3, `-c 73728`** | **11.8** | **16.1** | **16.4** | **15.0** | | mem — swap grew at 73.7K; clean to 65.5K at 8.6 tok/s. The 4K and 65.5K cells were read 2026-09-11 with llama-benchy on real code text at the server's own sampling, acceptance 37 to 63 percent; the others are the creep's readings |
+| AD-IQ3_S AtomicChat, MTP n-max 3, `-c 106496` | 15.8 | 14.8 | 13.7 | 12.7 | 10.3 | untested — swept to 98338 and never hit a stop |
+| IQ3_S-mtp ISTA, MTP n-max 3, `-c 131072` | 15.1 | 14.7 | 13.7 | 12.7 | 10.3 | mem — swap grew at 131.1K; clean to 114718 at 9.7 tok/s |
+| **IQ3_S-mtp ISTA, no drafter, `-c 163840`** | **14.1** | **13.3** | **12.4** | **11.5** | **9.7** | speed — 8.30 at 147478, under the floor at 163858; zero swap the whole way |
 
 Wired memory 25.4 GB for the 4-bit build, 24.1 to 24.4 GB for the
 3-bit rows. The 4-bit build runs against the wired limit the whole way;
@@ -323,9 +348,11 @@ The full no-drafter creep, one row per step:
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|---|
 | ISTA, no drafter, `-c 163840` | 14.14 | 13.82 | 13.25 | 12.83 | 12.39 | 11.95 | 11.51 | 10.90 | 10.24 | 9.69 | 9.19 | 8.72 | **8.30 — last above the floor** | 7.94, floor |
 
-### Drafter sweep on the ISTA build, two depths
+### Drafter sweep at two depths
 
-One 256-token completion per cell, temperature 0, f16 KV. The shallow
+<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" hide="drafter,effort" />
+
+One 256-token completion per cell, temperature 0. The shallow
 sweep served `-c 106496` at depth 256; the deep sweep served a fixed
 `-c 122880` at depth 98,338. No cell had a warmup, so the numbers rank
 the cells against each other and do not compare with a creep row.
@@ -367,9 +394,11 @@ memory 22.0 GB at 28K.
 | llama-server Q4_K_M + MTP n=3, f16 KV | 16.93 | 15.73 | ~21 GB RSS |
 | **mlx-lm MLX 4-bit, f16 KV, no MTP** | **19.69** | **19.58** | **15.5 GB peak** |
 
-## MTP draft depth sweep, the 4-bit build
+## MTP draft depth sweep (32K)
 
-256 tokens, temperature 0, q8_0 KV, 32K context.
+<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="q8_0" hide="drafter,effort" />
+
+256 tokens, temperature 0.
 
 | --spec-draft-n-max | py tok/s | py accept | js tok/s | js accept |
 |---|--:|--:|--:|--:|
@@ -396,7 +425,9 @@ At medium effort the llama peak stays at n-max 3:
 | 4 | 16.57 | 75% | 14.86 | 65% |
 | 6 | 13.44 | 61% | 11.60 | 51% |
 
-## KV cache: q8_0 vs f16 (at n-max 3)
+## KV cache: q8_0 vs f16
+
+<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" hide="kv,effort" />
 
 | KV type | py tok/s | js tok/s | quality |
 |---|--:|--:|---|

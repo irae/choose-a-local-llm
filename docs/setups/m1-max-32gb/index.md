@@ -41,8 +41,7 @@ sudo sysctl iogpu.wired_limit_mb=25000
   access. Suspect it first for any fresh-process hang (Node.js usually
   passes; Python often does not). See the cold-start sequence in
   [the checklist](../../methodology/checklist.md).
-- Docker does not fit beside a loaded model here. Aider polyglot runs
-  are driven from another computer against this machine's server.
+- Docker does not fit beside a loaded model here.
 - Swap arithmetic: the server's RSS is wired, the kernel wires 2 to 3 GB
   more, and all apps share the rest of 32 GB. Whole-machine slowness
   means swap. A slow model on a healthy machine means depth physics.

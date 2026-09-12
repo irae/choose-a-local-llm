@@ -107,9 +107,9 @@ The chat template has no `reasoning_effort` (unlike Qwen3.8) — only binary `en
 
 ## Quality — EvalPlus HumanEval+ (2026-08-28, fair budget)
 
-| config scored | budget | pass@1 base | pass@1 plus | empty | completion | regenerated |
+| config | budget | pass@1 base | pass@1 plus | empty | completion | regenerated |
 |---|--:|--:|--:|--:|--:|--:|
-| llama-server+MTP Q4_K_XL, q8_0 KV, thinking on | 26624 | **0.939** | **0.921** | 5/164 | 97% | 56 (54 missing + 2 previously empty) |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | 26624 | **0.939** | **0.921** | 5/164 | 97% | 56 (54 missing + 2 previously empty) |
 
 This corrected the 56 missing or empty completions at the calibrated budget
 of 26624 tokens, which is safe because temperature 0 is deterministic. The

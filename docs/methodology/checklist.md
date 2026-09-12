@@ -120,7 +120,7 @@ the block names at the point it is needed.
    that changes mid-session makes its own rows non-comparable.
 6. **Start the run watcher before the block, read exit 42, stop it
    after.** A sweep watches itself; a scoring run has exactly one
-   watcher. For every scoring run (EvalPlus, Mendel, polyglot) start
+   watcher. For every scoring run (EvalPlus, Mendel) start
    `benchmarks/run-watch.sh` as a background task (`run_in_background`,
    or under `Monitor`) right after the warmup request:
    `RUNWATCH_SERVER_LOG=<server log> RUNWATCH_OUTPUT=<result file>

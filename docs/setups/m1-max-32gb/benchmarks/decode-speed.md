@@ -23,17 +23,17 @@ Two rules to read the tables by:
 ## Latest per model and backend
 
 <!-- gen:decode-summary:start -->
-| model | best curve | tok/s (shallow → deep) | at | gated by |
-|---|---|--:|--:|---|
-| [Ternary-Bonsai-27B](./bonsai-27b.md) | MLX, unquantized KV, bounded cache, thinking on | 24.5 → 17.3 | 58k | mem |
-| [Ternary-Bonsai-27B](./bonsai-27b.md) | GGUF⁵, q4_0 KV + bias, thinking on | 14.8 → 7.9 | 33k | speed |
-| [Gemma-4-12B](./gemma-4-12b-it.md) | GGUF, f16 KV, no drafter, thinking off | 24.64 → 8.86 | 245k | mem |
-| [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | GGUF, MTP, f16 KV | 60.3† → 17.3† | 197k | mem |
-| [Gemma-4-26B-A4B](./gemma-4-26b-a4b.md) | MLX, unquantized KV | 51 → 12.8 | 70k | mem |
-| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | GGUF, MTP, q8_0 KV, thinking on | 43.7 → 13.0 | 82k | speed |
-| [Qwen3.6-35B-A3B](./qwen3.6-35b-a3b.md) | MLX, unquantized KV, thinking on | 55.1 → 37.4 | 41k | mem |
-| [Qwen3.8-27B](./qwen3.8-27b.md) | GGUF Q4_K_M (bartowski), MTP, f16 KV, effort xhigh | 11.8 → 8.6 | 72k | mem |
-| [Qwen3.8-27B](./qwen3.8-27b.md) | MLX 4-bit, unquantized KV, effort low | 17 → 15.3 | 28k | mem |
+| best curve | tok/s (shallow → deep) | at | gated by |
+|---|--:|--:|---|
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" />](./bonsai-27b.md) | 24.5 → 17.3 | 58k | mem |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" />](./bonsai-27b.md) | 14.8 → 7.9 | 33k | speed |
+| [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" />](./gemma-4-12b-it.md) | 24.64 → 8.86 | 245k | mem |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" />](./gemma-4-26b-a4b.md) | 60.3† → 17.3† | 197k | mem |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" />](./gemma-4-26b-a4b.md) | 51 → 12.8 | 70k | mem |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" />](./qwen3.6-35b-a3b.md) | 43.7 → 13.0 | 82k | speed |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" />](./qwen3.6-35b-a3b.md) | 55.1 → 37.4 | 41k | mem |
+| [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" />](./qwen3.8-27b.md) | 11.8 → 8.6 | 72k | mem |
+| [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" />](./qwen3.8-27b.md) | 17 → 15.3 | 28k | mem |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:decode-summary:end -->
@@ -147,7 +147,7 @@ config, and the same Bonsai fork at q4_0 KV floors at 33K.
 
 This test decides whether a config is *usable*, not whether it is
 *chosen*. The quality tiers come after: EvalPlus gates, Mendel tests
-real agentic work, polyglot ranks the survivors — and a config that
+real agentic work and ranks the survivors — and a config that
 loses there is dropped no matter how good its curve was. The live
 example is Gemma-26B: the fastest MLX depth curve on this page
 (51 tok/s shallow, 70K deep), parked anyway after scoring 0.713 on the

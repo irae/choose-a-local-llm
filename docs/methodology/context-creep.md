@@ -153,7 +153,7 @@ The runner also owns the stop conditions that watcher was there to
 serve: swap growth, sustained material compaction, the floor, a silent
 halt, a failed request, and a dead server.
 
-**Scoring runs** (EvalPlus, Mendel, polyglot) are the other case.
+**Scoring runs** (EvalPlus, Mendel) are the other case.
 Those harnesses sample no memory and run for hours, so
 `benchmarks/run-watch.sh` is their one watcher: it writes the memory
 record and it exits 42 on a dead server. Start it as

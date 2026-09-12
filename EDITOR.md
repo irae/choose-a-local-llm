@@ -113,6 +113,12 @@ These rules bind every `reports/<model>.md` page:
   generates both, between `<!-- gen:model-kpis:... -->` and
   `<!-- gen:model-table:... -->` markers. Never hand-edit inside the
   markers, never remove them. `npm run docs:check` fails on drift.
+- **A stat box qualifies its number; it does not explain it** (owner,
+  2026-09-12). The value is at most 22 characters, the label at most
+  44, and an optional `sub` line at most 44; no semicolons, no
+  dashes, no second clause. An EvalPlus box shows `base / plus` as
+  the number and the completion on the `sub` line. The generator
+  fails the build on a longer or clause-shaped text.
 - **Stats are centralized** in `models.json` under
   `models.<page-slug>.stats`. Keep an excess of stats there (every
   number worth quoting: speeds, ceilings, scores, footprints), each as
@@ -123,9 +129,9 @@ These rules bind every `reports/<model>.md` page:
   model and all its variants.** Rows come from the shared `rows` list
   (matched by `models.<page-slug>.rowMatch`). Old or abandoned variants
   may be added as `models.<page-slug>.extraRows` and may be incomplete.
-- **Every report page carries an "Agentic quality — Mendel" table**
-  with one row per Mendel run of that model, both tests and every
-  prompt version. `npm run docs:tables` generates it from
+- **Every report page carries an "Agentic quality — Mendel" section**
+  with one row per Mendel run of that model, every prompt version,
+  in two tables: blind first, then guided, never mixed. `npm run docs:tables` generates it from
   `benchmarks/mendel/results.csv` and
   `benchmarks/mendel/results-guided.csv`, between
   `<!-- gen:model-mendel:... -->` markers. A model with no run gets a
@@ -150,12 +156,13 @@ These rules bind every `reports/<model>.md` page:
   the model's report page then carries one "Retired entries" line under
   its table, pointing at the evidence.
 - **The Configs section is generated** between
-  `<!-- gen:model-configs:... -->` markers: one `#N — config` block per
-  visible row, with its exact startup command. Never hand-edit inside.
-  Never write prose that tells the reader to change a parameter.
-- **`docs:tables` fails if prose references a `#N` beyond the visible
-  row count**, so a hidden or deleted row cannot leave dangling
-  references silently. Renumbering is still yours to re-check.
+  `<!-- gen:model-configs:... -->` markers: one block per visible row,
+  its spec line first, then the note, then its exact startup command.
+  Never hand-edit inside. Never write prose that tells the reader to
+  change a parameter.
+- **Rows have no numbers.** Prose names a row by the words of its
+  spec line ("the fork at f16 KV", "the MLX 2-bit row at thinking
+  on"), never by a position in a table.
 - **Every stat box must be backed by the page's tables.** The number a
   box quotes appears in a table row on the same page, or that row marks
   it `pending`. A box never quotes a figure the tables do not carry.
@@ -201,7 +208,7 @@ update it:
 6. **Full curves never move here.** They stay on the per-model archive
    pages, linked only in the footer.
 
-New benchmark-type pages (evalplus, mendel, polyglot) grow toward this
+New benchmark-type pages (evalplus, mendel) grow toward this
 same shape: story first, generated summary, selective findings,
 archives at the bottom.
 
@@ -236,10 +243,53 @@ The published pages keep the word Mendel for now; the rules and the
 runbooks say simulator(mendel), the name of the runner that replaces
 it.
 
-- **Columns, in order**: # | Config | Max ctx | Gated by¹ |
-  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus² | Mendel³.
-  The `#` column numbers the rows of that page, top to bottom; every
-  page counts its own.
+- **Columns, in order**: Config | Max ctx | Gated by¹ |
+  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus² | Coding³.
+  **The Config cell is the leftmost column of every table that has
+  one**, generated or hand-written.
+- **The Config cell is the `ModelSpec` component** (owner,
+  2026-09-11), two lines, the same on every table: line one is the
+  base model and the weight quant; line two, smaller, is the
+  publisher and the server, then an optional drafter pill (`mtp/3`,
+  `dspark`; no drafter, no pill), the KV type (`f16`, `q8_0`,
+  `q4_0`; "unquantized" is `f16`) and a coloured effort pill (`off`
+  grey, `low` blue, `medium` green, `on` and `high` yellow, `xhigh`
+  and `max` red). The effort is the model's own value: a
+  binary-thinking model says `on` or `off`, a graded model says its
+  level. The publisher is plain underlined text that links to the
+  Hugging Face model card, never a pill; the card comes
+  from the row's command or `spec.repo`. The data is the row's `spec`
+  object in `models.json`; a Mendel row's spec comes from
+  `MENDEL_SPECS` in `tools/gen-tables.mjs`. A missing or invalid field
+  fails the build.
+- **Every EvalPlus table has a `config` column rendered by
+  `ModelSpec` and a `budget` column**; the budget never sits inside
+  the config text. The generated table on the EvalPlus page reads
+  each run's spec from `evalplusRuns[].row` (a row id) or an explicit
+  `spec`, and its `budget` field.
+- **The EvalPlus cell is two lines**: `base/plus` over the completion
+  percentage. **The Coding cell is two lines**: the score over the
+  test name, plus the libraries-done percentage on a partial
+  (`mendel-blind 38%`); the `mendel` field writes a partial as
+  `37.5 (partial 38%)`.
+- **Bold marks the best two of every numeric column**, and any further
+  row within 15 percent of the column's span (best minus worst) of
+  the second-best value; memory reads lower as better. The Config cell goes bold for the best two composites.
+- **Memory (at max ctx) shows on model pages only**; the homepage and
+  the comparison drop the column.
+- **Gated by is `mem` or `speed`, nothing else.** A row that ended at
+  its `-c` or at its depth list's end is `mem`: the allocation is a
+  memory choice, and the note says how it was found.
+  **Detail tables** (decode curves, drafter sweeps, KV comparisons)
+  keep their own columns and put one `<ModelSpec … />` line directly
+  under the heading with every field the rows share; `hide` lists
+  the fields the rows vary, comma separated (`hide="kv,effort"`), and
+  those are neither required nor shown. What the line says leaves
+  the heading and the row labels: no "f16 KV" in a title, no "llama"
+  at the start of every row, once the spec line carries them.
+- **The Coding cell is the `CodingScore` component**: the score on
+  line one, the test name (`mendel-blind` or `mendel-guided`) on line
+  two. The comparison and the homepage show blind only.
 - **The `mendel` cell is curated in `models.json`**, like `evalplus`:
   the config's Mendel blind score at that thinking level on the
   current prompt version, out of 100, with `(partial)` where the run
@@ -256,22 +306,19 @@ it.
   `gen:models-evaluated` markers, holds every complete row. After the
   footnotes and legends comes the second, inside the
   `gen:models-evaluated-partial` markers: every row at 40 percent
-  completeness or more that is not complete, in the same sort, with
-  `#` continuing the count. A row under 40 percent stays on its model
-  page only.
-- **Per-model tables use the same sort as every other table**, so a
-  row's `#` number moves when a score lands. The page shows every
-  visible row of the model in two tables inside one marker pair: the
-  complete rows first, then one note line, then every other row, `#`
-  continuing; the Configs blocks follow the same order. Prose on the page may
-  name a config by its `#` number, and whoever changes a score
-  re-checks every `#N` on that page in the same commit; the generator
-  only catches a number past the row count. There is no "Suggested
-  for" column; seat suggestions live only in the setup overview and in
-  analysis/decision prose.
+  completeness or more that is not complete, in the same sort. A row
+  under 40 percent stays on its model page only.
+- **Per-model tables use the same sort as every other table.** The
+  page shows every visible row of the model in two tables inside one
+  marker pair: the complete rows first, then one note line, then
+  every other row; the Configs blocks follow the same order. There
+  is no "Suggested for" column; seat suggestions live only in the
+  setup overview and in analysis/decision prose.
 - **One row per config; a model shows every runtime that has sweep
   data** (MLX and GGUF rows side by side), grouped by model.
-- **Config is a comma list: Model, Runtime, Details.** Model is the
+- **The `config` string in `models.json` stays as the row's name for
+  matching and sorting; the page renders `spec`.** Config is a comma
+  list: Model, Runtime, Details. Model is the
   HuggingFace repo name. A MoE model carries its active-parameter spec
   in the name (Qwen3.6-35B-A3B, Gemma-4-26B-A4B); a dense model is a
   plain size (Qwen3.8-27B), and the missing A-suffix marks it dense.
@@ -358,6 +405,12 @@ prose. This is the owner's rule, and the methodology's record-everywhere rule sa
 
 ## Site chrome
 
+- The models in the sidebar are listed by their best row's sort key,
+  the same average of EvalPlus base and Coding the comparison uses,
+  best first; a model with no complete row goes last. The list is
+  hand-maintained in `docs/.vitepress/config.mjs`; re-order it in the
+  same commit that moves a model's best row.
+
 - Footer: copyright Irae Carvalho, plus a link to https://github.com/irae.
 - The owner's name and GitHub link belong on every page, through the theme
   footer. Do not repeat them in page content.
@@ -399,8 +452,8 @@ docs/
     comparison.md              cross-model tables for that setup
     reports/<model>.md         one page per model
     benchmarks/<type>.md       cross-model page per benchmark type
-                               (decode-speed, evalplus, mendel,
-                               polyglot). These are in the sidebar,
+                               (decode-speed, evalplus, mendel).
+                               These are in the sidebar,
                                ordered as the tests usually run
     benchmarks/<model>.md      full raw data per model, current and
                                historical. Linked from the model page

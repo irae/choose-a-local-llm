@@ -30,6 +30,7 @@ named by its mnemonic, no index and no order.
 - [ ] pi's compaction may be too shallow under a small contextWindow: frequency climbed from 1/9min to 1/2-3min mid-run, several compactions freed only 1-8 points of headroom; research pi's compaction options (pi-compaction-efficiency.md)
 - [ ] Shared-score rule: the owner's sentence for when two quants of one model carry their own scores (shared-score-quant-exception.md)
 - [ ] Budget for cloud Mendel re-runs, and which models go to polyglot (cloud-reruns-and-polyglot-tier.md)
+- [l] Aider polyglot, the ranking tier, parked off the site on 2026-09-12; the method page lives here until it is scheduled (aider-polyglot.md)
 - [ ] Mendel: score thinking-off configs that only have thinking-high rows (qwen3.6-35b-a3b confirmed gap) (mendel-thinking-off-gaps.md)
 - [ ] local-llm-eval-tools: extract creep and the Mendel kit with history into two tools; hand-over prompt for the coordinator agent (local-llm-eval-tools-codebase-issue-simulator.md)
 - [ ] Two owner questions left by the non-goals sweep: the positive half of the model entry criteria, and whether "a run gated by our own configuration is our fault" becomes a rule (non-goals-sweep-findings.md)

@@ -38,21 +38,21 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
 ## Models evaluated
 
 <!-- gen:models-evaluated:start -->
-| # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² | Mendel³ |
-|--:|---|--:|:--:|--:|--:|--:|--:|
-| 1 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort xhigh | 72k | mem | 11.8 → 8.6 | 25.0 GB | 0.957/0.939/96% | 93 |
-| 2 | Qwen3.8-27B, GGUF Q4_K_M (bartowski), MTP, f16 KV, effort medium | 72k | mem | 11.8 → 8.6 | 25.0 GB | 0.982/0.939/100% | 87 |
-| 3 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort xhigh | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.945/0.921/97% | 80.5 |
-| 4 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium | 128k | mem | 15.1† → 9.7† | 24.2 GB | 0.976/0.945/99% | 76.5 |
-| 5 | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low | 147k | speed | 14.1 → 8.3 | 24.4 GB | 0.976/0.933/99% | 66 (partial) |
-| 6 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.939/0.921/97% | 63 |
-| 7 | Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking off | 82k | speed | 43.7 → 13.0 | 25.6 GB | 0.951/0.915/100% | 50.5 |
-| 8 | Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on | 66k | untested | 50.5 → 33.6 | 25.0 GB | 0.939/0.921/97% | 50 |
-| 9 | Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), MTP, f16 KV, effort medium | 104k | untested | 15.8† → 10.3† | 24.1 GB | 0.988/0.927/100% | 37.5 (partial) |
-| 10 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV | 197k | mem | 60.3† → 17.3† | 25.6 GB | 0.884/0.860/89% | 47.5 |
-| 11 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking on | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.915/0.884/97% | 37.5 (partial) |
-| 12 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low | 28k | mem | 17 → 15.3 | 22.0 GB | 0.976/0.927/100% | 12.5 (partial) |
-| 13 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on | 33k | speed | 14.8 → 7.9 | 9.6 GB | 0.927/0.890/98% | 12.5 |
+| Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | EvalPlus² | Coding³ |
+|---|--:|:--:|--:|--:|--:|
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" top /> | 72k | mem | 11.8 → 8.6 | <ScoreCell value="0.957/0.939" sub="96% completion" /> | <ScoreCell value="93" sub="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" top /> | 72k | mem | 11.8 → 8.6 | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="87" sub="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" top /> | **147k** | speed | 14.1 → 8.3 | <ScoreCell value="0.945/0.921" sub="97% completion" /> | <ScoreCell value="80.5" sub="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" top /> | **128k** | mem | 15.1† → 9.7† | <ScoreCell value="0.976/0.945" sub="99% completion" top /> | <ScoreCell value="76.5" sub="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" /> | **147k** | speed | 14.1 → 8.3 | <ScoreCell value="0.976/0.933" sub="99% completion" top /> | <ScoreCell value="66" sub="mendel-blind 88%" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | 82k | speed | **43.7** → 13.0 | <ScoreCell value="0.939/0.921" sub="97% completion" /> | <ScoreCell value="63" sub="mendel-blind" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" /> | 82k | speed | **43.7** → 13.0 | <ScoreCell value="0.951/0.915" sub="100% completion" /> | <ScoreCell value="50.5" sub="mendel-blind" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" /> | 66k | mem | **50.5** → **33.6** | <ScoreCell value="0.939/0.921" sub="97% completion" /> | <ScoreCell value="50" sub="mendel-blind" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | 104k | mem | 15.8† → 10.3† | <ScoreCell value="0.988/0.927" sub="100% completion" top /> | <ScoreCell value="37.5" sub="mendel-blind 38%" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **197k** | mem | **60.3†** → **17.3†** | <ScoreCell value="0.884/0.860" sub="89% completion" /> | <ScoreCell value="47.5" sub="mendel-blind" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" /> | 58k | mem | 24.5 → **17.3** | <ScoreCell value="0.915/0.884" sub="97% completion" /> | <ScoreCell value="37.5" sub="mendel-blind 38%" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> | 28k | mem | 17 → **15.3** | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5" sub="mendel-blind 13%" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | 33k | speed | 14.8 → 7.9 | <ScoreCell value="0.927/0.890" sub="98% completion" /> | <ScoreCell value="12.5" sub="mendel-blind" /> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->
@@ -73,8 +73,9 @@ above its MLX 4-bit, so those pairs carry their own. Aggressive quants
 (for example the prism fork's calibrated q4 KV) never share; they pass
 the gate separately.
 
-³ Mendel blind score of that config at that thinking level, out of
-100, on the current prompt version; `(partial)` when the run did not
+³ Coding: the simulator score of that config at that thinking level,
+out of 100, on the current prompt version; the second line names the
+test (Mendel blind here, never guided); `(partial)` when the run did not
 finish, `invalid` when every attempt was, `pending` when none ran.
 Never shared across levels or serving configs. Rows sort by the average
 of the EvalPlus base score and this one; a row with only one of the two
@@ -108,19 +109,19 @@ and are missing one or two; the same footnotes and sort apply, and
 model page.
 
 <!-- gen:models-evaluated-partial:start -->
-| # | Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus² | Mendel³ |
-|--:|---|--:|:--:|--:|--:|--:|--:|
-| 14 | Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium | 28k | mem | 17 → 15.3 | 22.0 GB | 0.982/0.939/100% | not run |
-| 15 | Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off | 245k | mem | 24.64 → 8.86 | 13.9 GB | 0.976/0.939/100% | invalid |
-| 16 | Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off | 2x82k | mem | 25.0 → 15.7 | 13.8 GB | 0.976/0.939/100% | pending |
-| 17 | Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off | 4x49k | mem | 42.9† → 27.7† | 25.1 GB | 0.976/0.939/100% | pending |
-| 18 | Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off | 16k | speed | 13.8† → 6.5† | 10.5 GB | 0.976/0.939/100% | pending |
-| 19 | Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on | 41k | mem | 55.1 → 37.4 | 24.6 GB | 0.939/0.921/97% | pending |
-| 20 | Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on | 41k | mem | 69.1† → 52.6† | 25.1 GB | 0.939/0.921/97% | pending |
-| 21 | Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off | 58k | mem | 24.5 → 17.3 | 22.5 GB | 0.927/0.902/100% | pending |
-| 22 | Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on | 2x48k | speed | 14.9 → 7.8 | 10.9 GB | 0.927/0.890/98% | pending |
-| 23 | Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots | 2x82k | mem | 66.6† → 33.6† | 25.3 GB | 0.884/0.860/89% | pending |
-| 24 | Gemma-4-26B-A4B, MLX, unquantized KV | 70k | mem | 51 → 12.8 | 20.0 GB | 0.713/0.701/72% | pending |
+| Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | EvalPlus² | Coding³ |
+|---|--:|:--:|--:|--:|--:|
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" /> | 28k | mem | 17 → 15.3 | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | **245k** | mem | 24.64 → 8.86 | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="invalid" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | **2x82k** | mem | 25.0 → 15.7 | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="f16" effort="off" /> | **4x49k** | mem | 42.9† → 27.7† | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" effort="off" /> | 16k | speed | 13.8† → 6.5† | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | 41k | mem | 55.1 → **37.4** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" /> | 41k | mem | **69.1†** → **52.6†** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | **58k** | mem | 24.5 → 17.3 | <ScoreCell value="0.927/0.902" sub="100% completion" /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | **2x48k** | speed | 14.9 → 7.8 | <ScoreCell value="0.927/0.890" sub="98% completion" /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **2x82k** | mem | **66.6†** → **33.6†** | <ScoreCell value="0.884/0.860" sub="89% completion" /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | **70k** | mem | 51 → 12.8 | <ScoreCell value="0.713/0.701" sub="72% completion" /> | <ScoreCell value="pending" sub="mendel-blind" /> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated-partial:end -->
@@ -185,21 +186,22 @@ It ends where the model's trained window ends, with wired memory flat at
 
 ## Code quality — EvalPlus HumanEval+
 
-| model | config scored | pass@1 base | pass@1 plus | completion | status |
-|---|---|--:|--:|--:|---|
-| **Qwen3.8-27B** | GGUF AD-IQ3_S AtomicChat llama, f16 KV, effort medium, budget 8886 | **0.988** | 0.927 | 100% | 0 empty, 3h10 |
-| Qwen3.8-27B | mlx 4-bit, unquantized KV, effort medium, budget 8192 | 0.982 | 0.939 | 100% | 0 empty; the 4-bit GGUF carries this score and has no run of its own |
-| Qwen3.8-27B | GGUF IQ3_S-mtp ISTA llama, f16 KV, effort medium, budget 8192 | 0.976 | **0.945** | 99% | 1 empty, 3h07 |
-| Qwen3.8-27B | GGUF IQ3_S-mtp ISTA llama, f16 KV, no drafter, effort low, budget 8192 | 0.976 | 0.933 | 99% | 1 empty, 2h23; level with the medium row on base, one problem lower on plus |
-| Qwen3.8-27B | GGUF IQ3_S-mtp ISTA llama, f16 KV, no drafter, effort xhigh, budget 30000 | 0.945 | 0.921 | 97% | 5 empty, all at the 30000-token cap, about 9h43 active; below medium and low on both metrics |
-| **Gemma-4-26B-A4B** | GGUF UD-Q4_K_XL llama, f16 KV, thinking off, budget 8192 | **0.976** | **0.945** | 100% | 0 empty, 19 minutes |
-| Gemma-4-26B-A4B | GGUF UD-Q4_K_XL llama, f16 KV, thinking on, budget 30000 | 0.884 | 0.860 | 89% | 18/164 empty, thinking non-convergence |
-| Gemma-4-26B-A4B | mlx 4-bit, f16 KV, thinking on, budget 30000 | 0.713 | 0.701 | 72% | 46/164 empty, the convergence problem at its worst |
-| **Gemma-4-12B** | GGUF Q4_K_XL llama, f16 KV, thinking off, budget 8192 | **0.976** | **0.939** | 100% | 0 empty |
-| Gemma-4-12B | LM Studio MLX 4-bit, f16 KV, thinking off, budget 30000 | 0.909 | 0.872 | 100% | 0 empty; 0.067 under the GGUF quant, so the two do not share a score |
-| **Qwen3.6-35B-A3B (MoE)** | llama+MTP q8_0 KV, thinking off, budget 8192 | **0.951** | 0.915 | 100% | 0 empty, 15 minutes |
-| Qwen3.6-35B-A3B (MoE) | llama+MTP, q8_0 KV, thinking on, budget 26624 | 0.939 | **0.921** | 97% | 5/164 empty is a real model ceiling |
-| **Ternary Bonsai-27B** | mlx 2-bit, f16 KV, thinking on, budget 10240 | **0.915** | **0.884** | 97% | 5/164 empty is a real model ceiling |
+| config | budget | pass@1 base | pass@1 plus | completion | status |
+|---|--:|--:|--:|--:|---|
+| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" top /> | 8886 | **0.988** | 0.927 | 100% | 0 empty, 3h10 |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" /> | 8192 | 0.982 | 0.939 | 100% | 0 empty; the 4-bit GGUF at medium carries this score and has no run of its own |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | 8192 | 0.976 | **0.945** | 99% | 1 empty, 3h07 |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" /> | 8192 | 0.976 | 0.933 | 99% | 1 empty, 2h23; level with the medium row on base, one problem lower on plus |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" /> | 30000 | 0.945 | 0.921 | 97% | 5 empty, all at the 30000-token cap, about 9h43 active; below medium and low on both metrics |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" /> | 30000 | 0.957 | 0.939 | 96% | 6 empty, all at the cap, 8h30 active |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" top /> | 8192 | **0.976** | **0.945** | 100% | 0 empty, 19 minutes |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | 30000 | 0.884 | 0.860 | 89% | 18/164 empty, thinking non-convergence |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | 30000 | 0.713 | 0.701 | 72% | 46/164 empty, the convergence problem at its worst |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" top /> | 8192 | **0.976** | **0.939** | 100% | 0 empty |
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" /> | 30000 | 0.909 | 0.872 | 100% | 0 empty; 0.067 under the GGUF quant, so the two do not share a score |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" top /> | 8192 | **0.951** | 0.915 | 100% | 0 empty, 15 minutes |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | 26624 | 0.939 | **0.921** | 97% | 5/164 empty is a real model ceiling |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" top /> | 10240 | **0.915** | **0.884** | 97% | 5/164 empty is a real model ceiling |
 
 ## Mendel — agentic quality (issue-13 bake-off)
 
@@ -323,8 +325,6 @@ ended on the 300-minute wall clock, not on the rubric.
 - A Bonsai guided row at thinking off. Two attempts went invalid on
   the harness; the third waits on a live loop alarm in the runner.
 - The Bonsai prism-fork q4 pick, and the corpus behind its KV bias file.
-- Aider polyglot (tier 2) for gate survivors, driven from another
-  computer; docker does not fit beside a loaded model here.
 - **Qwen3-Coder-30B-A3B is the only promising untested contender.** Not on
   this machine yet. Community-reported EvalPlus HumanEval+ 0.902 (unverified
   by our gate); MoE, 3.3B active, GGUF Q4_K_M ~18.6 GB. Math projects its
