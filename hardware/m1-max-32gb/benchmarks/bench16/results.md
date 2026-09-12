@@ -77,3 +77,20 @@ death at 36864 itself, not this cell, would step the window down to
 28672.
 Files: `results/benchy-sweep-qwen36-mlx-nmax0.md`,
 `results/server-sweep-qwen36-mlx.log`.
+
+## `sweep-gemma26-mlx`
+
+`mlx-community/gemma-4-26b-a4b-it-4bit`, rev `0d77464`,
+`mlx_lm.server`, `--prompt-cache-size 2`, no drafter, wired 25000.
+`llama-benchy` 0.4.0, tokenizer `google/gemma-4-26b-a4b-it`, code
+corpus, pp 512, tg 256, 2 runs after warmup. Depths: 4096, 65536.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 49.33 | 0.15 | 51 | -3.3% | 439.62, no growth |
+| 65536 | 23.43 | 0.19 | 12.8 | +83.0% | 439.62, no growth |
+
+Both cells completed, no dead cell. The deep cell sits well above the
+8 tok/s floor and well above the site's own number.
+Files: `results/benchy-sweep-gemma26-mlx-nmax0.md`,
+`results/server-sweep-gemma26-mlx.log`.
