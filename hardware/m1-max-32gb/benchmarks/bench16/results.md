@@ -49,3 +49,29 @@ Deviation: `vm_stat` wired pages read about 26280 MB at the 196608
 cell, above the 25000 wired-limit target. Swap held flat at 447.62 MB
 with no growth across all three depths; the 197K cell sits well above
 the 8 tok/s floor on real text.
+
+## `sweep-qwen36-mlx`
+
+`mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx_lm.server`,
+`--prompt-cache-size 2`, no drafter, wired 25000. `llama-benchy`
+0.4.0, tokenizer `Qwen/Qwen3.6-35B-A3B`, code corpus, pp 512, tg 256,
+2 runs after warmup. Depths: 4096, 39936.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 54.48 | 0.00 | 55.1 | -1.1% | no growth |
+| 39936 | dead cell | — | 37.4 | — | — |
+
+The deep cell died on `RuntimeError: [METAL] Command buffer execution
+failed: Insufficient Memory (kIOGPUCommandBufferCallbackErrorOutOfMemory)`
+in the generation thread, both run 1 and run 2, at prompt fill
+32768/40449. The `/v1/chat/completions` endpoint kept answering
+(server process alive) while the generation thread was dead, matching
+the known signature. **A dead deep cell is recorded as such, and the
+block is done.**
+Finding: this server's real ceiling sits under 39936 (not 40982 as
+last measured on 2026-09-06). Per the run's rule, the smoke window
+steps down 8192 from the planning value: `qwen36_mlx_window` becomes
+28672, not 36864.
+Files: `results/benchy-sweep-qwen36-mlx-nmax0.md`,
+`results/server-sweep-qwen36-mlx.log`.

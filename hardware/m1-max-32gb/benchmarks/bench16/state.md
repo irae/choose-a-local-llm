@@ -18,7 +18,7 @@ Docker before the first server.
 
 | name | value | source block |
 |---|---|---|
-| `qwen36_mlx_window` | | `qwen36-mlx-smoke-on` |
+| `qwen36_mlx_window` | 28672 | `sweep-qwen36-mlx` deep cell died at 39936 (Metal OOM), so ceiling stepped down 8192 from the 5-percent-under-ceiling planning value 36864 |
 | `gemma26_mlx_window` | | `gemma26-mlx-smoke-high` |
 | `qwen36_mlx_on` | | `qwen36-mlx-mendel-blind-on` |
 | `gemma26_mlx_high` | | `gemma26-mlx-mendel-blind-high` |
