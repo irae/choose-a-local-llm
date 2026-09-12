@@ -244,7 +244,11 @@ runbooks say simulator(mendel), the name of the runner that replaces
 it.
 
 - **Columns, in order**: Config | Max ctx | Gated by¹ |
-  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus² | Coding³.
+  tok/s¹ | Memory (at max ctx) | EvalPlus² | Coding³.
+- **The tok/s cell is the `TokCell` component**: shallow, an arrow,
+  deep, in a fixed-width run padded with spaces so the decimal points
+  and the arrows line up down the column, at a slightly smaller size.
+  The stale dagger sits once, in the text font, before the run.
   **The Config cell is the leftmost column of every table that has
   one**, generated or hand-written.
 - **The Config cell is the `ModelSpec` component** (owner,
@@ -348,12 +352,12 @@ it.
   shows one. When a new run lands, write the new value and remove the
   field from `stale`. Nothing else to touch; every table updates on the
   next `docs:tables` run.
-- **Footnote ¹ always lives on the "Gated by" header**, not on any cell.
-  It explains what the column measures: whichever limit hits first, the
-  max memory a config fits in or the max context that stays usable
-  (usable meaning at or above the 8 tok/s floor). It also covers what
-  "tok/s (shallow → deep)" means, since the two are the same idea. Do
-  not give tok/s its own separate explanation.
+- **Footnote ¹ lives on the "Gated by" and "tok/s" headers**, not on
+  any cell. It explains what the column measures: whichever limit hits
+  first, the max memory a config fits in or the max context that stays
+  usable (usable meaning at or above the 8 tok/s floor). It also says
+  that tok/s reads shallow then deep, since the two are the same idea.
+  Do not give tok/s its own separate footnote.
 - **A row served by a custom binary or fork gets its own footnote**,
   attached directly to the Runtime abbreviation in Config (for example
   "MLX⁴"), not to any other cell. The same fork reuses its number across

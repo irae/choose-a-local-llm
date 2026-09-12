@@ -438,7 +438,7 @@ function topSet(rows, read, { lower = false } = {}) {
 function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = true } = {}) {
   const fn = (n) => (footnotes ? n : '')
   const header = [
-    `| Config | Max ctx | Gated by${fn('¹')} | tok/s<br>(shallow → deep) |${memory ? ' Memory<br>(at max ctx) |' : ''} EvalPlus${fn('²')} | Coding${fn('³')} |`,
+    `| Config | Max ctx | Gated by${fn('¹')} | tok/s${fn('¹')} |${memory ? ' Memory<br>(at max ctx) |' : ''} EvalPlus${fn('²')} | Coding${fn('³')} |`,
     `|---|--:|:--:|--:|${memory ? '--:|' : ''}--:|--:|`,
   ]
   const ordered = sort ? sortRows(rows) : rows
@@ -461,7 +461,11 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     return r.abandoned ? `*${bold}*` : bold
   }
   const body = ordered.map((r, i) => {
-    const tok = `${cell(r, 'tokShallow')} → ${cell(r, 'tokDeep')}`
+    const tokStale = ['tokShallow', 'tokDeep'].some((f) => (r.stale || []).includes(f))
+    if (tokStale) anyStale = true
+    const tok = r.abandoned
+      ? `*${cell(r, 'tokShallow')} → ${cell(r, 'tokDeep')}*`
+      : `<TokCell shallow="${r.tokShallow}" deep="${r.tokDeep}"${tokStale ? ' stale' : ''}${top.tokShallow.has(r) ? ' top-shallow' : ''}${top.tokDeep.has(r) ? ' top-deep' : ''} />`
     const spec = specTag(r.spec, { label: r.id, repo: repoOf(r), top: top.composite.has(r) })
     const config = r.abandoned ? `${spec} ${r.abandoned.marker || '💀'}` : spec
     const ev = evalplusCell(r.evalplus)

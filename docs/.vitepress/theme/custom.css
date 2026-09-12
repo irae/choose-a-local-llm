@@ -188,6 +188,33 @@
 .dark .vp-doc .ms-effort-xhigh,
 .dark .vp-doc .ms-effort-max { --ms-tint: #d98a9a; }
 
+/* tok/s cell: both numbers in a fixed-width run, padded so the decimal
+   points and the arrow line up down the column; the stale dagger stays
+   in the text font outside the run. */
+.vp-doc .tk {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.2em;
+  font-size: 0.85em;
+}
+
+.vp-doc .tk-stale {
+  color: var(--vp-c-text-2);
+}
+
+.vp-doc pre.tk-pre {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-family: var(--vp-font-family-mono);
+  font-size: 1em;
+  line-height: inherit;
+  white-space: pre;
+  color: inherit;
+}
+
 /* Coding cell: a partial's completion sits muted beside the score;
    the test pill is blind yellow, guided green. */
 .vp-doc .cs-note {
