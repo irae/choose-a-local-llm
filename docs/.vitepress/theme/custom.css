@@ -188,7 +188,14 @@
 .dark .vp-doc .ms-effort-xhigh,
 .dark .vp-doc .ms-effort-max { --ms-tint: #d98a9a; }
 
-/* Coding cell test pill: blind yellow, guided green. */
+/* Coding cell: a partial's completion sits muted beside the score;
+   the test pill is blind yellow, guided green. */
+.vp-doc .cs-note {
+  font-weight: 400;
+  font-size: 0.85em;
+  color: var(--vp-c-text-2);
+}
+
 .vp-doc .cs-sub {
   display: inline-flex;
   align-items: baseline;

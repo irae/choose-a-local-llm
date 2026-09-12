@@ -119,9 +119,9 @@ function specTag(spec, { hide = '', label = '', repo = '', top = false } = {}) {
   return `<ModelSpec ${attrs.join(' ')} />`
 }
 
-function scoreTag(value, sub = '', top = false, pill = '') {
+function scoreTag(value, sub = '', top = false, pill = '', note = '') {
   const clean = (v) => String(v).replace(/"/g, '')
-  return `<ScoreCell value="${clean(value)}"${pill ? ` pill="${clean(pill)}"` : ''}${sub ? ` sub="${clean(sub)}"` : ''}${top ? ' top' : ''} />`
+  return `<ScoreCell value="${clean(value)}"${note ? ` note="${clean(note)}"` : ''}${pill ? ` pill="${clean(pill)}"` : ''}${sub ? ` sub="${clean(sub)}"` : ''}${top ? ' top' : ''} />`
 }
 
 // The EvalPlus cell "base/plus/completion%" renders as the two scores
@@ -134,8 +134,8 @@ function evalplusCell(text) {
 
 function mendelCellParts(r) {
   const m = String(r.mendel).match(/^([\d.]+)(?:\s*\(partial\s*(\d+%)\))?$/)
-  if (!m) return { value: String(r.mendel), sub: '', pill: '' }
-  return { value: m[1], sub: m[2] ? `${m[2]} completion` : '', pill: `mendel-${r.mendelTest || 'blind'}` }
+  if (!m) return { value: String(r.mendel), note: '', pill: '' }
+  return { value: m[1], note: m[2] || '', pill: `mendel-${r.mendelTest || 'blind'}` }
 }
 
 // The Coding cell of a row comes from the Mendel CSVs: every valid run
@@ -467,7 +467,7 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     const ev = evalplusCell(r.evalplus)
     const md = mendelCellParts(r)
     const stale = (f) => ((r.stale || []).includes(f) ? '†' : '')
-    return `| ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} |${memory ? ` ${cell(r, 'memory')} |` : ''} ${scoreTag(ev.value + stale('evalplus'), ev.sub, top.evalplus.has(r))} | ${scoreTag(md.value + stale('mendel'), md.sub, top.mendel.has(r), md.pill)} |`
+    return `| ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} |${memory ? ` ${cell(r, 'memory')} |` : ''} ${scoreTag(ev.value + stale('evalplus'), ev.sub, top.evalplus.has(r))} | ${scoreTag(md.value + stale('mendel'), '', top.mendel.has(r), md.pill, md.note)} |`
   })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']

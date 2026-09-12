@@ -268,9 +268,9 @@ it.
   each run's spec from `evalplusRuns[].row` (a row id) or an explicit
   `spec`, and its `budget` field.
 - **The EvalPlus cell is two lines**: `base/plus` over the completion
-  percentage. **The Coding cell is two lines**: the score over the
-  libraries-done percentage of a partial (`38% completion`) and the
-  test pill.
+  percentage. **The Coding cell is two lines**: the score, with a
+  partial's libraries-done percentage muted beside it (`37.5 / 38%`),
+  over the test pill.
 - **Bold marks the best two of every numeric column**, and any further
   row within 15 percent of the column's span (best minus worst) of
   the second-best value; memory reads lower as better. The Config cell goes bold for the best two composites.
@@ -287,8 +287,8 @@ it.
   the heading and the row labels: no "f16 KV" in a title, no "llama"
   at the start of every row, once the spec line carries them.
 - **The Coding cell is the `ScoreCell` component with a `pill`**: the
-  score on line one; on line two the completion percentage of a
-  partial, then the test pill at the right edge, `mendel-blind` in
+  score on line one, with a partial's completion percentage muted
+  after a slash; the test pill alone on line two, `mendel-blind` in
   yellow or `mendel-guided` in green.
 - **The Coding cell comes from the Mendel CSVs, never from
   `models.json`** (owner rule, 2026-09-12). The generator takes every

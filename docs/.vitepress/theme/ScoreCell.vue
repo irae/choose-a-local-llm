@@ -1,6 +1,7 @@
 <script setup>
 const props = defineProps({
   value: { type: String, default: '' },
+  note: { type: String, default: '' },
   pill: { type: String, default: '' },
   sub: { type: String, default: '' },
   top: { type: Boolean, default: false },
@@ -14,7 +15,7 @@ if (props.pill && !['mendel-blind', 'mendel-guided'].includes(props.pill)) {
 
 <template>
   <span class="cs" :class="{ 'cs-top': top }">
-    <span class="cs-value">{{ value }}</span>
+    <span class="cs-value">{{ value }}<span v-if="note" class="cs-note"> / {{ note }}</span></span>
     <span v-if="pill || sub" class="cs-sub">
       <template v-if="sub">{{ sub }}</template>
       <span v-if="pill" class="ms-pill cs-pill" :class="`cs-pill-${pill.replace('mendel-', '')}`">{{ pill }}</span>
