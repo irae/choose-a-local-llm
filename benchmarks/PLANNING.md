@@ -307,6 +307,15 @@ list transient workflow state: what is pushed, what is staged, which
 agent is running, which window to use. That belongs in the handoff's
 current-state section, not in an answer.
 
+**A stale Coding cell from a small window change is the lowest
+priority on the machine** (owner rule, 2026-09-12). When a harness
+window moves a little after a row was scored (the MLX 5 percent rule
+moved two rows), the cell gets the dagger and nothing else: never
+suggest the rerun, never put it in a runbook, never list it as
+pending. The score would land almost where it is, one compaction
+more or less. It runs only when the machine has nothing else to do,
+for the sake of clearing the dagger.
+
 ## The handoff file
 
 `HANDOFF.md` at the repo root is the coordinator's working state: what
