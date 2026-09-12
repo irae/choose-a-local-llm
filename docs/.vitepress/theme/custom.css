@@ -1,11 +1,11 @@
-/* Wide-monitor layout: the 1920px cap applies only where the theme's
-   >=1440px navbar/sidebar math stays non-negative (viewport >= cap - 64).
-   Below that the default 1440px cap keeps the vanilla auto-fit layout;
-   a global 1920px cap collapses the sidebar and title on mid-size
-   screens. */
-@media (min-width: 1856px) {
+/* Wide-monitor layout: from 1440px up the layout width follows the
+   viewport to a 1920px ceiling, so no step leaves margins on both
+   sides. The theme's >=1440px navbar/sidebar math needs the cap to
+   stay at or under the viewport, or the sidebar and title collapse;
+   a viewport-bound value keeps it non-negative at every width. */
+@media (min-width: 1440px) {
   :root {
-    --vp-layout-max-width: 1920px;
+    --vp-layout-max-width: min(100vw, 1920px);
   }
 }
 
