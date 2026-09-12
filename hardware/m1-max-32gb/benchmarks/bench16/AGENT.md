@@ -404,12 +404,14 @@ and budget"): MLX often triggers macOS memory compression near its
 ceiling, so the harness window sits 5 percent under the MLX ceiling.
 The ceiling is the last stable depth of the newest sweep of this
 server at wired 25000: planning value 40982 (2026-09-06; the
-generation thread died on a Metal OOM at the next step); if
-`sweep-qwen36-mlx` lost its deep cell to a dead generation thread,
-the ceiling is under 39936 and the window steps down 8192 from the
-planning value. The window is the largest multiple of 4096 at or
-under 95 percent of that ceiling: planning value 36864. Write
-`qwen36_mlx_window` in `state.md` with its source before the smoke.
+generation thread died on a Metal OOM at the next step). The window
+is the largest multiple of 4096 at or under 95 percent of that
+ceiling: planning value 36864. A dead deep cell in `sweep-qwen36-mlx`
+does not move it: that request was larger than the window. Only a
+server death at the window itself, in the smoke or the agent row,
+steps it down by 8192, written in `state.md` and the config note.
+Write `qwen36_mlx_window` in `state.md` with its source before the
+smoke.
 
 ```bash
 SMOKE_MENDEL_CONTEXT_WINDOW=<qwen36_mlx_window> benchmarks/mendel-smoke.sh mlx-community/Qwen3.6-35B-A3B-4bit on 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench16/results/mendel-smoke-qwen36-mlx-on.log
@@ -463,11 +465,12 @@ mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \
 
 Same window rule as `qwen36-mlx-smoke-on`. The ceiling is the last
 stable depth of the newest sweep of this server at wired 25000:
-planning value 70K, the site row's `maxCtx` (bench 3); if
-`sweep-gemma26-mlx` lost its deep cell to a dead generation thread,
-the ceiling is under 65536 and the window steps down 8192 from the
-planning value. The window is the largest multiple of 4096 at or
-under 95 percent of the ceiling: planning value 65536. Write
+planning value 70K, the measured ceiling in the site row's note
+(bench 3). The window is the largest multiple of 4096 at or under 95
+percent of the ceiling: planning value 65536. A dead deep cell in
+`sweep-gemma26-mlx` does not move it; only a server death at the
+window itself, in the smoke or the agent row, steps it down by 8192,
+written in `state.md` and the config note. Write
 `gemma26_mlx_window` in `state.md` with its source before the smoke.
 
 ```bash
