@@ -112,3 +112,37 @@ verdict=pass`
 1500 s cap. `qwen36-mlx-mendel-blind-on` runs next.
 Files: `results/mendel-smoke-qwen36-mlx-on.log`,
 `results/server-qwen36-mlx.log`.
+
+## `qwen36-mlx-mendel-blind-on`
+
+`mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx_lm.server`,
+`--prompt-cache-size 2`, thinking on, wired 25000, window 36864, keep
+budget 8192. Started 22:28:54Z, ended 22:41:13Z. `worker.json`: loop
+ok (ratio 0.62, tool call), one tooling nudge (a transient stream
+error, recovered), no compaction, `end_reason` complete.
+
+Handed to a subagent for scoring and publishing per the run's rule
+(one subagent, one pass: score, `results.json`, `results.csv`,
+`report.html`, commit and push to `mendel-benchmark` on branch
+`benchmark`). See the handing-over section for its report.
+
+## `gemma26-mlx-smoke-high`
+
+`mlx-community/gemma-4-26b-a4b-it-4bit`, rev `0d77464`,
+`mlx_lm.server`, `--prompt-cache-size 2`, thinking high, wired 25000,
+window 65536.
+
+`SMOKE-MENDEL model=mlx-community/gemma-4-26b-a4b-it-4bit level=high
+task=xtend window=65536 calls=6 distinct=6 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=3521 commits=0 clean=no end=toolUse
+wall_s=32 verdict=fail`
+
+**Fail.** Zero commits, tree not clean, ended on `toolUse` rather than
+`stop`. The server log shows no OOM and no death signature: it logs
+`WARNING - Failed to parse tool call (JSONDecodeError...) — tool text
+was likely truncated mid-generation` right where the run ends. This is
+a fail of the model/harness tool-call shape at this config, not a
+server death. Per the run's rule, `gemma26-mlx-mendel-blind-high` does
+not run.
+Files: `results/mendel-smoke-gemma26-mlx-high.log`,
+`results/server-gemma26-mlx.log`.

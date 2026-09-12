@@ -1,0 +1,8 @@
+mendel-smoke: model mlx-community/gemma-4-26b-a4b-it-4bit, thinking high, task xtend, cap 1500s
+mendel-smoke: everything lands in /tmp/mendel-smoke.6aHBtg
+mendel-smoke: fixture ready (xtend, 2 files, 310 bytes under lib), one commit, clean tree
+mendel-smoke: compaction settings {"enabled": true, "reserveTokens": 8192}
+mendel-smoke: contextWindow 65536 pinned on provider mlx
+mendel-smoke: pi config pinned at /tmp/mendel-smoke.6aHBtg/pi-agent
+mendel-smoke: pi exited 0 after 32s, session /tmp/mendel-smoke.6aHBtg/session/2026-09-12T22-43-08-966Z_01a097c9-f026-7bc7-991c-72bb8558f873.jsonl
+SMOKE-MENDEL model=mlx-community/gemma-4-26b-a4b-it-4bit level=high task=xtend window=65536 calls=6 distinct=6 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=3521 commits=0 clean=no end=toolUse wall_s=32 verdict=fail
