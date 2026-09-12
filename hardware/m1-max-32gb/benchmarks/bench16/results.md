@@ -26,3 +26,26 @@ Files: `results/benchy-qwen38-atomicchat-drafter.md`,
 `results/server-benchy-qwen38-atomicchat-drafter.log`,
 `results/benchy-qwen38-atomicchat-drafter-vm.log`.
 Wired stayed near 24900-25000 MB across the block. No swap growth.
+
+## `benchy-gemma26-drafter`
+
+`unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, `--no-mmproj`, f16 KV,
+drafter `--spec-type draft-mtp --spec-draft-n-max 2`, `--parallel 1`,
+`-c 212992`, wired 25000. `llama-benchy` 0.4.0, tokenizer
+`google/gemma-4-26b-a4b-it`, code corpus (`corpus-mendel-js.txt`),
+pp 512, tg 256, 2 runs after warmup.
+
+| depth | benchy tok/s | sd | site tok/s | diff | acceptance (warmup) | acceptance (runs) | swap MB |
+|--:|--:|--:|--:|--:|--:|--:|--:|
+| 4096 | 60.13 | 1.81 | 60.3 | -0.3% | 74.1% | 65.2%, 74.5% | 447.62, no growth |
+| 98304 | 28.19 | 0.54 | no site cell | — | 70.6% | 83.7%, 73.5% | 447.62, no growth |
+| 196608 | 19.06 | 0.67 | 17.3 (at 197K) | +10.2% | 67.0% | 96.0%, 86.1% | 447.62, no growth |
+
+Run 15, same files, no drafter, projector loaded: 53.1 at 4K, 19.2 at
+204K. Files: `results/benchy-gemma26-drafter.md`,
+`results/server-benchy-gemma26-drafter.log`,
+`results/benchy-gemma26-drafter-vm.log`.
+Deviation: `vm_stat` wired pages read about 26280 MB at the 196608
+cell, above the 25000 wired-limit target. Swap held flat at 447.62 MB
+with no growth across all three depths; the 197K cell sits well above
+the 8 tok/s floor on real text.
