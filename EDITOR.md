@@ -269,7 +269,7 @@ it.
   `spec`, and its `budget` field.
 - **The EvalPlus cell is two lines**: `base/plus` over the completion
   percentage. **The Coding cell is two lines**: the score, with a
-  partial's libraries-done percentage muted beside it (`37.5 / 38%`),
+  partial's libraries-done percentage muted before it (`38% / 37.5`),
   over the test pill.
 - **Bold marks the best two of every numeric column**, and any further
   row within 15 percent of the column's span (best minus worst) of
@@ -288,7 +288,7 @@ it.
   at the start of every row, once the spec line carries them.
 - **The Coding cell is the `ScoreCell` component with a `pill`**: the
   score on line one, with a partial's completion percentage muted
-  after a slash; the test pill alone on line two, `mendel-blind` in
+  before it and a slash; the test pill alone on line two, `mendel-blind` in
   yellow or `mendel-guided` in green.
 - **The Coding cell comes from the Mendel CSVs, never from
   `models.json`** (owner rule, 2026-09-12). The generator takes every
