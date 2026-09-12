@@ -38,7 +38,7 @@ down but hit hard memory ceilings; llama runtimes hold their speed
 deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 
 <!-- gen:models-evaluated:start -->
-| Config | Max ctx | Gated by¹ | tok/s¹ | EvalPlus² | Coding³ |
+| Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" top /> | 72k | mem | <TokCell shallow="11.8" deep="8.6" /> | <ScoreCell value="0.957/0.939" sub="96% completion" top /> | <ScoreCell value="93" pill="mendel-blind" top /> |
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" top /> | 82k | speed | <TokCell shallow="43.7" deep="13.0" top-deep /> | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="83" pill="mendel-guided" top /> |
@@ -55,36 +55,53 @@ deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->
 
-¹ Whichever limit hits first: the max memory a config fits in, the max
-context that stays usable — usable meaning at or above the 8 tok/s floor —
-or the model's own trained window, when neither of the other two arrives.
-tok/s is that same decode speed, shallow near an empty context, then deep
-at max ctx.
-
-² Scored once per model and thinking mode; runtimes serving the same
-model at a standard quant share the score. Aggressive quants (for
-example the prism fork's calibrated q4 KV) do not share — they pass the
-gate separately.
-
-³ Coding: the Mendel score of that config at that thinking level, out
-of 100, one real repository task with known traps; the pill names the
-test, blind or guided, and the cell shows the config's run with the
-most libraries done, then the higher score. A muted percentage before
-the score is the share of libraries done when the run did not finish,
-`invalid` when every attempt was. Rows sort by the
-average of the EvalPlus base score and this one; a row with only one
-of the two sorts after every row with both.
-
-⁴ LM Studio's MLX engine — the only runtime that loads this model's
+¹ LM Studio's MLX engine — the only runtime that loads this model's
 `gemma4_unified` architecture. It is retired on that machine; see
 [why](./setups/m1-max-32gb/lmstudio-retired.md).
 
-⁵ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
+² PrismML's llama.cpp fork, an approved exception to the no-forks rule.
 
-See [the measurement rules](./methodology/context-creep) for why a slow
-creep is more realistic than a fast sweep.
+#### Legend
 
-"Memory (at max ctx)" is the wired GPU memory the config holds at max ctx.
+- **Ctx**, the usable context: the deepest context the config served
+  above the floor, set by Cap. The coding harness gets the same
+  window, rounded down to a multiple of 4096; on MLX it sits about 20
+  percent lower, because that runtime dies near its ceiling.
+- **Cap**, what stops the context from growing: memory holds the
+  weights, the drafter, a vision adapter and the runtime's buffers,
+  and what is left is context. Some models do not fit their trained
+  window; others fit it and then decode too slowly to use. The floor
+  is 8 tok/s. `mem` means memory ran out first, `speed` means decode
+  fell under the floor first.
+- **tok/s**, decode speed shallow, near an empty context, then deep,
+  at Ctx. Most tools report the shallow number only, but engineering
+  work and long documents run at depth, where speed falls. A drafter
+  (MTP, speculative decoding) can help or hurt, and the answer
+  changes with depth, so every drafter row is read on real text with
+  its draft acceptance. See [the measurement
+  rules](./methodology/context-creep).
+- **EvalPlus**, scored once per model and thinking mode; runtimes
+  serving the same model at a standard quant share the score.
+  Aggressive quants (for example the prism fork's calibrated q4 KV)
+  do not share; they pass the gate separately. Each run gets an
+  output budget from a ten-problem calibration, capped at 30000
+  tokens. A problem that runs to the cap counts as failed; the
+  completion percentage says how many finished. The cap is what this
+  machine can wait for, not the model's ceiling, so a capable model
+  at a high reasoning level can lose points to it.
+- **Coding**, a simulated pull request: the `pi` coding agent fixes a
+  real issue in a real repository with known traps, over many turns,
+  not one prompt. A stalled agent gets a fixed number of nudges; a
+  nudge the model caused costs points. Mendel blind gives the terse
+  issue and the model plans the work itself. Mendel guided gives the
+  same task as steps with the traps disclosed, so a smaller model can
+  serve as an executor rather than a planner. The pill names the
+  test. Of the config's valid runs the cell shows the one with the
+  most libraries done, then the higher score; a muted percentage
+  before the score is the share of libraries done when the run did
+  not finish, `invalid` when every attempt was. Rows sort by the
+  average of the EvalPlus base score and this one; a row with only
+  one of the two sorts after every row with both.
 
 | model | report | benchmarks |
 |---|---|---|

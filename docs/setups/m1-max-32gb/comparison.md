@@ -38,7 +38,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
 ## Models evaluated
 
 <!-- gen:models-evaluated:start -->
-| Config | Max ctx | Gated by¹ | tok/s¹ | EvalPlus² | Coding³ |
+| Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" top /> | 72k | mem | <TokCell shallow="11.8" deep="8.6" /> | <ScoreCell value="0.957/0.939" sub="96% completion" /> | <ScoreCell value="93" pill="mendel-blind" top /> |
 | <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" top /> | 72k | mem | <TokCell shallow="11.8" deep="8.6" /> | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="87" pill="mendel-blind" top /> |
@@ -58,40 +58,62 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->
 
-¹ Two values. **mem**: memory ended the curve, whether the server did
-not load a larger context, died in flight, compacted or swapped, or the
-model's own trained window arrived first; the row note says which.
-**speed**: decode fell under the 8 tok/s floor while memory still had
-room.
-tok/s is that same decode speed, shallow near an empty context, then deep
-at max ctx.
-
-² Scored once per model and thinking mode; runtimes serving the same
-model at a standard quant share the score, until a measurement says
-otherwise: Gemma-4-12B's GGUF Q4_K_XL scored 0.067 above its LM Studio
-MLX 4-bit, and Gemma-4-26B-A4B's GGUF UD-Q4_K_XL at f16 KV scored 0.171
-above its MLX 4-bit, so those pairs carry their own. Aggressive quants
-(for example the prism fork's calibrated q4 KV) never share; they pass
-the gate separately.
-
-³ Coding: the simulator score of that config at that thinking level,
-out of 100, on the current prompt version; the pill names the test,
-Mendel blind or guided. Of the config's valid runs the cell shows the
-one with the most libraries done, then the higher score; a muted
-percentage before the score is the share of libraries done when the
-run did not finish, `invalid` when every attempt was, `pending` when
-none ran.
-Never shared across levels or serving configs. Rows sort by the average
-of the EvalPlus base score and this one; a row with only one of the two
-sorts after every row with both. A single run carries about ten points
-of noise, so two rows within that are not separated. Guided scores and
-every row's detail are in [the Mendel section](#mendel-agentic-quality-issue-13-bake-off).
-
-⁴ LM Studio's MLX engine, the only runtime that loads this model's
+¹ LM Studio's MLX engine, the only runtime that loads this model's
 `gemma4_unified` architecture. It is retired here and no longer a
 candidate; [the reasons are on its own page](./lmstudio-retired.md).
 
-⁵ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
+² PrismML's llama.cpp fork, an approved exception to the no-forks rule.
+
+#### Legend
+
+- **Ctx**, the usable context: the deepest context the config served
+  above the floor, set by Cap. The coding harness gets the same
+  window, rounded down to a multiple of 4096; on MLX it sits about 20
+  percent lower, because that runtime dies near its ceiling.
+- **Cap**, what stops the context from growing: memory holds the
+  weights, the drafter, a vision adapter and the runtime's buffers,
+  and what is left is context. Some models do not fit their trained
+  window; others fit it and then decode too slowly to use. The floor
+  is 8 tok/s. `mem` means memory ended the curve, whether the server
+  did not load a larger context, died in flight, compacted or swapped,
+  or the model's own trained window arrived first; the row note says
+  which. `speed` means decode fell under the floor while memory still
+  had room.
+- **tok/s**, decode speed shallow, near an empty context, then deep,
+  at Ctx. Most tools report the shallow number only, but engineering
+  work and long documents run at depth, where speed falls. A drafter
+  (MTP, speculative decoding) can help or hurt, and the answer
+  changes with depth, so every drafter row is read on real text with
+  its draft acceptance.
+- **EvalPlus**, scored once per model and thinking mode; runtimes
+  serving the same model at a standard quant share the score, until a
+  measurement says otherwise: Gemma-4-12B's GGUF Q4_K_XL scored 0.067
+  above its LM Studio MLX 4-bit, and Gemma-4-26B-A4B's GGUF UD-Q4_K_XL
+  at f16 KV scored 0.171 above its MLX 4-bit, so those pairs carry
+  their own. Aggressive quants (for example the prism fork's
+  calibrated q4 KV) never share; they pass the gate separately. Each
+  run gets an output budget from a ten-problem calibration, capped at
+  30000 tokens. A problem that runs to the cap counts as failed; the
+  completion percentage says how many finished. The cap is what this
+  machine can wait for, not the model's ceiling, so a capable model
+  at a high reasoning level can lose points to it.
+- **Coding**, a simulated pull request: the `pi` coding agent fixes a
+  real issue in a real repository with known traps, over many turns,
+  not one prompt. A stalled agent gets a fixed number of nudges; a
+  nudge the model caused costs points. Mendel blind gives the terse
+  issue and the model plans the work itself. Mendel guided gives the
+  same task as steps with the traps disclosed, so a smaller model can
+  serve as an executor rather than a planner. The pill names the
+  test. Of the config's valid runs on the current prompt version the
+  cell shows the one with the most libraries done, then the higher
+  score; a muted percentage before the score is the share of
+  libraries done when the run did not finish, `invalid` when every
+  attempt was, `pending` when none ran. Never shared across levels or
+  serving configs. Rows sort by the average of the EvalPlus base
+  score and this one; a row with only one of the two sorts after
+  every row with both. A single run carries about ten points of
+  noise, so two rows within that are not separated. Every row's
+  detail is in [the Mendel section](#mendel-agentic-quality-issue-13-bake-off).
 
 All ceilings below are slow creeps. Rows measured from 2026-09-06 on
 ran at wired limit 25000, the standing value; older rows ran at 24000
@@ -106,14 +128,14 @@ Compaction thresholds come from the floor table below, not from the window.
 
 ### Rows still being measured
 
-Every row above has all three measurements: tok/s (shallow → deep),
-EvalPlus and Mendel. The rows below have at least one of the three
+Every row above has all three measurements: tok/s, EvalPlus and
+Mendel. The rows below have at least one of the three
 and are missing one or two; the same footnotes and sort apply, and
 `#` continues the count. Rows with none of the three stay on their
 model page.
 
 <!-- gen:models-evaluated-partial:start -->
-| Config | Max ctx | Gated by¹ | tok/s¹ | EvalPlus² | Coding³ |
+| Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" /> | 28k | mem | <TokCell shallow="17" deep="15.3" stale /> | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" /> |
 | <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | **2x82k** | mem | <TokCell shallow="25.0" deep="15.7" stale /> | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> |
@@ -232,7 +254,7 @@ hosted reports show them dimmed, with reasons.
 
 Every row ran under the same harness, pi, which is pluggable and
 configurable and serves every model the same way, the cloud baselines
-included. "Max ctx" is the context window the harness had for the run.
+included. "Ctx" is the context window the harness had for the run.
 
 | model | test | runtime | thinking | max ctx | score | status |
 |---|---|---|---|--:|--:|---|
@@ -250,12 +272,12 @@ included. "Max ctx" is the context window the harness had for the run.
 | Gemma-4-12B | guided | GGUF, f16 KV, no drafter | off | 262k | **37.5/100** | partial, 3/8 libraries; model budget exhausted after three nudges |
 | Ternary Bonsai-27B | blind | MLX 2-bit | high | 58k | **37.5/100** (raw 55) | partial, 300-min wall clock at 3/8 libraries |
 | Qwen3.8-27B | blind | GGUF AD-IQ3_S AtomicChat, f16 KV | effort medium | 98k | **37.5/100** (raw 74) | partial, 3/8 libraries; ended on a repetition loop, the model's own failure |
-| Ternary Bonsai-27B | guided | GGUF⁵, q4 KV | high | 64k | **31.5/100** | partial, 3/8 libraries; 300-min wall clock, stopped by hand at 469 minutes |
+| Ternary Bonsai-27B | guided | GGUF², q4 KV | high | 64k | **31.5/100** | partial, 3/8 libraries; 300-min wall clock, stopped by hand at 469 minutes |
 | Gemma-4-26B-A4B | guided | GGUF, f16 KV | off | 208k | **25/100** (raw 44) | partial, 2/8 libraries; ended on the live loop stop, five identical edit calls |
 | Qwen3.8-27B | blind | MLX 4-bit | effort low | 26k | **12.5/100** (raw 67.5) | partial, 1/8; the 26624-token window plus a 16384-token output budget forced premature stops (our config arithmetic, not the model) |
 | Ternary Bonsai-27B | guided | MLX 2-bit | high | 58k | **12.5/100** (raw 59) | partial, 300-min wall clock at 1/8 libraries |
-| Ternary Bonsai-27B | blind | GGUF⁵, q4 KV | high | 64k | **12.5/100** (raw 60.5) | 1/8 libraries; typoed the repo path, self-scoped to chalk; a penalized retry is pending |
-| Ternary Bonsai-27B | guided | GGUF⁵, f16 KV, no drafter | high | 131k | **12.5/100** (raw 36) | partial, 1/8 libraries; 376 tool calls and 74 tool errors at a 127k peak context |
+| Ternary Bonsai-27B | blind | GGUF², q4 KV | high | 64k | **12.5/100** (raw 60.5) | 1/8 libraries; typoed the repo path, self-scoped to chalk; a penalized retry is pending |
+| Ternary Bonsai-27B | guided | GGUF², f16 KV, no drafter | high | 131k | **12.5/100** (raw 36) | partial, 1/8 libraries; 376 tool calls and 74 tool errors at a 127k peak context |
 | Gemma-4-26B-A4B | blind | GGUF, f16 KV | off | 208k | **12.5/100** (raw 21) | partial, 1/8 libraries; ended on the live loop stop, five identical edit calls |
 
 **Effort xhigh beats low on Qwen3.8, and spends less doing it.** On the

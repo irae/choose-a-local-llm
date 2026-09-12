@@ -8,7 +8,7 @@ const END = '<!-- gen:models-evaluated:end -->'
 const PARTIAL_START = '<!-- gen:models-evaluated-partial:start -->'
 const PARTIAL_END = '<!-- gen:models-evaluated-partial:end -->'
 const PARTIAL_NOTE =
-  'Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.'
+  'Rows below 100 percent completeness. Completeness counts three measurements: tok/s, EvalPlus and Mendel.'
 const KPI_START = '<!-- gen:model-kpis:start -->'
 const KPI_END = '<!-- gen:model-kpis:end -->'
 const MODEL_START = '<!-- gen:model-table:start -->'
@@ -436,9 +436,8 @@ function topSet(rows, read, { lower = false } = {}) {
 }
 
 function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = true } = {}) {
-  const fn = (n) => (footnotes ? n : '')
   const header = [
-    `| Config | Max ctx | Gated by${fn('¹')} | tok/s${fn('¹')} |${memory ? ' Memory<br>(at max ctx) |' : ''} EvalPlus${fn('²')} | Coding${fn('³')} |`,
+    `| Model / Config | Ctx | Cap | tok/s |${memory ? ' Memory<br>(at max ctx) |' : ''} EvalPlus | Coding |`,
     `|---|--:|:--:|--:|${memory ? '--:|' : ''}--:|--:|`,
   ]
   const ordered = sort ? sortRows(rows) : rows
