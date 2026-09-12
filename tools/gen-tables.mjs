@@ -119,9 +119,9 @@ function specTag(spec, { hide = '', label = '', repo = '', top = false } = {}) {
   return `<ModelSpec ${attrs.join(' ')} />`
 }
 
-function scoreTag(value, sub = '', top = false) {
+function scoreTag(value, sub = '', top = false, pill = '') {
   const clean = (v) => String(v).replace(/"/g, '')
-  return `<ScoreCell value="${clean(value)}"${sub ? ` sub="${clean(sub)}"` : ''}${top ? ' top' : ''} />`
+  return `<ScoreCell value="${clean(value)}"${pill ? ` pill="${clean(pill)}"` : ''}${sub ? ` sub="${clean(sub)}"` : ''}${top ? ' top' : ''} />`
 }
 
 // The EvalPlus cell "base/plus/completion%" renders as the two scores
@@ -132,10 +132,51 @@ function evalplusCell(text) {
   return m ? { value: m[1], sub: m[2] === '—' ? '' : `${m[2]} completion` } : { value: String(text), sub: '' }
 }
 
-function mendelCellParts(text) {
-  const m = String(text).match(/^([\d.]+)(?:\s*\(partial\s*(\d+%)\))?$/)
-  if (!m) return { value: String(text), sub: 'mendel-blind' }
-  return { value: m[1], sub: m[2] ? `mendel-blind ${m[2]}` : 'mendel-blind' }
+function mendelCellParts(r) {
+  const m = String(r.mendel).match(/^([\d.]+)(?:\s*\(partial\s*(\d+%)\))?$/)
+  if (!m) return { value: String(r.mendel), sub: '', pill: '' }
+  return { value: m[1], sub: m[2] ? `${m[2]} completion` : '', pill: `mendel-${r.mendelTest || 'blind'}` }
+}
+
+// The Coding cell of a row comes from the Mendel CSVs: every valid run
+// of the current prompt version, blind or guided, whose spec matches
+// the row's. The pick is the run with the most libraries done, then
+// the higher capped score. A row with no matching run keeps the state
+// word written in models.json.
+function mendelKey(spec, slots) {
+  return [...['base', 'quant', 'publisher', 'server', 'drafter', 'kv', 'effort'].map((k) => spec[k] || ''), slots].join('|')
+}
+
+function rowSlots(row) {
+  const m = String(row.command || '').match(/--parallel (\d+)/)
+  return m ? Number(m[1]) : 1
+}
+
+function runSlots(r) {
+  const m = `${r.model_id} ${r.branch}`.match(/-(\d)x\b/)
+  return m ? Number(m[1]) : 1
+}
+
+function deriveMendel(rows, blind, guided) {
+  const runs = [
+    ...blind.filter((r) => r.local === 'True').map((r) => ({ r, test: 'blind' })),
+    ...guided.filter((r) => r.local === 'True').map((r) => ({ r, test: 'guided' })),
+  ].map((x) => ({ ...x, key: mendelKey(mendelSpec(x.r), runSlots(x.r)) }))
+  const done = (r) => (r.libraries_done === '' ? 8 : Number(r.libraries_done))
+  const capped = (r) => Math.min(Number(r.score_total), (100 * done(r)) / 8)
+  for (const row of rows) {
+    if (!row.spec) continue
+    if (parseMendel(row.mendel) !== null) {
+      throw new Error(`row ${row.id}: mendel "${row.mendel}" is a number; the score comes from the Mendel CSVs, write only pending, not run or invalid`)
+    }
+    const match = runs
+      .filter((x) => x.key === mendelKey(row.spec, rowSlots(row)))
+      .sort((a, b) => done(b.r) - done(a.r) || capped(b.r) - capped(a.r))[0]
+    if (!match) continue
+    const partial = match.r.partial === 'True'
+    row.mendel = `${capped(match.r)}${partial ? ` (partial ${Math.round((100 * done(match.r)) / 8)}%)` : ''}`
+    row.mendelTest = match.test
+  }
 }
 
 // Mendel rows come from the benchmark CSVs, which carry the alias, the
@@ -179,7 +220,7 @@ function mendelSpec(r) {
     drafter: m.drafter,
     repo: m.repo,
     kv: m.kv || (r.kv_type === 'unquantized' || !r.kv_type ? 'f16' : r.kv_type),
-    effort: level === 'default' ? m.effort : m.binary && level === 'high' ? 'on' : level,
+    effort: level === 'default' ? m.effort : m.binary ? (level === 'off' ? 'off' : 'on') : level,
   }
 }
 
@@ -372,7 +413,7 @@ function checkRows(rows, setup) {
       throw new Error(`${setup}: row ${r.id} has gatedBy "${r.gatedBy}"; allowed: ${[...GATED_BY].join(', ')}`)
     }
     if (typeof r.mendel !== 'string' || !r.mendel) {
-      throw new Error(`${setup}: row ${r.id} has no mendel cell; write a score, "pending" or "invalid"`)
+      throw new Error(`${setup}: row ${r.id} has no mendel cell; write "pending", "not run" or "invalid"`)
     }
   }
 }
@@ -424,9 +465,9 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     const spec = specTag(r.spec, { label: r.id, repo: repoOf(r), top: top.composite.has(r) })
     const config = r.abandoned ? `${spec} ${r.abandoned.marker || '💀'}` : spec
     const ev = evalplusCell(r.evalplus)
-    const md = mendelCellParts(r.mendel)
+    const md = mendelCellParts(r)
     const stale = (f) => ((r.stale || []).includes(f) ? '†' : '')
-    return `| ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} |${memory ? ` ${cell(r, 'memory')} |` : ''} ${scoreTag(ev.value + stale('evalplus'), ev.sub, top.evalplus.has(r))} | ${scoreTag(md.value + stale('mendel'), md.sub, top.mendel.has(r))} |`
+    return `| ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} |${memory ? ` ${cell(r, 'memory')} |` : ''} ${scoreTag(ev.value + stale('evalplus'), ev.sub, top.evalplus.has(r))} | ${scoreTag(md.value + stale('mendel'), md.sub, top.mendel.has(r), md.pill)} |`
   })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']
@@ -605,6 +646,11 @@ for (const dataFile of dataFiles) {
   const setupDir = dataFile.replace(/\/models\.json$/, '')
   const data = JSON.parse(readFileSync(dataFile, 'utf8'))
   checkRows(data.rows, data.setup)
+  const mendelBlindAll = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8'))
+  const mendelGuidedAll = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8'))
+  const mendelBlind = currentPromptVersion(mendelBlindAll.filter((r) => r.invalid !== 'True'))
+  const mendelGuided = currentPromptVersion(mendelGuidedAll.filter((r) => r.invalid !== 'True'))
+  deriveMendel(data.rows, mendelBlind, mendelGuided)
   // An abandoned row keeps its numbers on the model page only: the comparison
   // and the home table answer "what should I run", and it is not a candidate.
   const visible = data.rows.filter((r) => !r.hidden && !r.retired && !r.abandoned)
@@ -633,10 +679,6 @@ for (const dataFile of dataFiles) {
     }
   }
 
-  const mendelBlindAll = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8'))
-  const mendelGuidedAll = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8'))
-  const mendelBlind = currentPromptVersion(mendelBlindAll.filter((r) => r.invalid !== 'True'))
-  const mendelGuided = currentPromptVersion(mendelGuidedAll.filter((r) => r.invalid !== 'True'))
   const typePages = [
     [`${setupDir}/benchmarks/evalplus.md`, EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(data)],
     [`${setupDir}/benchmarks/decode-speed.md`, DECODE_START, DECODE_END, renderDecodeSummary(data)],

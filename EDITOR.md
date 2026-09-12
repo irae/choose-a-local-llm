@@ -227,7 +227,7 @@ overwrites it. `npm run docs:check` fails the build if either copy has
 drifted from the JSON, so a forgotten regeneration cannot reach the
 site. The generator sorts rows by the average of the two quality
 scores, the EvalPlus base pass@1 times 100 and the simulator(mendel)
-blind score, descending. A row with only one of the two sorts after
+score the Coding cell shows, descending. A row with only one of the two sorts after
 every row with both, by its EvalPlus score; Max ctx (descending)
 breaks ties. Nothing else moves a row up: speed, window, memory and
 completeness are read from the row, not ranked.
@@ -269,9 +269,8 @@ it.
   `spec`, and its `budget` field.
 - **The EvalPlus cell is two lines**: `base/plus` over the completion
   percentage. **The Coding cell is two lines**: the score over the
-  test name, plus the libraries-done percentage on a partial
-  (`mendel-blind 38%`); the `mendel` field writes a partial as
-  `37.5 (partial 38%)`.
+  test pill, plus the libraries-done percentage on a partial
+  (`38% completion`).
 - **Bold marks the best two of every numeric column**, and any further
   row within 15 percent of the column's span (best minus worst) of
   the second-best value; memory reads lower as better. The Config cell goes bold for the best two composites.
@@ -287,17 +286,22 @@ it.
   those are neither required nor shown. What the line says leaves
   the heading and the row labels: no "f16 KV" in a title, no "llama"
   at the start of every row, once the spec line carries them.
-- **The Coding cell is the `CodingScore` component**: the score on
-  line one, the test name (`mendel-blind` or `mendel-guided`) on line
-  two. The comparison and the homepage show blind only.
-- **The `mendel` cell is curated in `models.json`**, like `evalplus`:
-  the config's Mendel blind score at that thinking level on the
-  current prompt version, out of 100, with `(partial)` where the run
-  did not finish; `pending` when no valid blind run exists and one is
-  planned; `not run` when none is planned, with the reason in the
-  row's note; `invalid` when every attempt was invalid. It is never
-  shared across levels or serving configs. Guided scores stay on the Mendel page. Footnote ³
-  lives on the header.
+- **The Coding cell is the `ScoreCell` component with a `pill`**: the
+  score on line one, the test pill on line two, `mendel-blind` in
+  yellow or `mendel-guided` in green, then the completion percentage
+  on a partial.
+- **The Coding cell comes from the Mendel CSVs, never from
+  `models.json`** (owner rule, 2026-09-12). The generator takes every
+  valid run of the current prompt version, blind and guided, whose
+  spec matches the row (build, server, drafter, KV type, thinking
+  level, slot count), and shows the run with the most libraries done,
+  then the higher capped score. A guided run can therefore stand on
+  the comparison and the homepage. The `mendel` field in
+  `models.json` holds only a state word for a row with no such run:
+  `pending` when one is planned; `not run` when none is planned, with
+  the reason in the row's note; `invalid` when every attempt was
+  invalid. A number in that field fails the build. Footnote ³ lives
+  on the header.
 - **The homepage table holds one line per build** (the first two
   parts of the config: model, then runtime and quant with its
   publisher), showing that build's best complete row by the same sort.

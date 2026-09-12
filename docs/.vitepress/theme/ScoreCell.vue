@@ -1,16 +1,23 @@
 <script setup>
 const props = defineProps({
   value: { type: String, default: '' },
+  pill: { type: String, default: '' },
   sub: { type: String, default: '' },
   top: { type: Boolean, default: false },
 })
 
 if (!props.value) throw new Error('ScoreCell: missing value')
+if (props.pill && !['mendel-blind', 'mendel-guided'].includes(props.pill)) {
+  throw new Error(`ScoreCell: pill "${props.pill}" is not mendel-blind or mendel-guided`)
+}
 </script>
 
 <template>
   <span class="cs" :class="{ 'cs-top': top }">
     <span class="cs-value">{{ value }}</span>
-    <span v-if="sub" class="cs-sub">{{ sub }}</span>
+    <span v-if="pill || sub" class="cs-sub">
+      <span v-if="pill" class="ms-pill cs-pill" :class="`cs-pill-${pill.replace('mendel-', '')}`">{{ pill }}</span>
+      <template v-if="sub">{{ sub }}</template>
+    </span>
   </span>
 </template>
