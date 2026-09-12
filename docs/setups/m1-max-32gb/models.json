@@ -260,7 +260,13 @@
       "id": "gemma26-mlx",
       "spec": { "base": "Gemma-4-26B-A4B", "quant": "4-bit", "server": "mlx_lm.server", "publisher": "mlx-community", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
-      "command": "mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \\\n  --prompt-cache-size 2 --port 8081"
+      "command": "mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \\\n  --prompt-cache-size 2 --port 8081",
+      "pi": {
+        "provider": "mlx",
+        "id": "mlx-community/gemma-4-26b-a4b-it-4bit",
+        "contextWindow": 53248,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Gemma-4-26B-A4B, GGUF, MTP, f16 KV",
