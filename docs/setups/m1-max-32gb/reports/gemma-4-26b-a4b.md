@@ -46,7 +46,7 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|--:|
 | <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **2x82k** | mem | **66.6†** → **33.6†** | **25.3 GB** | <ScoreCell value="0.884/0.860" sub="89% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | **70k** | mem | **51** → **12.8** | **20.0 GB** | <ScoreCell value="0.713/0.701" sub="72% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | **70k** | mem | **51†** → **12.8†** | **20.0 GB** | <ScoreCell value="0.713/0.701" sub="72% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->

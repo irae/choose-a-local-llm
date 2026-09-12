@@ -48,13 +48,15 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
 |---|--:|:--:|--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" top /> | **82k** | speed | **43.7** → **13.0** | **25.6 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="63" sub="mendel-blind" top /> |
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" top /> | **82k** | speed | **43.7** → **13.0** | **25.6 GB** | <ScoreCell value="0.951/0.915" sub="100% completion" top /> | <ScoreCell value="50.5" sub="mendel-blind" top /> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" top /> | **66k** | mem | **50.5** → **33.6** | **25.0 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="50" sub="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" top /> | **66k** | mem | **50.5†** → **33.6†** | **25.0 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="50" sub="mendel-blind" top /> |
+
+† from an earlier serving config or method; re-run pending.
 
 Rows below 100 percent completeness. Completeness counts three measurements: tok/s (shallow → deep), EvalPlus and Mendel.
 
 | Config | Max ctx | Gated by | tok/s<br>(shallow → deep) | Memory<br>(at max ctx) | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | **41k** | mem | **55.1** → **37.4** | **24.6 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | **41k** | mem | **55.1†** → **37.4†** | **24.6 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" /> | **41k** | mem | **69.1†** → **52.6†** | **25.1 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
 
 † from an earlier serving config or method; re-run pending.
