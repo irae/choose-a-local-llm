@@ -1,6 +1,6 @@
 # Run 16 — real-text speeds for the drafter rows, then the two MLX agent rows (Mac)
 
-Ready to start, 2026-09-12. About fourteen hours of machine time.
+Ready to start, 2026-09-12. About twenty-two hours of machine time.
 
 You are the runner, on the Mac. Read this file, then the pages each
 block names at its start, and nothing else. Write all prose in
@@ -28,6 +28,12 @@ one blind row each.
 - `benchy-gemma12-q8-drafter`
 - `benchy-gemma12-4slot-drafter`
 - `benchy-qwen36-f16-drafter`
+- `drafter-arms-qwen38-atomicchat`
+- `drafter-arms-gemma26`
+- `drafter-arms-gemma26-2slot`
+- `drafter-arms-gemma12-q8`
+- `drafter-arms-gemma12-4slot`
+- `drafter-arms-qwen36-f16`
 - `qwen36-mlx-smoke-on`
 - `qwen36-mlx-mendel-blind-on`
 - `gemma26-mlx-smoke-high`
@@ -280,6 +286,38 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
 Site numbers to read against: 69.1 at 4K, 52.6 at 41K, both with the
 artifact. Run 14 read the same arm with no drafter at 49.8 at 4K and
 38.3 at 41K; put those beside the table too.
+
+## The drafter-arms blocks
+
+Added 2026-09-12 on the owner's word, after
+`benchy-qwen38-atomicchat-drafter` read 35 to 42 percent acceptance
+at 4K. Each `drafter-arms-<row>` block takes the benchy block of the
+same row and serves the same files, KV type, slots and `-c` three
+more times, one arm per server, in this order: **no drafter** (drop
+the two `--spec-*` flags), **n-max 1**, **n-max 2**. Each arm runs
+the same benchy line at the row's two depths, into
+`results/benchy-<row mnemonic>-nmax<0|1|2>.md` with its own vm log
+and server log. Read acceptance on the two drafter arms. Nothing
+above n-max 2 in this run; n-max 4 was slower than 3 on both Qwen3.8
+3-bit builds (bench 12) and the owner rules it out here.
+
+Done: one table per row with one line per arm and depth: arm, depth,
+benchy tok/s, sd, acceptance, swap. Put the row's n-max 3 cells from
+its benchy block on the first lines of the same table. **A table and
+no pick.** The coordinator names the served arm at close-out.
+
+| block | takes its server from |
+|---|---|
+| `drafter-arms-qwen38-atomicchat` | `benchy-qwen38-atomicchat-drafter` |
+| `drafter-arms-gemma26` | `benchy-gemma26-drafter` |
+| `drafter-arms-gemma26-2slot` | `benchy-gemma26-2slot-drafter` |
+| `drafter-arms-gemma12-q8` | `benchy-gemma12-q8-drafter` |
+| `drafter-arms-gemma12-4slot` | `benchy-gemma12-4slot-drafter` |
+| `drafter-arms-qwen36-f16` | `benchy-qwen36-f16-drafter` |
+
+The Qwen3.6 f16 no-drafter arm at `-c 40960` was read by run 14
+(49.8 at 4K, 38.3 at 41K); read it again here so the four arms share
+one machine day.
 
 ## `qwen36-mlx-smoke-on`
 
