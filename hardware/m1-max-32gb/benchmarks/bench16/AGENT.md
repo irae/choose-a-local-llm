@@ -399,16 +399,17 @@ mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \
   | tee hardware/m1-max-32gb/benchmarks/bench16/results/server-qwen36-mlx.log
 ```
 
-The owner's word (2026-09-12): MLX is unstable near its ceiling, so
-the harness window sits about 20 percent under the MLX ceiling. The
-ceiling is the last stable depth of the newest sweep of this server
-at wired 25000: planning value 40982 (2026-09-06; the generation
-thread died on a Metal OOM at the next step); if `sweep-qwen36-mlx`
-lost its deep cell to a dead generation thread, the ceiling is under
-39936 and the window steps down 8192 from the planning value. The
-window is the largest multiple of 4096 at or under 80 percent of
-that ceiling: planning value 32768. Write `qwen36_mlx_window` in `state.md` with
-its source before the smoke.
+The owner's rule (2026-09-12, `docs/methodology/mendel.md`, "Window
+and budget"): MLX often triggers macOS memory compression near its
+ceiling, so the harness window sits 5 percent under the MLX ceiling.
+The ceiling is the last stable depth of the newest sweep of this
+server at wired 25000: planning value 40982 (2026-09-06; the
+generation thread died on a Metal OOM at the next step); if
+`sweep-qwen36-mlx` lost its deep cell to a dead generation thread,
+the ceiling is under 39936 and the window steps down 8192 from the
+planning value. The window is the largest multiple of 4096 at or
+under 95 percent of that ceiling: planning value 36864. Write
+`qwen36_mlx_window` in `state.md` with its source before the smoke.
 
 ```bash
 SMOKE_MENDEL_CONTEXT_WINDOW=<qwen36_mlx_window> benchmarks/mendel-smoke.sh mlx-community/Qwen3.6-35B-A3B-4bit on 2>&1 | tee hardware/m1-max-32gb/benchmarks/bench16/results/mendel-smoke-qwen36-mlx-on.log
@@ -466,7 +467,7 @@ planning value 70K, the site row's `maxCtx` (bench 3); if
 `sweep-gemma26-mlx` lost its deep cell to a dead generation thread,
 the ceiling is under 65536 and the window steps down 8192 from the
 planning value. The window is the largest multiple of 4096 at or
-under 80 percent of the ceiling: planning value 53248. Write
+under 95 percent of the ceiling: planning value 65536. Write
 `gemma26_mlx_window` in `state.md` with its source before the smoke.
 
 ```bash

@@ -1,11 +1,11 @@
-/* Wide-monitor layout: the 1920px cap applies only where the theme's
-   >=1440px navbar/sidebar math stays non-negative (viewport >= cap - 64).
-   Below that the default 1440px cap keeps the vanilla auto-fit layout;
-   a global 1920px cap collapses the sidebar and title on mid-size
-   screens. */
-@media (min-width: 1856px) {
+/* Wide-monitor layout: from 1440px up the layout width follows the
+   viewport to a 1920px ceiling, so no step leaves margins on both
+   sides. The theme's >=1440px navbar/sidebar math needs the cap to
+   stay at or under the viewport, or the sidebar and title collapse;
+   a viewport-bound value keeps it non-negative at every width. */
+@media (min-width: 1440px) {
   :root {
-    --vp-layout-max-width: 1920px;
+    --vp-layout-max-width: min(100vw, 1920px);
   }
 }
 
@@ -187,6 +187,59 @@
 .dark .vp-doc .ms-effort-high { --ms-tint: #d0ad55; }
 .dark .vp-doc .ms-effort-xhigh,
 .dark .vp-doc .ms-effort-max { --ms-tint: #d98a9a; }
+
+/* tok/s cell: both numbers in a fixed-width run, padded so the decimal
+   points and the arrow line up down the column; the stale dagger stays
+   in the text font outside the run. */
+.vp-doc .tk {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.2em;
+  font-size: 0.85em;
+}
+
+.vp-doc .tk-stale,
+.vp-doc .tk-arrow {
+  color: var(--vp-c-text-2);
+}
+
+.vp-doc pre.tk-pre {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-family: var(--vp-font-family-mono);
+  font-size: 1em;
+  line-height: inherit;
+  white-space: pre;
+  color: inherit;
+}
+
+/* Coding cell: a partial's completion sits muted beside the score;
+   the test pill is blind yellow, guided green. */
+.vp-doc .cs-note {
+  font-weight: 400;
+  font-size: 0.85em;
+  color: var(--vp-c-text-2);
+}
+
+.vp-doc .cs-sub {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+}
+
+.vp-doc .cs-pill {
+  color: var(--ms-tint);
+  border-color: color-mix(in srgb, var(--ms-tint) 45%, transparent);
+  background: color-mix(in srgb, var(--ms-tint) 12%, transparent);
+}
+
+.vp-doc .cs-pill-blind { --ms-tint: #b8912a; }
+.vp-doc .cs-pill-guided { --ms-tint: #4c9a63; }
+.dark .vp-doc .cs-pill-blind { --ms-tint: #d0ad55; }
+.dark .vp-doc .cs-pill-guided { --ms-tint: #7dbb8f; }
 
 /* A spec line under a section heading of a detail table. */
 .vp-doc h2 + p > .ms:only-child,

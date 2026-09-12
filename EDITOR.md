@@ -227,14 +227,14 @@ overwrites it. `npm run docs:check` fails the build if either copy has
 drifted from the JSON, so a forgotten regeneration cannot reach the
 site. The generator sorts rows by the average of the two quality
 scores, the EvalPlus base pass@1 times 100 and the simulator(mendel)
-blind score, descending. A row with only one of the two sorts after
-every row with both, by its EvalPlus score; Max ctx (descending)
+score the Coding cell shows, descending. A row with only one of the two sorts after
+every row with both, by its EvalPlus score; Ctx (descending)
 breaks ties. Nothing else moves a row up: speed, window, memory and
 completeness are read from the row, not ranked.
 
 **Completeness is a score, not a flag** (owner, 2026-09-11). Three
-measurements count, one point each: tok/s (shallow → deep), EvalPlus,
-and simulator(mendel). A `pending` tok/s cell, a `pending` EvalPlus
+measurements count, one point each: tok/s, EvalPlus, and
+simulator(mendel). A `pending` tok/s cell, a `pending` EvalPlus
 cell, or a simulator(mendel) cell that is not a number (`pending`,
 `not run`, `invalid`) loses its point. A `(partial)` score is a
 number and counts. A row at 3 of 3 is complete.
@@ -243,8 +243,16 @@ The published pages keep the word Mendel for now; the rules and the
 runbooks say simulator(mendel), the name of the runner that replaces
 it.
 
-- **Columns, in order**: Config | Max ctx | Gated by¹ |
-  tok/s (shallow → deep) | Memory (at max ctx) | EvalPlus² | Coding³.
+- **Columns, in order**: Model / Config | Ctx | Cap | tok/s | Memory
+  (at max ctx) | EvalPlus | Coding. No superscript on a header: the
+  columns are explained in a "Legend" section under the table.
+- **The tok/s cell is the `TokCell` component**: shallow, a muted
+  arrow with no space around it, deep, each number rounded to one
+  decimal and padded with leading spaces to four characters, in a
+  fixed-width run so the decimal points and the arrows line up down
+  the column, at a slightly smaller size. The stale dagger sits once,
+  in the text font, before the run. The data keeps its own precision;
+  only the cell rounds.
   **The Config cell is the leftmost column of every table that has
   one**, generated or hand-written.
 - **The Config cell is the `ModelSpec` component** (owner,
@@ -268,16 +276,15 @@ it.
   each run's spec from `evalplusRuns[].row` (a row id) or an explicit
   `spec`, and its `budget` field.
 - **The EvalPlus cell is two lines**: `base/plus` over the completion
-  percentage. **The Coding cell is two lines**: the score over the
-  test name, plus the libraries-done percentage on a partial
-  (`mendel-blind 38%`); the `mendel` field writes a partial as
-  `37.5 (partial 38%)`.
+  percentage. **The Coding cell is two lines**: the score, with a
+  partial's libraries-done percentage muted before it (`38% / 37.5`),
+  over the test pill.
 - **Bold marks the best two of every numeric column**, and any further
   row within 15 percent of the column's span (best minus worst) of
   the second-best value; memory reads lower as better. The Config cell goes bold for the best two composites.
 - **Memory (at max ctx) shows on model pages only**; the homepage and
   the comparison drop the column.
-- **Gated by is `mem` or `speed`, nothing else.** A row that ended at
+- **Cap is `mem` or `speed`, nothing else.** A row that ended at
   its `-c` or at its depth list's end is `mem`: the allocation is a
   memory choice, and the note says how it was found.
   **Detail tables** (decode curves, drafter sweeps, KV comparisons)
@@ -287,17 +294,21 @@ it.
   those are neither required nor shown. What the line says leaves
   the heading and the row labels: no "f16 KV" in a title, no "llama"
   at the start of every row, once the spec line carries them.
-- **The Coding cell is the `CodingScore` component**: the score on
-  line one, the test name (`mendel-blind` or `mendel-guided`) on line
-  two. The comparison and the homepage show blind only.
-- **The `mendel` cell is curated in `models.json`**, like `evalplus`:
-  the config's Mendel blind score at that thinking level on the
-  current prompt version, out of 100, with `(partial)` where the run
-  did not finish; `pending` when no valid blind run exists and one is
-  planned; `not run` when none is planned, with the reason in the
-  row's note; `invalid` when every attempt was invalid. It is never
-  shared across levels or serving configs. Guided scores stay on the Mendel page. Footnote ³
-  lives on the header.
+- **The Coding cell is the `ScoreCell` component with a `pill`**: the
+  score on line one, with a partial's completion percentage muted
+  before it and a slash; the test pill alone on line two, `mendel-blind` in
+  yellow or `mendel-guided` in green.
+- **The Coding cell comes from the Mendel CSVs, never from
+  `models.json`** (owner rule, 2026-09-12). The generator takes every
+  valid run of the current prompt version, blind and guided, whose
+  spec matches the row (build, server, drafter, KV type, thinking
+  level, slot count), and shows the run with the most libraries done,
+  then the higher capped score. A guided run can therefore stand on
+  the comparison and the homepage. The `mendel` field in
+  `models.json` holds only a state word for a row with no such run:
+  `pending` when one is planned; `not run` when none is planned, with
+  the reason in the row's note; `invalid` when every attempt was
+  invalid. A number in that field fails the build.
 - **The homepage table holds one line per build** (the first two
   parts of the config: model, then runtime and quant with its
   publisher), showing that build's best complete row by the same sort.
@@ -330,11 +341,12 @@ it.
   on/off", or "effort medium" for graded-effort models). No invented
   shorthand: write "compaction ~26k", not "compact". Do not mention
   slot count here; see multi-agent rows below.
-- **Footnote ² lives on the EvalPlus header**: one score per model and
+- **The EvalPlus legend entry says**: one score per model and
   thinking mode. Runtimes at standard quants share it. Aggressive
   quants (calibrated q4 KV and similar) gate separately and show
   "pending" until they pass. Scores never propagate across thinking
-  modes.
+  modes. It names the calibrated output budget and its 30000-token
+  cap, and that a problem at the cap counts as failed.
 - **Stale cells carry the † marker (superseded, re-run pending)**: a
   value measured under an earlier serving config or method (a retired
   wired limit, a fast sweep, a pre-calibration config) that the current
@@ -344,35 +356,39 @@ it.
   shows one. When a new run lands, write the new value and remove the
   field from `stale`. Nothing else to touch; every table updates on the
   next `docs:tables` run.
-- **Footnote ¹ always lives on the "Gated by" header**, not on any cell.
-  It explains what the column measures: whichever limit hits first, the
-  max memory a config fits in or the max context that stays usable
-  (usable meaning at or above the 8 tok/s floor). It also covers what
-  "tok/s (shallow → deep)" means, since the two are the same idea. Do
-  not give tok/s its own separate explanation.
+- **The Legend section follows the table's footnotes**, one bullet
+  per column in table order: Ctx (the usable context and the harness
+  window it sets), Cap (what memory holds, the 8 tok/s floor, `mem`
+  and `speed`), tok/s (shallow then deep, why depth matters, the
+  drafter read on real text), EvalPlus, Coding (the simulated pull
+  request, nudges, blind against guided, the pick rule, the sort).
+  The homepage and the comparison carry the same legend; the
+  comparison adds its page-specific facts.
 - **A row served by a custom binary or fork gets its own footnote**,
   attached directly to the Runtime abbreviation in Config (for example
-  "MLX⁴"), not to any other cell. The same fork reuses its number across
-  every row that uses it. Number them ⁴, ⁵, ... in the order they first
-  appear in the table (¹, ² and ³ are reserved for the header
-  footnotes).
-- **Each footnote is its own paragraph below the table**: a blank line
-  between ¹, ², ³, and so on, not one run-on block.
-- **Multi-agent configs** show the slot count in **Max ctx** as
+  "MLX¹"), not to any other cell. The same fork reuses its number across
+  every row that uses it. Number them ¹, ², ... in the order they first
+  appear in the table.
+- **Each footnote is its own paragraph below the table**, before the
+  Legend: a blank line between ¹, ², and so on, not one run-on block.
+  The † legend line stays inside the generated block, first.
+- **Multi-agent configs** show the slot count in **Ctx** as
   "Nx\<size\>", for example "2x48k", never in Config.
-- **Max ctx** (the used-context point where a config first breaks): the
+- **Ctx** (the used-context point where a config first breaks): the
   cell must end with the number and its unit, never a trailing word like
-  "per slot".
-- **"tok/s (shallow → deep)" is two numbers only**, "X → Y", never a
+  "per slot". An `mlx_lm.server` row shows its harness window, the
+  row's `pi.contextWindow`, 5 percent under the measured ceiling
+  (`docs/methodology/mendel.md`, "Window and budget"), never the
+  ceiling; the note keeps the ceiling.
+- **tok/s is two numbers only**, shallow then deep, never a
   qualifier word like "solo" or "concurrent" in the cell. For a
   multi-slot config, the number is one slot decoding alone (see
   methodology). If the method needs explaining, that explanation goes in
   the methodology, not as a note on this table.
 - **"Memory (at max ctx)" is one number only**: the max figure reached,
-  nothing else. No "flat", no "grows to", no qualifier of any kind.
-- **"tok/s (shallow → deep)"** and **"Memory (at max ctx)"** headers break
-  onto two lines before the parenthesis (`<br>`), so the column stays
-  narrow.
+  nothing else. No "flat", no "grows to", no qualifier of any kind. Its
+  header breaks onto two lines before the parenthesis (`<br>`), so the
+  column stays narrow.
 
 ## Stable values only
 

@@ -38,56 +38,84 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
 ## Models evaluated
 
 <!-- gen:models-evaluated:start -->
-| Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | EvalPlus² | Coding³ |
+| Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" top /> | 72k | mem | 11.8 → 8.6 | <ScoreCell value="0.957/0.939" sub="96% completion" /> | <ScoreCell value="93" sub="mendel-blind" top /> |
-| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" top /> | 72k | mem | 11.8 → 8.6 | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="87" sub="mendel-blind" top /> |
-| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" top /> | **147k** | speed | 14.1† → 8.3† | <ScoreCell value="0.945/0.921" sub="97% completion" /> | <ScoreCell value="80.5" sub="mendel-blind" top /> |
-| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" top /> | **128k** | mem | 15.1† → 9.7† | <ScoreCell value="0.976/0.945" sub="99% completion" top /> | <ScoreCell value="76.5" sub="mendel-blind" top /> |
-| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" /> | **147k** | speed | 14.1† → 8.3† | <ScoreCell value="0.976/0.933" sub="99% completion" top /> | <ScoreCell value="66" sub="mendel-blind 88%" /> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | 82k | speed | **43.7** → 13.0 | <ScoreCell value="0.939/0.921" sub="97% completion" /> | <ScoreCell value="63" sub="mendel-blind" /> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" /> | 82k | speed | **43.7** → 13.0 | <ScoreCell value="0.951/0.915" sub="100% completion" /> | <ScoreCell value="50.5" sub="mendel-blind" /> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" /> | 66k | mem | **50.5†** → **33.6†** | <ScoreCell value="0.939/0.921" sub="97% completion" /> | <ScoreCell value="50" sub="mendel-blind" /> |
-| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | 104k | mem | 15.8† → 10.3† | <ScoreCell value="0.988/0.927" sub="100% completion" top /> | <ScoreCell value="37.5" sub="mendel-blind 38%" /> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **197k** | mem | **60.3†** → **17.3†** | <ScoreCell value="0.884/0.860" sub="89% completion" /> | <ScoreCell value="47.5" sub="mendel-blind" /> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" /> | 58k | mem | 24.5† → **17.3†** | <ScoreCell value="0.915/0.884" sub="97% completion" /> | <ScoreCell value="37.5" sub="mendel-blind 38%" /> |
-| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> | 28k | mem | 17† → **15.3†** | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5" sub="mendel-blind 13%" /> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | 33k | speed | 14.8† → 7.9† | <ScoreCell value="0.927/0.890" sub="98% completion" /> | <ScoreCell value="12.5" sub="mendel-blind" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" top /> | 72k | mem | <TokCell shallow="11.8" deep="8.6" /> | <ScoreCell value="0.957/0.939" sub="96% completion" /> | <ScoreCell value="93" pill="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" top /> | 72k | mem | <TokCell shallow="11.8" deep="8.6" /> | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="87" pill="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" top /> | 82k | speed | <TokCell shallow="43.7" deep="13.0" top-shallow /> | <ScoreCell value="0.939/0.921" sub="97% completion" /> | <ScoreCell value="83" pill="mendel-guided" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" top /> | 147k | speed | <TokCell shallow="14.1" deep="8.3" stale /> | <ScoreCell value="0.945/0.921" sub="97% completion" /> | <ScoreCell value="80.5" pill="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" top /> | 128k | mem | <TokCell shallow="15.1" deep="9.7" stale /> | <ScoreCell value="0.976/0.945" sub="99% completion" top /> | <ScoreCell value="76.5" pill="mendel-blind" top /> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" /> | 147k | speed | <TokCell shallow="14.1" deep="8.3" stale /> | <ScoreCell value="0.976/0.933" sub="99% completion" top /> | <ScoreCell value="66" note="88%" pill="mendel-blind" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" /> | 82k | speed | <TokCell shallow="43.7" deep="13.0" top-shallow /> | <ScoreCell value="0.951/0.915" sub="100% completion" /> | <ScoreCell value="62.5" pill="mendel-guided" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" /> | 66k | mem | <TokCell shallow="50.5" deep="33.6" stale top-shallow top-deep /> | <ScoreCell value="0.939/0.921" sub="97% completion" /> | <ScoreCell value="50" pill="mendel-blind" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | 104k | mem | <TokCell shallow="15.8" deep="10.3" stale /> | <ScoreCell value="0.988/0.927" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **197k** | mem | <TokCell shallow="60.3" deep="17.3" stale top-shallow top-deep /> | <ScoreCell value="0.884/0.860" sub="89% completion" /> | <ScoreCell value="47.5" pill="mendel-blind" /> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | **245k** | mem | <TokCell shallow="24.64" deep="8.86" stale /> | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" /> | 53k | mem | <TokCell shallow="24.5" deep="17.3" stale top-deep /> | <ScoreCell value="0.915/0.884" sub="97% completion" /> | <ScoreCell value="37.5†" note="38%" pill="mendel-blind" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | 33k | speed | <TokCell shallow="14.8" deep="7.9" stale /> | <ScoreCell value="0.927/0.890" sub="98% completion" /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> | 25k | mem | <TokCell shallow="17" deep="15.3" stale top-deep /> | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5†" note="13%" pill="mendel-blind" /> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->
 
-¹ Two values. **mem**: memory ended the curve, whether the server did
-not load a larger context, died in flight, compacted or swapped, or the
-model's own trained window arrived first; the row note says which.
-**speed**: decode fell under the 8 tok/s floor while memory still had
-room.
-"tok/s (shallow → deep)" is that same decode speed, near an empty context
-then at max ctx.
-
-² Scored once per model and thinking mode; runtimes serving the same
-model at a standard quant share the score, until a measurement says
-otherwise: Gemma-4-12B's GGUF Q4_K_XL scored 0.067 above its LM Studio
-MLX 4-bit, and Gemma-4-26B-A4B's GGUF UD-Q4_K_XL at f16 KV scored 0.171
-above its MLX 4-bit, so those pairs carry their own. Aggressive quants
-(for example the prism fork's calibrated q4 KV) never share; they pass
-the gate separately.
-
-³ Coding: the simulator score of that config at that thinking level,
-out of 100, on the current prompt version; the second line names the
-test (Mendel blind here, never guided); `(partial)` when the run did not
-finish, `invalid` when every attempt was, `pending` when none ran.
-Never shared across levels or serving configs. Rows sort by the average
-of the EvalPlus base score and this one; a row with only one of the two
-sorts after every row with both. A single run carries about ten points
-of noise, so two rows within that are not separated. Guided scores and
-every row's detail are in [the Mendel section](#mendel-agentic-quality-issue-13-bake-off).
-
-⁴ LM Studio's MLX engine, the only runtime that loads this model's
+¹ LM Studio's MLX engine, the only runtime that loads this model's
 `gemma4_unified` architecture. It is retired here and no longer a
 candidate; [the reasons are on its own page](./lmstudio-retired.md).
 
-⁵ PrismML's llama.cpp fork, an approved exception to the no-forks rule.
+² PrismML's llama.cpp fork, an approved exception to the no-forks rule.
+
+#### Legend
+
+- **Ctx**, the usable context: the deepest context the config served
+  above the floor, set by Cap. The coding harness gets the same
+  window, rounded down to a multiple of 4096. On MLX the cell shows
+  the harness window, 5 percent under the measured ceiling, because
+  that runtime often triggers macOS memory compression near it.
+- **Cap**, what stops the context from growing: memory holds the
+  weights, the drafter, a vision adapter and the runtime's buffers,
+  and what is left is context. Some models do not fit their trained
+  window; others fit it and then decode too slowly to use. The floor
+  is 8 tok/s. `mem` means memory ended the curve, whether the server
+  did not load a larger context, died in flight, compacted or swapped,
+  or the model's own trained window arrived first; the row note says
+  which. `speed` means decode fell under the floor while memory still
+  had room.
+- **tok/s**, decode speed shallow, near an empty context, then deep,
+  at Ctx. Most tools report the shallow number only, but engineering
+  work and long documents run at depth, where speed falls. A drafter
+  (MTP, speculative decoding) often changes the picture, and for some
+  models it can help at one depth and hurt at another; nobody knows
+  before measuring, so every drafter row is read on real text at
+  more than one draft depth, with its acceptance.
+- **EvalPlus**, scored once per model and thinking mode; runtimes
+  serving the same model at a standard quant share the score, until a
+  measurement says otherwise: Gemma-4-12B's GGUF Q4_K_XL scored 0.067
+  above its LM Studio MLX 4-bit, and Gemma-4-26B-A4B's GGUF UD-Q4_K_XL
+  at f16 KV scored 0.171 above its MLX 4-bit, so those pairs carry
+  their own. Aggressive quants (for example the prism fork's
+  calibrated q4 KV) never share; they pass the gate separately. Each
+  run gets an output budget from a ten-problem calibration, capped at
+  30000 tokens. A problem that runs to the cap counts as failed; the
+  completion percentage says how many finished. The cap is what this
+  machine can wait for, not the model's ceiling, so a capable model
+  at a high reasoning level can lose points to it.
+- **Coding**, a simulated pull request: the `pi` coding agent fixes a
+  real issue in a real repository with known traps, over many turns,
+  not one prompt. A stalled agent gets a fixed number of nudges; a
+  nudge the model caused costs points. Mendel blind gives the terse
+  issue and the model plans the work itself. Mendel guided gives the
+  same task as steps with the traps disclosed, so a smaller model can
+  serve as an executor rather than a planner. The pill names the
+  test. Of the config's valid runs on the current prompt version the
+  cell shows the one with the most libraries done, then the higher
+  score; a muted percentage before the score is the share of
+  libraries done when the run did not finish, `invalid` when every
+  attempt was, `pending` when none ran. Never shared across levels or
+  serving configs. Rows sort by the average of the EvalPlus base
+  score and this one; a row with only one of the two sorts after
+  every row with both. A single run carries about ten points of
+  noise, so two rows within that are not separated. Every row's
+  detail is in [the Mendel section](#mendel-agentic-quality-issue-13-bake-off).
 
 All ceilings below are slow creeps. Rows measured from 2026-09-06 on
 ran at wired limit 25000, the standing value; older rows ran at 24000
@@ -102,26 +130,26 @@ Compaction thresholds come from the floor table below, not from the window.
 
 ### Rows still being measured
 
-Every row above has all three measurements: tok/s (shallow → deep),
-EvalPlus and Mendel. The rows below have at least one of the three
+Every row above has all three measurements: tok/s, EvalPlus and
+Mendel. The rows below have at least one of the three
 and are missing one or two; the same footnotes and sort apply, and
 `#` continues the count. Rows with none of the three stay on their
 model page.
 
 <!-- gen:models-evaluated-partial:start -->
-| Config | Max ctx | Gated by¹ | tok/s<br>(shallow → deep) | EvalPlus² | Coding³ |
+| Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" /> | 28k | mem | 17† → 15.3† | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" sub="mendel-blind" /> |
-| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | **245k** | mem | 24.64† → 8.86† | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="invalid" sub="mendel-blind" /> |
-| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | **2x82k** | mem | 25.0† → 15.7† | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
-| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="f16" effort="off" /> | **4x49k** | mem | 42.9† → 27.7† | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
-| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" effort="off" /> | 16k | speed | 13.8† → 6.5† | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | 41k | mem | 55.1† → **37.4†** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" /> | 41k | mem | **69.1†** → **52.6†** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" sub="mendel-blind" /> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | **58k** | mem | 24.5† → 17.3† | <ScoreCell value="0.927/0.902" sub="100% completion" /> | <ScoreCell value="pending" sub="mendel-blind" /> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | **2x48k** | speed | 14.9† → 7.8† | <ScoreCell value="0.927/0.890" sub="98% completion" /> | <ScoreCell value="pending" sub="mendel-blind" /> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **2x82k** | mem | **66.6†** → **33.6†** | <ScoreCell value="0.884/0.860" sub="89% completion" /> | <ScoreCell value="pending" sub="mendel-blind" /> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | **70k** | mem | 51† → 12.8† | <ScoreCell value="0.713/0.701" sub="72% completion" /> | <ScoreCell value="pending" sub="mendel-blind" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" /> | 25k | mem | <TokCell shallow="17" deep="15.3" stale /> | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" /> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | **2x82k** | mem | <TokCell shallow="25.0" deep="15.7" stale /> | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="f16" effort="off" /> | 4x49k | mem | <TokCell shallow="42.9" deep="27.7" stale /> | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" effort="off" /> | 16k | speed | <TokCell shallow="13.8" deep="6.5" stale /> | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" /> | 41k | mem | <TokCell shallow="69.1" deep="52.6" stale top-shallow top-deep /> | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | 37k | mem | <TokCell shallow="55.1" deep="37.4" stale top-deep /> | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | 53k | mem | <TokCell shallow="24.5" deep="17.3" stale /> | <ScoreCell value="0.927/0.902" sub="100% completion" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | 2x48k | speed | <TokCell shallow="14.9" deep="7.8" stale /> | <ScoreCell value="0.927/0.890" sub="98% completion" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **2x82k** | mem | <TokCell shallow="66.6" deep="33.6" stale top-shallow top-deep /> | <ScoreCell value="0.884/0.860" sub="89% completion" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | **66k** | mem | <TokCell shallow="51" deep="12.8" stale /> | <ScoreCell value="0.713/0.701" sub="72% completion" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" /> | **131k** | mem | <TokCell shallow="15.0" deep="9.7" stale /> | <ScoreCell value="pending" /> | <ScoreCell value="12.5" note="13%" pill="mendel-guided" top /> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated-partial:end -->
@@ -228,7 +256,7 @@ hosted reports show them dimmed, with reasons.
 
 Every row ran under the same harness, pi, which is pluggable and
 configurable and serves every model the same way, the cloud baselines
-included. "Max ctx" is the context window the harness had for the run.
+included. "Ctx" is the context window the harness had for the run.
 
 | model | test | runtime | thinking | max ctx | score | status |
 |---|---|---|---|--:|--:|---|
@@ -246,12 +274,12 @@ included. "Max ctx" is the context window the harness had for the run.
 | Gemma-4-12B | guided | GGUF, f16 KV, no drafter | off | 262k | **37.5/100** | partial, 3/8 libraries; model budget exhausted after three nudges |
 | Ternary Bonsai-27B | blind | MLX 2-bit | high | 58k | **37.5/100** (raw 55) | partial, 300-min wall clock at 3/8 libraries |
 | Qwen3.8-27B | blind | GGUF AD-IQ3_S AtomicChat, f16 KV | effort medium | 98k | **37.5/100** (raw 74) | partial, 3/8 libraries; ended on a repetition loop, the model's own failure |
-| Ternary Bonsai-27B | guided | GGUF⁵, q4 KV | high | 64k | **31.5/100** | partial, 3/8 libraries; 300-min wall clock, stopped by hand at 469 minutes |
+| Ternary Bonsai-27B | guided | GGUF², q4 KV | high | 64k | **31.5/100** | partial, 3/8 libraries; 300-min wall clock, stopped by hand at 469 minutes |
 | Gemma-4-26B-A4B | guided | GGUF, f16 KV | off | 208k | **25/100** (raw 44) | partial, 2/8 libraries; ended on the live loop stop, five identical edit calls |
 | Qwen3.8-27B | blind | MLX 4-bit | effort low | 26k | **12.5/100** (raw 67.5) | partial, 1/8; the 26624-token window plus a 16384-token output budget forced premature stops (our config arithmetic, not the model) |
 | Ternary Bonsai-27B | guided | MLX 2-bit | high | 58k | **12.5/100** (raw 59) | partial, 300-min wall clock at 1/8 libraries |
-| Ternary Bonsai-27B | blind | GGUF⁵, q4 KV | high | 64k | **12.5/100** (raw 60.5) | 1/8 libraries; typoed the repo path, self-scoped to chalk; a penalized retry is pending |
-| Ternary Bonsai-27B | guided | GGUF⁵, f16 KV, no drafter | high | 131k | **12.5/100** (raw 36) | partial, 1/8 libraries; 376 tool calls and 74 tool errors at a 127k peak context |
+| Ternary Bonsai-27B | blind | GGUF², q4 KV | high | 64k | **12.5/100** (raw 60.5) | 1/8 libraries; typoed the repo path, self-scoped to chalk; a penalized retry is pending |
+| Ternary Bonsai-27B | guided | GGUF², f16 KV, no drafter | high | 131k | **12.5/100** (raw 36) | partial, 1/8 libraries; 376 tool calls and 74 tool errors at a 127k peak context |
 | Gemma-4-26B-A4B | blind | GGUF, f16 KV | off | 208k | **12.5/100** (raw 21) | partial, 1/8 libraries; ended on the live loop stop, five identical edit calls |
 
 **Effort xhigh beats low on Qwen3.8, and spends less doing it.** On the

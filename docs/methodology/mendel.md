@@ -217,6 +217,11 @@ never copied from a runbook or from the owner's daily-driver entry.
   note. The task has needed about 46K on other models, so a window
   under that is a known partial condition, written in the config
   note, and never a reason to freeze a larger measurement out.
+  **On `mlx_lm.server` the window is 5 percent under the measured
+  ceiling** (owner rule, 2026-09-12), rounded down to a multiple of
+  4096: that runtime often triggers macOS memory compression near
+  its ceiling and dies. The site's Ctx cell for an MLX row shows this
+  harness window, not the ceiling.
 - **Output budget**: `maxTokens` and `reserveTokens` by the output
   budget rule above.
 - **Compaction keep** (`keepRecentTokens`): 8192 when the window is
