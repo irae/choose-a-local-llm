@@ -25,7 +25,7 @@ Two rules to read the tables by:
 <!-- gen:decode-summary:start -->
 | best curve | tok/s (shallow → deep) | at | gated by |
 |---|--:|--:|---|
-| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" />](./bonsai-27b.md) | 24.5† → 17.3† | 53k | mem |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" />](./bonsai-27b.md) | 24.5† → 17.3† | 40k | mem |
 | [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" />](./bonsai-27b.md) | 14.7 → 7.8 | 33k | speed |
 | [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" />](./gemma-4-12b-it.md) | 25.0 → 9.2 | 245k | mem |
 | [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" />](./gemma-4-26b-a4b.md) | 60.1 → 19.1 | 197k | mem |

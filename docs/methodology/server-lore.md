@@ -10,7 +10,14 @@ stall. Everything here was hit at least once.
   Any script talking to an mlx server watches the server log for the
   death signature ("Insufficient Memory", "Command buffer execution
   failed", a Traceback) and exits with code 42 immediately. Exit 42
-  means: the last printed row is the ceiling.
+  means: the last printed row is the ceiling. A monitor armed on
+  process exit never fires on this death: the process stays alive at
+  zero CPU and `pgrep` shows it (run 16, 2026-09-13, one hour lost).
+  Every MLX block keeps a live watch on the server log for the
+  signature beside the process monitor. `llama-benchy` writes its
+  result file once, at the end of the whole run, so a dead deep cell
+  also loses the shallow cells of the same call; read a fragile deep
+  cell in its own call.
 - **Prompt-cache pool**: by default the server pools several distinct KV
   caches (multi-GB each at depth) and acts like a memory leak across
   differently-shaped requests. Always serve with

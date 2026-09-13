@@ -7,6 +7,29 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench16, 2026-09-12 to 2026-09-13 ([state](bench16/state.md), [results](bench16/results.md), [report](bench16/report.md))
+
+- Runbook: [bench16/AGENT.md](bench16/AGENT.md). Real-text speed for
+  every homepage row that lacked one, with the short draft-depth
+  climb; the Qwen3.6 MLX build on the agent task; the Gemma-26B MLX
+  smoke. Ended on the owner's word after the homepage cells.
+- **The MTP drafter loses on the dense Qwen3.8 builds on real text**:
+  AtomicChat and bartowski now serve without it, 14.3 → 9.6 and
+  12.4 → 9.7, and AtomicChat clears the floor at 98K only that way.
+  Gemma-26B keeps n-max 2, fastest at 4K and level at depth.
+- **No-drafter rows read the same by creep and by benchy**, within
+  four percent on four builds.
+- **Qwen3.6 MLX scores 37.5 on the agent task**, capped at 3 of 8, on
+  a 36864 window; its first row was lost to a foreign stash from the
+  bench repo's shared stack, now cleared before every agent run.
+- **Gemma-26B MLX is retired**: its smoke ended on a truncated tool
+  call with no OOM, while the GGUF build completes the task.
+- **Bonsai MLX dies near 47K**, twice, under its old 53248 window;
+  the window is 40960 and its cells keep the dagger.
+- A dead MLX generation thread leaves the process alive, so a
+  process monitor alone misses it; `llama-benchy` loses every cell of
+  a call when one dies. Both in the server lore.
+
 ## bench15, 2026-09-11 to 2026-09-12 ([state](bench15/state.md), [results](bench15/results.md), [report](bench15/report.md))
 
 - Runbook: [bench15/AGENT.md](bench15/AGENT.md). The Qwen3.6 f16 arm
