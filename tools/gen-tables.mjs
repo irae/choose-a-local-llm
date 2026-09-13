@@ -279,20 +279,24 @@ function mendelWindow(r) {
   return est ? ladder.reduce((a, b) => (Math.abs(b - est) < Math.abs(a - est) ? b : a)) : 0
 }
 
-function mendelRow(r, { test = '' } = {}) {
+const mendelCapped = (r) => Math.min(Number(r.score_total), (100 * r.libraries_done) / 8)
+const mendelWall = (r) => (r.telemetry.wall_clock_min == null ? NaN : Number(r.telemetry.wall_clock_min))
+const mendelCtxUse = (r) => (Number(r.telemetry.compactions) || 0) * 100 + (Math.round(Number(r.telemetry.window_pct)) || 0)
+
+function mendelRow(r, { test = '', top = {} } = {}) {
   const t = r.telemetry
   const k = (v) => (v == null || v === '' ? '—' : `${Math.round(Number(v) / 1000)}k`)
+  const bold = (text, set) => (set?.has(r) ? `**${text}**` : text)
   const done = r.libraries_done
-  const raw = Number(r.score_total)
-  const cap = Math.min(raw, (100 * done) / 8)
-  const score = scoreTag(cap, '', false, '', done < 8 ? `${Math.round((100 * done) / 8)}%` : '')
-  const wall = t.wall_clock_min == null ? '—' : `${Math.round(Number(t.wall_clock_min))} min`
+  const cap = mendelCapped(r)
+  const score = scoreTag(cap, '', top.score?.has(r), '', done < 8 ? `${Math.round((100 * done) / 8)}%` : '')
+  const wall = t.wall_clock_min == null ? '—' : bold(`${Math.round(Number(t.wall_clock_min))} min`, top.wall)
   const window = mendelWindow(r)
   const comp = Number(t.compactions) || 0
-  const pct = Math.round(Number(t.window_pct)) || 0
+  const use = bold(`${mendelCtxUse(r)}%`, top.ctx)
   const ctx = comp
-    ? `<span class="ctxuse">${comp * 100 + pct}%<br>${pill(`${comp} compaction${comp > 1 ? 's' : ''}`, 'yellow')}</span>`
-    : `${pct}%`
+    ? `<span class="ctxuse">${use}<br>${pill(`${comp} compaction${comp > 1 ? 's' : ''}`, 'yellow')}</span>`
+    : use
   const counts = { critical: 0, medium: 0, minor: 0 }
   for (const d of r.defects || []) if (d.severity in counts) counts[d.severity] += 1
   const bugs = [
@@ -316,7 +320,7 @@ function mendelRow(r, { test = '' } = {}) {
     ...(test ? [pill(`mendel-${test}`, test === 'blind' ? 'yellow' : 'green')] : []),
     score,
     wall,
-    window ? `${Math.round(window / 1024)}k` : '—',
+    window ? bold(`${Math.round(window / 1024)}k`, top.window) : '—',
     k(t.tokens_out),
     ctx,
     bugsCell,
@@ -349,7 +353,14 @@ function mendelTable(rows, { test = false } = {}) {
     `|---|${test ? '---|' : ''}--:|--:|--:|--:|--:|---|---|`,
   ]
   const capped = (r) => Math.min(Number(r.score_total), (100 * r.libraries_done) / 8)
-  const body = [...rows].sort((a, b) => capped(b) - capped(a)).map((r) => mendelRow(r, { test: test ? r.test : '' }))
+  const ordered = [...rows].sort((a, b) => capped(b) - capped(a))
+  const top = {
+    score: topSet(ordered, mendelCapped),
+    wall: topSet(ordered, mendelWall, { lower: true }),
+    window: topSet(ordered, mendelWindow),
+    ctx: topSet(ordered, mendelCtxUse, { lower: true }),
+  }
+  const body = ordered.map((r) => mendelRow(r, { test: test ? r.test : '', top }))
   return [...header, ...body].join('\n')
 }
 
