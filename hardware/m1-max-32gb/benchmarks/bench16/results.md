@@ -157,5 +157,17 @@ rule". Depths: 4096, 98304.
 |---|--:|--:|--:|--:|--:|--:|--:|
 | no drafter | 4096 | 14.29 | 0.01 | 15.8 | -9.6% | — | 439.62, no growth |
 | no drafter | 98304 | 9.62 | 0.00 | 10.3 | -6.9% | — | 439.62, no growth |
+| n-max 1 | 4096 | 12.16 | 0.63 | 15.8 | -23.0% | 56-80% | 439.62, no growth |
+| n-max 1 | 98304 | 8.83 | 0.02 | 10.3 | -14.3% | 76-83% | 439.62, no growth |
 | n-max 3 (from `benchy-qwen38-atomicchat-drafter`) | 4096 | 8.10 | 0.05 | 15.8 | -48.7% | 35-42% | no growth |
 | n-max 3 (from `benchy-qwen38-atomicchat-drafter`) | 98304 | 7.43 | 0.34 | 10.3 | -27.9% | 60-69% | no growth |
+
+**Climb stopped at n-max 1**: it reads slower than no drafter at both
+depths (12.16 vs 14.29 at 4K, 8.83 vs 9.62 at 98K). N-max 2 is not
+read. No drafter is the fastest arm at both depths; the served n-max 3
+is the slowest. **A table and no pick**; the coordinator names the
+served arm.
+Files: `results/benchy-arms-qwen38-atomicchat-nmax0.md`,
+`results/benchy-arms-qwen38-atomicchat-nmax1.md`,
+`results/server-arms-qwen38-atomicchat-nmax0.log`,
+`results/server-arms-qwen38-atomicchat-nmax1.log`.
