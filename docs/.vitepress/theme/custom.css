@@ -220,11 +220,9 @@
    the context-use cell stacks its overflow reading. */
 .vp-doc .pills {
   display: inline-flex;
-  flex-wrap: wrap;
   gap: 0.3em;
-  max-width: 22em;
-  white-space: normal;
   vertical-align: middle;
+  line-height: 1.9;
 }
 
 .vp-doc .ctxuse {

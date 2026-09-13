@@ -290,7 +290,9 @@ function mendelRow(r, { test = '' } = {}) {
   const window = mendelWindow(r)
   const comp = Number(t.compactions) || 0
   const pct = Math.round(Number(t.window_pct)) || 0
-  const ctx = comp ? `<span class="ctxuse"><b>${comp}x + ${pct}%</b><br>${comp * 100 + pct}%</span>` : `${pct}%`
+  const ctx = comp
+    ? `<span class="ctxuse">${comp * 100 + pct}%<br>${pill(`${comp} compaction${comp > 1 ? 's' : ''}`, 'yellow')}</span>`
+    : `${pct}%`
   const counts = { critical: 0, medium: 0, minor: 0 }
   for (const d of r.defects || []) if (d.severity in counts) counts[d.severity] += 1
   const bugs = [
@@ -319,9 +321,27 @@ function mendelRow(r, { test = '' } = {}) {
     k(t.tokens_out),
     ctx,
     bugsCell,
-    `<span class="pills">${stats.join(' ')}</span>`,
+    twoLines(stats),
   ]
   return `| ${cells.join(' | ')} |`
+}
+
+// Pills split into at most two lines by character count, since a table
+// cell cannot wrap by itself: the first line takes pills until it holds
+// half of the text, the second line takes the rest.
+function twoLines(pills) {
+  const text = (p) => p.replace(/<[^>]+>/g, '')
+  const total = pills.reduce((n, p) => n + text(p).length, 0)
+  const first = []
+  let used = 0
+  for (const p of pills) {
+    if (first.length && used + text(p).length > total / 2) break
+    first.push(p)
+    used += text(p).length
+  }
+  const rest = pills.slice(first.length)
+  const line = (ps) => `<span class="pills">${ps.join(' ')}</span>`
+  return rest.length ? `${line(first)}<br>${line(rest)}` : line(first)
 }
 
 function mendelTable(rows, { test = false } = {}) {
