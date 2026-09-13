@@ -243,3 +243,35 @@ Both cells in line with the site, above the 8 tok/s floor at the
 deepest depth, no swap growth.
 Files: `results/benchy-sweep-gemma12-f16.md`,
 `results/server-sweep-gemma12-f16.log`.
+
+## `sweep-bonsai-mlx`
+
+`prism-ml/Ternary-Bonsai-27B-mlx-2bit`, `mlx_lm.server`,
+`--prompt-cache-size 2`, no drafter, wired 25000. Tokenizer
+`prism-ml/Ternary-Bonsai-27B-mlx-2bit`, code corpus. Depths: 4096,
+56320. Site: 24.5, 17.3.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | not recorded (see deviation) | — | 24.5 | — | 431.62, no growth |
+| 56320 | dead cell | — | 17.3 | — | — |
+
+**Dead deep cell**, same signature as `sweep-qwen36-mlx`: the
+generation thread died on `RuntimeError: [METAL] Command buffer
+execution failed: Insufficient Memory
+(kIOGPUCommandBufferCallbackErrorOutOfMemory)` at prompt fill
+47104/56831, inside the depth-56320 test's second run. The server
+process stayed alive with 0% CPU for over an hour; the HTTP endpoint
+never answered again. This session's `Monitor` (armed on process
+exit) could not detect it, since the process never exits on this
+failure mode; a 20-minute `ScheduleWakeup` heartbeat caught it by
+checking for log growth and process CPU, well after the death.
+Deviation: `llama-benchy` writes its result file once, at the end of
+every depth, so the 4096 cell's number is lost too, even though the
+`vm_stat` log shows 5 completed requests (three at depth 4096, two at
+depth 56320) before the fatal one. Finding for the run: a benchy block
+on `mlx_lm.server` should be watched by a liveness heartbeat, not only
+a process-exit monitor, or a depth close to a known-fragile ceiling
+should get `--save-result` per depth if the tool supports it.
+Files: `results/server-sweep-bonsai-mlx.log`,
+`results/benchy-sweep-bonsai-mlx-vm.log`.
