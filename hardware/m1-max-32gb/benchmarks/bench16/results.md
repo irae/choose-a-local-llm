@@ -275,3 +275,18 @@ a process-exit monitor, or a depth close to a known-fragile ceiling
 should get `--save-result` per depth if the tool supports it.
 Files: `results/server-sweep-bonsai-mlx.log`,
 `results/benchy-sweep-bonsai-mlx-vm.log`.
+
+## `sweep-qwen38-mlx`
+
+`mlx-community/Qwen3.8-27B-4bit`, `mlx_lm.server`,
+`--prompt-cache-size 2`, no drafter, wired 25000. Tokenizer
+`Qwen/Qwen3.8-27B`, code corpus. Depths: 4096, 24576.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 17.33 | 0.00 | 17 | +1.9% | 431.62, no growth |
+| 24576 | 14.82 | 0.01 | 15.3 | -3.1% | 431.62, no growth |
+
+Both cells completed, no dead cell, no swap growth.
+Files: `results/benchy-sweep-qwen38-mlx.md`,
+`results/server-sweep-qwen38-mlx.log`.
