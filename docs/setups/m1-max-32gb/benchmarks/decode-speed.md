@@ -32,7 +32,7 @@ Two rules to read the tables by:
 | [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" />](./qwen3.6-35b-a3b.md) | 43.7 → 13.0 | 82k | speed |
 | [<ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" />](./qwen3.6-35b-a3b.md) | 54.5 → 37.4† | 37k | mem |
 | [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" />](./qwen3.8-27b.md) | 11.8 → 8.6 | 72k | mem |
-| [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" />](./qwen3.8-27b.md) | 17† → 15.3† | 25k | mem |
+| [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" />](./qwen3.8-27b.md) | 17.3 → 14.8 | 25k | mem |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:decode-summary:end -->
