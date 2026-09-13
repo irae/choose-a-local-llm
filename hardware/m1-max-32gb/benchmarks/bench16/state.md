@@ -41,3 +41,20 @@ stash@{3}: WIP on gemma-4-26b-a4b-issue-13: 60b93f8 refactor: remove rimraf from
 The uncommitted `choose-a-local-llm/benchmarks/mendel/report.html` and
 `results.csv` in the Mac's `master` checkout stay as they are; the
 coordinator mirrors them at close-out.
+
+## `git stash clear`, before `qwen36-mlx-mendel-blind-on-retry`
+
+New essentials rule (owner, 2026-09-12): `git stash clear` in
+`~/code/mendel-benchmark` right before every smoke and every agent
+row. The owner confirmed this directly (asked, since it destroys
+other sessions' stashes with no way back). `git stash list` recorded
+right before the clear, same four entries as above:
+
+```
+stash@{0}: WIP on luna-5.6-max-issue-13: 7fd646a fix(mendel-requirify): preserve test assertion count
+stash@{1}: WIP on grok-4.6-issue-13: 9c721ca chore(mendel-outlet-manifest): replace shasum with crypto.createHash
+stash@{2}: WIP on deepseekv4-pro-0813-issue-13: 4b2ac6a chore: drop tmp devDependency from root
+stash@{3}: WIP on gemma-4-26b-a4b-issue-13: 60b93f8 refactor: remove rimraf from root and mendel-pipeline
+```
+
+Cleared with `git stash clear` right after this record.
