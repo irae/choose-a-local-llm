@@ -80,3 +80,18 @@ mlx-community-Qwen3.6-35B-A3B-4bit-on-issue-13
 mlx-community-Qwen3.6-35B-A3B-4bit-on-issue-13-stashpop` in
 `~/code/mendel-benchmark` succeeded, no permission refusal. The
 retry runs right after `arms-gemma26` closes.
+
+## `qwen36-mlx-mendel-blind-on-retry`
+
+Same server as `qwen36-mlx-mendel-blind-on`, window 36864, fresh
+worktree and branch (`mlx-community-Qwen3.6-35B-A3B-4bit-on-issue-13`,
+re-created after the rename cleared the collision). Started
+04:42:31Z, ended 05:01:02Z. `worker.json`: loop ok (ratio 0.65, tool
+call). `meta.json`: `end_reason` `model_budget_exhausted`, 1
+compaction, 3 model nudges ("model stopped; TASKS.md has unchecked
+items"). Not a repetition loop; the model kept stopping short of
+finishing until the run's model-nudge budget (3) ran out.
+
+Handed to a subagent for scoring and publishing, same rule as the
+first row. `qwen36_mlx_on` stays at the first row's value until the
+subagent's report updates it.
