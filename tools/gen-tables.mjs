@@ -305,7 +305,9 @@ function mendelRow(r, { test = '', top = {} } = {}) {
   const site = siteRowFor(r)
   const windowStale = site?.pi?.contextWindow > window
   const windowCell = window ? `${bold(`${Math.round(window / 1024)}k`, top.window)}${windowStale ? '†' : ''}` : '—'
-  const speed = site ? `<TokCell shallow="${site.tokShallow}" deep="${site.tokDeep}" />` : ''
+  const speed = site
+    ? `<TokCell shallow="${site.tokShallow}" deep="${site.tokDeep}"${top.tokShallow?.has(r) ? ' top-shallow' : ''}${top.tokDeep?.has(r) ? ' top-deep' : ''} />`
+    : ''
   const ctxSpeed = speed ? `<span class="ctxuse">${windowCell}<br>${speed}</span>` : windowCell
   const comp = Number(t.compactions) || 0
   const use = bold(`${mendelCtxUse(r)}%`, top.ctx)
@@ -374,6 +376,8 @@ function mendelTable(rows, { test = false } = {}) {
     wall: topSet(ordered, mendelWall, { lower: true }),
     window: topSet(ordered, mendelWindow),
     ctx: topSet(ordered, mendelCtxUse, { lower: true }),
+    tokShallow: topSet(ordered, (r) => parseFloat(siteRowFor(r)?.tokShallow)),
+    tokDeep: topSet(ordered, (r) => parseFloat(siteRowFor(r)?.tokDeep)),
   }
   const body = ordered.map((r) => mendelRow(r, { test: test ? r.test : '', top }))
   return [...header, ...body].join('\n')
