@@ -303,4 +303,14 @@ rule". Depths: 4096, 65536.
 | no drafter | 65536 | 9.72 | 0.04 | 8.6 (n-max 3, at 65.5K) | +13.0% | 431.62, no growth |
 
 No drafter is already faster than the served n-max 3 at both depths.
-Continuing the climb with n-max 1.
+
+| n-max 1 | 4096 | 10.70 | 0.33 | 11.8 (n-max 3) | -9.3% | 423.62, no growth |
+| n-max 1 | 65536 | 8.26 | 0.04 | 8.6 (n-max 3, at 65.5K) | -4.0% | 423.62, no growth |
+
+**Climb stopped at n-max 1**: slower than no drafter at both depths.
+N-max 2 is not read. No drafter is the fastest arm at both depths.
+**A table and no pick**; the coordinator names the served arm.
+Files: `results/benchy-sweep-qwen38-bartowski-nmax0.md`,
+`results/benchy-sweep-qwen38-bartowski-nmax1.md`,
+`results/server-sweep-qwen38-bartowski-nmax0.log`,
+`results/server-sweep-qwen38-bartowski-nmax1.log`.
