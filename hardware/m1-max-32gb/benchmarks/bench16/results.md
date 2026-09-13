@@ -277,6 +277,33 @@ should get `--save-result` per depth if the tool supports it.
 Files: `results/server-sweep-bonsai-mlx.log`,
 `results/benchy-sweep-bonsai-mlx-vm.log`.
 
+## `sweep-bonsai-mlx` retry (`retry-sweep`, 2026-09-13)
+
+Same server and command as `sweep-bonsai-mlx`. Depths: 4096, 52224
+(1024 under the 53248 window, per the coordinator's gate). This time
+a live watch on the server log (grep for the Metal OOM signature)
+caught the death within seconds, not an hour.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | not recorded (see deviation) | — | 24.5 | — | — |
+| 52224 | dead cell | — | 17.3 | — | — |
+
+**Dead deep cell again**, same signature, this time at prompt fill
+49152/52736, inside the depth-52224 test's first run (not even the
+second run this time). Finding: this server's real ceiling on this
+machine sits under 49152, well under both the 53248 window and the
+56320 tried in the first attempt. The 4096 cell's number is lost
+again, for the same reason (`--save-result` writes once, at the end).
+Two attempts, two dead cells at different depths (56320 and 52224,
+both above roughly 47-49K) point to a ceiling near 47K-49K for this
+build at this wired limit, well under the window the site derives
+from the last committed sweep (2026-09-06). This is a finding for the
+coordinator to weigh when it revisits `gemma26_mlx_window`'s sibling
+value for this model.
+Files: `results/server-sweep-bonsai-mlx-retry.log`,
+`results/benchy-retry-bonsai-mlx-vm.log`.
+
 ## `sweep-qwen38-mlx`
 
 `mlx-community/Qwen3.8-27B-4bit`, `mlx_lm.server`,
