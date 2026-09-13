@@ -171,3 +171,18 @@ Files: `results/benchy-arms-qwen38-atomicchat-nmax0.md`,
 `results/benchy-arms-qwen38-atomicchat-nmax1.md`,
 `results/server-arms-qwen38-atomicchat-nmax0.log`,
 `results/server-arms-qwen38-atomicchat-nmax1.log`.
+
+## `arms-gemma26`
+
+`unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, `--no-mmproj`, f16 KV,
+`--parallel 1`, `-c 212992`, wired 25000. Climb per "The sweep rule".
+Depths: 4096, 98304, 196608.
+
+| arm | depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|---|--:|--:|--:|--:|--:|--:|
+| no drafter | 4096 | 54.24 | 0.04 | 60.3 | -10.1% | 439.62, no growth |
+| no drafter | 98304 | 28.66 | 0.18 | no site cell | — | 439.62, no growth |
+| no drafter | 196608 | 19.15 | 0.01 | 17.3 (at 197K) | +10.7% | 439.62, no growth |
+| n-max 2 (from `benchy-gemma26-drafter`, served) | 4096 | 60.13 | 1.81 | 60.3 | -0.3% | no growth |
+| n-max 2 (from `benchy-gemma26-drafter`, served) | 98304 | 28.19 | 0.54 | no site cell | — | no growth |
+| n-max 2 (from `benchy-gemma26-drafter`, served) | 196608 | 19.06 | 0.67 | 17.3 (at 197K) | +10.2% | no growth |
