@@ -81,6 +81,19 @@ liveness heartbeat beside the process-exit monitor, not only the
 exit-based one. This belongs in `docs/methodology/server-lore.md` at
 close-out.
 
+## `sweep-bonsai-fork-single` — blocked, skipped
+
+The KV bias file `/tmp/Ternary-Bonsai-27B-kv-bias.gguf` does not
+exist (`/tmp` is wiped on reboot, per the site's own note). The
+snapshot `abbae72` and `~/prism-llama/llama-server` are both present.
+Per the run's rule, a missing bias file is stop and ask, never a
+rebuild on my own. Skipped; the run went on to `sweep-qwen38-bartowski`
+to keep the GPU busy. Gate for the coordinator: regenerate the bias
+file with the vendor's `make_kv_bias.sh` (the owner names the corpus,
+since a regenerated file with an unrecorded corpus is a different
+calibration than the scored one), or confirm the block is dropped for
+this run.
+
 ## `qwen36-mlx-mendel-blind-on-retry` — blocked, skipped
 
 The scored row's worktree was moved aside (not deleted) to
