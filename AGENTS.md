@@ -388,6 +388,10 @@ Benchmark work:
   survive: a cache is by definition safe to delete, and a session log
   behind a published measurement is not. `~/.cache/choose-a-local-llm/`
   is for things that can be rebuilt. When in doubt, it is not a cache.
+  **Nothing a run makes or needs goes under `/tmp`** (owner rule,
+  2026-09-13): not a log, not a generated file a serving command
+  points at, not a scratch directory. A bias file kept there was lost
+  once and blocked a run twice.
 - **Never version the owner's machine.** This repo is public work about
   a method. A list of the owner's login items, a BTM dump, a process
   list, or any other inventory of their apps is personal data and does

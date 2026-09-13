@@ -69,7 +69,7 @@ mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
 
 <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" />
 
-The scored config. The bias file is generated, not downloadable, and `/tmp` is wiped on reboot; the corpus behind the scored file is unrecorded, so a regenerated file is a different calibration until the owner confirms the corpus. Regenerate with the vendor's `make_kv_bias.sh` into `~/.local/share/choose-a-local-llm/`; see [the benchmarks](../benchmarks/bonsai-27b.md).
+The scored config. The bias file is generated, not downloadable. The file behind the EvalPlus score and the 2026-08-30 sweeps was made with an unrecorded corpus and was lost with `/tmp` on a reboot before 2026-09-04; the file served since bench 11 (2026-09-06) was regenerated with the vendor's `make_kv_bias.sh` and its built-in corpus and lives at `~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf`. The Mendel guided row and every later reading ran on that file; see [the benchmarks](../benchmarks/bonsai-27b.md).
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
@@ -77,7 +77,7 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --alias bonsai-prism \
   -ngl 999 -fa on -c 65536 --parallel 1 \
   --cache-type-k q4_0 --cache-type-v q4_0 \
-  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \
+  --kv-mean-center ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf \
   --jinja --port 8081
 ```
 
@@ -98,7 +98,7 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --alias bonsai-prism-2x \
   -ngl 999 -fa on -c 98304 --parallel 2 \
   --cache-type-k q4_0 --cache-type-v q4_0 \
-  --kv-mean-center /tmp/Ternary-Bonsai-27B-kv-bias.gguf \
+  --kv-mean-center ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf \
   --jinja --port 8081
 ```
 

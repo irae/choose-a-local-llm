@@ -381,9 +381,10 @@ recorded as such, and the block is done.
 The PrismML llama.cpp fork rows, no drafter, one arm each. Serve the
 row's own command from the site entry with `--cache-ram 0` added; the
 `<rev>` in the model path is the cached snapshot, and the KV bias file
-must exist before the q4_0 servers start (`docs/setups/m1-max-32gb/`
-holds how it was made; a missing bias file is stop and ask, never a
-rebuild on your own). Tokenizer `prism-ml/Ternary-Bonsai-27B-mlx-2bit`.
+is `~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf`,
+the file bench 11 regenerated (record its sha256 in `state.md`; a
+missing bias file is stop and ask, never a rebuild on your own).
+Tokenizer `prism-ml/Ternary-Bonsai-27B-mlx-2bit`.
 
 - `sweep-bonsai-fork-single`: q4_0 KV with bias, `-c 65536`,
   `--parallel 1`, alias `bonsai-prism`. Depths: 4096, 32768. Site:

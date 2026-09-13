@@ -102,7 +102,7 @@ MODEL="${1:?usage: mendel-smoke.sh <pi-model-id> <thinking-level>}"
 LEVEL="${2:?usage: mendel-smoke.sh <pi-model-id> <thinking-level>}"
 
 CAP="${SMOKE_MENDEL_CAP:-1500}"
-OUT="${SMOKE_MENDEL_OUT:-$(mktemp -d /tmp/mendel-smoke.XXXXXX)}"
+OUT="${SMOKE_MENDEL_OUT:-$(mkdir -p "$HOME/.cache/choose-a-local-llm" && mktemp -d "$HOME/.cache/choose-a-local-llm/mendel-smoke.XXXXXX")}"
 BASE="${SMOKE_MENDEL_BASE:-}"
 GIVEN_SESSION="${SMOKE_MENDEL_SESSION:-}"
 TASK_NAME="${SMOKE_MENDEL_TASK:-xtend}"

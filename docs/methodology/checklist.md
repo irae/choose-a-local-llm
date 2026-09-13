@@ -125,7 +125,7 @@ the block names at the point it is needed.
    or under `Monitor`) right after the warmup request:
    `RUNWATCH_SERVER_LOG=<server log> RUNWATCH_OUTPUT=<result file>
    RUNWATCH_BASE_URL=<base url> RUNWATCH_MODEL=<model id>
-   RUNWATCH_MEM_LOG=/tmp/<run>-mem.log bash benchmarks/run-watch.sh`.
+   RUNWATCH_MEM_LOG=~/.local/share/choose-a-local-llm/<run>-mem.log bash benchmarks/run-watch.sh`.
    It writes the run's only memory record (one line per
    `RUNWATCH_MEM_INTERVAL` seconds, default 20), tails the server log
    for the death signatures, and after `RUNWATCH_SILENCE` seconds
