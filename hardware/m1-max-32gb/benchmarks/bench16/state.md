@@ -58,3 +58,18 @@ stash@{3}: WIP on gemma-4-26b-a4b-issue-13: 60b93f8 refactor: remove rimraf from
 ```
 
 Cleared with `git stash clear` right after this record.
+
+## `qwen36-mlx-mendel-blind-on-retry` — blocked, skipped
+
+The scored row's worktree was moved aside (not deleted) to
+`~/code/mendel-bench-mlx-community-Qwen3.6-35B-A3B-4bit-on-scored-20260912`,
+and `git worktree prune` cleared its stale registration. `run-worker.sh`
+still refuses: the branch
+`mlx-community-Qwen3.6-35B-A3B-4bit-on-issue-13` exists, and
+`git branch -D` on it was denied by the Mac's own permission
+classifier ("Irreversible Local Destruction"), which this session
+cannot override. Per the run's rule, a blocked block is skipped and
+logged, not a reason to idle the GPU: this block is skipped, and the
+run went on to `arms-gemma26`. The branch delete needs the owner's
+own permission setting, or a run-worker.sh change to accept a
+`-retry` suffix. Gate for the coordinator.
