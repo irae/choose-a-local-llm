@@ -183,6 +183,20 @@ Depths: 4096, 98304, 196608.
 | no drafter | 4096 | 54.24 | 0.04 | 60.3 | -10.1% | 439.62, no growth |
 | no drafter | 98304 | 28.66 | 0.18 | no site cell | — | 439.62, no growth |
 | no drafter | 196608 | 19.15 | 0.01 | 17.3 (at 197K) | +10.7% | 439.62, no growth |
+| n-max 1 | 4096 | 58.24 | 1.48 | 60.3 | -3.4% | 439.62, no growth |
+| n-max 1 | 98304 | 27.49 | 0.11 | no site cell | — | 431.62, no growth |
+| n-max 1 | 196608 | 16.43 | 0.16 | 17.3 (at 197K) | -5.0% | 431.62, no growth |
 | n-max 2 (from `benchy-gemma26-drafter`, served) | 4096 | 60.13 | 1.81 | 60.3 | -0.3% | no growth |
 | n-max 2 (from `benchy-gemma26-drafter`, served) | 98304 | 28.19 | 0.54 | no site cell | — | no growth |
 | n-max 2 (from `benchy-gemma26-drafter`, served) | 196608 | 19.06 | 0.67 | 17.3 (at 197K) | +10.2% | no growth |
+
+**Climb stopped at n-max 2**: n-max 1 against no drafter is mixed
+(faster at 4K, slower at 98K and 197K), so the rule takes one more arm
+then stops — n-max 2 is that arm, already on record from
+`benchy-gemma26-drafter`. N-max 3 is not read. N-max 2 is the fastest
+arm at every depth. **A table and no pick**; the coordinator names the
+served arm.
+Files: `results/benchy-arms-gemma26-nmax0.md`,
+`results/benchy-arms-gemma26-nmax1.md`,
+`results/server-arms-gemma26-nmax0.log`,
+`results/server-arms-gemma26-nmax1.log`.
