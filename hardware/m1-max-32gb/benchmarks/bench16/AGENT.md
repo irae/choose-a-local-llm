@@ -38,19 +38,19 @@ is on record.
 - `sweep-gemma12-f16`
 - `sweep-bonsai-mlx`
 - `sweep-qwen38-mlx`
-- `sweep-bonsai-fork-single`
 - `sweep-qwen38-bartowski`
-- `sweep-qwen36-q8`
-- `sweep-qwen38-ista-drafter`
-- `sweep-qwen36-f16-drafter`
-- `sweep-qwen36-f16-nodrafter`
-- `sweep-gemma26-2slot`
-- `sweep-gemma12-q8`
-- `sweep-gemma12-2slot`
-- `sweep-gemma12-4slot`
-- `sweep-bonsai-fork-2slot`
-- `sweep-bonsai-fork-f16`
+- `sweep-bonsai-fork-single`
 - `retry-sweep`
+
+The owner ended the run here (2026-09-13): after the homepage cells
+the hardware goes to other work. `retry-sweep` holds the Qwen3.6 MLX
+cell at 35840 and the Bonsai MLX cells at 4096 and 52224, and
+nothing else runs. The blocks below that never ran stay in the file
+as the plan they were: `sweep-qwen36-q8`, `sweep-qwen38-ista-drafter`,
+`sweep-qwen36-f16-drafter`, `sweep-qwen36-f16-nodrafter`,
+`sweep-gemma26-2slot`, `sweep-gemma12-q8`, `sweep-gemma12-2slot`,
+`sweep-gemma12-4slot`, `sweep-bonsai-fork-2slot`,
+`sweep-bonsai-fork-f16`.
 
 The owner set this order (2026-09-12): first the speed readings the
 agent rows need, then the agent rows the homepage lacks, then the
