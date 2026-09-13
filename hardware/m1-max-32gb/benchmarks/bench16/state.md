@@ -59,6 +59,28 @@ stash@{3}: WIP on gemma-4-26b-a4b-issue-13: 60b93f8 refactor: remove rimraf from
 
 Cleared with `git stash clear` right after this record.
 
+## For `retry-sweep`: `sweep-bonsai-mlx` reads again
+
+Coordinator gate (2026-09-13): `sweep-bonsai-mlx` closed with no
+number at all, so both its cells go to `retry-sweep`, not moved up
+the order. Read depth 4096 and depth 52224 (the deep cell, 1024 under
+the 53248 window) in one benchy call, same server and command as
+`sweep-bonsai-mlx`, and add the two rows to that block's table in
+`results.md`.
+
+## Server lore: MLX generation-thread death leaves the process alive
+
+Finding (2026-09-13, `sweep-bonsai-mlx`): on `mlx_lm.server`, a Metal
+OOM inside the generation thread kills that thread but not the
+process. The HTTP endpoint never answers again, but `pgrep` still
+shows the server running and CPU sits at 0%. A `Monitor` armed only on
+process exit never fires on this failure. A 20-minute `ScheduleWakeup`
+heartbeat checking server-log growth and process CPU caught it, about
+an hour after the death. From here on, every MLX block keeps a
+liveness heartbeat beside the process-exit monitor, not only the
+exit-based one. This belongs in `docs/methodology/server-lore.md` at
+close-out.
+
 ## `qwen36-mlx-mendel-blind-on-retry` — blocked, skipped
 
 The scored row's worktree was moved aside (not deleted) to
