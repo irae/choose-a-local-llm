@@ -267,11 +267,21 @@ committed measurement, the block that measures it comes first.
    when output stops growing (server log first; see
    `docs/methodology/server-lore.md`), how to resume each block, and
    the rule that the next block on the list starts the moment one
-   ends. No approval
-   gates. The last line of every runbook's list is the retry sweep: the
-   run's killed or interrupted rows, oldest first, in fresh
-   worktrees, while the owner is away. Nothing of an interrupted run
-   is cleaned up mid-run (`docs/methodology/mendel.md`).
+   ends. No approval gates.
+   **A recoverable failure is retried at once, inside its block**
+   (owner rule, 2026-09-13): a dead benchy cell, a server that died
+   under a request, a row killed by the machine, anything the runner
+   can repeat with no human action. The retry runs before the next
+   block starts, and a block that a later block depends on never
+   closes with a hole in it. Run 16 put a dead deep cell into the
+   end-of-run sweep, and the agent row that depended on it ran on a
+   stale cell for a day; that is the failure this rule ends. The last
+   line of every runbook's list is still the retry sweep, but it
+   holds only what needed a human first: a permission the runner's
+   session refused, a login, an owner decision, a stop the owner
+   ordered. The runbook says which kind each failure path is. Nothing
+   of an interrupted run is cleaned up mid-run
+   (`docs/methodology/mendel.md`).
 10. Close the loop: when the run ends, the runner updates `state.md`
    with a clean handing-over section, and the coordinator adds the
    run's findings to `hardware/<hardware-id>/benchmarks/INDEX.md`,

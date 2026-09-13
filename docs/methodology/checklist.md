@@ -211,10 +211,14 @@ the block names at the point it is needed.
     remove a worktree, a branch, a session file or a pinned config of
     a run that did not end on its own; they stay until the coordinator
     closes the row ([Mendel](./mendel.md), "No cleanup mid-run").
-15. Before the session ends with the GPU idle: when no queued block
-    remains and the owner is away, retry the run's killed or
-    interrupted rows in fresh worktrees, oldest first, under the
-    Mendel retry rule; then end the session with the machine idle.
+15. A failure the runner can repeat with no human action (a dead
+    benchy cell, a server that died under a request, a row the
+    machine killed) is retried at once, inside its block, before the
+    next block starts (owner rule, 2026-09-13). Before the session
+    ends with the GPU idle: when no queued block remains and the
+    owner is away, retry the rows that waited on a human, oldest
+    first, in fresh worktrees, under the Mendel retry rule; then end
+    the session with the machine idle.
 
 ## One more time: the GPU does not sit idle
 
