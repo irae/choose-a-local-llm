@@ -290,3 +290,17 @@ Files: `results/server-sweep-bonsai-mlx.log`,
 Both cells completed, no dead cell, no swap growth.
 Files: `results/benchy-sweep-qwen38-mlx.md`,
 `results/server-sweep-qwen38-mlx.log`.
+
+## `sweep-qwen38-bartowski`
+
+`bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, rev `f0eec4a`, `--no-mmproj`,
+f16 KV, `--parallel 1`, `-c 73728`, wired 25000. Climb per "The sweep
+rule". Depths: 4096, 65536.
+
+| arm | depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|---|--:|--:|--:|--:|--:|--:|
+| no drafter | 4096 | 12.35 | 0.00 | 11.8 (n-max 3) | +4.7% | 431.62, no growth |
+| no drafter | 65536 | 9.72 | 0.04 | 8.6 (n-max 3, at 65.5K) | +13.0% | 431.62, no growth |
+
+No drafter is already faster than the served n-max 3 at both depths.
+Continuing the climb with n-max 1.
