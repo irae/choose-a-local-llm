@@ -285,7 +285,7 @@ function mendelRow(r, { test = '' } = {}) {
   const done = r.libraries_done
   const raw = Number(r.score_total)
   const cap = Math.min(raw, (100 * done) / 8)
-  const score = cap < raw ? `**${cap}** <small>raw ${raw}</small>` : `**${cap}**`
+  const score = cap < raw ? `<span class="ctxuse"><b>${cap}</b><br><small>raw ${raw}</small></span>` : `**${cap}**`
   const wall = t.wall_clock_min == null ? '—' : `${Math.round(Number(t.wall_clock_min))} min`
   const window = mendelWindow(r)
   const comp = Number(t.compactions) || 0
