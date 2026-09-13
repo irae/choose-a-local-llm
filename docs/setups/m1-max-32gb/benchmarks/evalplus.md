@@ -14,7 +14,7 @@ type its config serves.
 |---|--:|--:|--:|--:|--:|
 | [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" />](./qwen3.8-27b.md) | 8192 | **0.982** | 0.939 | 0/164 | 100% |
 | [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" />](./qwen3.8-27b.md) | 8192 | **0.976** | 0.945 | 1/164 | 99% |
-| [<ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" kv="f16" effort="medium" />](./qwen3.8-27b.md) | 8886 | **0.988** | 0.927 | 0/164 | 100% |
+| [<ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" />](./qwen3.8-27b.md) | 8886 | **0.988** | 0.927 | 0/164 | 100% |
 | [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" />](./qwen3.8-27b.md) | 8192 | **0.976** | 0.933 | 1/164 | 99% |
 | [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" />](./qwen3.8-27b.md) | 30000 | **0.945** | 0.921 | 5/164 | 97% |
 | [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" />](./qwen3.6-35b-a3b.md) | 26624 | 0.939 | 0.921 | 5/164 | 97% |
