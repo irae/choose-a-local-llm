@@ -25,6 +25,10 @@ const MENDEL_CLOUD_START = '<!-- gen:mendel-cloud:start -->'
 const MENDEL_CLOUD_END = '<!-- gen:mendel-cloud:end -->'
 const MENDEL_GUIDED_START = '<!-- gen:mendel-guided:start -->'
 const MENDEL_GUIDED_END = '<!-- gen:mendel-guided:end -->'
+const MENDEL_GUIDED_CLOUD_START = '<!-- gen:mendel-guided-cloud:start -->'
+const MENDEL_GUIDED_CLOUD_END = '<!-- gen:mendel-guided-cloud:end -->'
+const MENDEL_STALE_START = '<!-- gen:mendel-stale:start -->'
+const MENDEL_STALE_END = '<!-- gen:mendel-stale:end -->'
 const MODEL_MENDEL_START = '<!-- gen:model-mendel:start -->'
 const MODEL_MENDEL_END = '<!-- gen:model-mendel:end -->'
 
@@ -246,17 +250,105 @@ function currentPromptVersion(rows) {
   return rows.filter((r) => r.prompt_version === latest)
 }
 
-function renderMendelLocal(rows) {
-  const header = [
-    '| config | score | worst defect |',
-    '|---|--:|---|',
+// The local Mendel tables read the mirrored results JSON: it carries the
+// defect list and the nudge counts, which the CSV does not.
+function mendelRuns(file) {
+  return JSON.parse(readFileSync(file, 'utf8')).runs
+    .filter((r) => r.local && r.invalid !== true)
+    .map((r) => ({
+      ...r,
+      libraries_done: r.libraries_done == null ? 8 : Number(r.libraries_done),
+      kv_type: r.kv_type || 'f16',
+      telemetry: r.telemetry || {},
+    }))
+}
+
+function pill(text, tone = 'gray') {
+  return `<span class="ms-pill cs-pill cs-pill-${tone}">${text}</span>`
+}
+
+function mendelWindow(r) {
+  const note = String(r.config_note || '')
+  const m = note.match(/(?:contextWindow|window)\s+(\d{4,6})/)
+  if (m) return Number(m[1])
+  const t = r.telemetry
+  const peak = Number(t.peak_context)
+  const pct = Number(t.window_pct)
+  const est = peak > 0 && pct > 0 ? (peak / pct) * 100 : 0
+  const ladder = [24576, 26624, 32768, 36864, 40960, 49152, 53248, 57344, 65536, 81920, 98304, 114688, 122880, 131072, 147456, 163840, 212992, 262144]
+  return est ? ladder.reduce((a, b) => (Math.abs(b - est) < Math.abs(a - est) ? b : a)) : 0
+}
+
+function mendelRow(r, { test = '' } = {}) {
+  const t = r.telemetry
+  const k = (v) => (v == null || v === '' ? '—' : `${Math.round(Number(v) / 1000)}k`)
+  const done = r.libraries_done
+  const raw = Number(r.score_total)
+  const cap = Math.min(raw, (100 * done) / 8)
+  const score = cap < raw ? `**${cap}** <small>raw ${raw}</small>` : `**${cap}**`
+  const wall = t.wall_clock_min == null ? '—' : `${Math.round(Number(t.wall_clock_min))} min`
+  const window = mendelWindow(r)
+  const comp = Number(t.compactions) || 0
+  const pct = Math.round(Number(t.window_pct)) || 0
+  const ctx = comp ? `<span class="ctxuse"><b>${comp}x + ${pct}%</b><br>${comp * 100 + pct}%</span>` : `${pct}%`
+  const counts = { critical: 0, medium: 0, minor: 0 }
+  for (const d of r.defects || []) if (d.severity in counts) counts[d.severity] += 1
+  const bugs = [
+    counts.critical ? pill(`${counts.critical} critical`, 'red') : '',
+    counts.medium ? pill(`${counts.medium} medium`, 'yellow') : '',
+    counts.minor ? pill(`${counts.minor} minor`, 'gray') : '',
+  ].filter(Boolean)
+  const bugsCell = bugs.length ? `<span class="pills">${bugs.join(' ')}</span>` : pill('0 bugs', 'green')
+  const nudges = [t.nudges_tooling ? `${t.nudges_tooling}t` : '', t.nudges_model ? `${t.nudges_model}m` : ''].filter(Boolean)
+  const stats = [
+    t.tool_calls != null ? pill(`calls ${t.tool_calls}/${t.tool_errors ?? 0}`) : '',
+    pill(`commits ${t.commits ?? 0}`),
+    t.failed_commits ? pill(`failed commits ${t.failed_commits}`, 'red') : '',
+    t.assistant_msgs ? pill(`turns ${t.assistant_msgs}`) : '',
+    nudges.length ? pill(`nudges ${nudges.join(' ')}`, 'yellow') : '',
+    t.loop_flag === 'LOOP' ? pill(`loop ${t.loop_kind || ''}`.trim(), 'red') : '',
+    Number(t.truncation_pct) ? pill(`trimmed ${t.truncation_pct}%`) : '',
+  ].filter(Boolean)
+  const cells = [
+    mendelCell(r),
+    ...(test ? [pill(`mendel-${test}`, test === 'blind' ? 'yellow' : 'green')] : []),
+    score,
+    wall,
+    `${done}/8`,
+    window ? `${Math.round(window / 1024)}k` : '—',
+    k(t.tokens_out),
+    ctx,
+    bugsCell,
+    `<span class="pills">${stats.join(' ')}</span>`,
   ]
-  const sev = (d) => (d.match(/^(critical|medium|minor)/) || [])[1] || (d ? 'see report' : 'none found')
-  const body = rows
-    .filter((r) => r.local === 'True')
-    .sort((a, b) => Math.min(b.score_total, (100 * (b.libraries_done === '' ? 8 : b.libraries_done)) / 8) - Math.min(a.score_total, (100 * (a.libraries_done === '' ? 8 : a.libraries_done)) / 8))
-    .map((r) => `| ${mendelCell(r)} | ${mendelScore(r)} | ${sev(r.defects)} |`)
+  return `| ${cells.join(' | ')} |`
+}
+
+function mendelTable(rows, { test = false } = {}) {
+  const header = [
+    `| Model / Config |${test ? ' Test |' : ''} Score | Wall | Done | Max ctx | Tokens | Ctx use | Bugs | Stats |`,
+    `|---|${test ? '---|' : ''}--:|--:|--:|--:|--:|--:|---|---|`,
+  ]
+  const capped = (r) => Math.min(Number(r.score_total), (100 * r.libraries_done) / 8)
+  const body = [...rows].sort((a, b) => capped(b) - capped(a)).map((r) => mendelRow(r, { test: test ? r.test : '' }))
   return [...header, ...body].join('\n')
+}
+
+function renderMendelLocal(rows) {
+  return mendelTable(rows)
+}
+
+function renderMendelStale(blindAll, guidedAll) {
+  const stale = (all) => {
+    const current = new Set(currentPromptVersion(all).map((r) => r.branch))
+    return all.filter((r) => !current.has(r.branch))
+  }
+  const rows = [
+    ...stale(blindAll).map((r) => ({ ...r, test: 'blind' })),
+    ...stale(guidedAll).map((r) => ({ ...r, test: 'guided' })),
+  ]
+  if (!rows.length) return 'No stale row.'
+  return mendelTable(rows, { test: true })
 }
 
 function renderMendelCloud(rows) {
@@ -269,10 +361,15 @@ function renderMendelCloud(rows) {
 }
 
 function renderMendelGuided(rows) {
-  const header = ['| config | harness | score |', '|---|---|--:|']
+  return mendelTable(rows)
+}
+
+function renderMendelGuidedCloud(rows) {
+  const header = ['| model | harness | score |', '|---|---|--:|']
   const body = rows
+    .filter((r) => r.local !== 'True')
     .sort((a, b) => Math.min(b.score_total, (100 * (b.libraries_done === '' ? 8 : b.libraries_done)) / 8) - Math.min(a.score_total, (100 * (a.libraries_done === '' ? 8 : a.libraries_done)) / 8))
-    .map((r) => `| ${r.local === 'True' ? mendelCell(r) : mendelName(r)} | ${r.harness} | ${mendelScore(r)} |`)
+    .map((r) => `| ${mendelName(r)} | ${r.harness} | ${mendelScore(r)} |`)
   return [...header, ...body].join('\n')
 }
 
@@ -659,6 +756,8 @@ for (const dataFile of dataFiles) {
   const mendelBlind = currentPromptVersion(mendelBlindAll.filter((r) => r.invalid !== 'True'))
   const mendelGuided = currentPromptVersion(mendelGuidedAll.filter((r) => r.invalid !== 'True'))
   deriveMendel(data.rows, mendelBlind, mendelGuided)
+  const blindRuns = mendelRuns('benchmarks/mendel/results.json')
+  const guidedRuns = mendelRuns('benchmarks/mendel/results-guided.json')
   // An abandoned row keeps its numbers on the model page only: the comparison
   // and the home table answer "what should I run", and it is not a candidate.
   const visible = data.rows.filter((r) => !r.hidden && !r.retired && !r.abandoned)
@@ -690,9 +789,11 @@ for (const dataFile of dataFiles) {
   const typePages = [
     [`${setupDir}/benchmarks/evalplus.md`, EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(data)],
     [`${setupDir}/benchmarks/decode-speed.md`, DECODE_START, DECODE_END, renderDecodeSummary(data)],
-    [`${setupDir}/benchmarks/mendel.md`, MENDEL_LOCAL_START, MENDEL_LOCAL_END, renderMendelLocal(mendelBlind)],
+    [`${setupDir}/benchmarks/mendel.md`, MENDEL_LOCAL_START, MENDEL_LOCAL_END, renderMendelLocal(currentPromptVersion(blindRuns))],
     [`${setupDir}/benchmarks/mendel.md`, MENDEL_CLOUD_START, MENDEL_CLOUD_END, renderMendelCloud(mendelBlind)],
-    [`${setupDir}/benchmarks/mendel.md`, MENDEL_GUIDED_START, MENDEL_GUIDED_END, renderMendelGuided(mendelGuided)],
+    [`${setupDir}/benchmarks/mendel.md`, MENDEL_GUIDED_START, MENDEL_GUIDED_END, renderMendelGuided(currentPromptVersion(guidedRuns))],
+    [`${setupDir}/benchmarks/mendel.md`, MENDEL_GUIDED_CLOUD_START, MENDEL_GUIDED_CLOUD_END, renderMendelGuidedCloud(mendelGuided)],
+    [`${setupDir}/benchmarks/mendel.md`, MENDEL_STALE_START, MENDEL_STALE_END, renderMendelStale(blindRuns, guidedRuns)],
   ]
   for (const [target, mstart, mend, block] of typePages) {
     const original = readFileSync(target, 'utf8')

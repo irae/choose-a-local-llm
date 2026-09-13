@@ -216,6 +216,24 @@
   color: inherit;
 }
 
+/* Mendel page tables: a group of pills wraps onto two lines by width;
+   the context-use cell stacks its overflow reading. */
+.vp-doc .pills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.3em;
+  max-width: 22em;
+  white-space: normal;
+  vertical-align: middle;
+}
+
+.vp-doc .ctxuse {
+  display: inline-block;
+  line-height: 1.3;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Coding cell: a partial's completion sits muted beside the score;
    the test pill is blind yellow, guided green. */
 .vp-doc .cs-note {
@@ -236,11 +254,13 @@
   background: color-mix(in srgb, var(--ms-tint) 12%, transparent);
 }
 
-.vp-doc .cs-pill-failed-smoke { --ms-tint: #7c8390; }
-.vp-doc .cs-pill-blind { --ms-tint: #b8912a; }
-.vp-doc .cs-pill-guided { --ms-tint: #4c9a63; }
-.dark .vp-doc .cs-pill-blind { --ms-tint: #d0ad55; }
-.dark .vp-doc .cs-pill-guided { --ms-tint: #7dbb8f; }
+.vp-doc .cs-pill-gray { --ms-tint: #7c8390; }
+.vp-doc .cs-pill-yellow { --ms-tint: #b8912a; }
+.vp-doc .cs-pill-green { --ms-tint: #4c9a63; }
+.vp-doc .cs-pill-red { --ms-tint: #c25b6e; }
+.dark .vp-doc .cs-pill-yellow { --ms-tint: #d0ad55; }
+.dark .vp-doc .cs-pill-green { --ms-tint: #7dbb8f; }
+.dark .vp-doc .cs-pill-red { --ms-tint: #d98a9a; }
 
 /* A spec line under a section heading of a detail table. */
 .vp-doc h2 + p > .ms:only-child,

@@ -18,7 +18,7 @@ if (props.pill && !['mendel-blind', 'mendel-guided', 'failed-smoke'].includes(pr
     <span class="cs-value"><span v-if="note" class="cs-note">{{ note }} / </span>{{ value }}</span>
     <span v-if="pill || sub" class="cs-sub">
       <template v-if="sub">{{ sub }}</template>
-      <span v-if="pill" class="ms-pill cs-pill" :class="`cs-pill-${pill.replace('mendel-', '')}`">{{ pill }}</span>
+      <span v-if="pill" class="ms-pill cs-pill" :class="`cs-pill-${{ 'mendel-blind': 'yellow', 'mendel-guided': 'green', 'failed-smoke': 'gray' }[pill]}`">{{ pill }}</span>
     </span>
   </span>
 </template>
