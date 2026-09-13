@@ -450,8 +450,8 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     tokDeep: topSet(ordered, (r) => num(r.tokDeep)),
     memory: topSet(ordered, (r) => num(r.memory), { lower: true }),
     evalplus: topSet(ordered, (r) => parseScore(r.evalplus) >= 0 ? parseScore(r.evalplus) : NaN),
-    mendel: topSet(ordered, (r) => parseMendel(r.mendel) ?? NaN),
-    composite: topSet(ordered, (r) => composite(r) ?? NaN),
+    mendel: topSet(ordered, (r) => (r.mendel === 'failed-smoke' ? NaN : parseMendel(r.mendel) ?? NaN)),
+    composite: topSet(ordered, (r) => (r.mendel === 'failed-smoke' ? NaN : composite(r) ?? NaN)),
   }
   let anyStale = false
   const cell = (r, field) => {
