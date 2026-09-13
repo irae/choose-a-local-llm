@@ -1,0 +1,78 @@
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               30192.
+Pages active:                            196845.
+Pages inactive:                          204661.
+Pages speculative:                         3321.
+Pages throttled:                              0.
+Pages wired down:                       1551772.
+Pages purgeable:                           1742.
+"Translation faults":                2280814756.
+Pages copy-on-write:                  137431708.
+Pages zero filled:                   1201985515.
+Pages reactivated:                    119931109.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               34410.
+Pages active:                            196274.
+Pages inactive:                          204654.
+Pages speculative:                          647.
+Pages throttled:                              0.
+Pages wired down:                       1550711.
+Pages purgeable:                           1961.
+"Translation faults":                2281081042.
+Pages copy-on-write:                  137438892.
+Pages zero filled:                   1202199730.
+Pages reactivated:                    119931188.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               29050.
+Pages active:                            198359.
+Pages inactive:                          205970.
+Pages speculative:                         2836.
+Pages throttled:                              0.
+Pages wired down:                       1550489.
+Pages purgeable:                           2993.
+"Translation faults":                2281310640.
+Pages copy-on-write:                  137441388.
+Pages zero filled:                   1202402101.
+Pages reactivated:                    119931282.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               28753.
+Pages active:                            189878.
+Pages inactive:                          204160.
+Pages speculative:                          452.
+Pages throttled:                              0.
+Pages wired down:                       1550747.
+Pages purgeable:                           6663.
+"Translation faults":                2286308488.
+Pages copy-on-write:                  137492824.
+Pages zero filled:                   1206162497.
+Pages reactivated:                    120017711.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               29029.
+Pages active:                            199955.
+Pages inactive:                          190915.
+Pages speculative:                         7833.
+Pages throttled:                              0.
+Pages wired down:                       1550272.
+Pages purgeable:                          10267.
+"Translation faults":                2291328250.
+Pages copy-on-write:                  137544939.
+Pages zero filled:                   1210055341.
+Pages reactivated:                    120056868.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               29557.
+Pages active:                            205635.
+Pages inactive:                          201957.
+Pages speculative:                         2856.
+Pages throttled:                              0.
+Pages wired down:                       1542049.
+Pages purgeable:                          11662.
+"Translation faults":                2315079871.
+Pages copy-on-write:                  137587167.
+Pages zero filled:                   1210799254.
+Pages reactivated:                    120063088.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)

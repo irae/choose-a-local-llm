@@ -1,0 +1,157 @@
+/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/server.py:1723: UserWarning: mlx_lm.server is not recommended for production as it only implements basic security checks.
+  warnings.warn(
+2026-09-13 12:59:20,866 - INFO - Starting httpd at 127.0.0.1 on port 8081...
+2026-09-13 12:59:21,026 - INFO - HTTP Request: GET https://huggingface.co/api/models/prism-ml/Ternary-Bonsai-27B-mlx-2bit/revision/main "HTTP/1.1 200 OK"
+Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 173098.26it/s]
+2026-09-13 12:59:38,054 - INFO - Prompt Cache: 0 sequences, 0.00 GB
+2026-09-13 12:59:38,054 - INFO - - assistant: 0 sequences, 0.00 GB
+2026-09-13 12:59:38,054 - INFO - - user: 0 sequences, 0.00 GB
+2026-09-13 12:59:38,054 - INFO - - system: 0 sequences, 0.00 GB
+127.0.0.1 - - [13/Sep/2026 12:59:38] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-13 12:59:51,405 - INFO - Prompt processing progress: 2048/4409
+2026-09-13 13:00:04,794 - INFO - Prompt processing progress: 4096/4409
+2026-09-13 13:00:06,979 - INFO - Prompt processing progress: 4407/4409
+2026-09-13 13:00:07,034 - INFO - Prompt processing progress: 4408/4409
+2026-09-13 13:00:07,083 - INFO - Prompt processing progress: 4409/4409
+2026-09-13 13:00:20,001 - INFO - Prompt Cache: 2 sequences, 0.89 GB
+2026-09-13 13:00:20,001 - INFO - - assistant: 1 sequences, 0.44 GB
+2026-09-13 13:00:20,001 - INFO - - user: 1 sequences, 0.44 GB
+2026-09-13 13:00:20,001 - INFO - - system: 0 sequences, 0.00 GB
+127.0.0.1 - - [13/Sep/2026 13:00:20] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-13 13:00:20,446 - INFO - Prompt processing progress: 28/30
+2026-09-13 13:00:20,499 - INFO - Prompt processing progress: 29/30
+2026-09-13 13:00:20,541 - INFO - Prompt processing progress: 30/30
+2026-09-13 13:00:20,591 - INFO - Prompt Cache: 2 sequences, 0.31 GB
+2026-09-13 13:00:20,591 - INFO - - assistant: 1 sequences, 0.16 GB
+2026-09-13 13:00:20,591 - INFO - - user: 1 sequences, 0.16 GB
+2026-09-13 13:00:20,591 - INFO - - system: 0 sequences, 0.00 GB
+127.0.0.1 - - [13/Sep/2026 13:00:20] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-13 13:00:21,006 - INFO - Prompt processing progress: 28/36
+2026-09-13 13:00:21,263 - INFO - Prompt processing progress: 34/36
+2026-09-13 13:00:21,307 - INFO - Prompt processing progress: 35/36
+2026-09-13 13:00:21,349 - INFO - Prompt processing progress: 36/36
+2026-09-13 13:00:21,399 - INFO - Prompt Cache: 2 sequences, 0.31 GB
+2026-09-13 13:00:21,399 - INFO - - assistant: 0 sequences, 0.00 GB
+2026-09-13 13:00:21,399 - INFO - - user: 1 sequences, 0.16 GB
+2026-09-13 13:00:21,399 - INFO - - system: 1 sequences, 0.16 GB
+127.0.0.1 - - [13/Sep/2026 13:00:21] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-13 13:00:21,808 - INFO - Prompt processing progress: 21/23
+2026-09-13 13:00:21,853 - INFO - Prompt processing progress: 22/23
+2026-09-13 13:00:21,895 - INFO - Prompt processing progress: 23/23
+127.0.0.1 - - [13/Sep/2026 13:00:26] "GET /v1/models HTTP/1.1" 200 -
+127.0.0.1 - - [13/Sep/2026 13:00:26] "GET /v1/models HTTP/1.1" 200 -
+127.0.0.1 - - [13/Sep/2026 13:00:26] "GET /v1/models HTTP/1.1" 200 -
+2026-09-13 13:00:26,078 - INFO - Prompt Cache: 2 sequences, 0.31 GB
+2026-09-13 13:00:26,078 - INFO - - assistant: 0 sequences, 0.00 GB
+2026-09-13 13:00:26,078 - INFO - - user: 1 sequences, 0.16 GB
+2026-09-13 13:00:26,078 - INFO - - system: 1 sequences, 0.16 GB
+127.0.0.1 - - [13/Sep/2026 13:00:26] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-13 13:00:39,425 - INFO - Prompt processing progress: 2048/4609
+2026-09-13 13:00:52,859 - INFO - Prompt processing progress: 4090/4609
+2026-09-13 13:00:56,509 - INFO - Prompt processing progress: 4607/4609
+2026-09-13 13:00:56,558 - INFO - Prompt processing progress: 4608/4609
+2026-09-13 13:00:56,605 - INFO - Prompt processing progress: 4609/4609
+2026-09-13 13:02:08,513 - INFO - Prompt Cache: 2 sequences, 0.88 GB
+2026-09-13 13:02:08,514 - INFO - - assistant: 0 sequences, 0.00 GB
+2026-09-13 13:02:08,514 - INFO - - user: 1 sequences, 0.46 GB
+2026-09-13 13:02:08,514 - INFO - - system: 1 sequences, 0.42 GB
+127.0.0.1 - - [13/Sep/2026 13:02:08] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-13 13:02:21,913 - INFO - Prompt processing progress: 2048/4608
+2026-09-13 13:02:35,379 - INFO - Prompt processing progress: 4089/4608
+2026-09-13 13:02:39,036 - INFO - Prompt processing progress: 4606/4608
+2026-09-13 13:02:39,087 - INFO - Prompt processing progress: 4607/4608
+2026-09-13 13:02:39,133 - INFO - Prompt processing progress: 4608/4608
+2026-09-13 13:03:51,045 - INFO - Prompt Cache: 2 sequences, 0.88 GB
+2026-09-13 13:03:51,046 - INFO - - assistant: 0 sequences, 0.00 GB
+2026-09-13 13:03:51,046 - INFO - - user: 1 sequences, 0.46 GB
+2026-09-13 13:03:51,046 - INFO - - system: 1 sequences, 0.42 GB
+127.0.0.1 - - [13/Sep/2026 13:03:51] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-13 13:04:04,444 - INFO - Prompt processing progress: 2048/4608
+2026-09-13 13:04:17,911 - INFO - Prompt processing progress: 4089/4608
+2026-09-13 13:04:21,570 - INFO - Prompt processing progress: 4606/4608
+2026-09-13 13:04:21,621 - INFO - Prompt processing progress: 4607/4608
+2026-09-13 13:04:21,668 - INFO - Prompt processing progress: 4608/4608
+2026-09-13 13:05:33,315 - INFO - Prompt Cache: 2 sequences, 0.88 GB
+2026-09-13 13:05:33,315 - INFO - - assistant: 0 sequences, 0.00 GB
+2026-09-13 13:05:33,315 - INFO - - user: 1 sequences, 0.46 GB
+2026-09-13 13:05:33,315 - INFO - - system: 1 sequences, 0.42 GB
+127.0.0.1 - - [13/Sep/2026 13:05:33] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-13 13:05:46,714 - INFO - Prompt processing progress: 2048/52735
+2026-09-13 13:06:00,135 - INFO - Prompt processing progress: 4096/52735
+2026-09-13 13:06:13,744 - INFO - Prompt processing progress: 6144/52735
+2026-09-13 13:06:27,543 - INFO - Prompt processing progress: 8192/52735
+2026-09-13 13:06:41,550 - INFO - Prompt processing progress: 10240/52735
+2026-09-13 13:06:55,777 - INFO - Prompt processing progress: 12288/52735
+2026-09-13 13:07:10,215 - INFO - Prompt processing progress: 14336/52735
+2026-09-13 13:07:24,831 - INFO - Prompt processing progress: 16384/52735
+2026-09-13 13:07:39,672 - INFO - Prompt processing progress: 18432/52735
+2026-09-13 13:07:54,715 - INFO - Prompt processing progress: 20480/52735
+2026-09-13 13:08:09,950 - INFO - Prompt processing progress: 22528/52735
+2026-09-13 13:08:25,408 - INFO - Prompt processing progress: 24576/52735
+2026-09-13 13:08:41,098 - INFO - Prompt processing progress: 26624/52735
+2026-09-13 13:08:57,052 - INFO - Prompt processing progress: 28672/52735
+2026-09-13 13:09:13,202 - INFO - Prompt processing progress: 30720/52735
+2026-09-13 13:09:29,719 - INFO - Prompt processing progress: 32768/52735
+2026-09-13 13:09:46,416 - INFO - Prompt processing progress: 34816/52735
+2026-09-13 13:10:03,498 - INFO - Prompt processing progress: 36864/52735
+2026-09-13 13:10:20,763 - INFO - Prompt processing progress: 38912/52735
+2026-09-13 13:10:38,404 - INFO - Prompt processing progress: 40960/52735
+2026-09-13 13:10:56,517 - INFO - Prompt processing progress: 43008/52735
+2026-09-13 13:11:15,211 - INFO - Prompt processing progress: 45056/52735
+2026-09-13 13:11:34,210 - INFO - Prompt processing progress: 47104/52735
+2026-09-13 13:11:53,595 - INFO - Prompt processing progress: 49152/52735
+2026-09-13 13:12:13,441 - INFO - Prompt processing progress: 51200/52735
+2026-09-13 13:12:23,582 - INFO - Prompt processing progress: 52218/52735
+2026-09-13 13:12:28,987 - INFO - Prompt processing progress: 52733/52735
+2026-09-13 13:12:29,179 - INFO - Prompt processing progress: 52734/52735
+2026-09-13 13:12:29,363 - INFO - Prompt processing progress: 52735/52735
+2026-09-13 13:13:44,518 - INFO - Prompt Cache: 2 sequences, 7.19 GB
+2026-09-13 13:13:44,518 - INFO - - assistant: 0 sequences, 0.00 GB
+2026-09-13 13:13:44,518 - INFO - - user: 1 sequences, 3.61 GB
+2026-09-13 13:13:44,518 - INFO - - system: 1 sequences, 3.58 GB
+127.0.0.1 - - [13/Sep/2026 13:13:49] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-13 13:14:02,889 - INFO - Prompt processing progress: 2048/52736
+2026-09-13 13:14:16,328 - INFO - Prompt processing progress: 4096/52736
+2026-09-13 13:14:29,949 - INFO - Prompt processing progress: 6144/52736
+2026-09-13 13:14:43,750 - INFO - Prompt processing progress: 8192/52736
+2026-09-13 13:14:57,805 - INFO - Prompt processing progress: 10240/52736
+2026-09-13 13:15:12,017 - INFO - Prompt processing progress: 12288/52736
+2026-09-13 13:15:26,443 - INFO - Prompt processing progress: 14336/52736
+2026-09-13 13:15:41,051 - INFO - Prompt processing progress: 16384/52736
+2026-09-13 13:15:55,876 - INFO - Prompt processing progress: 18432/52736
+2026-09-13 13:16:10,911 - INFO - Prompt processing progress: 20480/52736
+2026-09-13 13:16:26,141 - INFO - Prompt processing progress: 22528/52736
+2026-09-13 13:16:41,588 - INFO - Prompt processing progress: 24576/52736
+2026-09-13 13:16:57,260 - INFO - Prompt processing progress: 26624/52736
+2026-09-13 13:17:13,176 - INFO - Prompt processing progress: 28672/52736
+2026-09-13 13:17:29,332 - INFO - Prompt processing progress: 30720/52736
+2026-09-13 13:17:45,953 - INFO - Prompt processing progress: 32768/52736
+2026-09-13 13:18:02,639 - INFO - Prompt processing progress: 34816/52736
+2026-09-13 13:18:19,709 - INFO - Prompt processing progress: 36864/52736
+2026-09-13 13:18:37,003 - INFO - Prompt processing progress: 38912/52736
+2026-09-13 13:18:54,617 - INFO - Prompt processing progress: 40960/52736
+2026-09-13 13:19:12,682 - INFO - Prompt processing progress: 43008/52736
+2026-09-13 13:19:31,374 - INFO - Prompt processing progress: 45056/52736
+2026-09-13 13:19:50,331 - INFO - Prompt processing progress: 47104/52736
+2026-09-13 13:20:09,960 - INFO - Prompt processing progress: 49152/52736
+Exception in thread Thread-1 (_generate):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/server.py", line 853, in _generate
+    prompt_responses, gen_responses = batch_generator.next()
+                                      ~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/generate.py", line 1855, in next
+    return self._next()
+           ~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/generate.py", line 1841, in _next
+    self._prompt_batch.prompt(prompts)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/generate.py", line 1161, in prompt
+    mx.eval([c.state for c in self.prompt_cache])
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [METAL] Command buffer execution failed: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory).

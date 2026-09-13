@@ -8,3 +8,356 @@ percent, acceptance, swap, and the tokenizer. A simulator(mendel) row
 states its score, libraries done, worst defect, wall clock, peak
 context, compaction count, and the sampling read from `meta.json`.
 A table carries no pick.
+
+## `benchy-qwen38-atomicchat-drafter`
+
+`AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, rev `ca10ebc`, `--no-mmproj`,
+f16 KV, drafter `--spec-type draft-mtp --spec-draft-n-max 3`,
+`--parallel 1`, `-c 106496`, wired 25000. `llama-benchy` 0.4.0,
+tokenizer `Qwen/Qwen3.8-27B`, code corpus (`corpus-mendel-js.txt`),
+pp 512, tg 256, 2 runs after warmup.
+
+| depth | benchy tok/s | sd | site tok/s | diff | acceptance (warmup) | acceptance (runs) | swap MB |
+|--:|--:|--:|--:|--:|--:|--:|--:|
+| 4096 | 8.10 | 0.05 | 15.8 | -48.7% | 42.0% | 35.6%, 34.9% | 447.62, no growth |
+| 98304 | 7.43 | 0.34 | 10.3 | -27.9% | 60.1% | 69.4%, 60.3% | 447.62, no growth |
+
+Files: `results/benchy-qwen38-atomicchat-drafter.md`,
+`results/server-benchy-qwen38-atomicchat-drafter.log`,
+`results/benchy-qwen38-atomicchat-drafter-vm.log`.
+Wired stayed near 24900-25000 MB across the block. No swap growth.
+
+## `benchy-gemma26-drafter`
+
+`unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, `--no-mmproj`, f16 KV,
+drafter `--spec-type draft-mtp --spec-draft-n-max 2`, `--parallel 1`,
+`-c 212992`, wired 25000. `llama-benchy` 0.4.0, tokenizer
+`google/gemma-4-26b-a4b-it`, code corpus (`corpus-mendel-js.txt`),
+pp 512, tg 256, 2 runs after warmup.
+
+| depth | benchy tok/s | sd | site tok/s | diff | acceptance (warmup) | acceptance (runs) | swap MB |
+|--:|--:|--:|--:|--:|--:|--:|--:|
+| 4096 | 60.13 | 1.81 | 60.3 | -0.3% | 74.1% | 65.2%, 74.5% | 447.62, no growth |
+| 98304 | 28.19 | 0.54 | no site cell | — | 70.6% | 83.7%, 73.5% | 447.62, no growth |
+| 196608 | 19.06 | 0.67 | 17.3 (at 197K) | +10.2% | 67.0% | 96.0%, 86.1% | 447.62, no growth |
+
+Run 15, same files, no drafter, projector loaded: 53.1 at 4K, 19.2 at
+204K. Files: `results/benchy-gemma26-drafter.md`,
+`results/server-benchy-gemma26-drafter.log`,
+`results/benchy-gemma26-drafter-vm.log`.
+Deviation: `vm_stat` wired pages read about 26280 MB at the 196608
+cell, above the 25000 wired-limit target. Swap held flat at 447.62 MB
+with no growth across all three depths; the 197K cell sits well above
+the 8 tok/s floor on real text.
+
+## `sweep-qwen36-mlx`
+
+`mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx_lm.server`,
+`--prompt-cache-size 2`, no drafter, wired 25000. `llama-benchy`
+0.4.0, tokenizer `Qwen/Qwen3.6-35B-A3B`, code corpus, pp 512, tg 256,
+2 runs after warmup. Depths: 4096, 39936.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 54.48 | 0.00 | 55.1 | -1.1% | no growth |
+| 39936 | dead cell | — | 37.4 | — | — |
+| 35840 (retry-sweep, 2026-09-13) | 39.11 | 0.13 | 37.4 | +4.6% | 423.62, no growth |
+
+The deep cell died on `RuntimeError: [METAL] Command buffer execution
+failed: Insufficient Memory (kIOGPUCommandBufferCallbackErrorOutOfMemory)`
+in the generation thread, both run 1 and run 2, at prompt fill
+32768/40449. The `/v1/chat/completions` endpoint kept answering
+(server process alive) while the generation thread was dead, matching
+the known signature. **A dead deep cell is recorded as such, and the
+block is done.**
+Finding: this server's real ceiling sits under 39936 (not 40982 as
+last measured on 2026-09-06). Coordinator gate (2026-09-12): the dead
+prompt was 40449 tokens, above the 36864 planning window, so it does
+not move `qwen36_mlx_window`; that value stays 36864 for the smoke. A
+death at 36864 itself, not this cell, would step the window down to
+28672.
+Files: `results/benchy-sweep-qwen36-mlx-nmax0.md`,
+`results/server-sweep-qwen36-mlx.log`.
+
+## `sweep-gemma26-mlx`
+
+`mlx-community/gemma-4-26b-a4b-it-4bit`, rev `0d77464`,
+`mlx_lm.server`, `--prompt-cache-size 2`, no drafter, wired 25000.
+`llama-benchy` 0.4.0, tokenizer `google/gemma-4-26b-a4b-it`, code
+corpus, pp 512, tg 256, 2 runs after warmup. Depths: 4096, 65536.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 49.33 | 0.15 | 51 | -3.3% | 439.62, no growth |
+| 65536 | 23.43 | 0.19 | 12.8 | +83.0% | 439.62, no growth |
+
+Both cells completed, no dead cell. The deep cell sits well above the
+8 tok/s floor and well above the site's own number.
+Files: `results/benchy-sweep-gemma26-mlx-nmax0.md`,
+`results/server-sweep-gemma26-mlx.log`.
+
+## `qwen36-mlx-smoke-on`
+
+`mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx_lm.server`,
+`--prompt-cache-size 2`, thinking on, wired 25000, window 36864 (the
+5-percent-under-ceiling planning value; the coordinator confirmed the
+`sweep-qwen36-mlx` dead cell does not move it, since that prompt was
+above this window).
+
+`SMOKE-MENDEL model=mlx-community/Qwen3.6-35B-A3B-4bit level=on
+task=xtend window=36864 calls=10 distinct=7 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=3723 commits=1 clean=yes end=stop wall_s=28
+verdict=pass`
+
+**Pass.** One commit, clean tree, no repetition loop, 28 s inside the
+1500 s cap. `qwen36-mlx-mendel-blind-on` runs next.
+Files: `results/mendel-smoke-qwen36-mlx-on.log`,
+`results/server-qwen36-mlx.log`.
+
+## `qwen36-mlx-mendel-blind-on`
+
+`mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx_lm.server`,
+`--prompt-cache-size 2`, thinking on, wired 25000, window 36864, keep
+budget 8192. Started 22:28:54Z, ended 22:41:13Z. `worker.json`: loop
+ok (ratio 0.62, tool call), one tooling nudge (a transient stream
+error, recovered), no compaction, `end_reason` complete.
+
+Handed to a subagent for scoring and publishing per the run's rule
+(one subagent, one pass: score, `results.json`, `results.csv`,
+`report.html`, commit and push to `mendel-benchmark` on branch
+`benchmark`). See the handing-over section for its report.
+
+## `gemma26-mlx-smoke-high`
+
+`mlx-community/gemma-4-26b-a4b-it-4bit`, rev `0d77464`,
+`mlx_lm.server`, `--prompt-cache-size 2`, thinking high, wired 25000,
+window 65536.
+
+`SMOKE-MENDEL model=mlx-community/gemma-4-26b-a4b-it-4bit level=high
+task=xtend window=65536 calls=6 distinct=6 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=3521 commits=0 clean=no end=toolUse
+wall_s=32 verdict=fail`
+
+**Fail.** Zero commits, tree not clean, ended on `toolUse` rather than
+`stop`. The server log shows no OOM and no death signature: it logs
+`WARNING - Failed to parse tool call (JSONDecodeError...) — tool text
+was likely truncated mid-generation` right where the run ends. This is
+a fail of the model/harness tool-call shape at this config, not a
+server death. Per the run's rule, `gemma26-mlx-mendel-blind-high` does
+not run.
+Files: `results/mendel-smoke-gemma26-mlx-high.log`,
+`results/server-gemma26-mlx.log`.
+
+## `arms-qwen38-atomicchat`
+
+`AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S`, rev `ca10ebc`, `--no-mmproj`,
+f16 KV, `--parallel 1`, `-c 106496`, wired 25000. Climb per "The sweep
+rule". Depths: 4096, 98304.
+
+| arm | depth | benchy tok/s | sd | site tok/s | diff | acceptance | swap MB |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| no drafter | 4096 | 14.29 | 0.01 | 15.8 | -9.6% | — | 439.62, no growth |
+| no drafter | 98304 | 9.62 | 0.00 | 10.3 | -6.9% | — | 439.62, no growth |
+| n-max 1 | 4096 | 12.16 | 0.63 | 15.8 | -23.0% | 56-80% | 439.62, no growth |
+| n-max 1 | 98304 | 8.83 | 0.02 | 10.3 | -14.3% | 76-83% | 439.62, no growth |
+| n-max 3 (from `benchy-qwen38-atomicchat-drafter`) | 4096 | 8.10 | 0.05 | 15.8 | -48.7% | 35-42% | no growth |
+| n-max 3 (from `benchy-qwen38-atomicchat-drafter`) | 98304 | 7.43 | 0.34 | 10.3 | -27.9% | 60-69% | no growth |
+
+**Climb stopped at n-max 1**: it reads slower than no drafter at both
+depths (12.16 vs 14.29 at 4K, 8.83 vs 9.62 at 98K). N-max 2 is not
+read. No drafter is the fastest arm at both depths; the served n-max 3
+is the slowest. **A table and no pick**; the coordinator names the
+served arm.
+Files: `results/benchy-arms-qwen38-atomicchat-nmax0.md`,
+`results/benchy-arms-qwen38-atomicchat-nmax1.md`,
+`results/server-arms-qwen38-atomicchat-nmax0.log`,
+`results/server-arms-qwen38-atomicchat-nmax1.log`.
+
+## `arms-gemma26`
+
+`unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, `--no-mmproj`, f16 KV,
+`--parallel 1`, `-c 212992`, wired 25000. Climb per "The sweep rule".
+Depths: 4096, 98304, 196608.
+
+| arm | depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|---|--:|--:|--:|--:|--:|--:|
+| no drafter | 4096 | 54.24 | 0.04 | 60.3 | -10.1% | 439.62, no growth |
+| no drafter | 98304 | 28.66 | 0.18 | no site cell | — | 439.62, no growth |
+| no drafter | 196608 | 19.15 | 0.01 | 17.3 (at 197K) | +10.7% | 439.62, no growth |
+| n-max 1 | 4096 | 58.24 | 1.48 | 60.3 | -3.4% | 439.62, no growth |
+| n-max 1 | 98304 | 27.49 | 0.11 | no site cell | — | 431.62, no growth |
+| n-max 1 | 196608 | 16.43 | 0.16 | 17.3 (at 197K) | -5.0% | 431.62, no growth |
+| n-max 2 (from `benchy-gemma26-drafter`, served) | 4096 | 60.13 | 1.81 | 60.3 | -0.3% | no growth |
+| n-max 2 (from `benchy-gemma26-drafter`, served) | 98304 | 28.19 | 0.54 | no site cell | — | no growth |
+| n-max 2 (from `benchy-gemma26-drafter`, served) | 196608 | 19.06 | 0.67 | 17.3 (at 197K) | +10.2% | no growth |
+
+| n-max 3 | 4096 | 50.75 | 0.25 | 60.3 | -15.8% | 431.62, no growth |
+| n-max 3 | 98304 | 25.67 | 1.53 | no site cell | — | 431.62, no growth |
+| n-max 3 | 196608 | 22.31 | 5.15 | 17.3 (at 197K) | +29.0% | 431.62, no growth |
+
+**Climb history**: n-max 1 against no drafter was mixed, so the
+corrected sweep rule (2026-09-12) took one more arm, n-max 2, and
+tested it the same way. N-max 2 against n-max 1 was faster at every
+depth, so the climb went on to n-max 3. N-max 3 against n-max 2 is
+mixed again (slower at 4K and 98K, faster and noisy at 197K, sd 5.15),
+not faster at every depth, so **the climb stops at n-max 3**; n-max 4
+is not read (also ruled out above n-max 3 except for Gemma-12B). Best
+tok/s at 4K and 98K is n-max 2; at 197K it is n-max 3, but its sd is
+wide. **A table and no pick**; the coordinator names the served arm.
+Files: `results/benchy-arms-gemma26-nmax0.md`,
+`results/benchy-arms-gemma26-nmax1.md`,
+`results/benchy-arms-gemma26-nmax3.md`,
+`results/server-arms-gemma26-nmax0.log`,
+`results/server-arms-gemma26-nmax1.log`,
+`results/server-arms-gemma26-nmax3.log`.
+
+## `sweep-qwen38-ista-nodrafter`
+
+`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, rev `d562806`,
+`--no-mmproj`, f16 KV, `--parallel 1`, `-c 163840`, wired 25000. One
+arm, no drafter. Tokenizer `Qwen/Qwen3.8-27B`, code corpus. Depths:
+4096, 146432.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 14.07 | 0.00 | 14.1 | -0.2% | 431.62, no growth |
+| 146432 | 8.11 | 0.01 | 8.3 | -2.3% | 431.62, no growth |
+
+Research run 4 read this arm at 13.94 (4K) and 9.47 (98K), a shallower
+depth. Both cells here sit close to the site and above the 8 tok/s
+floor.
+Files: `results/benchy-sweep-qwen38-ista-nodrafter.md`,
+`results/server-sweep-qwen38-ista-nodrafter.log`.
+
+## `sweep-gemma12-f16`
+
+`unsloth/gemma-4-12b-it-GGUF:Q4_K_XL`, `--no-mmproj`, f16 KV,
+`--parallel 1`, `-c 262144`, wired 25000. One arm, no drafter.
+Tokenizer `google/gemma-4-12b-it`, code corpus. Depths: 4096, 245760.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 24.95 | 0.01 | 24.64 | +1.3% | 431.62, no growth |
+| 245760 | 9.22 | 0.04 | 8.86 | +4.1% | 431.62, no growth |
+
+Both cells in line with the site, above the 8 tok/s floor at the
+deepest depth, no swap growth.
+Files: `results/benchy-sweep-gemma12-f16.md`,
+`results/server-sweep-gemma12-f16.log`.
+
+## `sweep-bonsai-mlx`
+
+`prism-ml/Ternary-Bonsai-27B-mlx-2bit`, `mlx_lm.server`,
+`--prompt-cache-size 2`, no drafter, wired 25000. Tokenizer
+`prism-ml/Ternary-Bonsai-27B-mlx-2bit`, code corpus. Depths: 4096,
+56320. Site: 24.5, 17.3.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | not recorded (see deviation) | — | 24.5 | — | 431.62, no growth |
+| 56320 | dead cell | — | 17.3 | — | — |
+
+**Dead deep cell**, same signature as `sweep-qwen36-mlx`: the
+generation thread died on `RuntimeError: [METAL] Command buffer
+execution failed: Insufficient Memory
+(kIOGPUCommandBufferCallbackErrorOutOfMemory)` at prompt fill
+47104/56831, inside the depth-56320 test's second run. The server
+process stayed alive with 0% CPU for over an hour; the HTTP endpoint
+never answered again. This session's `Monitor` (armed on process
+exit) could not detect it, since the process never exits on this
+failure mode; a 20-minute `ScheduleWakeup` heartbeat caught it by
+checking for log growth and process CPU, well after the death.
+Deviation: `llama-benchy` writes its result file once, at the end of
+every depth, so the 4096 cell's number is lost too, even though the
+`vm_stat` log shows 5 completed requests (three at depth 4096, two at
+depth 56320) before the fatal one. Finding for the run: a benchy block
+on `mlx_lm.server` should be watched by a liveness heartbeat, not only
+a process-exit monitor, or a depth close to a known-fragile ceiling
+should get `--save-result` per depth if the tool supports it.
+Files: `results/server-sweep-bonsai-mlx.log`,
+`results/benchy-sweep-bonsai-mlx-vm.log`.
+
+## `sweep-bonsai-mlx` retry (`retry-sweep`, 2026-09-13)
+
+Same server and command as `sweep-bonsai-mlx`. Depths: 4096, 52224
+(1024 under the 53248 window, per the coordinator's gate). This time
+a live watch on the server log (grep for the Metal OOM signature)
+caught the death within seconds, not an hour.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | not recorded (see deviation) | — | 24.5 | — | — |
+| 52224 | dead cell | — | 17.3 | — | — |
+
+**Dead deep cell again**, same signature, this time at prompt fill
+49152/52736, inside the depth-52224 test's first run (not even the
+second run this time). Finding: this server's real ceiling on this
+machine sits under 49152, well under both the 53248 window and the
+56320 tried in the first attempt. The 4096 cell's number is lost
+again, for the same reason (`--save-result` writes once, at the end).
+Two attempts, two dead cells at different depths (56320 and 52224,
+both above roughly 47-49K) point to a ceiling near 47K-49K for this
+build at this wired limit, well under the window the site derives
+from the last committed sweep (2026-09-06). This is a finding for the
+coordinator to weigh when it revisits `gemma26_mlx_window`'s sibling
+value for this model.
+Files: `results/server-sweep-bonsai-mlx-retry.log`,
+`results/benchy-retry-bonsai-mlx-vm.log`.
+
+## `sweep-qwen38-mlx`
+
+`mlx-community/Qwen3.8-27B-4bit`, `mlx_lm.server`,
+`--prompt-cache-size 2`, no drafter, wired 25000. Tokenizer
+`Qwen/Qwen3.8-27B`, code corpus. Depths: 4096, 24576.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 17.33 | 0.00 | 17 | +1.9% | 431.62, no growth |
+| 24576 | 14.82 | 0.01 | 15.3 | -3.1% | 431.62, no growth |
+
+Both cells completed, no dead cell, no swap growth.
+Files: `results/benchy-sweep-qwen38-mlx.md`,
+`results/server-sweep-qwen38-mlx.log`.
+
+## `sweep-qwen38-bartowski`
+
+`bartowski/Qwen3.8-27B-GGUF:Q4_K_M`, rev `f0eec4a`, `--no-mmproj`,
+f16 KV, `--parallel 1`, `-c 73728`, wired 25000. Climb per "The sweep
+rule". Depths: 4096, 65536.
+
+| arm | depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|---|--:|--:|--:|--:|--:|--:|
+| no drafter | 4096 | 12.35 | 0.00 | 11.8 (n-max 3) | +4.7% | 431.62, no growth |
+| no drafter | 65536 | 9.72 | 0.04 | 8.6 (n-max 3, at 65.5K) | +13.0% | 431.62, no growth |
+
+No drafter is already faster than the served n-max 3 at both depths.
+
+| n-max 1 | 4096 | 10.70 | 0.33 | 11.8 (n-max 3) | -9.3% | 423.62, no growth |
+| n-max 1 | 65536 | 8.26 | 0.04 | 8.6 (n-max 3, at 65.5K) | -4.0% | 423.62, no growth |
+
+**Climb stopped at n-max 1**: slower than no drafter at both depths.
+N-max 2 is not read. No drafter is the fastest arm at both depths.
+**A table and no pick**; the coordinator names the served arm.
+Files: `results/benchy-sweep-qwen38-bartowski-nmax0.md`,
+`results/benchy-sweep-qwen38-bartowski-nmax1.md`,
+`results/server-sweep-qwen38-bartowski-nmax0.log`,
+`results/server-sweep-qwen38-bartowski-nmax1.log`.
+
+## `sweep-bonsai-fork-single`
+
+PrismML llama.cpp fork, `prism-ml/Ternary-Bonsai-27B-gguf` rev
+`abbae72`, q4_0 KV with the bias file
+`~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf`
+(sha256 `f61d1350643a0f1656f1312dc337758bd80c456c44390e82b071982f4da4ded9`),
+`-c 65536`, `--parallel 1`, alias `bonsai-prism`, wired 25000.
+Tokenizer `prism-ml/Ternary-Bonsai-27B-mlx-2bit`, code corpus. Depths:
+4096, 32768.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 14.68 | 0.00 | 14.8 | -0.8% | 423.62, no growth |
+| 32768 | 7.81 | 0.00 | 7.9 (speed gated) | -1.1% | 423.62, no growth |
+
+Both cells close to the site, no dead cell, no swap growth.
+Files: `results/benchy-sweep-bonsai-fork-single.md`,
+`results/server-sweep-bonsai-fork-single.log`.
