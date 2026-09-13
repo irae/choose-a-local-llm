@@ -8,6 +8,7 @@ split by task — read the page for the task you are about to do:
 | Start ANY benchmark or sweep | [The bench run checklist](./methodology/checklist.md) |
 | Write or run any measurement script | [Common rules](./methodology/common-rules.md) |
 | Measure a new model at all | [KV cache pick](./methodology/kv-cache-pick.md) |
+| Carry a score across runtimes or quants | [Quantization](./methodology/quantization.md) |
 | Run a depth / context-creep sweep | [Context creep](./methodology/context-creep.md) |
 | Probe a memory ceiling | [Memory ceiling](./methodology/memory-ceiling.md) |
 | Set or re-find the macOS wired limit | [Wired limit](./methodology/wired-limit.md) |
@@ -41,7 +42,9 @@ EvalPlus gates every config; Mendel ranks the survivors.
   runtimes' standard quants do not count either — score each model once
   per thinking mode and share that score across runtimes. Aggressive or
   calibrated quants (for example a vendor-calibrated q4 KV) are not narrow;
-  each passes the gate separately.
+  each passes the gate separately. What the two
+  quant families do, and how much of a runtime gap is the weights:
+  [quantization](./methodology/quantization.md).
 
 ## The flow, per model, with gates
 

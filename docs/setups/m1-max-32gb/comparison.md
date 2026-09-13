@@ -30,6 +30,13 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
   runs 2×48K slots at 9.8 tok/s each in 10.0 GB, the only setup that
   leaves the machine free, and at f16 KV the fork has no speed floor
   to 131K.
+- **A plain MLX 4-bit build can score below a calibrated GGUF build of
+  the same model, and never above it.** Gemma-4-26B-A4B lost 0.171 base
+  on EvalPlus and Gemma-4-12B lost 0.067, while Qwen3.8-27B lost
+  nothing. MLX rounds every group to the same 4-bit grid with no
+  calibration; a GGUF k-quant mixes the bit width per tensor and takes
+  an importance matrix. The order holds, the size of the gap does not:
+  [quantization](../../methodology/quantization.md).
 - **The rule that decides everything:** MLX runtimes barely slow down but
   hit hard memory ceilings. llama runtimes hold their speed deeper at f16
   KV, and their ceiling is the largest `-c` that loads; a published `-c`
