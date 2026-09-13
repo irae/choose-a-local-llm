@@ -100,6 +100,18 @@ stay skipped in `retry-sweep` until the owner answers.
 `sweep-bonsai-fork-f16` needs no bias file (no `--kv-mean-center` in
 its command), so it runs in their place in the order.
 
+**Resolved.** The bias file is not lost: bench 11 (2026-09-06)
+regenerated it with the vendor's `make_kv_bias.sh` and its own
+corpus, at the persistent path `~/.local/share/choose-a-local-llm/
+Ternary-Bonsai-27B-kv-bias.gguf` (nothing of a run goes under `/tmp`,
+owner rule). The `/tmp` path in the runbook and the site command is
+stale. Confirmed: 65K, modified 2026-09-06 23:32, sha256
+`f61d1350643a0f1656f1312dc337758bd80c456c44390e82b071982f4da4ded9`.
+Both q4_0 prism blocks (`sweep-bonsai-fork-single`,
+`sweep-bonsai-fork-2slot`) run with `--kv-mean-center` pointing at
+this path, everything else unchanged, out of `retry-sweep` and back
+in the order, right after the block in progress.
+
 ## `qwen36-mlx-mendel-blind-on-retry` — blocked, skipped
 
 The scored row's worktree was moved aside (not deleted) to
