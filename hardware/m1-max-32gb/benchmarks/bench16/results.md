@@ -227,3 +227,19 @@ depth. Both cells here sit close to the site and above the 8 tok/s
 floor.
 Files: `results/benchy-sweep-qwen38-ista-nodrafter.md`,
 `results/server-sweep-qwen38-ista-nodrafter.log`.
+
+## `sweep-gemma12-f16`
+
+`unsloth/gemma-4-12b-it-GGUF:Q4_K_XL`, `--no-mmproj`, f16 KV,
+`--parallel 1`, `-c 262144`, wired 25000. One arm, no drafter.
+Tokenizer `google/gemma-4-12b-it`, code corpus. Depths: 4096, 245760.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 24.95 | 0.01 | 24.64 | +1.3% | 431.62, no growth |
+| 245760 | 9.22 | 0.04 | 8.86 | +4.1% | 431.62, no growth |
+
+Both cells in line with the site, above the 8 tok/s floor at the
+deepest depth, no swap growth.
+Files: `results/benchy-sweep-gemma12-f16.md`,
+`results/server-sweep-gemma12-f16.log`.
