@@ -90,7 +90,8 @@ apply on top of them.
   drafter through n-max 1, 2, 3. Stop the climb as soon as an arm
   reads slower than the one before it at every depth; when it is
   slower at one depth and faster at another, take one more arm and
-  stop. The row's served n-max is always read. A full table of every
+  apply the same test to it: faster at every depth and the climb goes
+  on, otherwise stop. The row's served n-max is always read. A full table of every
   step at every depth costs a machine day and decides nothing the
   short climb does not.
 
