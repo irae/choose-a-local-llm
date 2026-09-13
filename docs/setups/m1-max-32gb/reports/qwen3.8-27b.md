@@ -207,7 +207,10 @@ MLX build holds 26K at the same speed, and every run on it was partial
 or invalid, two of them Metal OOM crashes when the context grew past
 the 26,624-token window. A 26K window cannot hold a task that needs
 46K, at any effort level, so no further agent run is planned on the
-MLX build; it stays a single-turn option in 22 GB.
+MLX build; it stays a single-turn option in 22 GB. The weights are
+not the problem here: the MLX build scores level with the GGUF builds
+on EvalPlus, so its agent record is the window and the Metal ceiling
+([quantization](../../../methodology/quantization.md)).
 
 **Three bits look free on this hardware, on one comparison.** At
 effort medium the ISTA 3-bit build scored 76.5 against the 4-bit

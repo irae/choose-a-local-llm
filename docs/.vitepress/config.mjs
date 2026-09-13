@@ -31,6 +31,7 @@ export default defineConfig({
           { text: 'Bench run checklist', link: '/methodology/checklist' },
           { text: 'Common rules', link: '/methodology/common-rules' },
           { text: 'KV cache pick', link: '/methodology/kv-cache-pick' },
+          { text: 'Quantization', link: '/methodology/quantization' },
           { text: 'Context creep', link: '/methodology/context-creep' },
           { text: 'Memory ceiling', link: '/methodology/memory-ceiling' },
           { text: 'Wired limit', link: '/methodology/wired-limit' },
