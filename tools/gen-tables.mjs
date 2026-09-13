@@ -279,6 +279,16 @@ function mendelWindow(r) {
   return est ? ladder.reduce((a, b) => (Math.abs(b - est) < Math.abs(a - est) ? b : a)) : 0
 }
 
+// The site row a run belongs to, by the same key the Coding cell uses,
+// for the row's served window and its real-text speeds.
+let mendelSiteRows = []
+function siteRowFor(run) {
+  const key = mendelKey(mendelSpec(run), runSlots(run))
+  return mendelSiteRows.find(
+    (row) => row.spec && !row.retired && mendelKey({ ...row.spec, drafter: row.mendelDrafter ?? row.spec.drafter }, rowSlots(row)) === key,
+  )
+}
+
 const mendelCapped = (r) => Math.min(Number(r.score_total), (100 * r.libraries_done) / 8)
 const mendelWall = (r) => (r.telemetry.wall_clock_min == null ? NaN : Number(r.telemetry.wall_clock_min))
 const mendelCtxUse = (r) => (Number(r.telemetry.compactions) || 0) * 100 + (Math.round(Number(r.telemetry.window_pct)) || 0)
@@ -292,6 +302,11 @@ function mendelRow(r, { test = '', top = {} } = {}) {
   const score = scoreTag(cap, '', top.score?.has(r), '', done < 8 ? `${Math.round((100 * done) / 8)}%` : '')
   const wall = t.wall_clock_min == null ? '—' : bold(`${Math.round(Number(t.wall_clock_min))} min`, top.wall)
   const window = mendelWindow(r)
+  const site = siteRowFor(r)
+  const windowStale = site?.pi?.contextWindow > window
+  const windowCell = window ? `${bold(`${Math.round(window / 1024)}k`, top.window)}${windowStale ? '†' : ''}` : '—'
+  const speed = site ? `<TokCell shallow="${site.tokShallow}" deep="${site.tokDeep}" />` : ''
+  const ctxSpeed = speed ? `<span class="ctxuse">${windowCell}<br>${speed}</span>` : windowCell
   const comp = Number(t.compactions) || 0
   const use = bold(`${mendelCtxUse(r)}%`, top.ctx)
   const ctx = comp
@@ -320,7 +335,7 @@ function mendelRow(r, { test = '', top = {} } = {}) {
     ...(test ? [pill(`mendel-${test}`, test === 'blind' ? 'yellow' : 'green')] : []),
     score,
     wall,
-    window ? bold(`${Math.round(window / 1024)}k`, top.window) : '—',
+    ctxSpeed,
     k(t.tokens_out),
     ctx,
     bugsCell,
@@ -349,7 +364,7 @@ function twoLines(pills) {
 
 function mendelTable(rows, { test = false } = {}) {
   const header = [
-    `| Model / Config |${test ? ' Test |' : ''} Score | Wall | Max ctx | Tokens | Ctx use | Bugs | Stats |`,
+    `| Model / Config |${test ? ' Test |' : ''} Score | Wall | Ctx / speed | Tokens | Ctx use | Bugs | Stats |`,
     `|---|${test ? '---|' : ''}--:|--:|--:|--:|--:|---|---|`,
   ]
   const capped = (r) => Math.min(Number(r.score_total), (100 * r.libraries_done) / 8)
@@ -788,6 +803,7 @@ for (const dataFile of dataFiles) {
   deriveMendel(data.rows, mendelBlind, mendelGuided)
   const blindRuns = mendelRuns('benchmarks/mendel/results.json')
   const guidedRuns = mendelRuns('benchmarks/mendel/results-guided.json')
+  mendelSiteRows = data.rows
   // An abandoned row keeps its numbers on the model page only: the comparison
   // and the home table answer "what should I run", and it is not a candidate.
   const visible = data.rows.filter((r) => !r.hidden && !r.retired && !r.abandoned)
