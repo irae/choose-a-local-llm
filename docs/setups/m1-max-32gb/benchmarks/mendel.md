@@ -1,38 +1,16 @@
 # Mendel — M1 Max 32 GB
 
-The agentic tier of the quality flow, after EvalPlus: one real repo
-task with known traps, scored on a 100-point
-rubric — from the open-source
-[Mendel](https://github.com/irae/mendel/tree/benchmark) project, where
-the task, the rubric, and the raw results live. Method and house rules:
-[Mendel in the methodology](../../../methodology/mendel).
-
-Mendel is two tests on the same task. The **blind** test gives a terse
-prompt and asks whether the model finds the traps by itself. The
-**guided** test hands every model the same structured plan with the
-traps disclosed, and measures instruction-following. Strong API models
-run blind only; local and weak models run both, so each pair shows the
-lift. Scores never compare across the two tests.
-
-The full reports are hosted here, generated from the Mendel data:
-
-- <a href="../../../mendel/report.html" target="_blank" rel="noreferrer">Blind report</a> — scoreboard, criteria
-  matrix, cost tables, defect ledger.
-- <a href="../../../mendel/report-guided.html" target="_blank" rel="noreferrer">Guided report</a> — same format,
-  guided runs only.
-
-The tables below are drawn from the mirrored result files in
-`benchmarks/mendel/` (`npm run docs:tables`). The two main tables
-show only the current prompt version of each test (blind v1.1, guided
-v3.0); valid rows from older prompt versions sit in the stale table at
-the end of the page, and the hosted reports keep one scoreboard per
-version. The legend under the blind table explains every column.
-
-One Qwen3.6-35B-A3B score below, the guided 83 at thinking high, is
-pending a re-run at low priority: it ran on a 120K harness window, and
-at wired limit 25000 the model serves `-c 98304`. The score stays as a
-record of what the model did; the other Qwen3.6 rows ran on windows
-the machine serves today.
+One real repository task with known traps, scored on a 100-point
+rubric by the open-source
+[Mendel](https://github.com/irae/mendel/tree/benchmark) project;
+method and house rules in
+[the methodology](../../../methodology/mendel). The **blind** test
+gives a terse prompt and asks whether the model finds the traps by
+itself; the **guided** test hands every model the same plan with the
+traps disclosed. Scores never compare across the two tests. The
+tables show the current prompt of each test; older rows sit in the
+stale table at the end, and the legend under the blind table
+explains every column.
 
 ## Local models — blind test
 
@@ -190,3 +168,18 @@ keep one scoreboard per version.
 | [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" />](../reports/qwen3.8-27b.md) | <span class="ms-pill cs-pill cs-pill-yellow">mendel-blind</span> | <ScoreCell value="37.5" note="38%" /> | 254 min | <span class="ctxuse">26k<br><TokCell shallow="17.3" deep="14.8" top-deep /></span> | 22k | 90% | <span class="pills"><span class="ms-pill cs-pill cs-pill-yellow">1 medium</span></span><br><span class="pills"><span class="ms-pill cs-pill cs-pill-gray">2 minor</span></span> | <span class="pills"><span class="ms-pill cs-pill cs-pill-gray">calls 135/12</span></span><br><span class="pills"><span class="ms-pill cs-pill cs-pill-gray">commits 6</span> <span class="ms-pill cs-pill cs-pill-gray">turns 120</span> <span class="ms-pill cs-pill cs-pill-gray">trimmed 31%</span></span> |
 | [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" />](../reports/bonsai-27b.md) | <span class="ms-pill cs-pill cs-pill-green">mendel-guided</span> | <ScoreCell value="37.5" note="38%" /> | 230 min | <span class="ctxuse">56k<br><TokCell shallow="24.5" deep="17.3" top-shallow top-deep /></span> | 14k | 89% | <span class="pills"><span class="ms-pill cs-pill cs-pill-yellow">1 medium</span></span><br><span class="pills"><span class="ms-pill cs-pill cs-pill-gray">3 minor</span></span> | <span class="pills"><span class="ms-pill cs-pill cs-pill-gray">calls 94/4</span> <span class="ms-pill cs-pill cs-pill-gray">commits 3</span></span><br><span class="pills"><span class="ms-pill cs-pill cs-pill-gray">turns 83</span> <span class="ms-pill cs-pill cs-pill-gray">trimmed 35%</span></span> |
 <!-- gen:mendel-stale:end -->
+
+## Full reports
+
+The hosted reports, generated from the Mendel data, for the curious:
+the <a href="../../../mendel/report.html" target="_blank" rel="noreferrer">blind report</a>
+and the <a href="../../../mendel/report-guided.html" target="_blank" rel="noreferrer">guided report</a>,
+with the criteria matrix, cost tables and defect ledger, one
+scoreboard per prompt version. The tables on this page come from the
+mirrored result files in `benchmarks/mendel/` (`npm run docs:tables`).
+
+One Qwen3.6-35B-A3B score above, the guided 83 at thinking high, is
+pending a re-run at low priority: it ran on a 120K harness window, and
+at wired limit 25000 the model serves `-c 98304`. The score stays as a
+record of what the model did; the other Qwen3.6 rows ran on windows
+the machine serves today.
