@@ -73,3 +73,10 @@ logged, not a reason to idle the GPU: this block is skipped, and the
 run went on to `arms-gemma26`. The branch delete needs the owner's
 own permission setting, or a run-worker.sh change to accept a
 `-retry` suffix. Gate for the coordinator.
+
+**Resolved.** Coordinator gate answer: rename, not delete, keeping
+the first row's evidence. `git branch -m
+mlx-community-Qwen3.6-35B-A3B-4bit-on-issue-13
+mlx-community-Qwen3.6-35B-A3B-4bit-on-issue-13-stashpop` in
+`~/code/mendel-benchmark` succeeded, no permission refusal. The
+retry runs right after `arms-gemma26` closes.
