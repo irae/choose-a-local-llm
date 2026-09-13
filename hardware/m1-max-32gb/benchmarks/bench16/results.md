@@ -314,3 +314,22 @@ Files: `results/benchy-sweep-qwen38-bartowski-nmax0.md`,
 `results/benchy-sweep-qwen38-bartowski-nmax1.md`,
 `results/server-sweep-qwen38-bartowski-nmax0.log`,
 `results/server-sweep-qwen38-bartowski-nmax1.log`.
+
+## `sweep-bonsai-fork-single`
+
+PrismML llama.cpp fork, `prism-ml/Ternary-Bonsai-27B-gguf` rev
+`abbae72`, q4_0 KV with the bias file
+`~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf`
+(sha256 `f61d1350643a0f1656f1312dc337758bd80c456c44390e82b071982f4da4ded9`),
+`-c 65536`, `--parallel 1`, alias `bonsai-prism`, wired 25000.
+Tokenizer `prism-ml/Ternary-Bonsai-27B-mlx-2bit`, code corpus. Depths:
+4096, 32768.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 14.68 | 0.00 | 14.8 | -0.8% | 423.62, no growth |
+| 32768 | 7.81 | 0.00 | 7.9 (speed gated) | -1.1% | 423.62, no growth |
+
+Both cells close to the site, no dead cell, no swap growth.
+Files: `results/benchy-sweep-bonsai-fork-single.md`,
+`results/server-sweep-bonsai-fork-single.log`.
