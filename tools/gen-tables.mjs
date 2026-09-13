@@ -285,7 +285,7 @@ function mendelRow(r, { test = '' } = {}) {
   const done = r.libraries_done
   const raw = Number(r.score_total)
   const cap = Math.min(raw, (100 * done) / 8)
-  const score = cap < raw ? `<span class="ctxuse"><b>${cap}</b><br><small>raw ${raw}</small></span>` : `**${cap}**`
+  const score = scoreTag(cap, '', false, '', done < 8 ? `${Math.round((100 * done) / 8)}%` : '')
   const wall = t.wall_clock_min == null ? '—' : `${Math.round(Number(t.wall_clock_min))} min`
   const window = mendelWindow(r)
   const comp = Number(t.compactions) || 0
@@ -300,7 +300,7 @@ function mendelRow(r, { test = '' } = {}) {
     counts.medium ? pill(`${counts.medium} medium`, 'yellow') : '',
     counts.minor ? pill(`${counts.minor} minor`, 'gray') : '',
   ].filter(Boolean)
-  const bugsCell = bugs.length ? `<span class="pills">${bugs.join(' ')}</span>` : pill('0 bugs', 'green')
+  const bugsCell = bugs.length ? twoLines(bugs) : pill('0 bugs', 'green')
   const nudges = [t.nudges_tooling ? `${t.nudges_tooling}t` : '', t.nudges_model ? `${t.nudges_model}m` : ''].filter(Boolean)
   const stats = [
     t.tool_calls != null ? pill(`calls ${t.tool_calls}/${t.tool_errors ?? 0}`) : '',
@@ -316,7 +316,6 @@ function mendelRow(r, { test = '' } = {}) {
     ...(test ? [pill(`mendel-${test}`, test === 'blind' ? 'yellow' : 'green')] : []),
     score,
     wall,
-    `${done}/8`,
     window ? `${Math.round(window / 1024)}k` : '—',
     k(t.tokens_out),
     ctx,
@@ -346,8 +345,8 @@ function twoLines(pills) {
 
 function mendelTable(rows, { test = false } = {}) {
   const header = [
-    `| Model / Config |${test ? ' Test |' : ''} Score | Wall | Done | Max ctx | Tokens | Ctx use | Bugs | Stats |`,
-    `|---|${test ? '---|' : ''}--:|--:|--:|--:|--:|--:|---|---|`,
+    `| Model / Config |${test ? ' Test |' : ''} Score | Wall | Max ctx | Tokens | Ctx use | Bugs | Stats |`,
+    `|---|${test ? '---|' : ''}--:|--:|--:|--:|--:|---|---|`,
   ]
   const capped = (r) => Math.min(Number(r.score_total), (100 * r.libraries_done) / 8)
   const body = [...rows].sort((a, b) => capped(b) - capped(a)).map((r) => mendelRow(r, { test: test ? r.test : '' }))
