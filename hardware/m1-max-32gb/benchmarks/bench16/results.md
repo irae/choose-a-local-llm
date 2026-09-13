@@ -61,6 +61,7 @@ the 8 tok/s floor on real text.
 |--:|--:|--:|--:|--:|--:|
 | 4096 | 54.48 | 0.00 | 55.1 | -1.1% | no growth |
 | 39936 | dead cell | — | 37.4 | — | — |
+| 35840 (retry-sweep, 2026-09-13) | 39.11 | 0.13 | 37.4 | +4.6% | 423.62, no growth |
 
 The deep cell died on `RuntimeError: [METAL] Command buffer execution
 failed: Insufficient Memory (kIOGPUCommandBufferCallbackErrorOutOfMemory)`
