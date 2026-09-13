@@ -209,3 +209,21 @@ Files: `results/benchy-arms-gemma26-nmax0.md`,
 `results/server-arms-gemma26-nmax0.log`,
 `results/server-arms-gemma26-nmax1.log`,
 `results/server-arms-gemma26-nmax3.log`.
+
+## `sweep-qwen38-ista-nodrafter`
+
+`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, rev `d562806`,
+`--no-mmproj`, f16 KV, `--parallel 1`, `-c 163840`, wired 25000. One
+arm, no drafter. Tokenizer `Qwen/Qwen3.8-27B`, code corpus. Depths:
+4096, 146432.
+
+| depth | benchy tok/s | sd | site tok/s | diff | swap MB |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 14.07 | 0.00 | 14.1 | -0.2% | 431.62, no growth |
+| 146432 | 8.11 | 0.01 | 8.3 | -2.3% | 431.62, no growth |
+
+Research run 4 read this arm at 13.94 (4K) and 9.47 (98K), a shallower
+depth. Both cells here sit close to the site and above the 8 tok/s
+floor.
+Files: `results/benchy-sweep-qwen38-ista-nodrafter.md`,
+`results/server-sweep-qwen38-ista-nodrafter.log`.
