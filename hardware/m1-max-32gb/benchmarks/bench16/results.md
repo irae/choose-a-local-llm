@@ -190,13 +190,22 @@ Depths: 4096, 98304, 196608.
 | n-max 2 (from `benchy-gemma26-drafter`, served) | 98304 | 28.19 | 0.54 | no site cell | — | no growth |
 | n-max 2 (from `benchy-gemma26-drafter`, served) | 196608 | 19.06 | 0.67 | 17.3 (at 197K) | +10.2% | no growth |
 
-**Climb stopped at n-max 2**: n-max 1 against no drafter is mixed
-(faster at 4K, slower at 98K and 197K), so the rule takes one more arm
-then stops — n-max 2 is that arm, already on record from
-`benchy-gemma26-drafter`. N-max 3 is not read. N-max 2 is the fastest
-arm at every depth. **A table and no pick**; the coordinator names the
-served arm.
+| n-max 3 | 4096 | 50.75 | 0.25 | 60.3 | -15.8% | 431.62, no growth |
+| n-max 3 | 98304 | 25.67 | 1.53 | no site cell | — | 431.62, no growth |
+| n-max 3 | 196608 | 22.31 | 5.15 | 17.3 (at 197K) | +29.0% | 431.62, no growth |
+
+**Climb history**: n-max 1 against no drafter was mixed, so the
+corrected sweep rule (2026-09-12) took one more arm, n-max 2, and
+tested it the same way. N-max 2 against n-max 1 was faster at every
+depth, so the climb went on to n-max 3. N-max 3 against n-max 2 is
+mixed again (slower at 4K and 98K, faster and noisy at 197K, sd 5.15),
+not faster at every depth, so **the climb stops at n-max 3**; n-max 4
+is not read (also ruled out above n-max 3 except for Gemma-12B). Best
+tok/s at 4K and 98K is n-max 2; at 197K it is n-max 3, but its sd is
+wide. **A table and no pick**; the coordinator names the served arm.
 Files: `results/benchy-arms-gemma26-nmax0.md`,
 `results/benchy-arms-gemma26-nmax1.md`,
+`results/benchy-arms-gemma26-nmax3.md`,
 `results/server-arms-gemma26-nmax0.log`,
-`results/server-arms-gemma26-nmax1.log`.
+`results/server-arms-gemma26-nmax1.log`,
+`results/server-arms-gemma26-nmax3.log`.

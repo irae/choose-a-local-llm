@@ -37,3 +37,81 @@ Pages copy-on-write:                  136694403.
 Pages zero filled:                   1189241262.
 Pages reactivated:                    119763747.
 vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               40011.
+Pages active:                            165772.
+Pages inactive:                          163279.
+Pages speculative:                         2114.
+Pages throttled:                              0.
+Pages wired down:                       1606586.
+Pages purgeable:                           1895.
+"Translation faults":                2265097850.
+Pages copy-on-write:                  137116542.
+Pages zero filled:                   1190489754.
+Pages reactivated:                    119763968.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               44737.
+Pages active:                            163518.
+Pages inactive:                          161507.
+Pages speculative:                         1783.
+Pages throttled:                              0.
+Pages wired down:                       1606149.
+Pages purgeable:                           1916.
+"Translation faults":                2266234369.
+Pages copy-on-write:                  137129049.
+Pages zero filled:                   1191404056.
+Pages reactivated:                    119784278.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               40100.
+Pages active:                            164861.
+Pages inactive:                          160440.
+Pages speculative:                         4148.
+Pages throttled:                              0.
+Pages wired down:                       1607186.
+Pages purgeable:                           2120.
+"Translation faults":                2267344872.
+Pages copy-on-write:                  137137835.
+Pages zero filled:                   1192311017.
+Pages reactivated:                    119786129.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               28044.
+Pages active:                            168193.
+Pages inactive:                          151359.
+Pages speculative:                        16080.
+Pages throttled:                              0.
+Pages wired down:                       1605377.
+Pages purgeable:                           5650.
+"Translation faults":                2271083709.
+Pages copy-on-write:                  137180471.
+Pages zero filled:                   1195211979.
+Pages reactivated:                    119843024.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               40893.
+Pages active:                            162938.
+Pages inactive:                          161748.
+Pages speculative:                          814.
+Pages throttled:                              0.
+Pages wired down:                       1605579.
+Pages purgeable:                           7086.
+"Translation faults":                2274198102.
+Pages copy-on-write:                  137213519.
+Pages zero filled:                   1197636460.
+Pages reactivated:                    119895257.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               39996.
+Pages active:                            163161.
+Pages inactive:                          161851.
+Pages speculative:                          842.
+Pages throttled:                              0.
+Pages wired down:                       1605885.
+Pages purgeable:                           6780.
+"Translation faults":                2277783389.
+Pages copy-on-write:                  137247735.
+Pages zero filled:                   1200443498.
+Pages reactivated:                    119930861.
+vm.swapusage: total = 2048.00M  used = 431.62M  free = 1616.38M  (encrypted)
