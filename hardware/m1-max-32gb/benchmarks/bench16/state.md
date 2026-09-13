@@ -166,3 +166,75 @@ The local branch and its commits are intact; only the push to
 `origin` is missing. The owner needs to run this by hand or grant the
 permission:
 `cd ~/code/mendel-benchmark && git push --force-with-lease origin mlx-community-Qwen3.6-35B-A3B-4bit-on-issue-13`.
+(Done: the owner ran this by hand; the branch is on `origin` at commit
+`a6f5c9b`.)
+
+## Handing over, session 1, 2026-09-13
+
+Owner order: the run ends after the homepage cells. Every block from
+`benchy-qwen38-atomicchat-drafter` through the `sweep-bonsai-mlx`
+retry ran; nothing after that in the order list ran
+(`sweep-bonsai-fork-2slot`, `sweep-qwen36-q8`, and the rest of the
+`sweep-*` blocks are not started).
+
+What ran, in order: `benchy-qwen38-atomicchat-drafter`,
+`benchy-gemma26-drafter`, `sweep-qwen36-mlx` (dead deep cell),
+`sweep-gemma26-mlx`, `qwen36-mlx-smoke-on` (pass), `qwen36-mlx-mendel-blind-on`
+(scored 25, then re-scored 37.5 on retry after a shared-stash-stack
+fault, `best_of: 2`), `gemma26-mlx-smoke-high` (fail, no blind row),
+`arms-qwen38-atomicchat`, `arms-gemma26` (climbed to n-max 3),
+`sweep-qwen38-ista-nodrafter`, `sweep-gemma12-f16`, `sweep-bonsai-mlx`
+(dead cell, retried once more, dead again), `sweep-qwen38-mlx`,
+`sweep-bonsai-fork-single`, `sweep-qwen38-bartowski`, then the
+`retry-sweep` cells: `sweep-qwen36-mlx` at depth 35840 (clean) and
+`sweep-bonsai-mlx` at depths 4096/52224 (dead again).
+
+What a gate dropped and why:
+- `qwen36-mlx-mendel-blind-on-retry`'s branch collision needed a
+  rename, not a delete, because this session's own permission
+  classifier denies destructive git operations (branch delete,
+  force-push). The rename worked; the retry's own branch still
+  needed a force-push, which the owner ran by hand.
+- `gemma26-mlx-mendel-blind-high` never ran: its smoke failed on a
+  truncated tool-call parse, not a server death.
+- `sweep-bonsai-fork-single` was briefly blocked on a missing KV bias
+  file at a stale `/tmp` path; the owner pointed to the real,
+  persistent path and the block ran clean.
+- `sweep-bonsai-mlx` died twice, at two different depths (56320 and
+  52224), both past roughly 47-49K on this machine, well under its
+  53248 window. The 4096 cell's number was lost both times, since
+  `llama-benchy` writes `--save-result` once, at the end of the whole
+  run, not per depth.
+
+Server lore for `docs/methodology/server-lore.md`: on `mlx_lm.server`,
+a Metal OOM kills the generation thread but not the process; the HTTP
+endpoint never answers again, but `pgrep` and `/health` still show it
+alive. A `Monitor` armed only on process exit never fires. The first
+time this happened (`sweep-bonsai-mlx`, first attempt) it went
+undetected for about an hour, caught only by a 20-minute
+`ScheduleWakeup` heartbeat checking log growth and process CPU. From
+then on, every MLX block ran a live watch on the server log (grepping
+for the Metal OOM signature) alongside the process-exit monitor; the
+second `sweep-bonsai-mlx` death was caught within seconds.
+
+Machine state left behind: no `llama-server`, no `mlx_lm`, no
+`llama-benchy`, no `http.server` process. Wired 1855 MB (recovered to
+baseline). Wired limit 25000, unchanged. LM Studio not started, not
+touched. `~/.pi/agent/models.json` has the two new MLX entries
+(`mlx-community/Qwen3.6-35B-A3B-4bit` window 36864,
+`mlx-community/gemma-4-26b-a4b-it-4bit` window 65536), both with the
+`qwen-chat-template` thinking map copied from their `llama` provider
+siblings. The `mendel-benchmark` repo's shared stash stack was
+cleared once (recorded before clearing) per the owner-confirmed new
+essentials rule.
+
+Gates left for the coordinator at close-out: name the served arm of
+every drafter row (six benchy blocks plus their arms), take the
+daggers off in `models.json`, weigh the `sweep-bonsai-mlx` ceiling
+finding (roughly 47-49K, well under the current 53248 window) when
+next revisiting that model's MLX window, and decide whether either
+q4_0 bonsai-fork block still needs the retired `/tmp` path fixed at
+its source in `docs/setups/m1-max-32gb/reports/bonsai-27b.md`.
+
+Evidence archived: `tools/archive-evidence.sh
+hardware/m1-max-32gb/benchmarks/bench16/results run16`.
