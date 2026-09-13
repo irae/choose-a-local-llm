@@ -303,6 +303,10 @@ it.
   valid run of the current prompt version, blind and guided, whose
   spec matches the row (build, server, drafter, KV type, thinking
   level, slot count), and shows the run with the most libraries done,
+  then the higher capped score. A row whose served drafter changed
+  after its run names the run's drafter in `mendelDrafter`, since the
+  drafter changes speed and not output; the note says so. It shows
+  the run with the most libraries done,
   then the higher capped score. A guided run can therefore stand on
   the comparison and the homepage. The `mendel` field in
   `models.json` holds only a state word for a row with no such run:

@@ -171,8 +171,9 @@ function deriveMendel(rows, blind, guided) {
     if (/^[\d.]/.test(String(row.mendel))) {
       throw new Error(`row ${row.id}: mendel "${row.mendel}" is a number; the score comes from the Mendel CSVs, write only pending, not run, invalid or failed-smoke`)
     }
+    const rowKey = mendelKey({ ...row.spec, drafter: row.mendelDrafter ?? row.spec.drafter }, rowSlots(row))
     const match = runs
-      .filter((x) => x.key === mendelKey(row.spec, rowSlots(row)))
+      .filter((x) => x.key === rowKey)
       .sort((a, b) => done(b.r) - done(a.r) || capped(b.r) - capped(a.r))[0]
     if (!match) continue
     const partial = match.r.partial === 'True'
