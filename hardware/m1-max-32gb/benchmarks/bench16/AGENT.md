@@ -190,8 +190,10 @@ full ladder. Every `sweep-*` and `arms-*` block applies it:
    Nothing above 3, except Gemma-12B whose served value is 4.
 4. **Stop the climb** when an arm reads slower than the arm before it
    at every depth. When it reads slower at one depth and faster at
-   another, take one more arm, then stop. Write the arm you stopped
-   at and why in `results.md`.
+   another, take one more arm and apply the same test to that arm:
+   faster at every depth, the climb goes on; slower at every depth or
+   mixed again, stop. Write the arm you stopped at and why in
+   `results.md`.
 5. Done: one table per block, one line per arm and depth: arm, depth,
    benchy tok/s, sd, the site's tok/s at that depth, the difference
    in percent, acceptance, swap. Put any cell an earlier run already

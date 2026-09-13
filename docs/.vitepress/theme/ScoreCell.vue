@@ -8,8 +8,8 @@ const props = defineProps({
 })
 
 if (!props.value) throw new Error('ScoreCell: missing value')
-if (props.pill && !['mendel-blind', 'mendel-guided'].includes(props.pill)) {
-  throw new Error(`ScoreCell: pill "${props.pill}" is not mendel-blind or mendel-guided`)
+if (props.pill && !['mendel-blind', 'mendel-guided', 'failed-smoke'].includes(props.pill)) {
+  throw new Error(`ScoreCell: pill "${props.pill}" is not mendel-blind, mendel-guided or failed-smoke`)
 }
 </script>
 

@@ -133,6 +133,7 @@ function evalplusCell(text) {
 }
 
 function mendelCellParts(r) {
+  if (r.mendel === 'failed-smoke') return { value: '0', note: '0%', pill: 'failed-smoke' }
   const m = String(r.mendel).match(/^([\d.]+)(?:\s*\(partial\s*(\d+%)\))?$/)
   if (!m) return { value: String(r.mendel), note: '', pill: '' }
   return { value: m[1], note: m[2] || '', pill: `mendel-${r.mendelTest || 'blind'}` }
@@ -166,8 +167,8 @@ function deriveMendel(rows, blind, guided) {
   const capped = (r) => Math.min(Number(r.score_total), (100 * done(r)) / 8)
   for (const row of rows) {
     if (!row.spec) continue
-    if (parseMendel(row.mendel) !== null) {
-      throw new Error(`row ${row.id}: mendel "${row.mendel}" is a number; the score comes from the Mendel CSVs, write only pending, not run or invalid`)
+    if (/^[\d.]/.test(String(row.mendel))) {
+      throw new Error(`row ${row.id}: mendel "${row.mendel}" is a number; the score comes from the Mendel CSVs, write only pending, not run, invalid or failed-smoke`)
     }
     const match = runs
       .filter((x) => x.key === mendelKey(row.spec, rowSlots(row)))
@@ -368,6 +369,7 @@ function parseScore(evalplus) {
 }
 
 function parseMendel(mendel) {
+  if (mendel === 'failed-smoke') return 0
   const m = String(mendel ?? '').match(/^([\d.]+)/)
   return m ? parseFloat(m[1]) : null
 }
@@ -448,8 +450,8 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     tokDeep: topSet(ordered, (r) => num(r.tokDeep)),
     memory: topSet(ordered, (r) => num(r.memory), { lower: true }),
     evalplus: topSet(ordered, (r) => parseScore(r.evalplus) >= 0 ? parseScore(r.evalplus) : NaN),
-    mendel: topSet(ordered, (r) => parseMendel(r.mendel) ?? NaN),
-    composite: topSet(ordered, (r) => composite(r) ?? NaN),
+    mendel: topSet(ordered, (r) => (r.mendel === 'failed-smoke' ? NaN : parseMendel(r.mendel) ?? NaN)),
+    composite: topSet(ordered, (r) => (r.mendel === 'failed-smoke' ? NaN : composite(r) ?? NaN)),
   }
   let anyStale = false
   const cell = (r, field) => {
@@ -481,7 +483,7 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     seenPages.add(r.abandoned.page)
     legend.push(
       '',
-      `${r.abandoned.marker || '💀'} ${r.abandoned.reason} [Why this runtime is not a candidate](${r.abandoned.page}).`,
+      `${r.abandoned.marker || '💀'} ${r.abandoned.reason} [Why it is not a candidate](${r.abandoned.page}).`,
     )
   }
   return [...header, ...body, ...legend].join('\n')

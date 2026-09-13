@@ -308,7 +308,9 @@ it.
   `models.json` holds only a state word for a row with no such run:
   `pending` when one is planned; `not run` when none is planned, with
   the reason in the row's note; `invalid` when every attempt was
-  invalid. A number in that field fails the build.
+  invalid; `failed-smoke` when the config failed its agent smoke,
+  which renders as `0% / 0` over a grey `failed-smoke` pill and
+  counts as a score of 0. A number in that field fails the build.
 - **The homepage table holds one line per build** (the first two
   parts of the config: model, then runtime and quant with its
   publisher), showing that build's best complete row by the same sort.

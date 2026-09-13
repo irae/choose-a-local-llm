@@ -30,6 +30,13 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
   runs 2×48K slots at 9.8 tok/s each in 10.0 GB, the only setup that
   leaves the machine free, and at f16 KV the fork has no speed floor
   to 131K.
+- **A plain MLX 4-bit build can score below a calibrated GGUF build of
+  the same model, and never above it.** Gemma-4-26B-A4B lost 0.171 base
+  on EvalPlus and Gemma-4-12B lost 0.067, while Qwen3.8-27B lost
+  nothing. MLX rounds every group to the same 4-bit grid with no
+  calibration; a GGUF k-quant mixes the bit width per tensor and takes
+  an importance matrix. The order holds, the size of the gap does not:
+  [quantization](../../methodology/quantization.md).
 - **The rule that decides everything:** MLX runtimes barely slow down but
   hit hard memory ceilings. llama runtimes hold their speed deeper at f16
   KV, and their ceiling is the largest `-c` that loads; a published `-c`
@@ -143,12 +150,11 @@ model page.
 | <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | **2x82k** | mem | <TokCell shallow="25.0" deep="15.7" stale /> | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="f16" effort="off" /> | 4x49k | mem | <TokCell shallow="42.9" deep="27.7" stale /> | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" effort="off" /> | 16k | speed | <TokCell shallow="13.8" deep="6.5" stale /> | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" /> | 41k | mem | <TokCell shallow="69.1" deep="52.6" stale top-shallow top-deep /> | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" /> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | 37k | mem | <TokCell shallow="55.1" deep="37.4" stale top-deep /> | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" /> | 41k | mem | <TokCell shallow="69.1" deep="52.6" stale top-shallow top-deep /> | <ScoreCell value="0.939/0.921" sub="97% completion" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | 37k | mem | <TokCell shallow="55.1" deep="37.4" stale top-deep /> | <ScoreCell value="0.939/0.921" sub="97% completion" /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | 53k | mem | <TokCell shallow="24.5" deep="17.3" stale /> | <ScoreCell value="0.927/0.902" sub="100% completion" /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | 2x48k | speed | <TokCell shallow="14.9" deep="7.8" stale /> | <ScoreCell value="0.927/0.890" sub="98% completion" /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **2x82k** | mem | <TokCell shallow="66.6" deep="33.6" stale top-shallow top-deep /> | <ScoreCell value="0.884/0.860" sub="89% completion" /> | <ScoreCell value="pending" /> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | **66k** | mem | <TokCell shallow="51" deep="12.8" stale /> | <ScoreCell value="0.713/0.701" sub="72% completion" /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" /> | **131k** | mem | <TokCell shallow="15.0" deep="9.7" stale /> | <ScoreCell value="pending" /> | <ScoreCell value="12.5" note="13%" pill="mendel-guided" top /> |
 
 † from an earlier serving config or method; re-run pending.
