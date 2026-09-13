@@ -55,6 +55,7 @@ const MENDEL_SLUGS = {
   'qwen3.6-35b-a3b': 'qwen3.6-35b-a3b',
   'qwen3.6-35b-a3b (unsloth UD-Q4_K_XL, off)': 'qwen3.6-35b-a3b',
   'qwen3.6-35b-a3b-f16 (unsloth UD-Q4_K_XL, no drafter, on)': 'qwen3.6-35b-a3b',
+  'Qwen3.6-35B-A3B (mlx 4-bit, on)': 'qwen3.6-35b-a3b',
   'qwen3.8-27b (bartowski Q4_K_M, xhigh)': 'qwen3.8-27b',
   'gemma-4-26b-a4b': 'gemma-4-26b-a4b',
   'prism-ml/Ternary-Bonsai-27B-mlx-2bit': 'bonsai-27b',
@@ -170,8 +171,9 @@ function deriveMendel(rows, blind, guided) {
     if (/^[\d.]/.test(String(row.mendel))) {
       throw new Error(`row ${row.id}: mendel "${row.mendel}" is a number; the score comes from the Mendel CSVs, write only pending, not run, invalid or failed-smoke`)
     }
+    const rowKey = mendelKey({ ...row.spec, drafter: row.mendelDrafter ?? row.spec.drafter }, rowSlots(row))
     const match = runs
-      .filter((x) => x.key === mendelKey(row.spec, rowSlots(row)))
+      .filter((x) => x.key === rowKey)
       .sort((a, b) => done(b.r) - done(a.r) || capped(b.r) - capped(a.r))[0]
     if (!match) continue
     const partial = match.r.partial === 'True'
@@ -187,6 +189,7 @@ const MENDEL_SPECS = {
   'qwen3.6-35b-a3b': { base: 'Qwen3.6-35B-A3B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/Qwen3.6-35B-A3B-MTP-GGUF', drafter: 'mtp/3', effort: 'on', binary: true },
   'qwen3.6-35b-a3b (unsloth UD-Q4_K_XL, off)': { base: 'Qwen3.6-35B-A3B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/Qwen3.6-35B-A3B-MTP-GGUF', drafter: 'mtp/3', binary: true },
   'qwen3.6-35b-a3b-f16 (unsloth UD-Q4_K_XL, no drafter, on)': { base: 'Qwen3.6-35B-A3B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/Qwen3.6-35B-A3B-MTP-GGUF', drafter: '', effort: 'on', binary: true },
+  'Qwen3.6-35B-A3B (mlx 4-bit, on)': { base: 'Qwen3.6-35B-A3B', quant: '4-bit', publisher: 'mlx-community', repo: 'mlx-community/Qwen3.6-35B-A3B-4bit', drafter: '', effort: 'on', binary: true },
   'gemma-4-26b-a4b': { base: 'Gemma-4-26B-A4B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/gemma-4-26b-a4b-it-GGUF', drafter: 'mtp/2', effort: 'on', binary: true },
   'prism-ml/Ternary-Bonsai-27B-mlx-2bit': { base: 'Ternary-Bonsai-27B', quant: '2-bit', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-27B-mlx-2bit', drafter: '', effort: 'on', binary: true },
   'Ternary-Bonsai-27B (mlx, low)': { base: 'Ternary-Bonsai-27B', quant: '2-bit', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-27B-mlx-2bit', drafter: '', binary: true },

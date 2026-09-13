@@ -525,6 +525,10 @@ The run's killed or interrupted rows, oldest first, in fresh
 worktrees, while the owner is away. A row that ended on the model's
 own repetition loop is a valid partial and is not retried.
 
+Also one benchy cell: `sweep-qwen36-mlx` at depth 35840, the deep
+cell for its 36864 window, since the 39936 cell died above it. Same
+server and command as that block; add the cell to its table.
+
 ## Not in this run
 
 - Any repeat of a scored row. EvalPlus on any block. Polyglot, parked
