@@ -95,6 +95,15 @@ window ladder and the summary rubric live in
   a dead token costs a run to a login loop (measured 2026-09-05, on a
   guided run of one dense 27B model).
   A failing status means no Mendel run until the owner logs in.
+- **The bench repo's stash stack is empty before the agent starts**
+  (owner rule, 2026-09-12): run `git stash clear` in
+  `~/code/mendel-benchmark` right before every run, blind or guided,
+  and the smoke too. Every bench worktree shares one stash stack, so
+  a stash left by an earlier run is a foreign tree state the model
+  can pop by accident. It did on 2026-09-12: a blind `git stash pop`
+  wrote an older run's ticked task list into the tree and closed the
+  run mid-debug. A row that fails this way is a benchmark fault and is
+  re-run without penalty.
 - **A duplicate is a configuration, not a model.** One model now serves
   several builds, cache types, windows and levels, so the harness alias
   never decides this on its own. Two runs are the same run only when

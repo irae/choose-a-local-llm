@@ -32,6 +32,7 @@ is on record.
 - `gemma26-mlx-smoke-high`
 - `gemma26-mlx-mendel-blind-high`
 - `arms-qwen38-atomicchat`
+- `qwen36-mlx-mendel-blind-on-retry`
 - `arms-gemma26`
 - `sweep-qwen38-ista-nodrafter`
 - `sweep-gemma12-f16`
@@ -96,6 +97,11 @@ speed block follows "The sweep rule" below.
   map to copy by hand from the sibling entry of the same provider.
   Never edit `~/.pi/agent/models.json` in any other way.
 - `gh auth status` must pass before any smoke.
+- **`git stash clear` in `~/code/mendel-benchmark` right before every
+  smoke and every agent row** (owner rule, 2026-09-12,
+  `docs/methodology/mendel.md`). The bench worktrees share one stash
+  stack; a leftover stash is a foreign tree the model can pop. Record
+  the `git stash list` output before the clear in `state.md`.
 - Every scoring run starts `benchmarks/run-watch.sh` as the checklist
   says.
 - **Scoring and publishing are one task.** One subagent on the best
@@ -449,6 +455,18 @@ reached, written as such, and never a reason to lower the window on
 your own; the step down by 8192 is the coordinator's call at the
 block-close message. The 300-minute wall gives a partial, which is a
 row and not a failure. Write `qwen36_mlx_on` in `state.md`.
+
+## `qwen36-mlx-mendel-blind-on-retry`
+
+The re-run of `qwen36-mlx-mendel-blind-on`, without penalty: its
+first row ended on a benchmark fault, a foreign stash popped from the
+shared stash stack, which the owner ruled "our fault" (2026-09-12).
+Run `git stash clear` in `~/code/mendel-benchmark` first, then the
+block exactly as `qwen36-mlx-mendel-blind-on` says, same server,
+same window `qwen36_mlx_window` from `state.md`, in a fresh worktree.
+The first row stays in the results as the run it was; the config
+note of this row names it as the re-run and its cause. Write
+`qwen36_mlx_on` again in `state.md` with the new value.
 
 ## `gemma26-mlx-smoke-high`
 
