@@ -38,15 +38,17 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|--:|
 | <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" top /> | **197k** | mem | <TokCell shallow="60.3" deep="17.3" stale top-shallow top-deep /> | **25.6 GB** | <ScoreCell value="0.884/0.860" sub="89% completion" top /> | <ScoreCell value="47.5" pill="mendel-blind" top /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" top /> 💀 | ***66k*** | *mem* | ****51†*** → ***12.8†**** | ***20.0 GB*** | <ScoreCell value="0.713/0.701" sub="72% completion" top /> | <ScoreCell value="0" note="0%" pill="failed-smoke" top /> |
 
 † from an earlier serving config or method; re-run pending.
+
+💀 This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task. [Why it is not a candidate](../benchmarks/gemma-4-26b-a4b.md#the-retired-mlx-build).
 
 Rows below 100 percent completeness. Completeness counts three measurements: tok/s, EvalPlus and Mendel.
 
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|--:|
 | <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **2x82k** | mem | <TokCell shallow="66.6" deep="33.6" stale top-shallow top-deep /> | **25.3 GB** | <ScoreCell value="0.884/0.860" sub="89% completion" top /> | <ScoreCell value="pending" /> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | **66k** | mem | <TokCell shallow="51" deep="12.8" stale top-shallow top-deep /> | **20.0 GB** | <ScoreCell value="0.713/0.701" sub="72% completion" top /> | <ScoreCell value="pending" /> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
@@ -69,6 +71,15 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   --jinja --port 8081
 ```
 
+<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" />
+
+Retired 2026-09-12 (owner). The agent smoke at thinking high on a 65536 window ended with zero commits on a tool call the server truncated mid-generation, with no OOM and no server death; the GGUF UD-Q4_K_XL build of the same model completes the agent task, so this quant is not a candidate and is not run again. Real-text speed read 2026-09-12 with llama-benchy: 49.3 tok/s at 4K and 23.4 at 64K; the earlier creep read the same server alternating between 13 and 24 tok/s from 60K up, with 12.83 the last stable step at 70K.
+
+```bash
+mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \
+  --prompt-cache-size 2 --port 8081
+```
+
 <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" />
 
 pi id `gemma-4-26b-a4b-2x`. Measured 2026-09-05 at f16 KV: 202752 is the largest `-c` that serves a real 4096-token completion (208896 and above fail on compute buffers or at load), 101376 per slot. One slot swept with the other loaded and idle: no speed or memory stop before the slot window; the deepest row is 82K at 33.6 tok/s. The EvalPlus score is the single-slot f16 config's, same weights and cache type.
@@ -80,13 +91,6 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
   -ngl 999 -fa on -c 202752 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
-```
-
-<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" />
-
-```bash
-mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \
-  --prompt-cache-size 2 --port 8081
 ```
 <!-- gen:model-configs:end -->
 

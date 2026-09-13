@@ -56,7 +56,7 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 
 † from an earlier serving config or method; re-run pending.
 
-💀 LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned. [Why this runtime is not a candidate](../lmstudio-retired.md).
+💀 LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned. [Why it is not a candidate](../lmstudio-retired.md).
 
 Retired entries: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on repetition loop; entry gone from the model store ([details](../benchmarks/gemma-4-12b-it.md#the-retired-entry)).
 <!-- gen:model-table:end -->

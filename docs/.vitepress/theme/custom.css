@@ -236,6 +236,7 @@
   background: color-mix(in srgb, var(--ms-tint) 12%, transparent);
 }
 
+.vp-doc .cs-pill-failed-smoke { --ms-tint: #7c8390; }
 .vp-doc .cs-pill-blind { --ms-tint: #b8912a; }
 .vp-doc .cs-pill-guided { --ms-tint: #4c9a63; }
 .dark .vp-doc .cs-pill-blind { --ms-tint: #d0ad55; }

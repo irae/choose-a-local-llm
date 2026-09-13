@@ -262,11 +262,17 @@
       "tokDeep": "12.8",
       "memory": "20.0 GB",
       "evalplus": "0.713/0.701/72%",
-      "mendel": "pending",
+      "mendel": "failed-smoke",
       "id": "gemma26-mlx",
       "stale": ["tokShallow", "tokDeep"],
       "spec": { "base": "Gemma-4-26B-A4B", "quant": "4-bit", "server": "mlx_lm.server", "publisher": "mlx-community", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
+      "abandoned": {
+        "marker": "💀",
+        "page": "../benchmarks/gemma-4-26b-a4b.md#the-retired-mlx-build",
+        "reason": "This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task."
+      },
+      "note": "Retired 2026-09-12 (owner). The agent smoke at thinking high on a 65536 window ended with zero commits on a tool call the server truncated mid-generation, with no OOM and no server death; the GGUF UD-Q4_K_XL build of the same model completes the agent task, so this quant is not a candidate and is not run again. Real-text speed read 2026-09-12 with llama-benchy: 49.3 tok/s at 4K and 23.4 at 64K; the earlier creep read the same server alternating between 13 and 24 tok/s from 60K up, with 12.83 the last stable step at 70K.",
       "command": "mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \\\n  --prompt-cache-size 2 --port 8081",
       "pi": {
         "provider": "mlx",

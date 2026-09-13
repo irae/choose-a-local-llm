@@ -117,6 +117,20 @@ depth 256: 54.30 and 54.27 tok/s at 25470 MB wired. `llama-benchy`
 | 98304 | 28.28 |
 | 203776 | 19.24 |
 
+## The retired MLX build
+
+`mlx-community/gemma-4-26b-a4b-it-4bit` on `mlx_lm.server` is not a
+candidate here (owner, 2026-09-12). Its one agent smoke, thinking high
+on a 65536 window at wired limit 25000, ended after six tool calls with
+zero commits and a dirty tree: the server truncated a tool call
+mid-generation and the harness could not parse it. No OOM and no
+server death in the log. The GGUF UD-Q4_K_XL build of the same model
+completes the agent task, so the quant is the difference, and the row
+is not run again. Its EvalPlus at thinking on already read 0.713 with
+28 percent empty completions, the same convergence failure in another
+form. The row keeps its speed numbers on this page and shows
+`failed-smoke` in its Coding cell.
+
 ## Depth sweeps (llama at limit 25000, 2026-08-28; mlx re-tested at limit 24000, slow creep, 2026-08-29)
 
 | depth | llama+MTP, q8_0 KV (128K alloc) | mlx, f16 KV (`gemma-4-26b-a4b-it-4bit`) |
