@@ -94,6 +94,12 @@ since a regenerated file with an unrecorded corpus is a different
 calibration than the scored one), or confirm the block is dropped for
 this run.
 
+Coordinator gate answer (2026-09-13): the bias file question is with
+the owner now. `sweep-bonsai-fork-single` and `sweep-bonsai-fork-2slot`
+stay skipped in `retry-sweep` until the owner answers.
+`sweep-bonsai-fork-f16` needs no bias file (no `--kv-mean-center` in
+its command), so it runs in their place in the order.
+
 ## `qwen36-mlx-mendel-blind-on-retry` — blocked, skipped
 
 The scored row's worktree was moved aside (not deleted) to
