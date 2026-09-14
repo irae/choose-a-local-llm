@@ -55,12 +55,13 @@ function parseCsv(text) {
 }
 
 // The results files hold rows of every machine. A row names its machine
-// in `hardware`; rows older than that field are the Mac's, and a row
-// whose model value carries a setup id belongs to that setup.
+// in `hardware`; a row whose model value carries a setup id belongs to
+// that setup, and rows older than both are the Mac's.
+const SETUP_IDS = globSync('docs/setups/*/models.json').map((f) => f.split('/')[2])
 function hardwareOf(r) {
   if (r.hardware) return r.hardware
-  const m = String(r.model || '').match(/rtx-5060ti-16gb/)
-  return m ? m[0] : 'm1-max-32gb'
+  const model = String(r.model || '')
+  return SETUP_IDS.find((id) => model.includes(`, ${id})`)) || 'm1-max-32gb'
 }
 
 // Mendel model id -> this setup's report page slug.

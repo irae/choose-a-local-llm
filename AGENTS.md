@@ -79,6 +79,13 @@ Benchmark work:
   `<hardware-id>` is the same id the site uses for the setup under
   `docs/setups/`; today `m1-max-32gb` (the Mac) and `rtx-5060ti-16gb`
   (the Linux desktop). Run numbers are shared across machines.
+  **The id is the machine's short hostname** (`hostname -s`,
+  lowercase; owner rule, 2026-09-14). The owner or user may choose
+  another id once, when the machine's folders are first created; after
+  that it never changes. The hardware (chip, memory, OS) is data in the
+  setup's `models.json` and pages, never part of an id. Every id that
+  names a machine uses this one: run rows, model values, branch and log
+  names, calibration and evidence paths.
 - `hardware/<hardware-id>/benchmarks/INDEX.md`. Start here to learn
   what each run found. It links every run's state and results.
 - `hardware/<hardware-id>/benchmarks/bench<N>/AGENT.md`. The runbook

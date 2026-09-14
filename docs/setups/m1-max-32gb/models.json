@@ -1,5 +1,6 @@
 {
   "setup": "m1-max-32gb",
+  "hardware": "Apple M1 Max, 32 GB unified memory, macOS",
   "wiredLimit": 25000,
   "rows": [
     {

@@ -68,7 +68,10 @@ Highlights is the two-line details line.
 Run kits live in `hardware/<hardware-id>/benchmarks/bench<N>/` (runbook
 `AGENT.md`, log `state.md`, results), research kits in
 `hardware/<hardware-id>/research/run<N>/`. `<hardware-id>` is the setup
-id under `docs/setups/`. Shared run tools sit in `benchmarks/`.
+id under `docs/setups/`, the machine's hostname (`AGENTS.md`). Page
+titles, sidebar labels and link text name the hardware, because that
+is what a reader looks for; the path under them is the id. Shared run
+tools sit in `benchmarks/`.
 `hardware/<hardware-id>/benchmarks/INDEX.md` is the per-run findings
 index; add each run's most interesting findings there when the run
 closes. None of it is site content.

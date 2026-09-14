@@ -180,7 +180,14 @@ committed measurement, the block that measures it comes first.
 
 1. Create the next `hardware/<hardware-id>/benchmarks/bench<N>/` folder
    with the standard kit shape (`AGENT.md`, `state.md`, `results.md`,
-   `results/`; see `AGENTS.md`, standing rules).
+   `results/`; see `AGENTS.md`, standing rules). `<hardware-id>` is the
+   machine's hostname. For a machine new to the project, ask the owner
+   once whether to keep the hostname or choose another id, then create
+   `hardware/<id>/` and `docs/setups/<id>/` with it. Every row, model
+   value and file name the runbook asks for carries that id, and every
+   scoring prompt spells out the model value format with the id in it:
+   `<alias> (<publisher> <quant>, <level>, <id>)`, beside
+   `"hardware": "<id>"`.
 2. Open with one short essentials section: the run's `state.md`
    history, the worktree command, and the rules that apply to every
    block. Do not front-load a reading list. Each block names the
