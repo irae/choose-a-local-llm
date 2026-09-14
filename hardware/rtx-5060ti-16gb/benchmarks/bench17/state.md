@@ -33,8 +33,8 @@ its source.
 | `qwen38_iq3s_q8_clean` | 64512 | `sweep-qwen38-iq3s` |
 | `qwen36_nvfp4_n_cpu_moe` | - | - |
 | `qwen36_nvfp4_clean` | - | - |
-| `gemma26_nvfp4_n_cpu_moe` | - | - |
-| `gemma26_nvfp4_clean` | - | - |
+| `gemma26_nvfp4_n_cpu_moe` | 7 | `sweep-gemma26-nvfp4` |
+| `gemma26_nvfp4_clean` | 97280 | `sweep-gemma26-nvfp4` (no-drafter arm) |
 
 ## Files and revisions
 
@@ -222,6 +222,31 @@ or skip `sweep-qwen36-nvfp4` and its downstream smoke/guided/blind rows
 for this run, noted in the row list as blocked by a bad file, and move
 on. The GPU goes on with `sweep-gemma26-nvfp4`, which does not depend
 on this block.
+
+### sweep-gemma26-nvfp4
+
+`catlilface/Gemma-4-26B-A4B-NVFP4-GGUF` `Gemma4-26b-NVFP4Q8.gguf` rev
+`dc98839`, f16 KV, one arm, no drafter, one slot, `-c 98304`.
+`--n-cpu-moe` ladder: 12 pass (13495 MiB), 6 fail (OOM), 9 pass (14719
+MiB), 7 pass (15535 MiB), confirmed real with a deep-cell probe before
+the full sweep. Started 06:57, closed 07:20.
+
+| depth | tok/s | VRAM MB | MemAvailable |
+|--:|--:|--:|--:|
+| 4096 | 58.77 | 15585 | 24242 |
+| 65536 | 49.56 | 15585 | 24267 |
+| 97280 | 45.59 | 15585 | 24232 |
+
+speed/mem, ceiling 97280 @ 45.59 tok/s (vs Mac's 28.2 at 98K).
+`gemma26_nvfp4_n_cpu_moe` = 7, `gemma26_nvfp4_clean` = 97280.
+Files: `results/benchy-gemma26-nvfp4-nodraft.md`,
+`results/server-sweep-gemma26-nvfp4.log`,
+`results/benchy-gemma26-nvfp4-nodraft-vm.log`.
+Deviation: tried a drafter arm (`--spec-type draft-mtp
+--spec-draft-n-max 1`) before re-reading the block text; this build
+carries no MTP layers and the runbook already says "one arm, no
+drafter" for this block. No server time lost worth noting (failed at
+load, no compute). Swap flat around 1.6 GB.
 
 ## Handing over
 
