@@ -162,6 +162,23 @@ vs 42.52, 37.92 vs 37.80). Draft acceptance mostly 0.78-0.84 mid-run,
 mean draft length ~1.8. Per the sweep rule, the climb continues to
 n-max 2. VRAM flat, swap flat around 3.7-3.8 GB.
 
+**n-max 2 arm.** `--n-cpu-moe 19` OOM'd on the compute buffer again
+(a bigger draft window needs more headroom); `--n-cpu-moe 21` passed
+at load (14891 MiB) and confirmed on a real deep-cell request.
+`qwen36_q4kxl_n_cpu_moe_nmax2` = 21.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance | VRAM used |
+|---|--:|--:|--:|--:|--:|--:|
+| n-max2 | 4096 | 61.16 | 3.07 | 459.20 | ~0.63-0.92 | 15015 MiB |
+| n-max2 | 65536 | 50.04 | 0.61 | 428.46 | ~0.63-0.92 | 15015 MiB |
+| n-max2 | 97280 | 45.42 | 3.74 | 420.01 | ~0.63-0.92 | 15015 MiB |
+
+Faster than n-max1 at every depth (61.16 vs 60.60, 50.04 vs 44.12,
+45.42 vs 37.92). Draft acceptance 0.63-0.92 mid-run, mean draft length
+2.3-2.8 (longer than n-max1's ~1.8, as expected with a larger draft
+window). Per the sweep rule, the climb continues to n-max 3. VRAM
+flat, swap flat around 4.5 GB.
+
 A table and no pick. The coordinator names the served arm.
 
 ## Gates
