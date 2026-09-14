@@ -1,0 +1,7 @@
+Preparing worktree (new branch 'gemma-4-12b-nvfp4-off-guided-v3-issue-13')
+HEAD is now at 86935f48 chore: update the lockfile hash for the lint patch
+gemma-4-12b-nvfp4-off: worktree ready at /home/irae/code/mendel-benchmark/../mendel-bench-guided-gemma-4-12b-nvfp4-off, starting pi
+worker: contextWindow 258048 pinned on provider llama
+worker: compaction {"enabled": true, "reserveTokens": 8192}
+gemma-4-12b-nvfp4-off: loop verdict ok, worst ratio 0.53 on tool call
+gemma-4-12b-nvfp4-off: done

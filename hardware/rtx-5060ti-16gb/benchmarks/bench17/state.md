@@ -323,6 +323,44 @@ Deviation: none.
 All five smokes that do not depend on the blocked `sweep-qwen36-nvfp4`
 are done and pass. The guided rows are next.
 
+### gemma12-nvfp4-mendel-guided-off
+
+`gemma-4-12b-nvfp4`, off, window 258048, `-c 262144`, f16 KV, no
+drafter. `gh auth status` pass, stash cleared. Server config:
+`FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF` `gemma-4-12b-it-nvfp4.gguf`
+rev `207974a`, llama.cpp `0.4.0-dev` build 10809, `vram 16311 MiB`.
+run-watch armed (no exit 42, no crash). Started 10:29:44Z UTC, ended
+10:30:43Z.
+
+`end_reason=repetition_loop`, the same `bash` tool call (`pnpm remove
+--filter examples/planout-example uuid`) 5 times running, starting
+10:30:39Z. 30 tool calls, 31 assistant messages, peak context
+12524/258048 (4.9%). Guided worktree
+`~/code/mendel-bench-guided-gemma-4-12b-nvfp4-off` shows **zero
+commits** past base `86935f48`, one modified file and one untracked
+directory, uncommitted.
+
+Per Mendel `PLAN.md`, "Completion cap, invalid runs, and the score
+line": zero commits makes this row **invalid**, not a valid partial
+(the repetition-loop-is-valid-partial rule in this run's own text
+assumed at least one commit; `PLAN.md` is authoritative and its
+zero-commits rule controls). Scored and published by a subagent per
+the "Scoring and publishing are one task" rule: `results-guided.json`
+entry `invalid: true`, config note carries the file, revision, llama.cpp
+version, `-c`, KV type, window, reserve, keep budget, "no drafter",
+`vram 16311 MiB`, no explicit temperature/top_p passed (server
+default), and "EvalPlus gate waived for this run (owner, 2026-09-13)".
+Committed and pushed to `~/code/mendel-benchmark` branch `benchmark`,
+commit `31214ec9`.
+Files: `results/mendel-guided-gemma12-nvfp4.log`,
+`results/server-guided-gemma12-nvfp4.log`,
+`~/.local/share/mendel-benchmark/runs/gemma-4-12b-nvfp4-off-guided-meta.json`.
+Deviation: this build's guided row is invalid on the model's own
+immediate failure, not a harness fault; not retried automatically
+(the retry rule covers machine-caused or human-waiting failures, not
+a model's own zero-commit loop). Flagged to the coordinator for a
+retry decision.
+
 ## Handing over
 
 Not started.

@@ -131,3 +131,17 @@ type.
 | new | mendel smoke | gemma-4-12b-q4kxl | f16 KV, `-c 262144`, window 258048, off | 8 calls, 1 commit, clean, no loop, 15s | pass |
 
 ## Mendel
+
+| old/new | test | model | harness | score |
+|---|---|---|---|--:|
+| new | guided | gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, rtx-5060ti-16gb) | window 258048, reserve 8192 | invalid |
+
+**gemma12-nvfp4-mendel-guided-off**, invalid. The model looped on the
+same tool call (`bash pnpm remove --filter examples/planout-example
+uuid`) five times in a row and the run ended 59 seconds after start
+with zero commits, before the first library was even removed. Per
+Mendel `PLAN.md`, a run with zero commits is invalid regardless of end
+reason — the model's own failure, not a harness or serving collapse.
+30 tool calls, peak context 12524/258048 (4.9%). Scored and published
+to `~/code/mendel-benchmark` branch `benchmark`, commit `31214ec9`.
+Row dimmed, dash rank, excluded from site tables.
