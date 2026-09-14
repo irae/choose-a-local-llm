@@ -267,6 +267,13 @@ committed measurement, the block that measures it comes first.
      reader who needs the order reads the list at the top.
    - A block that needs a value from another block names that block by
      its mnemonic, never by a position.
+   - **Every speed block runs before the next agent row** (owner rule,
+     2026-09-14). A sweep, ladder or creep added while the run is
+     already past its stage goes to the top of the remaining list, and
+     the runner takes it at the next block boundary. A running agent
+     row is never stopped for it. Run 17 kept a replaced model's sweep
+     in its old place, and the runner passed it for a day of agent
+     rows.
 
    Each block gives: the serving
    command with its derived parameters marked and sourced, the run

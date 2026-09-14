@@ -34,24 +34,29 @@ this run only, and the run's rows say so.
 - `sweep-gemma12-nvfp4`
 - `sweep-gemma12-q4kxl`
 - `sweep-qwen38-iq3s`
-- `sweep-qwen36-q4kxl`
 - `sweep-gemma26-nvfp4`
 - `gemma12-nvfp4-smoke-off`
 - `qwen38-iq3s-smoke-xhigh`
-- `qwen36-q4kxl-smoke-high`
 - `gemma26-nvfp4-smoke-high`
 - `gemma12-q4kxl-smoke-off`
 - `gemma12-nvfp4-mendel-guided-off`
 - `qwen38-iq3s-mendel-guided-xhigh`
-- `qwen36-q4kxl-mendel-guided-high`
 - `gemma26-nvfp4-mendel-guided-high`
-- `gemma12-q4kxl-mendel-guided-high`
-- `gemma12-nvfp4-mendel-guided-high`
+- `sweep-qwen36-q4kxl`
 - `sweep-qwen38-ista`
 - `sweep-qwen38-iq3s-mtp`
+- `qwen36-q4kxl-smoke-high`
 - `qwen38-ista-smoke-xhigh`
+- `gemma12-q4kxl-mendel-guided-high`
+- `gemma12-nvfp4-mendel-guided-high`
+- `qwen36-q4kxl-mendel-guided-high`
 - `qwen38-ista-mendel-guided-xhigh`
 - `mendel-blind-after-guided`
+
+Owner, 2026-09-14: every speed block runs before the next agent row.
+The three sweeps above were added while the run was already in its
+agent rows, so they run right after `gemma26-nvfp4-mendel-guided-high`
+closes, before any other smoke or agent row. That row is not stopped.
 - `retry-sweep`
 
 ## Essentials
