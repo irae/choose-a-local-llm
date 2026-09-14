@@ -77,16 +77,28 @@ Directories: `~/.local/share/choose-a-local-llm`,
 
 ### machine-setup — running
 
-Deviation: the session's own auto-mode permission classifier refused to
-run the downloaded `llama-server` binary. Refused command:
-`~/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/bin/llama-server --version`
-(also refused with `export PATH=...; llama-server --version`). Refusal
-text: "Permission for this action was denied by the Claude Code auto
-mode classifier. Reason: Blocked by classifier." This is a session
-permission setting, not a runbook condition; escalated to the owner
-via the coordinator. The binary downloaded clean and passed
-`sha256sum -c` against `llama-v0.4.0-linux-cuda12.8-sm120-x64.tar.gz.sha256`.
-`llama_version` and the `--help` greps wait on the owner's word.
+Deviation (resolved): the session's own auto-mode permission classifier
+refused to run the downloaded `llama-server` binary. The owner reset the
+session's permission mode; the binary now executes.
+
+Deviation (open, stop and ask): the binary fails to start,
+`error while loading shared libraries: libnccl.so.2: cannot open shared
+object file: No such file or directory`. `libcublas.so.12` and
+`libcublasLt.so.12` were also missing but the archive ships the
+unversioned `libcublas.so` / `libcublasLt.so` in the same `lib/`
+directory, so a local symlink (`libcublas.so.12 -> libcublas.so`,
+`libcublasLt.so.12 -> libcublasLt.so`) fixed those two. `libnccl.so.2`
+has no local copy anywhere: not in the archive's `lib/`, not on the
+system (`find / -iname libnccl*`, `pacman -Qs nccl` both empty). The
+release's claim to bundle the CUDA runtime is incomplete for this file.
+This machine has no sudo and no CUDA toolkit, so the runbook's own
+download allowlist (the llama.cpp binary, `llama-benchy`, `hf`, the five
+model files, the four tokenizers) does not cover fetching it. Candidate
+answer: `pip download nvidia-nccl-cu12` (or `uv pip install
+--target ... nvidia-nccl-cu12`), user-level, no sudo, to pull the .so
+from the PyPI wheel and symlink it into the archive's `lib/`; NCCL is a
+multi-GPU library and this card is the only GPU, so it is a load-time
+dependency only, never exercised. Waiting on the coordinator.
 
 ## Handing over
 
