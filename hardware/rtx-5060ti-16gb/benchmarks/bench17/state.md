@@ -520,10 +520,15 @@ xtend, urlsafe-base64); rimraf half-done, glob barely started
 memory kill, no GPU watchdog event, no server issue.
 
 Scored by a subagent per `PLAN.md`/`RUBRIC.md` with the 37.5-point cap
-(3/8 libraries). Model value written in full runbook format, not a
-bare alias (per the coordinator's earlier catch on the qwen38-iq3s
-row). Scored and published to `~/code/mendel-benchmark` branch
-`benchmark`; commit id pending the subagent's report.
+(3/8 libraries): raw 65, capped 37.5. Model value written in full
+runbook format, not a bare alias (per the coordinator's earlier catch
+on the qwen38-iq3s row) — verified in JSON, CSV and HTML. Two of the
+three committed libraries carry medium defects on closer evidence
+(xtend's `package.json` entry never cleaned; rimraf missed trap B),
+and the uncommitted glob edit reproduces trap A even though `TASKS.md`
+marks it done. `gemma26_nvfp4_guided` = 37.5 (partial 3/8). Scored and
+published to `~/code/mendel-benchmark` branch `benchmark`, commit
+`48a90699`.
 Files: `results/mendel-guided-gemma26-nvfp4.log`,
 `results/server-guided-gemma26-nvfp4.log`,
 `results/vram-procs-gemma26-nvfp4-guided.log`.

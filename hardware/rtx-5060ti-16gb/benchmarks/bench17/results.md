@@ -136,6 +136,7 @@ type.
 |---|---|---|---|--:|
 | new | guided | gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, rtx-5060ti-16gb) | window 258048, reserve 8192 | 0 (model failed) |
 | new | guided | qwen3.8-27b-iq3s (unsloth IQ3_S, xhigh, rtx-5060ti-16gb) | window 61440, reserve 8192 | 79 (partial 7/8) |
+| new | guided | gemma-4-26b-a4b-nvfp4 (catlilface NVFP4Q8, high, rtx-5060ti-16gb) | window 94208, reserve 8192 | 37.5 (partial 3/8) |
 
 **gemma12-nvfp4-mendel-guided-off**, model-failed. The model looped on
 the same tool call (`bash pnpm remove --filter examples/planout-example
@@ -167,3 +168,19 @@ recovered in place with no lost commits, named in the config note
 alongside the owner's shared-desktop-VRAM-squeeze addendum. Scored and
 published to `~/code/mendel-benchmark` branch `benchmark`, commit
 `0ab06c66`.
+
+**gemma26-nvfp4-mendel-guided-high**, 37.5/100 capped (raw 65, the
+37.5-point completion cap for 3/8 binds), partial. Ended on a genuine
+475x text-repetition loop ("I'll try to `git add` them and then `git
+status`."), scored as a valid partial per Mendel's live-loop-stop
+rule. 3 of 8 libraries committed (uuid, xtend, urlsafe-base64), but
+two of those three carry medium defects found from evidence: xtend's
+`.js` requires were removed but its `package.json` entry was never
+cleaned (`xtend` still physically in `node_modules`); rimraf's two
+target files were fixed but missed the
+`legacy-packages/mendel-requirify` reference (trap B). The
+uncommitted glob edit reproduces trap A exactly
+(`glob(...).then is not a function`) even though `TASKS.md` marks it
+done. Only 1 of 6 commits ran the full unit suite first, against
+v3.0's rule of one before every commit. Scored and published to
+`~/code/mendel-benchmark` branch `benchmark`, commit `48a90699`.
