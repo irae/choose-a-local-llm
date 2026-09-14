@@ -123,16 +123,17 @@ retired memory limits.
 
 A desktop PC with a GeForce RTX 5060 Ti, 16 GB of VRAM, 32 GB of
 RAM. One runtime: llama-server on CUDA. The card runs NVFP4 natively,
-so two of the five builds under test are NVFP4. Every cell is
-pending until the first run closes; the rows are the plan.
+so two of the five builds under test are NVFP4. The first run is
+under way: speed and context are measured for four builds, and the
+agent cells are pending.
 
 <!-- gen:models-evaluated:rtx-5060ti-16gb:start -->
 | Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" /> | **pending** | mem | <TokCell shallow="pending" deep="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
-| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" /> | **pending** | mem | <TokCell shallow="pending" deep="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="q8_0" effort="on" /> | **pending** | mem | <TokCell shallow="pending" deep="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" /> | **pending** | mem | <TokCell shallow="pending" deep="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" /> | **261k** | mem | <TokCell shallow="49.55" deep="33.11" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" /> | **97k** | mem | <TokCell shallow="58.77" deep="45.59" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" /> | **65k** | mem | <TokCell shallow="29.36" deep="20.92" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="q8_0" effort="on" /> | pending | mem | <TokCell shallow="pending" deep="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
 <!-- gen:models-evaluated:rtx-5060ti-16gb:end -->
 
 The legend above applies. On this setup Ctx is the largest `-c` that

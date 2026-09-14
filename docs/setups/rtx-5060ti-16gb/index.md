@@ -12,9 +12,9 @@
   candidates here, and two of the five builds under test are NVFP4.
 - **One runtime, llama-server on CUDA.** No MLX, no LM Studio, no
   fork.
-- **Every cell is pending.** The first run on this machine is under
-  way; the rows on the [comparison page](./comparison.md) are the
-  plan.
+- **Speed and context are measured for four builds.** The first run
+  on this machine is under way. The Qwen3.6 build and every agent
+  cell are still pending.
 
 ## Setup
 
