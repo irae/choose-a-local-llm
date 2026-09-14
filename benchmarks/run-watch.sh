@@ -15,6 +15,8 @@
 #      memory log: free RAM and the deltas of the swap and compression
 #      counters from vm_stat, so a slowdown can be matched to a real
 #      swap or compression event. That log is the run's memory record.
+#      On a Linux machine with an NVIDIA GPU the line carries
+#      MemAvailable and the GPU memory in use from nvidia-smi instead.
 #
 # Two liveness signals, never /health:
 #   1. It tails the server log and matches every new line against the
@@ -152,6 +154,14 @@ write_memory_line() {
     local s free swapin swapout compress decompress free_mb
     s=$(vm_stat 2>/dev/null)
     if [ -z "$s" ]; then
+        if command -v nvidia-smi > /dev/null 2>&1; then
+            local gpu_used avail
+            gpu_used=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits 2>/dev/null | head -1)
+            avail=$(awk '/MemAvailable/ {print int($2 / 1024)}' /proc/meminfo)
+            echo "$(date '+%H:%M:%S') free_mb=$avail gpu_used_mb=$gpu_used" >> "$MEM_LOG"
+            mem_first=0
+            return
+        fi
         if [ "$mem_first" = "1" ]; then
             echo "vm_stat not found: no memory lines (this method reads the macOS counters)"
             mem_first=0

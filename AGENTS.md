@@ -77,7 +77,8 @@ Benchmark work:
   do.
 - `hardware/<hardware-id>/`. Everything that belongs to one machine.
   `<hardware-id>` is the same id the site uses for the setup under
-  `docs/setups/`; today the only one is `m1-max-32gb`.
+  `docs/setups/`; today `m1-max-32gb` (the Mac) and `rtx-5060ti-16gb`
+  (the Linux desktop). Run numbers are shared across machines.
 - `hardware/<hardware-id>/benchmarks/INDEX.md`. Start here to learn
   what each run found. It links every run's state and results.
 - `hardware/<hardware-id>/benchmarks/bench<N>/AGENT.md`. The runbook
