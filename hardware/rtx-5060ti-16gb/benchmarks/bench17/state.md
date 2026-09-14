@@ -23,8 +23,8 @@ its source.
 | `llama_version` | 0.4.0-dev (build 10809, commit 5266f24da) | `machine-setup` |
 | `benchy_version` | 0.4.0 | `machine-setup` |
 | `hf_version` | 1.31.0 | `machine-setup` |
-| `gemma12_nvfp4_c` | - | - |
-| `gemma12_nvfp4_clean` | - | - |
+| `gemma12_nvfp4_c` | 262144 | `sweep-gemma12-nvfp4` |
+| `gemma12_nvfp4_clean` | 261120 | `sweep-gemma12-nvfp4` |
 | `gemma12_q4kxl_c` | - | - |
 | `gemma12_q4kxl_clean` | - | - |
 | `qwen38_iq3s_f16_c` | - | - |
@@ -102,6 +102,28 @@ switch. `llama_version` recorded below. `PATH`/`LD_LIBRARY_PATH` for
 every session of this run:
 `export PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/bin:$PATH"`,
 `export LD_LIBRARY_PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/lib:$LD_LIBRARY_PATH"`.
+
+### sweep-gemma12-nvfp4
+
+`FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF` `gemma-4-12b-it-nvfp4.gguf`
+rev `207974a`, f16 KV, no drafter, one slot, `-c 262144`. Started
+05:13, closed 05:37.
+
+| depth | tok/s | VRAM MB | MemAvailable |
+|--:|--:|--:|--:|
+| 4096 | 49.55 | 12355 | 22711 |
+| 98304 | 41.57 | 12355 | 22738 |
+| 261120 | 33.11 | 12630 | 22547 |
+
+speed/mem headroom, ceiling 261120 @ 33.11 tok/s (well above the Mac's
+9.2 tok/s at 245K on the k-quant). `gemma12_nvfp4_c` = 262144,
+`gemma12_nvfp4_clean` = 261120.
+Files: `results/benchy-gemma12-nvfp4-f16.md`,
+`results/server-sweep-gemma12-nvfp4.log`,
+`results/benchy-gemma12-nvfp4-f16-vm.log`.
+Deviation: the first server start's `tee` failed (results dir did not
+exist yet when the process launched), no data lost — server log
+recreated on restart before any benchy request ran.
 
 ## Handing over
 
