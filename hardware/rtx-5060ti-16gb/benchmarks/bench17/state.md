@@ -248,6 +248,24 @@ carries no MTP layers and the runbook already says "one arm, no
 drafter" for this block. No server time lost worth noting (failed at
 load, no compute). Swap flat around 1.6 GB.
 
+### gemma12-nvfp4-smoke-off
+
+`gemma-4-12b-nvfp4`, level off (model's published default), window
+258048 (261120 rounded down to a multiple of 4096, source
+`gemma12_nvfp4_clean`), `-c 262144`. `gh auth status` pass. `git stash
+list` in `~/code/mendel-benchmark` was empty before `git stash clear`.
+
+`SMOKE-MENDEL model=gemma-4-12b-nvfp4 level=off task=xtend
+window=258048 calls=26 distinct=12 longest_run=2 loop=ok:0.40
+compactions=0 splits=0 peak=5494 commits=1 clean=yes end=stop wall_s=51
+verdict=pass`
+
+Session log thinking check: `usage.reasoning` 0 on every assistant
+message, no thinking content block, matches level off. `gemma12-nvfp4-mendel-guided-off` may proceed.
+Files: `results/mendel-smoke-gemma12-nvfp4.log`,
+`results/server-smoke-gemma12-nvfp4.log`.
+Deviation: none.
+
 ## Handing over
 
 Not started.

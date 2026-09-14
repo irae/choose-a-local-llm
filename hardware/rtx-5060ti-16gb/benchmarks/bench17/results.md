@@ -123,4 +123,8 @@ type.
 
 ## Gates
 
+| old/new | gate | model | config | result | verdict |
+|---|---|---|---|---|---|
+| new | mendel smoke | gemma-4-12b-nvfp4 | f16 KV, `-c 262144`, window 258048, off | 26 calls, 1 commit, clean, no loop, 51s | pass |
+
 ## Mendel
