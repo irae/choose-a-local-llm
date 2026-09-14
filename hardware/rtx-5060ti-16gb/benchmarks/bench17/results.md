@@ -128,5 +128,6 @@ type.
 | new | mendel smoke | gemma-4-12b-nvfp4 | f16 KV, `-c 262144`, window 258048, off | 26 calls, 1 commit, clean, no loop, 51s | pass |
 | new | mendel smoke | qwen3.8-27b-iq3s | q8_0 KV, `-c 65536`, window 61440, xhigh | 10 calls, 1 commit, clean, no loop, 61s | pass |
 | new | mendel smoke | gemma-4-26b-a4b-nvfp4 | f16 KV, `--n-cpu-moe 7`, `-c 98304`, window 94208, high | 10 calls, 1 commit, clean, no loop, 30s | pass |
+| new | mendel smoke | gemma-4-12b-q4kxl | f16 KV, `-c 262144`, window 258048, off | 8 calls, 1 commit, clean, no loop, 15s | pass |
 
 ## Mendel
