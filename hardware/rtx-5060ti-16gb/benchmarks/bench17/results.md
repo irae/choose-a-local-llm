@@ -73,6 +73,21 @@ the load-pass check alone was not enough headroom; stepped `-c` down
 Clean depth: 52224, `qwen38_iq3s_f16_clean` = 52224. Swap held at
 604-638 MB through the sweep, flat, no growth.
 
+**q8_0 arm.** Ladder: `-c 65536` passed at load (14505 MiB, ~1.8 GB
+headroom) and served the deep cell clean, no retry needed.
+`qwen38_iq3s_q8_c` = 65536.
+
+| arm | depth | tok/s | sd | prompt tok/s | VRAM used | MemAvailable |
+|---|--:|--:|--:|--:|--:|--:|
+| q8_0 | 4096 | 29.36 | 0.01 | 891.83 | 14527 MiB | 23950 MB |
+| q8_0 | 24576 | 25.84 | 0.00 | 829.09 | 14527 MiB | 23900 MB |
+| q8_0 | 64512 | 20.92 | 0.00 | 704.54 | 14527 MiB | 23890 MB |
+
+Clean depth: 64512, `qwen38_iq3s_q8_clean` = 64512. Swap flat at 603
+MB. The q8_0 arm reaches a wider window than f16 (65536 vs 53248) at a
+slightly slower decode speed (20.92 vs 24.34 tok/s at their respective
+deep cells).
+
 A table and no pick. The coordinator names the served arm and the KV
 type.
 

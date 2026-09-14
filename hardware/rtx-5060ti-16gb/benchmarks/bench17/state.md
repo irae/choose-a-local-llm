@@ -29,8 +29,8 @@ its source.
 | `gemma12_q4kxl_clean` | 261120 | `sweep-gemma12-q4kxl` |
 | `qwen38_iq3s_f16_c` | 53248 | `sweep-qwen38-iq3s` (stepped down from 61440 after a crash) |
 | `qwen38_iq3s_f16_clean` | 52224 | `sweep-qwen38-iq3s` |
-| `qwen38_iq3s_q8_c` | - | - |
-| `qwen38_iq3s_q8_clean` | - | - |
+| `qwen38_iq3s_q8_c` | 65536 | `sweep-qwen38-iq3s` |
+| `qwen38_iq3s_q8_clean` | 64512 | `sweep-qwen38-iq3s` |
 | `qwen36_nvfp4_n_cpu_moe` | - | - |
 | `qwen36_nvfp4_clean` | - | - |
 | `gemma26_nvfp4_n_cpu_moe` | - | - |
@@ -171,6 +171,26 @@ compute buffers for an actual request need more headroom than the
 bare load check shows. Retried at `-c` minus 8192 in the same block,
 per the owner's 2026-09-13 retry rule; no data lost, the crashed run's
 `-save-result` file was never written. Swap held flat at 604-638 MB.
+
+### sweep-qwen38-iq3s (q8_0 arm)
+
+`unsloth/Qwen3.8-27B-GGUF` `Qwen3.8-27B-UD-IQ3_S.gguf` rev `4ca7207`,
+q8_0 KV, no drafter, one slot, `-c 65536`. Passed at load and at the
+deep cell, no retry. Started 06:44, closed 06:56.
+
+| depth | tok/s | VRAM MB | MemAvailable |
+|--:|--:|--:|--:|
+| 4096 | 29.36 | 14527 | 23950 |
+| 24576 | 25.84 | 14527 | 23900 |
+| 64512 | 20.92 | 14527 | 23890 |
+
+speed/mem, ceiling 64512 @ 20.92 tok/s. `qwen38_iq3s_q8_c` = 65536,
+`qwen38_iq3s_q8_clean` = 64512. Wider window than the f16 arm (65536
+vs 53248) at somewhat lower decode speed at depth.
+Files: `results/benchy-qwen38-iq3s-q8.md`,
+`results/server-sweep-qwen38-iq3s-q8_0.log`,
+`results/benchy-qwen38-iq3s-q8-vm.log`.
+Deviation: none. Swap flat at 603 MB.
 
 ## Handing over
 
