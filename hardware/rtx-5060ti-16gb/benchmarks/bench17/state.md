@@ -361,6 +361,47 @@ immediate failure, not a harness fault; not retried automatically
 a model's own zero-commit loop). Flagged to the coordinator for a
 retry decision.
 
+### qwen38-iq3s-mendel-guided-xhigh — attempt 1, machine-killed
+
+`qwen3.8-27b-iq3s`, xhigh, q8_0 KV, window 61440. Started 10:35Z,
+progressing normally (1 commit landed, uuid task done; xtend task
+in progress, 4 files modified uncommitted) when a host low-memory
+event killed the server, the guided worker's `pi` process and an
+unrelated background download simultaneously around 12:19Z. `free -m`
+showed `available` recovering to ~26 GB right after. GPU itself never
+lost memory; this was host RAM, not VRAM.
+
+`run-worker.sh` has no resume flag (the backlog item
+`backlog/mendel-resume-interrupted-run.md` proposes one but it is
+unimplemented; `--resume` is not a real flag on this build) and aborts
+when its worktree or branch already exists, so the interrupted attempt
+could not resume in place. Per Mendel `PLAN.md` "Cleanup" and "No
+cleanup mid-run", the interrupted worktree is not deleted: moved to
+`~/code/mendel-bench-guided-qwen3.8-27b-iq3s-xhigh-interrupted1`
+(`git worktree move`), its branch renamed to
+`qwen3.8-27b-iq3s-xhigh-guided-v3-issue-13-interrupted1` and pushed to
+`origin/mendel` as evidence. Its run artifacts (`events.jsonl`, `meta.json`,
+etc.) copied to
+`~/.local/share/mendel-benchmark/runs/interrupted/` before the fresh
+attempt's worker overwrote the plain slug's files.
+
+Per checklist rule 15 (owner, 2026-09-13), a machine-killed row is
+retried at once, inside the block: attempt 2 started clean at
+the same config immediately after.
+
+### qwen38-iq3s-mendel-guided-xhigh — attempt 2, running
+
+`qwen3.8-27b-iq3s`, xhigh, q8_0 KV, `-c 65536`, window 61440. `gh auth
+status` pass, stash cleared. Server up at 14527 MiB. run-watch armed.
+Started ~12:22Z.
+
+Deviation: this run's own reading of the interrupted state as a
+"machine kill, retry at once" leaves attempt 1's partial 1-commit
+progress (2/8 tasks touched) unscored — flagged to the coordinator:
+should attempt 1's branch (now `-interrupted1`) be scored as a
+resumed-session row per the backlog proposal once implemented, or
+discarded once attempt 2 closes? Not blocking; the GPU moved on.
+
 ## Handing over
 
 Not started.
