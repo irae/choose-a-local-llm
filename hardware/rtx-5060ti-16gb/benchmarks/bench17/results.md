@@ -179,7 +179,27 @@ Faster than n-max1 at every depth (61.16 vs 60.60, 50.04 vs 44.12,
 window). Per the sweep rule, the climb continues to n-max 3. VRAM
 flat, swap flat around 4.5 GB.
 
-A table and no pick. The coordinator names the served arm.
+**n-max 3 arm**, `--n-cpu-moe 21` (same as n-max2, no OOM this time).
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance | VRAM used |
+|---|--:|--:|--:|--:|--:|--:|
+| n-max3 | 4096 | 57.85 | 0.39 | 462.94 | ~0.54-0.77 | 14894 MiB |
+| n-max3 | 65536 | 47.25 | 2.58 | 423.56 | ~0.54-0.77 | 14894 MiB |
+| n-max3 | 97280 | 46.76 | 4.91 | 416.49 | ~0.54-0.77 | 14894 MiB |
+
+Mixed against n-max2: slower at 4K and 65K (57.85 vs 61.16, 47.25 vs
+50.04), slightly faster at 97K (46.76 vs 45.42). Draft acceptance
+0.54-0.77, mean draft length 2.6-3.3 (highest of the three drafter
+arms, as expected with the largest draft window). n-max3 is the last
+arm in the climb regardless of this result. VRAM flat, swap flat
+around 5.3-5.4 GB.
+
+**sweep-qwen36-q4kxl closes.** Summary across all four arms at 97K
+(the deepest, most representative cell): no-drafter 37.80, n-max1
+37.92, n-max2 45.42, n-max3 46.76 tok/s. n-max2 and n-max3 read close;
+n-max2 needs less VRAM headroom (`--n-cpu-moe` 21 either way here) and
+a smaller draft window. A table and no pick — the coordinator names
+the served arm.
 
 ## Gates
 

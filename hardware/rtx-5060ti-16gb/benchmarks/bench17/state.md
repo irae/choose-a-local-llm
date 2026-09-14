@@ -546,6 +546,15 @@ Files: `results/mendel-guided-gemma26-nvfp4.log`,
   Merged the reorder commit only (`git merge f71daf3`, not full
   master, no directory moves) at this block boundary.
 
+### sweep-qwen36-q4kxl — closed
+
+Four arms at `-c 98304`, q8_0 KV: no-drafter (`n-cpu-moe` 17), n-max1
+(19), n-max2 (21), n-max3 (21). 97K depth tok/s: 37.80, 37.92, 45.42,
+46.76. n-max2/n-max3 read close; n-max2 needs a smaller draft window
+for a similar gain. Files:
+`results/benchy-qwen36-q4kxl-{nodraft,nmax1,nmax2,nmax3}.md`,
+matching `server-sweep-qwen36-q4kxl-*.log` and `*-vm.log`.
+
 ## Handing over
 
 Not started.
