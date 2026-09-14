@@ -137,6 +137,22 @@
       "note": "Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at effort low, scored 2026-09-10 at budget 8192 on the same build served at `-c 32768`: 0.976/0.933, one empty, in 2h23; level with the medium row on base and one problem lower on plus. The calibration converged on all 10 problems with a 3634-token maximum."
     },
     {
+      "config": "Qwen3.8-27B, GGUF UD-IQ3_S (unsloth), no drafter, f16 KV, effort xhigh",
+      "maxCtx": "147k",
+      "gatedBy": "speed",
+      "tokShallow": "13.60",
+      "tokDeep": "7.97",
+      "memory": "25.5 GB",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "id": "qwen38-gguf-unsloth-iq3s-xhigh",
+      "added": "2026-09-14",
+      "spec": { "base": "Qwen3.8-27B", "quant": "UD-IQ3_S", "server": "llama-server", "publisher": "unsloth", "drafter": "", "kv": "f16", "effort": "xhigh" },
+      "hidden": false,
+      "command": "llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S \\\n  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 188416 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.8-27b-iq3s`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build (run 18, in progress). Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. The drafter arms, the agent rows and EvalPlus are pending."
+    },
+    {
       "config": "Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), no drafter, f16 KV, effort medium",
       "maxCtx": "104k",
       "gatedBy": "mem",

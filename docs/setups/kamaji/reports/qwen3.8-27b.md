@@ -65,6 +65,7 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" /> | **25k** | mem | <TokCell shallow="17.3" deep="14.8" top-shallow top-deep /> | **22.0 GB** | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" /> | **147k** | speed | <TokCell shallow="13.60" deep="7.97" top-shallow top-deep /> | **25.5 GB** | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -161,6 +162,18 @@ Set the harness compaction threshold at ~26K. No Mendel run is planned: the agen
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
   --reasoning-effort medium --port 8081
+```
+
+<ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" />
+
+pi id `qwen3.8-27b-iq3s`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build (run 18, in progress). Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. The drafter arms, the agent rows and EvalPlus are pending.
+
+```bash
+llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S \
+  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \
+  -ngl 999 -fa on -c 188416 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
 ```
 <!-- gen:model-configs:end -->
 

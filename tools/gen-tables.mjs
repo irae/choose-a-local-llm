@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { globSync } from 'node:fs'
+import { execSync } from 'node:child_process'
 
 const CHECK = process.argv.includes('--check')
 
@@ -826,6 +827,12 @@ function renderDecodeSummary(data) {
   return [...header, ...body, ...legend].join('\n')
 }
 
+// "New" is measured against the newest commit, not the clock, so the
+// generated tables stay the same for a given commit and the check in CI
+// cannot drift.
+const HEAD_TIME = Date.parse(execSync('git log -1 --format=%cI').toString().trim())
+const isNew = (r) => Boolean(r.added) && HEAD_TIME - Date.parse(r.added) < 48 * 3600 * 1000
+
 const dataFiles = globSync('docs/setups/*/models.json')
 let drift = false
 
@@ -852,7 +859,7 @@ for (const dataFile of dataFiles) {
   const mainAll = completeRows.length < 2 && visible.length > completeRows.length
   const mainRows = mainAll ? visible : completeRows
   const partialPool = visible.filter((r) => !mainRows.includes(r))
-  const partialPicked = partialPool.filter((r) => completeness(r) >= 0.4)
+  const partialPicked = partialPool.filter((r) => completeness(r) >= 0.4 || isNew(r))
   const partialAll = partialPicked.length < 2 && partialPool.length > partialPicked.length
   const partialRows = sortRows(partialAll ? partialPool : partialPicked)
   const allNote = (all) => (all ? ['', 'Fewer than two rows pass the filter of this table, so it shows every row it can hold.'] : [])

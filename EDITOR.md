@@ -346,6 +346,12 @@ it.
   row the first did not show. The rule is code in
   `tools/gen-tables.mjs`, the same path for every setup; it exists so
   a new setup under test shows its partial rows.
+- **A new row shows for 48 hours whatever its completeness** (owner,
+  2026-09-14). A row carries `"added": "<YYYY-MM-DD>"` when it enters
+  `models.json`; while that date is less than 48 hours before the newest
+  commit, the second comparison table shows the row even under 40
+  percent. The clock is the commit time, so a commit always generates
+  the same tables.
 - **Per-model tables use the same sort as every other table.** The
   page shows every visible row of the model in two tables inside one
   marker pair: the complete rows first, then one note line, then
