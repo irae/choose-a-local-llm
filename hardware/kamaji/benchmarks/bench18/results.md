@@ -41,3 +41,17 @@ Ceiling: 188416, wired 25911 MB at load.
 
 **speed**, ceiling 147k @ 8.17 tok/s. Floor reached at 164k (7.81 tok/s).
 Against the ISTA build (old, same Mac, same level): 14.1 at 4K, 8.3 at 147478, speed gated. This run: 13.70 at 4K, 8.17 at 147478 — close, slightly slower.
+
+## sweep-qwen38-unsloth
+
+`unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S` rev `4ca7207`, f16 KV, wired 25000, one slot, `--cache-ram 0`.
+
+| arm | `-c` | depth | tok/s | peak tok/s |
+|---|--:|--:|--:|--:|
+| nmax0 (no drafter) | 188416 | 4096 | 13.60 | 14.00 |
+| nmax0 (no drafter) | 188416 | 138240 | 8.19 | 9.00 |
+| nmax0 (no drafter) | 188416 | 147478 | 7.97 | 8.00 |
+| nmax1 | 139264 | 4096 | 12.23 | 13.00 |
+| nmax1 | 139264 | 138240 | 7.34 | 8.00 |
+
+Climb stopped after nmax1: slower than nmax0 at both shared depths. nmax2 and nmax3 not run. Beside it, the ISTA file's cells from run 16 on this Mac: 14.1 at 4K, 8.1 at 147K, no drafter. A table and no pick; `qwen38-unsloth-serving` applies the rule.
