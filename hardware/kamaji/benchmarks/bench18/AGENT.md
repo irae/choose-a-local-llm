@@ -257,13 +257,21 @@ every dense Qwen3.8 build (run 16), and it paid on other models; this
 block measures it for this file.
 
 **The drafter arm's `-c` first.** The drafter costs memory, so its
-`-c` is smaller. Serve n-max 3, the heaviest arm, at `-c 4096`, and
-record wired at load. The estimate is `qwen38_unsloth_c` minus (wired
-at load of n-max 3 minus `qwen38_unsloth_wired_load`) divided by
-0.0671 GB per 1K tokens, rounded down to a multiple of 8192. Probe the
-estimate with one real 4096-token completion, then bisect against
-`qwen38_unsloth_c` in multiples of 8192, at most four loads. Write
-`qwen38_unsloth_mtp_c`.
+`-c` is smaller. Serve n-max 3, the heaviest arm, at `-c
+<qwen38_unsloth_c>`, and record wired at load; also serve no drafter at
+`-c 4096` and n-max 3 at `-c 4096`. The drafter's cost is the wired
+difference of the two `-c 4096` loads; the estimate is
+`qwen38_unsloth_c` minus that cost divided by 0.0671 GB per 1K tokens,
+rounded down to a multiple of 8192. Probe the estimate with one real
+4096-token completion, then bisect against `qwen38_unsloth_c` in
+multiples of 8192, at most four loads. Write `qwen38_unsloth_mtp_c`.
+
+Coordinator correction, 2026-09-14: the first version of this
+paragraph compared wired at `-c 4096` with wired at `qwen38_unsloth_c`,
+so its search started far too low and stopped on four passing loads at
+139264. The run keeps 139264 for the arm table, and bisects the agent
+arm's `-c` up to `qwen38_unsloth_c` only when a drafter arm is the
+agent arm (message to the runner, same day).
 
 **The arms.** Each arm is a fresh server with `--cache-ram 0`:
 
