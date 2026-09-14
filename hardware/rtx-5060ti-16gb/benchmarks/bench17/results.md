@@ -134,14 +134,36 @@ type.
 
 | old/new | test | model | harness | score |
 |---|---|---|---|--:|
-| new | guided | gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, rtx-5060ti-16gb) | window 258048, reserve 8192 | invalid |
+| new | guided | gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, rtx-5060ti-16gb) | window 258048, reserve 8192 | 0 (model failed) |
+| new | guided | qwen3.8-27b-iq3s (unsloth IQ3_S, xhigh, rtx-5060ti-16gb) | window 61440, reserve 8192 | 79 (partial 7/8) |
 
-**gemma12-nvfp4-mendel-guided-off**, invalid. The model looped on the
-same tool call (`bash pnpm remove --filter examples/planout-example
+**gemma12-nvfp4-mendel-guided-off**, model-failed. The model looped on
+the same tool call (`bash pnpm remove --filter examples/planout-example
 uuid`) five times in a row and the run ended 59 seconds after start
 with zero commits, before the first library was even removed. Per
-Mendel `PLAN.md`, a run with zero commits is invalid regardless of end
-reason — the model's own failure, not a harness or serving collapse.
-30 tool calls, peak context 12524/258048 (4.9%). Scored and published
-to `~/code/mendel-benchmark` branch `benchmark`, commit `31214ec9`.
-Row dimmed, dash rank, excluded from site tables.
+the 2026-09-14 `PLAN.md` update (`invalid` now means only a serving or
+harness collapse), a zero-commit run the model caused is `model_failed`
+(`invalid: false`, `partial: true`, score 0), never retried on its
+own — the label was corrected from the original "invalid" call after
+the rule changed. 30 tool calls, peak context 12524/258048 (4.9%).
+Scored and published to `~/code/mendel-benchmark` branch `benchmark`,
+commit `31214ec9` (relabel commit `7fcb5888`). Row dimmed, dash rank,
+excluded from site tables.
+
+**qwen38-iq3s-mendel-guided-xhigh**, 79/100 raw and capped (the
+87.5-point completion cap for 7/8 did not bind), partial. Ran to
+`tooling_budget_exhausted` (repeated "premature length stop" nudges,
+loop verdict `ok` — not a repetition loop), 7 of 8 libraries done
+(uuid, xtend, urlsafe-base64, rimraf, glob, chalk, tmp; `shasum` never
+started). Two medium defects: chalk kept the old v2.1
+`enableColor`-forced contract instead of v3.0's plain
+`util.styleText` behavior, and the rimraf commit missed the
+`legacy-packages/mendel-requirify` reference. Full unit suite green
+(285/285), lint clean, real `pnpm remove` used throughout. Two prior
+attempts (machine-killed by a session-harness false-positive, 1 commit
+and 0 commits respectively) are unscored evidence, no penalty; a
+mid-run NVIDIA driver GPU-watchdog crash (Xid 8) was caught and
+recovered in place with no lost commits, named in the config note
+alongside the owner's shared-desktop-VRAM-squeeze addendum. Scored and
+published to `~/code/mendel-benchmark` branch `benchmark`, commit
+`0ab06c66`.

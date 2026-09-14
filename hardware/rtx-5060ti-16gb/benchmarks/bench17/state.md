@@ -490,6 +490,22 @@ full `nvidia-smi` process table to
 `results/vram-procs-<mnemonic>.log`. Running via `nohup ... & disown`
 for this row: `results/vram-procs-qwen38-iq3s-guided.log`.
 
+### qwen38-iq3s-mendel-guided-xhigh — closed, scored
+
+Ended 2026-09-14T16:48:50.883Z, `end_reason` `tooling_budget_exhausted`
+(9 of 10 tooling nudges were "premature length stop", 1 was the
+mid-run server-reload `503`; loop verdict `ok`, worst ratio 0.40 on
+thinking — not a repetition loop). 7 of 8 libraries committed
+(`shasum` never started), 7 commits, 332 tool calls, 35 compactions.
+Scored by a subagent per `PLAN.md`/`RUBRIC.md`: raw 79, capped 79 (the
+87.5 cap for 7/8 did not bind). Two medium defects: chalk kept the old
+v2.1 `enableColor`-forced contract instead of v3.0 `util.styleText`;
+the rimraf commit missed the `legacy-packages/mendel-requirify`
+reference. Trap A avoided, trap C avoided. Full unit suite green
+(285/285), lint clean. `qwen38_iq3s_guided` = 79 (partial 7/8).
+Scored and published to `~/code/mendel-benchmark` branch `benchmark`,
+commit `0ab06c66`.
+
 ## Handing over
 
 Not started.
