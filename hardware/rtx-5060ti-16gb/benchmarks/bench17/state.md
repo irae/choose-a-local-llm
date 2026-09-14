@@ -266,6 +266,26 @@ Files: `results/mendel-smoke-gemma12-nvfp4.log`,
 `results/server-smoke-gemma12-nvfp4.log`.
 Deviation: none.
 
+### qwen38-iq3s-smoke-xhigh
+
+`qwen3.8-27b-iq3s`, level xhigh (owner rule, 2026-09-09), q8_0 arm
+(coordinator's pick), window 61440, `-c 65536`. `gh auth status` pass,
+mendel-benchmark stash cleared (was empty).
+
+`SMOKE-MENDEL model=qwen3.8-27b-iq3s level=xhigh task=xtend
+window=61440 calls=10 distinct=10 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=4030 commits=1 clean=yes end=stop wall_s=61
+verdict=pass`
+
+Session log thinking check: `content[].type == "thinking"` present on
+all 7 assistant turns, with real reasoning text each time (the harness
+`usage.reasoning` counter reads 0 for this provider's shape, so that
+field alone is not the check — the content block is).
+`qwen38-iq3s-mendel-guided-xhigh` may proceed at q8_0.
+Files: `results/mendel-smoke-qwen38-iq3s.log`,
+`results/server-smoke-qwen38-iq3s-q8.log`.
+Deviation: none.
+
 ## Handing over
 
 Not started.

@@ -1,0 +1,8 @@
+mendel-smoke: model qwen3.8-27b-iq3s, thinking xhigh, task xtend, cap 1500s
+mendel-smoke: everything lands in /home/irae/.cache/choose-a-local-llm/mendel-smoke.NKDyjI
+mendel-smoke: fixture ready (xtend, 2 files, 310 bytes under lib), one commit, clean tree
+mendel-smoke: compaction settings {"enabled": true, "reserveTokens": 8192}
+mendel-smoke: contextWindow 61440 pinned on provider llama
+mendel-smoke: pi config pinned at /home/irae/.cache/choose-a-local-llm/mendel-smoke.NKDyjI/pi-agent
+mendel-smoke: pi exited 0 after 61s, session /home/irae/.cache/choose-a-local-llm/mendel-smoke.NKDyjI/session/2026-09-14T10-25-02-434Z_01a09f72-e5e2-7066-b820-43f579aa001e.jsonl
+SMOKE-MENDEL model=qwen3.8-27b-iq3s level=xhigh task=xtend window=61440 calls=10 distinct=10 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=4030 commits=1 clean=yes end=stop wall_s=61 verdict=pass
