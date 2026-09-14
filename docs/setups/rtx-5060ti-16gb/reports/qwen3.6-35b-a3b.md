@@ -36,7 +36,7 @@ Each table row above is one config; start it with its block below.
 <!-- gen:model-configs:start -->
 <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="q8_0" effort="on" />
 
-pi id `qwen3.6-35b-a3b-q4kxl`. The build the reference setup serves, with the MTP drafter in a separate file. The file is larger than the card, so a measured count of expert layers stays in host RAM (`--n-cpu-moe`); the drafter arm is measured on real text before the row is served. A community NVFP4 repack was tried first and failed to load (a tensor-count defect); the owner chose the mainstream build over a niche one (2026-09-14). Every cell is pending until the first run closes.
+pi id `qwen3.6-35b-a3b-q4kxl`. The build the reference setup serves, with the MTP drafter embedded in the file. The file is larger than the card, so a measured count of expert layers stays in host RAM (`--n-cpu-moe`); the drafter arm is measured on real text before the row is served. A community NVFP4 repack was tried first and failed to load (a tensor-count defect); the owner chose the mainstream build over a niche one (2026-09-14). Every cell is pending until the first run closes.
 
 ```bash
 llama-server -m ~/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf \
