@@ -266,7 +266,7 @@
       "hidden": false,
       "abandoned": {
         "marker": "💀",
-        "page": "../benchmarks/gemma-4-26b-a4b.md#the-retired-mlx-build",
+        "page": "../gemma-4-26b-a4b-mlx-retired.md",
         "reason": "This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task."
       },
       "note": "Retired 2026-09-12 (owner). The agent smoke at thinking high on a 65536 window ended with zero commits on a tool call the server truncated mid-generation, with no OOM and no server death; the GGUF UD-Q4_K_XL build of the same model completes the agent task, so this quant is not a candidate and is not run again. Real-text speed read 2026-09-12 with llama-benchy: 49.3 tok/s at 4K and 23.4 at 64K; the earlier creep read the same server alternating between 13 and 24 tok/s from 60K up, with 12.83 the last stable step at 70K.",
@@ -322,7 +322,7 @@
       "retired": {
         "date": "2026-09-04",
         "reason": "thinking-on repetition loop; entry gone from the model store",
-        "details": "../benchmarks/gemma-4-12b-it.md#the-retired-entry"
+        "details": "../lmstudio-retired.md"
       }
     },
     {
@@ -333,7 +333,7 @@
       "tokDeep": "23.23",
       "memory": "17.2 GB",
       "evalplus": "0.909/0.872/100%",
-      "mendel": "invalid",
+      "mendel": "model-failed",
       "id": "gemma12-lmstudio-off",
       "spec": { "base": "Gemma-4-12B", "quant": "4-bit", "server": "lms", "publisher": "lmstudio-community", "repo": "lmstudio-community/gemma-4-12B-it-MLX-4bit", "drafter": "", "kv": "f16", "effort": "off" },
       "hidden": false,
@@ -359,7 +359,7 @@
       "tokDeep": "9.2",
       "memory": "13.9 GB",
       "evalplus": "0.976/0.939/100%",
-      "mendel": "invalid",
+      "mendel": "model-failed",
       "id": "gemma12-gguf-f16",
       "spec": { "base": "Gemma-4-12B", "quant": "Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "drafter": "", "kv": "f16", "effort": "off" },
       "hidden": false,

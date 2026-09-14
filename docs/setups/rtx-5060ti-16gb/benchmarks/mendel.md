@@ -48,6 +48,7 @@ same prompt follow.
 <!-- gen:mendel-guided:start -->
 | Model / Config | Score | Wall | Ctx / speed | Tokens | Ctx use | Bugs | Stats |
 |---|--:|--:|--:|--:|--:|---|---|
+| [<ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" />](../reports/gemma-4-12b-it.md) | <ScoreCell value="0" note="0%" top /> | **1 min** | <span class="ctxuse">**256k**<br><TokCell shallow="49.55" deep="33.11" top-shallow top-deep /></span> | 2k | **5%** | <span class="pills"><span class="ms-pill cs-pill cs-pill-red">1 critical</span></span> | <span class="pills"><span class="ms-pill cs-pill cs-pill-red">model-failed</span></span><br><span class="pills"><span class="ms-pill cs-pill cs-pill-gray">calls 30/6</span> <span class="ms-pill cs-pill cs-pill-gray">commits 0</span> <span class="ms-pill cs-pill cs-pill-gray">turns 31</span></span> |
 <!-- gen:mendel-guided:end -->
 
 Cloud anchors on the same guided prompt:

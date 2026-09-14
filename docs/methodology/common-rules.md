@@ -41,10 +41,10 @@ timings, prompt-cache reuse, the KV type decision) live in
    to the setup's `historical.md` (benchmarks pages keep the full
    archive).
 8. **Run the exact files the runbook names**, at the revision and quant
-   it names. A missing or different file is stop-and-ask, never a
-   substitute. Whether a run may download, and what, is decided when the
-   run is planned and written into its runbook; a runbook that says
-   nothing means no download. Exactness stops at identity: the files,
+   it names. A different file is stop-and-ask, never a substitute. A
+   missing file does not block the run: the runner fetches it and the
+   report names it. On the Mac a download needs the owner's approval,
+   written into the runbook (2026-09-14). Exactness stops at identity: the files,
    the backend, the thinking level, the prompt version, the KV type
    once picked. The values measured around them are rule 10.
 10. **Measured parameters come from the newest measurement, never from

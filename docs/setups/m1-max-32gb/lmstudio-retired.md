@@ -25,17 +25,19 @@ The agent benchmark is [Mendel](../../methodology/mendel.md): one real
 repository task, scored on a 100-point rubric. LM Studio ran it three
 times, on both prompt variants and at two thinking levels:
 
-| test, level | libraries done | commits | tool calls | end |
-|---|--:|--:|--:|---|
-| blind, high | 0 of 8 | 0 | 15 | invalid |
-| guided, high | 0 of 8 | 0 | 21 | invalid |
-| guided, low | 0 of 8 | 0 | 130 | invalid, tool-call loop |
+| date | test, level | libraries done | commits | tool calls | end |
+|---|---|--:|--:|--:|---|
+| 2026-09-03 | blind, high | 0 of 8 | 0 | 15 | model-failed: a newline flood of 5473 characters in the thinking channel; the current live loop stop ends this run |
+| 2026-09-03 | guided, high | 0 of 8 | 0 | 21 | model-failed: a newline flood of 5461 characters in the thinking channel; the current live loop stop ends this run |
+| 2026-09-03 | guided, low | 0 of 8 | 0 | 130 | model-failed: 72 identical failing calls in a row and newline floods; the current live loop stop ends this run |
 
-No LM Studio run has produced a single commit on this machine. The last
-one repeated the same tool call until its budget ran out. A second LM
-Studio entry, `google/gemma-4-12b`, was retired earlier for a
-repetition loop on its thinking channel, and it produced every failed
-Gemma-12B agent run before these.
+No LM Studio run has produced a single commit on this machine. All
+three ran the entry `google/gemma-4-12b`, which always thinks and ships
+Google's pre-fix chat template. That entry was retired on 2026-09-04
+for a repetition loop on its thinking channel; the evidence is on
+[the Gemma-12B data page](./benchmarks/gemma-4-12b-it.md#the-retired-entry).
+These runs show only on this page: the site's Mendel tables leave out
+a retired backend.
 
 ## Finding 2: lower quality on the same model
 

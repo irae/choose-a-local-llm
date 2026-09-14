@@ -87,6 +87,7 @@ const MENDEL_SLUGS = {
   'qwen3.8-27b (ISTA IQ3_S-mtp, xhigh)': 'qwen3.8-27b',
   'qwen3.8-27b (ISTA IQ3_S-mtp, low)': 'qwen3.8-27b',
   'qwen3.8-27b (AtomicChat AD-IQ3_S)': 'qwen3.8-27b',
+  'gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, rtx-5060ti-16gb)': 'gemma-4-12b-it',
 }
 
 function mendelName(r) {
@@ -148,6 +149,7 @@ function evalplusCell(text) {
 
 function mendelCellParts(r) {
   if (r.mendel === 'failed-smoke') return { value: '0', note: '0%', pill: 'failed-smoke' }
+  if (r.mendel === 'model-failed' || r.mendelFailed) return { value: '0', note: '0%', pill: 'model-failed' }
   const m = String(r.mendel).match(/^([\d.]+)(?:\s*\(partial\s*(\d+%)\))?$/)
   if (!m) return { value: String(r.mendel), note: '', pill: '' }
   return { value: m[1], note: m[2] || '', pill: `mendel-${r.mendelTest || 'blind'}` }
@@ -182,7 +184,7 @@ function deriveMendel(rows, blind, guided) {
   for (const row of rows) {
     if (!row.spec) continue
     if (/^[\d.]/.test(String(row.mendel))) {
-      throw new Error(`row ${row.id}: mendel "${row.mendel}" is a number; the score comes from the Mendel CSVs, write only pending, not run, invalid or failed-smoke`)
+      throw new Error(`row ${row.id}: mendel "${row.mendel}" is a number; the score comes from the Mendel CSVs, write only pending, not run, invalid, model-failed or failed-smoke`)
     }
     const rowKey = mendelKey({ ...row.spec, drafter: row.mendelDrafter ?? row.spec.drafter }, rowSlots(row))
     const match = runs
@@ -192,6 +194,7 @@ function deriveMendel(rows, blind, guided) {
     const partial = match.r.partial === 'True'
     row.mendel = `${capped(match.r)}${partial ? ` (partial ${Math.round((100 * done(match.r)) / 8)}%)` : ''}`
     row.mendelTest = match.test
+    row.mendelFailed = match.r['telemetry.commits'] === '0'
   }
 }
 
@@ -221,6 +224,7 @@ const MENDEL_SPECS = {
   'qwen3.8-27b (ISTA IQ3_S-mtp, xhigh)': { base: 'Qwen3.8-27B', quant: 'IQ3_S-mtp', publisher: 'ISTA-DASLab', repo: 'ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF', drafter: '' },
   'qwen3.8-27b (ISTA IQ3_S-mtp, low)': { base: 'Qwen3.8-27B', quant: 'IQ3_S-mtp', publisher: 'ISTA-DASLab', repo: 'ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF', drafter: '' },
   'qwen3.8-27b (AtomicChat AD-IQ3_S)': { base: 'Qwen3.8-27B', quant: 'AD-IQ3_S', publisher: 'AtomicChat', repo: 'AtomicChat/Qwen3.8-27B-GGUF', drafter: 'mtp/3' },
+  'gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, rtx-5060ti-16gb)': { base: 'Gemma-4-12B', quant: 'NVFP4', publisher: 'FreedomAISVR', repo: 'FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF', drafter: '', binary: true },
 }
 
 const MENDEL_SERVER = { 'llama-server': 'llama-server', 'mlx_lm.server': 'mlx_lm.server', 'lm-studio': 'lms' }
@@ -270,6 +274,16 @@ function mendelRuns(file, setup) {
       kv_type: r.kv_type || 'f16',
       telemetry: r.telemetry || {},
     }))
+}
+
+function buildKey(spec) {
+  return ['base', 'quant', 'publisher', 'server'].map((k) => spec[k] || '').join('|')
+}
+
+// A run on a retired build shows only on the retired page of that build.
+function onRetiredBuild(rows) {
+  const retired = new Set(rows.filter((row) => (row.abandoned || row.retired) && row.spec).map((row) => buildKey(row.spec)))
+  return (r) => (r.local === true || r.local === 'True') && retired.has(buildKey(mendelSpec(r)))
 }
 
 function pill(text, tone = 'gray') {
@@ -333,6 +347,7 @@ function mendelRow(r, { test = '', top = {} } = {}) {
   const bugsCell = bugs.length ? twoLines(bugs) : pill('0 bugs', 'green')
   const nudges = [t.nudges_tooling ? `${t.nudges_tooling}t` : '', t.nudges_model ? `${t.nudges_model}m` : ''].filter(Boolean)
   const stats = [
+    Number(t.commits) === 0 ? pill('model-failed', 'red') : '',
     t.tool_calls != null ? pill(`calls ${t.tool_calls}/${t.tool_errors ?? 0}`) : '',
     pill(`commits ${t.commits ?? 0}`),
     t.failed_commits ? pill(`failed commits ${t.failed_commits}`, 'red') : '',
@@ -475,7 +490,7 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
     const raw = Number(r.score_total)
     const score = cap < raw ? `**${cap}** (raw ${raw})` : `**${cap}**`
     const minutes = r['telemetry.wall_clock_min'] === '' ? '—' : Number(r['telemetry.wall_clock_min']).toFixed(1)
-    const state = r.invalid === 'True' ? 'invalid' : r.partial === 'True' ? 'partial' : 'done'
+    const state = r.invalid === 'True' ? 'invalid' : r['telemetry.commits'] === '0' ? 'model-failed' : r.partial === 'True' ? 'partial' : 'done'
     const loop = r['telemetry.loop_flag'] === 'LOOP' ? esc(r['telemetry.loop_kind'] || 'yes') : ''
     return `| ${[
       specTag(mendelSpec(r), { label: r.model }) + (distrust(r) ? ` ${distrust(r).marker || '†'}` : ''),
@@ -527,9 +542,13 @@ function parseScore(evalplus) {
 }
 
 function parseMendel(mendel) {
-  if (mendel === 'failed-smoke') return 0
+  if (mendel === 'failed-smoke' || mendel === 'model-failed') return 0
   const m = String(mendel ?? '').match(/^([\d.]+)/)
   return m ? parseFloat(m[1]) : null
+}
+
+function mendelFailedCell(r) {
+  return r.mendel === 'failed-smoke' || r.mendel === 'model-failed' || r.mendelFailed === true
 }
 
 function hasTok(r) {
@@ -573,7 +592,7 @@ function checkRows(rows, setup) {
       throw new Error(`${setup}: row ${r.id} has gatedBy "${r.gatedBy}"; allowed: ${[...GATED_BY].join(', ')}`)
     }
     if (typeof r.mendel !== 'string' || !r.mendel) {
-      throw new Error(`${setup}: row ${r.id} has no mendel cell; write "pending", "not run" or "invalid"`)
+      throw new Error(`${setup}: row ${r.id} has no mendel cell; write "pending", "not run", "invalid" or "model-failed"`)
     }
   }
 }
@@ -608,8 +627,8 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     tokDeep: topSet(ordered, (r) => num(r.tokDeep)),
     memory: topSet(ordered, (r) => num(r.memory), { lower: true }),
     evalplus: topSet(ordered, (r) => parseScore(r.evalplus) >= 0 ? parseScore(r.evalplus) : NaN),
-    mendel: topSet(ordered, (r) => (r.mendel === 'failed-smoke' ? NaN : parseMendel(r.mendel) ?? NaN)),
-    composite: topSet(ordered, (r) => (r.mendel === 'failed-smoke' ? NaN : composite(r) ?? NaN)),
+    mendel: topSet(ordered, (r) => (mendelFailedCell(r) ? NaN : parseMendel(r.mendel) ?? NaN)),
+    composite: topSet(ordered, (r) => (mendelFailedCell(r) ? NaN : composite(r) ?? NaN)),
   }
   let anyStale = false
   const cell = (r, field) => {
@@ -810,21 +829,30 @@ for (const dataFile of dataFiles) {
   const data = JSON.parse(readFileSync(dataFile, 'utf8'))
   checkRows(data.rows, data.setup)
   const ofSetup = (r) => r.local !== 'True' || hardwareOf(r) === data.setup
-  const mendelBlindAll = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8')).filter(ofSetup)
-  const mendelGuidedAll = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8')).filter(ofSetup)
+  const live = ((retired) => (r) => !retired(r))(onRetiredBuild(data.rows))
+  const mendelBlindAll = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8')).filter(ofSetup).filter(live)
+  const mendelGuidedAll = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8')).filter(ofSetup).filter(live)
   const mendelBlind = currentPromptVersion(mendelBlindAll.filter((r) => r.invalid !== 'True'))
   const mendelGuided = currentPromptVersion(mendelGuidedAll.filter((r) => r.invalid !== 'True'))
   deriveMendel(data.rows, mendelBlind, mendelGuided)
-  const blindRuns = mendelRuns('benchmarks/mendel/results.json', data.setup)
-  const guidedRuns = mendelRuns('benchmarks/mendel/results-guided.json', data.setup)
+  const blindRuns = mendelRuns('benchmarks/mendel/results.json', data.setup).filter(live)
+  const guidedRuns = mendelRuns('benchmarks/mendel/results-guided.json', data.setup).filter(live)
   mendelSiteRows = data.rows
   // An abandoned row keeps its numbers on the model page only: the comparison
   // and the home table answer "what should I run", and it is not a candidate.
   const visible = data.rows.filter((r) => !r.hidden && !r.retired && !r.abandoned)
+  // A table that its pending filter leaves with fewer than two rows shows
+  // every row it could hold, so a new setup has rows to read.
   const completeRows = visible.filter(isComplete)
-  const partialRows = sortRows(visible.filter((r) => !isComplete(r) && completeness(r) >= 0.4))
-  const comparisonTable = renderTable(completeRows, { memory: false })
-  const partialTable = renderTable(partialRows, { sort: false, start: completeRows.length, memory: false })
+  const mainAll = completeRows.length < 2 && visible.length > completeRows.length
+  const mainRows = mainAll ? visible : completeRows
+  const partialPool = visible.filter((r) => !mainRows.includes(r))
+  const partialPicked = partialPool.filter((r) => completeness(r) >= 0.4)
+  const partialAll = partialPicked.length < 2 && partialPool.length > partialPicked.length
+  const partialRows = sortRows(partialAll ? partialPool : partialPicked)
+  const allNote = (all) => (all ? ['', 'Fewer than two rows pass the filter of this table, so it shows every row it can hold.'] : [])
+  const comparisonTable = [renderTable(mainRows, { memory: false }), ...allNote(mainAll)].join('\n')
+  const partialTable = [renderTable(partialRows, { sort: false, start: mainRows.length, memory: false }), ...allNote(partialAll)].join('\n')
   const homeTable = renderHomeTable({ ...data, rows: visible })
 
   const homeStart = `<!-- gen:models-evaluated:${data.setup}:start -->`

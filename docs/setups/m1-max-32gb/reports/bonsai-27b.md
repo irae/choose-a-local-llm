@@ -39,6 +39,7 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 |---|--:|:--:|--:|--:|--:|--:|
 | <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" top /> | **40k** | mem | <TokCell shallow="24.5" deep="17.3" stale top-shallow top-deep /> | **22.5 GB** | <ScoreCell value="0.915/0.884" sub="97% completion" top /> | <ScoreCell value="37.5†" note="38%" pill="mendel-blind" top /> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" top /> | **33k** | speed | <TokCell shallow="14.7" deep="7.8" top-shallow top-deep /> | **9.6 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" top /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | **40k** | mem | <TokCell shallow="24.5" deep="17.3" stale top-shallow top-deep /> | **22.5 GB** | <ScoreCell value="0.927/0.902" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> |
 
 † from an earlier serving config or method; re-run pending.
 
@@ -46,8 +47,7 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | **2x48k** | speed | <TokCell shallow="14.9" deep="7.8" stale top-shallow /> | **10.9 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="pending" /> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | **40k** | mem | <TokCell shallow="24.5" deep="17.3" stale top-shallow top-deep /> | 22.5 GB | <ScoreCell value="0.927/0.902" sub="100% completion" top /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | **2x48k** | speed | <TokCell shallow="14.9" deep="7.8" stale top-shallow top-deep /> | **10.9 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" /> | **131k** | mem | <TokCell shallow="15.0" deep="9.7" stale top-shallow top-deep /> | **18.6 GB** | <ScoreCell value="pending" /> | <ScoreCell value="12.5" note="13%" pill="mendel-guided" top /> |
 
 † from an earlier serving config or method; re-run pending.
@@ -81,6 +81,15 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --jinja --port 8081
 ```
 
+<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" />
+
+Extra body per request: `{"chat_template_kwargs":{"enable_thinking":false}}`. Curve shared with the thinking-on row: same server, same weights.
+
+```bash
+mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
+  --prompt-cache-size 2 --port 8081
+```
+
 <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" />
 
 ```bash
@@ -91,15 +100,6 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   --cache-type-k q4_0 --cache-type-v q4_0 \
   --kv-mean-center ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf \
   --jinja --port 8081
-```
-
-<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" />
-
-Extra body per request: `{"chat_template_kwargs":{"enable_thinking":false}}`. Curve shared with the thinking-on row: same server, same weights.
-
-```bash
-mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
-  --prompt-cache-size 2 --port 8081
 ```
 
 <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" />
@@ -166,14 +166,15 @@ converted locally with `gguf-dspark-to-dflash`; the published Q4_1 sidecar
 and the plain Q2_0 GGUF are legacy layouts that do not load on current fork
 builds.
 
-**The MLX build with thinking off has no valid agent row.** On
+**The MLX build with thinking off scores 0 on the agent task.** On
 2026-09-06 it passed the Mendel smoke at thinking off (14 calls, one
-clean commit, 115 s) and then lost the guided run twice to the harness:
-first a dead `gh` token and a login loop, then 85 identical shell calls
-in a row against a missing file, zero commits in three hours, stopped
-by the operator. Both rows are invalid in the guided CSV. A third
-attempt is scheduled, with the runner's live loop stop in place, and
-the blind test at thinking off with it.
+clean commit, 115 s) and then lost the guided run twice. The first
+attempt is invalid: a dead `gh` token and a login loop on the harness.
+The second is model-failed: 85 identical shell calls in a row against
+a missing file, zero commits in three hours, stopped by the operator.
+The current live loop stop ends that run within minutes; this run set
+that rule and the timeout rules. No further thinking-off run is
+planned (owner, 2026-09-14).
 
 **PrismML's own published figures need their serving stack.** They report
 100K at ~15 GB, and 262K with 4-bit KV. The 4-bit KV path is llama.cpp-only,
@@ -224,7 +225,7 @@ Guided test:
 | <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" /> | guided-v3.0 | 56k | **12.5** (raw 59) | 1/8/partial | 300.0 | 3,619k | 46k | 0 | 122 | 1 |  |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" /> | guided-v3.0 | 128k | **12.5** | 1/8/partial | 194.7 | 21,049k | 127k | 1 | 376 | 2 |  |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | guided-v3.0 | 56k | **0** (raw 27) | 0/8/invalid | 83.5 | 48k | 5k | 0 | 10 | 0 |  |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | guided-v3.0 | 56k | **0** (raw 25) | 0/8/invalid | 186.9 | 1,969k | 27k | 0 | 105 | 0 | tool call |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | guided-v3.0 | 56k | **0** (raw 25) | 0/8/model-failed | 186.9 | 1,969k | 27k | 0 | 105 | 0 | tool call |
 
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:model-mendel:end -->

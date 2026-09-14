@@ -12,9 +12,9 @@
   candidates here, and two of the five builds under test are NVFP4.
 - **One runtime, llama-server on CUDA.** No MLX, no LM Studio, no
   fork.
-- **Every cell is pending.** The first run on this machine is under
-  way; the rows on the [comparison page](./comparison.md) are the
-  plan.
+- **Speed and context are measured for four builds.** The first run
+  on this machine is under way. The Qwen3.6 build and every agent
+  cell are still pending.
 
 ## Setup
 
@@ -48,7 +48,7 @@
 | model | files | reports |
 |---|---|---|
 | Gemma-4-12B-it | `FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF`; `unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL` | [report](./reports/gemma-4-12b-it.md), [benchmarks](./benchmarks/gemma-4-12b-it.md) |
-| Qwen3.8-27B | `unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S` | [report](./reports/qwen3.8-27b.md), [benchmarks](./benchmarks/qwen3.8-27b.md) |
+| Qwen3.8-27B | `unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S`; `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF`, IQ3_S-mtp file | [report](./reports/qwen3.8-27b.md), [benchmarks](./benchmarks/qwen3.8-27b.md) |
 | Qwen3.6-35B-A3B (MoE) | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` | [report](./reports/qwen3.6-35b-a3b.md), [benchmarks](./benchmarks/qwen3.6-35b-a3b.md) |
 | Gemma-4-26B-A4B (MoE) | `catlilface/Gemma-4-26B-A4B-NVFP4-GGUF`, NVFP4Q8 file | [report](./reports/gemma-4-26b-a4b.md), [benchmarks](./benchmarks/gemma-4-26b-a4b.md) |
 

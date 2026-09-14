@@ -262,13 +262,15 @@ evidence is collected here so the report page stays clean.
 164 answered), thinking makes this model better at the problems it
 finishes and unable to finish 37% of them.
 
-**All three invalid Mendel rows ran this entry.** One run made 130 tool
-calls with only 30 distinct, and repeated a single invalid command 72
-times in a row. The runs also produced newline floods that sit in
-`reasoning_content`, end on a bare channel-open token, and never
-proceed; the flood follows the runner's model nudge, not a tool
-response. The rows stay in the data, marked invalid, because they
-measure this serving combination and not the model's coding.
+**All three model-failed LM Studio Mendel rows ran this entry.** One
+run made 130 tool calls with only 30 distinct, and repeated a single
+failing command 72 times in a row. The runs also produced newline
+floods that sit in `reasoning_content`, end on a bare channel-open
+token, and never proceed; the flood follows the runner's model nudge,
+not a tool response. The current live loop stop ends each of these
+runs. The rows stay in the data, marked model-failed, and show only on
+[the LM Studio page](../lmstudio-retired.md), because that backend is
+retired.
 
 **The container ships Google's pre-fix chat template, and the standard
 loader picks it.** The LM Studio container carries two templates: the
