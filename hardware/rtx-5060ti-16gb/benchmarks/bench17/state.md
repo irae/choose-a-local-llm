@@ -452,6 +452,43 @@ unconfirmed (possibly contention with the concurrent 23 GB ISTA
 download's disk I/O, possibly unrelated). Watching for a repeat while
 downloads run alongside a guided row.
 
+**diagnose-crash finding (owner-triggered, 2026-09-14 11:14Z).** The
+crash's coredump (`coredumpctl info 270828`) confirms the mechanism:
+signal 6 (SIGABRT), `llama_server` command line matches this row.
+`journalctl -k` at 11:08:11 shows the real trigger, seconds before the
+abort: `NVRM: krcWatchdog: RC watchdog: GPU is probably locked!
+Notify Timeout Seconds: 7` then `NVRM: Xid (PCI:0000:01:00): 8,
+pid=270828, name=llama-server` — an NVIDIA driver watchdog event
+(Xid 8, "GPU stopped processing"), not a memory-exhaustion signature.
+llama.cpp's own `ggml_cuda_error()` → `ggml_abort()` path fired
+cleanly once the CUDA call failed (confirmed from the live backtrace
+captured in the server log at the time), so this is llama.cpp
+correctly aborting on a driver-level error, not a bug in llama.cpp
+itself. One Xid event since boot (up 12h23m at the time, driver
+610.57.04 installed 2026-09-10, no correlated package update). Ruled
+out host OOM (`free -m` available ~25 GB) and VRAM exhaustion at the
+`nvidia-smi` sample nearest the crash (14.5/16.3 GB). Not an Omarchy
+bug. No user data lost; the pi session recovered in place. Core
+extracted and deleted per the skill's data-hygiene rule.
+
+**Owner's addendum (2026-09-14 14:17Z, after the diagnose-crash
+report):** the GPU is also the owner's working desktop, so desktop
+apps can add VRAM usage while a row runs, and total VRAM can reach the
+card's limit even when the server alone holds only 14.5 GB. Config
+note for this row names the hang as a **possible shared-desktop VRAM
+squeeze, unconfirmed** — supporting data point: the process table at
+14:17Z shows desktop processes (Hyprland, quickshell, several `kitty`
+windows) holding ~873 MiB combined alongside `llama-server`'s
+13518 MiB (14391 MiB total, ~1.9 GB headroom under the 16311 MiB
+card). No window change; the row keeps going.
+
+**New logging, every agent row from here on:** every minute, and at
+once on any hang, append `date -u`, `nvidia-smi
+--query-gpu=memory.used,memory.total --format=csv,noheader`, and the
+full `nvidia-smi` process table to
+`results/vram-procs-<mnemonic>.log`. Running via `nohup ... & disown`
+for this row: `results/vram-procs-qwen38-iq3s-guided.log`.
+
 ## Handing over
 
 Not started.
