@@ -117,7 +117,10 @@ the block names at the point it is needed.
    `tool-check` block.** Pull once before the session's first creep,
    record `git -C ~/code/local-llm-eval-tools rev-parse --short HEAD`
    in `state.md`, and write that hash beside every sweep result of the
-   session. Do not pull again between creeps of one session; a tool
+   session. Set `STEP_PAUSE_S` by the pause rule
+   ([context creep](./context-creep.md), "Speed measurement rules" and
+   the requirements): the OS default, halved on macOS after a quiet
+   creep. Write the value beside the result. Do not pull again between creeps of one session; a tool
    that changes mid-session makes its own rows non-comparable.
 6. **Start the run watcher before the block, read exit 42, stop it
    after.** A sweep watches itself; a scoring run has exactly one

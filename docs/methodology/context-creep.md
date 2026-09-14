@@ -13,7 +13,18 @@ config. Common rules and the run loop apply
   beside it — see [The monitor](#the-monitor) below.
 - Append-only prompt growth (prompt-cache rule) — the sweep tool already
   does this.
-- The pause rule: **creep slowly, ~60 s between depth steps.** The pause
+- The pause rule (owner rule, 2026-09-14): **60 s between depth steps
+  on macOS, 5 s on a discrete GPU** (Linux, Windows). The tool takes
+  its default from the operating system. A discrete GPU holds the model
+  in its own memory, so the host has no pressure to release between
+  steps. The `sleep` in a `llama-benchy` `--post-run-cmd` follows the
+  same values. **On macOS the pause halves after a quiet creep:** when
+  the machine's last creep showed no memory pressure (no swap growth,
+  no step at or above `COMPRESS_PAGES`, no memory stop), the next creep
+  sets `STEP_PAUSE_S` to half of that creep's pause, never under 5 s,
+  and records it beside the result. Any sign of pressure puts the next
+  creep back at 60 s, and the first creep of a run always takes 60 s.
+  What follows explains the macOS value. The pause
   simulates real use — an agent's model waits on the user and on tool
   runs between requests — and it gives macOS time to compress other
   memory, which raises the measured ceiling (verified on the reference
@@ -351,7 +362,7 @@ least as large as `N_CONTEXTS`.
 
 One command picks the backend: `python3 creep.py <llama|mlx|lmstudio>`,
 run from the clone (see [Install](#install)). `creep.py` owns the
-method: the 60-second pause as a DEFAULT, append-only growth,
+method: the pause as a DEFAULT (60 s on macOS, 5 s elsewhere), append-only growth,
 round-robin contexts, memory sampling, liveness, and the stop
 conditions. Each backend module holds only its endpoint, its request
 shape, how it reads speed, and its two liveness parts. `--help` at
