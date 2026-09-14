@@ -145,6 +145,23 @@ Clean depth: 97280, well above the Mac's 13.0 tok/s at 82K. VRAM flat,
 swap flat around 4.5-4.7 GB (expected: `--n-cpu-moe 17` spills a large
 share of experts to host RAM), no growth trend.
 
+**n-max 1 arm.** The drafter's extra compute buffer needs more
+headroom than the no-drafter arm: `--n-cpu-moe 17` OOM'd on the
+compute buffer (`cudaMalloc failed`, 512 MiB short), `--n-cpu-moe 19`
+passed at load (15750 MiB) and confirmed on a real deep-cell request.
+`qwen36_q4kxl_n_cpu_moe_drafter` = 19.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance | VRAM used |
+|---|--:|--:|--:|--:|--:|--:|
+| n-max1 | 4096 | 60.60 | 1.24 | 502.92 | ~0.83-1.00 | 15813 MiB |
+| n-max1 | 65536 | 44.12 | 0.07 | 464.00 | ~0.78-0.84 | 15813 MiB |
+| n-max1 | 97280 | 37.92 | 0.18 | 450.04 | ~0.76-0.82 | 15813 MiB |
+
+Faster than the no-drafter arm at every depth (60.60 vs 55.81, 44.12
+vs 42.52, 37.92 vs 37.80). Draft acceptance mostly 0.78-0.84 mid-run,
+mean draft length ~1.8. Per the sweep rule, the climb continues to
+n-max 2. VRAM flat, swap flat around 3.7-3.8 GB.
+
 A table and no pick. The coordinator names the served arm.
 
 ## Gates
