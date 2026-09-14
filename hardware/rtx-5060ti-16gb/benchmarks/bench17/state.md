@@ -31,8 +31,8 @@ its source.
 | `qwen38_iq3s_f16_clean` | 52224 | `sweep-qwen38-iq3s` |
 | `qwen38_iq3s_q8_c` | 65536 | `sweep-qwen38-iq3s` |
 | `qwen38_iq3s_q8_clean` | 64512 | `sweep-qwen38-iq3s` |
-| `qwen36_nvfp4_n_cpu_moe` | - | - |
-| `qwen36_nvfp4_clean` | - | - |
+| `qwen36_q4kxl_n_cpu_moe` | - | - |
+| `qwen36_q4kxl_clean` | - | - |
 | `gemma26_nvfp4_n_cpu_moe` | 7 | `sweep-gemma26-nvfp4` |
 | `gemma26_nvfp4_clean` | 97280 | `sweep-gemma26-nvfp4` (no-drafter arm) |
 
@@ -43,8 +43,9 @@ its source.
 | `FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF` | `gemma-4-12b-it-nvfp4.gguf` | `207974a8455870a3a5d0b6854698f2a4f3c6347e` | `8f03a67ca9e7ed7cbf38527a5fa1cd806dba5272feffeb5c5f21865b6961dcad` |
 | `unsloth/gemma-4-12b-it-GGUF` | `gemma-4-12b-it-UD-Q4_K_XL.gguf` | `fc034cfff751157913579611efad8462ac1be606` | `90fd944d227e9d9b68e7e2c7d5b57b79d4c66ed521b0919fbbd932cf834f6f8e` |
 | `unsloth/Qwen3.8-27B-GGUF` | `Qwen3.8-27B-UD-IQ3_S.gguf` | `4ca720788d1e01f1bff70c033e0d0028fd02e502` | `d847e2c1e4aa276e4b7b8e9ad7628050e61e165d49ab995407bc36677a6f3864` |
-| `michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF` | `Qwen3.6-35B-A3B-NVFP4-MTP-HQ.gguf` | `df112dd576e55b1daa1331a7831b64ec9c03dbae` | `777564174a7ccf01a2e9d171ac73206ec3da6b6f6b0124e71a9628ac19f61aa9` |
+| `michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF` | `Qwen3.6-35B-A3B-NVFP4-MTP-HQ.gguf` | `df112dd576e55b1daa1331a7831b64ec9c03dbae` | `777564174a7ccf01a2e9d171ac73206ec3da6b6f6b0124e71a9628ac19f61aa9` (dropped, fails a tensor-count check, see `sweep-qwen36-nvfp4` below) |
 | `catlilface/Gemma-4-26B-A4B-NVFP4-GGUF` | `Gemma4-26b-NVFP4Q8.gguf` | `dc98839f4c28f571ac43fb91ab99357471eaff5c` | `62e1590ef5aeba9a2101508eb461083f1e050e97a68d61d86ba003c0a857a895` |
+| `unsloth/Qwen3.6-35B-A3B-MTP-GGUF` | `Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf` | `5bc3e238d916f48a861bac2f8a1990a0e9b7e98d` | `55983c5a75a1ab969824077b3bb3de4146e82a9234072b48ad4e8f92ad3fe9f1` (owner's word, 2026-09-14, replaces the michaelw9999 file) |
 
 Tokenizers (benchy fetches on first use, ungated): `unsloth/gemma-4-12b-it`
 (both Gemma-12B builds), `unsloth/Qwen3.8-27B`, `unsloth/Qwen3.6-35B-A3B`,
