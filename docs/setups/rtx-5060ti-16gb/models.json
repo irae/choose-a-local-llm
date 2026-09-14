@@ -48,6 +48,21 @@
       "note": "pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 GB. The KV type was measured on this card: q8_0 serves `-c 65536`, and f16 serves only `-c 53248` (24.3 tok/s at its deep cell), because a larger f16 window loads but runs out of memory on the first real request. q8_0 is the served type. The agent cells are pending."
     },
     {
+      "config": "Qwen3.8-27B, GGUF, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, effort xhigh",
+      "maxCtx": "pending",
+      "gatedBy": "mem",
+      "tokShallow": "pending",
+      "tokDeep": "pending",
+      "memory": "pending",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "id": "qwen38-ista-xhigh",
+      "spec": { "base": "Qwen3.8-27B", "quant": "IQ3_S-mtp", "server": "llama-server", "publisher": "ISTA-DASLab", "repo": "ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF", "drafter": "", "kv": "q8_0", "effort": "xhigh" },
+      "hidden": false,
+      "command": "llama-server -m ~/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 65536 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.8-27b-ista`. The 3-bit build the reference setup serves, at its revision `d562806`: a second provider's trade-off of the same model for the same 12 GB budget, with a different type for most tensors and its own importance matrix. The file carries the MTP head; the drafter arm is measured on real text before the row is served. The file sets `min_p 0.0` in its sampling defaults, where the unsloth file sets none. Every cell is pending until the run measures it; `-c 65536` is the planning value."
+    },
+    {
       "config": "Qwen3.6-35B-A3B, GGUF, UD-Q4_K_XL, q8_0 KV, experts partly in host RAM, thinking on",
       "maxCtx": "pending",
       "gatedBy": "mem",

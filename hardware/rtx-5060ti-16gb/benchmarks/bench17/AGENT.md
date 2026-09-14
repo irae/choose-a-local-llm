@@ -47,6 +47,10 @@ this run only, and the run's rows say so.
 - `gemma26-nvfp4-mendel-guided-high`
 - `gemma12-q4kxl-mendel-guided-high`
 - `gemma12-nvfp4-mendel-guided-high`
+- `sweep-qwen38-ista`
+- `sweep-qwen38-iq3s-mtp`
+- `qwen38-ista-smoke-xhigh`
+- `qwen38-ista-mendel-guided-xhigh`
 - `mendel-blind-after-guided`
 - `retry-sweep`
 
@@ -97,11 +101,12 @@ this run only, and the run's rows say so.
 - One model on the GPU at a time, port 8081. Before you start a
   server, `pgrep -fl llama-server` must be empty. Never kill a server
   you did not start.
-- **Downloads this run may make, and nothing else**: the llama.cpp
-  binary, `llama-benchy`, the `hf` command, the five model files and
-  the four tokenizers named in `machine-setup`. Every file is named
-  there with its repository and file name. A file that is not on that
-  list is stop and ask.
+- **Downloads never block this run** (owner rule, 2026-09-14): fetch
+  the llama.cpp binary, `llama-benchy`, the `hf` command, the six model
+  files and the four tokenizers named in `machine-setup` when a block
+  needs them, and go on. Every file is named there with its repository
+  and file name. A different file than the one a block names is stop
+  and ask.
 - **No temperature and no sampling parameter is passed to any
   server.** The server's own default is the serving sampling. Read the
   values a simulator(mendel) run used from its `meta.json` and put
@@ -195,7 +200,7 @@ command. Every install below is user-level; none needs sudo.
    download, record the repository's current commit as its revision:
    `curl -s https://huggingface.co/api/models/<repo> | python3 -c
    'import sys,json; print(json.load(sys.stdin)["sha"])'`. After
-   each, record `sha256sum` of the file. All five files:
+   each, record `sha256sum` of the file. All six files:
 
    | repo | file | size | block |
    |---|---|--:|---|
@@ -204,6 +209,7 @@ command. Every install below is user-level; none needs sudo.
    | `unsloth/Qwen3.8-27B-GGUF` | `Qwen3.8-27B-UD-IQ3_S.gguf` | 12.0 GB | `sweep-qwen38-iq3s` |
    | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF` | `Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf` | 22.9 GB | `sweep-qwen36-q4kxl` (owner's word, 2026-09-14; replaces the michaelw9999 NVFP4 file, which fails a tensor-count check) |
    | `catlilface/Gemma-4-26B-A4B-NVFP4-GGUF` | `Gemma4-26b-NVFP4Q8.gguf` | 15.4 GB | `sweep-gemma26-nvfp4` |
+   | `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` | `Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf` | 12.1 GB | `sweep-qwen38-ista` (owner, 2026-09-14; revision `d562806`, the Mac's, not the repository's newest) |
 
    Download the first file, start `sweep-gemma12-nvfp4`, and fetch
    the rest while it runs; a download never waits on the GPU and the
@@ -416,6 +422,67 @@ numbers to read against, the k-quant at f16 with n-max 2: 60.1 at 4K,
 28.2 at 98K. Write `gemma26_nvfp4_n_cpu_moe` and
 `gemma26_nvfp4_clean` in `state.md`.
 
+## `sweep-qwen38-ista`
+
+The dense 27B model in the 3-bit build the Mac serves: a second
+provider's trade-off of the same model for the same 12 GB budget
+(owner, 2026-09-14: both builds target a 16 GB card, and the Mac holds
+this build's agent rows, so the pair reads across providers and across
+machines). **Fetch the file now**, beside the block that runs; the
+download never waits for this block's place in the list. Fixed:
+`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF`
+`Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf` at revision
+`d562806dbafae37109975e970aae91b43e73b440`, the one the Mac runs
+(sha256 on the Mac
+`58fd826723939933dc86f45b7fe04545cbc2de1c70f6fe2cdd3858c87a98c12f`;
+record this machine's and compare, a mismatch is stop and ask),
+`--no-mmproj`, q8_0 KV (owner, 2026-09-14: on this card q8_0 buys the
+window; `sweep-qwen38-iq3s` measured 65536 at q8_0 against 53248 at
+f16), `--parallel 1`, alias `qwen3.8-27b-ista`. The file carries the
+MTP head, as the unsloth file does. Derived: `-c`, planning value
+`qwen38_iq3s_q8_c` (65536); this file is 79 MB larger, so the ladder
+may step down once. Arms by "The sweep rule" of
+`docs/methodology/context-creep.md`: no drafter first, then
+`--spec-type draft-mtp --spec-draft-n-max 1`, then 2, then 3, each a
+fresh server at the same `-c`; stop the climb when an arm reads slower
+than the arm before it at every depth, and after a mixed arm take one
+more. Depths: 4096, 24576, `-c` minus 1024. Tokenizer
+`unsloth/Qwen3.8-27B`, the same base tokenizer.
+
+```bash
+hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf \
+  --revision d562806dbafae37109975e970aae91b43e73b440 \
+  --local-dir ~/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF
+
+llama-server -m ~/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf \
+  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \
+  <arm flags> \
+  -ngl 999 --fit off -fa on -c <qwen38_ista_c; planning 65536> \
+  --cache-type-k q8_0 --cache-type-v q8_0 --cache-ram 0 \
+  --jinja --port 8081 2>&1 \
+  | tee hardware/rtx-5060ti-16gb/benchmarks/bench17/results/server-sweep-qwen38-ista-<arm>.log
+```
+
+The server reads its sampling defaults from the file. This file sets
+`min_p 0.0`; the unsloth file sets none, so its server applies
+`0.05`. Pass no sampling flag (Essentials), and let every config note
+of this build name `min_p`. Mac numbers to read against, this file at
+f16 on Metal: no drafter 14.1 at 4K and 8.1 at 147K; the drafter lost
+at every depth there. Write `qwen38_ista_c` and the clean depth of
+every arm (`qwen38_ista_clean` for the no-drafter arm) in `state.md`.
+The agent blocks of this build take the arm the coordinator names.
+
+## `sweep-qwen38-iq3s-mtp`
+
+The drafter climb on the unsloth file, so the two providers read at
+the same arms. Fixed: the files and flags of `sweep-qwen38-iq3s`, q8_0
+arm, `-c` from `qwen38_iq3s_q8_c`. The no-drafter cells of that block
+are the base arm; do not read them again. Arms n-max 1, then 2, then 3,
+by the climb rule above. Same depths, same tokenizer; logs
+`server-sweep-qwen38-iq3s-q8-nmax<n>.log`. Speed only: the guided row
+of this build runs with no drafter, and a drafter changes speed, not
+output.
+
 ## The smokes
 
 Read `docs/methodology/mendel.md`, "The smoke" and "Window and
@@ -460,6 +527,10 @@ block of that build waits.
   Window from `gemma26_nvfp4_clean`.
 - `gemma12-q4kxl-smoke-off`: alias `gemma-4-12b-q4kxl`, level `off`,
   as the NVFP4 build. Window from `gemma12_q4kxl_clean`.
+- `qwen38-ista-smoke-xhigh`: alias `qwen3.8-27b-ista`, level `xhigh`,
+  the model's published default (owner rule, 2026-09-09). Another
+  file, so its own smoke. The arm the coordinator named; window from
+  that arm's clean depth.
 
 ## The guided rows
 
@@ -501,6 +572,7 @@ and the end reason.
 - `gemma26-nvfp4-mendel-guided-high`: alias `gemma-4-26b-a4b-nvfp4`, `high`.
 - `gemma12-q4kxl-mendel-guided-high`: alias `gemma-4-12b-q4kxl`, `high`.
 - `gemma12-nvfp4-mendel-guided-high`: alias `gemma-4-12b-nvfp4`, `high`.
+- `qwen38-ista-mendel-guided-xhigh`: alias `qwen3.8-27b-ista`, `xhigh`.
 
 The two Gemma-12B rows run at `high`, thinking on, not at the `off`
 of their smokes (owner, 2026-09-14): no Mendel run at thinking off
@@ -566,7 +638,7 @@ binary-thinking models, `reasoning_effort` for the graded one).
         "thinkingFormat": "chat-template",
         "chatTemplateKwargs": { "enable_thinking": { "$var": "thinking.enabled" } }
       },
-      "thinkingLevelMap": { "off": "off", "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": null, "max": null }
+      "thinkingLevelMap": { "off": "off", "minimal": "off", "low": "low", "medium": "medium", "high": "high", "xhigh": "high", "max": "high" }
     },
     {
       "id": "gemma-4-12b-q4kxl",
@@ -582,7 +654,7 @@ binary-thinking models, `reasoning_effort` for the graded one).
         "thinkingFormat": "chat-template",
         "chatTemplateKwargs": { "enable_thinking": { "$var": "thinking.enabled" } }
       },
-      "thinkingLevelMap": { "off": "off", "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": null, "max": null }
+      "thinkingLevelMap": { "off": "off", "minimal": "off", "low": "low", "medium": "medium", "high": "high", "xhigh": "high", "max": "high" }
     },
     {
       "id": "gemma-4-26b-a4b-nvfp4",
@@ -598,7 +670,7 @@ binary-thinking models, `reasoning_effort` for the graded one).
         "thinkingFormat": "chat-template",
         "chatTemplateKwargs": { "enable_thinking": { "$var": "thinking.enabled" } }
       },
-      "thinkingLevelMap": { "off": "off", "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": null, "max": null }
+      "thinkingLevelMap": { "off": "off", "minimal": "off", "low": "low", "medium": "medium", "high": "high", "xhigh": "high", "max": "high" }
     },
     {
       "id": "qwen3.6-35b-a3b-q4kxl",
@@ -614,7 +686,7 @@ binary-thinking models, `reasoning_effort` for the graded one).
         "thinkingFormat": "chat-template",
         "chatTemplateKwargs": { "enable_thinking": { "$var": "thinking.enabled" } }
       },
-      "thinkingLevelMap": { "off": "off", "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": null, "max": null }
+      "thinkingLevelMap": { "off": "off", "minimal": "off", "low": "low", "medium": "medium", "high": "high", "xhigh": "high", "max": "high" }
     },
     {
       "id": "qwen3.8-27b-iq3s",
@@ -630,11 +702,32 @@ binary-thinking models, `reasoning_effort` for the graded one).
         "thinkingFormat": "chat-template",
         "chatTemplateKwargs": { "reasoning_effort": { "$var": "thinking.effort" } }
       },
-      "thinkingLevelMap": { "off": null, "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": "xhigh", "max": null }
+      "thinkingLevelMap": { "off": null, "minimal": null, "low": "low", "medium": "medium", "high": "medium", "xhigh": "xhigh", "max": "xhigh" }
+    },
+    {
+      "id": "qwen3.8-27b-ista",
+      "name": "Qwen3.8 27B ISTA GSQ-RCO IQ3_S-mtp (llama-server)",
+      "reasoning": true,
+      "input": ["text"],
+      "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+      "contextWindow": 61440,
+      "maxTokens": 8192,
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "thinkingFormat": "chat-template",
+        "chatTemplateKwargs": { "reasoning_effort": { "$var": "thinking.effort" } }
+      },
+      "thinkingLevelMap": { "off": null, "minimal": null, "low": "low", "medium": "medium", "high": "medium", "xhigh": "xhigh", "max": "xhigh" }
     }
   ]
 }
 ```
+
+The maps map down (owner rule, 2026-09-14,
+`benchmarks/PLANNING.md`, "A pi thinking map maps down"). The
+coordinator wrote the fixed maps and the `qwen3.8-27b-ista` entry into
+`~/.pi/agent/models.json` on 2026-09-14; the file already holds them.
 
 ## Not in this run
 

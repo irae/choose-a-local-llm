@@ -28,6 +28,7 @@ First run started 2026-09-13. Speed and context are measured; the agent cells ar
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" /> | **65k** | mem | <TokCell shallow="29.36" deep="20.92" top-shallow top-deep /> | **14.2 GB** | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" /> | **pending** | mem | <TokCell shallow="pending" deep="pending" /> | pending | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -42,6 +43,18 @@ pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 
 ```bash
 llama-server -m ~/.cache/llama.cpp/hf/unsloth/Qwen3.8-27B-GGUF/Qwen3.8-27B-UD-IQ3_S.gguf \
   --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \
+  -ngl 999 --fit off -fa on -c 65536 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081
+```
+
+<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" />
+
+pi id `qwen3.8-27b-ista`. The 3-bit build the reference setup serves, at its revision `d562806`: a second provider's trade-off of the same model for the same 12 GB budget, with a different type for most tensors and its own importance matrix. The file carries the MTP head; the drafter arm is measured on real text before the row is served. The file sets `min_p 0.0` in its sampling defaults, where the unsloth file sets none. Every cell is pending until the run measures it; `-c 65536` is the planning value.
+
+```bash
+llama-server -m ~/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf \
+  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 65536 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081

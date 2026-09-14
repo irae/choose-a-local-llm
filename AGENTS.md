@@ -291,9 +291,9 @@ Benchmark work:
   breaks while the run is going and the owner is away, the runner
   dispatches a subagent on the best available model to fix it and
   continues; the run does not wait.
-- **Run the exact files the runbook names.** A missing or different
-  file is stop-and-ask. Downloading is a planning decision written into
-  the runbook (`docs/methodology/common-rules.md`, rule 8).
+- **Run the exact files the runbook names.** A different file is
+  stop-and-ask. A missing file is fetched, by the download rule below
+  (`docs/methodology/common-rules.md`, rule 8).
 - **Measured parameters come from the newest data, never from the
   runbook's snapshot** (owner rule, 2026-09-06). The serving `-c`, the
   harness window, the output budget and every gate input are
@@ -317,24 +317,25 @@ Benchmark work:
   the block, the condition and the candidate answer, and keeps the
   GPU busy with the next block that does not depend on it. The
   coordinator answers inside the runbook's and the method's rules,
-  and takes to the owner only what needs the owner: sudo, a reboot, a
-  download, money, or a rule change. The coordinator never opens a
-  conversation with the runner on its own.
-- **A drafter file is the one download that needs no approval** (owner
-  rule, 2026-09-08). When a block names a drafter and the machine does
-  not hold one, fetch it and go on. The report then says plainly that
-  no drafter was on disk and that the run downloaded one, with the file
-  name and the revision it fetched. A drafter that arrives silently
-  makes every speed number of that block unreadable, because the reader
-  cannot tell a build that ships a head from a build that borrowed one.
-  Every other download still goes to the owner.
+  and takes to the owner only what needs the owner: sudo, a reboot,
+  money, a rule change, or a download on the Mac. The coordinator never
+  opens a conversation with the runner on its own.
+- **A download never blocks a run** (owner rule, 2026-09-14). The
+  runner fetches a file its block names and goes on, and the report
+  names every file the run fetched, with its revision. Approval before
+  a download is a rule of the Mac, not of the project: on the Mac every
+  download except a drafter file goes to the owner (owner rule,
+  2026-09-08). A drafter the run fetched is always named in the report,
+  because a drafter that arrives silently makes every speed number of
+  that block unreadable: the reader cannot tell a build that ships a
+  head from a build that borrowed one.
 - **A missing harness entry is never a reason to skip a block.** A pi
   entry for a model under test is a derived artifact: the runner
   creates or updates it in the run's pinned config from the block's
   parameter table (provider, model id, `contextWindow` from the
   measured window, `maxTokens` and `reserveTokens` from the output
-  budget rule, the thinking map copied from the sibling entry of the
-  same provider), records the entry in `state.md`, and runs. The
+  budget rule, the thinking map mapped down by
+  `benchmarks/PLANNING.md`, "A pi thinking map maps down"), records the entry in `state.md`, and runs. The
   coordinator writes the final entry into the owner's file at
   close-out. On a machine with the repo, `npm run pi:models` writes
   every entry from the site's `models.json`; a row carries its entry

@@ -92,8 +92,9 @@ the block names at the point it is needed.
       invalidates a speed or ceiling number and is a recorded
       deviation on a judged score.
    8. Only now start the real benchmark.
-4. Serve the exact files the runbook names. A missing file is STOP and
-   ask, unless the runbook says this run may download it. The
+4. Serve the exact files the runbook names. A missing file is fetched,
+   and the report names it; on the Mac it is STOP and ask unless the
+   runbook says the owner approved the download. The
    parameters beside the files (`-c`, the harness window, the output
    budget, the drafter depth) come from the newest measurement, not
    from the runbook's number: this run's earlier blocks first, then

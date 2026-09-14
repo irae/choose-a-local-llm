@@ -116,6 +116,15 @@ for other tasks, such as PDF reading, summaries and OCR. When a
 model's published default is off, its Mendel blocks use its
 thinking-on level, and the block writes that reason.
 
+**A pi thinking map maps down** (owner rule, 2026-09-14). This project
+writes the harness maps, so a level the model does not accept never
+reaches its chat template. Every pi level maps to the nearest level at
+or below it that the model accepts. For Qwen3.8 (low, medium, xhigh),
+`high` maps to `medium` and `max` to `xhigh`. For a binary-thinking
+model, `minimal` maps to `off`, and `xhigh` and `max` map to `high`. A
+level with nothing at or below it stays `null`. A block still names
+its level; the map covers the levels a person picks by hand.
+
 This rule exists because the opposite rule was written down and then
 followed for days. "One effort or thinking level per candidate: the
 level its control row already uses" reads as sound planning and is how
@@ -217,9 +226,12 @@ committed measurement, the block that measures it comes first.
    `vm_stat`) and, only when a value is wrong, reports it and shows the
    owner the command to run. The owner's Mac is not the runner's to
    change.
-5. Name the exact model files, revision and quant each block serves,
-   and say whether the run may download anything and what. Silence
-   means no download; the runner then stops and asks on a missing file.
+5. Name the exact model files, revision and quant each block serves.
+   A download never blocks a run (owner rule, 2026-09-14): the runner
+   fetches a named file that is missing and goes on. Approval before a
+   download is a rule of the Mac only; a Mac runbook says which
+   downloads the owner approved, and a missing file there is stop and
+   ask.
    That exactness covers identity only ("Fixed and derived parameters"
    above). The serving parameters beside the files are derived, and
    the block says where the run takes them from.
