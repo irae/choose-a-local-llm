@@ -18,6 +18,9 @@ block assigns, one line per value, with its source.
 - Every Qwen3.8 entry's `thinkingLevelMap` set to `{off: null, minimal: null, low: "low", medium: "medium", high: "medium", xhigh: "xhigh", max: "xhigh"}`. Every other reasoning entry of provider `llama` remapped down by the same rule (binary off/high models: off/minimal/low/medium → off, high/xhigh/max → high). Entries with no `thinkingLevelMap` (`qwen3.6-27b`, `gemma-4-12b-2x`, `bonsai-prism`, `bonsai-prism-f16`) left untouched. Before/after snapshots: `/tmp/pi_map_before.json`, `/tmp/pi_map_after.json` (not committed, local only).
 - `~/code/mendel-benchmark` fast-forwarded to `origin/benchmark` (fe692ec → 0ab06c6). `gh auth status` passes (account irae).
 - Note: origin carries a remote branch `qwen3.8-27b-iq3s-xhigh-guided-v3-issue-13-interrupted1`, meaning a prior attempt at this exact model's guided row was interrupted. Not investigated yet; the runbook's own worker naming picks a fresh branch when none exists, so this is only a flag for later, not a blocker.
+- `qwen38_unsloth_c`: 188416 (largest passing rung, ladder).
+- `qwen38_unsloth_wired_load`: 25911 MB (wired at load, rung 188416).
+- Deviation, noted as it happened: rung 180224 passed the real-request check with wired 25344 MB, above the configured `iogpu.wired_limit_mb` (25000). The sysctl gates the process's GPU-accelerator resident view, not overall wired, so a pass above 25000 total wired is not itself an error signature; the ladder rule (real request served, no Metal OOM in the log) still applied. Flagged for the owner, not a stop condition.
 
 ## Blocks
 
@@ -25,6 +28,21 @@ block assigns, one line per value, with its source.
 
 The model file loaded clean through llama-server with no `Insufficient Memory`, no Metal OOM, no 500 (log `results/server-download.log`). Server stopped after load. Sweep tool, benchy values, pi entry and thinking maps, and the mendel-benchmark repo are all in place; `gh auth status` passes.
 Deviation: none.
+
+### ladder-qwen38-unsloth
+
+`unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S` rev `4ca7207`, one slot, f16 KV, wired limit 25000. 4 loads of 6 allowed.
+
+| rung | result | wired MB | note |
+|--:|---|--:|---|
+| 163840 | pass | 24251 | clean, no error |
+| 180224 | pass | 25344 | clean, no error (wired above the 25000 sysctl, see deviation) |
+| 196608 | fail | — | Metal OOM during load (`kIOGPUCommandBufferCallbackErrorOutOfMemory`), even though the server later logged "model loaded" and "listening" |
+| 188416 | pass | 25911 | bisected between 180224 (pass) and 196608 (fail); clean, no error |
+
+`qwen38_unsloth_c` = 188416, `qwen38_unsloth_wired_load` = 25911 MB.
+Files: `results/server-ladder-163840.log`, `results/server-ladder-180224.log`, `results/server-ladder-196608.log`, `results/server-ladder-188416.log`.
+Deviation: wired at the two largest passing rungs (25344, 25911 MB) is above the 25000 sysctl wired limit; see the Values section.
 
 ## Handing over
 
