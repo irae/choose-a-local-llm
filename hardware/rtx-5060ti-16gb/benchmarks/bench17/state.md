@@ -402,6 +402,33 @@ should attempt 1's branch (now `-interrupted1`) be scored as a
 resumed-session row per the backlog proposal once implemented, or
 discarded once attempt 2 closes? Not blocking; the GPU moved on.
 
+### qwen38-iq3s-mendel-guided-xhigh — attempt 2, killed with zero progress
+
+Same config. Killed by a second low-memory event within ~15 minutes,
+this time with zero commits and zero working-tree changes (killed
+almost immediately). `free -m` at both kill events showed `available`
+around 25-26 GB; the low number was `free` alone, with `buff/cache`
+around 23 GB from the mmap'd model files and the in-progress download.
+This reads as the run harness's own background-task low-memory guard
+keying off a raw `free` or similar metric, not `available`/reclaimable
+memory — a false positive, not a real host OOM. The interrupted
+worktree (no commits, identical to base) moved aside anyway per "no
+cleanup mid-run": `~/code/mendel-bench-guided-qwen3.8-27b-iq3s-xhigh-interrupted2`,
+branch renamed `...-interrupted2`.
+
+Tried restarting the qwen36 download alone (no concurrent GPU work) to
+rule out contention: it was killed too, on its own, confirming the
+guard is not about concurrency. Worked around by launching the
+download, the server, and the guided worker with `nohup ... &
+disown` instead of the harness's tracked background-task mechanism,
+which stops the false-kill (these processes are not signaled by it).
+
+### qwen38-iq3s-mendel-guided-xhigh — attempt 3, running (nohup)
+
+Same config, `-c 65536`, q8_0 KV, window 61440. Server up at 14550
+MiB. Worker and the qwen36 download both running detached via `nohup
+... & disown`. Started ~09:38.
+
 ## Handing over
 
 Not started.
