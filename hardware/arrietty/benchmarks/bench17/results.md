@@ -121,6 +121,86 @@ at ~1.6 GB. Well above the Mac's 28.2 tok/s at 98K.
 A table and no pick. The coordinator names the served arm and the KV
 type.
 
+### sweep-qwen36-q4kxl
+
+`unsloth/Qwen3.6-35B-A3B-MTP-GGUF` `Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf`
+rev `5bc3e238d916f48a861bac2f8a1990a0e9b7e98d`, llama.cpp `0.4.0-dev`
+(build 10809, sm120/cuda12.8), q8_0 KV, `-c 98304`. Mac reference, the
+k-quant at q8_0 with n-max 3: 43.7 tok/s at 4K, 13.0 tok/s at 82K.
+
+`--n-cpu-moe` ladder: 20 passed at load (14374 MiB), 14 failed
+(`failed to allocate buffer for kv cache`), 17 passed at load (15786
+MiB, ~525 MiB headroom) and confirmed on a real deep-cell (97280)
+request before committing. `qwen36_q4kxl_n_cpu_moe` = 17.
+
+**No-drafter arm.**
+
+| arm | depth | tok/s | sd | prompt tok/s | VRAM used | MemAvailable |
+|---|--:|--:|--:|--:|--:|--:|
+| nodraft | 4096 | 55.81 | 0.03 | 540.96 | 15786 MiB | 23411 MB |
+| nodraft | 65536 | 42.52 | 0.04 | 506.12 | 15786 MiB | 23304 MB |
+| nodraft | 97280 | 37.80 | 0.00 | 491.84 | 15786 MiB | 23226 MB |
+
+Clean depth: 97280, well above the Mac's 13.0 tok/s at 82K. VRAM flat,
+swap flat around 4.5-4.7 GB (expected: `--n-cpu-moe 17` spills a large
+share of experts to host RAM), no growth trend.
+
+**n-max 1 arm.** The drafter's extra compute buffer needs more
+headroom than the no-drafter arm: `--n-cpu-moe 17` OOM'd on the
+compute buffer (`cudaMalloc failed`, 512 MiB short), `--n-cpu-moe 19`
+passed at load (15750 MiB) and confirmed on a real deep-cell request.
+`qwen36_q4kxl_n_cpu_moe_drafter` = 19.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance | VRAM used |
+|---|--:|--:|--:|--:|--:|--:|
+| n-max1 | 4096 | 60.60 | 1.24 | 502.92 | ~0.83-1.00 | 15813 MiB |
+| n-max1 | 65536 | 44.12 | 0.07 | 464.00 | ~0.78-0.84 | 15813 MiB |
+| n-max1 | 97280 | 37.92 | 0.18 | 450.04 | ~0.76-0.82 | 15813 MiB |
+
+Faster than the no-drafter arm at every depth (60.60 vs 55.81, 44.12
+vs 42.52, 37.92 vs 37.80). Draft acceptance mostly 0.78-0.84 mid-run,
+mean draft length ~1.8. Per the sweep rule, the climb continues to
+n-max 2. VRAM flat, swap flat around 3.7-3.8 GB.
+
+**n-max 2 arm.** `--n-cpu-moe 19` OOM'd on the compute buffer again
+(a bigger draft window needs more headroom); `--n-cpu-moe 21` passed
+at load (14891 MiB) and confirmed on a real deep-cell request.
+`qwen36_q4kxl_n_cpu_moe_nmax2` = 21.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance | VRAM used |
+|---|--:|--:|--:|--:|--:|--:|
+| n-max2 | 4096 | 61.16 | 3.07 | 459.20 | ~0.63-0.92 | 15015 MiB |
+| n-max2 | 65536 | 50.04 | 0.61 | 428.46 | ~0.63-0.92 | 15015 MiB |
+| n-max2 | 97280 | 45.42 | 3.74 | 420.01 | ~0.63-0.92 | 15015 MiB |
+
+Faster than n-max1 at every depth (61.16 vs 60.60, 50.04 vs 44.12,
+45.42 vs 37.92). Draft acceptance 0.63-0.92 mid-run, mean draft length
+2.3-2.8 (longer than n-max1's ~1.8, as expected with a larger draft
+window). Per the sweep rule, the climb continues to n-max 3. VRAM
+flat, swap flat around 4.5 GB.
+
+**n-max 3 arm**, `--n-cpu-moe 21` (same as n-max2, no OOM this time).
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance | VRAM used |
+|---|--:|--:|--:|--:|--:|--:|
+| n-max3 | 4096 | 57.85 | 0.39 | 462.94 | ~0.54-0.77 | 14894 MiB |
+| n-max3 | 65536 | 47.25 | 2.58 | 423.56 | ~0.54-0.77 | 14894 MiB |
+| n-max3 | 97280 | 46.76 | 4.91 | 416.49 | ~0.54-0.77 | 14894 MiB |
+
+Mixed against n-max2: slower at 4K and 65K (57.85 vs 61.16, 47.25 vs
+50.04), slightly faster at 97K (46.76 vs 45.42). Draft acceptance
+0.54-0.77, mean draft length 2.6-3.3 (highest of the three drafter
+arms, as expected with the largest draft window). n-max3 is the last
+arm in the climb regardless of this result. VRAM flat, swap flat
+around 5.3-5.4 GB.
+
+**sweep-qwen36-q4kxl closes.** Summary across all four arms at 97K
+(the deepest, most representative cell): no-drafter 37.80, n-max1
+37.92, n-max2 45.42, n-max3 46.76 tok/s. n-max2 and n-max3 read close;
+n-max2 needs less VRAM headroom (`--n-cpu-moe` 21 either way here) and
+a smaller draft window. A table and no pick — the coordinator names
+the served arm.
+
 ## Gates
 
 | old/new | gate | model | config | result | verdict |

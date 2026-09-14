@@ -5,7 +5,7 @@ Backends: llama-server · [GGUF on Hugging Face](https://huggingface.co/unsloth/
 <!-- gen:model-kpis:start -->
 <div class="kpis">
   <div class="kpi"><b>65k</b><span>usable context, UD-IQ3_S, q8_0 KV</span></div>
-  <div class="kpi"><b>pending</b><span>Mendel guided, UD-IQ3_S, effort xhigh</span></div>
+  <div class="kpi"><b>79</b><span>Mendel guided, UD-IQ3_S, effort xhigh</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 

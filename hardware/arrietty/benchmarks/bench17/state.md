@@ -31,8 +31,8 @@ its source.
 | `qwen38_iq3s_f16_clean` | 52224 | `sweep-qwen38-iq3s` |
 | `qwen38_iq3s_q8_c` | 65536 | `sweep-qwen38-iq3s` |
 | `qwen38_iq3s_q8_clean` | 64512 | `sweep-qwen38-iq3s` |
-| `qwen36_q4kxl_n_cpu_moe` | - | - |
-| `qwen36_q4kxl_clean` | - | - |
+| `qwen36_q4kxl_n_cpu_moe` | 17 | `sweep-qwen36-q4kxl` |
+| `qwen36_q4kxl_clean` | 97280 | `sweep-qwen36-q4kxl` (no-drafter arm) |
 | `gemma26_nvfp4_n_cpu_moe` | 7 | `sweep-gemma26-nvfp4` |
 | `gemma26_nvfp4_clean` | 97280 | `sweep-gemma26-nvfp4` (no-drafter arm) |
 
@@ -545,6 +545,15 @@ Files: `results/mendel-guided-gemma26-nvfp4.log`,
   `sweep-qwen38-iq3s-mtp`) run before any further smoke or agent row.
   Merged the reorder commit only (`git merge f71daf3`, not full
   master, no directory moves) at this block boundary.
+
+### sweep-qwen36-q4kxl — closed
+
+Four arms at `-c 98304`, q8_0 KV: no-drafter (`n-cpu-moe` 17), n-max1
+(19), n-max2 (21), n-max3 (21). 97K depth tok/s: 37.80, 37.92, 45.42,
+46.76. n-max2/n-max3 read close; n-max2 needs a smaller draft window
+for a similar gain. Files:
+`results/benchy-qwen36-q4kxl-{nodraft,nmax1,nmax2,nmax3}.md`,
+matching `server-sweep-qwen36-q4kxl-*.log` and `*-vm.log`.
 
 ## Handing over
 

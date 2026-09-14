@@ -5,7 +5,7 @@ Backends: llama-server · [NVFP4 GGUF on Hugging Face](https://huggingface.co/Fr
 <!-- gen:model-kpis:start -->
 <div class="kpis">
   <div class="kpi"><b>261k</b><span>usable context, NVFP4, f16 KV</span></div>
-  <div class="kpi"><b>pending</b><span>Mendel guided, NVFP4, thinking off</span></div>
+  <div class="kpi"><b>model-failed</b><span>Mendel guided, NVFP4, thinking off</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 

@@ -5,7 +5,7 @@ Backends: llama-server · [NVFP4 GGUF on Hugging Face](https://huggingface.co/ca
 <!-- gen:model-kpis:start -->
 <div class="kpis">
   <div class="kpi"><b>7</b><span>expert layers in host RAM at -c 98304</span></div>
-  <div class="kpi"><b>pending</b><span>Mendel guided, NVFP4, thinking on</span></div>
+  <div class="kpi"><b>37.5</b><span>Mendel guided, NVFP4, thinking on</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
