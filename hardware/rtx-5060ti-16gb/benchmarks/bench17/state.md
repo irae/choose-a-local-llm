@@ -304,6 +304,25 @@ Files: `results/mendel-smoke-gemma26-nvfp4.log`,
 `results/server-smoke-gemma26-nvfp4.log`.
 Deviation: none.
 
+### gemma12-q4kxl-smoke-off
+
+`gemma-4-12b-q4kxl`, level off, window 258048, `-c 262144`. `gh auth
+status` pass, stash cleared (was empty).
+
+`SMOKE-MENDEL model=gemma-4-12b-q4kxl level=off task=xtend
+window=258048 calls=8 distinct=8 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=2287 commits=1 clean=yes end=stop wall_s=15
+verdict=pass`
+
+Session log thinking check: 0 of 9 assistant turns carry a thinking
+block, matches off. `gemma12-q4kxl-mendel-guided-off` may proceed.
+Files: `results/mendel-smoke-gemma12-q4kxl.log`,
+`results/server-smoke-gemma12-q4kxl.log`.
+Deviation: none.
+
+All five smokes that do not depend on the blocked `sweep-qwen36-nvfp4`
+are done and pass. The guided rows are next.
+
 ## Handing over
 
 Not started.
