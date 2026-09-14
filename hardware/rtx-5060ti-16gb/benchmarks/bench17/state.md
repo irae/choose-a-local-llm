@@ -20,13 +20,13 @@ its source.
 | value | number | source |
 |---|--:|---|
 | `vram_start_mb` | 838 | `machine-setup`, `nvidia-smi` |
-| `llama_version` | - (binary not runnable, permission block) | `machine-setup` |
+| `llama_version` | 0.4.0-dev (build 10809, commit 5266f24da) | `machine-setup` |
 | `benchy_version` | 0.4.0 | `machine-setup` |
 | `hf_version` | 1.31.0 | `machine-setup` |
-| `gemma12_nvfp4_c` | - | - |
-| `gemma12_nvfp4_clean` | - | - |
-| `gemma12_q4kxl_c` | - | - |
-| `gemma12_q4kxl_clean` | - | - |
+| `gemma12_nvfp4_c` | 262144 | `sweep-gemma12-nvfp4` |
+| `gemma12_nvfp4_clean` | 261120 | `sweep-gemma12-nvfp4` |
+| `gemma12_q4kxl_c` | 262144 | `sweep-gemma12-q4kxl` |
+| `gemma12_q4kxl_clean` | 261120 | `sweep-gemma12-q4kxl` |
 | `qwen38_iq3s_f16_c` | - | - |
 | `qwen38_iq3s_f16_clean` | - | - |
 | `qwen38_iq3s_q8_c` | - | - |
@@ -75,18 +75,76 @@ Directories: `~/.local/share/choose-a-local-llm`,
 
 ## Blocks
 
-### machine-setup — running
+### machine-setup
 
-Deviation: the session's own auto-mode permission classifier refused to
-run the downloaded `llama-server` binary. Refused command:
-`~/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/bin/llama-server --version`
-(also refused with `export PATH=...; llama-server --version`). Refusal
-text: "Permission for this action was denied by the Claude Code auto
-mode classifier. Reason: Blocked by classifier." This is a session
-permission setting, not a runbook condition; escalated to the owner
-via the coordinator. The binary downloaded clean and passed
-`sha256sum -c` against `llama-v0.4.0-linux-cuda12.8-sm120-x64.tar.gz.sha256`.
-`llama_version` and the `--help` greps wait on the owner's word.
+Deviation (resolved): the session's own auto-mode permission classifier
+refused to run the downloaded `llama-server` binary. The owner reset the
+session's permission mode; the binary now executes.
+
+Deviation (resolved): the binary was missing three shared libraries the
+release claims to bundle. `libcublas.so.12` / `libcublasLt.so.12`:
+fixed with a local symlink to the archive's own unversioned
+`libcublas.so` / `libcublasLt.so`, same `lib/` directory. `libnccl.so.2`:
+not in the archive and not on the system at all. The owner installed
+the Arch `nccl` package first (`sudo pacman -S nccl`, 2.31.2-1), but it
+is built against CUDA 13 and needs `libcudart.so.13`, which conflicts
+with the archive's own CUDA 12.8 `libcudart.so.12` (a cross-major
+symlink was rejected as an ABI risk). Owner's word: "use uv". Fetched
+`nvidia-nccl-cu12` (2.31.2, matches the system package's version, built
+for CUDA 12) with `uv pip install --target`, copied its `libnccl.so.2`
+into the archive's `lib/`. `llama-server --version` now runs:
+`version: 0.4.0-dev (build 10809, commit 5266f24da), built with GNU
+9.4.0`. `--list-devices` shows `CUDA0: NVIDIA GeForce RTX 5060 Ti
+(15885 MiB, 15155 MiB free)`. `--help` lists `--fit`, `--fit-target`,
+`--fit-ctx`, `--n-cpu-moe`, `--spec-draft-n-cpu-moe`; no `--nvfp4` flag,
+expected since NVFP4 support reads from the GGUF quant type, not a CLI
+switch. `llama_version` recorded below. `PATH`/`LD_LIBRARY_PATH` for
+every session of this run:
+`export PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/bin:$PATH"`,
+`export LD_LIBRARY_PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/lib:$LD_LIBRARY_PATH"`.
+
+### sweep-gemma12-nvfp4
+
+`FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF` `gemma-4-12b-it-nvfp4.gguf`
+rev `207974a`, f16 KV, no drafter, one slot, `-c 262144`. Started
+05:13, closed 05:37.
+
+| depth | tok/s | VRAM MB | MemAvailable |
+|--:|--:|--:|--:|
+| 4096 | 49.55 | 12355 | 22711 |
+| 98304 | 41.57 | 12355 | 22738 |
+| 261120 | 33.11 | 12630 | 22547 |
+
+speed/mem headroom, ceiling 261120 @ 33.11 tok/s (well above the Mac's
+9.2 tok/s at 245K on the k-quant). `gemma12_nvfp4_c` = 262144,
+`gemma12_nvfp4_clean` = 261120.
+Files: `results/benchy-gemma12-nvfp4-f16.md`,
+`results/server-sweep-gemma12-nvfp4.log`,
+`results/benchy-gemma12-nvfp4-f16-vm.log`.
+Deviation: the first server start's `tee` failed (results dir did not
+exist yet when the process launched), no data lost — server log
+recreated on restart before any benchy request ran.
+
+### sweep-gemma12-q4kxl
+
+`unsloth/gemma-4-12b-it-GGUF` `gemma-4-12b-it-UD-Q4_K_XL.gguf` rev
+`fc034cf`, f16 KV, no drafter, one slot, `-c 262144`. Started 05:47,
+closed 06:23.
+
+| depth | tok/s | VRAM MB | MemAvailable |
+|--:|--:|--:|--:|
+| 4096 | 47.39 | 13052 | 22785 |
+| 98304 | 40.26 | 13052 | 22846 |
+| 261120 | 32.18 | 13000 | 22635 |
+
+speed/mem headroom, ceiling 261120 @ 32.18 tok/s. `gemma12_q4kxl_c` =
+262144, `gemma12_q4kxl_clean` = 261120. The NVFP4 build reads faster
+at every depth than this k-quant control (49.6 vs 47.4 at 4K, 33.1 vs
+32.2 at 261K).
+Files: `results/benchy-gemma12-q4kxl-f16.md`,
+`results/server-sweep-gemma12-q4kxl.log`,
+`results/benchy-gemma12-q4kxl-f16-vm.log`.
+Deviation: none.
 
 ## Handing over
 
