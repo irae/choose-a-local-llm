@@ -101,6 +101,20 @@ Coordinator answer (2026-09-14, on the push through 80f5f1c):
 
 Owner instruction (2026-09-14, direct to the runner): withdrawn. The owner first said `qwen38-unsloth-mendel-blind-xhigh` was a mistake in the order, then corrected: the original order was right, keep the blind block in queue as AGENT.md has it. No skip.
 
+### qwen38-unsloth-serving
+
+Not a measurement; applies the serving rule from the sweep table.
+
+1. **Agent arm.** At depth `qwen38_unsloth_mtp_c` minus 1024 (138240): nmax0 reads 8.19 tok/s, nmax1 reads 7.34 tok/s. Candidate = nmax0. Window (nmax0 rule): `qwen38_unsloth_clean` (147478) rounded down to a multiple of 4096, at or under `qwen38_unsloth_c` (188416) = 147456.
+2. **Compaction check.** ISTA's blind peak was 117940. The candidate's window (147456) is not under 122880, so the check does not fire; agent arm stays nmax0. Not a drafter arm, so the coordinator's added bisection step for `qwen38-unsloth-serving` does not apply.
+3. **EvalPlus arm.** Highest tok/s at depth 4096: nmax0 (13.60) beats nmax1 (12.23). Eval arm = nmax0.
+
+`qwen38_unsloth_agent_arm` = nmax0 (no drafter)
+`qwen38_unsloth_agent_c` = 188416
+`qwen38_unsloth_window` = 147456
+`qwen38_unsloth_keep` = pi's default (window ≥ 65536, so no override)
+`qwen38_unsloth_eval_arm` = nmax0
+
 ## Handing over
 
 Not started.
