@@ -29,11 +29,11 @@ link the setup's report. A model name in a method page is a bug.
    own page.
 4. Plan a run per [benchmarks/PLANNING.md](./benchmarks/PLANNING.md):
    a coordinator agent writes the runbook
-   `hardware/m1-max-32gb/benchmarks/bench<N>/AGENT.md`, a runner
+   `hardware/kamaji/benchmarks/bench<N>/AGENT.md`, a runner
    agent executes it unattended. `AGENTS.md` holds the rules for both.
 5. Record results the way `EDITOR.md` and the methodology's
    record-everywhere rule demand, and add each run's findings to
-   `hardware/m1-max-32gb/benchmarks/INDEX.md`. Contribute the setup
+   `hardware/kamaji/benchmarks/INDEX.md`. Contribute the setup
    folder back.
 
 ## What this project does not measure
