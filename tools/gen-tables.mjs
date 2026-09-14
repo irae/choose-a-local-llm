@@ -88,6 +88,7 @@ const MENDEL_SLUGS = {
   'qwen3.8-27b (ISTA IQ3_S-mtp, low)': 'qwen3.8-27b',
   'qwen3.8-27b (AtomicChat AD-IQ3_S)': 'qwen3.8-27b',
   'gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, rtx-5060ti-16gb)': 'gemma-4-12b-it',
+  'qwen3.8-27b-iq3s (unsloth UD-IQ3_S, xhigh, rtx-5060ti-16gb)': 'qwen3.8-27b',
 }
 
 function mendelName(r) {
@@ -225,6 +226,7 @@ const MENDEL_SPECS = {
   'qwen3.8-27b (ISTA IQ3_S-mtp, low)': { base: 'Qwen3.8-27B', quant: 'IQ3_S-mtp', publisher: 'ISTA-DASLab', repo: 'ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF', drafter: '' },
   'qwen3.8-27b (AtomicChat AD-IQ3_S)': { base: 'Qwen3.8-27B', quant: 'AD-IQ3_S', publisher: 'AtomicChat', repo: 'AtomicChat/Qwen3.8-27B-GGUF', drafter: 'mtp/3' },
   'gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, rtx-5060ti-16gb)': { base: 'Gemma-4-12B', quant: 'NVFP4', publisher: 'FreedomAISVR', repo: 'FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF', drafter: '', binary: true },
+  'qwen3.8-27b-iq3s (unsloth UD-IQ3_S, xhigh, rtx-5060ti-16gb)': { base: 'Qwen3.8-27B', quant: 'UD-IQ3_S', publisher: 'unsloth', repo: 'unsloth/Qwen3.8-27B-GGUF', drafter: '' },
 }
 
 const MENDEL_SERVER = { 'llama-server': 'llama-server', 'mlx_lm.server': 'mlx_lm.server', 'lm-studio': 'lms' }
