@@ -201,6 +201,30 @@ n-max2 needs less VRAM headroom (`--n-cpu-moe` 21 either way here) and
 a smaller draft window. A table and no pick — the coordinator names
 the served arm.
 
+### sweep-qwen38-ista
+
+`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` `Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf`
+rev `d562806dbafae37109975e970aae91b43e73b440`, llama.cpp `0.4.0-dev`
+(build 10809, sm120/cuda12.8), q8_0 KV, `-c 65536` (planning value from
+`qwen38_iq3s_q8_c`, passed on the first load despite the file being 79
+MB larger). No sampling flags passed; this file sets its own `min_p
+0.0` default (the unsloth file applies `0.05`). Mac reference, this
+file at f16 on Metal, no drafter: 14.1 tok/s at 4K, 8.1 tok/s at 147K.
+
+**No-drafter arm.**
+
+| arm | depth | tok/s | sd | prompt tok/s | VRAM used | MemAvailable |
+|---|--:|--:|--:|--:|--:|--:|
+| nodraft | 4096 | 29.43 | 0.01 | 898.20 | 15111 MiB | 21358 MB |
+| nodraft | 24576 | 25.89 | 0.00 | 835.73 | 15111 MiB | - |
+| nodraft | 64512 | 21.13 | 0.17 | 709.92 | 15111 MiB | 21387 MB |
+
+Clean depth: 64512, well above the Mac's 8.1 tok/s at 147K (a much
+shallower window here, much faster per token). VRAM flat, swap flat
+around 5.3 GB. `qwen38_ista_c` = 65536, `qwen38_ista_clean` = 64512.
+
+A table and no pick. The coordinator names the served arm.
+
 ## Gates
 
 | old/new | gate | model | config | result | verdict |

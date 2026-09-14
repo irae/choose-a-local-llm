@@ -37,6 +37,8 @@ its source.
 | `qwen36_q4kxl_window` | 94208 | coordinator (97280 rounded down) |
 | `gemma26_nvfp4_n_cpu_moe` | 7 | `sweep-gemma26-nvfp4` |
 | `gemma26_nvfp4_clean` | 97280 | `sweep-gemma26-nvfp4` (no-drafter arm) |
+| `qwen38_ista_c` | 65536 | `sweep-qwen38-ista` |
+| `qwen38_ista_clean` | 64512 | `sweep-qwen38-ista` (no-drafter arm) |
 
 ## Files and revisions
 
