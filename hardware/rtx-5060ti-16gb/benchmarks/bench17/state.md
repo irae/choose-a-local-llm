@@ -27,8 +27,8 @@ its source.
 | `gemma12_nvfp4_clean` | 261120 | `sweep-gemma12-nvfp4` |
 | `gemma12_q4kxl_c` | 262144 | `sweep-gemma12-q4kxl` |
 | `gemma12_q4kxl_clean` | 261120 | `sweep-gemma12-q4kxl` |
-| `qwen38_iq3s_f16_c` | - | - |
-| `qwen38_iq3s_f16_clean` | - | - |
+| `qwen38_iq3s_f16_c` | 53248 | `sweep-qwen38-iq3s` (stepped down from 61440 after a crash) |
+| `qwen38_iq3s_f16_clean` | 52224 | `sweep-qwen38-iq3s` |
 | `qwen38_iq3s_q8_c` | - | - |
 | `qwen38_iq3s_q8_clean` | - | - |
 | `qwen36_nvfp4_n_cpu_moe` | - | - |
@@ -145,6 +145,32 @@ Files: `results/benchy-gemma12-q4kxl-f16.md`,
 `results/server-sweep-gemma12-q4kxl.log`,
 `results/benchy-gemma12-q4kxl-f16-vm.log`.
 Deviation: none.
+
+### sweep-qwen38-iq3s (f16 arm)
+
+`unsloth/Qwen3.8-27B-GGUF` `Qwen3.8-27B-UD-IQ3_S.gguf` rev `4ca7207`,
+f16 KV, no drafter, one slot. Ladder loads: 65536 fail, 32768 pass,
+49152 pass, 57344 pass, 61440 pass (6 loads, cap reached), 63488 fail.
+61440 then crashed on a real request (CUDA OOM at warmup); stepped
+down to `-c 53248`, clean. Started 06:20, closed 06:42.
+
+| depth | tok/s | VRAM MB | MemAvailable |
+|--:|--:|--:|--:|
+| 4096 | 29.96 | 15453 | 23836 |
+| 24576 | 27.21 | 15453 | 23880 |
+| 52224 | 24.34 | 15453 | 23830 |
+
+speed/mem, ceiling 52224 @ 24.34 tok/s (vs Mac's 8.1 tok/s at 147K on
+the same quant at f16 — much shallower window here, much faster per
+token). `qwen38_iq3s_f16_c` = 53248, `qwen38_iq3s_f16_clean` = 52224.
+Files: `results/benchy-qwen38-iq3s-f16.md`,
+`results/server-sweep-qwen38-iq3s-f16.log`,
+`results/benchy-qwen38-iq3s-f16-vm.log`.
+Deviation: the 61440 load-pass was not a real pass — the model plus
+compute buffers for an actual request need more headroom than the
+bare load check shows. Retried at `-c` minus 8192 in the same block,
+per the owner's 2026-09-13 retry rule; no data lost, the crashed run's
+`-save-result` file was never written. Swap held flat at 604-638 MB.
 
 ## Handing over
 
