@@ -108,6 +108,14 @@ old medium row is the intended outcome, not a cost.
 Qwen3.8 that default is **xhigh**. A control row's level is not a
 default and never becomes one.
 
+**No Mendel run at thinking off** (owner rule, 2026-09-14). Thinking
+off does badly in the agent harness: the simulator, Mendel and pi. No
+block plans a Mendel smoke, guided run or blind run at thinking off,
+unless the owner asks for it in words. Thinking off stays a real level
+for other tasks, such as PDF reading, summaries and OCR. When a
+model's published default is off, its Mendel blocks use its
+thinking-on level, and the block writes that reason.
+
 This rule exists because the opposite rule was written down and then
 followed for days. "One effort or thinking level per candidate: the
 level its control row already uses" reads as sound planning and is how

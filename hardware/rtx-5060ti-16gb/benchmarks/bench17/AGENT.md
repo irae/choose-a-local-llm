@@ -45,7 +45,8 @@ this run only, and the run's rows say so.
 - `qwen38-iq3s-mendel-guided-xhigh`
 - `qwen36-q4kxl-mendel-guided-high`
 - `gemma26-nvfp4-mendel-guided-high`
-- `gemma12-q4kxl-mendel-guided-off`
+- `gemma12-q4kxl-mendel-guided-high`
+- `gemma12-nvfp4-mendel-guided-high`
 - `mendel-blind-after-guided`
 - `retry-sweep`
 
@@ -498,7 +499,17 @@ and the end reason.
 - `qwen38-iq3s-mendel-guided-xhigh`: alias `qwen3.8-27b-iq3s`, `xhigh`.
 - `qwen36-q4kxl-mendel-guided-high`: alias `qwen3.6-35b-a3b-q4kxl`, `high`.
 - `gemma26-nvfp4-mendel-guided-high`: alias `gemma-4-26b-a4b-nvfp4`, `high`.
-- `gemma12-q4kxl-mendel-guided-off`: alias `gemma-4-12b-q4kxl`, `off`.
+- `gemma12-q4kxl-mendel-guided-high`: alias `gemma-4-12b-q4kxl`, `high`.
+- `gemma12-nvfp4-mendel-guided-high`: alias `gemma-4-12b-nvfp4`, `high`.
+
+The two Gemma-12B rows run at `high`, thinking on, not at the `off`
+of their smokes (owner, 2026-09-14): no Mendel run at thinking off
+(`benchmarks/PLANNING.md`). The `off` smokes cover them, because one
+smoke covers every level of a build. Their window is the window of
+their smoke. The `off` row of the NVFP4 build stays as the record of
+its attempt and is not retried. After the first turns of each of the
+two rows, read the session log for a thinking block; no thinking block
+means the level did not reach the server, and that is stop and ask.
 
 ## `mendel-blind-after-guided`
 

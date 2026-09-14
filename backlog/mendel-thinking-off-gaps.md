@@ -3,6 +3,11 @@
 Status: not reviewed. Filed 2026-09-06, from run 10 — the owner spotted
 this mid-run while EvalPlus was scoring the "survivor" configs.
 
+**Needs owner approval before any work.** On 2026-09-14 the owner
+decided not to run more Mendel rows at thinking off: thinking off does
+badly in the agent harness (`benchmarks/PLANNING.md`, "No Mendel run
+at thinking off").
+
 ## What it is about
 
 Some local models have an EvalPlus pass at thinking `off` (this run
