@@ -34,16 +34,16 @@ this run only, and the run's rows say so.
 - `sweep-gemma12-nvfp4`
 - `sweep-gemma12-q4kxl`
 - `sweep-qwen38-iq3s`
-- `sweep-qwen36-nvfp4`
+- `sweep-qwen36-q4kxl`
 - `sweep-gemma26-nvfp4`
 - `gemma12-nvfp4-smoke-off`
 - `qwen38-iq3s-smoke-xhigh`
-- `qwen36-nvfp4-smoke-high`
+- `qwen36-q4kxl-smoke-high`
 - `gemma26-nvfp4-smoke-high`
 - `gemma12-q4kxl-smoke-off`
 - `gemma12-nvfp4-mendel-guided-off`
 - `qwen38-iq3s-mendel-guided-xhigh`
-- `qwen36-nvfp4-mendel-guided-high`
+- `qwen36-q4kxl-mendel-guided-high`
 - `gemma26-nvfp4-mendel-guided-high`
 - `gemma12-q4kxl-mendel-guided-off`
 - `mendel-blind-after-guided`
@@ -201,7 +201,7 @@ command. Every install below is user-level; none needs sudo.
    | `FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF` | `gemma-4-12b-it-nvfp4.gguf` | 7.0 GB | `sweep-gemma12-nvfp4` |
    | `unsloth/gemma-4-12b-it-GGUF` | `gemma-4-12b-it-UD-Q4_K_XL.gguf` | 7.4 GB | `sweep-gemma12-q4kxl` |
    | `unsloth/Qwen3.8-27B-GGUF` | `Qwen3.8-27B-UD-IQ3_S.gguf` | 12.0 GB | `sweep-qwen38-iq3s` |
-   | `michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF` | `Qwen3.6-35B-A3B-NVFP4-MTP-HQ.gguf` | 20.5 GB | `sweep-qwen36-nvfp4` |
+   | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF` | `Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf` | 22.9 GB | `sweep-qwen36-q4kxl` (owner's word, 2026-09-14; replaces the michaelw9999 NVFP4 file, which fails a tensor-count check) |
    | `catlilface/Gemma-4-26B-A4B-NVFP4-GGUF` | `Gemma4-26b-NVFP4Q8.gguf` | 15.4 GB | `sweep-gemma26-nvfp4` |
 
    Download the first file, start `sweep-gemma12-nvfp4`, and fetch
@@ -362,17 +362,20 @@ agent blocks of this model take the arm the coordinator names at the
 block-close message; until that message arrives, the smoke of this
 model waits and the list goes on.
 
-## `sweep-qwen36-nvfp4`
+## `sweep-qwen36-q4kxl`
 
-The MoE 35B model in a community NVFP4 build with the MTP drafter
-embedded. The file is larger than the card, so part of the experts
-stay in host RAM. Fixed: `michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF`
-`Qwen3.6-35B-A3B-NVFP4-MTP-HQ.gguf` at the recorded revision,
-`--no-mmproj`, q8_0 KV (the Mac's pick for this model: f16 did not
-fit a useful window there and will not here), `--parallel 1`, alias
-`qwen3.6-35b-a3b-nvfp4`. `-c 98304` is the search target of this
+The MoE 35B model in the mainstream build, the one the Mac serves
+(owner's word, 2026-09-14: a popular stable release, not a niche
+NVFP4 repack; the michaelw9999 file failed a tensor-count check at
+load). The file is larger than the card, so part of the experts stay
+in host RAM. Fixed: `unsloth/Qwen3.6-35B-A3B-MTP-GGUF`
+`Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf` at the recorded revision (this repo
+embeds the MTP drafter in the file; `--spec-type draft-mtp` turns it
+on, as the Mac's row does), `--no-mmproj`, q8_0 KV (the Mac's pick for
+this model: f16 did not fit a useful window there and will not here),
+`--parallel 1`, alias `qwen3.6-35b-a3b-q4kxl`. `-c 98304` is the search target of this
 block (coordinator, 2026-09-13: the Mac's window for this model, twice
-the task's 46K); the ladder finds `qwen36_nvfp4_n_cpu_moe`, the
+the task's 46K); the ladder finds `qwen36_q4kxl_n_cpu_moe`, the
 smallest expert offload that serves it. Arms by "The sweep rule" of
 `docs/methodology/context-creep.md`: no drafter first, then
 `--spec-type draft-mtp --spec-draft-n-max 1`, then 2, then 3, each a
@@ -382,25 +385,25 @@ take one more. Depths: 4096, 65536, 97280, the deep cell in its own
 call. Tokenizer `unsloth/Qwen3.6-35B-A3B`.
 
 ```bash
-llama-server -m ~/.cache/llama.cpp/hf/michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF/Qwen3.6-35B-A3B-NVFP4-MTP-HQ.gguf \
-  --alias qwen3.6-35b-a3b-nvfp4 --no-mmproj --parallel 1 \
+llama-server -m ~/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf \
+  --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 \
   <arm flags> \
-  -ngl 999 --fit off --n-cpu-moe <qwen36_nvfp4_n_cpu_moe> -fa on -c 98304 \
+  -ngl 999 --fit off --n-cpu-moe <qwen36_q4kxl_n_cpu_moe> -fa on -c 98304 \
   --cache-type-k q8_0 --cache-type-v q8_0 --cache-ram 0 \
   --jinja --port 8081 2>&1 \
-  | tee hardware/rtx-5060ti-16gb/benchmarks/bench17/results/server-sweep-qwen36-nvfp4-<arm>.log
+  | tee hardware/rtx-5060ti-16gb/benchmarks/bench17/results/server-sweep-qwen36-q4kxl-<arm>.log
 ```
 
 `<arm flags>` is empty for no drafter and `--spec-type draft-mtp
 --spec-draft-n-max <n>` otherwise. Mac numbers to read against, the
 k-quant at q8_0 with n-max 3: 43.7 at 4K, 13.0 at 82K. Write
-`qwen36_nvfp4_n_cpu_moe` and `qwen36_nvfp4_clean` in `state.md`. The
+`qwen36_q4kxl_n_cpu_moe` and `qwen36_q4kxl_clean` in `state.md`. The
 agent blocks of this model take the arm the coordinator names.
 
 ## `sweep-gemma26-nvfp4`
 
 The MoE 26B model in a community NVFP4 build that keeps attention at
-Q8. Same shape as `sweep-qwen36-nvfp4`, one arm, no drafter. Fixed:
+Q8. Same shape as `sweep-qwen36-q4kxl`, one arm, no drafter. Fixed:
 `catlilface/Gemma-4-26B-A4B-NVFP4-GGUF` `Gemma4-26b-NVFP4Q8.gguf` at
 the recorded revision, `--no-mmproj`, f16 KV (the Mac's pick for this
 model), `--parallel 1`, alias `gemma-4-26b-a4b-nvfp4`. `-c 98304` is
@@ -446,11 +449,11 @@ block of that build waits.
 - `qwen38-iq3s-smoke-xhigh`: alias `qwen3.8-27b-iq3s`, level `xhigh`,
   the model's published default (owner rule, 2026-09-09). The arm and
   `-c` the coordinator named; window from that arm's clean depth.
-- `qwen36-nvfp4-smoke-high`: alias `qwen3.6-35b-a3b-nvfp4`, level
+- `qwen36-q4kxl-smoke-high`: alias `qwen3.6-35b-a3b-q4kxl`, level
   `high`, which is thinking on for this model in the harness map, its
   published default and the level of its best Mac row (63 guided).
   The drafter arm the coordinator named. Window from
-  `qwen36_nvfp4_clean`.
+  `qwen36_q4kxl_clean`.
 - `gemma26-nvfp4-smoke-high`: alias `gemma-4-26b-a4b-nvfp4`, level
   `high`, thinking on, the level of its best Mac row (47.5 blind).
   Window from `gemma26_nvfp4_clean`.
@@ -493,7 +496,7 @@ and the end reason.
 
 - `gemma12-nvfp4-mendel-guided-off`: alias `gemma-4-12b-nvfp4`, `off`.
 - `qwen38-iq3s-mendel-guided-xhigh`: alias `qwen3.8-27b-iq3s`, `xhigh`.
-- `qwen36-nvfp4-mendel-guided-high`: alias `qwen3.6-35b-a3b-nvfp4`, `high`.
+- `qwen36-q4kxl-mendel-guided-high`: alias `qwen3.6-35b-a3b-q4kxl`, `high`.
 - `gemma26-nvfp4-mendel-guided-high`: alias `gemma-4-26b-a4b-nvfp4`, `high`.
 - `gemma12-q4kxl-mendel-guided-off`: alias `gemma-4-12b-q4kxl`, `off`.
 
@@ -587,8 +590,8 @@ binary-thinking models, `reasoning_effort` for the graded one).
       "thinkingLevelMap": { "off": "off", "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": null, "max": null }
     },
     {
-      "id": "qwen3.6-35b-a3b-nvfp4",
-      "name": "Qwen3.6 35B-A3B NVFP4 (llama-server)",
+      "id": "qwen3.6-35b-a3b-q4kxl",
+      "name": "Qwen3.6 35B-A3B UD-Q4_K_XL (llama-server)",
       "reasoning": true,
       "input": ["text"],
       "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },

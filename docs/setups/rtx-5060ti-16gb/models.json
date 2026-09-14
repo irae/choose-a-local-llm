@@ -48,7 +48,7 @@
       "note": "pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 GB. The KV type is measured on this card, f16 against q8_0, before the row is served; q8_0 and `-c 49152` are planning values. Every cell is pending until the first run closes."
     },
     {
-      "config": "Qwen3.6-35B-A3B, GGUF, NVFP4, q8_0 KV, experts partly in host RAM, thinking on",
+      "config": "Qwen3.6-35B-A3B, GGUF, UD-Q4_K_XL, q8_0 KV, experts partly in host RAM, thinking on",
       "maxCtx": "pending",
       "gatedBy": "mem",
       "tokShallow": "pending",
@@ -56,11 +56,11 @@
       "memory": "pending",
       "evalplus": "pending",
       "mendel": "pending",
-      "id": "qwen36-nvfp4-on",
-      "spec": { "base": "Qwen3.6-35B-A3B", "quant": "NVFP4-MTP-HQ", "server": "llama-server", "publisher": "michaelw9999", "repo": "michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF", "drafter": "", "kv": "q8_0", "effort": "on" },
+      "id": "qwen36-q4kxl-on",
+      "spec": { "base": "Qwen3.6-35B-A3B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/Qwen3.6-35B-A3B-MTP-GGUF", "drafter": "", "kv": "q8_0", "effort": "on" },
       "hidden": false,
-      "command": "llama-server -m ~/.cache/llama.cpp/hf/michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF/Qwen3.6-35B-A3B-NVFP4-MTP-HQ.gguf \\\n  --alias qwen3.6-35b-a3b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off --n-cpu-moe <measured> -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.6-35b-a3b-nvfp4`. A community NVFP4 repack with the MTP drafter embedded. The file is larger than the card, so a measured count of expert layers stays in host RAM (`--n-cpu-moe`); the drafter arm is measured on real text before the row is served. Every cell is pending until the first run closes."
+      "command": "llama-server -m ~/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf \\\n  --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off --n-cpu-moe <measured> -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.6-35b-a3b-q4kxl`. The build the reference setup serves, with the MTP drafter in a separate file. The file is larger than the card, so a measured count of expert layers stays in host RAM (`--n-cpu-moe`); the drafter arm is measured on real text before the row is served. A community NVFP4 repack was tried first and failed to load (a tensor-count defect); the owner chose the mainstream build over a niche one (2026-09-14). Every cell is pending until the first run closes."
     },
     {
       "config": "Gemma-4-26B-A4B, GGUF, NVFP4, f16 KV, experts partly in host RAM, thinking on",
@@ -100,7 +100,7 @@
       "kpis": ["offload", "mendelGuided"],
       "stats": {
         "offload": { "value": "pending", "label": "expert layers in host RAM at -c 98304" },
-        "mendelGuided": { "value": "pending", "label": "Mendel guided, NVFP4, thinking on" }
+        "mendelGuided": { "value": "pending", "label": "Mendel guided, UD-Q4_K_XL, thinking on" }
       }
     },
     "gemma-4-26b-a4b": {

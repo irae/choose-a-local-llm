@@ -1,6 +1,6 @@
 # Qwen3.6-35B-A3B on RTX 5060 Ti 16 GB — llama-server benchmarks
 
-Builds: michaelw9999 NVFP4-MTP-HQ. Backend: llama-server, CUDA, the prebuilt build
+Builds: unsloth UD-Q4_K_XL. Backend: llama-server, CUDA, the prebuilt build
 named in the setup overview.
 
 The full data of every measurement of this model on this machine,

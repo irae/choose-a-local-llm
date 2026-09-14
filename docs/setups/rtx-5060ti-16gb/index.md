@@ -9,7 +9,7 @@
   fit fails at load.
 - **The card runs NVFP4 natively.** llama.cpp has native NVFP4
   kernels for this GPU family, so NVFP4 builds are first-class
-  candidates here, and three of the five builds under test are NVFP4.
+  candidates here, and two of the five builds under test are NVFP4.
 - **One runtime, llama-server on CUDA.** No MLX, no LM Studio, no
   fork.
 - **Every cell is pending.** The first run on this machine is under
@@ -49,7 +49,7 @@
 |---|---|---|
 | Gemma-4-12B-it | `FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF`; `unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL` | [report](./reports/gemma-4-12b-it.md), [benchmarks](./benchmarks/gemma-4-12b-it.md) |
 | Qwen3.8-27B | `unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S` | [report](./reports/qwen3.8-27b.md), [benchmarks](./benchmarks/qwen3.8-27b.md) |
-| Qwen3.6-35B-A3B (MoE) | `michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF`, HQ file | [report](./reports/qwen3.6-35b-a3b.md), [benchmarks](./benchmarks/qwen3.6-35b-a3b.md) |
+| Qwen3.6-35B-A3B (MoE) | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` | [report](./reports/qwen3.6-35b-a3b.md), [benchmarks](./benchmarks/qwen3.6-35b-a3b.md) |
 | Gemma-4-26B-A4B (MoE) | `catlilface/Gemma-4-26B-A4B-NVFP4-GGUF`, NVFP4Q8 file | [report](./reports/gemma-4-26b-a4b.md), [benchmarks](./benchmarks/gemma-4-26b-a4b.md) |
 
 The NVFP4 builds are community repacks. unsloth publishes NVFP4 as

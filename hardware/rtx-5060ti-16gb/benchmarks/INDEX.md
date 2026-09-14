@@ -10,6 +10,6 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 
 - Runbook: [bench17/AGENT.md](bench17/AGENT.md). The first run on this
   machine: five llama.cpp builds read with `llama-benchy` up to their
-  deep context, three of them NVFP4, then the agent smoke, the guided
+  deep context, two of them NVFP4, then the agent smoke, the guided
   agent task, and the blind task for the builds that finish it. In
   progress; findings land here at the close.

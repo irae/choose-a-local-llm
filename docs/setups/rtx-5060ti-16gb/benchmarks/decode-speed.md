@@ -23,7 +23,7 @@ Two rules to read the tables by:
 |---|--:|--:|---|
 | [<ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" />](./gemma-4-12b-it.md) | pending → pending | pending | mem |
 | [<ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" />](./qwen3.8-27b.md) | pending → pending | pending | mem |
-| [<ModelSpec base="Qwen3.6-35B-A3B" quant="NVFP4-MTP-HQ" server="llama-server" publisher="michaelw9999" repo="michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF" kv="q8_0" effort="on" />](./qwen3.6-35b-a3b.md) | pending → pending | pending | mem |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="q8_0" effort="on" />](./qwen3.6-35b-a3b.md) | pending → pending | pending | mem |
 | [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" />](./gemma-4-26b-a4b.md) | pending → pending | pending | mem |
 <!-- gen:decode-summary:end -->
 
