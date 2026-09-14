@@ -91,6 +91,40 @@ deep cells).
 A table and no pick. The coordinator names the served arm and the KV
 type.
 
+### sweep-gemma26-nvfp4
+
+`catlilface/Gemma-4-26B-A4B-NVFP4-GGUF` `Gemma4-26b-NVFP4Q8.gguf` rev
+`dc98839`, llama.cpp `0.4.0-dev` (build 10809, sm120/cuda12.8), f16
+KV, one arm, no drafter (`--parallel 1`). This build carries no MTP
+layers (`--spec-type draft-mtp` fails at load with "model doesn't
+contain MTP layers"), confirming the runbook's own "one arm, no
+drafter" shape for this block. `-c 98304` fixed, search target
+`--n-cpu-moe`. Mac reference, the k-quant at f16 with n-max 2: 60.1
+tok/s at 4K, 28.2 tok/s at 98K.
+
+`--n-cpu-moe` ladder: 12 passed at load (13495 MiB), 6 failed
+(`cudaMalloc failed: out of memory`), 9 passed (14719 MiB), 7 passed
+at load (15535 MiB) and confirmed on a real request the size of the
+deep cell (97280) before committing to it, learning from the
+`sweep-qwen38-iq3s` crash earlier in this run.
+`gemma26_nvfp4_n_cpu_moe` = 7.
+
+| arm | depth | tok/s | sd | prompt tok/s | VRAM used | MemAvailable |
+|---|--:|--:|--:|--:|--:|--:|
+| f16 | 4096 | 58.77 | 0.05 | 1365.15 | 15585 MiB | 24242 MB |
+| f16 | 65536 | 49.56 | 0.31 | 1177.71 | 15585 MiB | 24267 MB |
+| f16 | 97280 | 45.59 | 0.43 | 1078.03 | 15585 MiB | 24232 MB |
+
+Clean depth: 97280, `gemma26_nvfp4_clean` = 97280. VRAM flat, swap flat
+at ~1.6 GB. Well above the Mac's 28.2 tok/s at 98K.
+
+A table and no pick. The coordinator names the served arm and the KV
+type.
+
 ## Gates
+
+| old/new | gate | model | config | result | verdict |
+|---|---|---|---|---|---|
+| new | mendel smoke | gemma-4-12b-nvfp4 | f16 KV, `-c 262144`, window 258048, off | 26 calls, 1 commit, clean, no loop, 51s | pass |
 
 ## Mendel
