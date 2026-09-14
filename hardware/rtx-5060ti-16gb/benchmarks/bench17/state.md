@@ -559,6 +559,17 @@ for a similar gain. Files:
 `results/benchy-qwen36-q4kxl-{nodraft,nmax1,nmax2,nmax3}.md`,
 matching `server-sweep-qwen36-q4kxl-*.log` and `*-vm.log`.
 
+### sweep-qwen38-ista n-max1 — retry at -c 57344
+
+`--spec-type draft-mtp --spec-draft-n-max 1` at `-c 65536` (the
+no-drafter arm's value) loaded clean but crashed on the deep-cell
+request (`CUDA error: out of memory`) — the drafter's extra compute
+buffer did not fit at the no-drafter arm's `-c`, the same pattern as
+`sweep-qwen36-q4kxl`'s `--n-cpu-moe` needing to grow for its drafter
+arms. Stepped `-c` down 8192 to 57344 per the retry rule, loaded at
+15466 MiB (~845 MiB headroom), probing the deep cell (56320) before
+the full sweep.
+
 ## Handing over
 
 Not started.
