@@ -44,6 +44,17 @@ Deviation: none.
 Files: `results/server-ladder-163840.log`, `results/server-ladder-180224.log`, `results/server-ladder-196608.log`, `results/server-ladder-188416.log`.
 Deviation: wired at the two largest passing rungs (25344, 25911 MB) is above the 25000 sysctl wired limit; see the Values section.
 
+### creep-qwen38-unsloth-nodrafter
+
+`unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S` rev `4ca7207`, no drafter, `-c 188416`, one slot, f16 KV, wired limit 25000. Tool `e38c467`. `STOP: below 8 tok/s at depth 163858`, a real speed floor, not a dead server: `swap_delta_mb` reads 0 on every row.
+
+`qwen38_unsloth_clean` = 147478 (8.17 tok/s, the deepest step at or above 8 tok/s before the STOP).
+`qwen38_unsloth_gated` = speed.
+
+Mac numbers to read against, the ISTA file at the same settings: 14.1 at 4K, 8.3 at 147478, speed gated. This build: 13.70 at 4K, 8.17 at 147478 — close, slightly slower.
+Files: `results/creep-qwen38-unsloth-nodrafter.tsv`, `results/server-creep-nodrafter.log`.
+Deviation: none.
+
 ## Handing over
 
 Not started.
