@@ -47,16 +47,19 @@ this run only, and the run's rows say so.
 - `sweep-qwen38-iq3s-mtp`
 - `qwen36-q4kxl-smoke-high`
 - `qwen38-ista-smoke-xhigh`
+- `qwen38-ista-mendel-guided-xhigh`
+- `qwen36-q4kxl-mendel-guided-high`
 - `gemma12-q4kxl-mendel-guided-high`
 - `gemma12-nvfp4-mendel-guided-high`
-- `qwen36-q4kxl-mendel-guided-high`
-- `qwen38-ista-mendel-guided-xhigh`
 - `mendel-blind-after-guided`
 
 Owner, 2026-09-14: every speed block runs before the next agent row.
 The three sweeps above were added while the run was already in its
 agent rows, so they run right after `gemma26-nvfp4-mendel-guided-high`
 closes, before any other smoke or agent row. That row is not stopped.
+
+Owner, 2026-09-14: the four guided-high rows run qwen3.8 first, the
+two gemma rows last; qwen3.6 stays between them.
 - `retry-sweep`
 
 ## Essentials

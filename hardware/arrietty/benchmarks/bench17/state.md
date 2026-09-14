@@ -31,10 +31,14 @@ its source.
 | `qwen38_iq3s_f16_clean` | 52224 | `sweep-qwen38-iq3s` |
 | `qwen38_iq3s_q8_c` | 65536 | `sweep-qwen38-iq3s` |
 | `qwen38_iq3s_q8_clean` | 64512 | `sweep-qwen38-iq3s` |
-| `qwen36_q4kxl_n_cpu_moe` | 17 | `sweep-qwen36-q4kxl` |
+| `qwen36_q4kxl_n_cpu_moe` | 17 | `sweep-qwen36-q4kxl` (no-drafter arm ladder) |
 | `qwen36_q4kxl_clean` | 97280 | `sweep-qwen36-q4kxl` (no-drafter arm) |
+| `qwen36_q4kxl_arm` | n-max 2, `--n-cpu-moe 21` | coordinator, served-arm pick |
+| `qwen36_q4kxl_window` | 94208 | coordinator (97280 rounded down) |
 | `gemma26_nvfp4_n_cpu_moe` | 7 | `sweep-gemma26-nvfp4` |
 | `gemma26_nvfp4_clean` | 97280 | `sweep-gemma26-nvfp4` (no-drafter arm) |
+| `qwen38_ista_c` | 65536 | `sweep-qwen38-ista` |
+| `qwen38_ista_clean` | 64512 | `sweep-qwen38-ista` (no-drafter arm) |
 
 ## Files and revisions
 
@@ -554,6 +558,17 @@ Four arms at `-c 98304`, q8_0 KV: no-drafter (`n-cpu-moe` 17), n-max1
 for a similar gain. Files:
 `results/benchy-qwen36-q4kxl-{nodraft,nmax1,nmax2,nmax3}.md`,
 matching `server-sweep-qwen36-q4kxl-*.log` and `*-vm.log`.
+
+### sweep-qwen38-ista n-max1 — retry at -c 57344
+
+`--spec-type draft-mtp --spec-draft-n-max 1` at `-c 65536` (the
+no-drafter arm's value) loaded clean but crashed on the deep-cell
+request (`CUDA error: out of memory`) — the drafter's extra compute
+buffer did not fit at the no-drafter arm's `-c`, the same pattern as
+`sweep-qwen36-q4kxl`'s `--n-cpu-moe` needing to grow for its drafter
+arms. Stepped `-c` down 8192 to 57344 per the retry rule, loaded at
+15466 MiB (~845 MiB headroom), probing the deep cell (56320) before
+the full sweep.
 
 ## Handing over
 
