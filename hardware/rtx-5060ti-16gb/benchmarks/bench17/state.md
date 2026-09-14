@@ -20,7 +20,7 @@ its source.
 | value | number | source |
 |---|--:|---|
 | `vram_start_mb` | 838 | `machine-setup`, `nvidia-smi` |
-| `llama_version` | - (binary not runnable, permission block) | `machine-setup` |
+| `llama_version` | 0.4.0-dev (build 10809, commit 5266f24da) | `machine-setup` |
 | `benchy_version` | 0.4.0 | `machine-setup` |
 | `hf_version` | 1.31.0 | `machine-setup` |
 | `gemma12_nvfp4_c` | - | - |
@@ -75,30 +75,33 @@ Directories: `~/.local/share/choose-a-local-llm`,
 
 ## Blocks
 
-### machine-setup — running
+### machine-setup
 
 Deviation (resolved): the session's own auto-mode permission classifier
 refused to run the downloaded `llama-server` binary. The owner reset the
 session's permission mode; the binary now executes.
 
-Deviation (open, stop and ask): the binary fails to start,
-`error while loading shared libraries: libnccl.so.2: cannot open shared
-object file: No such file or directory`. `libcublas.so.12` and
-`libcublasLt.so.12` were also missing but the archive ships the
-unversioned `libcublas.so` / `libcublasLt.so` in the same `lib/`
-directory, so a local symlink (`libcublas.so.12 -> libcublas.so`,
-`libcublasLt.so.12 -> libcublasLt.so`) fixed those two. `libnccl.so.2`
-has no local copy anywhere: not in the archive's `lib/`, not on the
-system (`find / -iname libnccl*`, `pacman -Qs nccl` both empty). The
-release's claim to bundle the CUDA runtime is incomplete for this file.
-This machine has no sudo and no CUDA toolkit, so the runbook's own
-download allowlist (the llama.cpp binary, `llama-benchy`, `hf`, the five
-model files, the four tokenizers) does not cover fetching it. Candidate
-answer: `pip download nvidia-nccl-cu12` (or `uv pip install
---target ... nvidia-nccl-cu12`), user-level, no sudo, to pull the .so
-from the PyPI wheel and symlink it into the archive's `lib/`; NCCL is a
-multi-GPU library and this card is the only GPU, so it is a load-time
-dependency only, never exercised. Waiting on the coordinator.
+Deviation (resolved): the binary was missing three shared libraries the
+release claims to bundle. `libcublas.so.12` / `libcublasLt.so.12`:
+fixed with a local symlink to the archive's own unversioned
+`libcublas.so` / `libcublasLt.so`, same `lib/` directory. `libnccl.so.2`:
+not in the archive and not on the system at all. The owner installed
+the Arch `nccl` package first (`sudo pacman -S nccl`, 2.31.2-1), but it
+is built against CUDA 13 and needs `libcudart.so.13`, which conflicts
+with the archive's own CUDA 12.8 `libcudart.so.12` (a cross-major
+symlink was rejected as an ABI risk). Owner's word: "use uv". Fetched
+`nvidia-nccl-cu12` (2.31.2, matches the system package's version, built
+for CUDA 12) with `uv pip install --target`, copied its `libnccl.so.2`
+into the archive's `lib/`. `llama-server --version` now runs:
+`version: 0.4.0-dev (build 10809, commit 5266f24da), built with GNU
+9.4.0`. `--list-devices` shows `CUDA0: NVIDIA GeForce RTX 5060 Ti
+(15885 MiB, 15155 MiB free)`. `--help` lists `--fit`, `--fit-target`,
+`--fit-ctx`, `--n-cpu-moe`, `--spec-draft-n-cpu-moe`; no `--nvfp4` flag,
+expected since NVFP4 support reads from the GGUF quant type, not a CLI
+switch. `llama_version` recorded below. `PATH`/`LD_LIBRARY_PATH` for
+every session of this run:
+`export PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/bin:$PATH"`,
+`export LD_LIBRARY_PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/lib:$LD_LIBRARY_PATH"`.
 
 ## Handing over
 
