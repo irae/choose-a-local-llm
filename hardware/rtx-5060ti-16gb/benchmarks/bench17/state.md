@@ -430,6 +430,28 @@ Same config, `-c 65536`, q8_0 KV, window 61440. Server up at 14550
 MiB. Worker and the qwen36 download both running detached via `nohup
 ... & disown`. Started ~09:38.
 
+**Mid-run crash, exit-42 handled, resumed same session.** At 14:07Z
+the server hung: `CUDA error: the launch timed out and was
+terminated`, caught by the detached `run-watch` (its log tailed by a
+Monitor), while the ISTA download (`sweep-qwen38-ista`, owner word
+2026-09-14) ran concurrently. Process stayed alive but stopped
+answering HTTP (`curl /health` timed out). `kill -9`, VRAM recovered
+to 682 MiB at once, restarted the same server command. `pi`'s RPC
+process (271454) was blocked in uninterruptible I/O (`D` state) on
+the dead connection; it unblocked on its own once the old server
+process was gone, auto-retried 3 times against the reloading server
+(`503 Loading model` on attempts 1-2), and the 4th request landed
+clean once the server finished loading (~15s). `run-worker.sh` and
+`pi` never exited — the whole recovery happened inside the same guided
+session, no new attempt, no lost commits. A fresh `run-watch` started
+at the log's current offset (confirmed it did not re-trigger on the
+old signature line already in the file) and a new Monitor tails it.
+Deviation: `CUDA error: the launch timed out` is a driver-level GPU
+hang, distinct from the earlier `out of memory` crashes; its cause is
+unconfirmed (possibly contention with the concurrent 23 GB ISTA
+download's disk I/O, possibly unrelated). Watching for a repeat while
+downloads run alongside a guided row.
+
 ## Handing over
 
 Not started.
