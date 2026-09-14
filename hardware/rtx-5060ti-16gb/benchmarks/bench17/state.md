@@ -25,8 +25,8 @@ its source.
 | `hf_version` | 1.31.0 | `machine-setup` |
 | `gemma12_nvfp4_c` | 262144 | `sweep-gemma12-nvfp4` |
 | `gemma12_nvfp4_clean` | 261120 | `sweep-gemma12-nvfp4` |
-| `gemma12_q4kxl_c` | - | - |
-| `gemma12_q4kxl_clean` | - | - |
+| `gemma12_q4kxl_c` | 262144 | `sweep-gemma12-q4kxl` |
+| `gemma12_q4kxl_clean` | 261120 | `sweep-gemma12-q4kxl` |
 | `qwen38_iq3s_f16_c` | - | - |
 | `qwen38_iq3s_f16_clean` | - | - |
 | `qwen38_iq3s_q8_c` | - | - |
@@ -124,6 +124,27 @@ Files: `results/benchy-gemma12-nvfp4-f16.md`,
 Deviation: the first server start's `tee` failed (results dir did not
 exist yet when the process launched), no data lost — server log
 recreated on restart before any benchy request ran.
+
+### sweep-gemma12-q4kxl
+
+`unsloth/gemma-4-12b-it-GGUF` `gemma-4-12b-it-UD-Q4_K_XL.gguf` rev
+`fc034cf`, f16 KV, no drafter, one slot, `-c 262144`. Started 05:47,
+closed 06:23.
+
+| depth | tok/s | VRAM MB | MemAvailable |
+|--:|--:|--:|--:|
+| 4096 | 47.39 | 13052 | 22785 |
+| 98304 | 40.26 | 13052 | 22846 |
+| 261120 | 32.18 | 13000 | 22635 |
+
+speed/mem headroom, ceiling 261120 @ 32.18 tok/s. `gemma12_q4kxl_c` =
+262144, `gemma12_q4kxl_clean` = 261120. The NVFP4 build reads faster
+at every depth than this k-quant control (49.6 vs 47.4 at 4K, 33.1 vs
+32.2 at 261K).
+Files: `results/benchy-gemma12-q4kxl-f16.md`,
+`results/server-sweep-gemma12-q4kxl.log`,
+`results/benchy-gemma12-q4kxl-f16-vm.log`.
+Deviation: none.
 
 ## Handing over
 

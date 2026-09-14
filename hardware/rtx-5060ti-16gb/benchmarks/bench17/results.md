@@ -29,6 +29,26 @@ tok/s): 261120, `gemma12_nvfp4_clean` = 261120.
 A table and no pick. The coordinator names the served arm and the KV
 type.
 
+### sweep-gemma12-q4kxl
+
+`unsloth/gemma-4-12b-it-GGUF` `gemma-4-12b-it-UD-Q4_K_XL.gguf` rev
+`fc034cf`, llama.cpp `0.4.0-dev` (build 10809, sm120/cuda12.8), f16 KV,
+no drafter, `--parallel 1`, `-c 262144` (planning value, passed on the
+first load). Same depths and tokenizer as `sweep-gemma12-nvfp4`.
+
+| arm | depth | tok/s | sd | prompt tok/s | VRAM used | MemAvailable |
+|---|--:|--:|--:|--:|--:|--:|
+| f16 | 4096 | 47.39 | 0.03 | 2001.98 | 13052 MiB | 22785 MB |
+| f16 | 98304 | 40.26 | 0.02 | 1223.78 | 13052 MiB | 22846 MB |
+| f16 | 261120 | 32.18 | 0.25 | 701.69 | 13000 MiB | 22635 MB |
+
+Ladder: `-c 262144` passed at first load. `gemma12_q4kxl_c` = 262144.
+VRAM flat (13.0-13.1 GB), no swap growth. Clean depth: 261120,
+`gemma12_q4kxl_clean` = 261120.
+
+A table and no pick. The coordinator names the served arm and the KV
+type.
+
 ## Gates
 
 ## Mendel
