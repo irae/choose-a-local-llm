@@ -54,6 +54,15 @@ function parseCsv(text) {
     .map((r) => Object.fromEntries(header.map((h, i) => [h, r[i] ?? ''])))
 }
 
+// The results files hold rows of every machine. A row names its machine
+// in `hardware`; rows older than that field are the Mac's, and a row
+// whose model value carries a setup id belongs to that setup.
+function hardwareOf(r) {
+  if (r.hardware) return r.hardware
+  const m = String(r.model || '').match(/rtx-5060ti-16gb/)
+  return m ? m[0] : 'm1-max-32gb'
+}
+
 // Mendel model id -> this setup's report page slug.
 const MENDEL_SLUGS = {
   'qwen3.6-35b-a3b': 'qwen3.6-35b-a3b',
@@ -252,9 +261,9 @@ function currentPromptVersion(rows) {
 
 // The local Mendel tables read the mirrored results JSON: it carries the
 // defect list and the nudge counts, which the CSV does not.
-function mendelRuns(file) {
+function mendelRuns(file, setup) {
   return JSON.parse(readFileSync(file, 'utf8')).runs
-    .filter((r) => r.local && r.invalid !== true)
+    .filter((r) => r.local && r.invalid !== true && hardwareOf(r) === setup)
     .map((r) => ({
       ...r,
       libraries_done: r.libraries_done == null ? 8 : Number(r.libraries_done),
@@ -800,13 +809,14 @@ for (const dataFile of dataFiles) {
   const setupDir = dataFile.replace(/\/models\.json$/, '')
   const data = JSON.parse(readFileSync(dataFile, 'utf8'))
   checkRows(data.rows, data.setup)
-  const mendelBlindAll = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8'))
-  const mendelGuidedAll = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8'))
+  const ofSetup = (r) => r.local !== 'True' || hardwareOf(r) === data.setup
+  const mendelBlindAll = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8')).filter(ofSetup)
+  const mendelGuidedAll = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8')).filter(ofSetup)
   const mendelBlind = currentPromptVersion(mendelBlindAll.filter((r) => r.invalid !== 'True'))
   const mendelGuided = currentPromptVersion(mendelGuidedAll.filter((r) => r.invalid !== 'True'))
   deriveMendel(data.rows, mendelBlind, mendelGuided)
-  const blindRuns = mendelRuns('benchmarks/mendel/results.json')
-  const guidedRuns = mendelRuns('benchmarks/mendel/results-guided.json')
+  const blindRuns = mendelRuns('benchmarks/mendel/results.json', data.setup)
+  const guidedRuns = mendelRuns('benchmarks/mendel/results-guided.json', data.setup)
   mendelSiteRows = data.rows
   // An abandoned row keeps its numbers on the model page only: the comparison
   // and the home table answer "what should I run", and it is not a candidate.
@@ -817,14 +827,16 @@ for (const dataFile of dataFiles) {
   const partialTable = renderTable(partialRows, { sort: false, start: completeRows.length, memory: false })
   const homeTable = renderHomeTable({ ...data, rows: visible })
 
+  const homeStart = `<!-- gen:models-evaluated:${data.setup}:start -->`
+  const homeEnd = `<!-- gen:models-evaluated:${data.setup}:end -->`
   const targets = [
     [`${setupDir}/comparison.md`, comparisonTable, [PARTIAL_START, PARTIAL_END, partialTable]],
-    ['docs/index.md', homeTable],
+    ['docs/index.md', homeTable, null, [homeStart, homeEnd]],
   ]
 
-  for (const [target, table, partial] of targets) {
+  for (const [target, table, partial, marks] of targets) {
     const original = readFileSync(target, 'utf8')
-    let updated = applyTable(original, table)
+    let updated = marks ? applyBlock(original, marks[0], marks[1], table, target) : applyTable(original, table)
     if (partial) updated = applyBlock(updated, partial[0], partial[1], partial[2], target)
     if (updated === original) continue
     if (CHECK) {

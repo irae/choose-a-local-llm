@@ -20,6 +20,7 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Methodology', link: '/methodology' },
       { text: 'M1 Max 32 GB', link: '/setups/m1-max-32gb/' },
+      { text: 'RTX 5060 Ti 16 GB', link: '/setups/rtx-5060ti-16gb/' },
     ],
     sidebar: [
       { text: 'Home', link: '/' },
@@ -68,6 +69,33 @@ export default defineConfig({
             ],
           },
           { text: 'Historical', link: '/setups/m1-max-32gb/historical' },
+        ],
+      },
+      {
+        text: 'RTX 5060 Ti 16 GB',
+        collapsed: false,
+        items: [
+          { text: 'Setup overview', link: '/setups/rtx-5060ti-16gb/' },
+          { text: 'Comparison', link: '/setups/rtx-5060ti-16gb/comparison' },
+          {
+            text: 'Models',
+            collapsed: false,
+            items: [
+              { text: 'Gemma-4-12B-it', link: '/setups/rtx-5060ti-16gb/reports/gemma-4-12b-it' },
+              { text: 'Qwen3.8-27B', link: '/setups/rtx-5060ti-16gb/reports/qwen3.8-27b' },
+              { text: 'Qwen3.6-35B-A3B', link: '/setups/rtx-5060ti-16gb/reports/qwen3.6-35b-a3b' },
+              { text: 'Gemma-4-26B-A4B', link: '/setups/rtx-5060ti-16gb/reports/gemma-4-26b-a4b' },
+            ],
+          },
+          {
+            text: 'Benchmarks',
+            collapsed: false,
+            items: [
+              { text: 'Decode speed vs context depth', link: '/setups/rtx-5060ti-16gb/benchmarks/decode-speed' },
+              { text: 'EvalPlus', link: '/setups/rtx-5060ti-16gb/benchmarks/evalplus' },
+              { text: 'Mendel', link: '/setups/rtx-5060ti-16gb/benchmarks/mendel' },
+            ],
+          },
         ],
       },
     ],

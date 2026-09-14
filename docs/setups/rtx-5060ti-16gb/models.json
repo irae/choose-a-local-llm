@@ -1,0 +1,116 @@
+{
+  "setup": "rtx-5060ti-16gb",
+  "vram": 16311,
+  "rows": [
+    {
+      "config": "Gemma-4-12B, GGUF, NVFP4, f16 KV, no drafter, thinking off",
+      "maxCtx": "pending",
+      "gatedBy": "mem",
+      "tokShallow": "pending",
+      "tokDeep": "pending",
+      "memory": "pending",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "id": "gemma12-nvfp4-off",
+      "spec": { "base": "Gemma-4-12B", "quant": "NVFP4", "server": "llama-server", "publisher": "FreedomAISVR", "repo": "FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF", "drafter": "", "kv": "f16", "effort": "off" },
+      "hidden": false,
+      "command": "llama-server -m ~/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf \\\n  --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-12b-nvfp4`. A community NVFP4 repack of the model, the run's headline NVFP4 row: the weights leave room for the trained 262,144 window at f16 KV. Every cell is pending until the first run closes; `-c 262144` is the planning value."
+    },
+    {
+      "config": "Gemma-4-12B, GGUF, UD-Q4_K_XL, f16 KV, no drafter, thinking off",
+      "maxCtx": "pending",
+      "gatedBy": "mem",
+      "tokShallow": "pending",
+      "tokDeep": "pending",
+      "memory": "pending",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "id": "gemma12-q4kxl-off",
+      "spec": { "base": "Gemma-4-12B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/gemma-4-12b-it-GGUF", "drafter": "", "kv": "f16", "effort": "off" },
+      "hidden": false,
+      "command": "llama-server -m ~/.cache/llama.cpp/hf/unsloth/gemma-4-12b-it-GGUF/gemma-4-12b-it-UD-Q4_K_XL.gguf \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-12b-q4kxl`. The k-quant build the Mac serves, the control for the NVFP4 row on this card. Every cell is pending until the first run closes."
+    },
+    {
+      "config": "Qwen3.8-27B, GGUF, UD-IQ3_S, no drafter, effort xhigh",
+      "maxCtx": "pending",
+      "gatedBy": "mem",
+      "tokShallow": "pending",
+      "tokDeep": "pending",
+      "memory": "pending",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "id": "qwen38-iq3s-xhigh",
+      "spec": { "base": "Qwen3.8-27B", "quant": "UD-IQ3_S", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/Qwen3.8-27B-GGUF", "drafter": "", "kv": "q8_0", "effort": "xhigh" },
+      "hidden": false,
+      "command": "llama-server -m ~/.cache/llama.cpp/hf/unsloth/Qwen3.8-27B-GGUF/Qwen3.8-27B-UD-IQ3_S.gguf \\\n  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 49152 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 GB. The KV type is measured on this card, f16 against q8_0, before the row is served; q8_0 and `-c 49152` are planning values. Every cell is pending until the first run closes."
+    },
+    {
+      "config": "Qwen3.6-35B-A3B, GGUF, NVFP4, q8_0 KV, experts partly in host RAM, thinking on",
+      "maxCtx": "pending",
+      "gatedBy": "mem",
+      "tokShallow": "pending",
+      "tokDeep": "pending",
+      "memory": "pending",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "id": "qwen36-nvfp4-on",
+      "spec": { "base": "Qwen3.6-35B-A3B", "quant": "NVFP4-MTP-HQ", "server": "llama-server", "publisher": "michaelw9999", "repo": "michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF", "drafter": "", "kv": "q8_0", "effort": "on" },
+      "hidden": false,
+      "command": "llama-server -m ~/.cache/llama.cpp/hf/michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF/Qwen3.6-35B-A3B-NVFP4-MTP-HQ.gguf \\\n  --alias qwen3.6-35b-a3b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off --n-cpu-moe <measured> -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.6-35b-a3b-nvfp4`. A community NVFP4 repack with the MTP drafter embedded. The file is larger than the card, so a measured count of expert layers stays in host RAM (`--n-cpu-moe`); the drafter arm is measured on real text before the row is served. Every cell is pending until the first run closes."
+    },
+    {
+      "config": "Gemma-4-26B-A4B, GGUF, NVFP4, f16 KV, experts partly in host RAM, thinking on",
+      "maxCtx": "pending",
+      "gatedBy": "mem",
+      "tokShallow": "pending",
+      "tokDeep": "pending",
+      "memory": "pending",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "id": "gemma26-nvfp4-on",
+      "spec": { "base": "Gemma-4-26B-A4B", "quant": "NVFP4Q8", "server": "llama-server", "publisher": "catlilface", "repo": "catlilface/Gemma-4-26B-A4B-NVFP4-GGUF", "drafter": "", "kv": "f16", "effort": "on" },
+      "hidden": false,
+      "command": "llama-server -m ~/.cache/llama.cpp/hf/catlilface/Gemma-4-26B-A4B-NVFP4-GGUF/Gemma4-26b-NVFP4Q8.gguf \\\n  --alias gemma-4-26b-a4b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off --n-cpu-moe <measured> -fa on -c 98304 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-26b-a4b-nvfp4`. A community NVFP4 repack that keeps attention at Q8. The file is larger than the card, so a measured count of expert layers stays in host RAM (`--n-cpu-moe`). Every cell is pending until the first run closes."
+    }
+  ],
+  "models": {
+    "gemma-4-12b-it": {
+      "rowMatch": "Gemma-4-12B",
+      "kpis": ["window", "mendelGuided"],
+      "stats": {
+        "window": { "value": "pending", "label": "largest -c that serves, NVFP4, f16 KV" },
+        "mendelGuided": { "value": "pending", "label": "Mendel guided, NVFP4, thinking off" }
+      }
+    },
+    "qwen3.8-27b": {
+      "rowMatch": "Qwen3.8-27B",
+      "kpis": ["window", "mendelGuided"],
+      "stats": {
+        "window": { "value": "pending", "label": "largest -c that serves, UD-IQ3_S" },
+        "mendelGuided": { "value": "pending", "label": "Mendel guided, UD-IQ3_S, effort xhigh" }
+      }
+    },
+    "qwen3.6-35b-a3b": {
+      "rowMatch": "Qwen3.6-35B-A3B",
+      "kpis": ["offload", "mendelGuided"],
+      "stats": {
+        "offload": { "value": "pending", "label": "expert layers in host RAM at -c 98304" },
+        "mendelGuided": { "value": "pending", "label": "Mendel guided, NVFP4, thinking on" }
+      }
+    },
+    "gemma-4-26b-a4b": {
+      "rowMatch": "Gemma-4-26B-A4B",
+      "kpis": ["offload", "mendelGuided"],
+      "stats": {
+        "offload": { "value": "pending", "label": "expert layers in host RAM at -c 98304" },
+        "mendelGuided": { "value": "pending", "label": "Mendel guided, NVFP4, thinking on" }
+      }
+    }
+  },
+  "evalplusRuns": []
+}

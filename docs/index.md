@@ -37,7 +37,7 @@ models have finished the agent task. The rule: MLX runtimes barely slow
 down but hit hard memory ceilings; llama runtimes hold their speed
 deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 
-<!-- gen:models-evaluated:start -->
+<!-- gen:models-evaluated:m1-max-32gb:start -->
 | Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" top /> | 72k | mem | <TokCell shallow="12.4" deep="9.7" /> | <ScoreCell value="0.957/0.939" sub="96% completion" /> | <ScoreCell value="93" pill="mendel-blind" top /> |
@@ -52,7 +52,7 @@ deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 | <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> | 25k | mem | <TokCell shallow="17.3" deep="14.8" top-deep /> | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5†" note="13%" pill="mendel-blind" /> |
 
 † from an earlier serving config or method; re-run pending.
-<!-- gen:models-evaluated:end -->
+<!-- gen:models-evaluated:m1-max-32gb:end -->
 
 ¹ LM Studio's MLX engine — the only runtime that loads this model's
 `gemma4_unified` architecture. It is retired on that machine; see
@@ -119,11 +119,36 @@ configuration, and
 [historical measurements](./setups/m1-max-32gb/historical.md) taken under
 retired memory limits.
 
-### More setups
+### RTX 5060 Ti 16 GB, Linux
 
-A PC with an NVIDIA GPU comes next: Bonsai on the CUDA builds of the prism
-fork, and lower quants of the other models. It gets the same shape — setup
-overview, comparison, reports, benchmarks.
+A desktop PC with a GeForce RTX 5060 Ti, 16 GB of VRAM, 32 GB of
+RAM. One runtime: llama-server on CUDA. The card runs NVFP4 natively,
+so three of the five builds under test are NVFP4. Every cell is
+pending until the first run closes; the rows are the plan.
+
+<!-- gen:models-evaluated:rtx-5060ti-16gb:start -->
+| Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
+|---|--:|:--:|--:|--:|--:|
+| <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" /> | **pending** | mem | <TokCell shallow="pending" deep="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" /> | **pending** | mem | <TokCell shallow="pending" deep="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="NVFP4-MTP-HQ" server="llama-server" publisher="michaelw9999" repo="michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF" kv="q8_0" effort="on" /> | **pending** | mem | <TokCell shallow="pending" deep="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" /> | **pending** | mem | <TokCell shallow="pending" deep="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+<!-- gen:models-evaluated:rtx-5060ti-16gb:end -->
+
+The legend above applies. On this setup Ctx is the largest `-c` that
+loads with every layer on the card, or with part of a MoE model's
+experts in host RAM, and the note of each row says which.
+
+| model | report | benchmarks |
+|---|---|---|
+| Gemma-4-12B-it | [report](./setups/rtx-5060ti-16gb/reports/gemma-4-12b-it.md) | [data](./setups/rtx-5060ti-16gb/benchmarks/gemma-4-12b-it.md) |
+| Qwen3.8-27B | [report](./setups/rtx-5060ti-16gb/reports/qwen3.8-27b.md) | [data](./setups/rtx-5060ti-16gb/benchmarks/qwen3.8-27b.md) |
+| Qwen3.6-35B-A3B (MoE) | [report](./setups/rtx-5060ti-16gb/reports/qwen3.6-35b-a3b.md) | [data](./setups/rtx-5060ti-16gb/benchmarks/qwen3.6-35b-a3b.md) |
+| Gemma-4-26B-A4B (MoE) | [report](./setups/rtx-5060ti-16gb/reports/gemma-4-26b-a4b.md) | [data](./setups/rtx-5060ti-16gb/benchmarks/gemma-4-26b-a4b.md) |
+
+Also on this setup: the [comparison page](./setups/rtx-5060ti-16gb/comparison.md)
+and the [setup overview](./setups/rtx-5060ti-16gb/index.md) with the
+machine configuration.
 
 ## Why this exists
 
