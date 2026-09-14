@@ -192,6 +192,37 @@ Files: `results/benchy-qwen38-iq3s-q8.md`,
 `results/benchy-qwen38-iq3s-q8-vm.log`.
 Deviation: none. Swap flat at 603 MB.
 
+### sweep-qwen36-nvfp4 — blocked, stop and ask
+
+`michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF`
+`Qwen3.6-35B-A3B-NVFP4-MTP-HQ.gguf` rev `df112dd`, sha256
+`777564174a7ccf01a2e9d171ac73206ec3da6b6f6b0124e71a9628ac19f61aa9`,
+matches the value recorded at download (`machine-setup`). File size on
+disk 20487740864 bytes, matches the planned 20.5 GB.
+
+The model will not load at all, any `--n-cpu-moe`, any `-c`:
+`llama_model_load: error loading model: done_getting_tensors: wrong
+number of tensors; expected 1101, got 1079`. Confirmed independent of
+`--n-cpu-moe` (tried with and without) and of `-c` (tried 98304 and
+4096) — not a VRAM condition, a tensor-count mismatch in the GGUF
+itself against this llama.cpp build's MTP/`nextn` tensor parsing
+(`unused tensor blk.N.nextn.*` warnings printed for every layer just
+before the failure, so the loader sees the `nextn` tensors but still
+comes up 22 tensors short of what the architecture expects). Not a
+memory or ladder condition, so the retry-at-once rule does not apply;
+this is a file/build compatibility defect, stop and ask.
+
+Candidate answer: this is the only community NVFP4+MTP repack named in
+the runbook for this model; a re-download would refetch the identical
+bytes (same revision, same sha256, so a corrupt upstream file would
+repeat) — not worth retrying on its own. Options for the coordinator:
+drop the drafter and try the plain Qwen3.6 quant this repacker or
+another publisher ships without embedded MTP tensors, if one exists;
+or skip `sweep-qwen36-nvfp4` and its downstream smoke/guided/blind rows
+for this run, noted in the row list as blocked by a bad file, and move
+on. The GPU goes on with `sweep-gemma26-nvfp4`, which does not depend
+on this block.
+
 ## Handing over
 
 Not started.
