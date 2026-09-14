@@ -506,6 +506,41 @@ reference. Trap A avoided, trap C avoided. Full unit suite green
 Scored and published to `~/code/mendel-benchmark` branch `benchmark`,
 commit `0ab06c66`.
 
+### gemma26-nvfp4-mendel-guided-high — closed, scored
+
+`gemma-4-26b-a4b-nvfp4`, high, f16 KV, `--n-cpu-moe 7`, `-c 98304`,
+window 94208. Started 2026-09-14T17:08:22Z, ended
+2026-09-14T17:30:51Z. `end_reason` `repetition_loop`: a genuine
+text-cycle loop, 475 repeats of "I'll try to `git add` them and then
+`git status`.", starting 17:28:16Z — the model's own failure, a valid
+partial (never invalid) per Mendel's live-loop-stop rule. 137 tool
+calls, 1 compaction. 3 of 8 libraries fully done and committed (uuid,
+xtend, urlsafe-base64); rimraf half-done, glob barely started
+(uncommitted), chalk/tmp/shasum untouched. Clean close: no crash, no
+memory kill, no GPU watchdog event, no server issue.
+
+Scored by a subagent per `PLAN.md`/`RUBRIC.md` with the 37.5-point cap
+(3/8 libraries). Model value written in full runbook format, not a
+bare alias (per the coordinator's earlier catch on the qwen38-iq3s
+row). Scored and published to `~/code/mendel-benchmark` branch
+`benchmark`; commit id pending the subagent's report.
+Files: `results/mendel-guided-gemma26-nvfp4.log`,
+`results/server-guided-gemma26-nvfp4.log`,
+`results/vram-procs-gemma26-nvfp4-guided.log`.
+
+### Plan corrections, owner word 2026-09-14
+
+- The machine-id rename (`rtx-5060ti-16gb` → `arrietty`,
+  `m1-max-32gb` → `kamaji`) proposed earlier was **cancelled**. Run 17
+  keeps the old convention to its end: paths, hardware fields, and
+  model values all stay `rtx-5060ti-16gb`. The coordinator translates
+  ids when it merges this branch.
+- New block order after `gemma26-nvfp4-mendel-guided-high`: the three
+  pending sweeps (`sweep-qwen36-q4kxl`, `sweep-qwen38-ista`,
+  `sweep-qwen38-iq3s-mtp`) run before any further smoke or agent row.
+  Merged the reorder commit only (`git merge f71daf3`, not full
+  master, no directory moves) at this block boundary.
+
 ## Handing over
 
 Not started.
