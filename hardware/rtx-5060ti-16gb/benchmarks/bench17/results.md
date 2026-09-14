@@ -121,6 +121,32 @@ at ~1.6 GB. Well above the Mac's 28.2 tok/s at 98K.
 A table and no pick. The coordinator names the served arm and the KV
 type.
 
+### sweep-qwen36-q4kxl
+
+`unsloth/Qwen3.6-35B-A3B-MTP-GGUF` `Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf`
+rev `5bc3e238d916f48a861bac2f8a1990a0e9b7e98d`, llama.cpp `0.4.0-dev`
+(build 10809, sm120/cuda12.8), q8_0 KV, `-c 98304`. Mac reference, the
+k-quant at q8_0 with n-max 3: 43.7 tok/s at 4K, 13.0 tok/s at 82K.
+
+`--n-cpu-moe` ladder: 20 passed at load (14374 MiB), 14 failed
+(`failed to allocate buffer for kv cache`), 17 passed at load (15786
+MiB, ~525 MiB headroom) and confirmed on a real deep-cell (97280)
+request before committing. `qwen36_q4kxl_n_cpu_moe` = 17.
+
+**No-drafter arm.**
+
+| arm | depth | tok/s | sd | prompt tok/s | VRAM used | MemAvailable |
+|---|--:|--:|--:|--:|--:|--:|
+| nodraft | 4096 | 55.81 | 0.03 | 540.96 | 15786 MiB | 23411 MB |
+| nodraft | 65536 | 42.52 | 0.04 | 506.12 | 15786 MiB | 23304 MB |
+| nodraft | 97280 | 37.80 | 0.00 | 491.84 | 15786 MiB | 23226 MB |
+
+Clean depth: 97280, well above the Mac's 13.0 tok/s at 82K. VRAM flat,
+swap flat around 4.5-4.7 GB (expected: `--n-cpu-moe 17` spills a large
+share of experts to host RAM), no growth trend.
+
+A table and no pick. The coordinator names the served arm.
+
 ## Gates
 
 | old/new | gate | model | config | result | verdict |

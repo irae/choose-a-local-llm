@@ -31,8 +31,8 @@ its source.
 | `qwen38_iq3s_f16_clean` | 52224 | `sweep-qwen38-iq3s` |
 | `qwen38_iq3s_q8_c` | 65536 | `sweep-qwen38-iq3s` |
 | `qwen38_iq3s_q8_clean` | 64512 | `sweep-qwen38-iq3s` |
-| `qwen36_q4kxl_n_cpu_moe` | - | - |
-| `qwen36_q4kxl_clean` | - | - |
+| `qwen36_q4kxl_n_cpu_moe` | 17 | `sweep-qwen36-q4kxl` |
+| `qwen36_q4kxl_clean` | 97280 | `sweep-qwen36-q4kxl` (no-drafter arm) |
 | `gemma26_nvfp4_n_cpu_moe` | 7 | `sweep-gemma26-nvfp4` |
 | `gemma26_nvfp4_clean` | 97280 | `sweep-gemma26-nvfp4` (no-drafter arm) |
 
