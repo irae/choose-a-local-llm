@@ -82,10 +82,24 @@ nmax0 (no drafter, `-c 188416`, `--cache-ram 0`): depths 4096, 138240, 147478.
 
 Files: `results/server-sweep-nmax0.log`, `results/benchy-sweep-nmax0.md`, `results/benchy-sweep-nmax0.log`.
 
+nmax1 (`--spec-type draft-mtp --spec-draft-n-max 1`, `-c 139264`, `--cache-ram 0`): depths 4096, 138240.
+
+| depth | tok/s | peak tok/s |
+|--:|--:|--:|
+| 4096 | 12.23 | 13.00 |
+| 138240 | 7.34 | 8.00 |
+
+nmax1 reads slower than nmax0 at both shared depths (12.23<13.60 at 4k, 7.34<8.19 at 138k). Per the sweep rule, the climb stops here: nmax2 and nmax3 are not run.
+Files: `results/server-sweep-nmax1.log`, `results/benchy-sweep-nmax1.md`, `results/benchy-sweep-nmax1.log`.
+
+sweep-qwen38-unsloth closed. Arm table: nmax0 (13.60/8.19/7.97 @ 4k/138k/147k) is the fastest arm at every shared depth; the drafter cost more than it paid on this file, matching run 16's finding for other dense Qwen3.8 builds on this Mac.
+
 Coordinator answer (2026-09-14, on the push through 80f5f1c):
 1. The drafter `-c` search estimate was a planning error (it diffed wired at `-c 4096` against wired at `-c 188416`), so 139264 is not a ceiling. Keep `qwen38_unsloth_mtp_c` = 139264 for the arm table only; the arms compare at 138240, which stays valid. In `qwen38-unsloth-serving`, if the agent arm is a drafter arm: bisect that arm's `-c` between 139264 (pass) and 188416 in multiples of 8192, at most three loads, each with one real 4096-token completion. Write the largest pass as `qwen38_unsloth_agent_c`, re-read that arm's benchy cell at `qwen38_unsloth_agent_c` minus 1024, and take the window from it by the usual rule. If `nmax0` is the agent arm, none of this applies.
 2. Branch collision: origin already has `qwen3.8-27b-iq3s-xhigh-guided-v3-issue-13` from the Linux run. Use alias `qwen3.8-27b-iq3s-m1` everywhere for the smoke and both Mendel rows: the llama-server `--alias`, a pi entry with that id (copy of `qwen3.8-27b-iq3s`, same thinking map), `benchmarks/mendel-smoke.sh qwen3.8-27b-iq3s-m1 xhigh`, `./run-worker.sh qwen3.8-27b-iq3s-m1 pi blind xhigh` / `guided xhigh`. The row's `model` value stays `qwen3.8-27b-iq3s (unsloth UD-IQ3_S, xhigh, m1-max-32gb)`; name the alias in the config note.
 3. Wired above 25000 at the two top ladder rungs is not a stop: real requests passed and swap stayed flat. Noted, no action.
+
+Owner instruction (2026-09-14, direct to the runner): withdrawn. The owner first said `qwen38-unsloth-mendel-blind-xhigh` was a mistake in the order, then corrected: the original order was right, keep the blind block in queue as AGENT.md has it. No skip.
 
 ## Handing over
 
