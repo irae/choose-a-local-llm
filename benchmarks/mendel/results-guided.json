@@ -2727,7 +2727,7 @@
       "kv_type_source": "config note"
     },
     {
-      "model": "gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, rtx-5060ti-16gb)",
+      "model": "gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, arrietty)",
       "model_id": "gemma-4-12b-nvfp4",
       "harness": "pi",
       "harness_guessed": false,
@@ -2739,7 +2739,7 @@
       "partial": true,
       "prompt_version": "v3.0",
       "thinking": "off",
-      "hardware": "rtx-5060ti-16gb",
+      "hardware": "arrietty",
       "config_note": "FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf at revision 207974a8455870a3a5d0b6854698f2a4f3c6347e, llama.cpp 0.4.0-dev (build 10809, sm120/cuda12.8) [server /props]. -c 262144, f16 KV [server /props default_generation_settings], drafter: none, --parallel 1, vram 16311 MiB [runbook]. MENDEL_CONTEXT_WINDOW 258048, reserveTokens 8192 (pi maxTokens pin) [pinned by run-worker.sh], keepRecentTokens 20000 (pi default for a window above 65536) [pi default, no override set]. Sampling: meta.json has no temperature/top_p field, so the server's own default applied (temperature 1, top_p 0.95, top_k 64, min_p 0.05) [llama.cpp /props default_generation_settings]. EvalPlus gate waived for this run (owner, 2026-09-13).",
       "end_reason": "repetition_loop",
       "libraries_done": 0,
@@ -2834,7 +2834,7 @@
       "kv_type_source": "config note"
     },
     {
-      "model": "qwen3.8-27b-iq3s (unsloth UD-IQ3_S, xhigh, rtx-5060ti-16gb)",
+      "model": "qwen3.8-27b-iq3s (unsloth UD-IQ3_S, xhigh, arrietty)",
       "model_id": "qwen3.8-27b-iq3s",
       "harness": "pi",
       "harness_guessed": false,
@@ -2846,7 +2846,7 @@
       "partial": true,
       "prompt_version": "v3.0",
       "thinking": "xhigh",
-      "hardware": "rtx-5060ti-16gb",
+      "hardware": "arrietty",
       "config_note": "unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-IQ3_S.gguf at revision 4ca720788d1e01f1bff70c033e0d0028fd02e502, llama.cpp 0.4.0-dev (build 10809, sm120/cuda12.8) [server /props]. -c 65536, q8_0 KV [server config], drafter: none, --parallel 1, vram 16311 MiB [runbook]. MENDEL_CONTEXT_WINDOW 61440, reserveTokens 8192, keepRecentTokens 8192 (window under 65536) [pinned by run-worker.sh]. Sampling: no explicit temperature/top_p from the harness, the server's own default applied (temperature 1, top_p 0.95, top_k 20, min_p 0.05) [llama.cpp /props default_generation_settings]. EvalPlus gate waived for this run (owner, 2026-09-13). 35 compactions, all on the 8192 reserve/keep budget; the harness records no data loss from any of them. Two earlier attempts of this session are unscored, no penalty: attempt 1 (1 commit, worktree preserved at ../mendel-bench-guided-qwen3.8-27b-iq3s-xhigh-interrupted1, branch ...-interrupted1, pushed) and attempt 2 (0 commits, worktree preserved at ...-interrupted2, branch local only) were each killed by a false-positive host low-memory guard in this session's own background-task watcher (host `available` memory stayed ~25-26 GB at both kills); attempt 3 (this scored run) ran the rest of the way detached (nohup, disown) to avoid the same false kill. Mid-run recovery: at 2026-09-14T14:08:11Z the server hung on a genuine NVIDIA driver GPU watchdog event (Xid 8, \"GPU stopped processing\", RC watchdog 7s timeout; confirmed via coredumpctl and journalctl -k, not a memory-exhaustion signature and not a llama.cpp bug \u2014 llama.cpp's own ggml_cuda_error() to ggml_abort() fired cleanly on the failed CUDA call). The hung server was killed and restarted with the identical command; pi auto-retried through 3 `503 Loading model` responses during the reload and continued the SAME pi session, no commits lost. The GPU also drives the desktop: a sample near the crash showed desktop processes (Hyprland, quickshell, several kitty windows) holding ~873 MiB alongside the server's 13518 MiB (14391/16311 MiB total) \u2014 a possible shared-desktop VRAM squeeze, unconfirmed.",
       "end_reason": "tooling_budget_exhausted",
       "libraries_done": 7,

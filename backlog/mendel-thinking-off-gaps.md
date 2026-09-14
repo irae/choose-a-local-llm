@@ -34,7 +34,7 @@ Confirmed gaps as of run 10:
 ## What to do
 
 Check every local model with more than one EvalPlus thinking mode
-scored (`docs/setups/m1-max-32gb/models.json`'s `evalplusRuns` list, or
+scored (`docs/setups/kamaji/models.json`'s `evalplusRuns` list, or
 grep `benchmark/results.json` / `results-guided.json` for a model
 appearing with only one `thinking` value) and queue the missing
 mode's smoke + guided (+ blind if the guided score justifies it) in

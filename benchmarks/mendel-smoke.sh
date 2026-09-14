@@ -4,7 +4,7 @@
 #
 # One question: can this config do agent work at all. It builds a small
 # git repository with two files that require `xtend`, hands the model
-# run 1's dependency-swap task (hardware/m1-max-32gb/research/run1/results/replay-probe.sh,
+# run 1's dependency-swap task (hardware/kamaji/research/run1/results/replay-probe.sh,
 # PROMPT_PARSER), runs pi once under a 25-minute cap, and prints one
 # line. It never scores, it never writes a result file, and it never
 # reaches the site. See docs/methodology/mendel.md, "The smoke".
@@ -59,7 +59,7 @@
 #                         below system prompt + summary + this value, so a
 #                         window under that line makes pi compact on every
 #                         turn. The design in
-#                         hardware/m1-max-32gb/research/compaction-experiment.md
+#                         hardware/kamaji/research/compaction-experiment.md
 #                         says which rungs lower it.
 #
 # Output, one line:
@@ -84,7 +84,7 @@
 # `count-tool-calls.mjs`), and research run 2's two replay arms
 # (llama-server 75 calls / 60 distinct / longest run 2 and no loop,
 # the pre-fix template arm LOOP at 0.02;
-# `hardware/m1-max-32gb/research/run2/results/replay-llama.md`). The pi arm ran against a
+# `hardware/kamaji/research/run2/results/replay-llama.md`). The pi arm ran against a
 # stub that commits the fixture (pass) and against a stub that runs
 # past the cap (fail). The compaction counters read the first 45 lines
 # of the Mendel row `gemma-4-12b-low-guided-v3-issue-13` (three

@@ -9,7 +9,7 @@ The Claude Code harness killed the block's server, worker, and
 watcher processes at ~23:30Z, citing low system memory. This was not
 a GPU OOM: no Metal error appeared in the `llama-server` log. The
 run's own memory-watch log
-(`hardware/m1-max-32gb/benchmarks/bench11/results/mem-watch-block5.log`)
+(`hardware/kamaji/benchmarks/bench11/results/mem-watch-block5.log`)
 shows free RAM collapsing from about 1565 MB to 62 MB in one
 20-second sample (20:27:20), with sustained heavy page compression
 (144115 pages compressed in that one interval) for over three

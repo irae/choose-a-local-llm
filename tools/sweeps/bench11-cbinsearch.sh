@@ -1,7 +1,7 @@
 #!/bin/bash
 set -uo pipefail
 C=$1
-LOG=/Users/irae/code/choose-a-local-llm-run11/hardware/m1-max-32gb/benchmarks/bench11/results/server-qwen36-gguf-q8-c${C}.log
+LOG=/Users/irae/code/choose-a-local-llm-run11/hardware/kamaji/benchmarks/bench11/results/server-qwen36-gguf-q8-c${C}.log
 rm -f "$LOG"
 cd /Users/irae/code/choose-a-local-llm-run11
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \

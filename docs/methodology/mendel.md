@@ -37,7 +37,7 @@ asks for one: thinking off does badly in the agent harness
 
 One handed task before the full run: replace one dependency that spans
 two files (`xtend` with `Object.assign`, the task research run 1 built
-and run 2 used, `hardware/m1-max-32gb/research/run2/results/mendel-probe-xtend.md`), same
+and run 2 used, `hardware/kamaji/research/run2/results/mendel-probe-xtend.md`), same
 base commit, thinking as the config will run, a 25-minute cap, unscored.
 The tool is `benchmarks/mendel-smoke.sh <pi-model-id> <thinking-level>`.
 It answers one question: does this build, on this runtime and serving
@@ -69,7 +69,7 @@ grows past the harness's 20000-token keep budget. The line then carries
 `compactions`, `splits` and `peak`, and the summaries land in the
 output directory. The pass rule does not change. The design, the
 window ladder and the summary rubric live in
-`hardware/m1-max-32gb/research/compaction-experiment.md`.
+`hardware/kamaji/research/compaction-experiment.md`.
 
 ## Where things live
 
@@ -79,7 +79,7 @@ window ladder and the summary rubric live in
 - Primary artifacts (results, reports) stay there. This repo mirrors
   the result CSVs and the two reports in `benchmarks/mendel/` — we host
   them because it is us who benchmarks the local models. The site's
-  [Mendel page](../setups/m1-max-32gb/benchmarks/mendel.md) draws its
+  [Mendel page](../setups/kamaji/benchmarks/mendel.md) draws its
   tables from the mirrored CSVs, and the reports are served at
   <a href="../mendel/report.html" target="_blank" rel="noreferrer">/mendel/report.html</a> and
   <a href="../mendel/report-guided.html" target="_blank" rel="noreferrer">/mendel/report-guided.html</a>.
@@ -182,7 +182,7 @@ window ladder and the summary rubric live in
   and is never retried on its own (owner, 2026-09-14; Mendel `PLAN.md`,
   "Completion cap, invalid runs, and the score line"). Every
   loop the project saw before the rule, with its timing, is in
-  `hardware/m1-max-32gb/research/loop-signatures.md`. The rule is in
+  `hardware/kamaji/research/loop-signatures.md`. The rule is in
   the Mendel `PLAN.md`.
 - **Repetition-loop flag.** At run close the Mendel worker runs
   `benchmarks/loop-check.py` on the session log, and the verdict, its
@@ -280,7 +280,7 @@ there.
 
 Measured 2026-09-08 on the reference setup: one dense 27B model, f16 KV,
 three community 3-bit builds against the 4-bit build the setup serves
-today ([model page](../setups/m1-max-32gb/benchmarks/qwen3.8-27b.md)).
+today ([model page](../setups/kamaji/benchmarks/qwen3.8-27b.md)).
 All three scored level with the control on the short-prompt quality
 gate and passed the agent smoke clean. The build with the largest
 published divergence from the unquantized weights took 12 tool calls

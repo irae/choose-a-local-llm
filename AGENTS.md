@@ -77,7 +77,7 @@ Benchmark work:
   do.
 - `hardware/<hardware-id>/`. Everything that belongs to one machine.
   `<hardware-id>` is the same id the site uses for the setup under
-  `docs/setups/`; today `m1-max-32gb` (the Mac) and `rtx-5060ti-16gb`
+  `docs/setups/`; today `kamaji` (the Mac) and `arrietty`
   (the Linux desktop). Run numbers are shared across machines.
   **The id is the machine's short hostname** (`hostname -s`,
   lowercase; owner rule, 2026-09-14). The owner or user may choose
@@ -389,7 +389,7 @@ Benchmark work:
   sentences, active voice, one idea per sentence.
 - **Terminology follows the community.** Repetition loop, degeneration,
   tool-call loop. Never "collapse" for repetition
-  (`hardware/m1-max-32gb/research/run2/results/terminology.md`).
+  (`hardware/kamaji/research/run2/results/terminology.md`).
 - **Do not write code comments** unless the owner asks for them.
 - **Three places for machine state, and they are not interchangeable.**
   `~/.config/choose-a-local-llm/` holds configuration the owner edits.

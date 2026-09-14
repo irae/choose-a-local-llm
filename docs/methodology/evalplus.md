@@ -69,7 +69,7 @@ its budget and returned empties.
 3. Run the scoring script (`RESULTS_BASE` chooses the run dir; the
    extra body carries `chat_template_kwargs` for thinking toggles):
    ```bash
-   RESULTS_BASE=hardware/m1-max-32gb/benchmarks/benchN/results \
+   RESULTS_BASE=hardware/kamaji/benchmarks/benchN/results \
      EVALPLUS_MAX_NEW_TOKENS=BUDGET \
      benchmarks/run-humaneval.sh RUN_NAME MODEL_ID_AS_SERVED [extra-body-json]
    ```
@@ -127,4 +127,4 @@ EvalPlus 0.3.1 needs local patches, all live in
 `extra_body` passthrough, None-content handling, no `signal.alarm` +
 7200 s client timeout (EvalPlus's own 100 s alarm made long completions
 retry forever), macOS rlimit in the venv. History in
-`hardware/m1-max-32gb/benchmarks/bench1/state.md` and `hardware/m1-max-32gb/benchmarks/bench2/state.md`.
+`hardware/kamaji/benchmarks/bench1/state.md` and `hardware/kamaji/benchmarks/bench2/state.md`.

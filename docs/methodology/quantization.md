@@ -50,7 +50,7 @@ method. MLX's plain converter has no equivalent step.
 ## What this project measured
 
 Three models on the reference setup carry a score for both families
-([the comparison](../setups/m1-max-32gb/comparison.md)).
+([the comparison](../setups/kamaji/comparison.md)).
 
 - One 26B MoE model, thinking on: the GGUF build scored 0.171 base
   above the MLX 4-bit build.

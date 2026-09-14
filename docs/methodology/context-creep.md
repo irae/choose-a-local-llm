@@ -374,7 +374,7 @@ step before, a silent halt, a failed request, and a dead server
 300 s; two failed probes end the sweep). Compression under
 `COMPRESS_PAGES` in one step is noise on a busy machine and does not
 count. These are the loosened thresholds found on this machine on
-2026-09-07 (`hardware/m1-max-32gb/benchmarks/bench12/results.md`,
+2026-09-07 (`hardware/kamaji/benchmarks/bench12/results.md`,
 "Pre-block prep"); the tighter values used before that date produced a
 false-positive stop from ordinary speed decay at 16K-32K depth.
 

@@ -58,12 +58,12 @@ docs/
   methodology.md                (exists)
   website-plan.md               (this file; srcExclude)
   setups/
-    m1-max-32gb/
+    kamaji/
       index.md                  (from docs/machine.md, git mv)
       benchmarks/*.md           (git mv from benchmarks/)
   public/
     setups/
-      m1-max-32gb/
+      kamaji/
         comparison.html         (git mv from repo root; phase 2 converts it)
         historical.html         (git mv from repo root; phase 2 converts it)
         reports/*.html          (git mv from reports/; phase 2 converts them)
@@ -76,7 +76,7 @@ from converted pages.
 
 Notes:
 
-- `hardware/m1-max-32gb/benchmarks/bench1/ hardware/m1-max-32gb/benchmarks/bench2/ hardware/m1-max-32gb/benchmarks/bench3/`, `HANDOFF.md`, and scripts stay outside `docs/`
+- `hardware/kamaji/benchmarks/bench1/ hardware/kamaji/benchmarks/bench2/ hardware/kamaji/benchmarks/bench3/`, `HANDOFF.md`, and scripts stay outside `docs/`
   and off the site.
 - The `benchmarks/*.md` files become real site pages for free.
 - The `reports/*.html` and `comparison.html` files pass through unchanged in
@@ -117,12 +117,12 @@ Notes:
 
 Convert, one page per commit, verifying rendering in `npm run docs:dev`:
 
-1. `docs/public/setups/m1-max-32gb/comparison.html` →
-   `docs/setups/m1-max-32gb/comparison.md`. The cards become sections;
+1. `docs/public/setups/kamaji/comparison.html` →
+   `docs/setups/kamaji/comparison.md`. The cards become sections;
    tables become Markdown tables; the "capped by" and EvalPlus columns
    survive as plain columns.
-2. Each `docs/public/setups/m1-max-32gb/reports/<model>.html` →
-   `docs/setups/m1-max-32gb/reports/<model>.md`. KPI boxes become a short
+2. Each `docs/public/setups/kamaji/reports/<model>.html` →
+   `docs/setups/kamaji/reports/<model>.md`. KPI boxes become a short
    bold line; command boxes become fenced `bash` blocks (copy-paste behavior
    preserved); tables become Markdown tables.
 3. After each conversion: delete the HTML file from `public/`, update the

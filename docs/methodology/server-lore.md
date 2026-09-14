@@ -38,7 +38,7 @@ Use `python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py
 lmstudio` for LM Studio depth sweeps (`docs/methodology/context-creep.md`,
 "Install"); set
 `N_CONTEXTS` for N alternating contexts. Full forensic record:
-`hardware/m1-max-32gb/benchmarks/bench4/lmstudio-forensics.md`.
+`hardware/kamaji/benchmarks/bench4/lmstudio-forensics.md`.
 
 - **Some MLX architectures refuse a pinned context window, and auto-fit
   wins.** Every path is ignored — CLI `-c`/`--context-length`, the REST
@@ -48,7 +48,7 @@ lmstudio` for LM Studio depth sweeps (`docs/methodology/context-creep.md`,
   Consequence: LM Studio ceilings use the compression-onset criterion
   ([context creep](./context-creep.md)). For the architecture and the
   window measured on the reference setup, see its
-  [runtime lore for that model](../setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md#runtime-lore-for-this-model).
+  [runtime lore for that model](../setups/kamaji/benchmarks/gemma-4-12b-it.md#runtime-lore-for-this-model).
 - **`lms load --estimate-only` is untrustworthy**: it prices weights
   only ("Confidence: LOW") and ignores KV. Do not use it as a fit
   check. MLX allocates KV lazily, so a load that succeeds proves
@@ -123,7 +123,7 @@ lmstudio` for LM Studio depth sweeps (`docs/methodology/context-creep.md`,
   change nothing), while another entry for the same weights answers with
   thinking off and cannot turn it on. Probe each entry, and record the
   entry name with the result. For the entries measured on the reference
-  setup, see its [runtime lore for that model](../setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md#runtime-lore-for-this-model).
+  setup, see its [runtime lore for that model](../setups/kamaji/benchmarks/gemma-4-12b-it.md#runtime-lore-for-this-model).
 - **MLX multi-slot only works through LM Studio**, not plain
   `mlx_lm.server` (which needs a second full weight copy for concurrent
   decode). LM Studio's engine added continuous batching for text models
@@ -131,4 +131,4 @@ lmstudio` for LM Studio depth sweeps (`docs/methodology/context-creep.md`,
 - **A curated Hub identifier is not necessarily different weights.** A
   curated id can resolve to another repository's container. Check
   `hub/models/<id>/manifest.json` before assuming. For the example
-  measured on the reference setup, see its [runtime lore for that model](../setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md#runtime-lore-for-this-model).
+  measured on the reference setup, see its [runtime lore for that model](../setups/kamaji/benchmarks/gemma-4-12b-it.md#runtime-lore-for-this-model).

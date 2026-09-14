@@ -538,7 +538,7 @@ setup's `historical.md`; do not delete it.
 ## How to add a setup
 
 1. Create `docs/setups/<slug>/` with `index.md`, `comparison.md`,
-   `reports/`, and `benchmarks/`. Copy the shape of `m1-max-32gb`.
+   `reports/`, and `benchmarks/`. Copy the shape of `kamaji`.
 2. Add a section to `docs/index.md` under "Setups": the bullets, the seat
    table, then the per-model table.
 3. Add a sidebar group in `docs/.vitepress/config.mjs`.

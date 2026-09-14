@@ -37,7 +37,7 @@ models have finished the agent task. The rule: MLX runtimes barely slow
 down but hit hard memory ceilings; llama runtimes hold their speed
 deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 
-<!-- gen:models-evaluated:m1-max-32gb:start -->
+<!-- gen:models-evaluated:kamaji:start -->
 | Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" top /> | 72k | mem | <TokCell shallow="12.4" deep="9.7" /> | <ScoreCell value="0.957/0.939" sub="96% completion" /> | <ScoreCell value="93" pill="mendel-blind" top /> |
@@ -52,11 +52,11 @@ deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 | <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> | 25k | mem | <TokCell shallow="17.3" deep="14.8" top-deep /> | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5†" note="13%" pill="mendel-blind" /> |
 
 † from an earlier serving config or method; re-run pending.
-<!-- gen:models-evaluated:m1-max-32gb:end -->
+<!-- gen:models-evaluated:kamaji:end -->
 
 ¹ LM Studio's MLX engine — the only runtime that loads this model's
 `gemma4_unified` architecture. It is retired on that machine; see
-[why](./setups/m1-max-32gb/lmstudio-retired.md).
+[why](./setups/kamaji/lmstudio-retired.md).
 
 ² PrismML's llama.cpp fork, an approved exception to the no-forks rule.
 
@@ -108,17 +108,17 @@ deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 
 | model | report | benchmarks |
 |---|---|---|
-| Qwen3.6-35B-A3B (MoE) | [report](./setups/m1-max-32gb/reports/qwen3.6-35b-a3b.md) | [data](./setups/m1-max-32gb/benchmarks/qwen3.6-35b-a3b.md) |
-| Gemma-4-26B-A4B (MoE) | [report](./setups/m1-max-32gb/reports/gemma-4-26b-a4b.md) | [data](./setups/m1-max-32gb/benchmarks/gemma-4-26b-a4b.md) |
-| Gemma-4-12B-it | [report](./setups/m1-max-32gb/reports/gemma-4-12b-it.md) | [data](./setups/m1-max-32gb/benchmarks/gemma-4-12b-it.md) |
-| Ternary Bonsai-27B | [report](./setups/m1-max-32gb/reports/bonsai-27b.md) | [data](./setups/m1-max-32gb/benchmarks/bonsai-27b.md) |
-| Qwen3.8-27B | [report](./setups/m1-max-32gb/reports/qwen3.8-27b.md) | [data](./setups/m1-max-32gb/benchmarks/qwen3.8-27b.md) |
+| Qwen3.6-35B-A3B (MoE) | [report](./setups/kamaji/reports/qwen3.6-35b-a3b.md) | [data](./setups/kamaji/benchmarks/qwen3.6-35b-a3b.md) |
+| Gemma-4-26B-A4B (MoE) | [report](./setups/kamaji/reports/gemma-4-26b-a4b.md) | [data](./setups/kamaji/benchmarks/gemma-4-26b-a4b.md) |
+| Gemma-4-12B-it | [report](./setups/kamaji/reports/gemma-4-12b-it.md) | [data](./setups/kamaji/benchmarks/gemma-4-12b-it.md) |
+| Ternary Bonsai-27B | [report](./setups/kamaji/reports/bonsai-27b.md) | [data](./setups/kamaji/benchmarks/bonsai-27b.md) |
+| Qwen3.8-27B | [report](./setups/kamaji/reports/qwen3.8-27b.md) | [data](./setups/kamaji/benchmarks/qwen3.8-27b.md) |
 
-Also on this setup: the [comparison page](./setups/m1-max-32gb/comparison.md)
+Also on this setup: the [comparison page](./setups/kamaji/comparison.md)
 with the full depth and quality tables, the
-[setup overview](./setups/m1-max-32gb/index.md) with the machine
+[setup overview](./setups/kamaji/index.md) with the machine
 configuration, and
-[historical measurements](./setups/m1-max-32gb/historical.md) taken under
+[historical measurements](./setups/kamaji/historical.md) taken under
 retired memory limits.
 
 ### RTX 5060 Ti 16 GB, Linux
@@ -129,14 +129,14 @@ so two of the five builds under test are NVFP4. The first run is
 under way: speed and context are measured for four builds, and the
 agent cells are pending.
 
-<!-- gen:models-evaluated:rtx-5060ti-16gb:start -->
+<!-- gen:models-evaluated:arrietty:start -->
 | Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|
 | <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" /> | **261k** | mem | <TokCell shallow="49.55" deep="33.11" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="0" note="0%" pill="model-failed" /> |
 | <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" /> | **97k** | mem | <TokCell shallow="58.77" deep="45.59" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" /> | **65k** | mem | <TokCell shallow="29.36" deep="20.92" /> | <ScoreCell value="pending" /> | <ScoreCell value="79" note="88%" pill="mendel-guided" top /> |
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="q8_0" effort="on" /> | pending | mem | <TokCell shallow="pending" deep="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
-<!-- gen:models-evaluated:rtx-5060ti-16gb:end -->
+<!-- gen:models-evaluated:arrietty:end -->
 
 The legend above applies. On this setup Ctx is the largest `-c` that
 loads with every layer on the card, or with part of a MoE model's
@@ -144,13 +144,13 @@ experts in host RAM, and the note of each row says which.
 
 | model | report | benchmarks |
 |---|---|---|
-| Gemma-4-12B-it | [report](./setups/rtx-5060ti-16gb/reports/gemma-4-12b-it.md) | [data](./setups/rtx-5060ti-16gb/benchmarks/gemma-4-12b-it.md) |
-| Qwen3.8-27B | [report](./setups/rtx-5060ti-16gb/reports/qwen3.8-27b.md) | [data](./setups/rtx-5060ti-16gb/benchmarks/qwen3.8-27b.md) |
-| Qwen3.6-35B-A3B (MoE) | [report](./setups/rtx-5060ti-16gb/reports/qwen3.6-35b-a3b.md) | [data](./setups/rtx-5060ti-16gb/benchmarks/qwen3.6-35b-a3b.md) |
-| Gemma-4-26B-A4B (MoE) | [report](./setups/rtx-5060ti-16gb/reports/gemma-4-26b-a4b.md) | [data](./setups/rtx-5060ti-16gb/benchmarks/gemma-4-26b-a4b.md) |
+| Gemma-4-12B-it | [report](./setups/arrietty/reports/gemma-4-12b-it.md) | [data](./setups/arrietty/benchmarks/gemma-4-12b-it.md) |
+| Qwen3.8-27B | [report](./setups/arrietty/reports/qwen3.8-27b.md) | [data](./setups/arrietty/benchmarks/qwen3.8-27b.md) |
+| Qwen3.6-35B-A3B (MoE) | [report](./setups/arrietty/reports/qwen3.6-35b-a3b.md) | [data](./setups/arrietty/benchmarks/qwen3.6-35b-a3b.md) |
+| Gemma-4-26B-A4B (MoE) | [report](./setups/arrietty/reports/gemma-4-26b-a4b.md) | [data](./setups/arrietty/benchmarks/gemma-4-26b-a4b.md) |
 
-Also on this setup: the [comparison page](./setups/rtx-5060ti-16gb/comparison.md)
-and the [setup overview](./setups/rtx-5060ti-16gb/index.md) with the
+Also on this setup: the [comparison page](./setups/arrietty/comparison.md)
+and the [setup overview](./setups/arrietty/index.md) with the
 machine configuration.
 
 ## Why this exists
