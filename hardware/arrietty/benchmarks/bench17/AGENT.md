@@ -287,7 +287,7 @@ llama-benchy --base-url http://127.0.0.1:8081/v1 --model <the alias the server a
   --book-url http://127.0.0.1:8089/corpus-mendel-js.txt \
   --pp 512 --tg 256 --depth <block's depths, space separated> \
   --runs 2 \
-  --post-run-cmd 'sleep 60; nvidia-smi --query-gpu=memory.used,memory.total,temperature.gpu,power.draw,clocks.sm --format=csv,noheader >> hardware/arrietty/benchmarks/bench17/results/benchy-<mnemonic>-<arm>-vm.log; free -m | sed -n 2,3p >> hardware/arrietty/benchmarks/bench17/results/benchy-<mnemonic>-<arm>-vm.log' \
+  --post-run-cmd 'sleep 5; nvidia-smi --query-gpu=memory.used,memory.total,temperature.gpu,power.draw,clocks.sm --format=csv,noheader >> hardware/arrietty/benchmarks/bench17/results/benchy-<mnemonic>-<arm>-vm.log; free -m | sed -n 2,3p >> hardware/arrietty/benchmarks/bench17/results/benchy-<mnemonic>-<arm>-vm.log' \
   --format md --save-result hardware/arrietty/benchmarks/bench17/results/benchy-<mnemonic>-<arm>.md
 ```
 
