@@ -62,6 +62,7 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
 | <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" /> | 40k | mem | <TokCell shallow="24.5" deep="17.3" stale /> | <ScoreCell value="0.915/0.884" sub="97% completion" /> | <ScoreCell value="37.5†" note="38%" pill="mendel-blind" /> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | 33k | speed | <TokCell shallow="14.7" deep="7.8" /> | <ScoreCell value="0.927/0.890" sub="98% completion" /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" /> |
 | <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" /> | 25k | mem | <TokCell shallow="17.3" deep="14.8" /> | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5†" note="13%" pill="mendel-blind" /> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | 40k | mem | <TokCell shallow="24.5" deep="17.3" stale /> | <ScoreCell value="0.927/0.902" sub="100% completion" /> | <ScoreCell value="0" note="0%" pill="model-failed" /> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->
@@ -117,8 +118,10 @@ candidate; [the reasons are on its own page](./lmstudio-retired.md).
   test. Of the config's valid runs on the current prompt version the
   cell shows the one with the most libraries done, then the higher
   score; a muted percentage before the score is the share of
-  libraries done when the run did not finish, `invalid` when every
-  attempt was, `pending` when none ran. Never shared across levels or
+  libraries done when the run did not finish. A run with zero commits
+  from the model's own failure shows `0% / 0` with a `model-failed`
+  pill; `invalid` means every attempt failed on the harness or the
+  server, `pending` that none ran. Never shared across levels or
   serving configs. Rows sort by the average of the EvalPlus base
   score and this one; a row with only one of the two sorts after
   every row with both. A single run carries about ten points of
@@ -142,7 +145,8 @@ Every row above has all three measurements: tok/s, EvalPlus and
 Mendel. The rows below have at least one of the three
 and are missing one or two; the same footnotes and sort apply, and
 `#` continues the count. Rows with none of the three stay on their
-model page.
+model page. When fewer than two rows pass the filter of a table, that
+table shows every row it can hold, and a note under it says so.
 
 <!-- gen:models-evaluated-partial:start -->
 | Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
@@ -153,7 +157,6 @@ model page.
 | <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" effort="off" /> | 16k | speed | <TokCell shallow="13.8" deep="6.5" stale /> | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" /> | 41k | mem | <TokCell shallow="69.1" deep="52.6" stale top-shallow top-deep /> | <ScoreCell value="0.939/0.921" sub="97% completion" /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | 2x48k | speed | <TokCell shallow="14.9" deep="7.8" stale /> | <ScoreCell value="0.927/0.890" sub="98% completion" /> | <ScoreCell value="pending" /> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | 40k | mem | <TokCell shallow="24.5" deep="17.3" stale /> | <ScoreCell value="0.927/0.902" sub="100% completion" /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | **2x82k** | mem | <TokCell shallow="66.6" deep="33.6" stale top-shallow top-deep /> | <ScoreCell value="0.884/0.860" sub="89% completion" /> | <ScoreCell value="pending" /> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" /> | **131k** | mem | <TokCell shallow="15.0" deep="9.7" stale /> | <ScoreCell value="pending" /> | <ScoreCell value="12.5" note="13%" pill="mendel-guided" top /> |
 
@@ -256,9 +259,11 @@ Scores wear a completion cap: a score cannot exceed the fraction of
 the task that got done (`min(raw, 100 × done/8)`). A partial run that
 the model itself spoiled can run again, but the new row loses 10
 points for each earlier valid attempt. When our own harness caused the
-stop, the corrected re-run carries no penalty. Runs where a serving
-failure prevented any real work are invalid and not listed here; the
-hosted reports show them dimmed, with reasons.
+stop, the corrected re-run carries no penalty. Runs where a serving or
+harness failure prevented any real work are invalid and not listed
+here. A run with zero commits from the model's own failure is
+model-failed: it scores 0 and is listed. The hosted reports show both
+kinds dimmed, with reasons.
 
 Every row ran under the same harness, pi, which is pluggable and
 configurable and serves every model the same way, the cloud baselines
@@ -287,6 +292,8 @@ included. "Ctx" is the context window the harness had for the run.
 | Ternary Bonsai-27B | blind | GGUF², q4 KV | high | 64k | **12.5/100** (raw 60.5) | 1/8 libraries; typoed the repo path, self-scoped to chalk; a penalized retry is pending |
 | Ternary Bonsai-27B | guided | GGUF², f16 KV, no drafter | high | 131k | **12.5/100** (raw 36) | partial, 1/8 libraries; 376 tool calls and 74 tool errors at a 127k peak context |
 | Gemma-4-26B-A4B | blind | GGUF, f16 KV | off | 208k | **12.5/100** (raw 21) | partial, 1/8 libraries; ended on the live loop stop, five identical edit calls |
+| Gemma-4-12B | blind | GGUF, f16 KV, no drafter | off | 262k | **0/100** (raw 2) | model-failed, 2026-09-06: zero commits; the model budget went to a repeated edit-tool schema error |
+| Ternary Bonsai-27B | guided | MLX 2-bit | off | 57k | **0/100** (raw 25) | model-failed, 2026-09-06: zero commits; 85 identical shell calls in a row, stopped by the operator after 187 minutes. The current live loop stop ends this run within minutes; this run set that rule and the timeout rules |
 
 **Effort xhigh beats low on Qwen3.8, and spends less doing it.** On the
 same build, the same window and the same reserve, xhigh scored 80.5
@@ -307,11 +314,15 @@ setting and keeps this one until then. The Qwen3.8 row ran at effort
 medium, which that model is no longer run at; its fresh row is the
 4-bit build at effort xhigh, not yet run.
 
-Invalid, not scored as model quality: three Gemma-4-12B runs on the
-retired LM Studio entry (thinking on, repetition loop, zero commits);
-the Qwen3.8-27B MLX guided runs (Metal OOM crashes past the 26624-token
-window, zero commits); two Bonsai MLX guided runs at thinking off (a
-dead `gh` token, then an 85-call identical-command loop).
+Invalid, not scored as model quality: the Qwen3.8-27B MLX guided run
+of 2026-09-02 (Metal OOM crashes past the 26624-token window, zero
+commits) and the first Bonsai MLX guided run at thinking off, of
+2026-09-06 (a dead `gh` token). The three Gemma-4-12B runs of
+2026-09-03 on the retired LM Studio entry are model-failed (newline
+floods and a 72-call loop, zero commits; the current live loop stop
+ends each of them) and show only on
+[the LM Studio page](./lmstudio-retired.md), because that backend is
+retired.
 
 Full tables for both Mendel tests are on the
 [Mendel page](./benchmarks/mendel.md), and the complete reports are
@@ -337,10 +348,12 @@ version.
 
 **Gemma-12B on llama-server ran out of budget, not of ability.** Three
 of eight libraries in the guided run, then the model budget after three
-nudges, the same signature as its retired LM Studio entry. The three
-LM Studio rows measure a serving failure, not the model's coding: the
-entry always thinks, fell into a repetition loop after its first failed
-edit in every run, and committed nothing. The evidence is on
+nudges, the same signature as its retired LM Studio entry. Its blind
+run at thinking off is model-failed: zero commits, the budget spent on
+a repeated edit-tool schema error. The three LM Studio rows are
+model-failed too: the entry always thinks, fell into a repetition loop
+after its first failed edit in every run, and committed nothing. The
+evidence is on [the LM Studio page](./lmstudio-retired.md) and
 [the Gemma-12B data page](./benchmarks/gemma-4-12b-it.md#the-retired-entry).
 
 **Both Bonsai mlx rows ran at thinking high, not the requested low.**
@@ -354,10 +367,8 @@ ended on the 300-minute wall clock, not on the rubric.
 
 - The 4-bit Qwen3.8 GGUF's own EvalPlus score and its agent row at effort
   xhigh; the Bonsai fork's EvalPlus score at f16 KV; a thinking-on
-  score for Gemma-12B; Qwen3.6 blind at thinking off on the 81920
-  window.
-- A Bonsai guided row at thinking off. Two attempts went invalid on
-  the harness; the third waits on a live loop alarm in the runner.
+  score for Gemma-12B. No Mendel run at thinking off is planned
+  (owner, 2026-09-14).
 - The Bonsai prism-fork q4 pick, and the corpus behind its KV bias file.
 - **Qwen3-Coder-30B-A3B is the only promising untested contender.** Not on
   this machine yet. Community-reported EvalPlus HumanEval+ 0.902 (unverified

@@ -155,6 +155,12 @@ These rules bind every `reports/<model>.md` page:
   the config itself is withdrawn and its numbers must leave the data;
   the model's report page then carries one "Retired entries" line under
   its table, pointing at the evidence.
+- **Every retired backend and every retired model or build has its own
+  page** (owner, 2026-09-14), for example `lmstudio-retired.md`. A
+  table that shows a retired row links that page in the note that
+  follows the table; the row's `abandoned.page` or `retired.details`
+  names it. The Mendel runs of a retired build leave every generated
+  table and show only on that page, as evidence.
 - **The Configs section is generated** between
   `<!-- gen:model-configs:... -->` markers: one block per visible row,
   its spec line first, then the note, then its exact startup command.
@@ -237,7 +243,8 @@ measurements count, one point each: tok/s, EvalPlus, and
 simulator(mendel). A `pending` tok/s cell, a `pending` EvalPlus
 cell, or a simulator(mendel) cell that is not a number (`pending`,
 `not run`, `invalid`) loses its point. A `(partial)` score is a
-number and counts. A row at 3 of 3 is complete.
+number and counts, and so does a `model-failed` or `failed-smoke`
+cell, a score of 0. A row at 3 of 3 is complete.
 
 The published pages keep the word Mendel for now; the rules and the
 runbooks say simulator(mendel), the name of the runner that replaces
@@ -311,10 +318,13 @@ it.
   the comparison and the homepage. The `mendel` field in
   `models.json` holds only a state word for a row with no such run:
   `pending` when one is planned; `not run` when none is planned, with
-  the reason in the row's note; `invalid` when every attempt was
-  invalid; `failed-smoke` when the config failed its agent smoke,
-  which renders as `0% / 0` over a grey `failed-smoke` pill and
-  counts as a score of 0. A number in that field fails the build.
+  the reason in the row's note; `invalid` when every attempt failed
+  on the harness or the server; `model-failed` when the model's own
+  failure left zero commits; `failed-smoke` when the config failed its
+  agent smoke. `model-failed` and `failed-smoke` render as `0% / 0`
+  over a pill with that name and count as a score of 0. A picked run
+  with zero commits renders the same `model-failed` cell (owner,
+  2026-09-14). A number in that field fails the build.
 - **The homepage table holds one line per build** (the first two
   parts of the config: model, then runtime and quant with its
   publisher), showing that build's best complete row by the same sort.
@@ -325,6 +335,14 @@ it.
   `gen:models-evaluated-partial` markers: every row at 40 percent
   completeness or more that is not complete, in the same sort. A row
   under 40 percent stays on its model page only.
+- **A table with fewer than two rows shows every row it can hold**
+  (owner, 2026-09-14). The generator applies the filters above; when a
+  filter leaves a table with fewer than two rows, that table shows
+  every row it could hold, and a note under it says so. The first
+  table can hold every visible row; the second can hold every visible
+  row the first did not show. The rule is code in
+  `tools/gen-tables.mjs`, the same path for every setup; it exists so
+  a new setup under test shows its partial rows.
 - **Per-model tables use the same sort as every other table.** The
   page shows every visible row of the model in two tables inside one
   marker pair: the complete rows first, then one note line, then

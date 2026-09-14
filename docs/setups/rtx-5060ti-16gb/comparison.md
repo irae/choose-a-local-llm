@@ -15,6 +15,13 @@ Cross-model picks · llama-server (CUDA) · first run started 2026-09-13
 <!-- gen:models-evaluated:start -->
 | Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|
+| <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" /> | **261k** | mem | <TokCell shallow="49.55" deep="33.11" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="0" note="0%" pill="model-failed" /> |
+| <ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" /> | **261k** | mem | <TokCell shallow="47.39" deep="32.18" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" /> | **97k** | mem | <TokCell shallow="58.77" deep="45.59" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" /> | **65k** | mem | <TokCell shallow="29.36" deep="20.92" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="q8_0" effort="on" /> | pending | mem | <TokCell shallow="pending" deep="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+
+Fewer than two rows pass the filter of this table, so it shows every row it can hold.
 <!-- gen:models-evaluated:end -->
 
 #### Legend
@@ -55,6 +62,8 @@ model ids.
 Every row above has all three measurements: tok/s, EvalPlus and
 Mendel. The rows below have at least one of the three and are missing
 one or two. Rows with none of the three stay on their model page.
+When fewer than two rows pass the filter of a table, that table shows
+every row it can hold, and a note under it says so.
 
 <!-- gen:models-evaluated-partial:start -->
 | Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |

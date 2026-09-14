@@ -460,7 +460,8 @@ defect`; the guided block is `model | harness | score`. One table,
 `old/new` first and a `test` column when the run changed both blind
 and guided rows. The old row is the run's previous scored row on the
 same model, the same test and the nearest configuration. An invalid
-row is never an old row and never a new row. A model with no scored
+row is never an old row and never a new row; a model-failed row is a
+scored row at 0. A model with no scored
 row of its own pairs with the row it replaces, or with the nearest
 scored local row, and the note says which.
 

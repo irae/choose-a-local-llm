@@ -165,7 +165,7 @@ Evidence: `hardware/m1-max-32gb/benchmarks/bench9/results.md`.
 
 Every number in this section was measured on the LM Studio entry
 `google/gemma-4-12b`. That entry always thinks, ships Google's pre-fix
-chat template, produced all three invalid Mendel rows, and is gone from
+chat template, produced all three model-failed LM Studio Mendel rows, and is gone from
 the model store. Its readings were copied onto the thinking-off row of
 the site, which is a different entry. **Do not use them for either
 entry.** The current curves for both backends are on

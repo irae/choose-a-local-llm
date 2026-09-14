@@ -28,7 +28,10 @@ uneven — a model may have a thinking-on row and no thinking-off row
 (or vice versa) even after EvalPlus clears the gate at that level.
 Check every thinking level a model has an EvalPlus pass at before
 assuming its Mendel coverage is complete;
-`backlog/mendel-thinking-off-gaps.md` tracks confirmed gaps.
+`backlog/mendel-thinking-off-gaps.md` tracks confirmed gaps. Since
+2026-09-14 no Mendel run is planned at thinking off unless the owner
+asks for one: thinking off does badly in the agent harness
+(`benchmarks/PLANNING.md`).
 
 ## The smoke
 
@@ -172,12 +175,12 @@ window ladder and the summary rubric live in
   counts, and a later retry of it pays the model-caused penalty. The
   stop exists to save the wall clock, not to void the row: a run that
   loops for three hours to a timeout produces the same result and
-  wastes the night. A row is invalid only when it has zero commits, or
-  when a serving or harness collapse ended the model's real
-  participation (Mendel `PLAN.md`, "Completion cap, invalid runs, and
-  the score line"). Corrected 2026-09-09; this page had said invalid,
-  against the benchmark law, and three rows were voided on that
-  reading. Every
+  wastes the night. A row is invalid only when a serving or harness
+  collapse ended the model's real participation. A row with zero
+  commits from the model's own failure is **model-failed**: a valid
+  partial that scores 0, shows on the site and counts as an attempt,
+  and is never retried on its own (owner, 2026-09-14; Mendel `PLAN.md`,
+  "Completion cap, invalid runs, and the score line"). Every
   loop the project saw before the rule, with its timing, is in
   `hardware/m1-max-32gb/research/loop-signatures.md`. The rule is in
   the Mendel `PLAN.md`.
