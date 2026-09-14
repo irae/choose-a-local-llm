@@ -1,0 +1,39 @@
+0.00.075.867 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.076.066 W srv  llama_server: -----------------
+0.00.076.067 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.076.068 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.076.068 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.076.068 W srv  llama_server: -----------------
+0.00.077.677 I srv    load_model: loading model '/Users/irae/.cache/huggingface/hub/models--unsloth--Qwen3.8-27B-GGUF/snapshots/4ca720788d1e01f1bff70c033e0d0028fd02e502/Qwen3.8-27B-UD-IQ3_S.gguf'
+0.00.733.758 W model has unused tensor blk.64.attn_norm.weight (size = 20480 bytes) -- ignoring
+0.00.733.764 W model has unused tensor blk.64.post_attention_norm.weight (size = 20480 bytes) -- ignoring
+0.00.733.770 W model has unused tensor blk.64.attn_q.weight (size = 51609600 bytes) -- ignoring
+0.00.733.772 W model has unused tensor blk.64.attn_k.weight (size = 5570560 bytes) -- ignoring
+0.00.733.775 W model has unused tensor blk.64.attn_v.weight (size = 5570560 bytes) -- ignoring
+0.00.733.782 W model has unused tensor blk.64.attn_output.weight (size = 25804800 bytes) -- ignoring
+0.00.733.784 W model has unused tensor blk.64.attn_q_norm.weight (size = 1024 bytes) -- ignoring
+0.00.733.786 W model has unused tensor blk.64.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.733.789 W model has unused tensor blk.64.ffn_gate.weight (size = 73113600 bytes) -- ignoring
+0.00.733.791 W model has unused tensor blk.64.ffn_down.weight (size = 73113600 bytes) -- ignoring
+0.00.733.793 W model has unused tensor blk.64.ffn_up.weight (size = 73113600 bytes) -- ignoring
+0.00.733.796 W model has unused tensor blk.64.nextn.eh_proj.weight (size = 43008000 bytes) -- ignoring
+0.00.733.799 W model has unused tensor blk.64.nextn.enorm.weight (size = 20480 bytes) -- ignoring
+0.00.733.801 W model has unused tensor blk.64.nextn.hnorm.weight (size = 20480 bytes) -- ignoring
+0.00.733.808 W model has unused tensor blk.64.nextn.shared_head_norm.weight (size = 20480 bytes) -- ignoring
+0.02.690.862 I cmn          init: llama threadpool init, n_threads = 8
+0.03.113.395 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 188416, kv_unified = 'false'
+0.03.118.348 W srv          init: chat template supports preserving reasoning, it is enabled by default (may use more tokens, disable via --no-reasoning-preserve)
+0.03.118.356 I srv  llama_server: model loaded
+0.03.118.359 I srv  llama_server: listening on http://127.0.0.1:8081
+0.10.588.377 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.10.588.391 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.22.079.499 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   2048, progress = 0.43, t =  11.49 s / 178.23 tokens per second
+0.37.613.321 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   4096, progress = 0.85, t =  27.02 s / 151.56 tokens per second
+0.41.544.868 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   4282, progress = 0.89, t =  30.96 s / 138.32 tokens per second
+0.43.066.072 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   4794, progress = 1.00, t =  32.48 s / 147.61 tokens per second
+0.51.896.200 I slot print_timing: id  0 | task 0 | prompt eval time =   36668.50 ms /  4798 tokens (    7.64 ms per token,   130.85 tokens per second)
+0.51.896.203 I slot print_timing: id  0 | task 0 |        eval time =    4639.30 ms /    64 tokens (   73.64 ms per token,    13.58 tokens per second)
+0.51.896.203 I slot print_timing: id  0 | task 0 |       total time =   41307.80 ms /  4862 tokens
+0.51.896.204 I slot print_timing: id  0 | task 0 |    graphs reused =         63
+0.51.896.409 I slot      release: id  0 | task 0 | stop processing: n_tokens = 4861, truncated = 0
+1.07.651.704 I srv    operator(): operator(): cleaning up before exit...
