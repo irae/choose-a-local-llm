@@ -184,37 +184,42 @@ table shows every row it can hold, and a note under it says so.
 
 Slow creeps. Rows dated 2026-09-06 or later ran at wired limit 25000:
 the three Qwen3.6 rows, the Qwen3.8 GGUF rows, the Bonsai fork at f16
-and the Gemma-12B two-slot row. The Gemma-26B rows, the Gemma-12B
-one-slot rows, the Bonsai MLX row and the Qwen3.8 MLX row ran at 24000
-between 2026-08-29 and 2026-09-05; the two speed-floored llama rows
-keep the fast sweep of 2026-08-28.
+and the Gemma-12B two-slot row. The unsloth UD-IQ3_S Qwen3.8 row ran
+at 25000 on 2026-09-14. The Gemma-26B row, the Gemma-12B one-slot rows,
+the Bonsai MLX row and the Qwen3.8 MLX row ran at 24000 between
+2026-08-29 and 2026-09-05; the two speed-floored llama rows keep the
+fast sweep of 2026-08-28.
 
-| model / runtime | tok/s @ 4K | @ 16K | @ 32-33K | @ 49K | @ 74-90K | capped by | EvalPlus (base/plus/completion) |
-|---|--:|--:|--:|--:|--:|---|--:|
-| **Gemma-26B llama (f16 KV, MTP, `-c 212992`)** | 60.3 | 56.5 | 45.9 | 45.9 | 26.4 (115K), 17.3 (197K) | mem — 212992 is the largest `-c` that loads; 17.3 tok/s at 197K | 0.976/0.945/100% off, 0.884/0.860/89% on |
-| **Gemma-26B MLX (f16 KV)** | 51.1 | 43.5 | 35.6 | 28.8 | 12.8 (70K) | mem — stable to 70K, 12.8 tok/s there | 0.713/0.701/72% |
-| **Qwen3.6-35B MLX (f16 KV)** | 55.1 | 47.8 | 38.3 | | 37.4 (41K) | mem — stable to 41K, 37.4 tok/s there, then a Metal OOM | pending |
-| Qwen3.6-35B llama (f16 KV, MTP, `-c 40960`) | 69.1 | 65.7 | 56.5 | | 52.6 (41K) | mem — 40960 is the largest `-c` that serves a real request; no ceiling found inside it; a creep with the drafter, a ceiling until read on real text | 0.951/0.915/100% off, 0.939/0.921/97% on |
-| **Qwen3.6-35B llama (f16 KV, no drafter, `-c 40960`)** | 49.8 | | | | 38.3 (40K) | mem — 40960 is the largest `-c` that serves a real request; read on real text at the server's sampling | 0.951/0.915/100% off, 0.939/0.921/97% on |
-| Qwen3.6-35B llama (q8_0 KV, MTP, `-c 98304`) | 43.7 | 31.2 | 19.6 | 19.2 | 11.2 (66K), 13.0 (82K) | speed — 7.86 at 98K, under the floor; zero swap; the 4K, 49K and 82K cells read on real text with acceptance 54 to 85 percent, the others are creep readings | 0.951/0.915/100% off, 0.939/0.921/97% on |
-| Bonsai MLX (f16 KV) | 24.5 | 22.9 | 20.5 | 18.8 | 17.3 (58K) | mem — stable to 58K, 17.3 tok/s there | 0.915/0.884/97% |
-| **Qwen3.8 llama Q4_K_M, bartowski (f16 KV, MTP, `-c 73728`)** | 11.8 | 16.1 | 16.4 | 15.0 | 8.6 (65.5K) | mem — 73728 is the largest `-c` that loads; the 4K and 65.5K cells read on real text with acceptance 37 to 63 percent, the others are creep readings | 0.982/0.939/100% (MLX score) |
-| **Qwen3.8 llama IQ3_S-mtp, ISTA GSQ-RCO (f16 KV, no drafter, `-c 163840`)** | 14.1 | 13.3 | 12.4 | 11.5 | 10.2 (82K), 8.3 (147K) | speed — 8.30 at 147K, under the floor at 164K; zero swap | 0.976/0.933/99% low, 0.945/0.921/97% xhigh |
-| Qwen3.8 llama IQ3_S-mtp, ISTA GSQ-RCO (f16 KV, MTP, `-c 131072`) | 15.1 | 14.7 | 13.7 | 12.7 | 11.0 (82K) | mem — clean to 114.7K at 9.7 tok/s | 0.976/0.945/99% |
-| Qwen3.8 llama AD-IQ3_S, AtomicChat (f16 KV, MTP, `-c 106496`) | 15.8 | 14.8 | 13.7 | 12.7 | 11.0 (82K) | untested — swept to 98.3K at 10.3 tok/s and never hit a stop | 0.988/0.927/100% |
-| Qwen3.8 MLX 4-bit (unquantized KV) | 17.1* | 16.4 | | | 15.3 (28K) | mem — stable to 28K, 15.3 tok/s there | 0.982/0.939/100% |
-| **Bonsai prism fork (f16 KV, no drafter, `-c 131072`)** | 15.0 | 15.6 | 14.5 | 13.4 | 11.5 (82K) | untested — no floor found; 9.7 tok/s at 131K, the `-c` boundary itself | pending |
-| Bonsai prism fork (q4_0 KV + bias) | 14.9 | 10.8 | 7.9 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890/98% |
-| Gemma-12B llama (q8_0 KV, MTP) | 13.8 | 6.5 | | | | speed — under 8 tok/s at 16K | 0.976/0.939/100% |
-| **Gemma-12B llama (f16 KV, no drafter)** | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | mem — 8.86 tok/s at 245K, where the trained window ends² | 0.976/0.939/100% |
-| Gemma-12B llama (f16 KV, no drafter, 2 slots, `-c 196608`) | 25.0 | 22.8 | 20.6 | 18.6 | 15.7 (82K) | mem — swap grew at the step past 82K on every larger `-c`; 82K per slot is the ceiling | 0.976/0.939/100% |
+| config | max ctx | tok/s @ 4K | @ 16K | @ 32-33K | @ 49K | @ 74-90K | capped by | EvalPlus (base/plus/completion) |
+|---|--:|--:|--:|--:|--:|--:|---|--:|
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" hide="effort" top /> | 212992 | 60.3 | 56.5 | 45.9 | 45.9 | 26.4 (115K), 17.3 (197K) | mem — 212992 is the largest `-c` that loads; 17.3 tok/s at 197K | 0.976/0.945/100% off, 0.884/0.860/89% on |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" hide="effort" top /> | 41K, last stable step | 55.1 | 47.8 | 38.3 | | 37.4 (41K) | mem — stable to 41K, 37.4 tok/s there, then a Metal OOM | pending |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" hide="effort" /> | 40960 | 69.1 | 65.7 | 56.5 | | 52.6 (41K) | mem — 40960 is the largest `-c` that serves a real request; no ceiling found inside it; a creep with the drafter, a ceiling until read on real text | 0.951/0.915/100% off, 0.939/0.921/97% on |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" hide="effort" top /> | 40960 | 49.8 | | | | 38.3 (40K) | mem — 40960 is the largest `-c` that serves a real request; read on real text at the server's sampling | 0.951/0.915/100% off, 0.939/0.921/97% on |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" hide="effort" /> | 98304 | 43.7 | 31.2 | 19.6 | 19.2 | 11.2 (66K), 13.0 (82K) | speed — 7.86 at 98K, under the floor; zero swap; the 4K, 49K and 82K cells read on real text with acceptance 54 to 85 percent, the others are creep readings | 0.951/0.915/100% off, 0.939/0.921/97% on |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" hide="effort" /> | 58K, last stable step | 24.5 | 22.9 | 20.5 | 18.8 | 17.3 (58K) | mem — stable to 58K, 17.3 tok/s there | 0.915/0.884/97% |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" hide="effort" top /> | 73728 | 11.8 | 16.1 | 16.4 | 15.0 | 8.6 (65.5K) | mem — 73728 is the largest `-c` that loads; the 4K and 65.5K cells read on real text with acceptance 37 to 63 percent, the others are creep readings | 0.982/0.939/100% (MLX score) |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" hide="effort" top /> | 163840 | 14.1 | 13.3 | 12.4 | 11.5 | 10.2 (82K), 8.3 (147K) | speed — 8.30 at 147K, under the floor at 164K; zero swap | 0.976/0.933/99% low, 0.945/0.921/97% xhigh |
+| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="f16" hide="effort" /> | 188416 | 13.7 | 12.9 | 12.0 | 11.3 | 10.0 (82K), 8.2 (147K) | speed — 8.17 at 147K, under the floor at 164K; zero swap; llama-benchy on real text reads 13.6 at 4K and 7.97 at 147K | pending |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" hide="effort" /> | 131072 | 15.1 | 14.7 | 13.7 | 12.7 | 11.0 (82K) | mem — clean to 114.7K at 9.7 tok/s | 0.976/0.945/99% |
+| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" hide="effort" /> | 106496 | 15.8 | 14.8 | 13.7 | 12.7 | 11.0 (82K) | untested — swept to 98.3K at 10.3 tok/s and never hit a stop | 0.988/0.927/100% |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" hide="effort" /> | 28K, last stable step | 17.1* | 16.4 | | | 15.3 (28K) | mem — stable to 28K, 15.3 tok/s there | 0.982/0.939/100% |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" hide="effort" top /> | 131072 | 15.0 | 15.6 | 14.5 | 13.4 | 11.5 (82K) | untested — no floor found; 9.7 tok/s at 131K, the `-c` boundary itself | pending |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" hide="effort" /> | 65536 | 14.9 | 10.8 | 7.9 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890/98% |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" hide="effort" /> | 262144 | 13.8 | 6.5 | | | | speed — under 8 tok/s at 16K | 0.976/0.939/100% |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" hide="effort" top /> | 262144 | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | mem — 8.86 tok/s at 245K, where the trained window ends² | 0.976/0.939/100% |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" hide="effort" /> | 196608, 2 slots | 25.0 | 22.8 | 20.6 | 18.6 | 15.7 (82K) | mem — swap grew at the step past 82K on every larger `-c`; 82K per slot is the ceiling | 0.976/0.939/100% |
 
 Cells are blank past a config's cap, or where no step was measured at that depth.
+**Max ctx** is the `-c` the curve ran at on llama-server and the prism
+fork, and the last stable step before the Metal OOM on MLX, which has
+no `-c`.
 
-The Gemma-12B curve on LM Studio is gone from this table. That runtime
-is retired here, and its numbers stay on
-[the model page](./reports/gemma-4-12b-it.md) with the reasons on
-[the LM Studio page](./lmstudio-retired.md).
+The Gemma-12B curve on LM Studio and the Gemma-26B MLX curve are gone
+from this table. That runtime and that build are retired here; their
+numbers stay on the model pages, with the reasons on
+[the LM Studio page](./lmstudio-retired.md) and
+[the Gemma-26B MLX page](./gemma-4-26b-a4b-mlx-retired.md).
 
 \*8K value.
 
