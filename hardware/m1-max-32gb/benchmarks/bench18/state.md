@@ -55,6 +55,33 @@ Mac numbers to read against, the ISTA file at the same settings: 14.1 at 4K, 8.3
 Files: `results/creep-qwen38-unsloth-nodrafter.tsv`, `results/server-creep-nodrafter.log`.
 Deviation: none.
 
+### sweep-qwen38-unsloth (drafter `-c` search)
+
+n-max 3 at `-c 4096`: wired at load 14409 MB. Estimate: `(188416 - (25911-14409)/0.0671*1000)` rounded down to a multiple of 8192 = 16384.
+4 loads for the search (the estimate probe, then bisection):
+
+| `-c` | result | wired MB |
+|--:|---|--:|
+| 16384 | pass | 15298 |
+| 98304 | pass | 21542 |
+| 139264 | pass | 24680 |
+
+Budget exhausted at 4 loads (estimate probe + 3 bisection loads), all passing; the search never hit a fail to bisect against. `qwen38_unsloth_mtp_c` = 139264 (the last, deepest passing rung tried).
+Files: `results/server-sweep-mtpc-probe-4096.log`, `results/server-sweep-mtpc-probe-16384.log`, `results/server-sweep-mtpc-probe-98304.log`, `results/server-sweep-mtpc-probe-139264.log`.
+Deviation: the search budget (4 loads) never found a fail, so 139264 is the deepest of the loads tried, not a bisected true ceiling between a pass and a fail — the real drafter ceiling may be higher, up to `qwen38_unsloth_c` (188416). Flagged for the owner; not investigated further inside this budget.
+
+### sweep-qwen38-unsloth (arms)
+
+nmax0 (no drafter, `-c 188416`, `--cache-ram 0`): depths 4096, 138240, 147478.
+
+| depth | tok/s | peak tok/s |
+|--:|--:|--:|
+| 4096 | 13.60 | 14.00 |
+| 138240 | 8.19 | 9.00 |
+| 147478 | 7.97 | 8.00 |
+
+Files: `results/server-sweep-nmax0.log`, `results/benchy-sweep-nmax0.md`, `results/benchy-sweep-nmax0.log`.
+
 ## Handing over
 
 Not started.
