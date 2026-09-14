@@ -67,7 +67,7 @@ with their planning `contextWindow` values. Pass.
 
 Corpus server: `python3 -m http.server 8089 --bind 127.0.0.1` running
 in the background over
-`hardware/kamaji/research/run4/results`. `corpus-mendel-js.txt`
+`hardware/m1-max-32gb/research/run4/results`. `corpus-mendel-js.txt`
 sha256 `f4cbe063ef231d753e736b60107b6601705a1acb448b05d9f8b8afbdfcec583c`,
 matches. `curl` to `http://127.0.0.1:8089/corpus-mendel-js.txt` returns
 200.
@@ -505,6 +505,46 @@ reference. Trap A avoided, trap C avoided. Full unit suite green
 (285/285), lint clean. `qwen38_iq3s_guided` = 79 (partial 7/8).
 Scored and published to `~/code/mendel-benchmark` branch `benchmark`,
 commit `0ab06c66`.
+
+### gemma26-nvfp4-mendel-guided-high — closed, scored
+
+`gemma-4-26b-a4b-nvfp4`, high, f16 KV, `--n-cpu-moe 7`, `-c 98304`,
+window 94208. Started 2026-09-14T17:08:22Z, ended
+2026-09-14T17:30:51Z. `end_reason` `repetition_loop`: a genuine
+text-cycle loop, 475 repeats of "I'll try to `git add` them and then
+`git status`.", starting 17:28:16Z — the model's own failure, a valid
+partial (never invalid) per Mendel's live-loop-stop rule. 137 tool
+calls, 1 compaction. 3 of 8 libraries fully done and committed (uuid,
+xtend, urlsafe-base64); rimraf half-done, glob barely started
+(uncommitted), chalk/tmp/shasum untouched. Clean close: no crash, no
+memory kill, no GPU watchdog event, no server issue.
+
+Scored by a subagent per `PLAN.md`/`RUBRIC.md` with the 37.5-point cap
+(3/8 libraries): raw 65, capped 37.5. Model value written in full
+runbook format, not a bare alias (per the coordinator's earlier catch
+on the qwen38-iq3s row) — verified in JSON, CSV and HTML. Two of the
+three committed libraries carry medium defects on closer evidence
+(xtend's `package.json` entry never cleaned; rimraf missed trap B),
+and the uncommitted glob edit reproduces trap A even though `TASKS.md`
+marks it done. `gemma26_nvfp4_guided` = 37.5 (partial 3/8). Scored and
+published to `~/code/mendel-benchmark` branch `benchmark`, commit
+`48a90699`.
+Files: `results/mendel-guided-gemma26-nvfp4.log`,
+`results/server-guided-gemma26-nvfp4.log`,
+`results/vram-procs-gemma26-nvfp4-guided.log`.
+
+### Plan corrections, owner word 2026-09-14
+
+- The machine-id rename (`rtx-5060ti-16gb` → `arrietty`,
+  `m1-max-32gb` → `kamaji`) proposed earlier was **cancelled**. Run 17
+  keeps the old convention to its end: paths, hardware fields, and
+  model values all stay `rtx-5060ti-16gb`. The coordinator translates
+  ids when it merges this branch.
+- New block order after `gemma26-nvfp4-mendel-guided-high`: the three
+  pending sweeps (`sweep-qwen36-q4kxl`, `sweep-qwen38-ista`,
+  `sweep-qwen38-iq3s-mtp`) run before any further smoke or agent row.
+  Merged the reorder commit only (`git merge f71daf3`, not full
+  master, no directory moves) at this block boundary.
 
 ## Handing over
 
