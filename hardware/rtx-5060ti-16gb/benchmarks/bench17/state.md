@@ -286,6 +286,24 @@ Files: `results/mendel-smoke-qwen38-iq3s.log`,
 `results/server-smoke-qwen38-iq3s-q8.log`.
 Deviation: none.
 
+### gemma26-nvfp4-smoke-high
+
+`gemma-4-26b-a4b-nvfp4`, level high (its best Mac row's level), f16 KV,
+`--n-cpu-moe 7`, `-c 98304`, window 94208 (coordinator, 97280 rounded
+down). `gh auth status` pass, stash cleared (was empty).
+
+`SMOKE-MENDEL model=gemma-4-26b-a4b-nvfp4 level=high task=xtend
+window=94208 calls=10 distinct=10 longest_run=1 loop=ok:0.83
+compactions=0 splits=0 peak=3340 commits=1 clean=yes end=stop wall_s=30
+verdict=pass`
+
+Session log thinking check: real, nonempty `thinking` content blocks
+on all 11 assistant turns. `gemma26-nvfp4-mendel-guided-high` may
+proceed.
+Files: `results/mendel-smoke-gemma26-nvfp4.log`,
+`results/server-smoke-gemma26-nvfp4.log`.
+Deviation: none.
+
 ## Handing over
 
 Not started.
