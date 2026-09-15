@@ -541,10 +541,10 @@ Files: `results/mendel-guided-gemma26-nvfp4.log`,
 
 ### Plan corrections, owner word 2026-09-14
 
-- The machine-id rename (`rtx-5060ti-16gb` → `arrietty`,
+- The machine-id rename (`arrietty` → `arrietty`,
   `m1-max-32gb` → `kamaji`) proposed earlier was **cancelled**. Run 17
   keeps the old convention to its end: paths, hardware fields, and
-  model values all stay `rtx-5060ti-16gb`. The coordinator translates
+  model values all stay `arrietty`. The coordinator translates
   ids when it merges this branch.
 - New block order after `gemma26-nvfp4-mendel-guided-high`: the three
   pending sweeps (`sweep-qwen36-q4kxl`, `sweep-qwen38-ista`,
@@ -1016,7 +1016,7 @@ desktop compositor). `git status` on `run17` is clean once this commit
 lands. Every crashed or interrupted worktree (`qwen38-iq3s` attempt 1,
 `qwen38-ista` attempts 1-3) is still in place, evidence for the
 coordinator, never deleted. Evidence archived:
-`tools/archive-evidence.sh hardware/rtx-5060ti-16gb/benchmarks/bench17/results run17`,
+`tools/archive-evidence.sh hardware/arrietty/benchmarks/bench17/results run17`,
 123 files to `~/.local/share/choose-a-local-llm/evidence/run17`.
 
 The coordinator now decides: merge `run17`, extend the run's order

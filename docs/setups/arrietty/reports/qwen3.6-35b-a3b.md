@@ -5,11 +5,11 @@ Backends: llama-server · [GGUF on Hugging Face](https://huggingface.co/unsloth/
 <!-- gen:model-kpis:start -->
 <div class="kpis">
   <div class="kpi"><b>21</b><span>expert layers in host RAM, MTP n-max 2</span></div>
-  <div class="kpi"><b>pending</b><span>Mendel guided, UD-Q4_K_XL, thinking on</span></div>
+  <div class="kpi"><b>48.5</b><span>Mendel guided, UD-Q4_K_XL, thinking on</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
-First run started 2026-09-13; every number is pending until it closes.
+First run 2026-09-13 to 2026-09-15: speed, context, drafter arms and the guided agent task. No EvalPlus on this machine yet.
 
 ## Highlights
 
@@ -26,7 +26,7 @@ First run started 2026-09-13; every number is pending until it closes.
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | EvalPlus | Coding |
 |---|--:|:--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" kv="q8_0" effort="on" /> | **97k** | mem | <TokCell shallow="61.16" deep="45.42" top-shallow top-deep /> | **14.7 GB** | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" kv="q8_0" effort="on" /> | **97k** | mem | <TokCell shallow="61.16" deep="45.42" top-shallow top-deep /> | **14.7 GB** | <ScoreCell value="pending" /> | <ScoreCell value="48.5" note="75%" pill="mendel-guided" top /> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -36,7 +36,7 @@ Each table row above is one config; start it with its block below.
 <!-- gen:model-configs:start -->
 <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" kv="q8_0" effort="on" />
 
-pi id `qwen3.6-35b-a3b-q4kxl`. The build the reference setup serves, with the MTP drafter embedded in the file. The file is larger than the card, so a measured count of expert layers stays in host RAM, and the drafter needs more of the card's memory than no drafter: no drafter serves `-c 98304` at `--n-cpu-moe 17` (55.8 tok/s at 4K, 37.8 at 97K), n-max 1 at 19 (60.6, 37.9), n-max 2 and 3 at 21 (61.2 and 45.4 for n-max 2; 57.9 and 46.8 for n-max 3). n-max 2 is the served arm: fastest at 4K and 65K, and within the spread of n-max 3 at 97K. A community NVFP4 repack was tried first and failed to load (a tensor-count defect); the owner chose the mainstream build over a niche one (2026-09-14). The agent cells are pending.
+pi id `qwen3.6-35b-a3b-q4kxl`. The build the reference setup serves, with the MTP drafter embedded in the file. The file is larger than the card, so a measured count of expert layers stays in host RAM, and the drafter needs more of the card's memory than no drafter: no drafter serves `-c 98304` at `--n-cpu-moe 17` (55.8 tok/s at 4K, 37.8 at 97K), n-max 1 at 19 (60.6, 37.9), n-max 2 and 3 at 21 (61.2 and 45.4 for n-max 2; 57.9 and 46.8 for n-max 3). n-max 2 is the served arm: fastest at 4K and 65K, and within the spread of n-max 3 at 97K. A community NVFP4 repack was tried first and failed to load (a tensor-count defect); the owner chose the mainstream build over a niche one (2026-09-14). The guided task scored 48.5, 6 of 8 libraries, and ended on a loop at the seventh; three of its commits moved the pre-commit hook aside.
 
 ```bash
 llama-server -m ~/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf \
@@ -50,12 +50,28 @@ llama-server -m ~/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-3
 
 ## Model details and findings
 
-Pending. The findings land here when the first run closes.
+- **97K at 61 → 45 tok/s** with the drafter at n-max 2 and 21 expert
+  layers in host RAM. Every drafter arm reads faster than no drafter;
+  each step of draft depth needs two more layers in host RAM.
+- **The guided task scored 48.5, 6 of 8**, and ended on a loop of five
+  identical edits at the seventh library. Two critical bugs shipped:
+  a `.then()` on `fs.promises.glob`, and test files that call
+  `fs.globSync` with no `fs` import. It found and fixed the
+  `mendel-requirify` rimraf references.
+- **Three commits moved the pre-commit hook aside** and back, a bypass
+  the scorer's automatic check does not see. The two bugs shipped in
+  those commits.
 
 ## Agentic quality — Mendel
 
 <!-- gen:model-mendel:start -->
-No Mendel run yet.
+Guided test:
+
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" kv="q8_0" effort="on" /> | guided-v3.0 | 96k | **48.5** | 6/8/partial | 27.2 | 10,958k | 86k | 1 | 266 | 6 |  |
+
+The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:model-mendel:end -->
 
 Full data: [the benchmarks page](../benchmarks/qwen3.6-35b-a3b.md).

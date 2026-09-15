@@ -363,14 +363,14 @@ A table and no pick. The coordinator names the served arm.
 
 | old/new | test | model | harness | score |
 |---|---|---|---|--:|
-| new | guided | gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, rtx-5060ti-16gb) | window 258048, reserve 8192 | 0 (model failed) |
-| new | guided | qwen3.8-27b-iq3s (unsloth IQ3_S, xhigh, rtx-5060ti-16gb) | window 61440, reserve 8192 | 79 (partial 7/8) |
-| new | guided | gemma-4-26b-a4b-nvfp4 (catlilface NVFP4Q8, high, rtx-5060ti-16gb) | window 94208, reserve 8192 | 37.5 (partial 3/8) |
-| new | guided | qwen3.6-35b-a3b-q4kxl (unsloth UD-Q4_K_XL, n-max2, high, rtx-5060ti-16gb) | window 94208, reserve 8192 | 48.5 (partial 6/8) |
-| new | guided | gemma-4-12b-q4kxl (unsloth UD-Q4_K_XL, high, rtx-5060ti-16gb) | window 258048, reserve 8192 | 0 (model failed) |
-| new | guided | gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, high, rtx-5060ti-16gb) | window 258048, reserve 8192 | 0 (model failed) |
-| new | guided | qwen3.8-27b-ista (ISTA-DASLab IQ3_S-mtp, xhigh, rtx-5060ti-16gb) | window 61440, reserve 8192 | **85 (8/8)** |
-| new | blind | qwen3.8-27b-ista (ISTA-DASLab IQ3_S-mtp, xhigh, rtx-5060ti-16gb) | window 61440, reserve 8192 | **91 (8/8)** |
+| new | guided | gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, arrietty) | window 258048, reserve 8192 | 0 (model failed) |
+| new | guided | qwen3.8-27b-iq3s (unsloth IQ3_S, xhigh, arrietty) | window 61440, reserve 8192 | 79 (partial 7/8) |
+| new | guided | gemma-4-26b-a4b-nvfp4 (catlilface NVFP4Q8, high, arrietty) | window 94208, reserve 8192 | 37.5 (partial 3/8) |
+| new | guided | qwen3.6-35b-a3b-q4kxl (unsloth UD-Q4_K_XL, n-max2, high, arrietty) | window 94208, reserve 8192 | 48.5 (partial 6/8) |
+| new | guided | gemma-4-12b-q4kxl (unsloth UD-Q4_K_XL, high, arrietty) | window 258048, reserve 8192 | 0 (model failed) |
+| new | guided | gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, high, arrietty) | window 258048, reserve 8192 | 0 (model failed) |
+| new | guided | qwen3.8-27b-ista (ISTA-DASLab IQ3_S-mtp, xhigh, arrietty) | window 61440, reserve 8192 | **85 (8/8)** |
+| new | blind | qwen3.8-27b-ista (ISTA-DASLab IQ3_S-mtp, xhigh, arrietty) | window 61440, reserve 8192 | **91 (8/8)** |
 
 **gemma12-nvfp4-mendel-guided-off**, model-failed. The model looped on
 the same tool call (`bash pnpm remove --filter examples/planout-example

@@ -9,7 +9,7 @@ Backends: llama-server · [NVFP4 GGUF on Hugging Face](https://huggingface.co/ca
 </div>
 <!-- gen:model-kpis:end -->
 
-First run started 2026-09-13. Speed and context are measured; the agent cells are pending.
+First run 2026-09-13 to 2026-09-15: speed, context and the guided agent task. No EvalPlus on this machine yet.
 
 ## Highlights
 
@@ -34,7 +34,7 @@ Each table row above is one config; start it with its block below.
 <!-- gen:model-configs:start -->
 <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" />
 
-pi id `gemma-4-26b-a4b-nvfp4`. A community NVFP4 repack that keeps attention at Q8. The file is larger than the card, so a measured count of expert layers stays in host RAM: 7 is the lowest `--n-cpu-moe` that loads at `-c 98304` and serves a real request at the deep cell (6 runs out of memory at load). The file has no MTP layers, so no drafter arm exists. The agent cells are pending.
+pi id `gemma-4-26b-a4b-nvfp4`. A community NVFP4 repack that keeps attention at Q8. The file is larger than the card, so a measured count of expert layers stays in host RAM: 7 is the lowest `--n-cpu-moe` that loads at `-c 98304` and serves a real request at the deep cell (6 runs out of memory at load). The file has no MTP layers, so no drafter arm exists. The guided task scored 37.5, 3 of 8 libraries, and ended on a loop in its text.
 
 ```bash
 llama-server -m ~/.cache/llama.cpp/hf/catlilface/Gemma-4-26B-A4B-NVFP4-GGUF/Gemma4-26b-NVFP4Q8.gguf \
@@ -47,7 +47,11 @@ llama-server -m ~/.cache/llama.cpp/hf/catlilface/Gemma-4-26B-A4B-NVFP4-GGUF/Gemm
 
 ## Model details and findings
 
-Pending. The findings land here when the first run closes.
+- **97K at 59 → 46 tok/s** with 7 expert layers in host RAM, the
+  fastest deep cell on this card. The file has no MTP layers.
+- **The guided task scored 37.5, 3 of 8**, and ended on a text loop
+  of 475 repeats. Two of its three libraries carry medium defects,
+  and only one of six commits ran the full test suite first.
 
 ## Agentic quality — Mendel
 

@@ -29,10 +29,33 @@ Two rules to read the tables by:
 
 ## Curves
 
-Pending: the first run's tables land here when it closes, one row per
-configuration with the depth buckets as columns, as on the reference
-setup. Raw evidence: `hardware/arrietty/benchmarks/bench17/`
-in the repo.
+Run 17, `llama-benchy` on real code text, tok/s. The served arm of each
+row is in bold; `-c` is in brackets where an arm needed a smaller one.
+
+| config | 4K | 24K | 65K | 97K | 261K |
+|---|--:|--:|--:|--:|--:|
+| Gemma-4-12B NVFP4, f16 KV | **49.55** | | | **41.57** (98K) | **33.11** |
+| Gemma-4-12B UD-Q4_K_XL, f16 KV | **47.39** | | | **40.26** (98K) | **32.18** |
+| Gemma-4-26B-A4B NVFP4Q8, f16 KV, `--n-cpu-moe 7` | **58.77** | | **49.56** | **45.59** | |
+| Qwen3.6-35B-A3B UD-Q4_K_XL, q8_0 KV, no drafter, `--n-cpu-moe 17` | 55.81 | | 42.52 | 37.80 | |
+| same, n-max 1, `--n-cpu-moe 19` | 60.60 | | 44.12 | 37.92 | |
+| same, n-max 2, `--n-cpu-moe 21` | **61.16** | | **50.04** | **45.42** | |
+| same, n-max 3, `--n-cpu-moe 21` | 57.85 | | 47.25 | 46.76 | |
+| Qwen3.8-27B ISTA IQ3_S-mtp, q8_0 KV, no drafter | **29.43** | **25.89** | **21.13** | | |
+| same, n-max 1 (57344) | 33.40 | 29.68 | 24.64 (56K) | | |
+| same, n-max 2 (57344) | 45.88 | 31.89 | 26.19 (56K) | | |
+| same, n-max 3 (49152) | 37.33 | 30.80 | 31.58 (48K) | | |
+| Qwen3.8-27B UD-IQ3_S, q8_0 KV, no drafter | **29.36** | **25.84** | **20.92** | | |
+| same, f16 KV (53248) | 29.96 | 27.21 | 24.34 (52K) | | |
+| same, q8_0, n-max 1 | 37.16 | 34.34 | 26.28 | | |
+| same, q8_0, n-max 2 | 47.05 | 37.84 | 30.82 | | |
+| same, q8_0, n-max 3 (57344) | 41.42 | 37.61 | 28.57 (56K) | | |
+
+Every drafter arm reads faster than no drafter at the shared depths.
+The dense Qwen3.8 builds serve their agent rows with no drafter: the
+ISTA n-max 2 arm left about 440 MiB of the card free and crashed three
+times with the desktop on the same card. Raw evidence:
+`hardware/arrietty/benchmarks/bench17/` in the repo.
 
 ## Method, in one breath
 
