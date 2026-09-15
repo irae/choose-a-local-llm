@@ -551,15 +551,16 @@ before/after/comments columns." (`3f1b158c`, 2026-08-31).
 
 A run consumes the runner's context. These four rules keep it small.
 
-1. **The wakeup cadence is 20 minutes or more, never less.** Do not
-   shorten it to watch a step land. A shorter cadence buys nothing and
-   costs the owner one turn and its tokens every time
-   ([checklist](./checklist.md), step 7). When a block is long and
-   quiet, a longer gap is better, not worse.
+1. **The wakeup comes every 20 minutes, never less and never skipped**
+   ([checklist](./checklist.md), step 7). Do not shorten it to watch a
+   step land. Do not stretch it or drop it because a block is long,
+   quiet, or watched by a background task: the majority of runners
+   that did so stalled their runs, and the owner reads the run through
+   these lines.
 2. **A background monitor reports on an event, never on a timer.** It
    exits 42 with the reason on stdout when the thing it watches dies or
    finishes. It prints one event line. It does not poll the agent, and
-   the agent does not poll it.
+   the agent does not poll it. It never replaces the 20-minute wakeup.
 3. **A heartbeat is one short line.** One line, numbers, and the next
    check time. No narration of routine steps.
 4. **The runner never pastes a table or a log excerpt into chat.** It

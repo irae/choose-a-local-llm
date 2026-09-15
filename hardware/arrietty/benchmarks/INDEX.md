@@ -6,6 +6,12 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 `results/`). Run numbers are shared with the Mac
 (`hardware/kamaji/benchmarks/INDEX.md`).
 
+## bench19, started 2026-09-15 ([state](bench19/state.md), [results](bench19/results.md))
+
+- Runbook: [bench19/AGENT.md](bench19/AGENT.md). EvalPlus on every row
+  of this setup, in the order of the rows' Mendel scores. In progress;
+  findings land here at the close.
+
 ## bench17, 2026-09-13 to 2026-09-15 ([report](bench17/report.md), [state](bench17/state.md), [results](bench17/results.md))
 
 - Runbook: [bench17/AGENT.md](bench17/AGENT.md). The first run on this

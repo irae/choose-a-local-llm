@@ -36,8 +36,12 @@ INSTRUCTION_PREFIX = (
 )
 SYSTEM_MSG = "You are a helpful assistant good at coding."
 
-DATASET_PATH = os.path.expanduser(
-    "~/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl"
+DATASET_PATH = next(
+    (p for p in map(os.path.expanduser, [
+        "~/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+        "~/.cache/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    ]) if os.path.exists(p)),
+    os.path.expanduser("~/.cache/evalplus/HumanEvalPlus-v0.1.10.jsonl"),
 )
 
 

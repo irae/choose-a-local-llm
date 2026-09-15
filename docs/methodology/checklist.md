@@ -151,15 +151,18 @@ the block names at the point it is needed.
 
 ## During the run
 
-7. **Keep the idle monitor.** Schedule a wakeup **20 minutes or more**
-   after starting any block. **Never less than 20 minutes**, and never
-   shortened to watch a step land. Every wakeup costs the owner a turn
-   and its tokens, and buys nothing a background monitor does not
-   already report on an event
+7. **Schedule a wakeup every 20 minutes, always** (owner rule,
+   2026-09-15). Use `ScheduleWakeup` with 1200 seconds from the first
+   action of the run to its last, and schedule the next one at every
+   wakeup. **This holds while a background task, a `Monitor` or
+   `run-watch.sh` runs.** Say it plainly: the majority of agents that
+   thought a background task was enough were wrong, and their runs
+   stalled until a person came back. The wakeup is also for human
+   inspection, not only a guard against stalls: at every wakeup the
+   owner gets the short status line and can see the run. A wakeup
+   with nothing new still sends its line. Never less than 20 minutes,
+   and never shortened to watch a step land
    ([status lines](./status-lines.md), "Context budget", rule 1).
-   A longer gap is always allowed; a shorter one is a defect.
-   (Corrected 2026-09-09. This step read "≤20 minutes" from 2026-08-30,
-   which says the opposite and is why runners have been waking early.)
    At every wakeup verify REAL output growth
    (result-file line count, not process liveness), because a server
    can die or hang while the process lives and `/health` returns 200.

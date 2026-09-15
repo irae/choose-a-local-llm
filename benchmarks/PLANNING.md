@@ -188,7 +188,15 @@ committed measurement, the block that measures it comes first.
    scoring prompt spells out the model value format with the id in it:
    `<alias> (<publisher> <quant>, <level>, <id>)`, beside
    `"hardware": "<id>"`.
-2. Open with one short essentials section: the run's `state.md`
+2. **The first section of every runbook, above the order list, is
+   the wakeup** (owner rule, 2026-09-15): `ScheduleWakeup` every 1200
+   seconds from the first action to the end of the run, also while a
+   background task runs, with the short status line at every wakeup,
+   for the owner's inspection as much as against stalls
+   (`docs/methodology/checklist.md`, step 7). This is the one rule a
+   runbook repeats from the checklist: most runners that trusted a
+   background task stalled their runs.
+   Then open with one short essentials section: the run's `state.md`
    history, the worktree command, and the rules that apply to every
    block. Do not front-load a reading list. Each block names the
    documents it needs at its own start, and the runner reads them
@@ -338,7 +346,8 @@ links them at the exact step where they apply.
 Give the runner a short prompt: the reading list (its `AGENT.md` first),
 the standing prohibitions (push only on owner request, and then only
 `master`; no publish), the heartbeat format
-(`docs/methodology/status-lines.md`), and the instruction to
+(`docs/methodology/status-lines.md`), the `ScheduleWakeup` every 1200
+seconds from the first action, background task or not, and the instruction to
 keep working until every block is done or truly blocked. Pass the STE
 prose rule on. Do not paste findings or history into the prompt; that
 is what the files are for.
