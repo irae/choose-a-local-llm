@@ -1,0 +1,14 @@
+event	budget	source=SMOKE_MAX_TOKENS	max_tokens=30000
+event	start	label=qwen38-unsloth-xhigh	model=qwen3.8-27b-iq3s	base=http://127.0.0.1:8081	out=/var/folders/2_/byl1fjpj0_5fxh04b9wz52600000gn/T/evalplus-smoke-7ps3p8r5
+event	generated	HumanEval/53	empty=false	completion_tokens=179	finish_reason=stop	wall_s=14.6
+event	generated	HumanEval/45	empty=false	completion_tokens=112	finish_reason=stop	wall_s=9.1
+event	generated	HumanEval/34	empty=false	completion_tokens=762	finish_reason=stop	wall_s=56.4
+event	generated	HumanEval/129	empty=false	completion_tokens=18607	finish_reason=stop	wall_s=1415.6
+event	evaluating	/var/folders/2_/byl1fjpj0_5fxh04b9wz52600000gn/T/evalplus-smoke-7ps3p8r5/qwen38-unsloth-xhigh.smoke.jsonl
+task_id	base	plus	empty	completion_tokens	reasoning_tokens	finish_reason	wall_s
+HumanEval/53	pass	pass	false	179	-1	stop	14.6
+HumanEval/45	pass	pass	false	112	-1	stop	9.1
+HumanEval/34	pass	pass	false	762	-1	stop	56.4
+HumanEval/129	pass	pass	false	18607	-1	stop	1415.6
+SMOKE	label=qwen38-unsloth-xhigh	problems=4	passed=4	empty=0	completion_tokens=19660	max_tokens=30000	wall_s=1557.1	out=/var/folders/2_/byl1fjpj0_5fxh04b9wz52600000gn/T/evalplus-smoke-7ps3p8r5
+event	read	compare this SMOKE line with the other side's line at the same max_tokens: level (same passed, same empty), better (passed higher, empty not higher), worse (passed lower, or passed equal and empty higher), otherwise no verdict

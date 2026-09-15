@@ -149,6 +149,18 @@ Scoring handed to a subagent (opus, background, scratch path `/Users/irae/code/m
 
 Deviation the subagent found, worth recording: `~/code/mendel-benchmark/benchmark` has no CSV generator (`generate-report.mjs` writes only HTML); the subagent appended the CSV row by hand from the JSON rather than hand-typing values, and could not do a full regeneration without churning the existing 31 rows' order/formatting. About half the row's wall time went to a `tap` build breakage in the scratch worktree (an `EEXIST` on a build symlink); the model correctly triaged it as infrastructure, not its own bug.
 
+### qwen38-unsloth-evalplus-smoke-xhigh
+
+Both sides at `-c 32768`, no drafter, budget 30000 (hand-set: the calibration hit `finish_reason=length`, so the x1.5 rule does not apply; used the scored ISTA row's own budget of 30000, `docs/setups/m1-max-32gb/models.json`, `qwen38-gguf-ista-nodrafter-xhigh`).
+
+- ISTA (`qwen3.8-27b-ista`): `SMOKE label=qwen38-ista-xhigh problems=4 passed=4 empty=0 completion_tokens=9025 max_tokens=30000 wall_s=715.7`.
+- unsloth (this build, `qwen3.8-27b-iq3s`): `SMOKE label=qwen38-unsloth-xhigh problems=4 passed=4 empty=0 completion_tokens=19660 max_tokens=30000 wall_s=1557.1`.
+
+Same `passed` (4), same `empty` (0). **Verdict: level.** The unsloth build used about twice the tokens on the one long problem (HumanEval/129: 18607 vs 8152), same correctness.
+`qwen38_unsloth_evalplus_smoke` = level.
+Files: `results/evalplus-smoke-ista.log`, `results/evalplus-smoke-unsloth.log`, `results/server-evalplus-smoke-ista.log`, `results/server-evalplus-smoke-unsloth.log`.
+Deviation: none (the full run is the score regardless of the smoke's verdict).
+
 Coordinator answer (2026-09-14, on the blind-row anomaly gate): keep the blind row as published (98f89f5, score 90.5, current `anomaly` text). PLAN.md has no rule that voids or penalizes a model's own master merge; the `anomaly` field already flags the base-comparability issue in the report. No re-run, no changes to the row, the rubric, or PLAN.md. Continue with the guided row and the rest of the runbook. The coordinator takes any rule change for this case to the owner.
 
 Coordinator handshake (2026-09-14): the coordinator session changed to "local-llm coordinator sept-14" (`bridge:session_01Qbci662csCc7jLo4gPGzjk`), replacing the earlier "Model quantization comparison across hardware" session. It confirmed the current `run18` head (726d480) correctly. Gates and stop-and-asks now go to this new session name.
