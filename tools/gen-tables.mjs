@@ -206,6 +206,7 @@ function deriveMendel(rows, blind, guided) {
     row.mendel = `${capped(match.r)}${partial ? ` (partial ${Math.round((100 * done(match.r)) / 8)}%)` : ''}`
     row.mendelTest = match.test
     row.mendelFailed = match.r['telemetry.commits'] === '0'
+    if (row.simulatorWall == null && match.r['telemetry.wall_clock_min'] !== '') row.simulatorWall = Number(match.r['telemetry.wall_clock_min'])
   }
 }
 
@@ -635,9 +636,15 @@ function topSet(rows, read, { lower = false } = {}) {
 
 function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = true, hardware = false, hide = '' } = {}) {
   const header = [
-    `| Model / Config | Ctx | Cap | tok/s |${memory ? ' Memory<br>(at max ctx) |' : ''} EvalPlus | Coding |`,
-    `|---|--:|:--:|--:|${memory ? '--:|' : ''}--:|--:|`,
+    `| Model / Config | Ctx | Cap | tok/s |${memory ? ' Memory<br>(at max ctx) |' : ''} EvalPlus | Coding | Wall |`,
+    `|---|--:|:--:|--:|${memory ? '--:|' : ''}--:|--:|--:|`,
   ]
+  const hm = (min) => {
+    if (min == null || Number.isNaN(Number(min))) return '—'
+    const m = Math.round(min)
+    return `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}`
+  }
+  const wall = (r) => (r.evalplusWall == null && r.simulatorWall == null ? '—' : `${hm(r.evalplusWall)} / ${hm(r.simulatorWall)}`)
   const ordered = sort ? sortRows(rows) : rows
   const num = (s) => parseFloat(String(s).replace(/[^\d.]/g, ''))
   const top = {
@@ -668,7 +675,7 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     const ev = evalplusCell(r.evalplus)
     const md = mendelCellParts(r)
     const stale = (f) => ((r.stale || []).includes(f) ? '†' : '')
-    return `| ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} |${memory ? ` ${cell(r, 'memory')} |` : ''} ${scoreTag(ev.value + stale('evalplus'), ev.sub, top.evalplus.has(r))} | ${scoreTag(md.value + stale('mendel'), '', top.mendel.has(r), md.pill, md.note)} |`
+    return `| ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} |${memory ? ` ${cell(r, 'memory')} |` : ''} ${scoreTag(ev.value + stale('evalplus'), ev.sub, top.evalplus.has(r))} | ${scoreTag(md.value + stale('mendel'), '', top.mendel.has(r), md.pill, md.note)} | ${wall(r)} |`
   })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']
@@ -767,9 +774,14 @@ function renderModelConfigs(data, model) {
 
 function renderEvalplusTable(datas) {
   const header = [
-    '| config | budget | pass@1 base | pass@1 plus | empty | completion |',
-    '|---|--:|--:|--:|--:|--:|',
+    '| config | budget | pass@1 base | pass@1 plus | empty | completion | wall |',
+    '|---|--:|--:|--:|--:|--:|--:|',
   ]
+  const hm = (min) => {
+    if (min == null) return '—'
+    const m = Math.round(min)
+    return `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}`
+  }
   const completion = (empty) => {
     const m = /^(\d+)\/(\d+)$/.exec(empty || '')
     return m ? `${Math.round(((m[2] - m[1]) / m[2]) * 100)}%` : '—'
@@ -785,7 +797,7 @@ function renderEvalplusTable(datas) {
   const top = topSet(runs, (r) => parseFloat(r.base))
   const body = runs.map((r) => {
     if (!r.budget) throw new Error(`EvalPlus run "${r.model}" has no budget`)
-    return `| [${specOf(r)}](../setups/${r.data.setup}/benchmarks/${r.slug}.md) | ${r.budget} | ${top.has(r) ? `**${r.base}**` : r.base} | ${r.plus} | ${r.empty} | ${completion(r.empty)} |`
+    return `| [${specOf(r)}](../setups/${r.data.setup}/benchmarks/${r.slug}.md) | ${r.budget} | ${top.has(r) ? `**${r.base}**` : r.base} | ${r.plus} | ${r.empty} | ${completion(r.empty)} | ${hm(r.wall)} |`
   })
   return [...header, ...body].join('\n')
 }

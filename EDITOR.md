@@ -255,8 +255,15 @@ runbooks say simulator(mendel), the name of the runner that replaces
 it.
 
 - **Columns, in order**: Model / Config | Ctx | Cap | tok/s | Memory
-  (at max ctx) | EvalPlus | Coding. No superscript on a header: the
+  (at max ctx) | EvalPlus | Coding | Wall. No superscript on a header: the
   columns are explained in a "Legend" section under the table.
+- **Wall is the active time of the scored EvalPlus run and of the scored
+  Mendel run**, `EvalPlus / Mendel`, pauses removed and split runs
+  added (owner, 2026-09-15). `evalplusWall` and `simulatorWall` in
+  `models.json`, in minutes; the Mendel side comes from the run's
+  `wall_clock_min` unless `simulatorWall` corrects it. Smokes,
+  calibrations, creeps and sweeps never count. Speed and creep tables
+  carry no Wall column. Wall does not move the sort.
 - **The tok/s cell is the `TokCell` component**: shallow, a muted
   arrow with no space around it, deep, each number rounded to one
   decimal and padded with leading spaces to four characters, in a

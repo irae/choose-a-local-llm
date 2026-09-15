@@ -22,9 +22,9 @@ First run 2026-09-13 to 2026-09-15: speed, context and the guided agent task. No
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | EvalPlus | Coding |
-|---|--:|:--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" top /> | **97k** | mem | <TokCell shallow="58.77" deep="45.59" top-shallow top-deep /> | **15.2 GB** | <ScoreCell value="pending" /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> |
+| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | EvalPlus | Coding | Wall |
+|---|--:|:--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" top /> | **97k** | mem | <TokCell shallow="58.77" deep="45.59" top-shallow top-deep /> | **15.2 GB** | <ScoreCell value="pending" /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | — / 0h23 |
 <!-- gen:model-table:end -->
 
 ## Configs
