@@ -92,9 +92,10 @@
       "tokShallow": "29.43",
       "tokDeep": "21.13",
       "memory": "14.8 GB",
-      "evalplus": "pending",
+      "evalplus": "0.945/0.909/100%",
       "mendel": "pending",
       "id": "qwen38-ista-xhigh",
+      "evalplusWall": 217.6,
       "spec": { "base": "Qwen3.8-27B", "quant": "IQ3_S-mtp", "server": "llama-server", "publisher": "ISTA-DASLab", "repo": "ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF", "drafter": "", "kv": "q8_0", "effort": "xhigh" },
       "hidden": false,
       "command": "llama-server -m \"$(hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf)\" \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 65536 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
@@ -169,7 +170,20 @@
       }
     }
   },
-  "evalplusRuns": [],
+  "evalplusRuns": [
+    {
+      "wall": 217.6,
+      "emptyCause": "none",
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, q8_0 KV)",
+      "mode": "effort xhigh",
+      "row": "qwen38-ista-xhigh",
+      "budget": 20500,
+      "base": "0.945",
+      "plus": "0.909",
+      "empty": "0/164"
+    }
+  ],
   "mendelWalls": {
     "qwen3.8-27b-iq3s-xhigh-guided-v3-issue-13": 285.9,
     "qwen3.8-27b-ista-xhigh-issue-13": 75.1,
