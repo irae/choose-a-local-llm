@@ -34,6 +34,9 @@ score as failures (up to 38% of scores lost before this was found).
 4. Never reuse a thinking-on budget for a thinking-off pass, or across
    models.
 
+What the cap does to a score, run by run:
+[limits on local hardware](../benchmarks/evalplus.md#limits-on-local-hardware).
+
 ## Which serving config to score
 
 **The fastest at shallow depth, always.** The problems are short and

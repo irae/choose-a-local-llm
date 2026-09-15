@@ -38,7 +38,8 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
   reads 0.945 / 0.921 / 97% with five completions that never converged
   inside a 30000-token cap. The 4-bit build at xhigh reads 0.957 /
   0.939 / 96% with six at the same cap, its own score and the first
-  4-bit row with one; the cap is the whole xhigh gap on both builds.
+  4-bit row with one; the cap is the whole xhigh gap on both builds
+  ([limits](../../../benchmarks/evalplus.md#limits-on-local-hardware)).
 - Weak point: the slowest model on this hardware. On real text at the
   server's sampling the 4-bit GGUF with its drafter reads 11.8 tok/s
   shallow and 8.6 at 65.5K, and the 3-bit without one 14 shallow and

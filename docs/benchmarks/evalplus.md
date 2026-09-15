@@ -31,6 +31,53 @@ a score; a row names it only where it is part of the quant.
 - Scores under the uncalibrated budget:
   [historical](../setups/kamaji/historical.md).
 
+## Limits on local hardware
+
+HumanEval+ was built for models that answer at once. A reasoning model
+can spend tens of thousands of tokens on one problem, so every run here
+has an output budget, calibrated per model and capped at 30000 tokens
+([method](../methodology/evalplus.md)). A problem with no answer inside
+the budget is empty, and it counts as failed. The cap is what these
+machines can wait for, not the model's ceiling: at 8 to 15 tok/s, 30000
+tokens is 35 to 60 minutes on one problem, and an effort-xhigh run
+already takes 8h30 to 9h43.
+
+Read the score with its completion:
+
+- **100% completion:** every problem got an answer, so every lost point
+  is code that failed the tests. That is the model's own limit.
+- **Under 100%:** an empty has one of two causes.
+  - **The budget.** The answer was still coming at the cap. More budget
+    would likely raise the score.
+  - **Thinking that does not converge.** The thinking ends with no
+    answer, with budget left. That is the model, at any budget.
+
+| run | budget | empty | cause | pass among answered |
+|---|--:|--:|---|--:|
+| Qwen3.8-27B Q4_K_M, xhigh | 30000 | 6/164 | budget: all six at the cap | 0.993 |
+| Qwen3.8-27B ISTA IQ3_S-mtp, xhigh | 30000 | 5/164 | budget: all five at the cap | 0.975 |
+| Gemma-4-26B-A4B GGUF, thinking on | 30000 | 18/164 | no convergence: budget left | 0.993 |
+| Gemma-4-26B-A4B MLX 4-bit, thinking on | 30000 | 46/164 | no convergence: budget left | 0.991 |
+| Qwen3.6-35B-A3B GGUF, thinking on | 26624 | 5/164 | budget set just above the longest answer | 0.969 |
+| Ternary-Bonsai-27B MLX 2-bit, thinking on | 10240 | 5/164 | budget set just above the longest answer | 0.944 |
+| Ternary-Bonsai-27B fork q4 KV, thinking on | 10240 | 4/164 | budget set just above the longest answer | 0.950 |
+
+Pass among answered is base pass@1 divided by completion. The last three
+rows use the budget rule for thinking that sometimes never ends: the
+budget stops just above the longest successful answer, so these runs
+cannot tell a slow answer from one that never comes. Early runs used a
+fixed budget that was too small; those scores are on
+[the historical page](../setups/kamaji/historical.md).
+
+Sources: the budget rule in [the method](../methodology/evalplus.md);
+the Qwen3.8-27B empties at the cap on
+[its data page](../setups/kamaji/benchmarks/qwen3.8-27b.md) and
+[report](../setups/kamaji/reports/qwen3.8-27b.md); the Gemma-4-26B-A4B
+empties with budget left on
+[its data page](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md) and
+[report](../setups/kamaji/reports/gemma-4-26b-a4b.md); the per-run
+budgets and empty counts in the table above.
+
 ## Thinking off against thinking on
 
 Thinking off runs HumanEval+ 10 to 40 times faster on the same build,

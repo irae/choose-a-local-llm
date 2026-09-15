@@ -130,7 +130,8 @@ thinking off; thinking costs about 3 tok/s.
 showed that at a 30K output cap 2 of 10 sample problems never finished
 reasoning. The full runs confirmed it: 46 of 164 empty on MLX, 18 of 164
 on the GGUF at f16, same budget. Every empty completion still had budget
-left, so this is model behaviour, not a harness limit. Like Gemma-12B,
+left, so this is model behaviour, not a harness limit
+([limits](../../../benchmarks/evalplus.md#limits-on-local-hardware)). Like Gemma-12B,
 this model does not share a score across its two quants. The MLX
 build rounds every group to one 4-bit grid with no calibration, which
 likely explains part of the 0.171 gap

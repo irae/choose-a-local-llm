@@ -23,7 +23,8 @@ show what changed and why.
   usable.
 - **Deflated quality scores.** Early EvalPlus passes used a fixed output
   budget that was too small, so reasoning ran out of tokens and empty
-  completions scored as failures. Two models were badly understated.
+  completions scored as failures. Two models were badly understated
+  ([limits](../../benchmarks/evalplus.md#limits-on-local-hardware)).
 - **Mixed eras in one table.** Some rows here are current and some are not,
   and they are not always labeled.
 

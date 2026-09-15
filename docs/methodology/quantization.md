@@ -70,7 +70,8 @@ Two failures that look like quant loss are not.
 - **Empty completions.** A reasoning model that never closes its
   thinking runs to the output cap and returns nothing. Both families
   showed this on the same model; the MLX build showed it more often.
-  Count the empties before you read the score.
+  Count the empties before you read the score
+  ([limits](../benchmarks/evalplus.md#limits-on-local-hardware)).
 - **A tool call cut off mid-generation.** `mlx_lm.server` defaults
   `max_tokens` to 512 and stops silently with a length finish reason,
   where llama-server generates until the context ends. It also parses
