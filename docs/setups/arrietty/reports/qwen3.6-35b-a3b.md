@@ -39,7 +39,7 @@ Each table row above is one config; start it with its block below.
 pi id `qwen3.6-35b-a3b-q4kxl`. The build the reference setup serves, with the MTP drafter embedded in the file. The file is larger than the card, so a measured count of expert layers stays in host RAM, and the drafter needs more of the card's memory than no drafter: no drafter serves `-c 98304` at `--n-cpu-moe 17` (55.8 tok/s at 4K, 37.8 at 97K), n-max 1 at 19 (60.6, 37.9), n-max 2 and 3 at 21 (61.2 and 45.4 for n-max 2; 57.9 and 46.8 for n-max 3). n-max 2 is the served arm: fastest at 4K and 65K, and within the spread of n-max 3 at 97K. A community NVFP4 repack was tried first and failed to load (a tensor-count defect); the owner chose the mainstream build over a niche one (2026-09-14). The guided task scored 48.5, 6 of 8 libraries, and ended on a loop at the seventh; three of its commits moved the pre-commit hook aside.
 
 ```bash
-llama-server -m ~/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf \
+llama-server -m "$(hf download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf)" \
   --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 \
   --spec-type draft-mtp --spec-draft-n-max 2 \
   -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 \

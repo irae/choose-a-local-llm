@@ -10,8 +10,11 @@
   `~/.local/share/choose-a-local-llm/llama.cpp/`.
 - Port 8081. Harness: pi, provider `llama`. Aliases equal the pi model
   ids.
-- Model files: `~/.cache/llama.cpp/hf/<owner>/<repo>/`, served with
-  `-m`.
+- Model files: the default Hugging Face hub cache
+  (`~/.cache/huggingface/hub`), fetched with `hf download <owner>/<repo>
+  <file>` (no `--local-dir`; a no-op if already cached) and served with
+  `-m "$(hf download <owner>/<repo> <file>)"`. Check what is present
+  with `hf cache ls`, never by listing the filesystem directly.
 - `--fit off` on every command. Without it, llama.cpp shrinks the
   context or moves layers off the card.
 - No wired limit. Rows record VRAM from `nvidia-smi` and the host's

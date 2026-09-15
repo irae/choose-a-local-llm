@@ -41,7 +41,7 @@ Each table row above is one config; start it with its block below.
 pi id `gemma-4-12b-nvfp4`. A community NVFP4 repack of the model, the run's headline NVFP4 row: the weights leave room for the trained 262,144 window at f16 KV. `-c 262144` loads at once and serves the deep cell at 261,120; the window is the model's own limit, not the card's. It reads 2 to 5 percent faster than the k-quant build on this card. The guided task at thinking off ended model-failed: the same tool call five times in a row, before the first commit. No EvalPlus ran on this machine (owner, 2026-09-13).
 
 ```bash
-llama-server -m ~/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf \
+llama-server -m "$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf)" \
   --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 262144 \
   --cache-type-k f16 --cache-type-v f16 \
@@ -53,7 +53,7 @@ llama-server -m ~/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gem
 pi id `gemma-4-12b-nvfp4`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: after a broken `xtend` edit, the thinking repeated the planned fix 520 times and never made the tool call, with zero commits.
 
 ```bash
-llama-server -m ~/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf \
+llama-server -m "$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf)" \
   --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 262144 \
   --cache-type-k f16 --cache-type-v f16 \
@@ -65,7 +65,7 @@ llama-server -m ~/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gem
 pi id `gemma-4-12b-q4kxl`. The k-quant build the Mac serves, the control for the NVFP4 row on this card. `-c 262144` loads at once and serves the deep cell at 261,120. The agent task runs at thinking on only (owner, 2026-09-14); see the row below.
 
 ```bash
-llama-server -m ~/.cache/llama.cpp/hf/unsloth/gemma-4-12b-it-GGUF/gemma-4-12b-it-UD-Q4_K_XL.gguf \
+llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)" \
   --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 262144 \
   --cache-type-k f16 --cache-type-v f16 \
@@ -77,7 +77,7 @@ llama-server -m ~/.cache/llama.cpp/hf/unsloth/gemma-4-12b-it-GGUF/gemma-4-12b-it
 pi id `gemma-4-12b-q4kxl`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: right after it found the first dependency, the thinking repeated one line 818 times and filled the output budget, with zero commits.
 
 ```bash
-llama-server -m ~/.cache/llama.cpp/hf/unsloth/gemma-4-12b-it-GGUF/gemma-4-12b-it-UD-Q4_K_XL.gguf \
+llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)" \
   --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 262144 \
   --cache-type-k f16 --cache-type-v f16 \

@@ -17,7 +17,7 @@
       "id": "gemma12-nvfp4-off",
       "spec": { "base": "Gemma-4-12B", "quant": "NVFP4", "server": "llama-server", "publisher": "FreedomAISVR", "repo": "FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF", "drafter": "", "kv": "f16", "effort": "off" },
       "hidden": false,
-      "command": "llama-server -m ~/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf \\\n  --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "command": "llama-server -m \"$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf)\" \\\n  --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-12b-nvfp4`. A community NVFP4 repack of the model, the run's headline NVFP4 row: the weights leave room for the trained 262,144 window at f16 KV. `-c 262144` loads at once and serves the deep cell at 261,120; the window is the model's own limit, not the card's. It reads 2 to 5 percent faster than the k-quant build on this card. The guided task at thinking off ended model-failed: the same tool call five times in a row, before the first commit. No EvalPlus ran on this machine (owner, 2026-09-13).",
       "pi": { "provider": "llama", "id": "gemma-4-12b-nvfp4", "contextWindow": 258048, "maxTokens": 8192 }
     },
@@ -33,7 +33,7 @@
       "id": "gemma12-nvfp4-on",
       "spec": { "base": "Gemma-4-12B", "quant": "NVFP4", "server": "llama-server", "publisher": "FreedomAISVR", "repo": "FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
-      "command": "llama-server -m ~/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf \\\n  --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "command": "llama-server -m \"$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf)\" \\\n  --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-12b-nvfp4`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: after a broken `xtend` edit, the thinking repeated the planned fix 520 times and never made the tool call, with zero commits.",
       "pi": { "provider": "llama", "id": "gemma-4-12b-nvfp4", "contextWindow": 258048, "maxTokens": 8192 }
     },
@@ -49,7 +49,7 @@
       "id": "gemma12-q4kxl-off",
       "spec": { "base": "Gemma-4-12B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/gemma-4-12b-it-GGUF", "drafter": "", "kv": "f16", "effort": "off" },
       "hidden": false,
-      "command": "llama-server -m ~/.cache/llama.cpp/hf/unsloth/gemma-4-12b-it-GGUF/gemma-4-12b-it-UD-Q4_K_XL.gguf \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "command": "llama-server -m \"$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)\" \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-12b-q4kxl`. The k-quant build the Mac serves, the control for the NVFP4 row on this card. `-c 262144` loads at once and serves the deep cell at 261,120. The agent task runs at thinking on only (owner, 2026-09-14); see the row below.",
       "pi": { "provider": "llama", "id": "gemma-4-12b-q4kxl", "contextWindow": 258048, "maxTokens": 8192 }
     },
@@ -65,7 +65,7 @@
       "id": "gemma12-q4kxl-on",
       "spec": { "base": "Gemma-4-12B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/gemma-4-12b-it-GGUF", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
-      "command": "llama-server -m ~/.cache/llama.cpp/hf/unsloth/gemma-4-12b-it-GGUF/gemma-4-12b-it-UD-Q4_K_XL.gguf \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "command": "llama-server -m \"$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)\" \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-12b-q4kxl`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: right after it found the first dependency, the thinking repeated one line 818 times and filled the output budget, with zero commits.",
       "pi": { "provider": "llama", "id": "gemma-4-12b-q4kxl", "contextWindow": 258048, "maxTokens": 8192 }
     },
@@ -81,7 +81,7 @@
       "id": "qwen38-iq3s-xhigh",
       "spec": { "base": "Qwen3.8-27B", "quant": "UD-IQ3_S", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/Qwen3.8-27B-GGUF", "drafter": "", "kv": "q8_0", "effort": "xhigh" },
       "hidden": false,
-      "command": "llama-server -m ~/.cache/llama.cpp/hf/unsloth/Qwen3.8-27B-GGUF/Qwen3.8-27B-UD-IQ3_S.gguf \\\n  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 65536 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "command": "llama-server -m \"$(hf download unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-IQ3_S.gguf)\" \\\n  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 65536 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
       "note": "pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 GB. The KV type was measured on this card: q8_0 serves `-c 65536`, and f16 serves only `-c 53248` (24.3 tok/s at its deep cell), because a larger f16 window loads but runs out of memory on the first real request. q8_0 is the served type. The MTP drafter was read after the agent row, at the same `-c`: n-max 1 reads 37.2 → 26.3 tok/s and n-max 2 47.1 → 30.8, both faster than no drafter at every depth; n-max 3 needs `-c 57344`. The guided task ran with no drafter: 79, 7 of 8 libraries, stopped when the output-budget nudges ran out.",
       "pi": { "provider": "llama", "id": "qwen3.8-27b-iq3s", "contextWindow": 61440, "maxTokens": 8192 }
     },
@@ -97,7 +97,7 @@
       "id": "qwen38-ista-xhigh",
       "spec": { "base": "Qwen3.8-27B", "quant": "IQ3_S-mtp", "server": "llama-server", "publisher": "ISTA-DASLab", "repo": "ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF", "drafter": "", "kv": "q8_0", "effort": "xhigh" },
       "hidden": false,
-      "command": "llama-server -m ~/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 65536 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "command": "llama-server -m \"$(hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf)\" \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 65536 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
       "note": "pi id `qwen3.8-27b-ista`. The 3-bit build the reference setup serves, at its revision `d562806`. The file sets `min_p 0.0` in its sampling defaults, where the unsloth file sets none. The drafter arms need a smaller `-c`: n-max 1 and 2 serve `-c 57344`, n-max 3 `-c 49152`; n-max 2 is the fastest arm (45.9 tok/s at 4K, 26.2 at 56K). n-max 2 served the guided task first, and the server died three times with a GPU launch timeout: the desktop shares the card, and about 440 MiB stayed free. No drafter leaves 1.2 GB free and served the guided and blind tasks with no crash. The best agent rows on this machine: guided 85 and blind 91, both 8 of 8.",
       "pi": { "provider": "llama", "id": "qwen3.8-27b-ista", "contextWindow": 61440, "maxTokens": 8192 }
     },
@@ -113,7 +113,7 @@
       "id": "qwen36-q4kxl-on",
       "spec": { "base": "Qwen3.6-35B-A3B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/Qwen3.6-35B-A3B-MTP-GGUF", "drafter": "mtp/2", "kv": "q8_0", "effort": "on" },
       "hidden": false,
-      "command": "llama-server -m ~/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf \\\n  --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 \\\n  --spec-type draft-mtp --spec-draft-n-max 2 \\\n  -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "command": "llama-server -m \"$(hf download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf)\" \\\n  --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 \\\n  --spec-type draft-mtp --spec-draft-n-max 2 \\\n  -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
       "note": "pi id `qwen3.6-35b-a3b-q4kxl`. The build the reference setup serves, with the MTP drafter embedded in the file. The file is larger than the card, so a measured count of expert layers stays in host RAM, and the drafter needs more of the card's memory than no drafter: no drafter serves `-c 98304` at `--n-cpu-moe 17` (55.8 tok/s at 4K, 37.8 at 97K), n-max 1 at 19 (60.6, 37.9), n-max 2 and 3 at 21 (61.2 and 45.4 for n-max 2; 57.9 and 46.8 for n-max 3). n-max 2 is the served arm: fastest at 4K and 65K, and within the spread of n-max 3 at 97K. A community NVFP4 repack was tried first and failed to load (a tensor-count defect); the owner chose the mainstream build over a niche one (2026-09-14). The guided task scored 48.5, 6 of 8 libraries, and ended on a loop at the seventh; three of its commits moved the pre-commit hook aside.",
       "pi": { "provider": "llama", "id": "qwen3.6-35b-a3b-q4kxl", "contextWindow": 94208, "maxTokens": 8192 }
     },
@@ -129,7 +129,7 @@
       "id": "gemma26-nvfp4-on",
       "spec": { "base": "Gemma-4-26B-A4B", "quant": "NVFP4Q8", "server": "llama-server", "publisher": "catlilface", "repo": "catlilface/Gemma-4-26B-A4B-NVFP4-GGUF", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
-      "command": "llama-server -m ~/.cache/llama.cpp/hf/catlilface/Gemma-4-26B-A4B-NVFP4-GGUF/Gemma4-26b-NVFP4Q8.gguf \\\n  --alias gemma-4-26b-a4b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off --n-cpu-moe 7 -fa on -c 98304 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "command": "llama-server -m \"$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-NVFP4Q8.gguf)\" \\\n  --alias gemma-4-26b-a4b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off --n-cpu-moe 7 -fa on -c 98304 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-26b-a4b-nvfp4`. A community NVFP4 repack that keeps attention at Q8. The file is larger than the card, so a measured count of expert layers stays in host RAM: 7 is the lowest `--n-cpu-moe` that loads at `-c 98304` and serves a real request at the deep cell (6 runs out of memory at load). The file has no MTP layers, so no drafter arm exists. The guided task scored 37.5, 3 of 8 libraries, and ended on a loop in its text.",
       "pi": { "provider": "llama", "id": "gemma-4-26b-a4b-nvfp4", "contextWindow": 94208, "maxTokens": 8192 }
     }
