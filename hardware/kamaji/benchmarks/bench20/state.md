@@ -17,6 +17,13 @@ happen, and the handing-over section at the end.
 `git log` for `benchmarks/run_codegen_wrapper.py` and `benchmarks/run-humaneval.sh` shows `b72fb56`, which carries the finish-log change (`EVALPLUS_FINISH_LOG` exported in `run-humaneval.sh`, line 18). `evalplus.codegen --help` runs. Preflight: all lines `ok`, wired limit 25000, no llama-server or mlx_lm running.
 Deviation: none.
 
+### `qwen38-ista-medium-rerun`
+
+Served `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, `--no-mmproj`, `--spec-type draft-mtp --spec-draft-n-max 3 --parallel 1`, f16 KV, `-c 32768` (bench20 fixed value), alias `qwen3.8-27b`. Probe: a full chat completion, finish_reason `stop`, verified before the watcher started. Watcher and codegen both closed clean; `finish.jsonl` (one level above `humaneval/`, not inside it — the log writes beside the `humaneval/` folder) shows HumanEval/39 at `finish_reason: length`, `completion_tokens: 8192`, `empty: true`. Cause is `cap`.
+Full re-scored result: base 0.976, plus 0.945, 1/164 empty, unchanged from the source row. Server and watcher stopped (pids 89982, 90738).
+Files: `results/qwen38-ista-medium-rerun/`, `results/server-qwen38-ista-medium-rerun.log`, `results/run-watch-qwen38-ista-medium-rerun.log`.
+Deviation: none.
+
 ## Handing over
 
-Not started past `machine-setup`. Begin with `qwen38-ista-medium-rerun`.
+`machine-setup` and `qwen38-ista-medium-rerun` done. Begin with `qwen38-ista-low-rerun`.
