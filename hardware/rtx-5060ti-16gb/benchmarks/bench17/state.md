@@ -663,6 +663,16 @@ Files: `results/benchy-qwen38-iq3s-q8-nmax{1,2,3}.md`, matching
 `server-sweep-qwen38-iq3s-q8-nmax*.log` and `*-vm.log`. Moving to the
 smokes: `qwen36-q4kxl-smoke-high`, `qwen38-ista-smoke-xhigh`.
 
+### qwen36-q4kxl-smoke-high — pass
+
+Served arm n-max2, `--n-cpu-moe 21`, `-c 98304`, window 94208, level
+high. `SMOKE-MENDEL model=qwen3.6-35b-a3b-q4kxl level=high task=xtend
+window=94208 calls=7 distinct=7 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=3094 commits=1 clean=yes end=stop wall_s=41
+verdict=pass`. Session log thinking check: 4 of 4 assistant turns carry
+a thinking block, confirming level high reached the server. The guided
+row of this build can now run.
+
 ## Handing over
 
 Not started.
