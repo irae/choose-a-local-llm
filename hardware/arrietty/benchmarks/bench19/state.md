@@ -58,7 +58,17 @@ own rule, not a stop-and-ask condition.
 | 1 | drafter | 2026-09-15T11:52:37Z | 2026-09-15T12:35:44Z | crash, CUDA launch timeout |
 | 2 | drafter | 2026-09-15T12:51:43Z | 2026-09-15T12:59:24Z | crash, CUDA launch timeout (Xid 8) |
 | 3 | no-drafter | 2026-09-15T13:16:39Z | 2026-09-15T14:29:48Z | switched back to drafter on owner word (66/164 solved, kept) |
-| 4 | drafter | 2026-09-15T14:29:48Z | — | running |
+| 4a | drafter, codegen | 2026-09-15T14:29:48Z | 2026-09-15T16:02:17Z | finished, 164/164, no further crash |
+| 4b | drafter, evaluate | 2026-09-15T19:58:07Z | 2026-09-15T19:59:18Z | finished |
+
+Wall = sum of parts 1+2+3+4a+4b = 43.1 + 7.7 + 73.2 + 92.5 + 1.2 =
+**217.6 min**. The gap between 4a and 4b (16:02–19:58) does not count:
+`run-humaneval.sh`'s bash wrapper (which chains codegen → evaluate) had
+been killed during the part-2 crash recovery; only its python codegen
+child survived and finished on its own with nothing left alive to run
+the evaluate step. Ran `evalplus.evaluate` by hand once codegen's
+164/164 was noticed. No further crash, no data lost — the gap is agent
+latency, not compute, and is excluded the same way a crash gap is.
 
 Owner word (2026-09-15, via chat, not the coordinator): keep retrying
 the drafter arm on every crash, do not fall back to no-drafter
@@ -97,8 +107,33 @@ Deviation: two CUDA launch-timeout crashes (Xid 8) on the drafter arm;
 switched to the fallback arm inside the block per the runbook. Watching
 for a repeat on no-drafter.
 
+### `qwen38-ista-evalplus-xhigh` close
+
+`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, MTP draft n-max 2
+(parts 1, 2, 4) / no drafter (part 3), one slot, q8_0 KV, ctx 32768,
+budget 20500. No further crash after part 4 restarted the drafter arm
+on owner word.
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.945 |
+| HumanEval plus | 0.909 |
+| completion rate | 100% |
+| empty | 0/164 |
+| wall | 217.6 min (parts 1+2+3+4a+4b, gaps excluded) |
+
+Files: `results/qwen38-ista-evalplus-xhigh/humaneval/`,
+`results/server-qwen38-ista*.log`.
+Deviation: two CUDA watchdog crashes on the drafter arm (parts 1-2),
+recovered per the runbook; switched to no-drafter (part 3, 66/164
+solved) then back to drafter on owner word (part 4, finished clean,
+0/164 empty on any arm — drafter never changed the score, as expected
+at temperature 0).
+
 ## Handing over
 
-`machine-setup` done. `qwen38-ista-evalplus-xhigh` calibrated, budget
-set, running on the **fallback (no-drafter) arm** after two CUDA
-watchdog crashes on the drafter arm. Watcher active.
+`machine-setup` and `qwen38-ista-evalplus-xhigh` done: base 0.945,
+plus 0.909, 0/164 empty, wall 217.6 min. On to
+`qwen38-iq3s-evalplus-xhigh`, no-drafter from the start per the
+coordinator's owner-approved rule (2026-09-15), `-c 32768`, q8_0 KV,
+2048 MiB free-VRAM floor after load.
