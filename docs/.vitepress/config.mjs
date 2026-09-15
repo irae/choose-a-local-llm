@@ -18,12 +18,25 @@ export default defineConfig({
     search: { provider: 'local' },
     nav: [
       { text: 'Home', link: '/' },
+      { text: 'Models', link: '/models/' },
       { text: 'Methodology', link: '/methodology' },
       { text: 'M1 Max 32 GB', link: '/setups/kamaji/' },
       { text: 'RTX 5060 Ti 16 GB', link: '/setups/arrietty/' },
     ],
     sidebar: [
       { text: 'Home', link: '/' },
+      {
+        text: 'Models',
+        link: '/models/',
+        collapsed: false,
+        items: [
+          { text: 'Qwen3.8-27B', link: '/models/qwen3.8-27b' },
+          { text: 'Qwen3.6-35B-A3B', link: '/models/qwen3.6-35b-a3b' },
+          { text: 'Gemma-4-26B-A4B', link: '/models/gemma-4-26b-a4b' },
+          { text: 'Gemma-4-12B-it', link: '/models/gemma-4-12b-it' },
+          { text: 'Ternary Bonsai-27B', link: '/models/bonsai-27b' },
+        ],
+      },
       {
         text: 'Methodology',
         link: '/methodology',
@@ -50,7 +63,7 @@ export default defineConfig({
           { text: 'Comparison', link: '/setups/kamaji/comparison' },
           {
             text: 'Models',
-            collapsed: false,
+            collapsed: true,
             items: [
               { text: 'Qwen3.8-27B', link: '/setups/kamaji/reports/qwen3.8-27b' },
               { text: 'Qwen3.6-35B-A3B', link: '/setups/kamaji/reports/qwen3.6-35b-a3b' },
@@ -61,7 +74,7 @@ export default defineConfig({
           },
           {
             text: 'Benchmarks',
-            collapsed: false,
+            collapsed: true,
             items: [
               { text: 'Decode speed vs context depth', link: '/setups/kamaji/benchmarks/decode-speed' },
               { text: 'EvalPlus', link: '/setups/kamaji/benchmarks/evalplus' },
@@ -79,17 +92,17 @@ export default defineConfig({
           { text: 'Comparison', link: '/setups/arrietty/comparison' },
           {
             text: 'Models',
-            collapsed: false,
+            collapsed: true,
             items: [
-              { text: 'Gemma-4-12B-it', link: '/setups/arrietty/reports/gemma-4-12b-it' },
               { text: 'Qwen3.8-27B', link: '/setups/arrietty/reports/qwen3.8-27b' },
               { text: 'Qwen3.6-35B-A3B', link: '/setups/arrietty/reports/qwen3.6-35b-a3b' },
               { text: 'Gemma-4-26B-A4B', link: '/setups/arrietty/reports/gemma-4-26b-a4b' },
+              { text: 'Gemma-4-12B-it', link: '/setups/arrietty/reports/gemma-4-12b-it' },
             ],
           },
           {
             text: 'Benchmarks',
-            collapsed: false,
+            collapsed: true,
             items: [
               { text: 'Decode speed vs context depth', link: '/setups/arrietty/benchmarks/decode-speed' },
               { text: 'EvalPlus', link: '/setups/arrietty/benchmarks/evalplus' },
