@@ -255,8 +255,12 @@ runbooks say simulator(mendel), the name of the runner that replaces
 it.
 
 - **Columns, in order**: Model / Config | Ctx | Cap | tok/s | Memory
-  (at max ctx) | EvalPlus | Coding | Wall. No superscript on a header: the
+  (at max ctx) | HumanEval+ | Coding | Wall. No superscript on a header: the
   columns are explained in a "Legend" section under the table.
+- **HumanEval+ in headers, EvalPlus inside** (owner, 2026-09-15). EvalPlus
+  is our name for the tool and the test, and prose, notes, data fields and
+  the method page keep it. Column headers, the global benchmark page and its
+  sidebar entry say HumanEval+, the name readers know.
 - **Wall is the active time of the scored EvalPlus run and of the scored
   Mendel run**, shown as their sum, with both parts in the cell's hover
   title and a `†` when one part has no time; pauses removed and split runs added (owner, 2026-09-15). `evalplusWall` and `simulatorWall` in

@@ -9,7 +9,7 @@ uses.
 The label under each name is the machine.
 
 <!-- gen:models-evaluated:all:start -->
-| Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding | Wall |
+| Model / Config | Ctx | Cap | tok/s | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" hardware="m1-max-32gb" hide="server" top /> | 72k | mem | <TokCell shallow="12.4" deep="9.7" /> | <ScoreCell value="0.957/0.939" sub="96% completion" top /> | <ScoreCell value="93" pill="mendel-blind" top /> | <span title="EvalPlus 8h30 · Mendel 3h33">12h04</span> |
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" hardware="m1-max-32gb" hide="server" top /> | 82k | speed | <TokCell shallow="43.7" deep="13.0" top-shallow /> | <ScoreCell value="0.939/0.921" sub="97% completion" /> | <ScoreCell value="83" pill="mendel-guided" top /> | <span title="EvalPlus 4h38 · Mendel 1h32">6h09</span> |
@@ -32,7 +32,7 @@ The label under each name is the machine.
   8 tok/s first.
 - **tok/s**: decode on real code text, near an empty context → at
   Ctx.
-- **EvalPlus**: HumanEval+ pass@1, base over plus, and the share of
+- **HumanEval+**: EvalPlus pass@1, base over plus, and the share of
   problems that finished inside the output budget (cap 30000 tokens).
 - **Coding**: the Mendel score out of 100, a multi-turn agent task on
   a real repository with known traps. The pill names the test, blind

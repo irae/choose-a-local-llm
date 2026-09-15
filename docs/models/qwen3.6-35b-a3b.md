@@ -3,7 +3,7 @@
 Every config of this model, on every machine, best first.
 
 <!-- gen:model-all:start -->
-| Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding | Wall |
+| Model / Config | Ctx | Cap | tok/s | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" hardware="m1-max-32gb" hide="server" top /> | **82k** | speed | <TokCell shallow="43.7" deep="13.0" /> | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="83" pill="mendel-guided" top /> | <span title="EvalPlus 4h38 · Mendel 1h32">6h09</span> |
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" hardware="m1-max-32gb" hide="server" top /> | **82k** | speed | <TokCell shallow="43.7" deep="13.0" /> | <ScoreCell value="0.951/0.915" sub="100% completion" top /> | <ScoreCell value="62.5" pill="mendel-guided" top /> | <span title="EvalPlus 0h15 · Mendel 1h29">1h44</span> |

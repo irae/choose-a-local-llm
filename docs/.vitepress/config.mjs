@@ -42,7 +42,7 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: 'Decode speed vs context depth', link: '/benchmarks/decode-speed' },
-          { text: 'EvalPlus', link: '/benchmarks/evalplus' },
+          { text: 'HumanEval+', link: '/benchmarks/evalplus' },
           { text: 'Mendel', link: '/benchmarks/mendel' },
         ],
       },

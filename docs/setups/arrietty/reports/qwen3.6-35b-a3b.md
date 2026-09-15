@@ -24,7 +24,7 @@ First run 2026-09-13 to 2026-09-15: speed, context, drafter arms and the guided 
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | EvalPlus | Coding | Wall |
+| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" kv="q8_0" effort="on" top /> | **97k** | mem | <TokCell shallow="61.16" deep="45.42" top-shallow top-deep /> | **14.7 GB** | <ScoreCell value="pending" /> | <ScoreCell value="48.5" note="75%" pill="mendel-guided" top /> | <span title="EvalPlus — · Mendel 0h27">0h27†</span> |
 <!-- gen:model-table:end -->

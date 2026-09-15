@@ -17,7 +17,7 @@ llama-server (CUDA) · run 17, 2026-09-13 to 2026-09-15
 ## Models evaluated
 
 <!-- gen:models-evaluated:start -->
-| Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding | Wall |
+| Model / Config | Ctx | Cap | tok/s | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" top /> | 65k | mem | <TokCell shallow="29.43" deep="21.13" /> | <ScoreCell value="pending" /> | <ScoreCell value="91" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 1h15">1h15†</span> |
 | <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" top /> | 65k | mem | <TokCell shallow="29.36" deep="20.92" /> | <ScoreCell value="pending" /> | <ScoreCell value="79" note="88%" pill="mendel-guided" top /> | <span title="EvalPlus — · Mendel 4h46">4h46†</span> |
@@ -40,7 +40,7 @@ Rows with two of the three measurements, or added in the last 48
 hours.
 
 <!-- gen:models-evaluated-partial:start -->
-| Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding | Wall |
+| Model / Config | Ctx | Cap | tok/s | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|
 <!-- gen:models-evaluated-partial:end -->
 
