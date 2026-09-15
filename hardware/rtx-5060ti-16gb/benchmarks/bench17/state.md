@@ -685,6 +685,31 @@ verdict=pass`. Session log thinking check: 8 of 8 assistant turns carry
 a thinking block, confirming level xhigh reached the server. The
 guided row of this build can now run.
 
+### qwen38-ista-mendel-guided-xhigh — first attempt interrupted
+
+The server died mid-run at `n_tokens` 28213 (well inside the 53248
+window): `CUDA error: the launch timed out and was terminated`, a
+different signature than the OOM seen on the sweep blocks — a driver
+kernel-launch timeout, not a memory failure. `journalctl -k` shows no
+Xid entry in the 15 minutes around the crash, so this was not a full
+GPU watchdog reset. pi's own auto-retry made 3 attempts against the
+dead server and gave up (`auto_retry_end success=false attempt=3`);
+`run-worker.sh` then finished normally, reporting `done` even though
+the underlying session ended on a connection error, not task
+completion.
+
+Per the retry rule (`docs/methodology/mendel.md`, "A row the machine
+killed is retried at once, in a fresh worktree") and the established
+naming from this run's earlier `qwen38-iq3s` interruption: moved the
+worktree and branch aside
+(`mendel-bench-guided-qwen3.8-27b-ista-xhigh-interrupted1`, branch
+`qwen3.8-27b-ista-xhigh-guided-v3-issue-13-interrupted1`), moved its
+`~/.local/share/mendel-benchmark/runs/qwen3.8-27b-ista-xhigh-guided-*`
+evidence into `runs/interrupted/`, restarted the server unchanged
+(same n-max2, `-c 57344`, q8_0 KV — no window change, that is the
+coordinator's call), and launched a fresh attempt at the canonical
+worktree/branch name.
+
 ## Handing over
 
 Not started.
