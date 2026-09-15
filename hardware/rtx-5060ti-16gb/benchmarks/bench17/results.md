@@ -461,15 +461,25 @@ removal command. / Actually, I'll do it." 818 times, filled the
 Scored and published to `~/code/mendel-benchmark` branch `benchmark`,
 commit `8e9a15b6`. Row dimmed, dash rank, excluded from site tables.
 
-**gemma12-nvfp4-mendel-guided-high**, scoring in progress. Same shape
-as the q4kxl row above: zero commits, `repetition_loop`, this time on
-"I'll replace `xtend(this._result, {` with `Object.assign({}, this._result, {`."
-repeated 520 times. Third Gemma-12B guided row this run to end without
-a single commit (with `gemma12-nvfp4-mendel-guided-off` and
-`gemma12-q4kxl-mendel-guided-high`), each a repetition loop right
-after locating a dependency, before the matching edit — worth flagging
-as a possible build-level pattern at this harness, not three
-independent flukes.
+**gemma12-nvfp4-mendel-guided-high**, model-failed, 0/100 (raw 34).
+Zero commits. The model ran `pnpm remove uuid`, swapped `app.js` to
+`crypto.randomUUID`, then started `xtend`: edited
+`tree-hash-walker.js` but botched it (replaced the `require('xtend')`
+line naming `object-assign` instead, never touched the
+`xtend(this._result, {...})` call site). Rereading the file it had
+just broken, its thinking channel cycled "I'll replace
+`xtend(this._result, {` with `Object.assign({}, this._result, {`."
+520 times from 07:44:00Z, hit the 8192-token output cap, closed at
+07:46:57Z. peak_context 39405/258048 (15.3%), 24 tool calls. Third
+Gemma-12B guided row this run to end without a single commit (with
+`gemma12-nvfp4-mendel-guided-off` and `gemma12-q4kxl-mendel-guided-high`);
+this one and the q4kxl row both looped specifically over the xtend
+swap, without ever issuing the matching tool call — the same
+decision-repeated-without-action shape twice, worth flagging as a
+possible build-level pattern at this harness, not three independent
+flukes. Scored and published to `~/code/mendel-benchmark` branch
+`benchmark`, commit `38b0eaad`. Row dimmed, dash rank, excluded from
+site tables.
 
 **qwen38-ista-mendel-guided-xhigh**, the retry on the no-drafter served
 arm (after three harness crashes on the original n-max2 pick, see

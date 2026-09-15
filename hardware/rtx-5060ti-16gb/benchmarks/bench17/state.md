@@ -876,7 +876,7 @@ All seven builds on `AGENT.md`'s guided list ran to their natural end:
 | qwen3.6-35b-a3b-q4kxl, high | 48.5 | 6/8 partial | repetition_loop |
 | gemma-4-26b-a4b-nvfp4, high | 37.5 | 3/8 partial | model_budget_exhausted |
 | gemma-4-12b-q4kxl, high | 0 | 0/8 | model_failed |
-| gemma-4-12b-nvfp4, high | pending (scoring) | 0/8 (zero commits) | repetition_loop |
+| gemma-4-12b-nvfp4, high | 0 | 0/8 | model_failed |
 | **qwen3.8-27b-ista, xhigh** | **85** | **8/8** | **complete** |
 
 Only `qwen3.8-27b-ista` reached 8/8 libraries with bugs allowed, so it
@@ -889,6 +889,28 @@ tool-call loop earlier in the run. Three of seven guided rows on this
 build family ended without a single commit; worth the coordinator's
 attention as a possible Gemma-12B-at-this-harness pattern, not
 independent flukes.
+
+### gemma12-nvfp4-mendel-guided-high — scored, model_failed
+
+Zero commits, `repetition_loop`. The model ran `pnpm remove uuid`,
+swapped `app.js` to `crypto.randomUUID`, then started `xtend`: edited
+`tree-hash-walker.js` but botched it (replaced the `require('xtend')`
+line naming `object-assign` instead, never touched the
+`xtend(this._result, {...})` call site). Rereading the file it just
+broke, its thinking channel cycled "I'll replace `xtend(this._result,
+{` with `Object.assign({}, this._result, {`." 520 times from
+07:44:00Z, hit the 8192-token cap, closed at 07:46:57Z. peak_context
+39405/258048 (15.3%), 24 tool calls. **Third Gemma-12B guided row this
+run to end on a repetition loop with zero commits** (with
+`gemma12-nvfp4-mendel-guided-off` and
+`gemma12-q4kxl-mendel-guided-high`); this one and the q4kxl row both
+looped specifically over the xtend swap, without ever issuing the
+matching tool call — the same decision-repeated-without-action shape
+twice. `gemma12_nvfp4_guided_high` = 0 (model_failed, dimmed, dash
+rank, excluded from site tables). Scored and published to
+`~/code/mendel-benchmark` branch `benchmark`, commit `38b0eaad`. Run
+branch `gemma-4-12b-nvfp4-high-guided-v3-issue-13` pushed to `origin`
+on the `mendel` repo (zero commits on it).
 
 ### mendel-blind-after-guided — qwen38-ista, running
 
