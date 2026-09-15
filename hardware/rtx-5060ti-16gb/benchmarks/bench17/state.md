@@ -587,6 +587,15 @@ cell ran, killed, and restarted with the two exports from this file
 inline in the same command. Every server start from here on carries
 them inline; no session assumes they are still set.
 
+### sweep-qwen38-ista n-max3 — retry at -c 49152
+
+`--spec-type draft-mtp --spec-draft-n-max 3` at `-c 57344` (n-max2's
+value) loaded clean but crashed on the deep-cell request (`CUDA error:
+out of memory`), the same pattern as n-max1's retry: the larger draft
+window's compute buffer needs more headroom. Stepped `-c` down 8192 to
+49152 per the retry rule, loaded clean at 15442 MiB, probing the deep
+cell (48128) before the full sweep.
+
 ### sweep-qwen38-ista n-max2 — closed, faster than n-max1
 
 Deep-cell probe at `-c 57344` passed clean, 25.12 tok/s at depth
