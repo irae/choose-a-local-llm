@@ -26,7 +26,7 @@ BASE_URL = "http://127.0.0.1:8081"
 
 PROBLEM_IDS = [
     "HumanEval/0", "HumanEval/10", "HumanEval/26", "HumanEval/32",
-    "HumanEval/38", "HumanEval/53", "HumanEval/76", "HumanEval/99",
+    "HumanEval/38", "HumanEval/39", "HumanEval/76", "HumanEval/99",
     "HumanEval/124", "HumanEval/145",
 ]
 
@@ -161,6 +161,7 @@ def main():
             "finish_reason": choice.finish_reason,
             "content_empty": not bool(content and content.strip()),
             "content_len": len(content) if content else 0,
+            "content": content or "",
             "has_separate_reasoning_field": bool(reasoning),
             "has_inline_think_tag": has_inline_think,
             "wall_s": round(dt, 1),

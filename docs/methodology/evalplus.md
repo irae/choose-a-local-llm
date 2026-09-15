@@ -24,7 +24,13 @@ the run loop apply ([common rules](./common-rules.md),
 undersized budget lets reasoning exhaust the cap and empty completions
 score as failures (up to 38% of scores lost before this was found).
 
-1. Run `benchmarks/calibrate.py` (10 fixed problems, cap 30000).
+1. Run `benchmarks/calibrate.py` (10 fixed problems, cap 30000). The
+   sample includes HumanEval/39, the problem that ends empty most often
+   across our runs (owner, 2026-09-15). The calibration saves every
+   answer. Pass the file to the full run as `EVALPLUS_CALIBRATION`: an
+   answer that ended on its own within the run's budget goes into the
+   samples, and the run does not generate that problem again. Its
+   calibration `wall_s` counts in the run's wall.
 2. Budget = observed max completion × 1.5, floor 8192.
 3. For models whose thinking sometimes never converges
    (`finish_reason: length` at any budget), the budget is a

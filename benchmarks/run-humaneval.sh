@@ -17,6 +17,43 @@ export OPENAI_API_KEY=none
 [ -n "$EXTRA_BODY" ] && export EVALPLUS_EXTRA_BODY="$EXTRA_BODY"
 export EVALPLUS_FINISH_LOG="${EVALPLUS_FINISH_LOG:-$DIR/finish.jsonl}"
 PYBIN="$(head -1 "$(command -v evalplus.codegen)" | sed 's/^#!//; s/ -E$//')"
+# EVALPLUS_CALIBRATION: a calibration answer that ended within the budget is
+# the same text the run would produce at temperature 0, so it goes into the
+# samples now and the run skips that problem instead of generating it again.
+if [ -n "${EVALPLUS_CALIBRATION:-}" ]; then
+  MODEL="$MODEL" DIR="$DIR" "$PYBIN" - <<'PYEOF'
+import datetime, json, os
+from evalplus.data import get_human_eval_plus
+from evalplus.sanitize import sanitize
+
+budget = int(os.environ.get("EVALPLUS_MAX_NEW_TOKENS", "3072"))
+identifier = os.environ["MODEL"].strip("./").replace("/", "--") + "_openai_temp_0.0"
+target = os.path.join(os.environ["DIR"], "humaneval", identifier + ".jsonl")
+os.makedirs(os.path.dirname(target), exist_ok=True)
+done = set()
+if os.path.exists(target):
+    with open(target) as f:
+        done = {json.loads(l)["task_id"] for l in f if l.strip()}
+problems = get_human_eval_plus()
+rows = json.load(open(os.environ["EVALPLUS_CALIBRATION"]))
+seeded = 0
+for r in rows:
+    content = r.get("content") or ""
+    if r["task_id"] in done or r.get("finish_reason") != "stop" or not content.strip():
+        continue
+    if (r.get("completion_tokens") or budget + 1) > budget:
+        continue
+    task = problems[r["task_id"]]
+    with open(target, "a") as f:
+        f.write(json.dumps({"task_id": r["task_id"], "solution": sanitize(content, entrypoint=task["entry_point"])}) + "\n")
+    with open(target.replace(".jsonl", ".raw.jsonl"), "a") as f:
+        f.write(json.dumps({"task_id": r["task_id"], "solution": content}) + "\n")
+    with open(os.environ["EVALPLUS_FINISH_LOG"], "a") as f:
+        f.write(json.dumps({"utc": datetime.datetime.now(datetime.timezone.utc).isoformat(), "task_id": r["task_id"], "finish_reason": "stop", "completion_tokens": r["completion_tokens"], "wall_s": r.get("wall_s"), "source": "calibration"}) + "\n")
+    seeded += 1
+print(f"seeded {seeded} problems from the calibration")
+PYEOF
+fi
 "$PYBIN" "$ROOT/benchmarks/run_codegen_wrapper.py" \
   --model "$MODEL" \
   --dataset humaneval \
