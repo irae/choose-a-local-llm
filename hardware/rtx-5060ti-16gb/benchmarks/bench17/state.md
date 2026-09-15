@@ -801,6 +801,16 @@ commits that shipped the uncaught defects. Scored and published to
 branch `qwen3.6-35b-a3b-q4kxl-high-guided-v3-issue-13` pushed to
 `origin` on the `mendel` repo.
 
+### gemma12-q4kxl-mendel-guided-high — running
+
+`gemma-4-12b-q4kxl`, f16 KV, `-c 262144`, no drafter, level high,
+window 258048 (the `off` smoke's window, one smoke covers every
+level). Early-turn check on `events.jsonl`: 1087 `thinking_delta`
+events in the first turns, confirming level high reached the server
+(the `off` smoke showed none, as expected). Started after
+`qwen38-ista-mendel-guided-xhigh` closed (scored `complete`, 8/8
+libraries, scoring subagent dispatched).
+
 ## Handing over
 
 Not started.
