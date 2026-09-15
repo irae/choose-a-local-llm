@@ -54,39 +54,15 @@ Read the score with its completion:
 
 | run | budget | empty | cause | pass among answered |
 |---|--:|--:|---|--:|
-| Qwen3.8-27B Q4_K_M, xhigh | 30000 | 6/164 | cap¹ | 0.993 |
-| Qwen3.8-27B ISTA IQ3_S-mtp, xhigh | 30000 | 5/164 | † unproven² | 0.975 |
-| Gemma-4-26B-A4B GGUF, thinking on | 30000 | 18/164 | † unproven³ | 0.993 |
-| Gemma-4-26B-A4B MLX 4-bit, thinking on | 30000 | 46/164 | † unproven⁴ | 0.991 |
-| Qwen3.6-35B-A3B GGUF, thinking on | 26624 | 5/164 | † unproven⁵ | 0.969 |
-| Ternary-Bonsai-27B MLX 2-bit, thinking on | 10240 | 5/164 | † unproven⁵ | 0.944 |
-| Ternary-Bonsai-27B fork q4 KV, thinking on | 10240 | 4/164 | † unproven⁵ | 0.950 |
+| Qwen3.8-27B Q4_K_M, xhigh | 30000 | 6/164 | cap | 0.993 |
+| Qwen3.8-27B ISTA IQ3_S-mtp, xhigh | 30000 | 5/164 | † unproven | 0.975 |
+| Gemma-4-26B-A4B GGUF, thinking on | 30000 | 18/164 | † unproven | 0.993 |
+| Gemma-4-26B-A4B MLX 4-bit, thinking on | 30000 | 46/164 | † unproven | 0.991 |
+| Qwen3.6-35B-A3B GGUF, thinking on | 26624 | 5/164 | † unproven | 0.969 |
+| Ternary-Bonsai-27B MLX 2-bit, thinking on | 10240 | 5/164 | † unproven | 0.944 |
+| Ternary-Bonsai-27B fork q4 KV, thinking on | 10240 | 4/164 | † unproven | 0.950 |
 
-¹ The server log shows six requests stopped at the budget, one per empty.
-² The run notes say the cap; no server log exists.
-³ The notes say budget left; the server log, mixed with other work, shows
-18 requests at the cap after the calibration's two.
-⁴ The notes say budget left; no server log exists.
-⁵ The budget was set just above the longest successful answer.
-
-Pass among answered is base pass@1 divided by completion. † unproven: no
-evidence per request exists yet; a re-run of the empties with the finish
-reason recorded settles it. Only a server log that covers the whole run
-proves a cause. The last three
-rows use the budget rule for thinking that sometimes never ends: the
-budget stops just above the longest successful answer, so these runs
-cannot tell a slow answer from one that never comes. Early runs used a
-fixed budget that was too small; those scores are on
-[the historical page](../setups/kamaji/historical.md).
-
-Sources: the budget rule in [the method](../methodology/evalplus.md);
-the Qwen3.8-27B empties at the cap on
-[its data page](../setups/kamaji/benchmarks/qwen3.8-27b.md) and
-[report](../setups/kamaji/reports/qwen3.8-27b.md); the Gemma-4-26B-A4B
-empties with budget left on
-[its data page](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md) and
-[report](../setups/kamaji/reports/gemma-4-26b-a4b.md); the per-run
-budgets and empty counts in the table above.
+Pass among answered is base pass@1 divided by completion.
 
 ## Thinking off against thinking on
 
