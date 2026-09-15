@@ -140,6 +140,8 @@ Same server as the blind row, unchanged (agent arm nmax0, `-c 188416`, alias `qw
 Deviation: `git -C ~/code/mendel-benchmark stash clear` blocked by the sandbox again (same as the smoke); `stash list` read empty first. Not a stop condition.
 still running.
 
+Coordinator answer (2026-09-14, on the blind-row anomaly gate): keep the blind row as published (98f89f5, score 90.5, current `anomaly` text). PLAN.md has no rule that voids or penalizes a model's own master merge; the `anomaly` field already flags the base-comparability issue in the report. No re-run, no changes to the row, the rubric, or PLAN.md. Continue with the guided row and the rest of the runbook. The coordinator takes any rule change for this case to the owner.
+
 Coordinator handshake (2026-09-14): the coordinator session changed to "local-llm coordinator sept-14" (`bridge:session_01Qbci662csCc7jLo4gPGzjk`), replacing the earlier "Model quantization comparison across hardware" session. It confirmed the current `run18` head (726d480) correctly. Gates and stop-and-asks now go to this new session name.
 
 ## Handing over
