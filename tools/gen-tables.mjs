@@ -691,27 +691,6 @@ function buildName(config) {
   return config.split(',').slice(0, 2).map((s) => s.trim()).join(', ')
 }
 
-function homeRows(data) {
-  const seen = []
-  const groups = new Map()
-  for (const r of data.rows) {
-    const name = buildName(r.config)
-    if (!groups.has(name)) {
-      groups.set(name, [])
-      seen.push(name)
-    }
-    groups.get(name).push(r)
-  }
-  const best = seen.map((name) => {
-    const rows = groups.get(name)
-    const complete = rows.filter((r) => !hasPending(r))
-    const pick = sortRows(complete.length ? complete : rows)[0]
-    const rest = pick.config.split(',').slice(2).map((s) => s.trim()).join(', ')
-    return { ...pick, config: rest ? `${name}, ${rest}` : name, hardwareSlug: data.hardwareSlug }
-  })
-  return best
-}
-
 function applyBlock(content, startMark, endMark, block, target) {
   const startIdx = content.indexOf(startMark)
   const endIdx = content.indexOf(endMark)
@@ -846,7 +825,6 @@ const isNew = (r) => Boolean(r.added) && HEAD_TIME - Date.parse(r.added) < 48 * 
 
 const dataFiles = globSync('docs/setups/*/models.json')
 let drift = false
-const homeAll = []
 const modelsAll = new Map()
 
 for (const dataFile of dataFiles) {
@@ -878,7 +856,6 @@ for (const dataFile of dataFiles) {
   const allNote = (all) => (all ? ['', 'Fewer than two rows pass the filter of this table, so it shows every row it can hold.'] : [])
   const comparisonTable = [renderTable(mainRows, { memory: false }), ...allNote(mainAll)].join('\n')
   const partialTable = [renderTable(partialRows, { sort: false, start: mainRows.length, memory: false }), ...allNote(partialAll)].join('\n')
-  homeAll.push(...homeRows({ ...data, rows: visible }))
   for (const [slug, model] of Object.entries(data.models || {})) {
     const rows = modelRows(data, model).filter((r) => !r.abandoned).map((r) => ({ ...r, hardwareSlug: data.hardwareSlug }))
     modelsAll.set(slug, [...(modelsAll.get(slug) || []), ...rows])
@@ -955,12 +932,11 @@ const writeBlock = (target, start, end, block) => {
   }
 }
 
-writeBlock('docs/index.md', '<!-- gen:models-evaluated:all:start -->', '<!-- gen:models-evaluated:all:end -->', renderTable(homeAll, { memory: false, hardware: true }))
-
 const bestPerModel = [...modelsAll].map(([slug, rows]) => {
   const complete = rows.filter(isComplete)
   return { ...sortRows(complete.length ? complete : rows)[0], modelSlug: slug }
 })
+writeBlock('docs/index.md', '<!-- gen:models-evaluated:all:start -->', '<!-- gen:models-evaluated:all:end -->', renderTable(bestPerModel, { memory: false, hardware: true, hide: 'server' }))
 writeBlock(
   'docs/models/index.md',
   '<!-- gen:models-best:start -->',
