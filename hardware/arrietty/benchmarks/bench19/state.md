@@ -63,8 +63,25 @@ resume-from-jsonl behavior held. Started a fresh watcher
 (`server-qwen38-ista-retry1.log`). Recoverable failure, retried inside
 the block per the runbook.
 
+**Second CUDA timeout, still 2/164, switch to fallback arm.** The
+watcher exited 42 again a few minutes later, same signature. Confirmed
+with `journalctl -k`: `NVRM: krcWatchdog: RC watchdog: GPU is probably
+locked! Notify Timeout Seconds: 7` then `NVRM: Xid (PCI:0000:01:00): 8,
+pid=1349049, name=llama-server` — the same driver-watchdog event run
+17 saw once (`bench17/state.md`, `diagnose-crash` finding), now twice
+on this drafter config. Per the runbook's own rule (a CUDA death inside
+the block is a switch to the fallback arm), restarted **without the
+drafter** (`no drafter`, dropping `--spec-type draft-mtp
+--spec-draft-n-max 2`). Loads clean, vram 13638 MiB, `run_codegen_wrapper.py`
+resumed against it immediately. Fresh watcher
+(`server-qwen38-ista-retry2-nodraft.log`).
+
+Deviation: two CUDA launch-timeout crashes (Xid 8) on the drafter arm;
+switched to the fallback arm inside the block per the runbook. Watching
+for a repeat on no-drafter.
+
 ## Handing over
 
 `machine-setup` done. `qwen38-ista-evalplus-xhigh` calibrated, budget
-set, running (one CUDA-timeout restart so far, resumed clean, watcher
-active).
+set, running on the **fallback (no-drafter) arm** after two CUDA
+watchdog crashes on the drafter arm. Watcher active.
