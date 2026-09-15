@@ -30,3 +30,15 @@ a score; a row names it only where it is part of the quant.
 - RTX 5060 Ti 16 GB: run 19 is scoring every row.
 - Scores under the uncalibrated budget:
   [historical](../setups/kamaji/historical.md).
+
+## Thinking off against thinking on
+
+Thinking off runs HumanEval+ 10 to 40 times faster on the same build,
+and its score is level or higher: Gemma-4-26B-A4B GGUF reads 0.976 /
+0.945 in 20 minutes at thinking off and 0.884 / 0.860 in 3h47 at
+thinking on; Qwen3.6-35B-A3B GGUF reads 0.951 / 0.915 in 15 minutes and
+0.939 / 0.921 in 4h38. Every thinking-off run here finished under 2
+hours, and every run with thinking on or an effort level took 2 hours
+or more. The single-turn score does not carry over to the agent task:
+Qwen3.6-35B-A3B scored 83 guided at thinking on and 62.5 at thinking
+off.
