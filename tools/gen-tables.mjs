@@ -581,9 +581,8 @@ function isComplete(r) {
 }
 
 function composite(r) {
-  const e = parseScore(r.evalplus)
-  const m = parseMendel(r.mendel)
-  if (e < 0 || m === null) return null
+  const e = Math.max(parseScore(r.evalplus), 0)
+  const m = parseMendel(r.mendel) ?? 0
   return (e * 100 + m) / 2
 }
 
