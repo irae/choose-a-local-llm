@@ -128,6 +128,8 @@ Smoke result: `SMOKE-MENDEL model=qwen3.8-27b-iq3s-m1 level=xhigh task=xtend win
 `unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S` rev `4ca7207`, no drafter (nmax0), one slot, f16 KV, `-c 188416` served, wired 25000. Harness: window 147456, reserve 8192 (pi default keep — window ≥ 65536). Branch `qwen3.8-27b-iq3s-m1-xhigh-issue-13` (none existed, per the coordinator's alias fix). Worktree `../mendel-bench-qwen3.8-27b-iq3s-m1-xhigh`. Started (see `results/mendel-blind-qwen38-unsloth-xhigh.log`). Same server as the smoke, unchanged. Watcher started, `results/run-watch-mendel-blind.log`, output tracked at `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-iq3s-m1-xhigh-blind-events.jsonl`.
 still running.
 
+Coordinator handshake (2026-09-14): the coordinator session changed to "local-llm coordinator sept-14" (`bridge:session_01Qbci662csCc7jLo4gPGzjk`), replacing the earlier "Model quantization comparison across hardware" session. It confirmed the current `run18` head (726d480) correctly. Gates and stop-and-asks now go to this new session name.
+
 ## Handing over
 
 Not started.
