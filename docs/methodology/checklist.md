@@ -136,7 +136,8 @@ the block names at the point it is needed.
    (default 600) without output growth probes one real completion,
    never `/health`. One failed probe is a suspicion, because a probe
    queued behind a long turn on a one-slot server fails the same way.
-   It exits 42 on a death signature, or when two probes fail, each
+   It exits 42 on a death signature, when the server process leaves
+   the NVIDIA GPU (`RUNWATCH_GPU_PROCESS`), or when two probes fail, each
    after a full silence window with no growth; its last stdout line
    says why, and the background-task notification carries that line.
    Read exit 42 as: kill the server, restart it, resume the block,

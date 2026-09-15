@@ -72,6 +72,12 @@
 #                          this script. Scope it to the run.
 #   RUNWATCH_MEM_INTERVAL  seconds between memory lines, default 20.
 #                          0 turns the memory log off.
+#   RUNWATCH_GPU_PROCESS   process name on an NVIDIA GPU, default
+#                          llama-server. When nvidia-smi exists, every
+#                          poll reads that process's VRAM; once it held
+#                          RUNWATCH_GPU_MIN_MB, a later reading under it
+#                          (the process left the card) exits 42 at once.
+#   RUNWATCH_GPU_MIN_MB    default 1024. 0 turns the GPU check off.
 # At least one of RUNWATCH_SERVER_LOG and RUNWATCH_OUTPUT is required.
 #
 # Validated 2026-09-05 against a fake log that grows a death signature
@@ -212,6 +218,30 @@ probe_real_completion() {
 }
 
 
+GPU_PROCESS="${RUNWATCH_GPU_PROCESS:-llama-server}"
+GPU_MIN_MB="${RUNWATCH_GPU_MIN_MB:-1024}"
+gpu_held=0
+
+# Prints the reason and returns 0 when the server process held its VRAM
+# once and does not hold it now.
+gpu_left() {
+    if [ "$GPU_MIN_MB" -le 0 ] || ! command -v nvidia-smi > /dev/null 2>&1; then
+        return 1
+    fi
+    local mb
+    mb=$(nvidia-smi --query-compute-apps=process_name,used_memory --format=csv,noheader,nounits 2>/dev/null \
+        | awk -F', *' -v p="$GPU_PROCESS" 'index($1, p) {s += $2} END {print s + 0}')
+    if [ "$mb" -ge "$GPU_MIN_MB" ]; then
+        gpu_held=1
+        return 1
+    fi
+    if [ "$gpu_held" = "1" ]; then
+        echo "SERVER DEAD: $GPU_PROCESS holds ${mb} MiB of VRAM, under ${GPU_MIN_MB} MiB; it left the GPU"
+        return 0
+    fi
+    return 1
+}
+
 echo "run-watch: log=${SERVER_LOG:-none} output=${OUTPUT_FILE:-none} url=$BASE_URL silence=${SILENCE}s probe_timeout=${PROBE_TIMEOUT}s poll=${POLL}s mem_log=$MEM_LOG mem_interval=${MEM_INTERVAL}s"
 memory_line_when_due
 
@@ -229,6 +259,9 @@ failed_probes=0
 while true; do
     sleep "$POLL"
     memory_line_when_due
+    if gpu_left; then
+        exit 42
+    fi
 
     if [ -n "$SERVER_LOG" ]; then
         log_now=$(file_size "$SERVER_LOG")

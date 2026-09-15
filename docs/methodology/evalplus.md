@@ -80,6 +80,25 @@ its budget and returned empties.
 6. Evaluate runs automatically at the end. Record pass@1 base/plus AND
    the empty count, honestly, on every surface.
 
+## Crashes and wall time
+
+A server crash does not restart the score. It costs time, and the wall
+must not count that time.
+
+1. The run watcher exits 42 the moment the server dies or leaves the
+   GPU ([checklist](./checklist.md), step 6). Restart the server with
+   the same config and resume at once: `run-humaneval.sh` skips every
+   problem already in the samples file, so the run continues from the
+   problem that crashed.
+2. Write every part in `state.md` as it happens, in UTC: the start of
+   each launch, and its end (crash, kill or finish). One line per part.
+3. At run close, the wall is the sum of the parts. The gaps between a
+   crash and the next launch do not count. The evaluate step counts
+   when it runs in the last part.
+4. Write the wall once, in minutes, beside the score in `results.md`,
+   with the list of parts. The coordinator copies it to `evalplusWall`
+   and to the run's `wall`; nobody recomputes it later.
+
 ## The smoke
 
 A fast fixed subset, for two uses: the [KV cache pick](./kv-cache-pick.md)
