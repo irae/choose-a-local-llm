@@ -602,6 +602,24 @@ Deep-cell probe at `-c 57344` passed clean, 25.12 tok/s at depth
 56320. Full sweep: 45.88/31.89/26.19 tok/s at 4K/24K/56K, faster than
 n-max1 (33.40/29.68/24.64) at every depth. Climb continues to n-max3.
 
+### sweep-qwen38-ista n-max3 — closed, last arm
+
+`qwen38_ista_nmax3_c` = 49152 (stepped down from 57344 after a
+deep-cell OOM). Full sweep: 37.33/30.80/31.58 tok/s at 4K/24K/48K,
+slower than n-max2 at both comparable depths (45.88/31.89 at 4K/24K).
+n-max3 is the last defined arm of this block; the climb ends here.
+
+### sweep-qwen38-ista — block closed
+
+Four arms: no-drafter (`-c` 65536, clean depth 64512, 21.13 tok/s
+deep), n-max1 (`-c` 57344, 24.64 tok/s deep), n-max2 (`-c` 57344, 26.19
+tok/s deep, fastest at the shared 4K/24K depths), n-max3 (`-c` 49152,
+31.58 tok/s deep but a shallower window and slower than n-max2 at the
+shared depths). A table and no pick; the coordinator names the served
+arm. Files: `results/benchy-qwen38-ista-{nodraft,nmax1,nmax2,nmax3}.md`,
+matching `server-sweep-qwen38-ista-*.log` and `*-vm.log`. Moving to
+`sweep-qwen38-iq3s-mtp` per `AGENT.md` order.
+
 ## Handing over
 
 Not started.
