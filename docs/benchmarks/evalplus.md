@@ -54,13 +54,20 @@ Read the score with its completion:
 
 | run | budget | empty | cause | pass among answered |
 |---|--:|--:|---|--:|
-| Qwen3.8-27B Q4_K_M, xhigh | 30000 | 6/164 | budget: server log, six requests at the cap | 0.993 |
-| Qwen3.8-27B ISTA IQ3_S-mtp, xhigh | 30000 | 5/164 | † unproven: the run notes say the cap; no server log | 0.975 |
-| Gemma-4-26B-A4B GGUF, thinking on | 30000 | 18/164 | † unproven: the notes say budget left, the mixed server log shows 18 cap hits | 0.993 |
-| Gemma-4-26B-A4B MLX 4-bit, thinking on | 30000 | 46/164 | † unproven: the notes say budget left; no server log | 0.991 |
-| Qwen3.6-35B-A3B GGUF, thinking on | 26624 | 5/164 | † unproven: budget set just above the longest answer | 0.969 |
-| Ternary-Bonsai-27B MLX 2-bit, thinking on | 10240 | 5/164 | † unproven: budget set just above the longest answer | 0.944 |
-| Ternary-Bonsai-27B fork q4 KV, thinking on | 10240 | 4/164 | † unproven: budget set just above the longest answer | 0.950 |
+| Qwen3.8-27B Q4_K_M, xhigh | 30000 | 6/164 | cap¹ | 0.993 |
+| Qwen3.8-27B ISTA IQ3_S-mtp, xhigh | 30000 | 5/164 | † unproven² | 0.975 |
+| Gemma-4-26B-A4B GGUF, thinking on | 30000 | 18/164 | † unproven³ | 0.993 |
+| Gemma-4-26B-A4B MLX 4-bit, thinking on | 30000 | 46/164 | † unproven⁴ | 0.991 |
+| Qwen3.6-35B-A3B GGUF, thinking on | 26624 | 5/164 | † unproven⁵ | 0.969 |
+| Ternary-Bonsai-27B MLX 2-bit, thinking on | 10240 | 5/164 | † unproven⁵ | 0.944 |
+| Ternary-Bonsai-27B fork q4 KV, thinking on | 10240 | 4/164 | † unproven⁵ | 0.950 |
+
+¹ The server log shows six requests stopped at the budget, one per empty.
+² The run notes say the cap; no server log exists.
+³ The notes say budget left; the server log, mixed with other work, shows
+18 requests at the cap after the calibration's two.
+⁴ The notes say budget left; no server log exists.
+⁵ The budget was set just above the longest successful answer.
 
 Pass among answered is base pass@1 divided by completion. † unproven: no
 evidence per request exists yet; a re-run of the empties with the finish
