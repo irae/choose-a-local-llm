@@ -752,6 +752,20 @@ that is the coordinator's call, not made here. The server for this
 build is left stopped; `qwen36-q4kxl-mendel-guided-high` runs next.
 This row returns to the queue once the coordinator answers.
 
+Deviation (resolved): every `run-watch.sh` this run pointed
+`RUNWATCH_OUTPUT` at `<fslug>-session.jsonl`, but `run-pi-rpc.mjs`
+writes that file exactly once, at the very end of the run (redacted
+from pi's own internal session file); it does not exist and does not
+grow while a run is in progress. `<fslug>-events.jsonl` is the file
+that grows continuously. This never caused an unsafe silence (the
+watcher's direct completion probe still fired and correctly reported
+the server alive every time), but it meant every silence window forced
+an expensive real completion request instead of the cheap growth
+check the rule intends. Fixed for `qwen36-q4kxl-mendel-guided-high`
+(run-watch restarted mid-run with the corrected path, worker and
+server left untouched) and for every row from here on: point
+`RUNWATCH_OUTPUT` at `<fslug>-events.jsonl`, never `-session.jsonl`.
+
 ## Handing over
 
 Not started.
