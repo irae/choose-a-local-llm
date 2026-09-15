@@ -834,6 +834,37 @@ published to `~/code/mendel-benchmark` branch `benchmark`, commit
 row. Run branch `qwen3.8-27b-ista-xhigh-guided-v3-issue-13` pushed to
 `origin` on the `mendel` repo.
 
+### gemma12-q4kxl-mendel-guided-high — ended in a repetition loop, zero commits
+
+`end_reason` `repetition_loop`, kind "text cycle", the model repeated
+"Wait, I'll run the removal command." 818 times, first at 07:20:52Z.
+`git log 86935f48..HEAD` in the worktree shows zero commits. Likely
+`model_failed` (the same shape as `gemma12-nvfp4-mendel-guided-off`
+earlier this run), but the scoring subagent confirms the classification
+against `PLAN.md` itself. Scoring dispatched.
+
+### gemma12-q4kxl-mendel-guided-high — scored, model_failed
+
+`gemma-4-12b-q4kxl` off-guided template applies: zero commits, ended
+on `repetition_loop`, never a harness fault. Trigger: after reading
+`package.json` to confirm where `uuid` was declared, the model's
+thinking channel cycled "Wait, I'll run the removal command. /
+Actually, I'll do it." 818 times, filled the 8192-token output budget
+in 181s, closed at 07:23:54Z, about 5m19s after start. peak_context
+24884/258048 (9.6%), tool_calls 17. `gemma12_q4kxl_guided` = 0
+(model_failed, dimmed, dash rank, excluded from site tables). Scored
+and published to `~/code/mendel-benchmark` branch `benchmark`, commit
+`8e9a15b6`. Run branch `gemma-4-12b-q4kxl-high-guided-v3-issue-13`
+pushed to `origin` on the `mendel` repo (zero commits on it).
+
+### gemma12-nvfp4-mendel-guided-high — running
+
+`gemma-4-12b-nvfp4`, f16 KV, `-c 262144`, no drafter, level high,
+window 258048 (the `off` smoke's window, one smoke covers every
+level). Early-turn check on `events.jsonl`: 912 `thinking_delta`
+events in the first turns, confirming level high reached the server.
+Last item on the guided list.
+
 ## Handing over
 
 Not started.
