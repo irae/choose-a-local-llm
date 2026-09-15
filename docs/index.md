@@ -38,8 +38,9 @@ The label under each name is the machine.
   a real repository with known traps. The pill names the test, blind
   or guided. A muted percentage is the share of libraries done when
   the run did not finish. `model-failed`: zero commits.
-- **Wall**: active time of the scored EvalPlus run / the scored Mendel
-  run, pauses removed. Not part of the sort.
+- **Wall**: active time of the scored EvalPlus run plus the scored
+  Mendel run, pauses removed. Hover for each part. Not part of the
+  sort.
 - **Sort**: the average of EvalPlus base × 100 and Coding; a missing
   score counts as 0. EvalPlus, then Ctx, break ties.
 

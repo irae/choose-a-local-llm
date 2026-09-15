@@ -644,7 +644,11 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     const m = Math.round(min)
     return `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}`
   }
-  const wall = (r) => (r.evalplusWall == null && r.simulatorWall == null ? '—' : `${hm(r.evalplusWall)} / ${hm(r.simulatorWall)}`)
+  const wall = (r) => {
+    if (r.evalplusWall == null && r.simulatorWall == null) return '—'
+    const sum = (Number(r.evalplusWall) || 0) + (Number(r.simulatorWall) || 0)
+    return `<span title="EvalPlus ${hm(r.evalplusWall)} · Mendel ${hm(r.simulatorWall)}">${hm(sum)}</span>`
+  }
   const ordered = sort ? sortRows(rows) : rows
   const num = (s) => parseFloat(String(s).replace(/[^\d.]/g, ''))
   const top = {

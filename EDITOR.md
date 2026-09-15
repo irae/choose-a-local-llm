@@ -258,8 +258,8 @@ it.
   (at max ctx) | EvalPlus | Coding | Wall. No superscript on a header: the
   columns are explained in a "Legend" section under the table.
 - **Wall is the active time of the scored EvalPlus run and of the scored
-  Mendel run**, `EvalPlus / Mendel`, pauses removed and split runs
-  added (owner, 2026-09-15). `evalplusWall` and `simulatorWall` in
+  Mendel run**, shown as their sum, with both parts in the cell's hover
+  title; pauses removed and split runs added (owner, 2026-09-15). `evalplusWall` and `simulatorWall` in
   `models.json`, in minutes; the Mendel side comes from the run's
   `wall_clock_min` unless `simulatorWall` corrects it. Smokes,
   calibrations, creeps and sweeps never count. Speed and creep tables
