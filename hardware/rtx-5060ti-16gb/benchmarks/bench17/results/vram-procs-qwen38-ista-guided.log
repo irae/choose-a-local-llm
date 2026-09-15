@@ -138,3 +138,55 @@ irae      860112  0.1  0.2 11504632 70432 ?      Sl   22:53   0:01 node /home/ir
 === 2026-09-14T23:16:11-03:00 ===
 15631 MiB, 16311 MiB, 32, 22.30 W, 2610 MHz
 irae      876212 33.2  3.6 98990508 1206964 ?    Sl   23:16   0:02 llama-server -m /home/irae/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf --alias qwen3.8-27b-ista --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off -fa on -c 57344 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-14T23:17:11-03:00 ===
+15833 MiB, 16311 MiB, 60, 175.10 W, 2737 MHz
+irae      876212 65.8  6.4 100214304 2122828 ?   Rl   23:16   0:45 llama-server -m /home/irae/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf --alias qwen3.8-27b-ista --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off -fa on -c 57344 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      876764  0.4  0.2 11502560 68160 ?      Sl   23:16   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.8-27b-ista --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.8-27b-ista-xhigh-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.8-27b-ista-xhigh --thinking xhigh
+=== 2026-09-14T23:18:11-03:00 ===
+15835 MiB, 16311 MiB, 59, 172.66 W, 2745 MHz
+irae      876212 81.6  7.2 100534216 2379544 ?   Rl   23:16   1:45 llama-server -m /home/irae/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf --alias qwen3.8-27b-ista --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off -fa on -c 57344 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      876764  0.4  0.2 11502560 68820 ?      Sl   23:16   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.8-27b-ista --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.8-27b-ista-xhigh-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.8-27b-ista-xhigh --thinking xhigh
+=== 2026-09-14T23:19:11-03:00 ===
+15835 MiB, 16311 MiB, 38, 24.63 W, 2610 MHz
+irae      876212 67.4  7.6 100541132 2486164 ?   Sl   23:16   2:07 llama-server -m /home/irae/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf --alias qwen3.8-27b-ista --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off -fa on -c 57344 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      876764  0.3  0.2 11502868 69384 ?      Sl   23:16   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.8-27b-ista --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.8-27b-ista-xhigh-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.8-27b-ista-xhigh --thinking xhigh
+=== 2026-09-14T23:20:11-03:00 ===
+1170 MiB, 16311 MiB, 36, 4.99 W, 180 MHz
+irae      876764  0.2  0.2 11502868 69432 ?      Sl   23:16   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.8-27b-ista --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.8-27b-ista-xhigh-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.8-27b-ista-xhigh --thinking xhigh
+=== 2026-09-14T23:21:11-03:00 ===
+1170 MiB, 16311 MiB, 35, 5.09 W, 195 MHz
+irae      876764  0.1  0.2 11502868 69468 ?      Sl   23:16   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.8-27b-ista --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.8-27b-ista-xhigh-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.8-27b-ista-xhigh --thinking xhigh
+=== 2026-09-14T23:22:11-03:00 ===
+1170 MiB, 16311 MiB, 34, 5.04 W, 180 MHz
+=== 2026-09-14T23:23:11-03:00 ===
+1170 MiB, 16311 MiB, 33, 4.76 W, 180 MHz
+=== 2026-09-14T23:24:11-03:00 ===
+1170 MiB, 16311 MiB, 33, 5.38 W, 180 MHz
+=== 2026-09-14T23:25:11-03:00 ===
+1170 MiB, 16311 MiB, 32, 4.62 W, 180 MHz
+=== 2026-09-14T23:26:11-03:00 ===
+1170 MiB, 16311 MiB, 32, 4.54 W, 180 MHz
+=== 2026-09-14T23:27:11-03:00 ===
+1170 MiB, 16311 MiB, 31, 4.49 W, 180 MHz
+=== 2026-09-14T23:28:11-03:00 ===
+1170 MiB, 16311 MiB, 31, 4.56 W, 180 MHz
+=== 2026-09-14T23:29:11-03:00 ===
+1170 MiB, 16311 MiB, 31, 4.55 W, 195 MHz
+=== 2026-09-14T23:30:11-03:00 ===
+1170 MiB, 16311 MiB, 30, 4.45 W, 180 MHz
+=== 2026-09-14T23:31:11-03:00 ===
+1170 MiB, 16311 MiB, 30, 4.31 W, 180 MHz
+=== 2026-09-14T23:32:11-03:00 ===
+1170 MiB, 16311 MiB, 30, 5.03 W, 180 MHz
+=== 2026-09-14T23:33:12-03:00 ===
+1170 MiB, 16311 MiB, 30, 4.45 W, 180 MHz
+=== 2026-09-14T23:34:12-03:00 ===
+1170 MiB, 16311 MiB, 30, 4.34 W, 180 MHz
+=== 2026-09-14T23:35:12-03:00 ===
+1170 MiB, 16311 MiB, 29, 4.35 W, 180 MHz
+=== 2026-09-14T23:36:12-03:00 ===
+1170 MiB, 16311 MiB, 29, 4.28 W, 180 MHz
+=== 2026-09-14T23:37:12-03:00 ===
+1170 MiB, 16311 MiB, 29, 4.46 W, 180 MHz
+=== 2026-09-14T23:38:12-03:00 ===
+1170 MiB, 16311 MiB, 29, 4.06 W, 180 MHz

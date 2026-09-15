@@ -731,6 +731,27 @@ interruption lost its second attempt's evidence to a filename
 collision; this time each attempt gets a distinct name). Server
 restarted unchanged, third attempt launched at the canonical name.
 
+### qwen38-ista-mendel-guided-xhigh — third attempt also interrupted, block skipped
+
+Same signature again, this time at `n_tokens` 14686 (earlier than
+either prior crash: 28213, then 44064, then 14686), no Xid this time.
+Three attempts, three crashes, on the exact same config (n-max2,
+`-c 57344`, q8_0 KV), none reaching a real completion of the row.
+Moved aside as `-interrupted3`, RUNS evidence under an `-attempt3`
+suffix, same as before; nothing deleted.
+
+**Skipping this block rather than a fourth blind retry.** Per
+`docs/methodology/checklist.md` rule 1, a block that is genuinely
+stuck gets skipped, with the reason written here, and the next block
+runs — repeating an 0-for-3 config a fourth time without new
+information is not a good use of GPU time. Escalated to the
+coordinator: the served-arm pick (n-max2) was made on speed alone,
+before this stability pattern was known; n-max1 (smaller MTP draft
+window) may avoid whatever triggers the stalled kernel launch, but
+that is the coordinator's call, not made here. The server for this
+build is left stopped; `qwen36-q4kxl-mendel-guided-high` runs next.
+This row returns to the queue once the coordinator answers.
+
 ## Handing over
 
 Not started.
