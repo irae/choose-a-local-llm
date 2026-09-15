@@ -168,7 +168,13 @@ Calibration (`hardware/m1-max-32gb/calibrations/calibration-qwen38-unsloth-iq3s-
 Deviation: the first attempt at the full run passed the venv python directly to `run-humaneval.sh` (a bash script) instead of putting the venv on `PATH`; the script's own shebang-sniffing (`evalplus.codegen`'s shebang line) needs `PATH` to find the venv, not an interpreter override. Fixed by exporting `PATH` with the venv prepended before calling the script. No wasted GPU time (the syntax error happened before any request left the machine).
 
 Full run started (log `results/run-humaneval-unsloth.log`), watcher started (`results/run-watch-evalplus.log`), budget 20000. This can take hours — the ISTA comparison run took about 9h43 of active wall time.
-still running.
+
+Full run closed: 164/164, **base 0.945, plus 0.927**, completion rate 100%, **8/164 empty (4.9%)**: HumanEval/32, 91, 99, 134, 137, 138, 145, 146. Wall time 10:15:34 (615.6 min), close to the ISTA comparison row's ~9h43. Watcher never hit a real exit-42 across the whole run (several false alarms, each verified with `/health` and an active-task check before deciding not to kill the server; two stray duplicate watcher processes appeared during the run and were cleaned up, source unclear — flagged for the owner, not a correctness issue since each pointed at the same log/output files).
+`qwen38_unsloth_evalplus` = 0.945/0.927/100%, 8/164 empty, budget 20000.
+
+Against the ISTA build (old, same Mac, same level, budget 30000): 0.945/0.921, five empty, ~9h43. This build: **same base (0.945), higher plus (0.927 vs 0.921)**, more empties (8 vs 5) despite a smaller budget (20000 vs 30000) — this build's completions that do finish score slightly better on the stricter `plus` tests, but at more frequent budget cutoffs given its lower ceiling.
+Files: `results/run-humaneval-unsloth.log`, `results/qwen38-unsloth-evalplus-xhigh/`, `results/calibrate-unsloth.log`, `results/server-evalplus-unsloth.log`, `results/run-watch-evalplus.log`.
+Deviation: two stray duplicate `run-watch.sh` processes appeared and were killed during the run; every false-alarm exit-42 was verified live (server `/health` ok, an active task mid-processing) before deciding not to kill the server or restart codegen — no data lost.
 
 Coordinator answer (2026-09-14, on the blind-row anomaly gate): keep the blind row as published (98f89f5, score 90.5, current `anomaly` text). PLAN.md has no rule that voids or penalizes a model's own master merge; the `anomaly` field already flags the base-comparability issue in the report. No re-run, no changes to the row, the rubric, or PLAN.md. Continue with the guided row and the rest of the runbook. The coordinator takes any rule change for this case to the owner.
 
@@ -176,4 +182,30 @@ Coordinator handshake (2026-09-14): the coordinator session changed to "local-ll
 
 ## Handing over
 
-Not started.
+Every block of the AGENT.md order ran except `retry-sweep`, which has nothing queued (no block waited on a human across the whole run). The run is done pending coordinator/owner review of the two open flags below.
+
+**What ran, in order:**
+1. `machine-setup` — model verified (sha256 matches the Linux box exactly), sweep tool, pi entries, thinking maps, mendel-benchmark sync.
+2. `ladder-qwen38-unsloth` — ceiling 188416, wired 25911 MB.
+3. `creep-qwen38-unsloth-nodrafter` — speed-gated, clean 147478 @ 8.17 tok/s.
+4. `sweep-qwen38-unsloth` — nmax0 wins every shared depth; climb stopped after nmax1 (slower at both shared depths).
+5. `qwen38-unsloth-serving` — agent arm nmax0/188416, window 147456, eval arm nmax0.
+6. `qwen38-unsloth-smoke-xhigh` — pass, xhigh confirmed reaching the server.
+7. `qwen38-unsloth-mendel-blind-xhigh` — **90.5/100**, 8/8, published `98f89f5`. Anomaly: model self-merged master mid-run; kept as published per the coordinator, marked not-base-comparable.
+8. `qwen38-unsloth-mendel-guided-xhigh` — **62.5/100 displayed** (76 raw), 5/8 libraries, wall-clock partial, published `6b88bed`.
+9. `qwen38-unsloth-evalplus-smoke-xhigh` — level (4/4 both sides, 0 empty both sides).
+10. `qwen38-unsloth-evalplus-xhigh` — **0.945/0.927/100%**, 8/164 empty, budget 20000, wall 10:15:34.
+11. `retry-sweep` — nothing queued, skipped cleanly.
+
+**What a gate dropped and why:** nothing was dropped. The drafter `-c` search (sweep block) never found a true ceiling within its 4-load budget — flagged, not dropped; `qwen38_unsloth_mtp_c` (139264) stands as the deepest load tried, not a bisected fail boundary. The coordinator's follow-up bisection step for `qwen38-unsloth-serving` did not apply because the winning agent arm was nmax0 (no drafter), not a drafter arm.
+
+**Machine state left behind:** GPU idle, no llama-server or mlx_lm process running, wired memory recovered to baseline. `git stash clear` in `~/code/mendel-benchmark` was blocked by this session's sandbox every time the runbook called for it (owner rule, 2026-09-12); `git stash list` read empty each time, so nothing was at risk, but the runner could not run the command itself — flagged for the owner. Two Mendel worktrees remain uncleaned per the "no cleanup mid-run" rule: `../mendel-bench-qwen3.8-27b-iq3s-m1-xhigh` (blind) and `../mendel-bench-guided-qwen3.8-27b-iq3s-m1-xhigh` (guided), both with their branches pushed to `origin` on the `mendel` repo.
+
+**Evidence archived:** `tools/archive-evidence.sh hardware/m1-max-32gb/benchmarks/bench18/results run18` — 44 files to `~/.local/share/choose-a-local-llm/evidence/run18`.
+
+**Open flags for the owner/coordinator, not stop conditions:**
+1. Wired at the top two ladder rungs (25344, 25911 MB) read above the 25000 sysctl wired limit; real requests still passed and swap stayed flat throughout the run.
+2. The drafter `-c` search's own estimate formula compared wired at two different `-c` values incorrectly (coordinator-confirmed planning error); `qwen38_unsloth_mtp_c` = 139264 is not a true ceiling.
+3. The blind Mendel row's anomaly (model self-merged master) — kept as published per the coordinator; PLAN.md has no rule for this case yet.
+4. Two stray duplicate `run-watch.sh` processes appeared during the run (once on the guided Mendel row, once on the final EvalPlus run); source unclear, cleaned up both times, no data lost.
+5. `git stash clear` could not be run by the runner (sandbox denial); nothing was at risk each time, but the owner rule was not literally satisfied by the runner itself.

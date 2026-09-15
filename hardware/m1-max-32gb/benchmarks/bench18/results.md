@@ -62,3 +62,23 @@ Climb stopped after nmax1: slower than nmax0 at both shared depths. nmax2 and nm
 |---|---|---|---|---|---|
 | new | mendel smoke | qwen3.8-27b-iq3s-m1 | unsloth UD-IQ3_S, xhigh | 13 calls, 1 commit, no loop, 206s | pass |
 | new | evalplus smoke | qwen3.8-27b-iq3s (unsloth) vs qwen3.8-27b-ista | both xhigh, budget 30000 | 4/4 passed both sides, 0 empty both sides | level |
+
+## Quality
+
+| old/new | # | Config | Max ctx | Gated by | tok/s (shallow → deep) | Memory | EvalPlus |
+|---|--:|---|--:|:--:|--:|--:|--:|
+| old | — | Qwen3.8-27B, ISTA GSQ-RCO IQ3_S-mtp, GGUF f16, xhigh | 147456 | speed | 14.1 → 8.3 | wired 25000 | 0.945/0.921/97% (5/164 empty), budget 30000 |
+| new | — | Qwen3.8-27B, unsloth UD-IQ3_S, GGUF f16, xhigh | 188416 | speed | 13.70 → 8.17 | wired 25911 | **0.945/0.927**/100% (8/164 empty), budget 20000 |
+
+## Mendel
+
+| old/new | test | model | serving | score | worst defect |
+|---|---|---|---|--:|---|
+| old | blind | Qwen3.8-27B, ISTA GSQ-RCO IQ3_S-mtp, xhigh | llama-server | 80.5/100, 8/8 | critical |
+| new | blind | qwen3.8-27b-iq3s-m1, unsloth UD-IQ3_S, xhigh | llama-server | **90.5/100**, 8/8 | not scored — anomaly (model self-merged master mid-run; row not strictly base-comparable) |
+| new | guided | qwen3.8-27b-iq3s-m1, unsloth UD-IQ3_S, xhigh | llama-server | 62.5/100 (76 raw), partial 5/8 | stopped on wall_clock |
+
+Notes:
+- **Quality.** Same base pass@1 as the ISTA build on this Mac, a higher `plus` score, at a smaller output budget (20000 vs 30000) and a deeper window (188416 vs 147456, no drafter beats the ISTA build's own drafter comparison too — see the speed table above).
+- **Blind.** No earlier blind row on the unsloth build exists on this Mac; the pair is the ISTA build's blind row at the same level, the nearest same-model comparison. The unsloth row carries an anomaly: the model merged `master` into its own branch mid-run on its own reasoning, importing infrastructure the blind base deliberately hides. Coordinator decision (2026-09-14): keep the score as published, mark the row not-base-comparable rather than pairing it cleanly against other blind rows.
+- **Guided.** No earlier guided row on this build or the ISTA build exists on this Mac to pair against; reported alone. A valid wall-clock partial (5/8 libraries), not a failure — the model was still productive at the cap.
