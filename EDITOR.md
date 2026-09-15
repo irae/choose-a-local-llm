@@ -260,8 +260,10 @@ it.
 - **Wall is the active time of the scored EvalPlus run and of the scored
   Mendel run**, shown as their sum, with both parts in the cell's hover
   title; pauses removed and split runs added (owner, 2026-09-15). `evalplusWall` and `simulatorWall` in
-  `models.json`, in minutes; the Mendel side comes from the run's
-  `wall_clock_min` unless `simulatorWall` corrects it. Smokes,
+  `models.json`, in minutes. `mendelWalls` in the same file holds the
+  active minutes of every local Mendel run of that setup, by branch, kept
+  even for runs no table shows; the Mendel side reads it, then the run's
+  `wall_clock_min`, unless a row's `simulatorWall` overrides both. Smokes,
   calibrations, creeps and sweeps never count. Speed and creep tables
   carry no Wall column. Wall does not move the sort.
 - **The tok/s cell is the `TokCell` component**: shallow, a muted

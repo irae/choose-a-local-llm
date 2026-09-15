@@ -169,5 +169,15 @@
       }
     }
   },
-  "evalplusRuns": []
+  "evalplusRuns": [],
+  "mendelWalls": {
+    "qwen3.8-27b-iq3s-xhigh-guided-v3-issue-13": 285.9,
+    "qwen3.8-27b-ista-xhigh-issue-13": 75.1,
+    "gemma-4-12b-nvfp4-off-guided-v3-issue-13": 1,
+    "gemma-4-26b-a4b-nvfp4-high-guided-v3-issue-13": 22.5,
+    "qwen3.6-35b-a3b-q4kxl-high-guided-v3-issue-13": 27.2,
+    "qwen3.8-27b-ista-xhigh-guided-v3-issue-13": 214.8,
+    "gemma-4-12b-q4kxl-high-guided-v3-issue-13": 5.3,
+    "gemma-4-12b-nvfp4-high-guided-v3-issue-13": 5.5
+  }
 }

@@ -65,6 +65,18 @@ function hardwareOf(r) {
   return SETUP_IDS.find((id) => model.includes(`, ${id})`)) || 'kamaji'
 }
 
+// Active Mendel minutes per run, pauses removed, kept per setup by branch.
+const MENDEL_WALLS = Object.fromEntries(
+  globSync('docs/setups/*/models.json').flatMap((f) => {
+    const setup = f.split('/')[2]
+    return Object.entries(JSON.parse(readFileSync(f, 'utf8')).mendelWalls || {}).map(([branch, min]) => [`${setup}:${branch}`, min])
+  }),
+)
+function mendelWallOf(r) {
+  const min = MENDEL_WALLS[`${hardwareOf(r)}:${r.branch}`] ?? r.telemetry?.wall_clock_min ?? r['telemetry.wall_clock_min']
+  return min == null || min === '' ? null : Number(min)
+}
+
 // Mendel model id -> this setup's report page slug.
 const MENDEL_SLUGS = {
   'qwen3.6-35b-a3b': 'qwen3.6-35b-a3b',
@@ -206,7 +218,7 @@ function deriveMendel(rows, blind, guided) {
     row.mendel = `${capped(match.r)}${partial ? ` (partial ${Math.round((100 * done(match.r)) / 8)}%)` : ''}`
     row.mendelTest = match.test
     row.mendelFailed = match.r['telemetry.commits'] === '0'
-    if (row.simulatorWall == null && match.r['telemetry.wall_clock_min'] !== '') row.simulatorWall = Number(match.r['telemetry.wall_clock_min'])
+    if (row.simulatorWall == null) row.simulatorWall = mendelWallOf(match.r)
   }
 }
 
@@ -342,7 +354,7 @@ function siteRowFor(run) {
 }
 
 const mendelCapped = (r) => Math.min(Number(r.score_total), (100 * r.libraries_done) / 8)
-const mendelWall = (r) => (r.telemetry.wall_clock_min == null ? NaN : Number(r.telemetry.wall_clock_min))
+const mendelWall = (r) => mendelWallOf(r) ?? NaN
 const mendelCtxUse = (r) => (Number(r.telemetry.compactions) || 0) * 100 + (Math.round(Number(r.telemetry.window_pct)) || 0)
 
 function mendelRow(r, { test = '', top = {}, global = false } = {}) {
@@ -352,7 +364,7 @@ function mendelRow(r, { test = '', top = {}, global = false } = {}) {
   const done = r.libraries_done
   const cap = mendelCapped(r)
   const score = scoreTag(cap, '', top.score?.has(r), '', done < 8 ? `${Math.round((100 * done) / 8)}%` : '')
-  const wall = t.wall_clock_min == null ? '—' : bold(`${Math.round(Number(t.wall_clock_min))} min`, top.wall)
+  const wall = Number.isNaN(mendelWall(r)) ? '—' : bold(`${Math.round(mendelWall(r))} min`, top.wall)
   const window = mendelWindow(r)
   const site = siteRowFor(r)
   const windowStale = site?.pi?.contextWindow > window
