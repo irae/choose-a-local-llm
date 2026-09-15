@@ -881,7 +881,7 @@
     },
     {
       "wall": 143,
-      "emptyCause": "† unproven",
+      "emptyCause": "1 cap",
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
       "mode": "effort low",
@@ -893,7 +893,7 @@
     },
     {
       "wall": 583.2,
-      "emptyCause": "† unproven",
+      "emptyCause": "5 cap",
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
       "mode": "effort xhigh",
