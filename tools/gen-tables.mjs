@@ -942,12 +942,9 @@ const bestPerModel = [...modelsAll].map(([slug, rows]) => {
   return { ...sortRows(complete.length ? complete : rows)[0], modelSlug: slug }
 })
 writeBlock('docs/index.md', '<!-- gen:models-evaluated:all:start -->', '<!-- gen:models-evaluated:all:end -->', renderTable(bestPerModel, { memory: false, hardware: true, hide: 'server' }))
-writeBlock(
-  'docs/models/index.md',
-  '<!-- gen:models-best:start -->',
-  '<!-- gen:models-best:end -->',
-  [renderTable(bestPerModel, { memory: false, hardware: true, hide: 'server' }), '', sortRows(bestPerModel).map((r) => `[${r.spec.base}](./${r.modelSlug}.md)`).join(' · ')].join('\n'),
-)
+const allModelRows = [...modelsAll.values()].flat()
+writeBlock('docs/models/index.md', '<!-- gen:models-complete:start -->', '<!-- gen:models-complete:end -->', renderTable(allModelRows.filter(isComplete), { memory: false, hardware: true, hide: 'server' }))
+writeBlock('docs/models/index.md', '<!-- gen:models-incomplete:start -->', '<!-- gen:models-incomplete:end -->', renderTable(allModelRows.filter((r) => !isComplete(r)), { memory: false, hardware: true, hide: 'server' }))
 for (const [slug, rows] of modelsAll) {
   writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-all:start -->', '<!-- gen:model-all:end -->', renderTable(rows, { memory: false, hardware: true, hide: 'server' }))
 }
