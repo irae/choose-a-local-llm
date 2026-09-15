@@ -128,7 +128,13 @@ Smoke result: `SMOKE-MENDEL model=qwen3.8-27b-iq3s-m1 level=xhigh task=xtend win
 `unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S` rev `4ca7207`, no drafter (nmax0), one slot, f16 KV, `-c 188416` served, wired 25000. Harness: window 147456, reserve 8192 (pi default keep — window ≥ 65536). Branch `qwen3.8-27b-iq3s-m1-xhigh-issue-13` (none existed, per the coordinator's alias fix). Worktree `../mendel-bench-qwen3.8-27b-iq3s-m1-xhigh`. Started (see `results/mendel-blind-qwen38-unsloth-xhigh.log`). Same server as the smoke, unchanged. Watcher started, `results/run-watch-mendel-blind.log`, output tracked at `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-iq3s-m1-xhigh-blind-events.jsonl`.
 Worker done: `end_reason: complete`, wall 185.4 min (well inside the 300-min cap), 240 tool calls, 196 assistant messages, 25 commits since base `2652ed6` on branch `qwen3.8-27b-iq3s-m1-xhigh-issue-13`. One compaction at 02:36:38 UTC, reason `overflow`. `count-tool-calls.mjs` reads `peak_context 143401` of window 147456 (97.2%) — **peak_context essentially reached the window**. Watcher stopped (run completed clean, no exit 42 in its lifetime). Server left running, unchanged, for the guided row per AGENT.md.
 Files: `results/mendel-blind-qwen38-unsloth-xhigh.log`, meta `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-iq3s-m1-xhigh-blind-meta.json`, session `~/.local/share/mendel-benchmark/pi-agent/qwen3.8-27b-iq3s-m1-xhigh-blind/sessions/.../2026-09-15T00-01-41-076Z_01a0a25e-8ed4-7dd5-b30d-a745a43a9704.jsonl`.
-Scoring handed to a subagent (below); `qwen38_unsloth_blind` recorded once it reports back.
+Scoring handed to a subagent (opus, background, scratch path `/Users/irae/code/mendel-bench-qwen3.8-27b-iq3s-m1-xhigh`); `qwen38_unsloth_blind` recorded once it reports back.
+
+### qwen38-unsloth-mendel-guided-xhigh — running
+
+Same server as the blind row, unchanged (agent arm nmax0, `-c 188416`, alias `qwen3.8-27b-iq3s-m1`). `gh auth status` passes. Branch `qwen3.8-27b-iq3s-m1-xhigh-guided-v3-issue-13` (none existed — the coordinator's fix worked). Worktree `../mendel-bench-guided-qwen3.8-27b-iq3s-m1-xhigh`. Watcher started, `results/run-watch-mendel-guided.log`.
+Deviation: `git -C ~/code/mendel-benchmark stash clear` blocked by the sandbox again (same as the smoke); `stash list` read empty first. Not a stop condition.
+still running.
 
 Coordinator handshake (2026-09-14): the coordinator session changed to "local-llm coordinator sept-14" (`bridge:session_01Qbci662csCc7jLo4gPGzjk`), replacing the earlier "Model quantization comparison across hardware" session. It confirmed the current `run18` head (726d480) correctly. Gates and stop-and-asks now go to this new session name.
 
