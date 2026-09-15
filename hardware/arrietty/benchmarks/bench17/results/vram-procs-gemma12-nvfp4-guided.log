@@ -1,0 +1,74 @@
+=== 2026-09-15T04:41:27-03:00 ===
+12921 MiB, 16311 MiB, 32, 22.30 W, 2610 MHz
+irae     1144202 13.1  4.8 62002568 1579656 ?    Sl   04:41   0:02 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:42:27-03:00 ===
+12930 MiB, 16311 MiB, 54, 109.37 W, 2760 MHz
+irae     1144202 75.3  9.0 63819584 2956484 ?    Rl   04:41   0:59 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+irae     1145233  0.6  0.2 11502748 68840 ?      Sl   04:41   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model gemma-4-12b-nvfp4 --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/gemma-4-12b-nvfp4-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-gemma-4-12b-nvfp4-high --thinking high
+=== 2026-09-15T04:43:27-03:00 ===
+12929 MiB, 16311 MiB, 58, 142.70 W, 2760 MHz
+irae     1144202 86.0  9.0 63821672 2965040 ?    Rl   04:41   2:00 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+irae     1145233  0.5  0.2 11502748 69620 ?      Sl   04:41   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model gemma-4-12b-nvfp4 --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/gemma-4-12b-nvfp4-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-gemma-4-12b-nvfp4-high --thinking high
+=== 2026-09-15T04:44:27-03:00 ===
+12929 MiB, 16311 MiB, 57, 142.46 W, 2760 MHz
+irae     1144202 90.4 10.1 64179112 3324256 ?    Rl   04:41   3:00 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+irae     1145233  0.4  0.2 11502748 69636 ?      Sl   04:41   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model gemma-4-12b-nvfp4 --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/gemma-4-12b-nvfp4-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-gemma-4-12b-nvfp4-high --thinking high
+=== 2026-09-15T04:45:28-03:00 ===
+12930 MiB, 16311 MiB, 57, 142.66 W, 2760 MHz
+irae     1144202 92.8 10.2 64179112 3347844 ?    Rl   04:41   4:00 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+irae     1145233  0.4  0.2 11502748 69636 ?      Sl   04:41   0:01 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model gemma-4-12b-nvfp4 --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/gemma-4-12b-nvfp4-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-gemma-4-12b-nvfp4-high --thinking high
+=== 2026-09-15T04:46:28-03:00 ===
+12929 MiB, 16311 MiB, 57, 142.54 W, 2760 MHz
+irae     1144202 94.3 10.2 64179112 3353932 ?    Rl   04:41   5:01 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+irae     1145233  0.4  0.2 11502748 69636 ?      Sl   04:41   0:01 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model gemma-4-12b-nvfp4 --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/gemma-4-12b-nvfp4-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-gemma-4-12b-nvfp4-high --thinking high
+=== 2026-09-15T04:47:28-03:00 ===
+12929 MiB, 16311 MiB, 39, 6.91 W, 180 MHz
+irae     1144202 87.3 13.2 65137732 4312556 ?    Sl   04:41   5:31 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:48:28-03:00 ===
+12932 MiB, 16311 MiB, 34, 6.04 W, 180 MHz
+irae     1144202 75.4 13.2 65137732 4312556 ?    Sl   04:41   5:31 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:49:28-03:00 ===
+12932 MiB, 16311 MiB, 34, 4.85 W, 180 MHz
+irae     1144202 66.4 13.2 65137732 4312556 ?    Sl   04:41   5:31 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:50:28-03:00 ===
+12932 MiB, 16311 MiB, 33, 5.58 W, 180 MHz
+irae     1144202 59.2 13.2 65137732 4312556 ?    Sl   04:41   5:31 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:51:28-03:00 ===
+12932 MiB, 16311 MiB, 33, 5.54 W, 180 MHz
+irae     1144202 53.5 13.2 65137732 4312556 ?    Sl   04:41   5:31 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:52:28-03:00 ===
+12932 MiB, 16311 MiB, 32, 4.71 W, 180 MHz
+irae     1144202 48.8 13.2 65137732 4312556 ?    Sl   04:41   5:31 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:53:28-03:00 ===
+12932 MiB, 16311 MiB, 32, 4.75 W, 180 MHz
+irae     1144202 44.8 13.2 65137732 4312556 ?    Sl   04:41   5:31 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:54:28-03:00 ===
+12932 MiB, 16311 MiB, 32, 4.62 W, 180 MHz
+irae     1144202 41.5 13.2 65137732 4312556 ?    Sl   04:41   5:32 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:55:28-03:00 ===
+12932 MiB, 16311 MiB, 32, 5.30 W, 180 MHz
+irae     1144202 38.6 13.2 65137732 4312556 ?    Sl   04:41   5:32 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:56:28-03:00 ===
+12935 MiB, 16311 MiB, 31, 5.49 W, 180 MHz
+irae     1144202 36.1 13.2 65137732 4312556 ?    Sl   04:41   5:32 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:57:28-03:00 ===
+12934 MiB, 16311 MiB, 32, 4.61 W, 180 MHz
+irae     1144202 33.9 13.2 65137732 4312556 ?    Sl   04:41   5:32 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:58:28-03:00 ===
+12934 MiB, 16311 MiB, 31, 5.50 W, 180 MHz
+irae     1144202 31.9 13.2 65137732 4312556 ?    Sl   04:41   5:32 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T04:59:28-03:00 ===
+12935 MiB, 16311 MiB, 31, 5.44 W, 180 MHz
+irae     1144202 30.2 13.2 65137732 4312556 ?    Sl   04:41   5:32 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T05:00:28-03:00 ===
+12934 MiB, 16311 MiB, 31, 4.53 W, 187 MHz
+irae     1144202 28.6 13.2 65137732 4312556 ?    Sl   04:41   5:32 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T05:01:28-03:00 ===
+12934 MiB, 16311 MiB, 30, 4.42 W, 180 MHz
+irae     1144202 27.2 13.2 65137732 4312556 ?    Sl   04:41   5:32 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T05:02:28-03:00 ===
+12935 MiB, 16311 MiB, 30, 5.23 W, 180 MHz
+irae     1144202 25.9 13.2 65137732 4312556 ?    Sl   04:41   5:32 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081
+=== 2026-09-15T05:03:28-03:00 ===
+12931 MiB, 16311 MiB, 30, 5.03 W, 180 MHz
+irae     1144202 24.8 13.2 65137732 4312556 ?    Sl   04:41   5:32 llama-server -m /home/irae/.cache/llama.cpp/hf/FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF/gemma-4-12b-it-nvfp4.gguf --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 262144 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081

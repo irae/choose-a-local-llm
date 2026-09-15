@@ -366,6 +366,10 @@ A table and no pick. The coordinator names the served arm.
 | new | guided | gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, off, rtx-5060ti-16gb) | window 258048, reserve 8192 | 0 (model failed) |
 | new | guided | qwen3.8-27b-iq3s (unsloth IQ3_S, xhigh, rtx-5060ti-16gb) | window 61440, reserve 8192 | 79 (partial 7/8) |
 | new | guided | gemma-4-26b-a4b-nvfp4 (catlilface NVFP4Q8, high, rtx-5060ti-16gb) | window 94208, reserve 8192 | 37.5 (partial 3/8) |
+| new | guided | qwen3.6-35b-a3b-q4kxl (unsloth UD-Q4_K_XL, n-max2, high, rtx-5060ti-16gb) | window 94208, reserve 8192 | 48.5 (partial 6/8) |
+| new | guided | gemma-4-12b-q4kxl (unsloth UD-Q4_K_XL, high, rtx-5060ti-16gb) | window 258048, reserve 8192 | 0 (model failed) |
+| new | guided | gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, high, rtx-5060ti-16gb) | window 258048, reserve 8192 | 0 (model failed) |
+| new | guided | qwen3.8-27b-ista (ISTA-DASLab IQ3_S-mtp, xhigh, rtx-5060ti-16gb) | window 61440, reserve 8192 | **85 (8/8)** |
 
 **gemma12-nvfp4-mendel-guided-off**, model-failed. The model looped on
 the same tool call (`bash pnpm remove --filter examples/planout-example
@@ -432,3 +436,53 @@ uncommitted glob edit reproduces trap A exactly
 done. Only 1 of 6 commits ran the full unit suite first, against
 v3.0's rule of one before every commit. Scored and published to
 `~/code/mendel-benchmark` branch `benchmark`, commit `48a90699`.
+
+**qwen36-q4kxl-mendel-guided-high**, 48.5/100 raw (the 75-point
+completion cap for 6/8 does not bind), partial. Ended on a
+repetition loop (5 identical edits on the 7th dependency), 6 of 8
+libraries committed (uuid, xtend, urlsafe-base64, rimraf, glob,
+chalk). Two shipped critical bugs: `apply-extra-options.js` keeps a
+naive `.then()` on `fs.promises.glob()`, an AsyncIterator, throws
+`TypeError`; a matching bug in 3 `mendel-deps` test files
+(`fs.globSync` called with no `fs` import), 3/3 tests fail. Trap B
+(the undisclosed `mendel-requirify` rimraf reference) found and fixed
+correctly. Notable: 3 of 6 commits moved `.husky/pre-commit` aside and
+back around `git commit`, a functional `--no-verify` bypass the
+literal-flag check misses; the bypassed commits (glob, chalk) are
+exactly the ones that shipped the two bugs. Scored and published to
+`~/code/mendel-benchmark` branch `benchmark`, commit `eb847d6`.
+
+**gemma12-q4kxl-mendel-guided-high**, model-failed, 0/100 (raw 34).
+Zero commits. Right after reading `package.json` to locate the `uuid`
+dependency, the model's thinking channel cycled "Wait, I'll run the
+removal command. / Actually, I'll do it." 818 times, filled the
+8192-token output budget in 181s, closed on `repetition_loop` about
+5m19s after start. peak_context 24884/258048 (9.6%), 17 tool calls.
+Scored and published to `~/code/mendel-benchmark` branch `benchmark`,
+commit `8e9a15b6`. Row dimmed, dash rank, excluded from site tables.
+
+**gemma12-nvfp4-mendel-guided-high**, scoring in progress. Same shape
+as the q4kxl row above: zero commits, `repetition_loop`, this time on
+"I'll replace `xtend(this._result, {` with `Object.assign({}, this._result, {`."
+repeated 520 times. Third Gemma-12B guided row this run to end without
+a single commit (with `gemma12-nvfp4-mendel-guided-off` and
+`gemma12-q4kxl-mendel-guided-high`), each a repetition loop right
+after locating a dependency, before the matching edit — worth flagging
+as a possible build-level pattern at this harness, not three
+independent flukes.
+
+**qwen38-ista-mendel-guided-xhigh**, the retry on the no-drafter served
+arm (after three harness crashes on the original n-max2 pick, see
+above), scored **85/100** raw (8/8 libraries, completion cap does not
+bind) — this run's only 8/8 guided row, qualifying it for
+`mendel-blind-after-guided`. All 8 libraries correctly swapped
+(uuid, xtend, urlsafe-base64, rimraf, glob, chalk, tmp, shasum). One
+critical defect: `apply-extra-options.js` calls `fs.glob(i).then(...)`,
+misusing Node's callback-based `fs.glob` as a Promise, throws
+immediately, no test covers the file — the same class of bug (wrong
+glob variant) `qwen3.6-35b-a3b-q4kxl` shipped above. Trap B found by
+the model's own grep near the end, then dismissed as out of scope,
+ships unfixed. Otherwise clean: full suite chained before every
+commit, no hook bypasses. peak_context 57581/61440 (93.7%), 320 tool
+calls, 23 compactions, wall clock 214.8 min. Scored and published to
+`~/code/mendel-benchmark` branch `benchmark`, commit `ad51241b`.
