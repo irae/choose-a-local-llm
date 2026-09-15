@@ -51,6 +51,23 @@ calibration) and do not chase it with a bigger budget.
 Deviation: none — non-converging calibration handled per the runbook's
 own rule, not a stop-and-ask condition.
 
+**Parts (owner rule, 2026-09-15, wall = sum of parts, gaps excluded):**
+
+| part | arm | start (UTC) | end (UTC) | reason |
+|---|---|---|---|---|
+| 1 | drafter | 2026-09-15T11:52:37Z | 2026-09-15T12:35:44Z | crash, CUDA launch timeout |
+| 2 | drafter | 2026-09-15T12:51:43Z | 2026-09-15T12:59:24Z | crash, CUDA launch timeout (Xid 8) |
+| 3 | no-drafter | 2026-09-15T13:16:39Z | 2026-09-15T14:29:48Z | switched back to drafter on owner word (66/164 solved, kept) |
+| 4 | drafter | 2026-09-15T14:29:48Z | — | running |
+
+Owner word (2026-09-15, via chat, not the coordinator): keep retrying
+the drafter arm on every crash, do not fall back to no-drafter
+permanently. Problems already solved on the no-drafter part (66/164)
+are kept — speculative decoding never changes the output at
+temperature 0 (`docs/methodology/evalplus.md`), so mixing arms across
+parts of the same run is valid. `run-humaneval.sh`'s resume-from-jsonl
+behavior carries every part forward regardless of arm.
+
 The full run started with the watcher; after 7/164 problems the watcher
 exited 42 (`SERVER DEAD: two probes did not return, each after 600s
 without output growth`), the server log showing `CUDA error: the launch
