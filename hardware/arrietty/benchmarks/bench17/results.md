@@ -91,6 +91,69 @@ deep cells).
 A table and no pick. The coordinator names the served arm and the KV
 type.
 
+### sweep-qwen38-iq3s-mtp
+
+The drafter climb on the unsloth file, at the q8_0 arm's `-c 65536`
+(`qwen38_iq3s_q8_c`), so the two providers of this model read at the
+same arms. The no-drafter cells above are the base arm.
+
+**n-max 1 arm.** `-c 65536` loaded clean (15550 MiB) and served the
+deep-cell probe (64512) clean, no retry needed.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance |
+|---|--:|--:|--:|--:|--:|
+| n-max1 | 4096 | 37.16 | 0.81 | 858.83 | ~0.57-0.93 |
+| n-max1 | 24576 | 34.34 | 2.53 | 800.81 | ~0.57-0.93 |
+| n-max1 | 64512 | 26.28 | 0.41 | 677.31 | ~0.57-0.93 |
+
+Faster than the no-drafter q8_0 arm at every depth (37.16 vs 29.36 at
+4K, 34.34 vs 25.84 at 24K, 26.28 vs 20.92 at 64.5K). Draft acceptance
+0.57-0.93, mean draft length ~1.57-1.93. Per the sweep rule, the climb
+continues to n-max 2.
+
+**n-max 2 arm.** Same `-c 65536`. Deep-cell probe passed clean first
+(28.48 tok/s at depth 64512), then the full sweep.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance |
+|---|--:|--:|--:|--:|--:|
+| n-max2 | 4096 | 47.05 | 1.28 | 858.39 | ~0.41-0.94 |
+| n-max2 | 24576 | 37.84 | 5.08 | 800.63 | ~0.41-0.94 |
+| n-max2 | 64512 | 30.82 | 5.67 | 677.44 | ~0.41-0.94 |
+
+Faster than n-max1 at every depth (47.05 vs 37.16 at 4K, 37.84 vs
+34.34 at 24K, 30.82 vs 26.28 at 64.5K). Draft acceptance 0.41-0.94,
+mean draft length ~1.83-2.89, wider spread than n-max1. Per the sweep
+rule, the climb continues to n-max 3, the last arm of this block.
+
+**n-max 3 arm.** `-c 65536` (n-max1/n-max2's value) loaded clean but
+crashed on the deep-cell request (`CUDA error: out of memory`) — the
+same pattern as `sweep-qwen38-ista`'s n-max3 retry. Stepped `-c` down
+8192 to 57344 per the retry rule, confirmed clean on the deep-cell
+probe. `qwen38_iq3s_mtp_nmax3_c` = 57344.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance |
+|---|--:|--:|--:|--:|--:|
+| n-max3 | 4096 | 41.42 | 1.36 | 858.15 | ~0.28-0.83 |
+| n-max3 | 24576 | 37.61 | 2.09 | 799.28 | ~0.28-0.83 |
+| n-max3 | 56320 | 28.57 | 0.46 | 698.67 | ~0.28-0.83 |
+
+Slower than n-max2 at both comparable depths (41.42 vs 47.05 at 4K,
+37.61 vs 37.84 at 24K; the deep cells are not comparable, 56320 vs
+64512, n-max3's own being shallower). Draft acceptance 0.28-0.83, mean
+draft length ~1.85-3.50. n-max3 is the last defined arm of this block,
+so the climb ends here regardless of the read.
+
+**Climb close.** At the shared 4K and 24K depths, n-max2 is the
+fastest arm throughout (47.05 @ 4K, 37.84 @ 24K); n-max1 and n-max3
+trail it, n-max3 also serving the smallest window (57344 against
+n-max1/n-max2's 65536). Same shape as `sweep-qwen38-ista`'s climb on
+the ISTA file: the middle arm (n-max2) wins, the outer arms (n-max1,
+n-max3) both trail and n-max3 pays a narrower window for its larger
+draft.
+
+A table and no pick. The coordinator names the served arm. Speed only:
+the guided row of this build runs with no drafter.
+
 ### sweep-gemma26-nvfp4
 
 `catlilface/Gemma-4-26B-A4B-NVFP4-GGUF` `Gemma4-26b-NVFP4Q8.gguf` rev
@@ -222,6 +285,65 @@ file at f16 on Metal, no drafter: 14.1 tok/s at 4K, 8.1 tok/s at 147K.
 Clean depth: 64512, well above the Mac's 8.1 tok/s at 147K (a much
 shallower window here, much faster per token). VRAM flat, swap flat
 around 5.3 GB. `qwen38_ista_c` = 65536, `qwen38_ista_clean` = 64512.
+
+**n-max 1 arm.** `-c 65536` (the no-drafter arm's value) loaded clean
+but crashed on the deep-cell request (`CUDA error: out of memory`) —
+the drafter's extra compute buffer needs more headroom than the
+no-drafter arm's `-c`, the same pattern as `sweep-qwen36-q4kxl`'s
+`--n-cpu-moe`. Stepped `-c` down 8192 to 57344 per the retry rule,
+confirmed clean on the deep-cell request. `qwen38_ista_nmax1_c` =
+57344.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance |
+|---|--:|--:|--:|--:|--:|
+| n-max1 | 4096 | 33.40 | 0.71 | 821.62 | ~0.61-0.78 |
+| n-max1 | 24576 | 29.68 | 0.45 | 796.44 | ~0.61-0.78 |
+| n-max1 | 56320 | 24.64 | 0.72 | 686.13 | ~0.61-0.78 |
+
+Faster than the no-drafter arm at every comparable depth (33.40 vs
+29.43 at 4K, 29.68 vs 25.89 at 24K; deep cells not directly comparable,
+56320 vs 64512). Draft acceptance 0.61-0.78, mean draft length ~1.6-1.8.
+Per the sweep rule, the climb continues to n-max 2.
+
+**n-max 2 arm.** Same `-c 57344`. Deep-cell probe passed clean first
+(25.12 tok/s at depth 56320), then the full sweep.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance |
+|---|--:|--:|--:|--:|--:|
+| n-max2 | 4096 | 45.88 | 2.22 | 844.43 | ~0.33-0.78 |
+| n-max2 | 24576 | 31.89 | 4.38 | 796.11 | ~0.33-0.78 |
+| n-max2 | 56320 | 26.19 | 1.60 | 703.26 | ~0.33-0.78 |
+
+Faster than n-max1 at every depth (45.88 vs 33.40 at 4K, 31.89 vs
+29.68 at 24K, 26.19 vs 24.64 at 56K). Draft acceptance 0.33-0.78, mean
+draft length ~1.66-2.55, wider spread than n-max1. Per the sweep rule,
+the climb continues to n-max 3, the last arm of this block.
+
+**n-max 3 arm.** `-c 57344` (n-max2's value) loaded clean but crashed
+on the deep-cell request (`CUDA error: out of memory`) — the larger
+draft window's compute buffer did not fit, the same pattern as
+n-max1's retry. Stepped `-c` down 8192 to 49152 per the retry rule,
+confirmed clean on the deep-cell probe. `qwen38_ista_nmax3_c` = 49152.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance |
+|---|--:|--:|--:|--:|--:|
+| n-max3 | 4096 | 37.33 | 0.94 | 860.00 | ~0.32-0.76 |
+| n-max3 | 24576 | 30.80 | 0.71 | 804.17 | ~0.32-0.76 |
+| n-max3 | 48128 | 31.58 | 1.96 | 726.99 | ~0.32-0.76 |
+
+Slower than n-max2 at both comparable depths (37.33 vs 45.88 at 4K,
+30.80 vs 31.89 at 24K; the deep cells are not comparable, 48128 vs
+56320, n-max3's own being shallower). Draft acceptance 0.32-0.76, mean
+draft length ~1.95-3.27. n-max3 is the last defined arm of this block,
+so the climb ends here regardless of the read.
+
+**Climb close.** Deep-cell tok/s by arm (each arm's own deepest cell,
+not a matched depth): no-drafter 21.13 @ 64512, n-max1 24.64 @ 56320,
+n-max2 26.19 @ 56320, n-max3 31.58 @ 48128 (a shallower window, so not
+directly against the other three). At the shared 4K and 24K depths,
+n-max2 is the fastest arm throughout (45.88 @ 4K, 31.89 @ 24K); n-max1
+and n-max3 trail it, n-max3 also serving the smallest window (49152
+against n-max1/n-max2's 57344).
 
 A table and no pick. The coordinator names the served arm.
 
