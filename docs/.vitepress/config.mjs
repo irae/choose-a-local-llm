@@ -27,9 +27,9 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       {
         text: 'Models',
-        link: '/models/',
         collapsed: false,
         items: [
+          { text: 'All models', link: '/models/' },
           { text: 'Qwen3.8-27B', link: '/models/qwen3.8-27b' },
           { text: 'Qwen3.6-35B-A3B', link: '/models/qwen3.6-35b-a3b' },
           { text: 'Gemma-4-26B-A4B', link: '/models/gemma-4-26b-a4b' },
