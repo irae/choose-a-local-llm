@@ -634,6 +634,15 @@ tok/s at depth 64512). Full sweep: 47.05/37.84/30.82 tok/s at
 4K/24K/64.5K, faster than n-max1 (37.16/34.34/26.28) at every depth.
 Climb continues to n-max3.
 
+### sweep-qwen38-iq3s-mtp n-max3 — retry at -c 57344
+
+`--spec-type draft-mtp --spec-draft-n-max 3` at `-c 65536` (the
+no-drafter/n-max1/n-max2 value) loaded clean but crashed on the
+deep-cell request (`CUDA error: out of memory`), the same pattern as
+`sweep-qwen38-ista`'s n-max3. Stepped `-c` down 8192 to 57344 per the
+retry rule, loaded clean at 15528 MiB, probing the deep cell (56320)
+before the full sweep.
+
 ## Handing over
 
 Not started.
