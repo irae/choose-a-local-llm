@@ -125,6 +125,32 @@ Faster than n-max1 at every depth (47.05 vs 37.16 at 4K, 37.84 vs
 mean draft length ~1.83-2.89, wider spread than n-max1. Per the sweep
 rule, the climb continues to n-max 3, the last arm of this block.
 
+**n-max 3 arm.** `-c 65536` (n-max1/n-max2's value) loaded clean but
+crashed on the deep-cell request (`CUDA error: out of memory`) — the
+same pattern as `sweep-qwen38-ista`'s n-max3 retry. Stepped `-c` down
+8192 to 57344 per the retry rule, confirmed clean on the deep-cell
+probe. `qwen38_iq3s_mtp_nmax3_c` = 57344.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance |
+|---|--:|--:|--:|--:|--:|
+| n-max3 | 4096 | 41.42 | 1.36 | 858.15 | ~0.28-0.83 |
+| n-max3 | 24576 | 37.61 | 2.09 | 799.28 | ~0.28-0.83 |
+| n-max3 | 56320 | 28.57 | 0.46 | 698.67 | ~0.28-0.83 |
+
+Slower than n-max2 at both comparable depths (41.42 vs 47.05 at 4K,
+37.61 vs 37.84 at 24K; the deep cells are not comparable, 56320 vs
+64512, n-max3's own being shallower). Draft acceptance 0.28-0.83, mean
+draft length ~1.85-3.50. n-max3 is the last defined arm of this block,
+so the climb ends here regardless of the read.
+
+**Climb close.** At the shared 4K and 24K depths, n-max2 is the
+fastest arm throughout (47.05 @ 4K, 37.84 @ 24K); n-max1 and n-max3
+trail it, n-max3 also serving the smallest window (57344 against
+n-max1/n-max2's 65536). Same shape as `sweep-qwen38-ista`'s climb on
+the ISTA file: the middle arm (n-max2) wins, the outer arms (n-max1,
+n-max3) both trail and n-max3 pays a narrower window for its larger
+draft.
+
 A table and no pick. The coordinator names the served arm. Speed only:
 the guided row of this build runs with no drafter.
 

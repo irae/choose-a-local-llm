@@ -643,6 +643,26 @@ deep-cell request (`CUDA error: out of memory`), the same pattern as
 retry rule, loaded clean at 15528 MiB, probing the deep cell (56320)
 before the full sweep.
 
+### sweep-qwen38-iq3s-mtp n-max3 — closed, last arm
+
+`qwen38_iq3s_mtp_nmax3_c` = 57344 (stepped down from 65536 after a
+deep-cell OOM). Full sweep: 41.42/37.61/28.57 tok/s at 4K/24K/56K,
+slower than n-max2 at both comparable depths (47.05/37.84 at 4K/24K).
+n-max3 is the last defined arm of this block; the climb ends here.
+
+### sweep-qwen38-iq3s-mtp — block closed
+
+Three arms plus the no-drafter base from `sweep-qwen38-iq3s`: n-max1
+(`-c` 65536, 26.28 tok/s deep), n-max2 (`-c` 65536, 30.82 tok/s deep,
+fastest at the shared 4K/24K depths), n-max3 (`-c` 57344, 28.57 tok/s
+deep but a shallower window and slower than n-max2 at the shared
+depths). Same shape as `sweep-qwen38-ista`'s climb: the middle arm
+wins. A table and no pick; the coordinator names the served arm. This
+build's guided row runs with no drafter regardless (speed-only block).
+Files: `results/benchy-qwen38-iq3s-q8-nmax{1,2,3}.md`, matching
+`server-sweep-qwen38-iq3s-q8-nmax*.log` and `*-vm.log`. Moving to the
+smokes: `qwen36-q4kxl-smoke-high`, `qwen38-ista-smoke-xhigh`.
+
 ## Handing over
 
 Not started.
