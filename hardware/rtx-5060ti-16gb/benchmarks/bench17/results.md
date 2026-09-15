@@ -111,6 +111,20 @@ Faster than the no-drafter q8_0 arm at every depth (37.16 vs 29.36 at
 0.57-0.93, mean draft length ~1.57-1.93. Per the sweep rule, the climb
 continues to n-max 2.
 
+**n-max 2 arm.** Same `-c 65536`. Deep-cell probe passed clean first
+(28.48 tok/s at depth 64512), then the full sweep.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance |
+|---|--:|--:|--:|--:|--:|
+| n-max2 | 4096 | 47.05 | 1.28 | 858.39 | ~0.41-0.94 |
+| n-max2 | 24576 | 37.84 | 5.08 | 800.63 | ~0.41-0.94 |
+| n-max2 | 64512 | 30.82 | 5.67 | 677.44 | ~0.41-0.94 |
+
+Faster than n-max1 at every depth (47.05 vs 37.16 at 4K, 37.84 vs
+34.34 at 24K, 30.82 vs 26.28 at 64.5K). Draft acceptance 0.41-0.94,
+mean draft length ~1.83-2.89, wider spread than n-max1. Per the sweep
+rule, the climb continues to n-max 3, the last arm of this block.
+
 A table and no pick. The coordinator names the served arm. Speed only:
 the guided row of this build runs with no drafter.
 

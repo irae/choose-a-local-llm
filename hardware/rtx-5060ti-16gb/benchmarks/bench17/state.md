@@ -627,6 +627,13 @@ sweep: 37.16/34.34/26.28 tok/s at 4K/24K/64.5K, faster than the
 no-drafter q8_0 arm (29.36/25.84/20.92) at every depth. Climb
 continues to n-max2.
 
+### sweep-qwen38-iq3s-mtp n-max2 — closed, faster than n-max1
+
+Same `-c 65536`, loaded clean, deep-cell probe passed clean (28.48
+tok/s at depth 64512). Full sweep: 47.05/37.84/30.82 tok/s at
+4K/24K/64.5K, faster than n-max1 (37.16/34.34/26.28) at every depth.
+Climb continues to n-max3.
+
 ## Handing over
 
 Not started.
