@@ -223,6 +223,25 @@ Clean depth: 64512, well above the Mac's 8.1 tok/s at 147K (a much
 shallower window here, much faster per token). VRAM flat, swap flat
 around 5.3 GB. `qwen38_ista_c` = 65536, `qwen38_ista_clean` = 64512.
 
+**n-max 1 arm.** `-c 65536` (the no-drafter arm's value) loaded clean
+but crashed on the deep-cell request (`CUDA error: out of memory`) —
+the drafter's extra compute buffer needs more headroom than the
+no-drafter arm's `-c`, the same pattern as `sweep-qwen36-q4kxl`'s
+`--n-cpu-moe`. Stepped `-c` down 8192 to 57344 per the retry rule,
+confirmed clean on the deep-cell request. `qwen38_ista_nmax1_c` =
+57344.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance |
+|---|--:|--:|--:|--:|--:|
+| n-max1 | 4096 | 33.40 | 0.71 | 821.62 | ~0.61-0.78 |
+| n-max1 | 24576 | 29.68 | 0.45 | 796.44 | ~0.61-0.78 |
+| n-max1 | 56320 | 24.64 | 0.72 | 686.13 | ~0.61-0.78 |
+
+Faster than the no-drafter arm at every comparable depth (33.40 vs
+29.43 at 4K, 29.68 vs 25.89 at 24K; deep cells not directly comparable,
+56320 vs 64512). Draft acceptance 0.61-0.78, mean draft length ~1.6-1.8.
+Per the sweep rule, the climb continues to n-max 2.
+
 A table and no pick. The coordinator names the served arm.
 
 ## Gates

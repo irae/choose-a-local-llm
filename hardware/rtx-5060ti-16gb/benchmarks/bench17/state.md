@@ -559,6 +559,12 @@ for a similar gain. Files:
 `results/benchy-qwen36-q4kxl-{nodraft,nmax1,nmax2,nmax3}.md`,
 matching `server-sweep-qwen36-q4kxl-*.log` and `*-vm.log`.
 
+### sweep-qwen38-ista n-max1 — closed, faster than no-drafter
+
+`qwen38_ista_nmax1_c` = 57344. 33.40/29.68/24.64 tok/s at 4K/24K/56K,
+faster than no-drafter at comparable depths. Climb continues to
+n-max2.
+
 ### sweep-qwen38-ista n-max1 — retry at -c 57344
 
 `--spec-type draft-mtp --spec-draft-n-max 1` at `-c 65536` (the
