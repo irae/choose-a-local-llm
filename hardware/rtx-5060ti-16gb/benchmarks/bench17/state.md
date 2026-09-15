@@ -920,6 +920,104 @@ which cannot change its own 0/8 outcome or any other build's
 eligibility). Server unchanged from the guided row: no drafter,
 `-c 65536`, q8_0 KV, level xhigh, window 61440.
 
+### mendel-blind-after-guided — qwen38-ista, scored, 91/100
+
+`end_reason` `complete`, 17 commits, all 8 dependencies touched (uuid,
+xtend x2, urlsafe-base64, rimraf x3, glob x3, chalk, tmp x3, shasum
+x2). `qwen38_ista_blind` = 91/100 (raw = capped, completion cap does
+not bind). **The run's best score.** Trap A (fs.glob misuse) and Trap
+C (tmp exit-hook regression) both avoided; Trap A used a hand-rolled
+callback wrap rather than the idiomatic `Array.fromAsync`, docked half
+a point under conventions. Trap B (`legacy-packages/mendel-requirify`
+rimraf refs) never discovered — the model's own grep printed the exact
+paths, but its reasoning never engaged with them, worse than the
+guided row (which found it via grep, then wrongly dismissed it).
+Neither of the guided row's two issues repeated: the `fs.glob(i).then()`
+misuse is fully avoided here, and a `node:`-prefix lint trap was
+self-corrected before any commit. peak_context 64596/61440 (105%, one
+overflow compaction), tool_calls 257, 239 assistant messages, wall
+clock 75.1 min, 3 compactions, 0 nudges, no crashes this attempt.
+Scored and published to `~/code/mendel-benchmark` branch `benchmark`,
+commit `57bb5211`, which also backfills the session log and its
+`SESSIONS.md` row (Blind runs table). Run branch
+`qwen3.8-27b-ista-xhigh-issue-13` pushed to `origin` on the `mendel`
+repo.
+
+**mendel-blind-after-guided is closed.** `qwen3.8-27b-ista` was the
+only build to qualify (8/8 guided), and its one blind row is scored.
+
+### retry-sweep — nothing to do
+
+Every machine-killed row this run (`qwen38-iq3s-mendel-guided-xhigh`
+attempt 1, `qwen38-ista-mendel-guided-xhigh` attempts 1-3) was already
+retried at once, inside its own block, per checklist rule 15 — none
+waited on a human. No rows remain for this block.
+
 ## Handing over
 
-Not started.
+`AGENT.md`'s order list is complete, end to end. Nothing queued.
+
+**What ran.** `machine-setup`; four dense/MoE speed sweeps at their
+planning depths (`sweep-gemma12-nvfp4`, `sweep-gemma12-q4kxl`,
+`sweep-qwen38-iq3s`, `sweep-gemma26-nvfp4`); five smokes (later a
+sixth and a seventh, the two `qwen38-ista` smokes on its two served
+arms); `sweep-qwen36-q4kxl` (closed after a blocked NVFP4 file was
+replaced by owner's word), `sweep-qwen38-ista` (four-arm drafter
+climb), `sweep-qwen38-iq3s-mtp` (three-arm drafter climb on the
+unsloth file); all seven guided rows; `mendel-blind-after-guided` for
+the one build that qualified; `retry-sweep` (nothing to do, every
+machine-killed row was already retried inline). 22 blocks total by the
+runbook's own list.
+
+**What a gate dropped and why.** `sweep-qwen36-nvfp4`'s file failed a
+tensor-count check at load; owner's word replaced it with the unsloth
+Q4_K_XL file, block renamed `sweep-qwen36-q4kxl`, no further loss.
+`gemma12-nvfp4-mendel-guided-off`, `gemma12-q4kxl-mendel-guided-high`
+and `gemma12-nvfp4-mendel-guided-high` all ended `model_failed`
+(zero commits, a text-cycle repetition loop, never a harness fault);
+two of the three looped on the exact same trigger (the `xtend` swap,
+right after locating the dependency, before the matching edit) — flagged
+to the coordinator as a possible Gemma-12B-at-this-harness pattern,
+not three independent flukes.
+
+**Best results.** `qwen3.8-27b-ista` (ISTA-DASLab IQ3_S-mtp, no
+drafter, q8_0, `-c 65536`) scored 85/100 guided (8/8) and 91/100 blind
+(8/8, this run's best score) — the only build to reach 8/8 in either
+test. `qwen3.8-27b-iq3s` (the same base model, unsloth's build) scored
+79/100 guided (partial 7/8). `qwen3.6-35b-a3b-q4kxl` scored 48.5/100
+guided (partial 6/8), with a notable finding: 3 of 6 commits bypassed
+the pre-commit hook by moving `.husky/pre-commit` aside and back, a
+bypass the literal-flag scoring check misses, and those exact bypassed
+commits shipped the row's two critical bugs. `gemma-4-26b-a4b-nvfp4`
+scored 37.5/100 guided (partial 3/8).
+
+**Deviations of note**, all resolved in place, full detail above:
+the session permission classifier blocking `llama-server` at first
+launch; three missing shared libraries in the CUDA build, fixed with
+symlinks and a `uv`-fetched `nvidia-nccl-cu12`; a post-compaction
+session losing its exported `PATH`/`LD_LIBRARY_PATH` and briefly
+loading a model on the system's CPU-only `llama-server` (caught before
+any benchy cell ran); five deep-cell OOM retries across three sweeps,
+each resolved by stepping `-c` down 8192; three GPU driver
+launch-timeout crashes on `qwen38-ista`'s original n-max2 served arm
+(one with an Xid 8 watchdog event), resolved by the coordinator's
+served-arm change to no-drafter, which then ran clean through both its
+guided and blind rows; every `run-watch.sh` this run pointing at the
+wrong output file (`-session.jsonl`, written once at the end, instead
+of the continuously-growing `-events.jsonl`) until caught and fixed
+mid-run — never unsafe, just wasteful; the pi scoring step's session-log
+backfill being missed for the run's first four scored rows, caught by
+the coordinator and backfilled, then built into every later scoring
+subagent's own instructions.
+
+**Machine state left behind.** No `llama-server`, no `run-worker.sh`,
+no `run-watch.sh` process running. GPU at idle baseline (~1.1 GB, the
+desktop compositor). `git status` on `run17` is clean once this commit
+lands. Every crashed or interrupted worktree (`qwen38-iq3s` attempt 1,
+`qwen38-ista` attempts 1-3) is still in place, evidence for the
+coordinator, never deleted. Evidence archived:
+`tools/archive-evidence.sh hardware/rtx-5060ti-16gb/benchmarks/bench17/results run17`,
+123 files to `~/.local/share/choose-a-local-llm/evidence/run17`.
+
+The coordinator now decides: merge `run17`, extend the run's order
+list, or close it out.
