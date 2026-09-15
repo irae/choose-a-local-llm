@@ -834,6 +834,23 @@ published to `~/code/mendel-benchmark` branch `benchmark`, commit
 row. Run branch `qwen3.8-27b-ista-xhigh-guided-v3-issue-13` pushed to
 `origin` on the `mendel` repo.
 
+### gemma12-q4kxl-mendel-guided-high — ended in a repetition loop, zero commits
+
+`end_reason` `repetition_loop`, kind "text cycle", the model repeated
+"Wait, I'll run the removal command." 818 times, first at 07:20:52Z.
+`git log 86935f48..HEAD` in the worktree shows zero commits. Likely
+`model_failed` (the same shape as `gemma12-nvfp4-mendel-guided-off`
+earlier this run), but the scoring subagent confirms the classification
+against `PLAN.md` itself. Scoring dispatched.
+
+### gemma12-nvfp4-mendel-guided-high — running
+
+`gemma-4-12b-nvfp4`, f16 KV, `-c 262144`, no drafter, level high,
+window 258048 (the `off` smoke's window, one smoke covers every
+level). Early-turn check on `events.jsonl`: 912 `thinking_delta`
+events in the first turns, confirming level high reached the server.
+Last item on the guided list.
+
 ## Handing over
 
 Not started.
