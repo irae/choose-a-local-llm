@@ -137,3 +137,20 @@ plus 0.909, 0/164 empty, wall 217.6 min. On to
 `qwen38-iq3s-evalplus-xhigh`, no-drafter from the start per the
 coordinator's owner-approved rule (2026-09-15), `-c 32768`, q8_0 KV,
 2048 MiB free-VRAM floor after load.
+
+## `qwen38-iq3s-evalplus-xhigh` — running
+
+`unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S`, no drafter (owner rule
+2026-09-15), one slot, q8_0 KV, ctx 32768 served, vram 13470 MiB, 2417
+MiB free after load (above the 2048 MiB floor). Model file already in
+the default `hf` cache (migrated earlier this session):
+`~/.cache/huggingface/hub/models--unsloth--Qwen3.8-27B-GGUF/snapshots/4ca720788d1e01f1bff70c033e0d0028fd02e502/`.
+
+Calibration `qwen38-iq3s-xhigh`, xhigh reasoning: 10/10 rows, 2
+`length` stops (`HumanEval/32`, `HumanEval/99`, both hit the 30000 cap,
+empty) — same non-converging pattern as the ista build. Longest
+successful completion is `HumanEval/145` at 18907 tokens.
+`qwen38-iq3s_budget` = 19000 (just above 18907), source:
+calibration-qwen38-iq3s-xhigh.json, non-converging rule.
+
+Deviation: none — handled per the same runbook rule as the ista block.
