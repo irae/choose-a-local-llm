@@ -710,6 +710,27 @@ evidence into `runs/interrupted/`, restarted the server unchanged
 coordinator's call), and launched a fresh attempt at the canonical
 worktree/branch name.
 
+### qwen38-ista-mendel-guided-xhigh — second attempt also interrupted
+
+Same signature (`CUDA error: the launch timed out and was
+terminated`), this time at `n_tokens` 44064, deeper into the run.
+`journalctl -k` this time DOES show an Xid 8 (`NVRM: krcWatchdog_IMPL:
+RC watchdog: GPU is probably locked!`, `Xid (PCI:0000:01:00): 8,
+pid=859509, name=llama-server`) around the crash, the same watchdog
+signature the run's earlier `diagnose-crash` investigation found. The
+first attempt showed no Xid; this one did. Two crashes in a row on the
+same config is a pattern worth the coordinator's attention, not
+necessarily config-specific (the earlier Xid 8 crash this run hit a
+different build), but flagged here in case a third recurrence changes
+that read.
+
+Repeated the retry pattern: worktree/branch moved aside as
+`-interrupted2`, RUNS evidence moved to `runs/interrupted/` with an
+`-attempt2` suffix on every filename (the run's earlier `qwen38-iq3s`
+interruption lost its second attempt's evidence to a filename
+collision; this time each attempt gets a distinct name). Server
+restarted unchanged, third attempt launched at the canonical name.
+
 ## Handing over
 
 Not started.
