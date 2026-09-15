@@ -200,7 +200,7 @@ Guided test:
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:model-mendel:end -->
 
-The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
+The full table and the rubric are on [the Mendel page](../../../benchmarks/mendel.md).
 
 ## Decode speed vs used context
 

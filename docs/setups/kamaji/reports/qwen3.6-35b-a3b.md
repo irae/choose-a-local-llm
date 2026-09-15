@@ -223,7 +223,7 @@ The window cell is the harness context window of that run. Rows before the KV pi
 ⏳ this row ran on a 122880-token harness window; at wired 25000 the q8_0 arm serves `-c 98304`, so the window is out of reach. The score stands as a record; a re-run at the served window is pending, at low priority. [What the machine serves at wired 25000](../index.md#the-wired-limit-25000).
 <!-- gen:model-mendel:end -->
 
-The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
+The full table and the rubric are on [the Mendel page](../../../benchmarks/mendel.md).
 
 ## Decode speed vs used context
 

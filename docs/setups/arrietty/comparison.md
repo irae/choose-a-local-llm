@@ -53,6 +53,6 @@ hours.
 
 ## Benchmarks
 
-- [Decode speed](./benchmarks/decode-speed.md)
-- [EvalPlus](./benchmarks/evalplus.md): run 19, in progress.
-- [Mendel](./benchmarks/mendel.md)
+- [Decode speed](../../benchmarks/decode-speed.md)
+- [EvalPlus](../../benchmarks/evalplus.md): run 19, in progress.
+- [Mendel](../../benchmarks/mendel.md)

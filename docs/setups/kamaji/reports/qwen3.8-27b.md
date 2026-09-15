@@ -332,7 +332,7 @@ The window cell is the harness context window of that run. Rows before the KV pi
 † a 26624-token window with a 16384-token output budget, our config arithmetic, not the model
 <!-- gen:model-mendel:end -->
 
-The full table and the rubric are on [the Mendel page](../benchmarks/mendel.md).
+The full table and the rubric are on [the Mendel page](../../../benchmarks/mendel.md).
 
 The MLX build gives a 26624-token window. That window stopped the low-effort run.
 

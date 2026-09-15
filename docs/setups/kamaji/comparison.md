@@ -141,7 +141,7 @@ Slow creeps, floor 8 tok/s. Rows from 2026-09-06 on ran at wired limit
 
 ## Mendel — agentic quality
 
-Every row, blind and guided: [the Mendel page](./benchmarks/mendel.md).
+Every row, blind and guided: [the Mendel page](../../benchmarks/mendel.md).
 Hosted reports: <a href="../../mendel/report.html" target="_blank" rel="noreferrer">blind</a> ·
 <a href="../../mendel/report-guided.html" target="_blank" rel="noreferrer">guided</a>.
 Rows on older prompt versions: [historical](./historical.md).

@@ -263,10 +263,16 @@ function mendelSpec(r) {
   }
 }
 
-function mendelCell(r) {
+const HARDWARE_SLUG = Object.fromEntries(
+  globSync('docs/setups/*/models.json').map((f) => [f.split('/')[2], JSON.parse(readFileSync(f, 'utf8')).hardwareSlug]),
+)
+
+function mendelCell(r, { global = false } = {}) {
   const slug = MENDEL_SLUGS[r.model]
-  const tag = specTag(mendelSpec(r), { label: r.model })
-  return slug ? `[${tag}](../reports/${slug}.md)` : tag
+  const setup = hardwareOf(r)
+  const tag = specTag(mendelSpec(r), { label: r.model, hardware: global ? HARDWARE_SLUG[setup] : '' })
+  const reports = global ? `../setups/${setup}/reports` : '../reports'
+  return slug ? `[${tag}](${reports}/${slug}.md)` : tag
 }
 
 function mendelScore(r) {
@@ -326,7 +332,11 @@ let mendelSiteRows = []
 function siteRowFor(run) {
   const key = mendelKey(mendelSpec(run), runSlots(run))
   return mendelSiteRows.find(
-    (row) => row.spec && !row.retired && mendelKey({ ...row.spec, drafter: row.mendelDrafter ?? row.spec.drafter }, rowSlots(row)) === key,
+    (row) =>
+      row.spec &&
+      !row.retired &&
+      (!row.setup || row.setup === hardwareOf(run)) &&
+      mendelKey({ ...row.spec, drafter: row.mendelDrafter ?? row.spec.drafter }, rowSlots(row)) === key,
   )
 }
 
@@ -334,7 +344,7 @@ const mendelCapped = (r) => Math.min(Number(r.score_total), (100 * r.libraries_d
 const mendelWall = (r) => (r.telemetry.wall_clock_min == null ? NaN : Number(r.telemetry.wall_clock_min))
 const mendelCtxUse = (r) => (Number(r.telemetry.compactions) || 0) * 100 + (Math.round(Number(r.telemetry.window_pct)) || 0)
 
-function mendelRow(r, { test = '', top = {} } = {}) {
+function mendelRow(r, { test = '', top = {}, global = false } = {}) {
   const t = r.telemetry
   const k = (v) => (v == null || v === '' ? '—' : `${Math.round(Number(v) / 1000)}k`)
   const bold = (text, set) => (set?.has(r) ? `**${text}**` : text)
@@ -375,7 +385,7 @@ function mendelRow(r, { test = '', top = {} } = {}) {
     Number(t.truncation_pct) ? pill(`trimmed ${t.truncation_pct}%`) : '',
   ].filter(Boolean)
   const cells = [
-    mendelCell(r),
+    mendelCell(r, { global }),
     ...(test ? [pill(`mendel-${test}`, test === 'blind' ? 'yellow' : 'green')] : []),
     score,
     wall,
@@ -406,7 +416,7 @@ function twoLines(pills) {
   return rest.length ? `${line(first)}<br>${line(rest)}` : line(first)
 }
 
-function mendelTable(rows, { test = false } = {}) {
+function mendelTable(rows, { test = false, global = false } = {}) {
   const header = [
     `| Model / Config |${test ? ' Test |' : ''} Score | Wall | Ctx / speed | Tokens | Ctx use | Bugs | Stats |`,
     `|---|${test ? '---|' : ''}--:|--:|--:|--:|--:|---|---|`,
@@ -421,12 +431,8 @@ function mendelTable(rows, { test = false } = {}) {
     tokShallow: topSet(ordered, (r) => parseFloat(siteRowFor(r)?.tokShallow)),
     tokDeep: topSet(ordered, (r) => parseFloat(siteRowFor(r)?.tokDeep)),
   }
-  const body = ordered.map((r) => mendelRow(r, { test: test ? r.test : '', top }))
+  const body = ordered.map((r) => mendelRow(r, { test: test ? r.test : '', top, global }))
   return [...header, ...body].join('\n')
-}
-
-function renderMendelLocal(rows) {
-  return mendelTable(rows)
 }
 
 function renderMendelStale(blindAll, guidedAll) {
@@ -439,7 +445,7 @@ function renderMendelStale(blindAll, guidedAll) {
     ...stale(guidedAll).map((r) => ({ ...r, test: 'guided' })),
   ]
   if (!rows.length) return 'No stale row.'
-  return mendelTable(rows, { test: true })
+  return mendelTable(rows, { test: true, global: true })
 }
 
 function renderMendelCloud(rows) {
@@ -449,10 +455,6 @@ function renderMendelCloud(rows) {
     .sort((a, b) => Math.min(b.score_total, (100 * (b.libraries_done === '' ? 8 : b.libraries_done)) / 8) - Math.min(a.score_total, (100 * (a.libraries_done === '' ? 8 : a.libraries_done)) / 8))
     .map((r) => `| ${mendelName(r)} | ${r.harness} | ${mendelScore(r)} |`)
   return [...header, ...body].join('\n')
-}
-
-function renderMendelGuided(rows) {
-  return mendelTable(rows)
 }
 
 function renderMendelGuidedCloud(rows) {
@@ -763,7 +765,7 @@ function renderModelConfigs(data, model) {
   return blocks.join('\n\n')
 }
 
-function renderEvalplusTable(data) {
+function renderEvalplusTable(datas) {
   const header = [
     '| config | budget | pass@1 base | pass@1 plus | empty | completion |',
     '|---|--:|--:|--:|--:|--:|',
@@ -772,22 +774,23 @@ function renderEvalplusTable(data) {
     const m = /^(\d+)\/(\d+)$/.exec(empty || '')
     return m ? `${Math.round(((m[2] - m[1]) / m[2]) * 100)}%` : '—'
   }
-  const runs = data.evalplusRuns || []
+  const runs = datas.flatMap((data) => (data.evalplusRuns || []).map((r) => ({ ...r, data })))
   const specOf = (r) => {
-    if (r.spec) return specTag(r.spec, { label: r.model })
-    const row = data.rows.find((x) => x.id === r.row)
+    const hardware = r.data.hardwareSlug
+    if (r.spec) return specTag(r.spec, { label: r.model, hardware })
+    const row = r.data.rows.find((x) => x.id === r.row)
     if (!row) throw new Error(`EvalPlus run "${r.model}" names no row and no spec`)
-    return specTag(row.spec, { label: row.id, repo: repoOf(row) })
+    return specTag(row.spec, { label: row.id, repo: repoOf(row), hardware })
   }
   const top = topSet(runs, (r) => parseFloat(r.base))
   const body = runs.map((r) => {
     if (!r.budget) throw new Error(`EvalPlus run "${r.model}" has no budget`)
-    return `| [${specOf(r)}](./${r.slug}.md) | ${r.budget} | ${top.has(r) ? `**${r.base}**` : r.base} | ${r.plus} | ${r.empty} | ${completion(r.empty)} |`
+    return `| [${specOf(r)}](../setups/${r.data.setup}/benchmarks/${r.slug}.md) | ${r.budget} | ${top.has(r) ? `**${r.base}**` : r.base} | ${r.plus} | ${r.empty} | ${completion(r.empty)} |`
   })
   return [...header, ...body].join('\n')
 }
 
-function renderDecodeSummary(data) {
+function renderDecodeSummary(datas) {
   const header = [
     '| best curve | tok/s (shallow → deep) | at | gated by |',
     '|---|--:|--:|---|',
@@ -798,7 +801,7 @@ function renderDecodeSummary(data) {
     if (stale) anyStale = true
     return `${r[field]}${stale ? '†' : ''}`
   }
-  const body = Object.entries(data.models || {}).flatMap(([slug, model]) => {
+  const body = datas.flatMap((data) => Object.entries(data.models || {}).flatMap(([slug, model]) => {
     const backends = new Map()
     for (const r of modelRows(data, model).filter((r) => !r.abandoned)) {
       const backend = (r.config.split(',')[1] || '').trim().replace(/[^A-Za-z].*$/, '') || 'other'
@@ -808,9 +811,9 @@ function renderDecodeSummary(data) {
     return [...backends.values()].map((rows) => {
       const complete = rows.filter((r) => !hasPending(r))
       const pick = sortRows(complete.length ? complete : rows)[0]
-      return `| [${specTag(pick.spec, { label: pick.id, repo: repoOf(pick) })}](./${slug}.md) | ${cell(pick, 'tokShallow')} → ${cell(pick, 'tokDeep')} | ${cell(pick, 'maxCtx')} | ${cell(pick, 'gatedBy')} |`
+      return `| [${specTag(pick.spec, { label: pick.id, repo: repoOf(pick), hardware: data.hardwareSlug })}](../setups/${data.setup}/benchmarks/${slug}.md) | ${cell(pick, 'tokShallow')} → ${cell(pick, 'tokDeep')} | ${cell(pick, 'maxCtx')} | ${cell(pick, 'gatedBy')} |`
     })
-  })
+  }))
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']
     : []
@@ -826,6 +829,11 @@ const isNew = (r) => Boolean(r.added) && HEAD_TIME - Date.parse(r.added) < 48 * 
 const dataFiles = globSync('docs/setups/*/models.json')
 let drift = false
 const modelsAll = new Map()
+const setupsAll = []
+const blindRunsAll = []
+const guidedRunsAll = []
+let cloudBlind = []
+let cloudGuided = []
 
 for (const dataFile of dataFiles) {
   const setupDir = dataFile.replace(/\/models\.json$/, '')
@@ -879,27 +887,12 @@ for (const dataFile of dataFiles) {
     }
   }
 
-  const typePages = [
-    [`${setupDir}/benchmarks/evalplus.md`, EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(data)],
-    [`${setupDir}/benchmarks/decode-speed.md`, DECODE_START, DECODE_END, renderDecodeSummary(data)],
-    [`${setupDir}/benchmarks/mendel.md`, MENDEL_LOCAL_START, MENDEL_LOCAL_END, renderMendelLocal(currentPromptVersion(blindRuns))],
-    [`${setupDir}/benchmarks/mendel.md`, MENDEL_CLOUD_START, MENDEL_CLOUD_END, renderMendelCloud(mendelBlind)],
-    [`${setupDir}/benchmarks/mendel.md`, MENDEL_GUIDED_START, MENDEL_GUIDED_END, renderMendelGuided(currentPromptVersion(guidedRuns))],
-    [`${setupDir}/benchmarks/mendel.md`, MENDEL_GUIDED_CLOUD_START, MENDEL_GUIDED_CLOUD_END, renderMendelGuidedCloud(mendelGuided)],
-    [`${setupDir}/benchmarks/mendel.md`, MENDEL_STALE_START, MENDEL_STALE_END, renderMendelStale(blindRuns, guidedRuns)],
-  ]
-  for (const [target, mstart, mend, block] of typePages) {
-    const original = readFileSync(target, 'utf8')
-    const updated = applyBlock(original, mstart, mend, block, target)
-    if (updated === original) continue
-    if (CHECK) {
-      console.error('STALE: ' + target + ' does not match ' + dataFile + '. Run `npm run docs:tables`.')
-      drift = true
-    } else {
-      writeFileSync(target, updated)
-      console.log(`updated: ${target}`)
-    }
-  }
+  for (const r of data.rows) r.setup = data.setup
+  setupsAll.push(data)
+  blindRunsAll.push(...blindRuns)
+  guidedRunsAll.push(...guidedRuns)
+  cloudBlind = mendelBlind
+  cloudGuided = mendelGuided
 
   for (const [slug, model] of Object.entries(data.models || {})) {
     const target = `${setupDir}/reports/${slug}.md`
@@ -946,6 +939,15 @@ writeBlock(
 for (const [slug, rows] of modelsAll) {
   writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-all:start -->', '<!-- gen:model-all:end -->', renderTable(rows, { memory: false, hardware: true, hide: 'server' }))
 }
+
+mendelSiteRows = setupsAll.flatMap((data) => data.rows)
+writeBlock('docs/benchmarks/evalplus.md', EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(setupsAll))
+writeBlock('docs/benchmarks/decode-speed.md', DECODE_START, DECODE_END, renderDecodeSummary(setupsAll))
+writeBlock('docs/benchmarks/mendel.md', MENDEL_LOCAL_START, MENDEL_LOCAL_END, mendelTable(currentPromptVersion(blindRunsAll), { global: true }))
+writeBlock('docs/benchmarks/mendel.md', MENDEL_CLOUD_START, MENDEL_CLOUD_END, renderMendelCloud(cloudBlind))
+writeBlock('docs/benchmarks/mendel.md', MENDEL_GUIDED_START, MENDEL_GUIDED_END, mendelTable(currentPromptVersion(guidedRunsAll), { global: true }))
+writeBlock('docs/benchmarks/mendel.md', MENDEL_GUIDED_CLOUD_START, MENDEL_GUIDED_CLOUD_END, renderMendelGuidedCloud(cloudGuided))
+writeBlock('docs/benchmarks/mendel.md', MENDEL_STALE_START, MENDEL_STALE_END, renderMendelStale(blindRunsAll, guidedRunsAll))
 
 if (CHECK && drift) process.exit(1)
 if (!CHECK) console.log('tables generated from docs/setups/*/models.json')

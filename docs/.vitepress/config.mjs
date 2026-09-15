@@ -38,6 +38,15 @@ export default defineConfig({
         ],
       },
       {
+        text: 'Benchmarks',
+        collapsed: false,
+        items: [
+          { text: 'Decode speed vs context depth', link: '/benchmarks/decode-speed' },
+          { text: 'EvalPlus', link: '/benchmarks/evalplus' },
+          { text: 'Mendel', link: '/benchmarks/mendel' },
+        ],
+      },
+      {
         text: 'Methodology',
         link: '/methodology',
         collapsed: true,
@@ -72,15 +81,6 @@ export default defineConfig({
               { text: 'Gemma-4-12B-it', link: '/setups/kamaji/reports/gemma-4-12b-it' },
             ],
           },
-          {
-            text: 'Benchmarks',
-            collapsed: true,
-            items: [
-              { text: 'Decode speed vs context depth', link: '/setups/kamaji/benchmarks/decode-speed' },
-              { text: 'EvalPlus', link: '/setups/kamaji/benchmarks/evalplus' },
-              { text: 'Mendel', link: '/setups/kamaji/benchmarks/mendel' },
-            ],
-          },
           { text: 'Historical', link: '/setups/kamaji/historical' },
         ],
       },
@@ -98,15 +98,6 @@ export default defineConfig({
               { text: 'Qwen3.6-35B-A3B', link: '/setups/arrietty/reports/qwen3.6-35b-a3b' },
               { text: 'Gemma-4-26B-A4B', link: '/setups/arrietty/reports/gemma-4-26b-a4b' },
               { text: 'Gemma-4-12B-it', link: '/setups/arrietty/reports/gemma-4-12b-it' },
-            ],
-          },
-          {
-            text: 'Benchmarks',
-            collapsed: true,
-            items: [
-              { text: 'Decode speed vs context depth', link: '/setups/arrietty/benchmarks/decode-speed' },
-              { text: 'EvalPlus', link: '/setups/arrietty/benchmarks/evalplus' },
-              { text: 'Mendel', link: '/setups/arrietty/benchmarks/mendel' },
             ],
           },
         ],
