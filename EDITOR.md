@@ -259,7 +259,7 @@ it.
   columns are explained in a "Legend" section under the table.
 - **Wall is the active time of the scored EvalPlus run and of the scored
   Mendel run**, shown as their sum, with both parts in the cell's hover
-  title; pauses removed and split runs added (owner, 2026-09-15). `evalplusWall` and `simulatorWall` in
+  title and a `†` when one part has no time; pauses removed and split runs added (owner, 2026-09-15). `evalplusWall` and `simulatorWall` in
   `models.json`, in minutes. `mendelWalls` in the same file holds the
   active minutes of every local Mendel run of that setup, by branch, kept
   even for runs no table shows; the Mendel side reads it, then the run's

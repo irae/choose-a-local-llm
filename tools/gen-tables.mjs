@@ -659,7 +659,8 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
   const wall = (r) => {
     if (r.evalplusWall == null && r.simulatorWall == null) return '—'
     const sum = (Number(r.evalplusWall) || 0) + (Number(r.simulatorWall) || 0)
-    return `<span title="EvalPlus ${hm(r.evalplusWall)} · Mendel ${hm(r.simulatorWall)}">${hm(sum)}</span>`
+    const partial = r.evalplusWall == null || r.simulatorWall == null ? '†' : ''
+    return `<span title="EvalPlus ${hm(r.evalplusWall)} · Mendel ${hm(r.simulatorWall)}">${hm(sum)}${partial}</span>`
   }
   const ordered = sort ? sortRows(rows) : rows
   const num = (s) => parseFloat(String(s).replace(/[^\d.]/g, ''))
