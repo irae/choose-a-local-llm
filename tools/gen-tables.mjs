@@ -805,7 +805,9 @@ function renderEvalplusTable(datas) {
     const m = /^(\d+)\/(\d+)$/.exec(empty || '')
     return m ? `${Math.round(((m[2] - m[1]) / m[2]) * 100)}%` : '—'
   }
-  const runs = datas.flatMap((data) => (data.evalplusRuns || []).map((r) => ({ ...r, data })))
+  const runs = datas
+    .flatMap((data) => (data.evalplusRuns || []).map((r) => ({ ...r, data })))
+    .sort((a, b) => parseFloat(b.base) - parseFloat(a.base) || parseFloat(b.plus) - parseFloat(a.plus))
   const specOf = (r) => {
     const hardware = r.data.hardwareSlug
     if (r.spec) return specTag(r.spec, { label: r.model, hardware })
