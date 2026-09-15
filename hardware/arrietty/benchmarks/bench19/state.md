@@ -51,7 +51,20 @@ calibration) and do not chase it with a bigger budget.
 Deviation: none — non-converging calibration handled per the runbook's
 own rule, not a stop-and-ask condition.
 
+The full run started with the watcher; after 7/164 problems the watcher
+exited 42 (`SERVER DEAD: two probes did not return, each after 600s
+without output growth`), the server log showing `CUDA error: the launch
+timed out and was terminated`. Killed the stalled `run-humaneval.sh`
+wrapper, restarted the server (same config), verified it loads and
+serves. The underlying `run_codegen_wrapper.py` child process had
+survived the kill and had already resumed against the restarted
+server before I checked — no manual resume needed, `run-humaneval.sh`'s
+resume-from-jsonl behavior held. Started a fresh watcher
+(`server-qwen38-ista-retry1.log`). Recoverable failure, retried inside
+the block per the runbook.
+
 ## Handing over
 
 `machine-setup` done. `qwen38-ista-evalplus-xhigh` calibrated, budget
-set. Starting the watcher and the full EvalPlus run next.
+set, running (one CUDA-timeout restart so far, resumed clean, watcher
+active).
