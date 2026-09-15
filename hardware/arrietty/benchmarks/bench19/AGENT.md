@@ -94,8 +94,7 @@ land.
   server.** EvalPlus sends temperature 0 itself.
 - **Effort medium is banned for Qwen3.8** (owner rule, 2026-09-09).
 - **Downloads never block this run** (owner rule, 2026-09-14). Every
-  model file is already in `~/.cache/llama.cpp/hf/` from run 17 (should
-  have used `hf download` with its default cache, not `--local-dir` —
+  model file is already in `~/.cache/llama.cpp/hf/` from run 17 (should have used the default hf cache;
   migrated to the default Hugging Face hub cache on 2026-09-15, except
   the file this run has open); a missing one is fetched with
   `hf download <repo> <file>` (default cache, no `--local-dir`), by the

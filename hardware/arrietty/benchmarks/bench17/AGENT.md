@@ -203,7 +203,7 @@ command. Every install below is user-level; none needs sudo.
    Record both versions in `state.md` as `benchy_version` and
    `hf_version`.
 3. **Model files.** Download each into
-   `~/.cache/llama.cpp/hf/<owner>/<repo>/` with `hf download <repo>
+   `~/.cache/llama.cpp/hf/<owner>/<repo>/` (should have used the default hf cache) with `hf download <repo>
    <file> --local-dir ~/.cache/llama.cpp/hf/<repo>` (should have used `hf download` with its default cache, not `--local-dir`). Before each
    download, record the repository's current commit as its revision:
    `curl -s https://huggingface.co/api/models/<repo> | python3 -c
