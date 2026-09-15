@@ -7,6 +7,12 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench20, planned 2026-09-15 ([state](bench20/state.md), [results](bench20/results.md))
+
+- Runbook: [bench20/AGENT.md](bench20/AGENT.md). Re-runs only the empty
+  EvalPlus problems of seven scored runs, with the finish reason
+  recorded, so each empty's cause is proven. Starts after run 18.
+
 ## bench16, 2026-09-12 to 2026-09-13 ([state](bench16/state.md), [results](bench16/results.md), [report](bench16/report.md))
 
 - Runbook: [bench16/AGENT.md](bench16/AGENT.md). Real-text speed for
