@@ -811,6 +811,29 @@ events in the first turns, confirming level high reached the server
 `qwen38-ista-mendel-guided-xhigh` closed (scored `complete`, 8/8
 libraries, scoring subagent dispatched).
 
+### qwen38-ista-mendel-guided-xhigh — scored, 8/8, qualifies for blind
+
+`qwen38_ista_guided` = 85/100 (raw; 8/8 libraries, completion cap does
+not bind). Criterion breakdown: bugs 16/25, completion 14/20,
+node_modules 8/8, lint 5/5, commit_craft 12/12, first_time 8/8,
+test_discipline 10/10, conventions 5/5, task_list 4/4, truncation 3/3.
+One critical defect: `apply-extra-options.js` calls
+`fs.glob(i).then(...)`, misusing Node's callback-based `fs.glob` as a
+Promise, throws immediately, no test covers the file — the same class
+of bug (wrong glob variant) this model shipped on
+`qwen36-q4kxl-mendel-guided-high`. Trap B (legacy `mendel-requirify`
+rimraf refs) found by the model's own grep near the end, then
+dismissed as out of scope, ships unfixed. Otherwise clean: correct
+swaps for uuid/xtend/urlsafe-base64/shasum/chalk/tmp, `force:true` on
+rimraf, full suite chained before every commit, no hook bypasses.
+peak_context 57581, tool_calls 320, 290 assistant messages, 23
+compactions, wall clock 214.8 min. **8/8 libraries with bugs allowed
+qualifies this build for `mendel-blind-after-guided`.** Scored and
+published to `~/code/mendel-benchmark` branch `benchmark`, commit
+`ad51241b`, which also backfills the session log and its `SESSIONS.md`
+row. Run branch `qwen3.8-27b-ista-xhigh-guided-v3-issue-13` pushed to
+`origin` on the `mendel` repo.
+
 ## Handing over
 
 Not started.
