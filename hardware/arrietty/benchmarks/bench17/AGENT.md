@@ -204,7 +204,7 @@ command. Every install below is user-level; none needs sudo.
    `hf_version`.
 3. **Model files.** Download each into
    `~/.cache/llama.cpp/hf/<owner>/<repo>/` with `hf download <repo>
-   <file> --local-dir ~/.cache/llama.cpp/hf/<repo>`. Before each
+   <file> --local-dir ~/.cache/llama.cpp/hf/<repo>` (should have used `hf download` with its default cache, not `--local-dir`). Before each
    download, record the repository's current commit as its revision:
    `curl -s https://huggingface.co/api/models/<repo> | python3 -c
    'import sys,json; print(json.load(sys.stdin)["sha"])'`. After
@@ -460,7 +460,7 @@ more. Depths: 4096, 24576, `-c` minus 1024. Tokenizer
 ```bash
 hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf \
   --revision d562806dbafae37109975e970aae91b43e73b440 \
-  --local-dir ~/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF
+  --local-dir ~/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF  # should have used the default hf cache, not --local-dir
 
 llama-server -m ~/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf \
   --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \

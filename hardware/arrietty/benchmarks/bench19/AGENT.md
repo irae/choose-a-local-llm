@@ -94,9 +94,13 @@ land.
   server.** EvalPlus sends temperature 0 itself.
 - **Effort medium is banned for Qwen3.8** (owner rule, 2026-09-09).
 - **Downloads never block this run** (owner rule, 2026-09-14). Every
-  model file is already in `~/.cache/llama.cpp/hf/` from run 17; a
-  missing one is fetched by the repository and file name in
-  `bench17/state.md`, "Files and revisions".
+  model file is already in `~/.cache/llama.cpp/hf/` from run 17 (should
+  have used `hf download` with its default cache, not `--local-dir` —
+  migrated to the default Hugging Face hub cache on 2026-09-15, except
+  the file this run has open); a missing one is fetched with
+  `hf download <repo> <file>` (default cache, no `--local-dir`), by the
+  repository and file name in `bench17/state.md`, "Files and revisions".
+  Check presence with `hf cache ls`, not by listing the filesystem.
 - Every scoring run starts `benchmarks/run-watch.sh` as the checklist
   says, with the CUDA signatures.
 - Commit on `run19` as results land. Push `run19` at every block close
@@ -164,7 +168,7 @@ values.
    for the desktop. A drafter never changes an output at temperature 0.
 
    ```bash
-   llama-server -m ~/.cache/llama.cpp/hf/<file> \
+   llama-server -m "$(hf download <repo> <file>)" \
      --alias <alias> --no-mmproj --parallel 1 <arm flags> \
      -ngl 999 --fit off -fa on -c 32768 \
      --cache-type-k <kv> --cache-type-v <kv> \
@@ -212,7 +216,7 @@ values.
    commit, push, message the coordinator. Stop the watcher and the
    server, wait for `vram_start_mb`, start the next block.
 
-| mnemonic | file (under `~/.cache/llama.cpp/hf/`) | alias | kv | arm flags | fallback arm | extra body | calibration |
+| mnemonic | file (`<repo>` and `<file>` for `hf download <repo> <file>`, default cache) | alias | kv | arm flags | fallback arm | extra body | calibration |
 |---|---|---|---|---|---|---|---|
 | `qwen38-ista-evalplus-xhigh` | `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf` | `qwen3.8-27b-ista` | `q8_0` | `--spec-type draft-mtp --spec-draft-n-max 2` | no drafter | `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}` | `qwen38-ista-xhigh` |
 | `qwen38-iq3s-evalplus-xhigh` | `unsloth/Qwen3.8-27B-GGUF/Qwen3.8-27B-UD-IQ3_S.gguf` | `qwen3.8-27b-iq3s` | `q8_0` | `--spec-type draft-mtp --spec-draft-n-max 2` | no drafter | `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}` | `qwen38-iq3s-xhigh` |

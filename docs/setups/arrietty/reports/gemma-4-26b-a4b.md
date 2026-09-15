@@ -37,7 +37,7 @@ Each table row above is one config; start it with its block below.
 pi id `gemma-4-26b-a4b-nvfp4`. A community NVFP4 repack that keeps attention at Q8. The file is larger than the card, so a measured count of expert layers stays in host RAM: 7 is the lowest `--n-cpu-moe` that loads at `-c 98304` and serves a real request at the deep cell (6 runs out of memory at load). The file has no MTP layers, so no drafter arm exists. The guided task scored 37.5, 3 of 8 libraries, and ended on a loop in its text.
 
 ```bash
-llama-server -m ~/.cache/llama.cpp/hf/catlilface/Gemma-4-26B-A4B-NVFP4-GGUF/Gemma4-26b-NVFP4Q8.gguf \
+llama-server -m "$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-NVFP4Q8.gguf)" \
   --alias gemma-4-26b-a4b-nvfp4 --no-mmproj --parallel 1 \
   -ngl 999 --fit off --n-cpu-moe 7 -fa on -c 98304 \
   --cache-type-k f16 --cache-type-v f16 \
