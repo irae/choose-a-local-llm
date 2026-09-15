@@ -8,13 +8,14 @@ const props = defineProps({
   drafter: { type: String, default: '' },
   kv: { type: String, default: '' },
   effort: { type: String, default: '' },
+  hardware: { type: String, default: '' },
   hide: { type: String, default: '' },
   top: { type: Boolean, default: false },
 })
 
 const EFFORTS = ['off', 'on', 'low', 'medium', 'high', 'xhigh', 'max']
 const KVS = ['f16', 'q8_0', 'q4_0', 'q4_0+bias']
-const FIELDS = ['quant', 'server', 'publisher', 'drafter', 'kv', 'effort']
+const FIELDS = ['quant', 'server', 'publisher', 'drafter', 'kv', 'effort', 'hardware']
 const name = `ModelSpec ${props.base || '?'} ${props.quant || ''}`.trim()
 
 // `hide` lists the fields a line leaves out, comma separated: the rows
@@ -39,7 +40,7 @@ if (props.drafter && !/^[a-z]+(\/\d+)?$/.test(props.drafter)) {
 
 const card = props.repo ? `https://huggingface.co/${props.repo}` : ''
 const title = show('quant') ? `${props.base} ${props.quant}` : props.base
-const hasServing = show('server') || show('publisher')
+const hasServing = show('server') || show('publisher') || show('hardware')
 const hasPills = show('drafter') || show('kv') || show('effort')
 </script>
 
@@ -47,6 +48,7 @@ const hasPills = show('drafter') || show('kv') || show('effort')
   <span class="ms" :class="{ 'ms-top': top }">
     <span class="ms-name">{{ title }}</span>
     <span v-if="hasServing || hasPills" class="ms-sub">
+      <span v-if="show('hardware')" class="ms-serving ms-hardware">{{ hardware }}</span><span v-if="show('hardware') && (show('publisher') || show('server'))" class="ms-serving">,</span>
       <a v-if="show('publisher')" class="ms-publisher" :href="card" target="_blank" rel="noreferrer">{{ publisher }}</a><span v-if="show('publisher') && show('server')" class="ms-serving">,</span>
       <span v-if="show('server')" class="ms-serving">{{ server }}</span>
       <span v-if="hasServing && hasPills" class="ms-serving">–</span>

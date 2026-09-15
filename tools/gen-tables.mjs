@@ -118,8 +118,9 @@ function repoOf(row) {
   return m[1]
 }
 
-function specTag(spec, { hide = '', label = '', repo = '', top = false } = {}) {
+function specTag(spec, { hide = '', label = '', repo = '', top = false, hardware = '' } = {}) {
   for (const k of ['base', 'quant', 'server', 'publisher', 'kv']) {
+    if (k === 'server' && hide.split(',').includes('server')) continue
     if (!spec?.[k]) throw new Error(`spec ${label || JSON.stringify(spec)}: missing ${k}`)
   }
   const card = repo || spec.repo
@@ -137,6 +138,7 @@ function specTag(spec, { hide = '', label = '', repo = '', top = false } = {}) {
     spec.drafter ? `drafter="${spec.drafter}"` : '',
     `kv="${spec.kv}"`,
     spec.effort && !hideEffort ? `effort="${spec.effort}"` : '',
+    hardware ? `hardware="${hardware}"` : '',
     hide ? `hide="${hide}"` : '',
     top ? 'top' : '',
   ].filter(Boolean)
@@ -629,7 +631,7 @@ function topSet(rows, read, { lower = false } = {}) {
   return new Set(rows.filter((r, i) => vals[i] !== null && (vals[i] === ranked[0] || vals[i] === second || near(vals[i]))))
 }
 
-function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = true } = {}) {
+function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = true, hardware = false, hide = '' } = {}) {
   const header = [
     `| Model / Config | Ctx | Cap | tok/s |${memory ? ' Memory<br>(at max ctx) |' : ''} EvalPlus | Coding |`,
     `|---|--:|:--:|--:|${memory ? '--:|' : ''}--:|--:|`,
@@ -659,7 +661,7 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     const tok = r.abandoned
       ? `*${cell(r, 'tokShallow')} → ${cell(r, 'tokDeep')}*`
       : `<TokCell shallow="${r.tokShallow}" deep="${r.tokDeep}"${tokStale ? ' stale' : ''}${top.tokShallow.has(r) ? ' top-shallow' : ''}${top.tokDeep.has(r) ? ' top-deep' : ''} />`
-    const spec = specTag(r.spec, { label: r.id, repo: repoOf(r), top: top.composite.has(r) })
+    const spec = specTag(r.spec, { label: r.id, repo: repoOf(r), top: top.composite.has(r), hardware: hardware ? r.hardwareSlug : '', hide })
     const config = r.abandoned ? `${spec} ${r.abandoned.marker || '💀'}` : spec
     const ev = evalplusCell(r.evalplus)
     const md = mendelCellParts(r)
@@ -689,7 +691,7 @@ function buildName(config) {
   return config.split(',').slice(0, 2).map((s) => s.trim()).join(', ')
 }
 
-function renderHomeTable(data) {
+function homeRows(data) {
   const seen = []
   const groups = new Map()
   for (const r of data.rows) {
@@ -705,9 +707,9 @@ function renderHomeTable(data) {
     const complete = rows.filter((r) => !hasPending(r))
     const pick = sortRows(complete.length ? complete : rows)[0]
     const rest = pick.config.split(',').slice(2).map((s) => s.trim()).join(', ')
-    return { ...pick, config: rest ? `${name}, ${rest}` : name }
+    return { ...pick, config: rest ? `${name}, ${rest}` : name, hardwareSlug: data.hardwareSlug }
   })
-  return renderTable(best, { memory: false })
+  return best
 }
 
 function applyBlock(content, startMark, endMark, block, target) {
@@ -844,6 +846,8 @@ const isNew = (r) => Boolean(r.added) && HEAD_TIME - Date.parse(r.added) < 48 * 
 
 const dataFiles = globSync('docs/setups/*/models.json')
 let drift = false
+const homeAll = []
+const modelsAll = new Map()
 
 for (const dataFile of dataFiles) {
   const setupDir = dataFile.replace(/\/models\.json$/, '')
@@ -874,13 +878,14 @@ for (const dataFile of dataFiles) {
   const allNote = (all) => (all ? ['', 'Fewer than two rows pass the filter of this table, so it shows every row it can hold.'] : [])
   const comparisonTable = [renderTable(mainRows, { memory: false }), ...allNote(mainAll)].join('\n')
   const partialTable = [renderTable(partialRows, { sort: false, start: mainRows.length, memory: false }), ...allNote(partialAll)].join('\n')
-  const homeTable = renderHomeTable({ ...data, rows: visible })
+  homeAll.push(...homeRows({ ...data, rows: visible }))
+  for (const [slug, model] of Object.entries(data.models || {})) {
+    const rows = modelRows(data, model).filter((r) => !r.abandoned).map((r) => ({ ...r, hardwareSlug: data.hardwareSlug }))
+    modelsAll.set(slug, [...(modelsAll.get(slug) || []), ...rows])
+  }
 
-  const homeStart = `<!-- gen:models-evaluated:${data.setup}:start -->`
-  const homeEnd = `<!-- gen:models-evaluated:${data.setup}:end -->`
   const targets = [
     [`${setupDir}/comparison.md`, comparisonTable, [PARTIAL_START, PARTIAL_END, partialTable]],
-    ['docs/index.md', homeTable, null, [homeStart, homeEnd]],
   ]
 
   for (const [target, table, partial, marks] of targets) {
@@ -935,6 +940,35 @@ for (const dataFile of dataFiles) {
       console.log(`updated: ${target}`)
     }
   }
+}
+
+const writeBlock = (target, start, end, block) => {
+  const original = readFileSync(target, 'utf8')
+  const updated = applyBlock(original, start, end, block, target)
+  if (updated === original) return
+  if (CHECK) {
+    console.error(`STALE: ${target} does not match docs/setups/*/models.json. Run \`npm run docs:tables\`.`)
+    drift = true
+  } else {
+    writeFileSync(target, updated)
+    console.log(`updated: ${target}`)
+  }
+}
+
+writeBlock('docs/index.md', '<!-- gen:models-evaluated:all:start -->', '<!-- gen:models-evaluated:all:end -->', renderTable(homeAll, { memory: false, hardware: true }))
+
+const bestPerModel = [...modelsAll].map(([slug, rows]) => {
+  const complete = rows.filter(isComplete)
+  return { ...sortRows(complete.length ? complete : rows)[0], modelSlug: slug }
+})
+writeBlock(
+  'docs/models/index.md',
+  '<!-- gen:models-best:start -->',
+  '<!-- gen:models-best:end -->',
+  [renderTable(bestPerModel, { memory: false, hardware: true, hide: 'server' }), '', sortRows(bestPerModel).map((r) => `[${r.spec.base}](./${r.modelSlug}.md)`).join(' · ')].join('\n'),
+)
+for (const [slug, rows] of modelsAll) {
+  writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-all:start -->', '<!-- gen:model-all:end -->', renderTable(rows, { memory: false, hardware: true, hide: 'server' }))
 }
 
 if (CHECK && drift) process.exit(1)

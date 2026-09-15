@@ -1,5 +1,7 @@
 {
   "setup": "arrietty",
+  "hardwareSlug": "rtx-5060ti-16gb",
+  "hardwareName": "RTX 5060 Ti 16 GB",
   "hardware": "GeForce RTX 5060 Ti 16 GB, 12 CPU threads, 32 GB RAM, Linux",
   "vram": 16311,
   "rows": [
