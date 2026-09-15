@@ -91,6 +91,29 @@ deep cells).
 A table and no pick. The coordinator names the served arm and the KV
 type.
 
+### sweep-qwen38-iq3s-mtp
+
+The drafter climb on the unsloth file, at the q8_0 arm's `-c 65536`
+(`qwen38_iq3s_q8_c`), so the two providers of this model read at the
+same arms. The no-drafter cells above are the base arm.
+
+**n-max 1 arm.** `-c 65536` loaded clean (15550 MiB) and served the
+deep-cell probe (64512) clean, no retry needed.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance |
+|---|--:|--:|--:|--:|--:|
+| n-max1 | 4096 | 37.16 | 0.81 | 858.83 | ~0.57-0.93 |
+| n-max1 | 24576 | 34.34 | 2.53 | 800.81 | ~0.57-0.93 |
+| n-max1 | 64512 | 26.28 | 0.41 | 677.31 | ~0.57-0.93 |
+
+Faster than the no-drafter q8_0 arm at every depth (37.16 vs 29.36 at
+4K, 34.34 vs 25.84 at 24K, 26.28 vs 20.92 at 64.5K). Draft acceptance
+0.57-0.93, mean draft length ~1.57-1.93. Per the sweep rule, the climb
+continues to n-max 2.
+
+A table and no pick. The coordinator names the served arm. Speed only:
+the guided row of this build runs with no drafter.
+
 ### sweep-gemma26-nvfp4
 
 `catlilface/Gemma-4-26B-A4B-NVFP4-GGUF` `Gemma4-26b-NVFP4Q8.gguf` rev

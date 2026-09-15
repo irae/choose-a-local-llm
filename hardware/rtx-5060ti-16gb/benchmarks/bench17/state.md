@@ -620,6 +620,13 @@ arm. Files: `results/benchy-qwen38-ista-{nodraft,nmax1,nmax2,nmax3}.md`,
 matching `server-sweep-qwen38-ista-*.log` and `*-vm.log`. Moving to
 `sweep-qwen38-iq3s-mtp` per `AGENT.md` order.
 
+### sweep-qwen38-iq3s-mtp n-max1 — closed, faster than no-drafter
+
+`-c 65536` (`qwen38_iq3s_q8_c`) loaded clean, no retry needed. Full
+sweep: 37.16/34.34/26.28 tok/s at 4K/24K/64.5K, faster than the
+no-drafter q8_0 arm (29.36/25.84/20.92) at every depth. Climb
+continues to n-max2.
+
 ## Handing over
 
 Not started.
