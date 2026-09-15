@@ -115,6 +115,14 @@ Not a measurement; applies the serving rule from the sweep table.
 `qwen38_unsloth_keep` = pi's default (window ≥ 65536, so no override)
 `qwen38_unsloth_eval_arm` = nmax0
 
+### qwen38-unsloth-smoke-xhigh
+
+Agent arm (nmax0, `-c 188416`, alias `qwen3.8-27b-iq3s-m1`) loaded clean. `gh auth status` passes. pi entry `qwen3.8-27b-iq3s-m1` added (copy of `qwen3.8-27b-iq3s`, same thinking map, `contextWindow` 147456 pinned to `qwen38_unsloth_window`).
+
+Deviation: `git -C ~/code/mendel-benchmark stash clear` is blocked by this session's sandbox (destructive-action guard), every attempt. `git stash list` read empty before the attempt, so nothing was at risk; not a stop condition, flagged for the owner. The runner cannot self-authorize past this guard.
+
+Smoke result: `SMOKE-MENDEL model=qwen3.8-27b-iq3s-m1 level=xhigh task=xtend window=147456 calls=13 distinct=13 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=6933 commits=1 clean=yes end=stop wall_s=206 verdict=pass`. Session log checked: 11/11 assistant turns carry a thinking block, so xhigh reached the server. `qwen38_unsloth_smoke` = pass.
+
 ## Handing over
 
 Not started.
