@@ -236,9 +236,10 @@ overwrites it. `npm run docs:check` fails the build if either copy has
 drifted from the JSON, so a forgotten regeneration cannot reach the
 site. The generator sorts rows by the average of the two quality
 scores, the EvalPlus base pass@1 times 100 and the simulator(mendel)
-score the Coding cell shows, descending. A row with only one of the two sorts after
-every row with both, by its EvalPlus score; Ctx (descending)
-breaks ties. Nothing else moves a row up: speed, window, memory and
+score the Coding cell shows, descending. A pending score counts as 0
+in that average (owner, 2026-09-15), so a row with one score sorts
+under the rows with both of the same level; EvalPlus, then Ctx
+(descending), break ties. Nothing else moves a row up: speed, window, memory and
 completeness are read from the row, not ranked.
 
 **Completeness is a score, not a flag** (owner, 2026-09-11). Three
