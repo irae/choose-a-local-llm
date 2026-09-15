@@ -576,6 +576,17 @@ arms. Stepped `-c` down 8192 to 57344 per the retry rule, loaded at
 15466 MiB (~845 MiB headroom), probing the deep cell (56320) before
 the full sweep.
 
+Deviation (resolved): a fresh session after a context compaction did
+not carry forward the exported `PATH`/`LD_LIBRARY_PATH` from
+`machine-setup` (shell state does not persist across tool calls,
+only the working directory). The first n-max3 server start resolved
+`llama-server` to `/usr/bin/llama-server`, a system build with no CUDA
+support (`warning: no usable GPU found`), and loaded the model fully
+on CPU (VRAM stayed near the idle baseline). Caught before any benchy
+cell ran, killed, and restarted with the two exports from this file
+inline in the same command. Every server start from here on carries
+them inline; no session assumes they are still set.
+
 ### sweep-qwen38-ista n-max2 — closed, faster than n-max1
 
 Deep-cell probe at `-c 57344` passed clean, 25.12 tok/s at depth
