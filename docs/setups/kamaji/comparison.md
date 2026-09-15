@@ -1,46 +1,27 @@
 # Local coding models on M1 Max 32 GB
 
-Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, updated 2026-09-11
+llama-server + mlx_lm.server + PrismML fork · wired limit 25000
 
 ## Highlights
 
-- **Best quality, and the model that finishes the agent task at its own
-  default level:** Qwen3.8-27B. 0.988 base and 0.945 plus on EvalPlus
-  across its 3-bit GGUF builds; on the Mendel blind task at effort
-  xhigh the 4-bit GGUF scores 93 of 100 on a 65K window and the ISTA
-  3-bit build 80.5 on a 147K window, both complete, one run each. Send
-  hard problems to one of those rows.
-- **Secondary-model pick, best big window, and best depth:** Gemma-26B
-  on llama-server at f16 KV gives 60.3 tok/s at 4K and 17.3 at 197K,
-  the largest context this machine loads for it; 0.976 / 0.945 / 100%
-  on EvalPlus with thinking off, 47.5 of 100 on Mendel, complete.
-  Gemma-12B with f16 KV and no drafter goes deeper still, 24.64 tok/s
-  at 4K and still 8.86 at 245K, reaching the model's own 262,144
-  window above the floor, in 13.9 GB.
-- **Fastest shallow decode, and the KV type is a window-against-speed
-  trade:** Qwen3.6-35B on llama. With f16 KV and no drafter it reads
-  49.8 tok/s at 4K and 38.3 at 40K on real text, the largest window
-  that loads; with q8_0 KV and its drafter the same files serve
-  `-c 98304` and read 13.0 at 82K. EvalPlus 0.951 / 0.915 / 100% with
-  thinking off; on the agent task 63 blind with thinking on and 50.5
-  blind at thinking off.
-- **Cheapest in memory, and most parallel:** Ternary Bonsai-27B gives
-  27B-class quality from 8 GB of weights and the flattest curve of any
-  model, but has never finished the agent task. On the prism fork it
-  runs 2×48K slots at 9.8 tok/s each in 10.0 GB, the only setup that
-  leaves the machine free, and at f16 KV the fork has no speed floor
-  to 131K.
-- **A plain MLX 4-bit build can score below a calibrated GGUF build of
-  the same model, and never above it.** Gemma-4-26B-A4B lost 0.171 base
-  on EvalPlus and Gemma-4-12B lost 0.067, while Qwen3.8-27B lost
-  nothing. MLX rounds every group to the same 4-bit grid with no
-  calibration; a GGUF k-quant mixes the bit width per tensor and takes
-  an importance matrix. The order holds, the size of the gap does not:
-  [quantization](../../methodology/quantization.md).
-- **The rule that decides everything:** MLX runtimes barely slow down but
-  hit hard memory ceilings. llama runtimes hold their speed deeper at f16
-  KV, and their ceiling is the largest `-c` that loads; a published `-c`
-  that OOMs at load is not a window.
+- **Qwen3.8-27B, best agent rows.** Blind at effort xhigh: 93 on the
+  4-bit GGUF (65K window), 90.5 on the unsloth UD-IQ3_S (147K), 80.5 on
+  the ISTA IQ3_S-mtp (147K), all 8 of 8. EvalPlus best: 0.988 base
+  (AtomicChat), 0.945 plus (ISTA), both at effort medium.
+- **Gemma-4-26B-A4B, llama-server, f16 KV, MTP n-max 2.** 197K at
+  60.1 → 19.1 tok/s. EvalPlus 0.976 / 0.945 / 100% at thinking off.
+  Blind 47.5, 8 of 8.
+- **Qwen3.6-35B-A3B, llama-server.** f16 KV, no drafter: 49.8 tok/s at
+  4K, 38.3 at 40K. q8_0 KV with the drafter: 82K at 13.0 tok/s. Guided
+  83 at thinking on, 62.5 at off.
+- **Gemma-4-12B, llama-server, f16 KV.** 245K at 8.86 tok/s; two slots
+  of 82K in 13.8 GB. EvalPlus 0.976 / 0.939 / 100% at thinking off.
+- **Ternary Bonsai-27B.** 8 GB of weights. Prism fork: two 48K slots at
+  9.8 tok/s in 10.0 GB; at f16 KV no speed floor to 131K. No complete
+  agent row.
+- **MLX 4-bit against GGUF on EvalPlus:** Gemma-4-26B-A4B 0.171 base
+  lower on MLX, Gemma-4-12B 0.067 lower, Qwen3.8-27B level
+  ([quantization](../../methodology/quantization.md)).
 
 ## Models evaluated
 
@@ -67,86 +48,17 @@ Cross-model picks · llama-server (build 10621) + mlx-lm 0.31.3 · 2026-08-25, u
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:end -->
 
-¹ LM Studio's MLX engine, the only runtime that loads this model's
-`gemma4_unified` architecture. It is retired here and no longer a
-candidate; [the reasons are on its own page](./lmstudio-retired.md).
-
+¹ LM Studio's MLX engine, retired ([why](./lmstudio-retired.md)).
 ² PrismML's llama.cpp fork, an approved exception to the no-forks rule.
 
-#### Legend
-
-- **Ctx**, the usable context: the deepest context the config served
-  above the floor, set by Cap. The coding harness gets the same
-  window, rounded down to a multiple of 4096. On MLX the cell shows
-  the harness window, 5 percent under the measured ceiling, because
-  that runtime often triggers macOS memory compression near it.
-- **Cap**, what stops the context from growing: memory holds the
-  weights, the drafter, a vision adapter and the runtime's buffers,
-  and what is left is context. Some models do not fit their trained
-  window; others fit it and then decode too slowly to use. The floor
-  is 8 tok/s. `mem` means memory ended the curve, whether the server
-  did not load a larger context, died in flight, compacted or swapped,
-  or the model's own trained window arrived first; the row note says
-  which. `speed` means decode fell under the floor while memory still
-  had room.
-- **tok/s**, decode speed shallow, near an empty context, then deep,
-  at Ctx. Most tools report the shallow number only, but engineering
-  work and long documents run at depth, where speed falls. A drafter
-  (MTP, speculative decoding) often changes the picture, and for some
-  models it can help at one depth and hurt at another; nobody knows
-  before measuring, so every drafter row is read on real text at
-  more than one draft depth, with its acceptance.
-- **EvalPlus**, scored once per model and thinking mode; runtimes
-  serving the same model at a standard quant share the score, until a
-  measurement says otherwise: Gemma-4-12B's GGUF Q4_K_XL scored 0.067
-  above its LM Studio MLX 4-bit, and Gemma-4-26B-A4B's GGUF UD-Q4_K_XL
-  at f16 KV scored 0.171 above its MLX 4-bit, so those pairs carry
-  their own. Aggressive quants (for example the prism fork's
-  calibrated q4 KV) never share; they pass the gate separately. Each
-  run gets an output budget from a ten-problem calibration, capped at
-  30000 tokens. A problem that runs to the cap counts as failed; the
-  completion percentage says how many finished. The cap is what this
-  machine can wait for, not the model's ceiling, so a capable model
-  at a high reasoning level can lose points to it.
-- **Coding**, a simulated pull request: the `pi` coding agent fixes a
-  real issue in a real repository with known traps, over many turns,
-  not one prompt. A stalled agent gets a fixed number of nudges; a
-  nudge the model caused costs points. Mendel blind gives the terse
-  issue and the model plans the work itself. Mendel guided gives the
-  same task as steps with the traps disclosed, so a smaller model can
-  serve as an executor rather than a planner. The pill names the
-  test. Of the config's valid runs on the current prompt version the
-  cell shows the one with the most libraries done, then the higher
-  score; a muted percentage before the score is the share of
-  libraries done when the run did not finish. A run with zero commits
-  from the model's own failure shows `0% / 0` with a `model-failed`
-  pill; `invalid` means every attempt failed on the harness or the
-  server, `pending` that none ran. Never shared across levels or
-  serving configs. Rows sort by the average of the EvalPlus base
-  score and this one; a row with only one of the two sorts after
-  every row with both. A single run carries about ten points of
-  noise, so two rows within that are not separated. Every row's
-  detail is in [the Mendel section](#mendel-agentic-quality-issue-13-bake-off).
-
-All ceilings below are slow creeps. Rows measured from 2026-09-06 on
-ran at wired limit 25000, the standing value; older rows ran at 24000
-and say so in their config notes. See
-[the measurement rules](../../methodology/context-creep) for why the
-slow creep is more realistic than a fast sweep.
-
-"Memory (at max ctx)" is the wired GPU memory the config holds at max ctx.
-
-Server commands live in each model's report; aliases equal the pi model ids.
-Compaction thresholds come from the floor table below, not from the window.
+Columns and sort: [the legend](../../#legend). On this machine an MLX
+Ctx is the harness window, 5 percent under the measured ceiling. Server
+commands: each model's report. Aliases equal the pi model ids.
 
 ### Rows still being measured
 
-Every row above has all three measurements: tok/s, EvalPlus and
-Mendel. The rows below have at least one of the three
-and are missing one or two; the same footnotes and sort apply, and
-`#` continues the count. Rows with none of the three stay on their
-model page. When fewer than two rows pass the filter of a table, that
-table shows every row it can hold, and a note under it says so.
+Rows with two of the three measurements, or added in the last 48
+hours.
 
 <!-- gen:models-evaluated-partial:start -->
 | Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
@@ -166,29 +78,16 @@ table shows every row it can hold, and a note under it says so.
 
 ## Per-model reports
 
-- [Qwen3.8-27B](./reports/qwen3.8-27b.md): strongest base model,
-  slowest on this hardware; on llama at f16 KV it finishes the agent
-  task at the model's own default, 93 blind on the 4-bit build and
-  80.5 on the ISTA 3-bit build
-- [Gemma-4-26B-A4B](./reports/gemma-4-26b-a4b.md): MoE+MTP, fastest
-  Python, 197K at f16 KV on one slot, 47.5 blind on the agent task
-- [Qwen3.6-35B-A3B](./reports/qwen3.6-35b-a3b.md): MoE+MTP, fastest JS,
-  strongest base benchmarks; 41K at 53 tok/s with f16 KV, 82K at q8_0
-- [Gemma-4-12B-it](./reports/gemma-4-12b-it.md): biggest context, best
-  concurrency, 2×82K on llama f16
-- [Ternary Bonsai-27B](./reports/bonsai-27b.md): 27B-class from 8 GB;
-  two serving profiles (MLX speed / prism-fork desktop), 2 concurrent
-  slots on the fork, no floor to 131K at f16 KV
+- [Qwen3.8-27B](./reports/qwen3.8-27b.md)
+- [Qwen3.6-35B-A3B](./reports/qwen3.6-35b-a3b.md)
+- [Gemma-4-26B-A4B](./reports/gemma-4-26b-a4b.md)
+- [Gemma-4-12B-it](./reports/gemma-4-12b-it.md)
+- [Ternary Bonsai-27B](./reports/bonsai-27b.md)
 
-## Decode speed vs used context — the 8 tok/s usability floor
+## Decode speed vs used context
 
-Slow creeps. Rows dated 2026-09-06 or later ran at wired limit 25000:
-the three Qwen3.6 rows, the Qwen3.8 GGUF rows, the Bonsai fork at f16
-and the Gemma-12B two-slot row. The unsloth UD-IQ3_S Qwen3.8 row ran
-at 25000 on 2026-09-14. The Gemma-26B row, the Gemma-12B one-slot rows,
-the Bonsai MLX row and the Qwen3.8 MLX row ran at 24000 between
-2026-08-29 and 2026-09-05; the two speed-floored llama rows keep the
-fast sweep of 2026-08-28.
+Slow creeps, floor 8 tok/s. Rows from 2026-09-06 on ran at wired limit
+25000; older rows ran at 24000 and say so in their config notes.
 
 | config | max ctx | tok/s @ 4K | @ 16K | @ 32-33K | @ 49K | @ 74-90K | capped by | EvalPlus (base/plus/completion) |
 |---|--:|--:|--:|--:|--:|--:|---|--:|
@@ -207,223 +106,42 @@ fast sweep of 2026-08-28.
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" hide="effort" top /> | 131072 | 15.0 | 15.6 | 14.5 | 13.4 | 11.5 (82K) | untested — no floor found; 9.7 tok/s at 131K, the `-c` boundary itself | pending |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" hide="effort" /> | 65536 | 14.9 | 10.8 | 7.9 | | 7.9 (32K) | speed — under 8 tok/s at 32K, single slot deep, other slot idle-loaded | 0.927/0.890/98% |
 | <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" hide="effort" /> | 262144 | 13.8 | 6.5 | | | | speed — under 8 tok/s at 16K | 0.976/0.939/100% |
-| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" hide="effort" top /> | 262144 | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | mem — 8.86 tok/s at 245K, where the trained window ends² | 0.976/0.939/100% |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" hide="effort" top /> | 262144 | 24.6 | 22.7 | 20.6 | 18.8 | 8.86 (245K) | mem — 8.86 tok/s at 245K, where the trained window ends | 0.976/0.939/100% |
 | <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" hide="effort" /> | 196608, 2 slots | 25.0 | 22.8 | 20.6 | 18.6 | 15.7 (82K) | mem — swap grew at the step past 82K on every larger `-c`; 82K per slot is the ceiling | 0.976/0.939/100% |
 
-Cells are blank past a config's cap, or where no step was measured at that depth.
-**Max ctx** is the `-c` the curve ran at on llama-server and the prism
-fork, and the last stable step before the Metal OOM on MLX, which has
-no `-c`.
-
-The Gemma-12B curve on LM Studio and the Gemma-26B MLX curve are gone
-from this table. That runtime and that build are retired here; their
-numbers stay on the model pages, with the reasons on
-[the LM Studio page](./lmstudio-retired.md) and
-[the Gemma-26B MLX page](./gemma-4-26b-a4b-mlx-retired.md).
-
-\*8K value.
-
-² The Gemma-12B llama f16 curve was measured 2026-09-04, thinking off.
-It ends where the model's trained window ends, with wired memory flat at
-13.9 GB.
+- A blank cell: past the cap, or no step at that depth.
+- **Max ctx**: the `-c` of the curve on llama-server and the fork; the
+  last stable step before the Metal OOM on MLX.
+- \*8K value.
+- Retired curves: [LM Studio](./lmstudio-retired.md),
+  [Gemma-26B MLX](./gemma-4-26b-a4b-mlx-retired.md).
 
 ## Code quality — EvalPlus HumanEval+
 
 | config | budget | pass@1 base | pass@1 plus | completion | status |
 |---|--:|--:|--:|--:|---|
 | <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" top /> | 8886 | **0.988** | 0.927 | 100% | 0 empty, 3h10 |
-| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" /> | 8192 | 0.982 | 0.939 | 100% | 0 empty; the 4-bit GGUF at medium carries this score and has no run of its own |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" /> | 8192 | 0.982 | 0.939 | 100% | 0 empty; the 4-bit GGUF at medium carries this score |
 | <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" /> | 8192 | 0.976 | **0.945** | 99% | 1 empty, 3h07 |
-| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" /> | 8192 | 0.976 | 0.933 | 99% | 1 empty, 2h23; level with the medium row on base, one problem lower on plus |
-| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" /> | 30000 | 0.945 | 0.921 | 97% | 5 empty, all at the 30000-token cap, about 9h43 active; below medium and low on both metrics |
-| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" /> | 30000 | 0.957 | 0.939 | 96% | 6 empty, all at the cap, 8h30 active |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" /> | 8192 | 0.976 | 0.933 | 99% | 1 empty, 2h23 |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" /> | 30000 | 0.945 | 0.921 | 97% | 5 empty at the 30000 cap, 9h43 |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" /> | 30000 | 0.957 | 0.939 | 96% | 6 empty at the cap, 8h30 |
 | <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" top /> | 8192 | **0.976** | **0.945** | 100% | 0 empty, 19 minutes |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | 30000 | 0.884 | 0.860 | 89% | 18/164 empty, thinking non-convergence |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | 30000 | 0.713 | 0.701 | 72% | 46/164 empty, the convergence problem at its worst |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | 30000 | 0.884 | 0.860 | 89% | 18/164 empty |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | 30000 | 0.713 | 0.701 | 72% | 46/164 empty |
 | <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" top /> | 8192 | **0.976** | **0.939** | 100% | 0 empty |
-| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" /> | 30000 | 0.909 | 0.872 | 100% | 0 empty; 0.067 under the GGUF quant, so the two do not share a score |
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" /> | 30000 | 0.909 | 0.872 | 100% | 0 empty |
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" top /> | 8192 | **0.951** | 0.915 | 100% | 0 empty, 15 minutes |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | 26624 | 0.939 | **0.921** | 97% | 5/164 empty is a real model ceiling |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" top /> | 10240 | **0.915** | **0.884** | 97% | 5/164 empty is a real model ceiling |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | 26624 | 0.939 | **0.921** | 97% | 5/164 empty |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" top /> | 10240 | **0.915** | **0.884** | 97% | 5/164 empty |
 
-## Mendel — agentic quality (issue-13 bake-off)
+- Empty: a problem that ran to the budget with no answer. It counts as
+  failed.
+- Scores under the uncalibrated budget: [historical](./historical.md).
 
-Two independent tests of the same task (rubric unchanged, everything
-else different; never compare a score across them): **blind** (terse
-prompt, the model must find the traps itself) and **guided** (numbered
-workflow, traps disclosed, tests instruction-following instead of trap
-discovery). Full rubric, scoring method, and the rest of the field
-(proprietary and other local models) live in the open-source
-[Mendel benchmark](https://github.com/irae/mendel/tree/benchmark).
+## Mendel — agentic quality
 
-Current rows use blind prompt v1.1 and guided v3.0, run from fresh
-base tags with the tap crash fix. Rows from older prompt versions
-moved to [historical](./historical.md); never compare across prompt
-versions.
-
-Scores wear a completion cap: a score cannot exceed the fraction of
-the task that got done (`min(raw, 100 × done/8)`). A partial run that
-the model itself spoiled can run again, but the new row loses 10
-points for each earlier valid attempt. When our own harness caused the
-stop, the corrected re-run carries no penalty. Runs where a serving or
-harness failure prevented any real work are invalid and not listed
-here. A run with zero commits from the model's own failure is
-model-failed: it scores 0 and is listed. The hosted reports show both
-kinds dimmed, with reasons.
-
-Every row ran under the same harness, pi, which is pluggable and
-configurable and serves every model the same way, the cloud baselines
-included. "Ctx" is the context window the harness had for the run.
-
-| model | test | runtime | thinking | max ctx | score | status |
-|---|---|---|---|--:|--:|---|
-| Qwen3.8-27B | blind | GGUF Q4_K_M bartowski, f16 KV | effort medium | 49k | **87/100**‡ | complete, all 8 libraries; no bug defect. Harness reserve 16384 |
-| Qwen3.6-35B-A3B | guided | GGUF, q8_0 KV | high | 120k | **83/100**‡⏳ | complete, all 8 libraries |
-| Qwen3.8-27B | blind | GGUF IQ3_S-mtp ISTA, f16 KV, no drafter | effort xhigh | 147k | **80.5/100** | complete, all 8 libraries; one critical runtime defect (trap A). The model's own default level. Harness reserve 8192 |
-| Qwen3.8-27B | blind | GGUF IQ3_S-mtp ISTA, f16 KV | effort medium | 115k | **76.5/100** | complete, all 8 libraries; one critical runtime defect (trap A). Harness reserve 8192 |
-| Qwen3.8-27B | blind | GGUF Q4_K_M bartowski, f16 KV | effort medium | 66k | **76/100** | complete, all 8 libraries; one critical runtime defect (trap A). Harness reserve 8192 |
-| Qwen3.8-27B | blind | GGUF IQ3_S-mtp ISTA, f16 KV, no drafter | effort low | 147k | **66/100** | partial, 7/8 libraries; two runtime defects (traps A and C). Ended on the harness's 25-minute turn cap during a test suite |
-| Qwen3.6-35B-A3B | blind | GGUF, q8_0 KV | high | 98k | **63/100** | complete, all 8 libraries; one critical runtime defect (trap A) |
-| Qwen3.6-35B-A3B | guided | GGUF, q8_0 KV | off | 80k | **62.5/100** | complete, all 8 libraries |
-| Gemma-4-26B-A4B | guided | GGUF, f16 KV | high | 208k | **57/100** | partial, 7/8 libraries; third attempt, the first two killed by a system memory squeeze |
-| Gemma-4-26B-A4B | blind | GGUF, f16 KV | high | 213k | **47.5/100**‡ | complete, all 8 libraries; one critical runtime defect (trap A) |
-| Qwen3.6-35B-A3B | guided | GGUF, q8_0 KV | off | 48k | **46.5/100** | complete, all 8 libraries; twelve compactions on a window the creep does not support |
-| Gemma-4-12B | guided | GGUF, f16 KV, no drafter | off | 262k | **37.5/100** | partial, 3/8 libraries; model budget exhausted after three nudges |
-| Ternary Bonsai-27B | blind | MLX 2-bit | high | 58k | **37.5/100** (raw 55) | partial, 300-min wall clock at 3/8 libraries |
-| Qwen3.8-27B | blind | GGUF AD-IQ3_S AtomicChat, f16 KV | effort medium | 98k | **37.5/100** (raw 74) | partial, 3/8 libraries; ended on a repetition loop, the model's own failure |
-| Ternary Bonsai-27B | guided | GGUF², q4 KV | high | 64k | **31.5/100** | partial, 3/8 libraries; 300-min wall clock, stopped by hand at 469 minutes |
-| Gemma-4-26B-A4B | guided | GGUF, f16 KV | off | 208k | **25/100** (raw 44) | partial, 2/8 libraries; ended on the live loop stop, five identical edit calls |
-| Qwen3.8-27B | blind | MLX 4-bit | effort low | 26k | **12.5/100** (raw 67.5) | partial, 1/8; the 26624-token window plus a 16384-token output budget forced premature stops (our config arithmetic, not the model) |
-| Ternary Bonsai-27B | guided | MLX 2-bit | high | 58k | **12.5/100** (raw 59) | partial, 300-min wall clock at 1/8 libraries |
-| Ternary Bonsai-27B | blind | GGUF², q4 KV | high | 64k | **12.5/100** (raw 60.5) | 1/8 libraries; typoed the repo path, self-scoped to chalk; a penalized retry is pending |
-| Ternary Bonsai-27B | guided | GGUF², f16 KV, no drafter | high | 131k | **12.5/100** (raw 36) | partial, 1/8 libraries; 376 tool calls and 74 tool errors at a 127k peak context |
-| Gemma-4-26B-A4B | blind | GGUF, f16 KV | off | 208k | **12.5/100** (raw 21) | partial, 1/8 libraries; ended on the live loop stop, five identical edit calls |
-| Gemma-4-12B | blind | GGUF, f16 KV, no drafter | off | 262k | **0/100** (raw 2) | model-failed, 2026-09-06: zero commits; the model budget went to a repeated edit-tool schema error |
-| Ternary Bonsai-27B | guided | MLX 2-bit | off | 57k | **0/100** (raw 25) | model-failed, 2026-09-06: zero commits; 85 identical shell calls in a row, stopped by the operator after 187 minutes. The current live loop stop ends this run within minutes; this run set that rule and the timeout rules |
-
-**Effort xhigh beats low on Qwen3.8, and spends less doing it.** On the
-same build, the same window and the same reserve, xhigh scored 80.5
-with all eight libraries in 109 minutes at a 118K peak context; low
-scored 66 with seven in 163 minutes at 130K, and ended on the turn cap.
-Both rows record their sampling: temperature 1.0, top_p 0.95, the
-values the server reads from the model file.
-
-⏳ Pending a re-run, low priority. This row ran on a 120K harness
-window; at wired 25000 the q8_0 arm serves `-c 98304`, so the window
-is out of reach. The score stands as a record. See
-[the wired limit](./index.md#the-wired-limit-25000).
-
-‡ Scheduled for a re-run. These rows compacted under the harness's
-old reserve of 16384 tokens, twice the answer budget; since 2026-09-06
-the harness reserves 8192, so each gets a fresh row under the current
-setting and keeps this one until then. The Qwen3.8 row ran at effort
-medium, which that model is no longer run at; its fresh row is the
-4-bit build at effort xhigh, not yet run.
-
-Invalid, not scored as model quality: the Qwen3.8-27B MLX guided run
-of 2026-09-02 (Metal OOM crashes past the 26624-token window, zero
-commits) and the first Bonsai MLX guided run at thinking off, of
-2026-09-06 (a dead `gh` token). The three Gemma-4-12B runs of
-2026-09-03 on the retired LM Studio entry are model-failed (newline
-floods and a 72-call loop, zero commits; the current live loop stop
-ends each of them) and show only on
-[the LM Studio page](./lmstudio-retired.md), because that backend is
-retired.
-
-Full tables for both Mendel tests are on the
-[Mendel page](./benchmarks/mendel.md), and the complete reports are
-hosted here: <a href="../../mendel/report.html" target="_blank" rel="noreferrer">blind</a> ·
+Every row, blind and guided: [the Mendel page](./benchmarks/mendel.md).
+Hosted reports: <a href="../../mendel/report.html" target="_blank" rel="noreferrer">blind</a> ·
 <a href="../../mendel/report-guided.html" target="_blank" rel="noreferrer">guided</a>.
-
-**The window decides the agent task on dense Qwen3.8.** The task needs
-about 46K of context. The GGUF at f16 KV holds 49K and finished it at
-87; the MLX build holds 26K, kept stopping at 1 output token as the
-prompt neared its window, and its guided runs hit the Metal OOM
-dead-thread trap three times. Its scores above carry that caveat. On
-Qwen3.6 the same rule showed as 16 points: 62.5 on the window its
-creep supports against 46.5 on a smaller one that compacted twelve
-times.
-
-**Gemma-26B finishes the task at thinking high and loops at thinking
-off.** Blind at high it touched all eight libraries and lost most of
-its points to one critical trap and leftover calls; guided at high it
-did seven of eight. Both thinking-off rows ended on five identical edit
-calls, caught by the live loop stop in under half an hour each. Its
-earlier blind row at q8_0 KV scored 38, partial, on the previous prompt
-version.
-
-**Gemma-12B on llama-server ran out of budget, not of ability.** Three
-of eight libraries in the guided run, then the model budget after three
-nudges, the same signature as its retired LM Studio entry. Its blind
-run at thinking off is model-failed: zero commits, the budget spent on
-a repeated edit-tool schema error. The three LM Studio rows are
-model-failed too: the entry always thinks, fell into a repetition loop
-after its first failed edit in every run, and committed nothing. The
-evidence is on [the LM Studio page](./lmstudio-retired.md) and
-[the Gemma-12B data page](./benchmarks/gemma-4-12b-it.md#the-retired-entry).
-
-**Both Bonsai mlx rows ran at thinking high, not the requested low.**
-The runner asked for low, but the session logs record high; the flag
-was not honored on `mlx_lm.server`. The rows are scored and labeled at
-the observed level. Bonsai's blind run finished 3 of 8 libraries and
-lost about 40 minutes to one JSON syntax break of its own making; it
-ended on the 300-minute wall clock, not on the rubric.
-
-## Open questions
-
-- The 4-bit Qwen3.8 GGUF's own EvalPlus score and its agent row at effort
-  xhigh; the Bonsai fork's EvalPlus score at f16 KV; a thinking-on
-  score for Gemma-12B. No Mendel run at thinking off is planned
-  (owner, 2026-09-14).
-- The Bonsai prism-fork q4 pick, and the corpus behind its KV bias file.
-- **Qwen3-Coder-30B-A3B is the only promising untested contender.** Not on
-  this machine yet. Community-reported EvalPlus HumanEval+ 0.902 (unverified
-  by our gate); MoE, 3.3B active, GGUF Q4_K_M ~18.6 GB. Math projects its
-  GGUF single-slot ceiling above 45K, but its 2-slot ceiling lands close to
-  our 45K bar either way; likely below our best score. Worth a real test
-  before ruling it out, low priority otherwise.
-- Watch list: brew llama.cpp reading ternary Q2; mlx-lm gaining
-  `gemma4_unified` and server-side KV quantization; LM Studio's MLX
-  continuous batching (mlx-engine, general since 0.4.2, confirmed here at
-  0.4.21) as the only path to real multi-slot MLX serving. Plain
-  `mlx_lm.server` has no shared-weight multi-slot mode, so MLX 2-slot
-  math does not apply to it the way GGUF's does.
-
-## History and reasoning
-
-**Why the depth axis exists at all.** Decode speed falls as the KV cache
-fills. A real coding session measured 1.7 tok/s at 135K used tokens, on a
-config whose near-empty benchmark said 62. Context maxima alone are storage,
-not speed. So each model is swept with an append-only growing prompt, which
-gives perfect cache reuse, until decode drops under the 8 tok/s floor or the
-server runs out of memory. The floor, not the window, is where the harness
-compaction threshold belongs.
-
-**How to read the numbers.** Sweep prompts are synthetic code continuations,
-so MTP-model numbers read below the standard py/js bench, because draft
-acceptance differs. The curves stay comparable across rows. Scores are
-HumanEval+ pass@1, one score per model and thinking mode (footnote ²
-above).
-
-**Quality scores need a calibrated output budget.** A fixed budget that is
-too small lets reasoning exhaust the cap, and empty completions score as
-failures, a harness flaw, not a model flaw. Budgets here are calibrated per
-model from measured reasoning length. Superseded scores from an
-uncalibrated budget live on [the historical page](./historical.md), never
-here.
-
-**The Gemma models have a real convergence problem with thinking on.**
-Their thinking mode sometimes fails to converge at all, 30K tokens of
-reasoning with no answer. That is model behavior, not a harness limit;
-the 26B does it on 11% of the problems on the GGUF and 28% on the MLX
-build, and thinking off removes it.
-
-Superseded measurements live in
-[the historical page](./historical.md). Nothing on this page
-was measured under a retired wired limit. The flow is in the
-[methodology](../../methodology.md).
-
----
-
-Method: warmup before measurements; identical prompts across models;
-temperature 0. Per-model raw numbers in the benchmarks pages.
+Rows on older prompt versions: [historical](./historical.md).
