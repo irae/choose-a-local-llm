@@ -1,41 +1,12 @@
-# Finding the best local coding model for your machine
+# Local coding models, measured
 
-A repeatable process to answer, for one specific computer: **which local
-model, runtime, and configuration should I code with?** Everything runs
-against OpenAI-compatible servers that a coding harness can actually use.
+Which local model, runtime and config to code with, per machine. Every
+number comes from an OpenAI-compatible server that a coding harness
+uses.
 
-## What this project measures
+## Best config per build
 
-- **Usable speed at real session depth, not benchmark speed.** Decode speed
-  falls as the context fills. A model that benchmarks at 60 tok/s can crawl
-  at 2 tok/s mid-session.
-- **Context that fits the machine while it stays a desktop.** Memory
-  footprints are measured so the Mac remains usable while a model serves.
-- **Quality per quantization.** Published scores cover full-precision
-  models. What you run is a quant. One score per model and thinking
-  mode; runtimes at standard quants share it.
-- **A pick per use, not a single winner.** Models are used in more
-  than one way, and the data is kept so each use can be read from it.
-
-Every config gets a KV cache pick, a decode-vs-used-context sweep and an
-honest "capped by" verdict: speed floor, memory OOM, or model window. The
-usability floor here is 8 tok/s. EvalPlus gates every config; Mendel
-ranks the survivors.
-
-Read [the methodology](./methodology.md) before running anything. The
-flow is binding.
-
-## Setups
-
-### M1 Max, 32 GB
-
-Apple Silicon, wired limit 25000 MB. Five models, three runtimes:
-llama-server, mlx_lm.server, and the PrismML llama.cpp fork. LM Studio
-was tried and retired.
-Depth sweeps and EvalPlus scores are complete for every model; two
-models have finished the agent task. The rule: MLX runtimes barely slow
-down but hit hard memory ceilings; llama runtimes hold their speed
-deeper at f16 KV, and their ceiling is the largest `-c` that loads.
+The label under each name is the machine.
 
 <!-- gen:models-evaluated:all:start -->
 | Model / Config | Ctx | Cap | tok/s | EvalPlus | Coding |
@@ -59,110 +30,38 @@ deeper at f16 KV, and their ceiling is the largest `-c` that loads.
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated:all:end -->
 
-¹ LM Studio's MLX engine — the only runtime that loads this model's
-`gemma4_unified` architecture. It is retired on that machine; see
-[why](./setups/kamaji/lmstudio-retired.md).
-
+¹ LM Studio's MLX engine, retired ([why](./setups/kamaji/lmstudio-retired.md)).
 ² PrismML's llama.cpp fork, an approved exception to the no-forks rule.
 
 #### Legend
 
-- **Ctx**, the usable context: the deepest context the config served
-  above the floor, set by Cap. The coding harness gets the same
-  window, rounded down to a multiple of 4096. On MLX the cell shows
-  the harness window, 5 percent under the measured ceiling, because
-  that runtime often triggers macOS memory compression near it.
-- **Cap**, what stops the context from growing: memory holds the
-  weights, the drafter, a vision adapter and the runtime's buffers,
-  and what is left is context. Some models do not fit their trained
-  window; others fit it and then decode too slowly to use. The floor
-  is 8 tok/s. `mem` means memory ran out first, `speed` means decode
-  fell under the floor first.
-- **tok/s**, decode speed shallow, near an empty context, then deep,
-  at Ctx. Most tools report the shallow number only, but engineering
-  work and long documents run at depth, where speed falls. A drafter
-  (MTP, speculative decoding) often changes the picture, and for some
-  models it can help at one depth and hurt at another; nobody knows
-  before measuring, so every drafter row is read on real text at
-  more than one draft depth, with its acceptance. See [the
-  measurement rules](./methodology/context-creep).
-- **EvalPlus**, scored once per model and thinking mode; runtimes
-  serving the same model at a standard quant share the score.
-  Aggressive quants (for example the prism fork's calibrated q4 KV)
-  do not share; they pass the gate separately. Each run gets an
-  output budget from a ten-problem calibration, capped at 30000
-  tokens. A problem that runs to the cap counts as failed; the
-  completion percentage says how many finished. The cap is what this
-  machine can wait for, not the model's ceiling, so a capable model
-  at a high reasoning level can lose points to it.
-- **Coding**, a simulated pull request: the `pi` coding agent fixes a
-  real issue in a real repository with known traps, over many turns,
-  not one prompt. A stalled agent gets a fixed number of nudges; a
-  nudge the model caused costs points. Mendel blind gives the terse
-  issue and the model plans the work itself. Mendel guided gives the
-  same task as steps with the traps disclosed, so a smaller model can
-  serve as an executor rather than a planner. The pill names the
-  test. Of the config's valid runs the cell shows the one with the
-  most libraries done, then the higher score; a muted percentage
-  before the score is the share of libraries done when the run did
-  not finish. A run with zero commits from the model's own failure
-  shows `0% / 0` with a `model-failed` pill; `invalid` means every
-  attempt failed on the harness or the server. Rows sort by the
-  average of the EvalPlus base score and this one; a row with only
-  one of the two sorts after every row with both.
+- **Ctx**: the deepest context served at 8 tok/s or more. The harness
+  window is Ctx rounded down to a multiple of 4096; on MLX, 5 percent
+  under the measured ceiling.
+- **Cap**: `mem`, memory ran out first; `speed`, decode fell under
+  8 tok/s first.
+- **tok/s**: decode on real code text, near an empty context → at
+  Ctx.
+- **EvalPlus**: HumanEval+ pass@1, base over plus, and the share of
+  problems that finished inside the output budget (cap 30000 tokens).
+- **Coding**: the Mendel score out of 100, a multi-turn agent task on
+  a real repository with known traps. The pill names the test, blind
+  or guided. A muted percentage is the share of libraries done when
+  the run did not finish. `model-failed`: zero commits.
+- **Sort**: the average of EvalPlus base × 100 and Coding; a missing
+  score counts as 0. EvalPlus, then Ctx, break ties.
 
-| model | report | benchmarks |
+## Machines
+
+| machine | runtimes | pages |
 |---|---|---|
-| Qwen3.6-35B-A3B (MoE) | [report](./setups/kamaji/reports/qwen3.6-35b-a3b.md) | [data](./setups/kamaji/benchmarks/qwen3.6-35b-a3b.md) |
-| Gemma-4-26B-A4B (MoE) | [report](./setups/kamaji/reports/gemma-4-26b-a4b.md) | [data](./setups/kamaji/benchmarks/gemma-4-26b-a4b.md) |
-| Gemma-4-12B-it | [report](./setups/kamaji/reports/gemma-4-12b-it.md) | [data](./setups/kamaji/benchmarks/gemma-4-12b-it.md) |
-| Ternary Bonsai-27B | [report](./setups/kamaji/reports/bonsai-27b.md) | [data](./setups/kamaji/benchmarks/bonsai-27b.md) |
-| Qwen3.8-27B | [report](./setups/kamaji/reports/qwen3.8-27b.md) | [data](./setups/kamaji/benchmarks/qwen3.8-27b.md) |
+| M1 Max 32 GB, `m1-max-32gb` | llama-server, mlx_lm.server, PrismML fork | [comparison](./setups/kamaji/comparison.md) · [setup](./setups/kamaji/index.md) · [historical](./setups/kamaji/historical.md) |
+| RTX 5060 Ti 16 GB, `rtx-5060ti-16gb` | llama-server, CUDA | [comparison](./setups/arrietty/comparison.md) · [setup](./setups/arrietty/index.md) |
 
-Also on this setup: the [comparison page](./setups/kamaji/comparison.md)
-with the full depth and quality tables, the
-[setup overview](./setups/kamaji/index.md) with the machine
-configuration, and
-[historical measurements](./setups/kamaji/historical.md) taken under
-retired memory limits.
+Every config of one model on every machine: [Models](./models/).
 
-### RTX 5060 Ti 16 GB, Linux
+## Method
 
-A desktop PC with a GeForce RTX 5060 Ti, 16 GB of VRAM, 32 GB of
-RAM. One runtime: llama-server on CUDA. The card runs NVFP4 natively,
-so two of the five builds under test are NVFP4. The first run is
-under way: speed and context are measured for four builds, and the
-agent cells are pending.
-
-The mixed table above holds this setup's rows. The legend applies. On this setup Ctx is the largest `-c` that
-loads with every layer on the card, or with part of a MoE model's
-experts in host RAM, and the note of each row says which.
-
-| model | report | benchmarks |
-|---|---|---|
-| Gemma-4-12B-it | [report](./setups/arrietty/reports/gemma-4-12b-it.md) | [data](./setups/arrietty/benchmarks/gemma-4-12b-it.md) |
-| Qwen3.8-27B | [report](./setups/arrietty/reports/qwen3.8-27b.md) | [data](./setups/arrietty/benchmarks/qwen3.8-27b.md) |
-| Qwen3.6-35B-A3B (MoE) | [report](./setups/arrietty/reports/qwen3.6-35b-a3b.md) | [data](./setups/arrietty/benchmarks/qwen3.6-35b-a3b.md) |
-| Gemma-4-26B-A4B (MoE) | [report](./setups/arrietty/reports/gemma-4-26b-a4b.md) | [data](./setups/arrietty/benchmarks/gemma-4-26b-a4b.md) |
-
-Also on this setup: the [comparison page](./setups/arrietty/comparison.md)
-and the [setup overview](./setups/arrietty/index.md) with the
-machine configuration.
-
-## Why this exists
-
-This site is the worked example for one machine, but the process applies to
-any box: substitute your memory budget and your candidates.
-
-The reason the depth axis matters more than any published benchmark: a real
-coding session here measured 1.7 tok/s at 135K used tokens, on a config whose
-near-empty benchmark said 62 tok/s. Context maxima alone are storage, not
-speed. So every config is swept against *used* context until it drops under
-the usability floor or runs out of memory, and the floor — not the window —
-sets the harness compaction threshold.
-
-Published quality scores have the same problem. They cover full-precision
-weights, and what fits on a desktop is a quant, so quality is measured on
-the quant actually served. Narrow differences between runtimes' standard
-quants do not count: one score per model and thinking mode covers them.
-Aggressive or calibrated quants get their own gate.
+Read [the methodology](./methodology.md) before you run anything.
+Speed is read at depth: one real session read 1.7 tok/s at 135K used
+tokens, on a config that read 62 tok/s near an empty context.
