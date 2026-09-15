@@ -77,11 +77,12 @@ land.
   ```bash
   export PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/bin:$PATH"
   export LD_LIBRARY_PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/lib:$LD_LIBRARY_PATH"
-  command -v llama-server; llama-server --version 2>&1 | grep -i cuda
+  command -v llama-server; llama-server --list-devices 2>&1 | grep CUDA0
   ```
 
-  A `llama-server` outside that directory, or a version line with no
-  CUDA, is a fail: do not start the server; fix the exports first.
+  A `llama-server` outside that directory, or no `CUDA0` device, is a
+  fail: do not start the server; fix the exports first. The version
+  line of this build names no CUDA.
 - One model on the GPU at a time, port 8081. Before you start a
   server, `pgrep -fl llama-server` must be empty. Never kill a server
   you did not start.
