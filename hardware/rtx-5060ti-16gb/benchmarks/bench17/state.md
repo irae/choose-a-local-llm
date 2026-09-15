@@ -766,6 +766,19 @@ check the rule intends. Fixed for `qwen36-q4kxl-mendel-guided-high`
 server left untouched) and for every row from here on: point
 `RUNWATCH_OUTPUT` at `<fslug>-events.jsonl`, never `-session.jsonl`.
 
+### qwen38-ista-smoke-xhigh, no-drafter arm — pass
+
+Rerun on the coordinator's new served arm (no drafter, `-c 65536`,
+window 61440, level xhigh), the required smoke-per-serving-config
+rule since this is a different config than the n-max2 smoke.
+`SMOKE-MENDEL model=qwen3.8-27b-ista level=xhigh task=xtend
+window=61440 calls=9 distinct=9 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=4325 commits=1 clean=yes end=stop wall_s=71
+verdict=pass`. Session log thinking check: 6 of 6 assistant turns carry
+a thinking block. Loaded at 14925 MiB, well inside the card's headroom
+(the coordinator's VRAM-squeeze read). The guided row runs next on
+this arm.
+
 ## Handing over
 
 Not started.

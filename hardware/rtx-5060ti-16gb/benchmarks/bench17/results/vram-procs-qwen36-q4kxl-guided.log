@@ -1,0 +1,162 @@
+=== 2026-09-14T23:39:54-03:00 ===
+14953 MiB, 16311 MiB, 31, 22.12 W, 2610 MHz
+irae      887442 34.4 24.5 109301092 8035256 ?   Sl   23:39   0:10 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-14T23:40:54-03:00 ===
+15009 MiB, 16311 MiB, 40, 62.42 W, 2775 MHz
+irae      887442  214 37.0 110346600 12088320 ?  Rl   23:39   3:16 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.3  0.2 11502348 68088 ?      Sl   23:39   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:41:54-03:00 ===
+15015 MiB, 16311 MiB, 48, 70.36 W, 2775 MHz
+irae      887442  287 37.4 110521064 12225436 ?  Rl   23:39   7:16 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.4  0.2 11502492 69176 ?      Sl   23:39   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:42:55-03:00 ===
+15015 MiB, 16311 MiB, 41, 24.11 W, 2610 MHz
+irae      887442  227 37.5 110526924 12279804 ?  Sl   23:39   8:02 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.2  0.2 11502628 69184 ?      Sl   23:39   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:43:55-03:00 ===
+15015 MiB, 16311 MiB, 41, 24.16 W, 2610 MHz
+irae      887442  189 37.1 110537116 12120184 ?  Sl   23:39   8:36 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.2  0.2 11502628 69184 ?      Sl   23:39   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:44:55-03:00 ===
+15015 MiB, 16311 MiB, 38, 5.00 W, 180 MHz
+irae      887442  158 37.1 110660424 12132088 ?  Sl   23:39   8:47 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11502628 69188 ?      Sl   23:39   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:45:55-03:00 ===
+15015 MiB, 16311 MiB, 37, 5.35 W, 180 MHz
+irae      887442  138 37.4 110668536 12244272 ?  Sl   23:39   9:03 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11502628 69188 ?      Sl   23:39   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:46:55-03:00 ===
+15017 MiB, 16311 MiB, 42, 24.71 W, 2610 MHz
+irae      887442  164 38.1 110829340 12451676 ?  Sl   23:39  12:25 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11502628 69512 ?      Sl   23:39   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:47:55-03:00 ===
+15017 MiB, 16311 MiB, 49, 76.01 W, 2775 MHz
+irae      887442  177 38.2 110848740 12479376 ?  Rl   23:39  15:10 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11502628 69664 ?      Sl   23:39   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:48:55-03:00 ===
+15019 MiB, 16311 MiB, 52, 76.54 W, 2767 MHz
+irae      887442  197 38.8 111055144 12688636 ?  Rl   23:39  18:49 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11502768 69712 ?      Sl   23:39   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:49:55-03:00 ===
+15019 MiB, 16311 MiB, 51, 29.80 W, 2775 MHz
+irae      887442  212 38.9 111079428 12726948 ?  Sl   23:39  22:24 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11502768 69808 ?      Sl   23:39   0:01 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:50:55-03:00 ===
+15019 MiB, 16311 MiB, 55, 73.68 W, 2767 MHz
+irae      887442  221 39.9 111402096 13047648 ?  Sl   23:39  25:33 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11502768 69816 ?      Sl   23:39   0:01 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:51:55-03:00 ===
+15019 MiB, 16311 MiB, 47, 26.25 W, 2610 MHz
+irae      887442  232 40.0 111427692 13078980 ?  Sl   23:39  29:08 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11502928 69856 ?      Sl   23:39   0:01 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:52:55-03:00 ===
+15019 MiB, 16311 MiB, 48, 76.10 W, 2775 MHz
+irae      887442  246 40.7 111637832 13296348 ?  Rl   23:39  33:20 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11502928 69920 ?      Sl   23:39   0:01 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:53:55-03:00 ===
+15019 MiB, 16311 MiB, 47, 77.44 W, 2775 MHz
+irae      887442  256 40.7 111657800 13324736 ?  Rl   23:39  37:14 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11502928 69972 ?      Sl   23:39   0:01 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:54:55-03:00 ===
+15019 MiB, 16311 MiB, 46, 76.52 W, 2775 MHz
+irae      887442  267 41.5 111884616 13556580 ?  Rl   23:39  41:37 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11502928 70028 ?      Sl   23:39   0:01 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:55:55-03:00 ===
+15019 MiB, 16311 MiB, 45, 77.69 W, 2775 MHz
+irae      887442  279 42.2 112128436 13809228 ?  Rl   23:39  46:09 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.2  0.2 11502928 70036 ?      Sl   23:39   0:01 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:56:55-03:00 ===
+15019 MiB, 16311 MiB, 45, 86.79 W, 2775 MHz
+irae      887442  286 42.3 112157068 13845728 ?  Rl   23:39  50:15 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.2  0.2 11503096 70064 ?      Sl   23:39   0:02 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:57:55-03:00 ===
+15019 MiB, 16311 MiB, 42, 31.67 W, 2797 MHz
+irae      887442  283 45.9 113319708 15008448 ?  Rl   23:39  52:37 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.2  0.2 11503096 70080 ?      Sl   23:39   0:02 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:58:55-03:00 ===
+15019 MiB, 16311 MiB, 49, 66.70 W, 2782 MHz
+irae      887442  274 46.1 113384032 15078344 ?  Rl   23:39  53:37 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11503096 70080 ?      Sl   23:39   0:02 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-14T23:59:55-03:00 ===
+15019 MiB, 16311 MiB, 57, 77.66 W, 2767 MHz
+irae      887442  274 47.0 113686260 15382320 ?  Rl   23:39  56:29 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11503096 70080 ?      Sl   23:39   0:02 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-15T00:00:56-03:00 ===
+15020 MiB, 16311 MiB, 52, 67.22 W, 2775 MHz
+irae      887442  272 49.4 114451824 16148340 ?  Rl   Sep14  58:38 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11503096 70088 ?      Sl   Sep14   0:02 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-15T00:01:56-03:00 ===
+15020 MiB, 16311 MiB, 49, 83.58 W, 2775 MHz
+irae      887442  270 50.7 114865544 16569184 ?  Rl   Sep14  60:58 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11503248 70220 ?      Sl   Sep14   0:02 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-15T00:02:56-03:00 ===
+15020 MiB, 16311 MiB, 47, 75.58 W, 2775 MHz
+irae      887442  278 51.2 115034572 16736584 ?  Rl   Sep14  65:39 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11503248 70228 ?      Sl   Sep14   0:02 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-15T00:03:56-03:00 ===
+15020 MiB, 16311 MiB, 45, 75.36 W, 2775 MHz
+irae      887442  285 51.2 115054272 16756508 ?  Rl   Sep14  70:10 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11503248 70228 ?      Sl   Sep14   0:02 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-15T00:04:56-03:00 ===
+15020 MiB, 16311 MiB, 55, 72.75 W, 2782 MHz
+irae      887442  292 51.8 115229964 16931876 ?  Rl   Sep14  74:37 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11503248 70232 ?      Sl   Sep14   0:02 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-15T00:05:56-03:00 ===
+15020 MiB, 16311 MiB, 46, 49.08 W, 2775 MHz
+irae      887442  298 52.4 115437968 17140996 ?  Rl   Sep14  79:09 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11503248 70232 ?      Sl   Sep14   0:02 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-15T00:06:56-03:00 ===
+15020 MiB, 16311 MiB, 44, 73.75 W, 2775 MHz
+irae      887442  305 52.5 115454500 17154740 ?  Rl   Sep14  84:16 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae      888727  0.1  0.2 11503248 70236 ?      Sl   Sep14   0:03 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.6-35b-a3b-q4kxl --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-guided.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-high-guided --cwd /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-high --thinking high
+=== 2026-09-15T00:07:56-03:00 ===
+15020 MiB, 16311 MiB, 37, 5.05 W, 180 MHz
+irae      887442  298 52.5 115454500 17154740 ?  Sl   Sep14  85:07 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:08:56-03:00 ===
+15020 MiB, 16311 MiB, 36, 5.00 W, 180 MHz
+irae      887442  288 52.5 115454500 17154740 ?  Sl   Sep14  85:07 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:09:56-03:00 ===
+15020 MiB, 16311 MiB, 34, 5.08 W, 195 MHz
+irae      887442  278 52.5 115454500 17154740 ?  Sl   Sep14  85:07 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:10:56-03:00 ===
+15020 MiB, 16311 MiB, 33, 4.64 W, 172 MHz
+irae      887442  269 52.5 115454500 17154740 ?  Sl   Sep14  85:07 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:11:56-03:00 ===
+15020 MiB, 16311 MiB, 33, 4.54 W, 180 MHz
+irae      887442  261 52.5 115454500 17154740 ?  Sl   Sep14  85:07 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:12:56-03:00 ===
+15020 MiB, 16311 MiB, 32, 5.40 W, 180 MHz
+irae      887442  253 52.5 115454500 17154740 ?  Sl   Sep14  85:07 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:13:56-03:00 ===
+15020 MiB, 16311 MiB, 32, 4.33 W, 180 MHz
+irae      887442  246 52.5 115454500 17154740 ?  Sl   Sep14  85:07 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:14:56-03:00 ===
+15020 MiB, 16311 MiB, 31, 4.30 W, 180 MHz
+irae      887442  239 52.5 115454500 17154740 ?  Sl   Sep14  85:07 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:15:56-03:00 ===
+15016 MiB, 16311 MiB, 31, 4.49 W, 180 MHz
+irae      887442  232 52.5 115454500 17154740 ?  Sl   Sep14  85:07 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:16:56-03:00 ===
+15017 MiB, 16311 MiB, 31, 4.37 W, 180 MHz
+irae      887442  226 52.5 115454500 17154740 ?  Sl   Sep14  85:07 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:17:56-03:00 ===
+15017 MiB, 16311 MiB, 31, 4.48 W, 180 MHz
+irae      887442  220 54.9 116243500 17943740 ?  Sl   Sep14  85:08 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:18:56-03:00 ===
+15017 MiB, 16311 MiB, 31, 4.24 W, 180 MHz
+irae      887442  215 54.9 116243500 17943740 ?  Sl   Sep14  85:08 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:19:56-03:00 ===
+15017 MiB, 16311 MiB, 30, 4.33 W, 180 MHz
+irae      887442  209 54.9 116243500 17943740 ?  Sl   Sep14  85:08 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:20:56-03:00 ===
+15017 MiB, 16311 MiB, 30, 5.21 W, 180 MHz
+irae      887442  204 54.9 116243500 17943740 ?  Sl   Sep14  85:08 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:21:56-03:00 ===
+15017 MiB, 16311 MiB, 30, 4.27 W, 180 MHz
+irae      887442  200 54.9 116243500 17943740 ?  Sl   Sep14  85:08 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:22:57-03:00 ===
+15017 MiB, 16311 MiB, 30, 4.28 W, 180 MHz
+irae      887442  195 54.9 116243500 17943740 ?  Sl   Sep14  85:08 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T00:23:57-03:00 ===
+15017 MiB, 16311 MiB, 29, 4.37 W, 180 MHz
+irae      887442  191 54.9 116243500 17943740 ?  Sl   Sep14  85:08 llama-server -m /home/irae/.cache/llama.cpp/hf/unsloth/Qwen3.6-35B-A3B-MTP-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 --spec-type draft-mtp --spec-draft-n-max 2 -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
