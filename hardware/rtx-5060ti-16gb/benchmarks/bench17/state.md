@@ -865,6 +865,39 @@ level). Early-turn check on `events.jsonl`: 912 `thinking_delta`
 events in the first turns, confirming level high reached the server.
 Last item on the guided list.
 
+### Guided rows — all seven closed
+
+All seven builds on `AGENT.md`'s guided list ran to their natural end:
+
+| build | score | libraries | end reason |
+|---|--:|--:|---|
+| gemma-4-12b-nvfp4, off | 0 | 0/8 | model_failed |
+| qwen3.8-27b-iq3s, xhigh | 79 | 7/8 partial | tooling_budget_exhausted |
+| qwen3.6-35b-a3b-q4kxl, high | 48.5 | 6/8 partial | repetition_loop |
+| gemma-4-26b-a4b-nvfp4, high | 37.5 | 3/8 partial | model_budget_exhausted |
+| gemma-4-12b-q4kxl, high | 0 | 0/8 | model_failed |
+| gemma-4-12b-nvfp4, high | pending (scoring) | 0/8 (zero commits) | repetition_loop |
+| **qwen3.8-27b-ista, xhigh** | **85** | **8/8** | **complete** |
+
+Only `qwen3.8-27b-ista` reached 8/8 libraries with bugs allowed, so it
+alone qualifies for `mendel-blind-after-guided`. Both Gemma-12B rows
+at thinking high (`gemma-4-12b-q4kxl` and `gemma-4-12b-nvfp4`) ended
+in the same shape: a repetition loop right after the model located a
+dependency in `package.json`, zero commits, before issuing the
+matching edit. `gemma-4-12b-nvfp4`'s off-guided row hit a related
+tool-call loop earlier in the run. Three of seven guided rows on this
+build family ended without a single commit; worth the coordinator's
+attention as a possible Gemma-12B-at-this-harness pattern, not
+independent flukes.
+
+### mendel-blind-after-guided — qwen38-ista, running
+
+Started immediately once every guided row had run to its end (the
+last one, `gemma-4-12b-nvfp4` high, needs only its score published,
+which cannot change its own 0/8 outcome or any other build's
+eligibility). Server unchanged from the guided row: no drafter,
+`-c 65536`, q8_0 KV, level xhigh, window 61440.
+
 ## Handing over
 
 Not started.

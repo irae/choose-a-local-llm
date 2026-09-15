@@ -1,0 +1,5 @@
+Preparing worktree (new branch 'qwen3.8-27b-ista-xhigh-issue-13')
+HEAD is now at 2652ed6c chore: stop node SIGSEGV/SIGILL crashes in parallel tap runs
+qwen3.8-27b-ista-xhigh: worktree ready at /home/irae/code/mendel-benchmark/../mendel-bench-qwen3.8-27b-ista-xhigh, starting pi
+worker: contextWindow 61440 pinned on provider llama
+worker: compaction {"enabled": true, "reserveTokens": 8192, "keepRecentTokens": 8192}

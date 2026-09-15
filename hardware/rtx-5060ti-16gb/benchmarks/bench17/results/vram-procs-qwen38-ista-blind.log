@@ -1,0 +1,7 @@
+=== 2026-09-15T05:05:11-03:00 ===
+14929 MiB, 16311 MiB, 32, 22.14 W, 2610 MHz
+irae     1165733 16.0  3.2 64227872 1065516 ?    Sl   05:04   0:03 llama-server -m /home/irae/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf --alias qwen3.8-27b-ista --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 65536 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+=== 2026-09-15T05:06:11-03:00 ===
+15126 MiB, 16311 MiB, 60, 180.01 W, 2745 MHz
+irae     1165733 73.6  5.2 65363064 1729172 ?    Rl   05:04   1:02 llama-server -m /home/irae/.cache/llama.cpp/hf/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf --alias qwen3.8-27b-ista --no-mmproj --parallel 1 -ngl 999 --fit off -fa on -c 65536 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081
+irae     1166668  0.5  0.2 11502140 67644 ?      Sl   05:05   0:00 node /home/irae/code/mendel-benchmark/benchmark/run-pi-rpc.mjs --model qwen3.8-27b-ista --prompt /home/irae/code/mendel-benchmark/benchmark/prompt-blind.txt --out /home/irae/.local/share/mendel-benchmark/runs/qwen3.8-27b-ista-xhigh-blind --cwd /home/irae/code/mendel-benchmark/../mendel-bench-qwen3.8-27b-ista-xhigh --thinking xhigh
