@@ -675,6 +675,16 @@ verdict=pass`. Session log thinking check: 4 of 4 assistant turns carry
 a thinking block, confirming level high reached the server. The guided
 row of this build can now run.
 
+### qwen38-ista-smoke-xhigh — pass
+
+Served arm n-max2, `-c 57344`, window 53248, level xhigh.
+`SMOKE-MENDEL model=qwen3.8-27b-ista level=xhigh task=xtend
+window=53248 calls=14 distinct=11 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=4386 commits=1 clean=yes end=stop wall_s=42
+verdict=pass`. Session log thinking check: 8 of 8 assistant turns carry
+a thinking block, confirming level xhigh reached the server. The
+guided row of this build can now run.
+
 ## Handing over
 
 Not started.
