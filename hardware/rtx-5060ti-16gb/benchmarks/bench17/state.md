@@ -39,6 +39,8 @@ its source.
 | `gemma26_nvfp4_clean` | 97280 | `sweep-gemma26-nvfp4` (no-drafter arm) |
 | `qwen38_ista_c` | 65536 | `sweep-qwen38-ista` |
 | `qwen38_ista_clean` | 64512 | `sweep-qwen38-ista` (no-drafter arm) |
+| `qwen38_ista_arm` | n-max 2, `-c 57344` | coordinator, served-arm pick |
+| `qwen38_ista_window` | 53248 | coordinator (56320 rounded down) |
 
 ## Files and revisions
 
