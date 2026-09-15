@@ -242,6 +242,20 @@ Faster than the no-drafter arm at every comparable depth (33.40 vs
 56320 vs 64512). Draft acceptance 0.61-0.78, mean draft length ~1.6-1.8.
 Per the sweep rule, the climb continues to n-max 2.
 
+**n-max 2 arm.** Same `-c 57344`. Deep-cell probe passed clean first
+(25.12 tok/s at depth 56320), then the full sweep.
+
+| arm | depth | tok/s | sd | prompt tok/s | acceptance |
+|---|--:|--:|--:|--:|--:|
+| n-max2 | 4096 | 45.88 | 2.22 | 844.43 | ~0.33-0.78 |
+| n-max2 | 24576 | 31.89 | 4.38 | 796.11 | ~0.33-0.78 |
+| n-max2 | 56320 | 26.19 | 1.60 | 703.26 | ~0.33-0.78 |
+
+Faster than n-max1 at every depth (45.88 vs 33.40 at 4K, 31.89 vs
+29.68 at 24K, 26.19 vs 24.64 at 56K). Draft acceptance 0.33-0.78, mean
+draft length ~1.66-2.55, wider spread than n-max1. Per the sweep rule,
+the climb continues to n-max 3, the last arm of this block.
+
 A table and no pick. The coordinator names the served arm.
 
 ## Gates

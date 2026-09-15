@@ -576,6 +576,12 @@ arms. Stepped `-c` down 8192 to 57344 per the retry rule, loaded at
 15466 MiB (~845 MiB headroom), probing the deep cell (56320) before
 the full sweep.
 
+### sweep-qwen38-ista n-max2 — closed, faster than n-max1
+
+Deep-cell probe at `-c 57344` passed clean, 25.12 tok/s at depth
+56320. Full sweep: 45.88/31.89/26.19 tok/s at 4K/24K/56K, faster than
+n-max1 (33.40/29.68/24.64) at every depth. Climb continues to n-max3.
+
 ## Handing over
 
 Not started.
