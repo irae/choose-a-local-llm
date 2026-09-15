@@ -370,6 +370,7 @@ A table and no pick. The coordinator names the served arm.
 | new | guided | gemma-4-12b-q4kxl (unsloth UD-Q4_K_XL, high, rtx-5060ti-16gb) | window 258048, reserve 8192 | 0 (model failed) |
 | new | guided | gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, high, rtx-5060ti-16gb) | window 258048, reserve 8192 | 0 (model failed) |
 | new | guided | qwen3.8-27b-ista (ISTA-DASLab IQ3_S-mtp, xhigh, rtx-5060ti-16gb) | window 61440, reserve 8192 | **85 (8/8)** |
+| new | blind | qwen3.8-27b-ista (ISTA-DASLab IQ3_S-mtp, xhigh, rtx-5060ti-16gb) | window 61440, reserve 8192 | **91 (8/8)** |
 
 **gemma12-nvfp4-mendel-guided-off**, model-failed. The model looped on
 the same tool call (`bash pnpm remove --filter examples/planout-example
@@ -496,3 +497,29 @@ ships unfixed. Otherwise clean: full suite chained before every
 commit, no hook bypasses. peak_context 57581/61440 (93.7%), 320 tool
 calls, 23 compactions, wall clock 214.8 min. Scored and published to
 `~/code/mendel-benchmark` branch `benchmark`, commit `ad51241b`.
+
+**qwen38-ista-mendel-blind-xhigh**, this run's best score,
+**91/100** raw (8/8 libraries, completion cap does not bind), no
+crashes this attempt. All 8 dependencies swapped in 17 commits. Trap A
+(the `fs.glob` misuse the guided row shipped) and Trap C (a `tmp`
+exit-hook regression) both avoided — Trap A used a hand-rolled
+callback wrap rather than the idiomatic `Array.fromAsync`, docked half
+a point under conventions. Trap B
+(`legacy-packages/mendel-requirify` rimraf references, undisclosed in
+the blind prompt) never discovered: the model's own grep printed the
+exact file paths, but its reasoning never engaged with them, a worse
+outcome than the guided row (which found it via grep, then wrongly
+dismissed it as out of scope). Neither of the guided row's own two
+issues repeated. peak_context 64596/61440 (105%, one overflow
+compaction), 257 tool calls, 239 assistant messages, wall clock 75.1
+min, 3 compactions, 0 nudges. Scored and published to
+`~/code/mendel-benchmark` branch `benchmark`, commit `57bb5211`.
+
+**mendel-blind-after-guided is closed**: `qwen3.8-27b-ista` was the
+only build to reach 8/8 in its guided row, so it is the only blind row
+of this run.
+
+**retry-sweep**: nothing to do. Every machine-killed row this run
+(`qwen38-iq3s-mendel-guided-xhigh` attempt 1, `qwen38-ista-mendel-guided-xhigh`
+attempts 1-3) was retried at once, inside its own block, per the
+checklist's retry rule; none waited on a human.
