@@ -127,7 +127,7 @@ the block names at the point it is needed.
    watcher. For every scoring run (EvalPlus, Mendel) start
    `benchmarks/run-watch.sh` as a background task (`run_in_background`,
    or under `Monitor`) right after the warmup request:
-   `RUNWATCH_SERVER_LOG=<server log> RUNWATCH_OUTPUT=<result file>
+   `RUNWATCH_SERVER_LOG=<server log> RUNWATCH_OUTPUT=<growing output file>
    RUNWATCH_BASE_URL=<base url> RUNWATCH_MODEL=<model id>
    RUNWATCH_MEM_LOG=~/.local/share/choose-a-local-llm/<run>-mem.log bash benchmarks/run-watch.sh`.
    It writes the run's only memory record (one line per

@@ -51,8 +51,10 @@
 #
 # Environment:
 #   RUNWATCH_SERVER_LOG    server log to tail. Empty: no log signal.
-#   RUNWATCH_OUTPUT        the run's output file (result file, session
-#                          log). Empty: no silence probe.
+#   RUNWATCH_OUTPUT        a file that grows during the run. For Mendel
+#                          that is <slug>-events.jsonl; the session
+#                          .jsonl appears only at the end. Empty: no
+#                          silence probe.
 #   RUNWATCH_BASE_URL      server base URL, default http://127.0.0.1:8081
 #   RUNWATCH_MODEL         model id for the probe request, default empty
 #   RUNWATCH_SILENCE       seconds without output growth before the one
