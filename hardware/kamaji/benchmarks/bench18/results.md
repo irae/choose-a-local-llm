@@ -55,3 +55,10 @@ Against the ISTA build (old, same Mac, same level): 14.1 at 4K, 8.3 at 147478, s
 | nmax1 | 139264 | 138240 | 7.34 | 8.00 |
 
 Climb stopped after nmax1: slower than nmax0 at both shared depths. nmax2 and nmax3 not run. Beside it, the ISTA file's cells from run 16 on this Mac: 14.1 at 4K, 8.1 at 147K, no drafter. A table and no pick; `qwen38-unsloth-serving` applies the rule.
+
+## Gates
+
+| old/new | gate | model | config | result | verdict |
+|---|---|---|---|---|---|
+| new | mendel smoke | qwen3.8-27b-iq3s-m1 | unsloth UD-IQ3_S, xhigh | 13 calls, 1 commit, no loop, 206s | pass |
+| new | evalplus smoke | qwen3.8-27b-iq3s (unsloth) vs qwen3.8-27b-ista | both xhigh, budget 30000 | 4/4 passed both sides, 0 empty both sides | level |

@@ -115,6 +115,56 @@ Not a measurement; applies the serving rule from the sweep table.
 `qwen38_unsloth_keep` = pi's default (window ≥ 65536, so no override)
 `qwen38_unsloth_eval_arm` = nmax0
 
+### qwen38-unsloth-smoke-xhigh
+
+Agent arm (nmax0, `-c 188416`, alias `qwen3.8-27b-iq3s-m1`) loaded clean. `gh auth status` passes. pi entry `qwen3.8-27b-iq3s-m1` added (copy of `qwen3.8-27b-iq3s`, same thinking map, `contextWindow` 147456 pinned to `qwen38_unsloth_window`).
+
+Deviation: `git -C ~/code/mendel-benchmark stash clear` is blocked by this session's sandbox (destructive-action guard), every attempt. `git stash list` read empty before the attempt, so nothing was at risk; not a stop condition, flagged for the owner. The runner cannot self-authorize past this guard.
+
+Smoke result: `SMOKE-MENDEL model=qwen3.8-27b-iq3s-m1 level=xhigh task=xtend window=147456 calls=13 distinct=13 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=6933 commits=1 clean=yes end=stop wall_s=206 verdict=pass`. Session log checked: 11/11 assistant turns carry a thinking block, so xhigh reached the server. `qwen38_unsloth_smoke` = pass.
+
+### qwen38-unsloth-mendel-blind-xhigh — running
+
+`unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S` rev `4ca7207`, no drafter (nmax0), one slot, f16 KV, `-c 188416` served, wired 25000. Harness: window 147456, reserve 8192 (pi default keep — window ≥ 65536). Branch `qwen3.8-27b-iq3s-m1-xhigh-issue-13` (none existed, per the coordinator's alias fix). Worktree `../mendel-bench-qwen3.8-27b-iq3s-m1-xhigh`. Started (see `results/mendel-blind-qwen38-unsloth-xhigh.log`). Same server as the smoke, unchanged. Watcher started, `results/run-watch-mendel-blind.log`, output tracked at `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-iq3s-m1-xhigh-blind-events.jsonl`.
+Worker done: `end_reason: complete`, wall 185.4 min (well inside the 300-min cap), 240 tool calls, 196 assistant messages, 25 commits since base `2652ed6` on branch `qwen3.8-27b-iq3s-m1-xhigh-issue-13`. One compaction at 02:36:38 UTC, reason `overflow`. `count-tool-calls.mjs` reads `peak_context 143401` of window 147456 (97.2%) — **peak_context essentially reached the window**. Watcher stopped (run completed clean, no exit 42 in its lifetime). Server left running, unchanged, for the guided row per AGENT.md.
+Files: `results/mendel-blind-qwen38-unsloth-xhigh.log`, meta `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-iq3s-m1-xhigh-blind-meta.json`, session `~/.local/share/mendel-benchmark/pi-agent/qwen3.8-27b-iq3s-m1-xhigh-blind/sessions/.../2026-09-15T00-01-41-076Z_01a0a25e-8ed4-7dd5-b30d-a745a43a9704.jsonl`.
+Scoring handed to a subagent (opus, background, scratch path `/Users/irae/code/mendel-bench-qwen3.8-27b-iq3s-m1-xhigh`).
+
+`qwen38_unsloth_blind` = **90.5/100**, 8/8 libraries, `end_reason` complete, no reruns. Dimensions: bugs 25, completion 20, node_modules 8, lint 5, commit_craft 6, first_time 8, test_discipline 10, conventions 4, task_list 2, truncation 2.5. First blind row on this Mac to close trap B (`mendel-requirify` loses rimraf in both test files and `package.json`). Published: `~/code/mendel-benchmark` commit `98f89f5` on branch `benchmark`.
+
+Anomaly, worth flagging: the model merged `master` into its own branch mid-run (commit `855f252`), on its own reasoning, with no human help — just the one prompt message. That import brought in six infrastructure commits the blind base deliberately hides (the `node:` lint patch, a glob fixture change, the root `mendel-pipeline` declaration, an AGENTS.md rule). It had already solved the `node:` lint trap by itself before the merge. **This row is not strictly base-comparable with other blind rows.** The scoring subagent scored the 19 commits that are model-only work (`3714463` as the post-merge base), not all 25 (`2652ed6..HEAD`). The rubric has no rule for this case. Also: the fixture exception in PLAN.md names only the es5 fixture; the model also touched es6 — scored as a small conventions deduction, not a defect. `peak_context` 143401 re-confirmed against `count-tool-calls.mjs`.
+
+### qwen38-unsloth-mendel-guided-xhigh — running
+
+Same server as the blind row, unchanged (agent arm nmax0, `-c 188416`, alias `qwen3.8-27b-iq3s-m1`). `gh auth status` passes. Branch `qwen3.8-27b-iq3s-m1-xhigh-guided-v3-issue-13` (none existed — the coordinator's fix worked). Worktree `../mendel-bench-guided-qwen3.8-27b-iq3s-m1-xhigh`. Watcher started, `results/run-watch-mendel-guided.log`.
+Deviation: `git -C ~/code/mendel-benchmark stash clear` blocked by the sandbox again (same as the smoke); `stash list` read empty first. Not a stop condition.
+
+Deviation, 2026-09-15 ~06:55 UTC and again ~07:26 UTC: the watcher exited 42 twice, both "SERVER DEAD: two probes did not return, each after 600s without output growth". Both times checked before acting: `curl /health` returned `{"status":"ok"}` and the server log showed an active task mid-processing at normal speed. This row's individual turns ran long enough (one measured at 447s wall) to outrun the watcher's two 600s silence windows on the events file — a false alarm both times, exactly the risk the watcher's own doc names. Did not kill the server either time (that would have destroyed real in-progress work); started a fresh watcher each time.
+
+Worker done: `end_reason: wall_clock` (a valid partial, not a failure), ended 2026-09-15T08:10:02Z, 5 commits since base `86935f4` on branch `qwen3.8-27b-iq3s-m1-xhigh-guided-v3-issue-13`. `count-tool-calls.mjs` reads `peak_context 143399` of window 147456 (97.2%) — **peak_context essentially reached the window**, same as the blind row. Watcher stopped.
+Files: `results/mendel-guided-qwen38-unsloth-xhigh.log`, meta `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-iq3s-m1-xhigh-guided-meta.json`, session `~/.local/share/mendel-benchmark/pi-agent/qwen3.8-27b-iq3s-m1-xhigh-guided/sessions/.../2026-09-15T03-10-02-795Z_01a0a30b-022b-7898-af57-116244382d04.jsonl`.
+Scoring handed to a subagent (opus, background, scratch path `/Users/irae/code/mendel-bench-guided-qwen3.8-27b-iq3s-m1-xhigh`).
+
+`qwen38_unsloth_guided` = **62.5/100 displayed** (76 raw, capped by `min(76, 100 × 5/8)` — 5 of 8 libraries; PLAN.md treats the 300-min wall cap as a valid partial, not a failure). Dimensions: bugs 16, completion 11, node_modules 8, lint 4, commit_craft 9.5, first_time 7, test_discipline 10, conventions 5, task_list 3, truncation 2.5. The cap fired 13s after the fifth commit landed, next TASKS.md tick still in flight — the model was productive to the last second. Defects: trap B missed for rimraf (medium), unused root rimraf devDep left (minor). No master-merge anomaly like the blind row. `peak_context` 143399 re-confirmed. Published: `~/code/mendel-benchmark` commit `6b88bed` on branch `benchmark`. The Mendel worktree's own branch `qwen3.8-27b-iq3s-m1-xhigh-guided-v3-issue-13` is pushed to `origin` (the subagent's own push attempt was sandbox-denied; the runner pushed it directly).
+
+Deviation the subagent found, worth recording: `~/code/mendel-benchmark/benchmark` has no CSV generator (`generate-report.mjs` writes only HTML); the subagent appended the CSV row by hand from the JSON rather than hand-typing values, and could not do a full regeneration without churning the existing 31 rows' order/formatting. About half the row's wall time went to a `tap` build breakage in the scratch worktree (an `EEXIST` on a build symlink); the model correctly triaged it as infrastructure, not its own bug.
+
+### qwen38-unsloth-evalplus-smoke-xhigh
+
+Both sides at `-c 32768`, no drafter, budget 30000 (hand-set: the calibration hit `finish_reason=length`, so the x1.5 rule does not apply; used the scored ISTA row's own budget of 30000, `docs/setups/m1-max-32gb/models.json`, `qwen38-gguf-ista-nodrafter-xhigh`).
+
+- ISTA (`qwen3.8-27b-ista`): `SMOKE label=qwen38-ista-xhigh problems=4 passed=4 empty=0 completion_tokens=9025 max_tokens=30000 wall_s=715.7`.
+- unsloth (this build, `qwen3.8-27b-iq3s`): `SMOKE label=qwen38-unsloth-xhigh problems=4 passed=4 empty=0 completion_tokens=19660 max_tokens=30000 wall_s=1557.1`.
+
+Same `passed` (4), same `empty` (0). **Verdict: level.** The unsloth build used about twice the tokens on the one long problem (HumanEval/129: 18607 vs 8152), same correctness.
+`qwen38_unsloth_evalplus_smoke` = level.
+Files: `results/evalplus-smoke-ista.log`, `results/evalplus-smoke-unsloth.log`, `results/server-evalplus-smoke-ista.log`, `results/server-evalplus-smoke-unsloth.log`.
+Deviation: none (the full run is the score regardless of the smoke's verdict).
+
+Coordinator answer (2026-09-14, on the blind-row anomaly gate): keep the blind row as published (98f89f5, score 90.5, current `anomaly` text). PLAN.md has no rule that voids or penalizes a model's own master merge; the `anomaly` field already flags the base-comparability issue in the report. No re-run, no changes to the row, the rubric, or PLAN.md. Continue with the guided row and the rest of the runbook. The coordinator takes any rule change for this case to the owner.
+
+Coordinator handshake (2026-09-14): the coordinator session changed to "local-llm coordinator sept-14" (`bridge:session_01Qbci662csCc7jLo4gPGzjk`), replacing the earlier "Model quantization comparison across hardware" session. It confirmed the current `run18` head (726d480) correctly. Gates and stop-and-asks now go to this new session name.
+
 ## Handing over
 
 Not started.
