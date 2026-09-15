@@ -39,8 +39,8 @@ its source.
 | `gemma26_nvfp4_clean` | 97280 | `sweep-gemma26-nvfp4` (no-drafter arm) |
 | `qwen38_ista_c` | 65536 | `sweep-qwen38-ista` |
 | `qwen38_ista_clean` | 64512 | `sweep-qwen38-ista` (no-drafter arm) |
-| `qwen38_ista_arm` | n-max 2, `-c 57344` | coordinator, served-arm pick |
-| `qwen38_ista_window` | 53248 | coordinator (56320 rounded down) |
+| `qwen38_ista_arm` | no drafter, `-c 65536` | coordinator, served-arm change after three GPU launch timeouts on n-max2 |
+| `qwen38_ista_window` | 61440 | coordinator (`qwen38_ista_clean` 64512 rounded down) |
 
 ## Files and revisions
 
@@ -709,6 +709,75 @@ evidence into `runs/interrupted/`, restarted the server unchanged
 (same n-max2, `-c 57344`, q8_0 KV — no window change, that is the
 coordinator's call), and launched a fresh attempt at the canonical
 worktree/branch name.
+
+### qwen38-ista-mendel-guided-xhigh — second attempt also interrupted
+
+Same signature (`CUDA error: the launch timed out and was
+terminated`), this time at `n_tokens` 44064, deeper into the run.
+`journalctl -k` this time DOES show an Xid 8 (`NVRM: krcWatchdog_IMPL:
+RC watchdog: GPU is probably locked!`, `Xid (PCI:0000:01:00): 8,
+pid=859509, name=llama-server`) around the crash, the same watchdog
+signature the run's earlier `diagnose-crash` investigation found. The
+first attempt showed no Xid; this one did. Two crashes in a row on the
+same config is a pattern worth the coordinator's attention, not
+necessarily config-specific (the earlier Xid 8 crash this run hit a
+different build), but flagged here in case a third recurrence changes
+that read.
+
+Repeated the retry pattern: worktree/branch moved aside as
+`-interrupted2`, RUNS evidence moved to `runs/interrupted/` with an
+`-attempt2` suffix on every filename (the run's earlier `qwen38-iq3s`
+interruption lost its second attempt's evidence to a filename
+collision; this time each attempt gets a distinct name). Server
+restarted unchanged, third attempt launched at the canonical name.
+
+### qwen38-ista-mendel-guided-xhigh — third attempt also interrupted, block skipped
+
+Same signature again, this time at `n_tokens` 14686 (earlier than
+either prior crash: 28213, then 44064, then 14686), no Xid this time.
+Three attempts, three crashes, on the exact same config (n-max2,
+`-c 57344`, q8_0 KV), none reaching a real completion of the row.
+Moved aside as `-interrupted3`, RUNS evidence under an `-attempt3`
+suffix, same as before; nothing deleted.
+
+**Skipping this block rather than a fourth blind retry.** Per
+`docs/methodology/checklist.md` rule 1, a block that is genuinely
+stuck gets skipped, with the reason written here, and the next block
+runs — repeating an 0-for-3 config a fourth time without new
+information is not a good use of GPU time. Escalated to the
+coordinator: the served-arm pick (n-max2) was made on speed alone,
+before this stability pattern was known; n-max1 (smaller MTP draft
+window) may avoid whatever triggers the stalled kernel launch, but
+that is the coordinator's call, not made here. The server for this
+build is left stopped; `qwen36-q4kxl-mendel-guided-high` runs next.
+This row returns to the queue once the coordinator answers.
+
+Deviation (resolved): every `run-watch.sh` this run pointed
+`RUNWATCH_OUTPUT` at `<fslug>-session.jsonl`, but `run-pi-rpc.mjs`
+writes that file exactly once, at the very end of the run (redacted
+from pi's own internal session file); it does not exist and does not
+grow while a run is in progress. `<fslug>-events.jsonl` is the file
+that grows continuously. This never caused an unsafe silence (the
+watcher's direct completion probe still fired and correctly reported
+the server alive every time), but it meant every silence window forced
+an expensive real completion request instead of the cheap growth
+check the rule intends. Fixed for `qwen36-q4kxl-mendel-guided-high`
+(run-watch restarted mid-run with the corrected path, worker and
+server left untouched) and for every row from here on: point
+`RUNWATCH_OUTPUT` at `<fslug>-events.jsonl`, never `-session.jsonl`.
+
+### qwen38-ista-smoke-xhigh, no-drafter arm — pass
+
+Rerun on the coordinator's new served arm (no drafter, `-c 65536`,
+window 61440, level xhigh), the required smoke-per-serving-config
+rule since this is a different config than the n-max2 smoke.
+`SMOKE-MENDEL model=qwen3.8-27b-ista level=xhigh task=xtend
+window=61440 calls=9 distinct=9 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=4325 commits=1 clean=yes end=stop wall_s=71
+verdict=pass`. Session log thinking check: 6 of 6 assistant turns carry
+a thinking block. Loaded at 14925 MiB, well inside the card's headroom
+(the coordinator's VRAM-squeeze read). The guided row runs next on
+this arm.
 
 ## Handing over
 

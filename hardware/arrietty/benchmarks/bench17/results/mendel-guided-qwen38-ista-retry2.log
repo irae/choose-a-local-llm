@@ -3,5 +3,5 @@ HEAD is now at 86935f48 chore: update the lockfile hash for the lint patch
 qwen3.8-27b-ista-xhigh: worktree ready at /home/irae/code/mendel-benchmark/../mendel-bench-guided-qwen3.8-27b-ista-xhigh, starting pi
 worker: contextWindow 53248 pinned on provider llama
 worker: compaction {"enabled": true, "reserveTokens": 8192, "keepRecentTokens": 8192}
-qwen3.8-27b-ista-xhigh: loop verdict ok, worst ratio 0.67 on thinking
+qwen3.8-27b-ista-xhigh: loop verdict ok, worst ratio 0.93 on thinking
 qwen3.8-27b-ista-xhigh: done

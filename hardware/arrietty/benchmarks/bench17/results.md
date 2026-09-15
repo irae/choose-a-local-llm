@@ -355,6 +355,9 @@ A table and no pick. The coordinator names the served arm.
 | new | mendel smoke | qwen3.8-27b-iq3s | q8_0 KV, `-c 65536`, window 61440, xhigh | 10 calls, 1 commit, clean, no loop, 61s | pass |
 | new | mendel smoke | gemma-4-26b-a4b-nvfp4 | f16 KV, `--n-cpu-moe 7`, `-c 98304`, window 94208, high | 10 calls, 1 commit, clean, no loop, 30s | pass |
 | new | mendel smoke | gemma-4-12b-q4kxl | f16 KV, `-c 262144`, window 258048, off | 8 calls, 1 commit, clean, no loop, 15s | pass |
+| new | mendel smoke | qwen3.6-35b-a3b-q4kxl | q8_0 KV, n-max2, `--n-cpu-moe 21`, `-c 98304`, window 94208, high | 7 calls, 1 commit, clean, no loop, 41s | pass |
+| new | mendel smoke | qwen3.8-27b-ista | q8_0 KV, n-max2, `-c 57344`, window 53248, xhigh | 14 calls, 1 commit, clean, no loop, 42s | pass |
+| new | mendel guided (interrupted x3) | qwen3.8-27b-ista | q8_0 KV, n-max2, `-c 57344`, window 53248, xhigh | 3 attempts, 3 server deaths (`CUDA error: launch timed out`, one with Xid 8), n_tokens 28213/44064/14686, zero completions | harness fault, no penalty |
 
 ## Mendel
 
@@ -376,6 +379,25 @@ the rule changed. 30 tool calls, peak context 12524/258048 (4.9%).
 Scored and published to `~/code/mendel-benchmark` branch `benchmark`,
 commit `31214ec9` (relabel commit `7fcb5888`). Row dimmed, dash rank,
 excluded from site tables.
+
+**qwen38-ista-mendel-guided-xhigh, three interrupted attempts.** All
+three crashed on the same server death signature (`CUDA error: the
+launch timed out and was terminated`), never a model action: attempt 1
+at `n_tokens` 28213 (no Xid), attempt 2 at 44064 (Xid 8, GPU RC
+watchdog, in `journalctl -k`), attempt 3 at 14686 (no Xid). A harness
+or hardware collapse, not a model failure, so none of the three carries
+a penalty and none is a scored row. Each attempt's worktree, branch and
+RUNS evidence is kept, moved aside as `-interrupted1`/`2`/`3`
+(`mendel-bench-guided-qwen3.8-27b-ista-xhigh-interrupted{1,2,3}`,
+matching branches, and
+`~/.local/share/mendel-benchmark/runs/interrupted/qwen3.8-27b-ista-xhigh-guided-attempt{2,3}-*`,
+attempt 1 unsuffixed since it was first). The coordinator's read: the
+idle desktop holds 1170 MiB on a 16311 MiB card, n-max2 peaks at 15873
+MiB (~440 MiB free), a VRAM squeeze that fits three crashes; the
+no-drafter arm peaks at 15111 MiB, closer to the completed
+`qwen38-iq3s` guided row's 14723 MiB. Served arm changed to no-drafter,
+`-c 65536`, window 61440 (`qwen38_ista_clean` 64512 rounded down). The
+smoke reruns on the new arm before the guided row retries.
 
 **qwen38-iq3s-mendel-guided-xhigh**, 79/100 raw and capped (the
 87.5-point completion cap for 7/8 did not bind), partial. Ran to
