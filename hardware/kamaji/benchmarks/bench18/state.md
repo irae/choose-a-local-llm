@@ -161,6 +161,15 @@ Same `passed` (4), same `empty` (0). **Verdict: level.** The unsloth build used 
 Files: `results/evalplus-smoke-ista.log`, `results/evalplus-smoke-unsloth.log`, `results/server-evalplus-smoke-ista.log`, `results/server-evalplus-smoke-unsloth.log`.
 Deviation: none (the full run is the score regardless of the smoke's verdict).
 
+### qwen38-unsloth-evalplus-xhigh
+
+Calibration (`hardware/m1-max-32gb/calibrations/calibration-qwen38-unsloth-iq3s-xhigh.json`), 10 problems, all `resolved_reasoning_effort: xhigh`. 3 of 10 hit `finish_reason: length` at 30000 (HumanEval/32, 99, 145) — this model's thinking sometimes never converges, so the budget is a waste-limiter, not the x1.5 rule (`docs/methodology/evalplus.md`, step 3). Longest successful (non-length) completion: 19906 (HumanEval/76).
+`qwen38_unsloth_eval_budget` = **20000** (just above 19906, rounded to a clean thousand, matching the run 4 precedent). Expected empty rate: **30%** (3/10 calibration rows hit length); the ISTA comparison row on this Mac read five empty of 164 (about 3%) at budget 30000, so this build's lower budget should read a higher empty rate — recorded here so it is not read as a surprise later.
+Deviation: the first attempt at the full run passed the venv python directly to `run-humaneval.sh` (a bash script) instead of putting the venv on `PATH`; the script's own shebang-sniffing (`evalplus.codegen`'s shebang line) needs `PATH` to find the venv, not an interpreter override. Fixed by exporting `PATH` with the venv prepended before calling the script. No wasted GPU time (the syntax error happened before any request left the machine).
+
+Full run started (log `results/run-humaneval-unsloth.log`), watcher started (`results/run-watch-evalplus.log`), budget 20000. This can take hours — the ISTA comparison run took about 9h43 of active wall time.
+still running.
+
 Coordinator answer (2026-09-14, on the blind-row anomaly gate): keep the blind row as published (98f89f5, score 90.5, current `anomaly` text). PLAN.md has no rule that voids or penalizes a model's own master merge; the `anomaly` field already flags the base-comparability issue in the report. No re-run, no changes to the row, the rubric, or PLAN.md. Continue with the guided row and the rest of the runbook. The coordinator takes any rule change for this case to the owner.
 
 Coordinator handshake (2026-09-14): the coordinator session changed to "local-llm coordinator sept-14" (`bridge:session_01Qbci662csCc7jLo4gPGzjk`), replacing the earlier "Model quantization comparison across hardware" session. It confirmed the current `run18` head (726d480) correctly. Gates and stop-and-asks now go to this new session name.
