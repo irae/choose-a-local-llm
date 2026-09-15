@@ -40,11 +40,39 @@ from evalplus.provider.openai import OpenAIChatDecoder
 import evalplus.gen.util.openai_request as oreq
 
 
+# Scores cannot tell a budget cut from a model that gave up: the samples
+# file keeps only the solution text. EVALPLUS_FINISH_LOG names a jsonl that
+# gets one line per answered request: UTC time, finish_reason
+# ("length" = the budget cut it), completion tokens and a hash of the prompt.
+_finish_log = os.environ.get("EVALPLUS_FINISH_LOG")
+
+
+def _record_finish(kwargs, ret):
+    if not _finish_log:
+        return
+    import datetime
+    import hashlib
+
+    messages = kwargs.get("message") or kwargs.get("messages") or ""
+    choice = ret.choices[0] if getattr(ret, "choices", None) else None
+    usage = getattr(ret, "usage", None)
+    line = {
+        "utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "finish_reason": getattr(choice, "finish_reason", None),
+        "completion_tokens": getattr(usage, "completion_tokens", None),
+        "prompt_sha1": hashlib.sha1(json.dumps(messages, sort_keys=True, default=str).encode()).hexdigest(),
+        "empty": not (getattr(getattr(choice, "message", None), "content", None) or "").strip(),
+    }
+    with open(_finish_log, "a") as f:
+        f.write(json.dumps(line) + "\n")
+
+
 def _patient_make_auto_request(*args, **kwargs):
     ret = None
     while ret is None:
         try:
             ret = oreq.make_request(*args, **kwargs)
+            _record_finish(kwargs, ret)
         except openai.RateLimitError:
             print("Rate limit exceeded. Waiting...")
             import time

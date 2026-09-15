@@ -82,6 +82,11 @@ its budget and returned empties.
 5. Monitor per the checklist (output growth, not process liveness).
 6. Evaluate runs automatically at the end. Record pass@1 base/plus AND
    the empty count, honestly, on every surface.
+7. Keep `finish.jsonl` beside the samples: `run-humaneval.sh` writes one
+   line per answered request, with the UTC time, the finish reason
+   (`length` means the budget cut it), the completion tokens and a hash of
+   the prompt. It is the proof of why each empty is empty: the budget or
+   the model. Write the count of each cause beside the score.
 
 ## Crashes and wall time
 

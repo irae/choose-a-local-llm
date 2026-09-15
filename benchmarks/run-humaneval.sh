@@ -15,6 +15,7 @@ DIR="$ROOT/${RESULTS_BASE:-hardware/kamaji/benchmarks/bench5/results}/$NAME"
 mkdir -p "$DIR"
 export OPENAI_API_KEY=none
 [ -n "$EXTRA_BODY" ] && export EVALPLUS_EXTRA_BODY="$EXTRA_BODY"
+export EVALPLUS_FINISH_LOG="${EVALPLUS_FINISH_LOG:-$DIR/finish.jsonl}"
 PYBIN="$(head -1 "$(command -v evalplus.codegen)" | sed 's/^#!//; s/ -E$//')"
 "$PYBIN" "$ROOT/benchmarks/run_codegen_wrapper.py" \
   --model "$MODEL" \

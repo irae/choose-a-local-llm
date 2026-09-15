@@ -791,8 +791,8 @@ function renderModelConfigs(data, model) {
 
 function renderEvalplusTable(datas) {
   const header = [
-    '| config | budget | Scores | tok/s | wall |',
-    '|---|--:|--:|--:|--:|',
+    '| config | budget | Scores | empties | tok/s | wall |',
+    '|---|--:|--:|--:|--:|--:|',
   ]
   const same = (a, b) => ['base', 'quant', 'publisher', 'server'].every((k) => a?.[k] === b?.[k])
   const rowOf = (r) => (r.row ? r.data.rows.find((x) => x.id === r.row) : r.data.rows.find((x) => same(x.spec, r.spec)))
@@ -816,7 +816,7 @@ function renderEvalplusTable(datas) {
   const top = topSet(runs, (r) => parseFloat(r.base))
   const body = runs.map((r) => {
     if (!r.budget) throw new Error(`EvalPlus run "${r.model}" has no budget`)
-    return `| [${specOf(r)}](../setups/${r.data.setup}/benchmarks/${r.slug}.md) | ${r.budget} | ${scoreTag(`${r.base}/${r.plus}`, completion(r.empty) === '—' ? '' : `${completion(r.empty)} completion`, top.has(r))} | ${rowOf(r) ? `<TokCell shallow="${rowOf(r).tokShallow}" deep="${rowOf(r).tokDeep}" />` : '—'} | ${hm(r.wall)} |`
+    return `| [${specOf(r)}](../setups/${r.data.setup}/benchmarks/${r.slug}.md) | ${r.budget} | ${scoreTag(`${r.base}/${r.plus}`, completion(r.empty) === '—' ? '' : `${completion(r.empty)} completion`, top.has(r))} | ${r.emptyCause ?? '† unproven'} | ${rowOf(r) ? `<TokCell shallow="${rowOf(r).tokShallow}" deep="${rowOf(r).tokDeep}" />` : '—'} | ${hm(r.wall)} |`
   })
   return [...header, ...body].join('\n')
 }
