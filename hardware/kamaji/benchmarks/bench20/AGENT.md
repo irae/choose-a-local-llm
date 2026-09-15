@@ -1,6 +1,6 @@
 # Run 20 — re-run the empty EvalPlus problems (Mac)
 
-Ready to start after run 18 ends, 2026-09-15. A short run: seven blocks,
+Ready to start after run 18 ends, 2026-09-15. A short run: eight blocks,
 each re-running only a few problems of a scored EvalPlus run. The list
 below is the order and the run ends when the list ends or the owner says
 stop.
@@ -48,6 +48,7 @@ evaluated again on the full 164.
 - `qwen36-gguf-think-rerun`
 - `gemma26-gguf-think-rerun`
 - `gemma26-mlx-think-rerun`
+- `qwen38-unsloth-xhigh-rerun`
 - `retry-sweep`
 
 ## Essentials
@@ -86,7 +87,7 @@ evaluated again on the full 164.
 - **Crashes and wall:** `docs/methodology/evalplus.md`, "Crashes and
   wall time". Write every part in `state.md` in UTC.
 - Commit on `run20` as results land. Push `run20` at every block close
-  and message the coordinator session `local-llm coordinator sept-14`
+  and message the coordinator session `local-llm coordinator sept-15`
   with the block, the result line and the commit id. **No message
   between pushes.** Every gate and every stop-and-ask goes to the
   coordinator with the block, the condition and your candidate answer;
@@ -158,10 +159,11 @@ values. Read `docs/methodology/evalplus.md`, whole, once.
 | `qwen38-ista-medium-rerun` | `bench12/results/qwen38-ista-mtp` | `bench12` | `qwen3.8-27b` | `{"chat_template_kwargs":{"reasoning_effort":"medium"}}` | 8192 | 39 |
 | `qwen38-ista-low-rerun` | `bench13/results/ista-evalplus-low` | `bench13` | `qwen3.8-27b` | `{"chat_template_kwargs":{"reasoning_effort":"low"}}` | 8192 | 39 |
 | `bonsai-fork-rerun` | `bench3/results/bonsai-prism` | `bench3`, `bench4` | `bonsai-prism` | none | 10240 | 47, 84, 97, 129 |
-| `bonsai-mlx-rerun` | `bench2/results/bonsai-think` | `bench2` (`benchmarks/bench1/30-server-bonsai.sh`) | `prism-ml/Ternary-Bonsai-27B-mlx-2bit` | none | 10240 | 39, 99, 107, 122, 129 |
-| `qwen36-gguf-think-rerun` | `bench2/results/qwen36-think` | `bench2` (`benchmarks/bench1/20-server-qwen36.sh`) | `qwen3.6-35b-a3b` | none | 26624 | 4, 23, 55, 107, 121 |
+| `bonsai-mlx-rerun` | `bench2/results/bonsai-think` | `bench2` (`hardware/kamaji/benchmarks/bench1/30-server-bonsai.sh`) | `prism-ml/Ternary-Bonsai-27B-mlx-2bit` | none | 10240 | 39, 99, 107, 122, 129 |
+| `qwen36-gguf-think-rerun` | `bench2/results/qwen36-think` | `bench2` (`hardware/kamaji/benchmarks/bench1/20-server-qwen36.sh`) | `qwen3.6-35b-a3b` | none | 26624 | 4, 23, 55, 107, 121 |
 | `gemma26-gguf-think-rerun` | `bench10/results/gemma26-gguf-think` | `bench10` | `gemma-4-26b-a4b` | `{"chat_template_kwargs":{"enable_thinking":true}}` | 30000 | 33, 38, 40, 41, 62, 86, 93, 94, 105, 108, 115, 130, 141, 145, 147, 153, 158, 160 |
 | `gemma26-mlx-think-rerun` | `bench3/results/gemma26-mlx` | `bench3` | `mlx-community/gemma-4-26b-a4b-it-4bit` | `{"chat_template_kwargs":{"enable_thinking":true}}` | 30000 | 1, 10, 17, 32, 33, 38, 46, 47, 70, 76, 81, 84, 85, 86, 90, 93, 94, 95, 99, 103, 108, 110, 113, 115, 116, 118, 119, 120, 122, 123, 124, 125, 126, 127, 128, 129, 130, 132, 134, 141, 143, 145, 147, 151, 154, 156 |
+| `qwen38-unsloth-xhigh-rerun` | `bench18/results/qwen38-unsloth-evalplus-xhigh` | `bench18` (`qwen38_unsloth_path` in its `state.md`) | `qwen3.8-27b-iq3s` | `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}` | 20000 | 32, 91, 99, 134, 137, 138, 145, 146 |
 
 In the `qwen36-gguf-think-rerun` block, HumanEval/4 in the source run
 was a server error, not an answer. It re-runs like the others.
