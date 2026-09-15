@@ -39,6 +39,8 @@ its source.
 | `gemma26_nvfp4_clean` | 97280 | `sweep-gemma26-nvfp4` (no-drafter arm) |
 | `qwen38_ista_c` | 65536 | `sweep-qwen38-ista` |
 | `qwen38_ista_clean` | 64512 | `sweep-qwen38-ista` (no-drafter arm) |
+| `qwen38_ista_arm` | n-max 2, `-c 57344` | coordinator, served-arm pick |
+| `qwen38_ista_window` | 53248 | coordinator (56320 rounded down) |
 
 ## Files and revisions
 
@@ -662,6 +664,51 @@ build's guided row runs with no drafter regardless (speed-only block).
 Files: `results/benchy-qwen38-iq3s-q8-nmax{1,2,3}.md`, matching
 `server-sweep-qwen38-iq3s-q8-nmax*.log` and `*-vm.log`. Moving to the
 smokes: `qwen36-q4kxl-smoke-high`, `qwen38-ista-smoke-xhigh`.
+
+### qwen36-q4kxl-smoke-high — pass
+
+Served arm n-max2, `--n-cpu-moe 21`, `-c 98304`, window 94208, level
+high. `SMOKE-MENDEL model=qwen3.6-35b-a3b-q4kxl level=high task=xtend
+window=94208 calls=7 distinct=7 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=3094 commits=1 clean=yes end=stop wall_s=41
+verdict=pass`. Session log thinking check: 4 of 4 assistant turns carry
+a thinking block, confirming level high reached the server. The guided
+row of this build can now run.
+
+### qwen38-ista-smoke-xhigh — pass
+
+Served arm n-max2, `-c 57344`, window 53248, level xhigh.
+`SMOKE-MENDEL model=qwen3.8-27b-ista level=xhigh task=xtend
+window=53248 calls=14 distinct=11 longest_run=1 loop=ok:1.00
+compactions=0 splits=0 peak=4386 commits=1 clean=yes end=stop wall_s=42
+verdict=pass`. Session log thinking check: 8 of 8 assistant turns carry
+a thinking block, confirming level xhigh reached the server. The
+guided row of this build can now run.
+
+### qwen38-ista-mendel-guided-xhigh — first attempt interrupted
+
+The server died mid-run at `n_tokens` 28213 (well inside the 53248
+window): `CUDA error: the launch timed out and was terminated`, a
+different signature than the OOM seen on the sweep blocks — a driver
+kernel-launch timeout, not a memory failure. `journalctl -k` shows no
+Xid entry in the 15 minutes around the crash, so this was not a full
+GPU watchdog reset. pi's own auto-retry made 3 attempts against the
+dead server and gave up (`auto_retry_end success=false attempt=3`);
+`run-worker.sh` then finished normally, reporting `done` even though
+the underlying session ended on a connection error, not task
+completion.
+
+Per the retry rule (`docs/methodology/mendel.md`, "A row the machine
+killed is retried at once, in a fresh worktree") and the established
+naming from this run's earlier `qwen38-iq3s` interruption: moved the
+worktree and branch aside
+(`mendel-bench-guided-qwen3.8-27b-ista-xhigh-interrupted1`, branch
+`qwen3.8-27b-ista-xhigh-guided-v3-issue-13-interrupted1`), moved its
+`~/.local/share/mendel-benchmark/runs/qwen3.8-27b-ista-xhigh-guided-*`
+evidence into `runs/interrupted/`, restarted the server unchanged
+(same n-max2, `-c 57344`, q8_0 KV — no window change, that is the
+coordinator's call), and launched a fresh attempt at the canonical
+worktree/branch name.
 
 ## Handing over
 
