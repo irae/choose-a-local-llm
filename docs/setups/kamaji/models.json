@@ -856,8 +856,6 @@
     },
     {
       "wall": 187.6,
-      "wall": 190.5,
-      "wall": 143,
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV)",
       "mode": "effort medium",
@@ -868,8 +866,7 @@
       "empty": "1/164"
     },
     {
-      "wall": 583.2,
-      "wall": 545,
+      "wall": 190.5,
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF AD-IQ3_S, AtomicChat, f16 KV)",
       "mode": "effort medium",
@@ -880,8 +877,7 @@
       "empty": "0/164"
     },
     {
-      "wall": 14.7,
-      "wall": 980,
+      "wall": 143,
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
       "mode": "effort low",
@@ -892,7 +888,7 @@
       "empty": "1/164"
     },
     {
-      "wall": 200,
+      "wall": 583.2,
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
       "mode": "effort xhigh",
@@ -903,8 +899,7 @@
       "empty": "5/164"
     },
     {
-      "wall": 11.7,
-      "wall": 93,
+      "wall": 545,
       "slug": "qwen3.6-35b-a3b",
       "model": "Qwen3.6-35B-A3B",
       "mode": "thinking on",
@@ -915,8 +910,7 @@
       "empty": "5/164"
     },
     {
-      "wall": 19.5,
-      "wall": 227,
+      "wall": 14.7,
       "slug": "qwen3.6-35b-a3b",
       "model": "Qwen3.6-35B-A3B (GGUF UD-Q4_K_XL, q8_0 KV)",
       "mode": "thinking off",
@@ -927,7 +921,7 @@
       "empty": "0/164"
     },
     {
-      "wall": 136,
+      "wall": 980,
       "slug": "bonsai-27b",
       "model": "Ternary-Bonsai-27B (fork q4+bias)",
       "mode": "thinking on",
@@ -938,7 +932,7 @@
       "empty": "4/164"
     },
     {
-      "wall": 510.3,
+      "wall": 200,
       "slug": "bonsai-27b",
       "model": "Ternary-Bonsai-27B (MLX 2-bit)",
       "mode": "thinking on",
@@ -949,6 +943,7 @@
       "empty": "5/164"
     },
     {
+      "wall": 11.7,
       "slug": "gemma-4-12b-it",
       "model": "Gemma-4-12B (GGUF Q4_K_XL)",
       "mode": "thinking off",
@@ -959,6 +954,7 @@
       "empty": "0/164"
     },
     {
+      "wall": 93,
       "slug": "gemma-4-12b-it",
       "model": "Gemma-4-12B (LM Studio MLX 4-bit)",
       "mode": "thinking off",
@@ -969,6 +965,7 @@
       "empty": "0/164"
     },
     {
+      "wall": 19.5,
       "slug": "gemma-4-26b-a4b",
       "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)",
       "mode": "thinking off",
@@ -979,6 +976,7 @@
       "empty": "0/164"
     },
     {
+      "wall": 227,
       "slug": "gemma-4-26b-a4b",
       "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)",
       "mode": "thinking on",
@@ -989,6 +987,7 @@
       "empty": "18/164"
     },
     {
+      "wall": 136,
       "slug": "gemma-4-26b-a4b",
       "model": "Gemma-4-26B-A4B (MLX 4-bit)",
       "mode": "thinking on",
@@ -999,6 +998,7 @@
       "empty": "46/164"
     },
     {
+      "wall": 510.3,
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF Q4_K_M, bartowski, f16 KV)",
       "mode": "effort xhigh",
