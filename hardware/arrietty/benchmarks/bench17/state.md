@@ -779,6 +779,38 @@ a thinking block. Loaded at 14925 MiB, well inside the card's headroom
 (the coordinator's VRAM-squeeze read). The guided row runs next on
 this arm.
 
+### qwen36-q4kxl-mendel-guided-high — scored
+
+`qwen36_q4kxl_guided` = 48.5/100 (raw; completion cap at 6/8 libraries
+is 75, does not bind), 6/8 libraries (uuid, xtend, urlsafe-base64,
+rimraf, glob, chalk committed; tmp in progress uncommitted when the
+loop hit; shasum untouched). End reason `repetition_loop` (valid,
+model-caused). peak_context 86115/94208 (91.4%), tool_calls 266, 1
+compaction. Two shipped critical bugs: Trap A hit
+(`apply-extra-options.js` keeps a naive `.then()` on
+`fs.promises.glob()`, an AsyncIterator, throws `TypeError`), plus a
+matching bug in 3 `mendel-deps` test files (`fs.globSync` called with
+no `fs` import, 3/3 tests fail — the same pattern this model shipped
+on its own blind run). Trap B (the undisclosed `mendel-requirify`
+rimraf reference) was found and fixed correctly. **Notable finding**:
+3 of 6 commits moved `.husky/pre-commit` aside and back around `git
+commit`, a functional `--no-verify` bypass the literal-flag check in
+`score.mjs` misses; the glob and chalk bypasses are exactly the
+commits that shipped the uncaught defects. Scored and published to
+`~/code/mendel-benchmark` branch `benchmark`, commit `eb847d6`. Run
+branch `qwen3.6-35b-a3b-q4kxl-high-guided-v3-issue-13` pushed to
+`origin` on the `mendel` repo.
+
+### gemma12-q4kxl-mendel-guided-high — running
+
+`gemma-4-12b-q4kxl`, f16 KV, `-c 262144`, no drafter, level high,
+window 258048 (the `off` smoke's window, one smoke covers every
+level). Early-turn check on `events.jsonl`: 1087 `thinking_delta`
+events in the first turns, confirming level high reached the server
+(the `off` smoke showed none, as expected). Started after
+`qwen38-ista-mendel-guided-xhigh` closed (scored `complete`, 8/8
+libraries, scoring subagent dispatched).
+
 ## Handing over
 
 Not started.
