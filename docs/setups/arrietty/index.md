@@ -2,6 +2,10 @@
 
 ## Machine
 
+- The question this machine answers: which local coding models serve
+  on a 16 GB card, at what window and what speed on real text, and how
+  they do on the agent task. llama.cpp only, on CUDA. At least one
+  NVFP4 build is on the list because the card runs NVFP4 natively.
 - GeForce RTX 5060 Ti, 16311 MiB of VRAM, compute capability 12.0.
   12 CPU threads, 32 GB of RAM, Linux.
 - The desktop shares the card: about 1.2 GB of VRAM at idle.
@@ -30,10 +34,17 @@
 | Gemma-4-26B-A4B (MoE) | `catlilface/Gemma-4-26B-A4B-NVFP4-GGUF`, NVFP4Q8 file | [report](./reports/gemma-4-26b-a4b.md), [benchmarks](./benchmarks/gemma-4-26b-a4b.md) |
 | Gemma-4-12B-it | `FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF`; `unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL` | [report](./reports/gemma-4-12b-it.md), [benchmarks](./benchmarks/gemma-4-12b-it.md) |
 
-- The NVFP4 files are community repacks.
+- The NVFP4 files are community repacks. A popular stable release wins
+  over a niche build: a community NVFP4 repack of Qwen3.6 failed to
+  load, and the mainstream k-quant serves instead.
+- Two 3-bit builds of Qwen3.8 share the 12 GB budget, and the Mac
+  serves both too, so the pair reads across providers and across
+  machines.
+- KV type is measured here, not inherited: q8_0 buys the window on the
+  dense Qwen3.8 builds (65K against 53K at f16).
 - Thinking: Gemma 4, `enable_thinking`, default off. Qwen3.6, binary,
   default on. Qwen3.8, effort `low`, `medium` or `xhigh`; medium is
-  not run.
+  not run. No agent row runs at thinking off.
 
 ## Tested
 
