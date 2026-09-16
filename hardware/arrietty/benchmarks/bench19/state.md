@@ -382,5 +382,21 @@ empty), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty),
 `gemma26-nvfp4-evalplus-on` (0.909/0.878, 0/164 empty),
 `gemma12-nvfp4-evalplus-off` (0.927/0.896, 0/164 empty),
 `gemma12-nvfp4-evalplus-on` (0.659/0.640, 0/164 empty) and
-`gemma12-q4kxl-evalplus-on` (0.793/0.780, 0/164 empty) done. On to
-`gemma12-q4kxl-evalplus-off` next, same server, thinking off.
+`gemma12-q4kxl-evalplus-on` (0.793/0.780, 0/164 empty) done.
+
+## `gemma12-q4kxl-evalplus-off` — running
+
+Same server as `-on` (no restart), thinking off.
+
+Calibration `gemma12-q4kxl-off`: 10/10 rows, 0 `length` stops,
+converges normally. Max completion 1011 × 1.5 = 1517 < floor 8192.
+`gemma12-q4kxl-off_budget` = 8192 (floor).
+
+Deviation: none.
+
+## Handing over
+
+`machine-setup` through `gemma12-q4kxl-evalplus-on` all done (see
+above). `gemma12-q4kxl-evalplus-off` calibrated, budget 8192, starting
+the watcher and full run next — the last EvalPlus block before
+`retry-sweep`.
