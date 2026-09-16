@@ -154,3 +154,29 @@ successful completion is `HumanEval/145` at 18907 tokens.
 calibration-qwen38-iq3s-xhigh.json, non-converging rule.
 
 Deviation: none — handled per the same runbook rule as the ista block.
+
+### `qwen38-iq3s-evalplus-xhigh` close
+
+`unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S`, no drafter throughout, one slot,
+q8_0 KV, ctx 32768, budget 19000. One part, no crash, watcher clean
+start to close: 2026-09-15T20:02:29Z to 2026-09-16T00:52:07Z.
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.957 |
+| HumanEval plus | 0.921 |
+| completion rate | 100% |
+| empty | 0/164 |
+| wall | 289.6 min (one part, no crash) |
+
+Files: `results/qwen38-iq3s-evalplus-xhigh/humaneval/`,
+`results/server-qwen38-iq3s.log`.
+Deviation: none.
+
+## Handing over
+
+`machine-setup`, `qwen38-ista-evalplus-xhigh` (0.945/0.909, 0/164
+empty) and `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty)
+done. On to `qwen36-q4kxl-evalplus-on` next, per the runbook's order
+and arm table (drafter, `--n-cpu-moe 21`, fallback no drafter +
+`--n-cpu-moe 17`).
