@@ -71,3 +71,31 @@ Source: `bench2/results/qwen36-think`. Removed HumanEval/4 (a server error in th
 
 New score on all 164: base **0.957**, plus **0.939**, empty **2/164** (HumanEval/23, 55). Cause counts: `cap` 2, `model` 0. **Improved from the source row** (`bench2`, base 0.939 / plus 0.921, 5/164 empty, one of those five a server error): three real completions recovered and pass, plus the one server-error slot now has a real answer. Re-run wall: about 24 min, clean (no server incidents during this block itself — see the state.md note on a stray-process incident right before the server load, caught and cleared before any codegen started).
 Files: `results/qwen36-gguf-think-rerun/`, `results/server-qwen36-gguf-think-rerun.log`.
+
+### `gemma26-gguf-think-rerun`
+
+Source: `bench10/results/gemma26-gguf-think`. Served `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, `--alias gemma-4-26b-a4b`, MTP n-max 2, `-c 212992`, f16/f16 KV, thinking on (`enable_thinking: true`), budget 30000.
+
+| task id | finish_reason | completion_tokens | result |
+|---|---|--:|---|
+| HumanEval/33 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/38 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/40 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/41 | stop | 4923 | pass (base and plus) — recovered |
+| HumanEval/62 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/86 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/93 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/94 | stop | 4701 | pass (base and plus) — recovered |
+| HumanEval/105 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/108 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/115 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/130 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/141 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/145 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/147 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/153 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/158 | length | 30000 | fail (base and plus) — genuinely empty |
+| HumanEval/160 | length | 30000 | fail (base and plus) — genuinely empty |
+
+New score on all 164: base **0.896**, plus **0.872**, empty **16/164**. Cause counts: `cap` 16, `model` 0. Slightly up from the source row (`bench10`, base 0.884 / plus 0.860, 18/164 empty): only 2 of the 18 empties recover at this budget on today's build; the other 16 confirm a real model limitation at 30000, not a bug. Re-run wall: about 2h.
+Files: `results/gemma26-gguf-think-rerun/`, `results/server-gemma26-gguf-think-rerun.log`.

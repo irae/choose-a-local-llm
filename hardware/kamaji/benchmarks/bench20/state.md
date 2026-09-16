@@ -64,6 +64,14 @@ Deviation: right after the first server load, two stray `run_codegen_wrapper.py`
 Close: codegen and evaluation ran clean once the stray processes were cleared — no server incidents during the block itself. `finish.jsonl` shows HumanEval/23 and 55 at `finish_reason: length`, 26624 tokens, genuinely empty (`cap`); HumanEval/4, 107, 121 all completed and passed. Full re-scored result: base 0.957, plus 0.939, 2/164 empty, up from the source row's 0.939/0.921/5 empty (one of the source empties was a server error, not a real generation). Server and watcher stopped (pids 62801, 63527).
 Files: `results/qwen36-gguf-think-rerun/`, `results/server-qwen36-gguf-think-rerun.log`, `results/run-watch-qwen36-gguf-think-rerun.log`.
 
+### `gemma26-gguf-think-rerun`
+
+Served `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL`, `--alias gemma-4-26b-a4b`, MTP n-max 2, `-c 212992`, f16/f16 KV, thinking on, budget 30000. Same server as bench9/bench10's published `gemma-4-26b-a4b` command with `f16` KV and `-c 212992`, per `AGENT.md`'s pointer. Clean run, 18 problems, no server incidents, checked `pgrep -fl run_codegen_wrapper.py` before this block's server load per the reminder above — clean.
+`finish.jsonl`: 16 of 18 re-run problems hit `finish_reason: length` at the 30000 budget (genuinely empty, cause `cap`); `HumanEval/41` and `94` completed (`stop`) and passed.
+Full re-scored result: base 0.896, plus 0.872, 16/164 empty, up slightly from the source row's 0.884/0.860/18 empty. Server and watcher stopped (pids 73301, 74075).
+Files: `results/gemma26-gguf-think-rerun/`, `results/server-gemma26-gguf-think-rerun.log`, `results/run-watch-gemma26-gguf-think-rerun.log`.
+Deviation: none.
+
 ## Handing over
 
-`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun`, `bonsai-mlx-rerun`, `qwen36-gguf-think-rerun` done. Begin with `gemma26-gguf-think-rerun`. Reminder from this session: after any `kill`/`kill -9` on a `run-humaneval.sh` bash PID, also check `pgrep -fl run_codegen_wrapper.py` before starting the next server — the bash kill does not reliably kill its Python child.
+`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun`, `bonsai-mlx-rerun`, `qwen36-gguf-think-rerun`, `gemma26-gguf-think-rerun` done. Begin with `gemma26-mlx-think-rerun`. Reminder from this session: after any `kill`/`kill -9` on a `run-humaneval.sh` bash PID, also check `pgrep -fl run_codegen_wrapper.py` before starting the next server — the bash kill does not reliably kill its Python child.
