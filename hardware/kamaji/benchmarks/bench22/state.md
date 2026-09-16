@@ -54,6 +54,7 @@ Served with the budget: `--reasoning-budget 19491 --reasoning-budget-message "$B
 
 Watcher started (pid 37475), `RUNWATCH_MEM_LOG=~/.local/share/choose-a-local-llm/run22-gemma26-budget-think-mem.log`. Codegen started (pid 37728), `EVALPLUS_MAX_NEW_TOKENS=21539`.
 
+Deviation: `run_codegen_wrapper.py`'s `_task_id_for` loads both `get_human_eval_plus()` and `get_mbpp_plus()` to build its task-id lookup, even on a HumanEval-only run. The MBPP cache file was missing (`~/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl`), so `evalplus`'s own `wget.download` tried to fetch it from the GitHub release asset redirect (an Azure blob URL) and hung there — a live TCP connection, not a dead one, so `run-watch.sh`'s death signatures never caught it; only a `pgrep`/`lsof` check on the codegen pid showed the stuck connect. `curl` reached and downloaded the same URL in under 10 s, so the network was fine; the hang is a `wget` package fault, not a firewall block. Fix: downloaded the file with `curl` and `gunzip`, placed it at the cache path `evalplus` expects, so the loader is now offline-safe. No change to the tool script. This can recur on any block whose dataset differs from `humaneval`'s cache; a future run should pre-seed both dataset caches in `machine-setup`. First codegen attempt lost ~26 min to the hang before this was found and fixed; killed and restarted clean, no partial data lost (0 lines written before the fix).
+
 still running.
 Files: `hardware/kamaji/benchmarks/bench22/results/gemma26-gguf-budget-think/`.
-Deviation: none.
