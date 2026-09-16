@@ -871,7 +871,7 @@
     },
     {
       "wall": 191.6,
-      "emptyCause": "1 cap",
+      "emptyCause": "1 budget",
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV)",
       "mode": "effort medium",
@@ -895,7 +895,7 @@
     },
     {
       "wall": 147,
-      "emptyCause": "1 cap",
+      "emptyCause": "1 budget",
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
       "mode": "effort low",
@@ -907,7 +907,7 @@
     },
     {
       "wall": 583.2,
-      "emptyCause": "5 cap",
+      "emptyCause": "5 budget",
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
       "mode": "effort xhigh",
@@ -919,7 +919,7 @@
     },
     {
       "wall": 301.5,
-      "emptyCause": "2 cap",
+      "emptyCause": "2 budget",
       "slug": "qwen3.6-35b-a3b",
       "model": "Qwen3.6-35B-A3B",
       "mode": "thinking on",
@@ -943,7 +943,7 @@
     },
     {
       "wall": 594.8,
-      "emptyCause": "4 cap",
+      "emptyCause": "4 budget",
       "slug": "bonsai-27b",
       "model": "Ternary-Bonsai-27B (fork q4+bias)",
       "mode": "thinking on",
@@ -955,7 +955,7 @@
     },
     {
       "wall": 1164.1,
-      "emptyCause": "2 cap",
+      "emptyCause": "2 budget",
       "slug": "bonsai-27b",
       "model": "Ternary-Bonsai-27B (MLX 2-bit)",
       "mode": "thinking on",
@@ -1003,7 +1003,7 @@
     },
     {
       "wall": 347,
-      "emptyCause": "16 cap",
+      "emptyCause": "16 budget",
       "slug": "gemma-4-26b-a4b",
       "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)",
       "mode": "thinking on",
@@ -1027,7 +1027,7 @@
     },
     {
       "wall": 510.3,
-      "emptyCause": "6 cap",
+      "emptyCause": "6 budget",
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF Q4_K_M, bartowski, f16 KV)",
       "mode": "effort xhigh",

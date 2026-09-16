@@ -91,8 +91,14 @@ its budget and returned empties.
 7. Keep `finish.jsonl` beside the samples: `run-humaneval.sh` writes one
    line per answered request, with the UTC time, the finish reason
    (`length` means the budget cut it), the completion tokens and a hash of
-   the prompt. It is the proof of why each empty is empty: the budget or
-   the model. Write the count of each cause beside the score.
+   the prompt. It is the proof of why each empty is empty. Write the
+   cause beside the score, in one of three words: `budget` when the
+   answer was still coming as the output budget ran out
+   (`finish_reason: length`), `model` when the model ended with no
+   answer and budget was left (`finish_reason: stop`), and `† unproven`
+   when the run recorded no finish reason. A model whose thinking never
+   converges also ends at the budget, so `budget` at a large budget does
+   not prove that more budget is enough.
 
 ## Crashes and wall time
 

@@ -393,7 +393,13 @@ it.
   quants (calibrated q4 KV and similar) gate separately and show
   "pending" until they pass. Scores never propagate across thinking
   modes. It names the calibrated output budget and its 30000-token
-  cap, and that a problem at the cap counts as failed.
+  cap, and that a problem at the cap counts as failed. The cause of an
+  empty count is one of three words: `budget` (the answer was still
+  coming when the output budget ran out), `model` (the model ended with
+  no answer and budget was left) and `† unproven` (the run recorded no
+  finish reason). `emptyCause` in `models.json` carries it as `none`,
+  `N budget`, `N model` or `† unproven`, and the HumanEval+ page
+  explains the three words under its limits table.
 - **Stale cells carry the † marker (superseded, re-run pending)**: a
   value measured under an earlier serving config or method (a retired
   wired limit, a fast sweep, a pre-calibration config) that the current
