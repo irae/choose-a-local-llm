@@ -75,5 +75,12 @@ Deviation: the server took about 10 minutes from launch to the first `loading mo
 
 Calibration running (pid 92408), `calibration-qwen38-bartowski-xhigh-budget.json`.
 
-still running.
-Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-calibrate-xhigh/`.
+Calibration done, 10/10 problems. Derive: converged 9, cut 1, max_reasoning_tokens 25766, max_answer_tokens 979.
+
+`qwen38_think_budget` = 30000
+`qwen38_answer_budget` = 2048
+`qwen38_max_tokens` = 32048
+
+Server kept up for the budget block.
+Files: `hardware/kamaji/calibrations/calibration-qwen38-bartowski-xhigh-budget.json`, `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-calibrate-xhigh/`.
+Deviation: none beyond the cold-cache load delay noted above.
