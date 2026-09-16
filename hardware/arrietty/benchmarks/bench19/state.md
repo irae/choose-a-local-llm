@@ -423,5 +423,25 @@ Every planned block done: `machine-setup`, `qwen38-ista-evalplus-xhigh`
 (0.793/0.780) and `gemma12-q4kxl-evalplus-off` (0.951/0.909) — every
 row 0/164 empty except the two ISTA-arm-switch and one budget-
 correction deviations noted above. `retry-sweep` empty, nothing
-waited on a human. Stopping the server, cleaning up processes, and
-closing the session next.
+waited on a human.
+
+## Run close
+
+Server stopped, two stale watchers from earlier blocks found and
+killed (harmless — logged, not restarted), VRAM back to 951 MiB
+(baseline was 921 MiB at session start). Evidence archived:
+`tools/archive-evidence.sh hardware/arrietty/benchmarks/bench19/results run19`
+→ 20 files to `~/.local/share/choose-a-local-llm/evidence/run19`.
+
+Machine left idle, no queued work remains. The coordinator's next
+steps: write `report.md`, add the findings to
+`hardware/arrietty/benchmarks/INDEX.md`, fill the `evalplus` cells in
+`docs/setups/arrietty/models.json` for all 8 rows scored this run, and
+publish. Two open items for the coordinator to note: (1) the
+`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` file is still at its original
+`~/.cache/llama.cpp/hf/` path, deliberately not migrated to the
+default `hf` cache mid-run (it was the live model); a future session
+should migrate it now that the run is done. (2) the `hf-cache-
+migration` branch (commit 56c6e2f, pushed earlier this session, not
+part of run19) holds the doc/tooling fix for the `--local-dir`
+download pattern — still waiting on the coordinator to merge.
