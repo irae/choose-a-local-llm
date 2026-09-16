@@ -295,15 +295,31 @@ successful completion `HumanEval/0` at 1616 tokens.
 rule. Expect a real empty rate near 50% and do not chase it with a
 bigger budget — the runbook's own words for this case.
 
-Deviation: none — handled per the same non-converging rule as the
-other blocks; the rate is far higher here (5/10 vs 1-2/10 elsewhere).
+Deviation: **owner correction (via coordinator, 2026-09-16): the
+budget floor of 8192 still applies even when a model is
+non-converging.** `docs/methodology/evalplus.md`, "Calibrate the
+output budget FIRST", step 2 sets the floor; step 3 (the
+non-converging rule I used) replaces the multiplier formula, not the
+floor. My 1700 budget was wrong. The thinking-off block of the same
+file already floored at 8192 one block earlier, which should have been
+the signal.
+
+**Part 1** (budget 1700, wrong): started 2026-09-16T10:42:09Z, stopped
+2026-09-16T10:55:36Z on the coordinator's word, 32/164 problems done,
+**0 empty in this part** (the early, easier problems ran first, before
+budget exhaustion would show up) — every one of the 32 kept, unchanged
+by a larger budget at temperature 0. Killed the scoring run and both
+watchers (one stale watcher from the `-off` block was also still
+running; killed too). Server left running.
+
+**Part 2** (budget 8192, correct): restarting now, resumes at problem
+33 of 164.
 
 ## Handing over
 
 `machine-setup`, `qwen38-ista-evalplus-xhigh` (0.945/0.909, 0/164
 empty), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty),
-`qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty),
-`gemma26-nvfp4-evalplus-on` (0.909/0.878, 0/164 empty) and
+`qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty) and
 `gemma12-nvfp4-evalplus-off` (0.927/0.896, 0/164 empty) done.
-`gemma12-nvfp4-evalplus-on` calibrated, budget 1700 (~50% empty
-expected), starting the watcher and full run next.
+`gemma12-nvfp4-evalplus-on` corrected to budget 8192 per owner word,
+restarting the watcher and run, resuming at problem 33/164.
