@@ -47,3 +47,13 @@ Derive output: converged 8, cut 2, max_reasoning_tokens 12994, max_answer_tokens
 Server kept up for the budget block.
 Files: `hardware/kamaji/calibrations/calibration-gemma26-gguf-think-budget.json`, `hardware/kamaji/benchmarks/bench22/results/gemma26-gguf-calibrate-think/server.log`.
 Deviation: none.
+
+### evalplus gemma-4-26b-a4b think-budget — running
+
+Served with the budget: `--reasoning-budget 19491 --reasoning-budget-message "$BUDGET_MSG"`, `-c 32768`. Verified with a real request (`finish_reason: length` at 512 tokens, expected under budget). Wired after load: ~20161 MB.
+
+Watcher started (pid 37475), `RUNWATCH_MEM_LOG=~/.local/share/choose-a-local-llm/run22-gemma26-budget-think-mem.log`. Codegen started (pid 37728), `EVALPLUS_MAX_NEW_TOKENS=21539`.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/gemma26-gguf-budget-think/`.
+Deviation: none.
