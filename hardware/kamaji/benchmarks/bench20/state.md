@@ -48,6 +48,8 @@ Second deviation: after the first restart's old codegen process (pid 19991) turn
 
 Third deviation: the server died silently a second time, again right after prompt processing finished and before the first output token, this time on `HumanEval/107` (`server-bonsai-mlx-rerun-retry1.log`). No OOM, no memory pressure (free ~20 GB flat). Restarted (`server-bonsai-mlx-rerun-retry2.log`), resumed, cleared `HumanEval/107` this time, then died a third time on `HumanEval/122` under the same signature (`server-bonsai-mlx-rerun-retry2.log`). This is a pattern, not a one-off: `mlx_lm.server` 0.31.3_2 silently dies on this model after several requests accumulate in its prompt cache (the log always shows 10 cached sequences right before the death), never a crash trace. Flagged for the owner as a tool bug, not blocking the run. Restarted a third time (`server-bonsai-mlx-rerun-retry3.log`, `run-watch-bonsai-mlx-rerun-retry3.log`); only 2 problems (`HumanEval/122`, `129`) remained.
 
+A subagent (Haiku) researched the pattern: `mlx_lm.server` takes a `--prompt-cache-bytes` flag (confirmed present in this build's `--help`) to cap the KV cache size, a plausible fix for unbounded prompt-cache growth after several requests. Its cited issue numbers are unverified (a Haiku model can misattribute). Note for a future block or run: pass `--prompt-cache-bytes` on this model if the death repeats, and consider periodic restarts for long `mlx_lm.server` EvalPlus runs on Bonsai MLX.
+
 ## Handing over
 
 `machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun` done. `bonsai-mlx-rerun` in progress (resumed after one server death, see above). Begin next session with `bonsai-mlx-rerun`'s close, then `qwen36-gguf-think-rerun`.
