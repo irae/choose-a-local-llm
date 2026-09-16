@@ -79,6 +79,37 @@ Full re-scored result: base 0.793 (130/164), plus 0.768 (126/164), 31/164 empty,
 Files: `results/gemma26-mlx-think-rerun/`, `results/server-gemma26-mlx-think-rerun.log`, `results/run-watch-gemma26-mlx-think-rerun.log`.
 Deviation: none.
 
+### `qwen38-unsloth-xhigh-rerun`
+
+Served `unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S`, `--alias qwen3.8-27b-iq3s`, no drafter (nmax0), `-c 32768`, f16/f16 KV, `reasoning_effort: xhigh`, budget 20000. Clean run, no server incidents. All 8 re-run problems hit `finish_reason: length` at 20000, no recoveries — the new score is an exact match to the source row (`bench18`, 0.945/0.927/8 empty).
+Server and watcher stopped (pids 79588, 80092).
+Files: `results/qwen38-unsloth-xhigh-rerun/`, `results/server-qwen38-unsloth-xhigh-rerun.log`, `results/run-watch-qwen38-unsloth-xhigh-rerun.log`.
+Deviation: none.
+
 ## Handing over
 
-`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun`, `bonsai-mlx-rerun`, `qwen36-gguf-think-rerun`, `gemma26-gguf-think-rerun`, `gemma26-mlx-think-rerun` done. Begin with `qwen38-unsloth-xhigh-rerun`, then `retry-sweep` (nothing queued there so far — every block this run has either run clean or recovered within its own retries, none needed a human). Reminder from this session: after any `kill`/`kill -9` on a `run-humaneval.sh` bash PID, also check `pgrep -fl run_codegen_wrapper.py` before starting the next server — the bash kill does not reliably kill its Python child.
+Every block of the AGENT.md order ran: `machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun`, `bonsai-mlx-rerun`, `qwen36-gguf-think-rerun`, `gemma26-gguf-think-rerun`, `gemma26-mlx-think-rerun`, `qwen38-unsloth-xhigh-rerun`. `retry-sweep` had nothing queued — no block waited on a human across the whole run; every retry (three on `bonsai-mlx-rerun`, one on `qwen36-gguf-think-rerun`'s stray-process cleanup) resolved inline. The run is done pending the coordinator's review and publish.
+
+**Summary of the eight re-run rows**, cause counts (`cap` = length at budget, `model` = stop with no answer — none of this run's empties were `model`):
+
+| mnemonic | new score (base/plus) | new empty | old score (base/plus) | old empty | recovered |
+|---|---|--:|---|--:|--:|
+| `qwen38-ista-medium-rerun` | 0.976/0.945 | 1/164 | 0.976/0.945 | 1/164 | 0 |
+| `qwen38-ista-low-rerun` | 0.976/0.933 | 1/164 | 0.976/0.933 | 1/164 | 0 |
+| `bonsai-fork-rerun` | 0.927/0.890 | 4/164 | 0.927/0.890 | 4/164 | 0 |
+| `bonsai-mlx-rerun` | 0.933/0.902 | 2/164 | 0.915/0.884 | 5/164 | 3 |
+| `qwen36-gguf-think-rerun` | 0.957/0.939 | 2/164 | 0.939/0.921 | 5/164 | 3 |
+| `gemma26-gguf-think-rerun` | 0.896/0.872 | 16/164 | 0.884/0.860 | 18/164 | 2 |
+| `gemma26-mlx-think-rerun` | 0.793/0.768 | 31/164 | 0.713/0.701 | 46/164 | 15 |
+| `qwen38-unsloth-xhigh-rerun` | 0.945/0.927 | 8/164 | 0.945/0.927 | 8/164 | 0 |
+
+Every remaining empty across all eight rows hit `finish_reason: length` at its budget — none were a model choosing to stop with no answer. So this run's finding: no scored EvalPlus row in this batch had a hidden `model`-cause empty; the empties on the site are all genuine budget caps.
+
+**Machine state left behind:** GPU idle, no `llama-server` or `mlx_lm.server` process running, wired memory recovered to baseline after the last block. No stray `run_codegen_wrapper.py` processes (checked before every server load after the `qwen36-gguf-think-rerun` incident).
+
+**Evidence archived:** not yet run — the coordinator or the next session should run `tools/archive-evidence.sh hardware/kamaji/benchmarks/bench20/results run20` before closing this run out.
+
+**Open flags for the owner/coordinator, not stop conditions:**
+1. `bonsai-mlx-rerun`'s `mlx_lm.server` died silently three times on long generations with no OOM signature; a Haiku subagent's research points at unbounded prompt-cache growth as the likely cause (the `--prompt-cache-size 2` flag `gemma26-mlx-think-rerun`'s command already carries avoided the issue there) — worth adding `--prompt-cache-size` or `--prompt-cache-bytes` to future Bonsai MLX serve commands. The subagent's cited GitHub issue numbers are unverified.
+2. A `kill`/`kill -9` on a `run-humaneval.sh` bash PID does not reliably kill its `run_codegen_wrapper.py` Python child — this run hit it once (stray processes from a killed `bonsai-mlx-rerun` attempt briefly hit the next block's fresh server before being caught and killed, no data was written). Worth a note in the checklist for future runs.
+3. The coordinator's earlier review question about `finish.jsonl`'s cause split is answered above: every empty this run touched was `cap`, none `model`.
