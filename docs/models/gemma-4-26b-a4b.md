@@ -29,6 +29,9 @@ Every config of this model, on every machine, best first.
   puts 7 expert layers in host RAM: 97K at 59 → 46 tok/s, 0.909 /
   0.878 with 14 empty at thinking on, guided 37.5 on 3 of 8, ended on
   a text loop.
-- **This model loops in both benchmarks.** Its empties at the 30000
-  budget are the first case of the thinking-budget test
-  ([method](../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)).
+- **This model loops in both benchmarks, and a thinking budget fixes
+  the single-turn side.** Under test on the M1 Max: the GGUF at
+  thinking on with a 19491-token thinking budget scored 0.988 / 0.957,
+  no empty answer, in 166 minutes, against 0.896 / 0.872 with 16
+  empties in 347 minutes without it. 15 of the 16 forced answers
+  passed ([method](../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)).
