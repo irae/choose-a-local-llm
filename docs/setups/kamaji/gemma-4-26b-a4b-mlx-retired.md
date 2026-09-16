@@ -27,7 +27,7 @@ build is not run again.
 
 EvalPlus at thinking on read 0.713 / 0.701, with 46 of 164 problems
 empty (72 percent completion): the same convergence failure in another
-form. The GGUF build at the same level reads 0.884 / 0.860.
+form. The GGUF build at the same level reads 0.896 / 0.872.
 
 ## What it did give
 

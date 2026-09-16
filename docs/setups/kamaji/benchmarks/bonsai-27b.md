@@ -141,11 +141,12 @@ mem-watch (20 s interval) showed zero swap during all sweeps: compute-bound.
 
 **pass@1 0.927 base / 0.890 plus / 98% completion** (`bonsai-prism`, q4_0 KV,
 `--kv-mean-center` PrismML bias file, thinking on, output budget 10240,
-temperature 0). 4/164 completions stay empty at the full budget, every one the output cap (run 20) — a real
-model ceiling at this quant, not a harness artifact. This score beats
-the MLX 2-bit config (0.915/0.884/97%) by a small margin — the calibrated
-q4 KV bias does not cost quality versus 2-bit MLX; if anything it holds
-up slightly better. Run resumed cleanly from a 72/164 partial left on 2026-08-29
+temperature 0). 4/164 completions stay empty at the full budget, and run 20 proved the
+cause: every one ran to the output cap with the answer still coming, so
+a larger budget could still change them. The MLX 2-bit config reads
+0.933/0.902/99% after its own re-run, so the two builds sit within one
+problem of each other and the calibrated q4 KV bias costs no measurable
+quality. Run resumed cleanly from a 72/164 partial left on 2026-08-29
 (`hardware/kamaji/benchmarks/bench3/results/bonsai-prism/`); `benchmarks/mem-watch.sh` ran the
 whole time, no crash signatures, no unusual compression events.
 

@@ -16,9 +16,9 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
 ## Highlights
 
 - **The speed king: 68 py / 74 js tok/s.** 1.5× Gemma-12B, 4× dense Qwen3.8.
-- **Second-best quality measured here, and thinking off is better on
-  base.** Thinking on 0.939 / 0.921 / 97%; thinking off 0.951 / 0.915 /
-  100% with no empty completion, in 15 minutes. Only Qwen3.8 scores
+- **Second-best quality measured here, and thinking on leads after the
+  re-run.** Thinking on 0.957 / 0.939 / 99%; thinking off 0.951 / 0.915
+  / 100% with no empty completion, in 15 minutes. Only Qwen3.8 scores
   higher, and Qwen3.8 is four times slower.
 - **The KV type is a window-against-speed trade on this model.** At
   wired limit 25000 the q8_0 arm serves `-c 98304` and, on real text

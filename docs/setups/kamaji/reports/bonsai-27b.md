@@ -16,8 +16,9 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 ## Highlights
 
 - **27B-class quality from 8 GB of weights** — EvalPlus 0.927 / 0.890 / 98%,
-  and the vendor's q4-KV calibration costs no quality (it beats plain
-  MLX 2-bit's 0.915 / 0.884 / 97%).
+  and the vendor's q4-KV calibration costs no quality. Plain MLX 2-bit
+  reads 0.933 / 0.902 / 99% after run 20 re-ran its empty problems, so
+  the two builds sit within one problem of each other.
 - **The flattest speed curve of any model here** (MLX): −23% from 4K to
   49K, never hits the speed floor; the limit is memory (~58-60K).
 - **The only multi-agent setup that leaves the machine free**: 2×48K
