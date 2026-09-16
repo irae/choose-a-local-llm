@@ -84,3 +84,13 @@ Calibration done, 10/10 problems. Derive: converged 9, cut 1, max_reasoning_toke
 Server kept up for the budget block.
 Files: `hardware/kamaji/calibrations/calibration-qwen38-bartowski-xhigh-budget.json`, `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-calibrate-xhigh/`.
 Deviation: none beyond the cold-cache load delay noted above.
+
+### evalplus qwen3.8-27b xhigh budget-30000 — running
+
+Served with the budget: `--reasoning-budget 30000 --reasoning-budget-message "$BUDGET_MSG"`, `-c 32768`. Verified with a real request (`finish_reason: stop`). Wired after load: ~22398 MB, under the 25000 limit.
+
+Watcher started (pid 97728). Codegen started (pid 97975), `EVALPLUS_MAX_NEW_TOKENS=32048`. MBPP cache already fixed from the earlier block, no repeat of that deviation.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh/`.
+Deviation: none.
