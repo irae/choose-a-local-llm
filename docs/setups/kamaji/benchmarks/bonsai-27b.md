@@ -53,11 +53,13 @@ Both servers: 14.9 GB RSS combined. ~12 GB left for KV → roughly 2×35K contex
 
 ## Quality — EvalPlus HumanEval+ (2026-08-27, fair budget)
 
-**pass@1 0.915 base / 0.884 plus / 97% completion** (mlx, thinking on, output budget 10240,
+**pass@1 0.933 base / 0.902 plus / 99% completion** (mlx, thinking on, output budget 10240,
 temperature 0). A 2026-08-26 pass under a flawed 3072-token cap had scored
 it 0.640/0.634/70% — the biggest correction of any model (superseded, see
-[the historical page](../historical.md)). 5/164 completions stay empty even
-at the full budget: a real model ceiling, not a harness artifact. The
+[the historical page](../historical.md)). 2/164 completions stay empty
+at the full budget, and run 20 proved the cause: the answer was still
+coming when the budget ran out. Three earlier empties now complete and
+pass on today's build. The
 ternary 95% claim holds up in practice. Bonsai is also the least disruptive
 model to run while working (moderate fan noise, ~8 GB weights), so it is
 a candidate for real coding use in the background. It has not finished
@@ -139,7 +141,7 @@ mem-watch (20 s interval) showed zero swap during all sweeps: compute-bound.
 
 **pass@1 0.927 base / 0.890 plus / 98% completion** (`bonsai-prism`, q4_0 KV,
 `--kv-mean-center` PrismML bias file, thinking on, output budget 10240,
-temperature 0). 4/164 completions stay empty at the full budget — a real
+temperature 0). 4/164 completions stay empty at the full budget, every one the output cap (run 20) — a real
 model ceiling at this quant, not a harness artifact. This score beats
 the MLX 2-bit config (0.915/0.884/97%) by a small margin — the calibrated
 q4 KV bias does not cost quality versus 2-bit MLX; if anything it holds

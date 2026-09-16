@@ -26,7 +26,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
   101K each: 66.6 tok/s at 4K, 33.6 at 82K on one slot with the other
   idle, no speed or memory stop before the slot window.
 - **Thinking costs answers on the single-turn test.** Thinking on reads
-  0.884 / 0.860 / 89% with 18 of 164 empty; the MLX build 0.713 / 0.701 /
+  0.896 / 0.872 / 90% with 16 of 164 empty; the MLX build 0.713 / 0.701 /
   72% with 46 empty. The two builds do not share a score.
 - Weak point: wired memory sits at 25.6 GB on the deep config, above the
   24000 limit, flat but with no room for anything beside it. MLX is the
@@ -37,7 +37,7 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" top /> | **197k** | mem | <TokCell shallow="60.1" deep="19.1" top-shallow top-deep /> | **25.6 GB** | <ScoreCell value="0.884/0.860" sub="89% completion" top /> | <ScoreCell value="47.5" pill="mendel-blind" top /> | <span title="EvalPlus 3h47 · Mendel 1h21">5h08</span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" top /> | **197k** | mem | <TokCell shallow="60.1" deep="19.1" top-shallow top-deep /> | **25.6 GB** | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="47.5" pill="mendel-blind" top /> | <span title="EvalPlus 5h47 · Mendel 1h21">7h08</span> |
 | <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> 💀 | ***66k*** | *mem* | ****49.3*** → ***23.4**** | ***20.0 GB*** | <ScoreCell value="0.713/0.701" sub="72% completion" top /> | <ScoreCell value="0" note="0%" pill="failed-smoke" /> | <span title="EvalPlus 2h16 · Mendel —">2h16†</span> |
 
 💀 This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task. [Why it is not a candidate](../gemma-4-26b-a4b-mlx-retired.md).
@@ -46,7 +46,7 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" top /> | **2x82k** | mem | <TokCell shallow="66.6" deep="33.6" stale top-shallow top-deep /> | **25.3 GB** | <ScoreCell value="0.884/0.860" sub="89% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 3h47 · Mendel —">3h47†</span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" top /> | **2x82k** | mem | <TokCell shallow="66.6" deep="33.6" stale top-shallow top-deep /> | **25.3 GB** | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h47 · Mendel —">5h47†</span> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
@@ -126,11 +126,13 @@ GB. llama at f16 holds three times that depth in 25.6 GB wired, flat.
 graded effort levels. The speed numbers on this page were measured with
 thinking off; thinking costs about 3 tok/s.
 
-**Thinking on has a convergence problem on both builds.** Calibration
-showed that at a 30K output cap 2 of 10 sample problems never finished
-reasoning. The full runs confirmed it: 46 of 164 empty on MLX, 18 of 164
-on the GGUF at f16, same budget. Every empty completion still had budget
-left, so this is model behaviour, not a harness limit
+**Thinking on costs answers on both builds.** Calibration showed that at
+a 30K output cap 2 of 10 sample problems never finished reasoning. The
+full runs confirmed the cost: 46 of 164 empty on MLX, 16 of 164 on the
+GGUF at f16, same budget. Run 20 re-ran every GGUF empty and proved the
+cause: two complete and pass on today's build, and the other sixteen ran
+to the 30000-token cap with the answer still coming. The MLX empties are
+not re-run yet, so their cause stays unproven
 ([limits](../../../benchmarks/evalplus.md#limits-on-local-hardware)). Like Gemma-12B,
 this model does not share a score across its two quants. The MLX
 build rounds every group to one 4-bit grid with no calibration, which

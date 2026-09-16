@@ -46,10 +46,10 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" top /> | **82k** | speed | <TokCell shallow="43.7" deep="13.0" /> | 25.6 GB | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="83" pill="mendel-guided" top /> | <span title="EvalPlus 4h38 · Mendel 1h32">6h09</span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" top /> | **82k** | speed | <TokCell shallow="43.7" deep="13.0" /> | 25.6 GB | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="83" pill="mendel-guided" top /> | <span title="EvalPlus 5h02 · Mendel 1h32">6h33</span> |
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" top /> | **82k** | speed | <TokCell shallow="43.7" deep="13.0" /> | 25.6 GB | <ScoreCell value="0.951/0.915" sub="100% completion" top /> | <ScoreCell value="62.5" pill="mendel-guided" top /> | <span title="EvalPlus 0h15 · Mendel 1h29">1h44</span> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" /> | **66k** | mem | <TokCell shallow="50.5" deep="33.6" stale top-shallow top-deep /> | **25.0 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="50" pill="mendel-blind" /> | <span title="EvalPlus 4h38 · Mendel 0h33">5h11</span> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | 37k | mem | <TokCell shallow="54.5" deep="39.1" top-shallow top-deep /> | **24.6 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" /> | <span title="EvalPlus 4h38 · Mendel 0h19">4h56</span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" /> | **66k** | mem | <TokCell shallow="50.5" deep="33.6" stale top-shallow top-deep /> | **25.0 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="50" pill="mendel-blind" /> | <span title="EvalPlus 5h02 · Mendel 0h33">5h35</span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" /> | 37k | mem | <TokCell shallow="54.5" deep="39.1" top-shallow top-deep /> | **24.6 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" /> | <span title="EvalPlus 5h02 · Mendel 0h19">5h20</span> |
 
 † from an earlier serving config or method; re-run pending.
 
@@ -57,7 +57,7 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" top /> | **41k** | mem | <TokCell shallow="69.1" deep="52.6" stale top-shallow top-deep /> | **25.1 GB** | <ScoreCell value="0.939/0.921" sub="97% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 4h38 · Mendel —">4h38†</span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" top /> | **41k** | mem | <TokCell shallow="69.1" deep="52.6" stale top-shallow top-deep /> | **25.1 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h02 · Mendel —">5h02†</span> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
@@ -140,10 +140,11 @@ which is safe because temperature 0 is deterministic. The deflated
 numbers are on [the historical page](../historical.md); do not use
 them. Full data: [the benchmarks page](../benchmarks/qwen3.6-35b-a3b.md).
 
-**Thinking off scores higher on base and loses nothing that matters.**
-0.951 base against 0.939, 0.915 plus against 0.921, and the five
-thinking-on empties are gone. The five empties with thinking on stay
-empty at the full budget, so they are a real model limit.
+**Thinking on scores higher after the re-run; thinking off buys speed.**
+0.951 base against 0.957, 0.915 plus against 0.939, and no empty answer
+against two. Thinking on now scores higher on both metrics after run 20
+re-ran its empty problems, so thinking off buys speed, not quality. The
+two empties that stay are the output cap, not a model stop.
 
 **The wired limit and the KV type set this model's depth.** At 27000
 the machine became too slow for normal use. At 25000, the standing

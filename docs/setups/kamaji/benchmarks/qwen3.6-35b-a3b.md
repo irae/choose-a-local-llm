@@ -109,15 +109,16 @@ The chat template has no `reasoning_effort` (unlike Qwen3.8) — only binary `en
 
 | config | budget | pass@1 base | pass@1 plus | empty | completion | regenerated |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | 26624 | **0.939** | **0.921** | 5/164 | 97% | 56 (54 missing + 2 previously empty) |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | 26624 | **0.957** | **0.939** | 2/164 | 99% | 56 (54 missing + 2 previously empty) |
 
 This corrected the 56 missing or empty completions at the calibrated budget
 of 26624 tokens, which is safe because temperature 0 is deterministic. The
 run was clean: the server and the memory probe stayed healthy through every
 heartbeat check.
 
-5 completions stay genuinely empty at the full budget. That is a real model
-limit, not a harness artifact.
+2 completions stay empty at the full budget. Run 20 re-ran every empty
+problem and proved the cause: the answer was still coming at the cap.
+Three earlier empties now complete and pass on today's build.
 
 A 2026-08-26 pass under a flawed 3072-token cap had scored this config
 0.610/0.610/62% with 62/164 empty (superseded, see

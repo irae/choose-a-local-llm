@@ -37,8 +37,8 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" top /> | **40k** | mem | <TokCell shallow="24.5" deep="17.3" stale top-shallow top-deep /> | **22.5 GB** | <ScoreCell value="0.915/0.884" sub="97% completion" top /> | <ScoreCell value="37.5†" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 14h04 · Mendel 5h00">19h04</span> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" top /> | **33k** | speed | <TokCell shallow="14.7" deep="7.8" top-shallow top-deep /> | **9.6 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 9h19 · Mendel 5h00">14h19</span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" top /> | **40k** | mem | <TokCell shallow="24.5" deep="17.3" stale top-shallow top-deep /> | **22.5 GB** | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | <ScoreCell value="37.5†" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 19h24 · Mendel 5h00">24h24</span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" top /> | **33k** | speed | <TokCell shallow="14.7" deep="7.8" top-shallow top-deep /> | **9.6 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 9h55 · Mendel 5h00">14h55</span> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" /> | **40k** | mem | <TokCell shallow="24.5" deep="17.3" stale top-shallow top-deep /> | **22.5 GB** | <ScoreCell value="0.927/0.902" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 0h46 · Mendel 3h07">3h53</span> |
 
 † from an earlier serving config or method; re-run pending.
@@ -47,7 +47,7 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" top /> | **2x48k** | speed | <TokCell shallow="14.9" deep="7.8" stale top-shallow top-deep /> | **10.9 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 9h19 · Mendel —">9h19†</span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" top /> | **2x48k** | speed | <TokCell shallow="14.9" deep="7.8" stale top-shallow top-deep /> | **10.9 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 9h55 · Mendel —">9h55†</span> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" top /> | **131k** | mem | <TokCell shallow="15.0" deep="9.7" stale top-shallow top-deep /> | **18.6 GB** | <ScoreCell value="pending" /> | <ScoreCell value="12.5" note="13%" pill="mendel-guided" top /> | <span title="EvalPlus — · Mendel 3h15">3h15†</span> |
 
 † from an earlier serving config or method; re-run pending.
@@ -143,11 +143,11 @@ of any model.** Ternary Bonsai is PrismML's quality-oriented compression of
 Qwen3.6-27B, and they claim 95% of full-precision performance. An early pass
 scored it far too low, with a token budget that was too small. Calibrating
 the budget (10240) and regenerating all 55 truncated completions moved the
-score to 0.915/0.884/97%, the second-largest correction in the project. The
+score to 0.933/0.902/99%, the second-largest correction in the project. The
 flawed cap had been hiding most of its ability. The deflated number is on
-[the historical page](../historical.md). The 4-5 empty completions that
-remain are a real model ceiling — they stay empty at the full budget — not
-a harness artifact. The ternary claim holds up: 2-bit compression kept
+[the historical page](../historical.md). The empty completions that remain, two on MLX
+and four on the fork, are the output cap: run 20 re-ran each one and
+every answer was still coming when the budget ran out. The ternary claim holds up: 2-bit compression kept
 near-27B-class quality, and the vendor's q4-KV calibration then held it
 again (0.927/0.890/98%, slightly above MLX 2-bit).
 
