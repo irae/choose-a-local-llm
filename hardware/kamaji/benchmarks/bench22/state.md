@@ -66,3 +66,21 @@ Files: `hardware/kamaji/benchmarks/bench22/results/gemma26-gguf-budget-think/`.
 Close: 0 forced-failed problems left unfixed by data (2 re-run: `HumanEval/141` forced-fail-wrong, `HumanEval/145` forced-fail-loop). Score unchanged, base 0.988, plus 0.957. Re-run wall 8 min 20 s. `corrected_think_budget`: unchanged (19491), no late answer. Server and watcher stopped.
 Files: `hardware/kamaji/benchmarks/bench22/results/gemma26-gguf-forced-rerun/`.
 Deviation: none.
+
+## `qwen38-bartowski-calibrate-xhigh` — running
+
+Served: `llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M --alias qwen3.8-27b --no-mmproj --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 -ngl 999 -fa on -c 32768 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081`, effort xhigh.
+
+Deviation: the server took about 10 minutes from launch to the first `loading model` log line, with near-zero RSS the whole time and no error — a cold HF cache resolution/hash step on this 29 GB file, not a download (the file was already on disk, 29 GB under `~/.cache/huggingface/hub/models--bartowski--Qwen3.8-27B-GGUF`). Loaded clean after that. Verified with a real request (`finish_reason: stop`).
+
+Calibration running (pid 92408), `calibration-qwen38-bartowski-xhigh-budget.json`.
+
+Calibration done, 10/10 problems. Derive: converged 9, cut 1, max_reasoning_tokens 25766, max_answer_tokens 979.
+
+`qwen38_think_budget` = 30000
+`qwen38_answer_budget` = 2048
+`qwen38_max_tokens` = 32048
+
+Server kept up for the budget block.
+Files: `hardware/kamaji/calibrations/calibration-qwen38-bartowski-xhigh-budget.json`, `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-calibrate-xhigh/`.
+Deviation: none beyond the cold-cache load delay noted above.
