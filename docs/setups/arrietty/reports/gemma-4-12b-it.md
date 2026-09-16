@@ -25,7 +25,12 @@ First run 2026-09-13 to 2026-09-15: speed, context and the guided agent task. No
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" /> | **261k** | mem | <TokCell shallow="49.55" deep="33.11" top-shallow top-deep /> | **12.3 GB** | <ScoreCell value="pending" /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus — · Mendel 0h01">0h01†</span> |
+| <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" /> | **261k** | mem | <TokCell shallow="49.55" deep="33.11" top-shallow top-deep /> | **12.3 GB** | <ScoreCell value="0.927/0.896" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 0h51 · Mendel 0h01">0h52</span> |
+
+Rows below 100 percent completeness. Completeness counts three measurements: tok/s, EvalPlus and Mendel.
+
+| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
+|---|--:|:--:|--:|--:|--:|--:|--:|
 | <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="on" /> | **261k** | mem | <TokCell shallow="49.55" deep="33.11" top-shallow top-deep /> | **12.3 GB** | <ScoreCell value="pending" /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus — · Mendel 0h06">0h06†</span> |
 | <ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" top /> | **261k** | mem | <TokCell shallow="47.39" deep="32.18" top-shallow top-deep /> | **12.7 GB** | <ScoreCell value="pending" /> | <ScoreCell value="not run" /> | — |
 | <ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="on" /> | **261k** | mem | <TokCell shallow="47.39" deep="32.18" top-shallow top-deep /> | **12.7 GB** | <ScoreCell value="pending" /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus — · Mendel 0h05">0h05†</span> |
@@ -38,7 +43,7 @@ Each table row above is one config; start it with its block below.
 <!-- gen:model-configs:start -->
 <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" />
 
-pi id `gemma-4-12b-nvfp4`. A community NVFP4 repack of the model, the run's headline NVFP4 row: the weights leave room for the trained 262,144 window at f16 KV. `-c 262144` loads at once and serves the deep cell at 261,120; the window is the model's own limit, not the card's. It reads 2 to 5 percent faster than the k-quant build on this card. The guided task at thinking off ended model-failed: the same tool call five times in a row, before the first commit. No EvalPlus ran on this machine (owner, 2026-09-13).
+pi id `gemma-4-12b-nvfp4`. A community NVFP4 repack of the model, the run's headline NVFP4 row: the weights leave room for the trained 262,144 window at f16 KV. `-c 262144` loads at once and serves the deep cell at 261,120; the window is the model's own limit, not the card's. It reads 2 to 5 percent faster than the k-quant build on this card. The guided task at thinking off ended model-failed: the same tool call five times in a row, before the first commit. EvalPlus at thinking off, scored 2026-09-16 at `-c 32768`, budget 8192: 0.927/0.896, no empty answer of 164, in 51.1 minutes of active time. This is the first EvalPlus score for this build. The budget floors at 8192 because the longest calibration answer ran 949 tokens, so thinking off costs almost nothing here.
 
 ```bash
 llama-server -m "$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf)" \
