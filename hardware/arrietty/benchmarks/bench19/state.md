@@ -197,9 +197,28 @@ pressure (not the run's own processes); worked around by polling
 directly. Watching swap for growth during the full run per the
 checklist.
 
+### `qwen36-q4kxl-evalplus-on` close
+
+`unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`, MTP draft n-max 2,
+`--n-cpu-moe 21`, one slot, q8_0 KV, ctx 32768, budget 24154. One
+part, no crash: 2026-09-16T01:03:04Z to 2026-09-16T04:15:05Z. Swap
+stayed flat through the run, no growth.
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.945 |
+| HumanEval plus | 0.902 |
+| completion rate | 100% |
+| empty | 0/164 |
+| wall | 192.0 min (one part, no crash) |
+
+Files: `results/qwen36-q4kxl-evalplus-on/humaneval/`,
+`results/server-qwen36-q4kxl.log`.
+Deviation: none.
+
 ## Handing over
 
 `machine-setup`, `qwen38-ista-evalplus-xhigh` (0.945/0.909, 0/164
-empty) and `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty)
-done. `qwen36-q4kxl-evalplus-on` calibrated, budget 24154, starting
-the watcher and full run next.
+empty), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty) and
+`qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty) done. On to
+`gemma26-nvfp4-evalplus-on` next.
