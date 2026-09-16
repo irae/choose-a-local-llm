@@ -42,12 +42,33 @@ import evalplus.gen.util.openai_request as oreq
 
 # Scores cannot tell a budget cut from a model that gave up: the samples
 # file keeps only the solution text. EVALPLUS_FINISH_LOG names a jsonl that
-# gets one line per answered request: UTC time, finish_reason
-# ("length" = the budget cut it), completion tokens and a hash of the prompt.
+# gets one line per answered request: UTC time, task id, finish_reason
+# ("length" = the budget cut it), completion and reasoning token counts,
+# reasoning and answer lengths, the last 200 characters of the reasoning
+# (a server's budget message lands there), the request wall and a hash of
+# the prompt. The task id comes from the dataset prompt the decoder was
+# given, since the request itself carries no id.
 _finish_log = os.environ.get("EVALPLUS_FINISH_LOG")
+_task_by_prompt = None
+_current_task_id = None
 
 
-def _record_finish(kwargs, ret):
+def _task_id_for(prompt):
+    global _task_by_prompt
+    if _task_by_prompt is None:
+        from evalplus.data import get_human_eval_plus, get_mbpp_plus
+
+        _task_by_prompt = {}
+        for loader in (get_human_eval_plus, get_mbpp_plus):
+            try:
+                for task_id, task in loader().items():
+                    _task_by_prompt[task["prompt"].strip()] = task_id
+            except Exception:
+                pass
+    return _task_by_prompt.get(prompt.strip())
+
+
+def _record_finish(kwargs, ret, wall_s):
     if not _finish_log:
         return
     import datetime
@@ -55,24 +76,41 @@ def _record_finish(kwargs, ret):
 
     messages = kwargs.get("message") or kwargs.get("messages") or ""
     choice = ret.choices[0] if getattr(ret, "choices", None) else None
+    message = getattr(choice, "message", None)
     usage = getattr(ret, "usage", None)
+    details = getattr(usage, "completion_tokens_details", None)
+    content = getattr(message, "content", None) or ""
+    reasoning = (
+        getattr(message, "reasoning_content", None)
+        or getattr(message, "reasoning", None)
+        or ""
+    )
     line = {
         "utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "task_id": _current_task_id,
         "finish_reason": getattr(choice, "finish_reason", None),
         "completion_tokens": getattr(usage, "completion_tokens", None),
+        "reasoning_tokens": getattr(details, "reasoning_tokens", None),
+        "reasoning_len": len(reasoning),
+        "reasoning_tail": reasoning[-200:],
+        "content_len": len(content),
+        "wall_s": round(wall_s, 1),
         "prompt_sha1": hashlib.sha1(json.dumps(messages, sort_keys=True, default=str).encode()).hexdigest(),
-        "empty": not (getattr(getattr(choice, "message", None), "content", None) or "").strip(),
+        "empty": not content.strip(),
     }
     with open(_finish_log, "a") as f:
         f.write(json.dumps(line) + "\n")
 
 
 def _patient_make_auto_request(*args, **kwargs):
+    import time
+
     ret = None
     while ret is None:
         try:
+            t0 = time.monotonic()
             ret = oreq.make_request(*args, **kwargs)
-            _record_finish(kwargs, ret)
+            _record_finish(kwargs, ret, time.monotonic() - t0)
         except openai.RateLimitError:
             print("Rate limit exceeded. Waiting...")
             import time
@@ -95,6 +133,8 @@ _orig_openai_codegen = OpenAIChatDecoder.codegen
 
 
 def _safe_openai_codegen(self, prompt, do_sample=True, num_samples=200):
+    global _current_task_id
+    _current_task_id = _task_id_for(prompt)
     outputs = _orig_openai_codegen(
         self, prompt, do_sample=do_sample, num_samples=num_samples
     )

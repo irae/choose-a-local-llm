@@ -89,9 +89,13 @@ its budget and returned empties.
 6. Evaluate runs automatically at the end. Record pass@1 base/plus AND
    the empty count, honestly, on every surface.
 7. Keep `finish.jsonl` beside the samples: `run-humaneval.sh` writes one
-   line per answered request, with the UTC time, the finish reason
-   (`length` means the budget cut it), the completion tokens and a hash of
-   the prompt. It is the proof of why each empty is empty. Write the
+   line per answered request, with the UTC time, the task id, the finish
+   reason (`length` means the budget cut it), the completion and
+   reasoning token counts, the reasoning and answer lengths, the last 200
+   characters of the reasoning, the request wall and a hash of the
+   prompt. It is the proof of why each empty is empty, and the token
+   count per problem gives the score at any smaller budget without a
+   re-run. Write the
    cause beside the score, in one of three words: `budget` when the
    answer was still coming as the output budget ran out
    (`finish_reason: length`), `model` when the model ended with no
