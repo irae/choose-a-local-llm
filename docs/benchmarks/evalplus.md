@@ -34,7 +34,8 @@ a score; a row names it only where it is part of the quant.
 - **Empty**: a problem that ran to the budget with no answer. It counts
   as failed.
 - **Completion**: the share of the 164 problems that got an answer.
-- RTX 5060 Ti 16 GB: run 19 is scoring every row.
+- RTX 5060 Ti 16 GB: every row scored at its default level; the
+  Gemma-12B k-quant rows are pending.
 - Scores under the uncalibrated budget:
   [historical](../setups/kamaji/historical.md).
 
@@ -66,6 +67,11 @@ Read the score with its completion:
 | Qwen3.6-35B-A3B GGUF, thinking on | 26624 | 2/164 | budget | 0.969 |
 | Ternary-Bonsai-27B MLX 2-bit, thinking on | 10240 | 2/164 | budget | 0.944 |
 | Ternary-Bonsai-27B fork q4 KV, thinking on | 10240 | 4/164 | budget | 0.950 |
+| Gemma-4-12B NVFP4, thinking on, RTX 5060 Ti | 8192 | 53/164 | † unproven | 0.974 |
+| Gemma-4-26B-A4B NVFP4Q8, thinking on, RTX 5060 Ti | 12500 | 14/164 | † unproven | 0.993 |
+| Qwen3.8-27B ISTA IQ3_S-mtp, xhigh, RTX 5060 Ti | 20500 | 7/164 | † unproven | 0.987 |
+| Qwen3.6-35B-A3B UD-Q4_K_XL, thinking on, RTX 5060 Ti | 24154 | 6/164 | † unproven | 0.981 |
+| Qwen3.8-27B unsloth UD-IQ3_S, xhigh, RTX 5060 Ti | 19000 | 3/164 | † unproven | 0.975 |
 
 **The cause column** says what ended an empty answer. A re-run of the
 empty problems proves it, because the re-run records the finish reason
@@ -83,7 +89,10 @@ of each one.
 
 A model whose thinking never converges also ends at the budget. So
 `budget` at an already large budget does not prove that more budget is
-enough; it proves only that the answer had not arrived.
+enough; it proves only that the answer had not arrived. A thinking
+budget on the server, which forces an answer and counts the problems
+where it fired, is under test as the way to tell the two apart
+([method](../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)).
 
 Pass among answered is base pass@1 divided by completion.
 
@@ -94,7 +103,9 @@ and its score is level or higher on every build but one:
 Gemma-4-26B-A4B GGUF reads 0.976 / 0.945 in 20 minutes at thinking off
 and 0.896 / 0.872 in 5h47 at thinking on. Qwen3.6-35B-A3B GGUF is the
 exception after its empty problems were re-run: 0.951 / 0.915 in 15
-minutes at thinking off against 0.957 / 0.939 in 5h02 at thinking on. Every thinking-off run here finished under 2
+minutes at thinking off against 0.957 / 0.939 in 5h02 at thinking on. On the RTX 5060 Ti the gap is the largest measured: Gemma-4-12B NVFP4
+reads 0.927 / 0.896 in 51 minutes at thinking off and 0.659 / 0.640 in
+204 minutes at thinking on, with 53 empties. Every thinking-off run here finished under 2
 hours, and every run with thinking on or an effort level took 2 hours
 or more. The single-turn score does not carry over to the agent task:
 Qwen3.6-35B-A3B scored 83 guided at thinking on and 62.5 at thinking

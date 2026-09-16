@@ -5,11 +5,13 @@ Backends: llama-server · [NVFP4 GGUF on Hugging Face](https://huggingface.co/Fr
 <!-- gen:model-kpis:start -->
 <div class="kpis">
   <div class="kpi"><b>261k</b><span>usable context, NVFP4, f16 KV</span></div>
+  <div class="kpi"><b>0.927 / 0.896</b><span>EvalPlus base / plus, NVFP4, thinking off</span><small>100% completion</small></div>
+  <div class="kpi"><b>0.659 / 0.640</b><span>EvalPlus base / plus, NVFP4, thinking on</span><small>68% completion</small></div>
   <div class="kpi"><b>model-failed</b><span>Mendel guided, both builds, off and on</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
-First run 2026-09-13 to 2026-09-15: speed, context and the guided agent task. No EvalPlus on this machine yet.
+Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; EvalPlus scored 2026-09-16 on the NVFP4 build at both thinking levels. The k-quant build's EvalPlus is pending.
 
 ## Highlights
 
@@ -19,6 +21,11 @@ First run 2026-09-13 to 2026-09-15: speed, context and the guided agent task. No
 - **The k-quant build is the control.** The same file the reference
   setup serves, read on this card at the same depths, so the NVFP4
   row has a pair.
+- **Thinking off is the level for this model on this card.** EvalPlus
+  0.927 / 0.896 with every answer delivered, in 51 minutes. Thinking
+  on: 0.659 / 0.640 with 53 of 164 empty, in 204 minutes.
+- **The agent task fails on every build and level**, with zero commits
+  each time.
 
 ## All configs — this model
 
@@ -101,9 +108,30 @@ llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_
   the tool call: 818 times on the first dependency (UD-Q4_K_XL), 520
   times on a broken `xtend` edit (NVFP4).
 - **EvalPlus, NVFP4 at thinking off:** 0.927/0.896, no empty answer of
-  164, budget 8192, 51.1 minutes of active time (run 19). The longest
+  164, budget 8192, 51.1 minutes of active time. The longest
   calibration answer ran 949 tokens, so the budget floors and the gate
-  costs little. The k-quant build and the thinking-on rows are pending.
+  costs little.
+- **EvalPlus, NVFP4 at thinking on:** 0.659/0.640, 53 empty answers of
+  164, budget 8192, 203.9 minutes. The calibration had five of ten
+  answers still thinking at 30000 tokens, so most of the loss is
+  thinking that never ends, not wrong code; the cause of each empty is
+  unproven because the run saved no finish log. The 12B fails to
+  converge more often than the 26B, on both machines. This config is
+  the first case of the thinking-budget test
+  ([method](../../../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)),
+  pending.
+- **The k-quant build's EvalPlus is pending** at both levels.
+
+## Quality — EvalPlus HumanEval+
+
+<!-- gen:model-evalplus:start -->
+| config | budget | Scores | empties | tok/s | wall |
+|---|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" />](../benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.927/0.896" sub="100% completion" top /> | none | <TokCell shallow="49.55" deep="33.11" /> | 0h51 |
+| [<ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="on" />](../benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.659/0.640" sub="68% completion" top /> | † unproven | <TokCell shallow="49.55" deep="33.11" /> | 3h24 |
+<!-- gen:model-evalplus:end -->
+
+Every run of this model on this machine, best base score first. The empties column carries the cause word ([what the words mean](../../../benchmarks/evalplus.md#limits-on-local-hardware)).
 
 ## Agentic quality — Mendel
 

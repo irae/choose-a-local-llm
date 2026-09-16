@@ -4,13 +4,14 @@ Backends: llama-server · [GGUF on Hugging Face](https://huggingface.co/unsloth/
 
 <!-- gen:model-kpis:start -->
 <div class="kpis">
-  <div class="kpi"><b>65k</b><span>usable context, both 3-bit builds, q8_0 KV</span></div>
-  <div class="kpi"><b>85</b><span>Mendel guided, ISTA IQ3_S-mtp, xhigh, 8/8</span></div>
+  <div class="kpi"><b>0.957 / 0.921</b><span>EvalPlus base / plus, UD-IQ3_S, xhigh</span><small>98% completion</small></div>
   <div class="kpi"><b>91</b><span>Mendel blind, ISTA IQ3_S-mtp, xhigh, 8/8</span></div>
+  <div class="kpi"><b>85</b><span>Mendel guided, ISTA IQ3_S-mtp, xhigh, 8/8</span></div>
+  <div class="kpi"><b>65k</b><span>usable context, both 3-bit builds, q8_0 KV</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
-First run 2026-09-13 to 2026-09-15: speed, context, drafter arms and both agent tasks. No EvalPlus on this machine yet.
+Speed, context, drafter arms and both agent tasks measured 2026-09-13 to 2026-09-15; EvalPlus scored 2026-09-15 and 2026-09-16 on both builds at effort xhigh.
 
 ## Highlights
 
@@ -22,6 +23,10 @@ First run 2026-09-13 to 2026-09-15: speed, context, drafter arms and both agent 
   not carry over.
 - **Effort xhigh, the model's published default.** Medium is never
   run on this model.
+- **EvalPlus at xhigh: unsloth 0.957 / 0.921 with 3 empty, ISTA
+  0.945 / 0.909 with 7 empty.** The unsloth build leads the single-turn
+  test and the ISTA build the agent task; both builds are two
+  providers' trade-offs of one model for the same 12 GB budget.
 
 ## All configs — this model
 
@@ -80,6 +85,27 @@ llama-server -m "$(hf download unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-IQ3_S.ggu
   trap and dismissed the `mendel-requirify` rimraf references as out
   of scope; the blind row avoided both glob traps and never looked at
   the rimraf references its own grep printed.
+- **EvalPlus at effort xhigh, q8_0 KV, no drafter for the score.** The
+  unsloth build: 0.957/0.921, 3 empty answers of 164, budget 19000,
+  289.6 minutes. The ISTA build: 0.945/0.909, 7 empty of 164, budget
+  20500, 217.6 minutes, two driver watchdog crashes on the drafter arm
+  inside the run. On the Mac the same two builds read 0.945 / 0.927
+  (8 empty) and 0.945 / 0.921 (5 empty), so the card and the Mac agree
+  within about one point on base. Every empty here is unproven because
+  the run saved no finish log; on the Mac the ISTA empties were proven
+  as the budget. The ISTA row is the second case of the thinking-budget
+  test, pending.
+
+## Quality — EvalPlus HumanEval+
+
+<!-- gen:model-evalplus:start -->
+| config | budget | Scores | empties | tok/s | wall |
+|---|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" />](../benchmarks/qwen3.8-27b.md) | 19000 | <ScoreCell value="0.957/0.921" sub="98% completion" top /> | † unproven | <TokCell shallow="29.36" deep="20.92" /> | 4h50 |
+| [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" />](../benchmarks/qwen3.8-27b.md) | 20500 | <ScoreCell value="0.945/0.909" sub="96% completion" top /> | † unproven | <TokCell shallow="29.43" deep="21.13" /> | 3h38 |
+<!-- gen:model-evalplus:end -->
+
+Every run of this model on this machine, best base score first. The empties column carries the cause word ([what the words mean](../../../benchmarks/evalplus.md#limits-on-local-hardware)).
 
 ## Agentic quality — Mendel
 

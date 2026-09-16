@@ -32,6 +32,10 @@ const MENDEL_STALE_START = '<!-- gen:mendel-stale:start -->'
 const MENDEL_STALE_END = '<!-- gen:mendel-stale:end -->'
 const MODEL_MENDEL_START = '<!-- gen:model-mendel:start -->'
 const MODEL_MENDEL_END = '<!-- gen:model-mendel:end -->'
+const MODEL_EVALPLUS_START = '<!-- gen:model-evalplus:start -->'
+const MODEL_EVALPLUS_END = '<!-- gen:model-evalplus:end -->'
+const SETUP_EVALPLUS_START = '<!-- gen:setup-evalplus:start -->'
+const SETUP_EVALPLUS_END = '<!-- gen:setup-evalplus:end -->'
 
 // Minimal CSV parser: handles quoted fields with embedded commas/quotes.
 function parseCsv(text) {
@@ -789,7 +793,7 @@ function renderModelConfigs(data, model) {
   return blocks.join('\n\n')
 }
 
-function renderEvalplusTable(datas) {
+function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHardware = true } = {}) {
   const header = [
     '| config | budget | Scores | empties | tok/s | wall |',
     '|---|--:|--:|--:|--:|--:|',
@@ -807,9 +811,12 @@ function renderEvalplusTable(datas) {
   }
   const runs = datas
     .flatMap((data) => (data.evalplusRuns || []).map((r) => ({ ...r, data })))
+    .filter((r) => !onlySlug || r.slug === onlySlug)
     .sort((a, b) => parseFloat(b.base) - parseFloat(a.base) || parseFloat(b.plus) - parseFloat(a.plus))
+  if (!runs.length) return 'No EvalPlus run yet.'
+  const link = linkOf || ((r) => `../setups/${r.data.setup}/benchmarks/${r.slug}.md`)
   const specOf = (r) => {
-    const hardware = r.data.hardwareSlug
+    const hardware = showHardware ? r.data.hardwareSlug : ''
     if (r.spec) return specTag(r.spec, { label: r.model, hardware })
     const row = r.data.rows.find((x) => x.id === r.row)
     if (!row) throw new Error(`EvalPlus run "${r.model}" names no row and no spec`)
@@ -818,7 +825,7 @@ function renderEvalplusTable(datas) {
   const top = topSet(runs, (r) => parseFloat(r.base))
   const body = runs.map((r) => {
     if (!r.budget) throw new Error(`EvalPlus run "${r.model}" has no budget`)
-    return `| [${specOf(r)}](../setups/${r.data.setup}/benchmarks/${r.slug}.md) | ${r.budget} | ${scoreTag(`${r.base}/${r.plus}`, completion(r.empty) === '—' ? '' : `${completion(r.empty)} completion`, top.has(r))} | ${r.emptyCause ?? '† unproven'} | ${rowOf(r) ? `<TokCell shallow="${rowOf(r).tokShallow}" deep="${rowOf(r).tokDeep}" />` : '—'} | ${hm(r.wall)} |`
+    return `| [${specOf(r)}](${link(r)}) | ${r.budget} | ${scoreTag(`${r.base}/${r.plus}`, completion(r.empty) === '—' ? '' : `${completion(r.empty)} completion`, top.has(r))} | ${r.emptyCause ?? '† unproven'} | ${rowOf(r) ? `<TokCell shallow="${rowOf(r).tokShallow}" deep="${rowOf(r).tokDeep}" />` : '—'} | ${hm(r.wall)} |`
   })
   return [...header, ...body].join('\n')
 }
@@ -910,6 +917,7 @@ for (const dataFile of dataFiles) {
     const original = readFileSync(target, 'utf8')
     let updated = marks ? applyBlock(original, marks[0], marks[1], table, target) : applyTable(original, table)
     if (partial) updated = applyBlock(updated, partial[0], partial[1], partial[2], target)
+    updated = applyBlock(updated, SETUP_EVALPLUS_START, SETUP_EVALPLUS_END, renderEvalplusTable([data], { linkOf: (r) => `./benchmarks/${r.slug}.md`, hardware: false }), target)
     if (updated === original) continue
     if (CHECK) {
       console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)
@@ -934,6 +942,7 @@ for (const dataFile of dataFiles) {
     updated = applyBlock(updated, MODEL_START, MODEL_END, renderModelTable(data, model), target)
     updated = applyBlock(updated, CONFIGS_START, CONFIGS_END, renderModelConfigs(data, model), target)
     updated = applyBlock(updated, MODEL_MENDEL_START, MODEL_MENDEL_END, renderModelMendel(slug, mendelBlindAll, mendelGuidedAll, model.mendelUntrusted), target)
+    updated = applyBlock(updated, MODEL_EVALPLUS_START, MODEL_EVALPLUS_END, renderEvalplusTable([data], { slug, linkOf: (r) => `../benchmarks/${r.slug}.md`, hardware: false }), target)
     if (updated === original) continue
     if (CHECK) {
       console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)

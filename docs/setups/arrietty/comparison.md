@@ -1,6 +1,6 @@
 # Local coding models on RTX 5060 Ti 16 GB
 
-llama-server (CUDA) · run 17, 2026-09-13 to 2026-09-15
+llama-server (CUDA) · measured 2026-09-13 to 2026-09-16
 
 ## Highlights
 
@@ -12,7 +12,11 @@ llama-server (CUDA) · run 17, 2026-09-13 to 2026-09-15
   NVFP4 serves 261K at 49.6 → 33.1 tok/s.
 - **VRAM for the desktop:** about 1.2 GB at idle. The ISTA n-max 2
   server crashed three times at about 440 MiB free.
-- EvalPlus: run 19, in progress.
+- **EvalPlus at the default level of each model.** unsloth Qwen3.8
+  0.957 / 0.921 and ISTA 0.945 / 0.909 at xhigh; Qwen3.6 0.945 / 0.902
+  and Gemma-26B NVFP4Q8 0.909 / 0.878 at thinking on. Gemma-12B NVFP4:
+  0.927 / 0.896 at thinking off, 0.659 / 0.640 at thinking on. Every
+  thinking-on row left empties; their cause is unproven.
 
 ## Models evaluated
 
@@ -44,6 +48,23 @@ hours.
 Fewer than two rows pass the filter of this table, so it shows every row it can hold.
 <!-- gen:models-evaluated-partial:end -->
 
+## Code quality — EvalPlus HumanEval+
+
+<!-- gen:setup-evalplus:start -->
+| config | budget | Scores | empties | tok/s | wall |
+|---|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" />](./benchmarks/qwen3.8-27b.md) | 19000 | <ScoreCell value="0.957/0.921" sub="98% completion" top /> | † unproven | <TokCell shallow="29.36" deep="20.92" /> | 4h50 |
+| [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" />](./benchmarks/qwen3.8-27b.md) | 20500 | <ScoreCell value="0.945/0.909" sub="96% completion" top /> | † unproven | <TokCell shallow="29.43" deep="21.13" /> | 3h38 |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" kv="q8_0" effort="on" />](./benchmarks/qwen3.6-35b-a3b.md) | 24154 | <ScoreCell value="0.945/0.902" sub="96% completion" top /> | † unproven | <TokCell shallow="61.16" deep="45.42" /> | 3h12 |
+| [<ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" />](./benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.927/0.896" sub="100% completion" top /> | none | <TokCell shallow="49.55" deep="33.11" /> | 0h51 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" />](./benchmarks/gemma-4-26b-a4b.md) | 12500 | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | † unproven | <TokCell shallow="58.77" deep="45.59" /> | 3h35 |
+| [<ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="on" />](./benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.659/0.640" sub="68% completion" /> | † unproven | <TokCell shallow="49.55" deep="33.11" /> | 3h24 |
+<!-- gen:setup-evalplus:end -->
+
+- Empty: a problem that ran to the budget with no answer. It counts as
+  failed. The empties column carries the cause word
+  ([what the words mean](../../benchmarks/evalplus.md#limits-on-local-hardware)).
+
 ## Per-model reports
 
 - [Qwen3.8-27B](./reports/qwen3.8-27b.md)
@@ -54,5 +75,6 @@ Fewer than two rows pass the filter of this table, so it shows every row it can 
 ## Benchmarks
 
 - [Decode speed](../../benchmarks/decode-speed.md)
-- [EvalPlus](../../benchmarks/evalplus.md): run 19, in progress.
+- [EvalPlus](../../benchmarks/evalplus.md): every row at its default
+  level; the Gemma-12B k-quant rows are pending.
 - [Mendel](../../benchmarks/mendel.md)

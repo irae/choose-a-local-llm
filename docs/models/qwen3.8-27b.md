@@ -19,3 +19,27 @@ Every config of this model, on every machine, best first.
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-all:end -->
+
+## What the numbers say
+
+- **The agent pick on both machines.** On the M1 Max the 4-bit GGUF
+  scores 93 blind at effort xhigh on a 65K window. On the RTX 5060 Ti
+  the ISTA 3-bit scores 85 guided and 91 blind on a 61K window, at
+  about twice the Mac's speed.
+- **Effort xhigh is the level.** It is the model's published default.
+  Medium is not run again on this model: it thinks long and does not
+  conclude on agent work, and every medium row on this site is a
+  record, not a target. Low is the other level worth a try.
+- **Two 3-bit builds for one 12 GB budget.** unsloth UD-IQ3_S and ISTA
+  IQ3_S-mtp are two providers' trade-offs of one model. On the
+  single-turn test they sit within one point of each other on both
+  machines. On the agent task the ISTA build leads on the card and the
+  unsloth build on the Mac, one run each.
+- **The drafter is a speed decision, never a quality one.** On the Mac
+  the dense builds serve without it, because on real text it loses at
+  every depth. On the card every drafter arm reads faster, but it costs
+  VRAM the desktop also needs, and the agent rows serve without it.
+- **The slowest model here, and its empties are its thinking.** At
+  xhigh a few problems never converge inside the output budget on both
+  machines. A thinking budget on the server is under test on this model
+  ([method](../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)).

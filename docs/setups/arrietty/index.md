@@ -35,9 +35,14 @@
   default on. Qwen3.8, effort `low`, `medium` or `xhigh`; medium is
   not run.
 
-## Runs
+## Tested
 
-- Run 17, 2026-09-13 to 2026-09-15: speed, drafter arms, agent task.
-  `hardware/arrietty/benchmarks/bench17/` in the repo.
-- Run 19, from 2026-09-15: EvalPlus on every row.
-  `hardware/arrietty/benchmarks/bench19/` in the repo.
+- 2026-09-13 to 2026-09-15: real-text speed at depth, the drafter
+  arms, the KV type, the guided agent task on every row and the blind
+  task on the pick.
+- 2026-09-15 on: EvalPlus on every row at its default level. The
+  Gemma-12B k-quant rows are pending.
+- Pending: the thinking-budget test on the two configs named in
+  [the method](../../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget);
+  the blind agent task on the rows that scored above zero guided.
+- Raw records: `hardware/arrietty/benchmarks/` in the repository.

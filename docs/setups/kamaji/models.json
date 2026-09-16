@@ -160,7 +160,7 @@
       "spec": { "base": "Qwen3.8-27B", "quant": "UD-IQ3_S", "server": "llama-server", "publisher": "unsloth", "drafter": "", "kv": "f16", "effort": "xhigh" },
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S \\\n  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 188416 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b-iq3s`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build (run 18, in progress). Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20000 on the same build served at `-c 32768`: 0.945/0.927, eight empty of 164, in 615.6 minutes of active time. Same base score as the ISTA build on this Mac and a higher `plus` score, at a smaller budget. The cause of the eight empty answers is not proven: this run saved no finish reason, and run 20 re-runs those problems. Mendel blind at effort xhigh: 90.5/100, complete 8/8, with an anomaly — the model merged `master` into its own branch mid-run and imported infrastructure the blind base hides, so the row is not strictly base-comparable. Mendel guided at effort xhigh: 62.5 displayed of 76 raw, a valid partial at the 300-minute wall cap, 5 of 8 libraries. The drafter arms are pending.",
+      "note": "pi id `qwen3.8-27b-iq3s`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build. Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20000 on the same build served at `-c 32768`: 0.945/0.927, eight empty of 164, in 615.6 minutes of active time. Same base score as the ISTA build on this Mac and a higher `plus` score, at a smaller budget. The cause of the eight empty answers is not proven yet: the run saved no finish reason, and a re-run of those problems is pending. Mendel blind at effort xhigh: 90.5/100, complete 8/8, with an anomaly — the model merged `master` into its own branch mid-run and imported infrastructure the blind base hides, so the row is not strictly base-comparable. Mendel guided at effort xhigh: 62.5 displayed of 76 raw, a valid partial at the 300-minute wall cap, 5 of 8 libraries. The drafter arms are pending.",
       "pi": { "provider": "llama", "id": "qwen3.8-27b-iq3s", "contextWindow": 147456, "maxTokens": 8192 }
     },
     {
@@ -483,7 +483,7 @@
       "spec": { "base": "Ternary-Bonsai-27B", "quant": "2-bit", "server": "mlx_lm.server", "publisher": "prism-ml", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
       "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
-      "note": "Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak. Run 16 (2026-09-13) read this server with llama-benchy twice and both times the generation thread died on a Metal OOM at the deep cell, at 56320 and then at 52224, with the prompt fill stalled near 47K; the process stayed alive and silent. The ceiling on this machine sits near 47K, not the 58K the 2026-08-29 creep reached, so the harness window is 40960 by the MLX rule and the speed cells keep the creep's numbers with the dagger: no benchy cell survived, because llama-benchy writes its result once at the end of a run.",
+      "note": "Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak. A real-text read of this server on 2026-09-13 ran with llama-benchy twice and both times the generation thread died on a Metal OOM at the deep cell, at 56320 and then at 52224, with the prompt fill stalled near 47K; the process stayed alive and silent. The ceiling on this machine sits near 47K, not the 58K the 2026-08-29 creep reached, so the harness window is 40960 by the MLX rule and the speed cells keep the creep's numbers with the dagger: no benchy cell survived, because llama-benchy writes its result once at the end of a run.",
       "pi": {
         "provider": "mlx",
         "id": "prism-ml/Ternary-Bonsai-27B-mlx-2bit",
@@ -593,11 +593,12 @@
           "sub": "98% completion"
         },
         "evalplusMlx": {
-          "value": "0.915 / 0.884 / 97%",
-          "label": "EvalPlus base/plus/completion (MLX 2-bit)"
+          "value": "0.933 / 0.902",
+          "label": "EvalPlus base / plus, MLX 2-bit, thinking on",
+          "sub": "99% completion"
         },
         "multiAgent": {
-          "value": "2\u00d748K",
+          "value": "2×48K",
           "label": "two fork slots, 10.9 GB at the floor"
         },
         "weights": {
@@ -618,7 +619,7 @@
         },
         "empties": {
           "value": "4/164",
-          "label": "empty completions at full budget"
+          "label": "empty on the fork at the budget, cause budget"
         }
       }
     },
@@ -627,7 +628,7 @@
       "mendelUntrusted": [
         {
           "serving": "lm-studio",
-          "marker": "\ud83d\udc80",
+          "marker": "💀",
           "page": "../lmstudio-retired.md",
           "reason": "LM Studio is retired here: every agent run ended with zero commits."
         }
@@ -669,7 +670,7 @@
           "label": "EvalPlus, thinking on"
         },
         "slots": {
-          "value": "2\u00d782K",
+          "value": "2×82K",
           "label": "two llama slots at f16 KV, 13.8 GB"
         },
         "shallowLlama": {
@@ -700,13 +701,13 @@
           "label": "last stable depth, 12.8 tok/s (MLX)"
         },
         "evalplus": {
-          "value": "0.884 / 0.860",
+          "value": "0.896 / 0.872",
           "label": "EvalPlus base / plus, GGUF, thinking on",
-          "sub": "89% completion"
+          "sub": "90% completion"
         },
         "empties": {
-          "value": "18/164",
-          "label": "empty on GGUF f16: thinking non-convergence (46/164 on MLX)"
+          "value": "16/164",
+          "label": "empty on GGUF f16, thinking on, cause budget"
         },
         "memory": {
           "value": "20.0 GB",
@@ -742,8 +743,9 @@
           "label": "decode, shallow (MLX)"
         },
         "evalplus": {
-          "value": "0.939 / 0.921 / 97%",
-          "label": "EvalPlus, thinking on"
+          "value": "0.957 / 0.939",
+          "label": "EvalPlus base / plus, q8_0 KV, thinking on",
+          "sub": "99% completion"
         },
         "depthGguf": {
           "value": "41K",
@@ -758,8 +760,8 @@
           "label": "at max ctx (MLX)"
         },
         "empties": {
-          "value": "5/164",
-          "label": "empty completions at full budget"
+          "value": "2/164",
+          "label": "empty at thinking on, cause budget"
         },
         "evalplusOff": {
           "value": "0.951 / 0.915",
@@ -784,7 +786,7 @@
         {
           "serving": "llama-server",
           "branch": "high-guided-v3",
-          "marker": "\u23f3",
+          "marker": "⏳",
           "page": "../index.md#the-wired-limit-25000",
           "reason": "this row ran on a 122880-token harness window; at wired 25000 the q8_0 arm serves `-c 98304`, so the window is out of reach. The score stands as a record; a re-run at the served window is pending, at low priority.",
           "linkText": "What the machine serves at wired 25000"
@@ -807,9 +809,9 @@
       ],
       "stats": {
         "evalplus": {
-          "value": "0.988 / 0.945",
-          "label": "EvalPlus best base and plus, 3-bit GGUFs",
-          "sub": "AtomicChat base, ISTA plus, effort medium"
+          "value": "0.957 / 0.939",
+          "label": "EvalPlus base / plus, Q4_K_M, effort xhigh",
+          "sub": "96% completion"
         },
         "shallow": {
           "value": "17 tok/s",
@@ -840,6 +842,11 @@
         "sampling": {
           "value": "1.0 / 0.95",
           "label": "temperature and top_p the server reads from the ISTA model file, recorded on both xhigh and low Mendel rows"
+        },
+        "evalplusMedium": {
+          "value": "0.988 / 0.945",
+          "label": "EvalPlus best base and plus, 3-bit GGUFs",
+          "sub": "a record; medium is no longer run"
         }
       }
     }

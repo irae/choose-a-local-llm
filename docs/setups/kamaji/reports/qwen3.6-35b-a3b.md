@@ -140,11 +140,10 @@ which is safe because temperature 0 is deterministic. The deflated
 numbers are on [the historical page](../historical.md); do not use
 them. Full data: [the benchmarks page](../benchmarks/qwen3.6-35b-a3b.md).
 
-**Thinking on scores higher after the re-run; thinking off buys speed.**
-0.951 base against 0.957, 0.915 plus against 0.939, and no empty answer
-against two. Thinking on now scores higher on both metrics after run 20
-re-ran its empty problems, so thinking off buys speed, not quality. The
-two empties that stay are the output cap, not a model stop.
+**Thinking on scores higher; thinking off buys speed.** 0.951 base
+against 0.957, 0.915 plus against 0.939, and no empty answer against
+two, in 15 minutes against five hours. The two empties are proven as
+the output budget, not a model stop.
 
 **The wired limit and the KV type set this model's depth.** At 27000
 the machine became too slow for normal use. At 25000, the standing
@@ -192,10 +191,12 @@ so MTP numbers there read below the py/js bench.
 
 ## Quality — EvalPlus HumanEval+
 
-| config | budget | pass@1 base | pass@1 plus | empty completions | completion |
+<!-- gen:model-evalplus:start -->
+| config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" /> | 8192 | **0.951** | 0.915 | 0/164 | 100% |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" /> | 26624 | 0.939 | **0.921** | 5/164 | 97% |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" />](../benchmarks/qwen3.6-35b-a3b.md) | 26624 | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | 2 budget | <TokCell shallow="43.7" deep="13.0" /> | 5h02 |
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" />](../benchmarks/qwen3.6-35b-a3b.md) | 8192 | <ScoreCell value="0.951/0.915" sub="100% completion" top /> | none | <TokCell shallow="43.7" deep="13.0" /> | 0h15 |
+<!-- gen:model-evalplus:end -->
 
 ## Agentic quality — Mendel
 
@@ -265,15 +266,8 @@ unquantized and the server offers no KV option.
 Wired memory peaked at 24.6 GB. At wired 24000 the same server
 stopped at 37K in 18.7 GB ([historical](../historical.md)).
 
-## MTP draft depth sweep (32K)
-
-<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" hide="drafter,effort" />
-
-| --spec-draft-n-max | py tok/s | py accept | js tok/s | js accept |
-|---|--:|--:|--:|--:|
-| 2 | 67.75 | 88% | 70.67 | 94% |
-| **3** | **68.21** | **82%** | **73.53** | **90%** |
-| 4 | 63.53 | 73% | 69.42 | 81% |
+The short-prompt drafter sweep is on
+[the benchmarks page](../benchmarks/qwen3.6-35b-a3b.md).
 
 ---
 

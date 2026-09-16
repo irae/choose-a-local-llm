@@ -143,35 +143,110 @@
   "models": {
     "gemma-4-12b-it": {
       "rowMatch": "Gemma-4-12B",
-      "kpis": ["window", "mendelGuided"],
+      "kpis": [
+        "window",
+        "evalplusOff",
+        "evalplusOn",
+        "mendelGuided"
+      ],
       "stats": {
-        "window": { "value": "261k", "label": "usable context, NVFP4, f16 KV" },
-        "mendelGuided": { "value": "model-failed", "label": "Mendel guided, both builds, off and on" }
+        "window": {
+          "value": "261k",
+          "label": "usable context, NVFP4, f16 KV"
+        },
+        "mendelGuided": {
+          "value": "model-failed",
+          "label": "Mendel guided, both builds, off and on"
+        },
+        "evalplusOff": {
+          "value": "0.927 / 0.896",
+          "label": "EvalPlus base / plus, NVFP4, thinking off",
+          "sub": "100% completion"
+        },
+        "evalplusOn": {
+          "value": "0.659 / 0.640",
+          "label": "EvalPlus base / plus, NVFP4, thinking on",
+          "sub": "68% completion"
+        }
       }
     },
     "qwen3.8-27b": {
       "rowMatch": "Qwen3.8-27B",
-      "kpis": ["window", "mendelGuided", "mendelBlind"],
+      "kpis": [
+        "evalplus",
+        "mendelBlind",
+        "mendelGuided",
+        "window"
+      ],
       "stats": {
-        "window": { "value": "65k", "label": "usable context, both 3-bit builds, q8_0 KV" },
-        "mendelGuided": { "value": "85", "label": "Mendel guided, ISTA IQ3_S-mtp, xhigh, 8/8" },
-        "mendelBlind": { "value": "91", "label": "Mendel blind, ISTA IQ3_S-mtp, xhigh, 8/8" }
+        "window": {
+          "value": "65k",
+          "label": "usable context, both 3-bit builds, q8_0 KV"
+        },
+        "mendelGuided": {
+          "value": "85",
+          "label": "Mendel guided, ISTA IQ3_S-mtp, xhigh, 8/8"
+        },
+        "mendelBlind": {
+          "value": "91",
+          "label": "Mendel blind, ISTA IQ3_S-mtp, xhigh, 8/8"
+        },
+        "evalplus": {
+          "value": "0.957 / 0.921",
+          "label": "EvalPlus base / plus, UD-IQ3_S, xhigh",
+          "sub": "98% completion"
+        },
+        "evalplusIsta": {
+          "value": "0.945 / 0.909",
+          "label": "EvalPlus base / plus, IQ3_S-mtp, xhigh",
+          "sub": "96% completion"
+        }
       }
     },
     "qwen3.6-35b-a3b": {
       "rowMatch": "Qwen3.6-35B-A3B",
-      "kpis": ["offload", "mendelGuided"],
+      "kpis": [
+        "offload",
+        "evalplus",
+        "mendelGuided"
+      ],
       "stats": {
-        "offload": { "value": "21", "label": "expert layers in host RAM, MTP n-max 2" },
-        "mendelGuided": { "value": "48.5", "label": "Mendel guided, UD-Q4_K_XL, thinking on" }
+        "offload": {
+          "value": "21",
+          "label": "expert layers in host RAM, MTP n-max 2"
+        },
+        "mendelGuided": {
+          "value": "48.5",
+          "label": "Mendel guided, UD-Q4_K_XL, thinking on"
+        },
+        "evalplus": {
+          "value": "0.945 / 0.902",
+          "label": "EvalPlus base / plus, q8_0 KV, thinking on",
+          "sub": "96% completion"
+        }
       }
     },
     "gemma-4-26b-a4b": {
       "rowMatch": "Gemma-4-26B-A4B",
-      "kpis": ["offload", "mendelGuided"],
+      "kpis": [
+        "offload",
+        "evalplus",
+        "mendelGuided"
+      ],
       "stats": {
-        "offload": { "value": "7", "label": "expert layers in host RAM at -c 98304" },
-        "mendelGuided": { "value": "37.5", "label": "Mendel guided, NVFP4, thinking on" }
+        "offload": {
+          "value": "7",
+          "label": "expert layers in host RAM at -c 98304"
+        },
+        "mendelGuided": {
+          "value": "37.5",
+          "label": "Mendel guided, NVFP4, thinking on"
+        },
+        "evalplus": {
+          "value": "0.909 / 0.878",
+          "label": "EvalPlus base / plus, NVFP4Q8, thinking on",
+          "sub": "91% completion"
+        }
       }
     }
   },

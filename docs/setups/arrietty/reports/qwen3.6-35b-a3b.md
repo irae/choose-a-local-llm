@@ -5,11 +5,12 @@ Backends: llama-server · [GGUF on Hugging Face](https://huggingface.co/unsloth/
 <!-- gen:model-kpis:start -->
 <div class="kpis">
   <div class="kpi"><b>21</b><span>expert layers in host RAM, MTP n-max 2</span></div>
+  <div class="kpi"><b>0.945 / 0.902</b><span>EvalPlus base / plus, q8_0 KV, thinking on</span><small>96% completion</small></div>
   <div class="kpi"><b>48.5</b><span>Mendel guided, UD-Q4_K_XL, thinking on</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
-First run 2026-09-13 to 2026-09-15: speed, context, drafter arms and the guided agent task. No EvalPlus on this machine yet.
+Speed, context, drafter arms and the guided agent task measured 2026-09-13 to 2026-09-15; EvalPlus scored 2026-09-16 at thinking on.
 
 ## Highlights
 
@@ -18,8 +19,12 @@ First run 2026-09-13 to 2026-09-15: speed, context, drafter arms and the guided 
   `-c 98304`.
 - **The mainstream build, not a niche one.** The same unsloth
   UD-Q4_K_XL file the reference setup serves; a community NVFP4 repack
-  was tried first and failed to load. The MTP drafter is measured on
+  was tried first and failed to load, and the owner's word is a popular
+  stable release over a niche build. The MTP drafter is measured on
   real text, from no drafter up, before the row is served.
+- **EvalPlus 0.945 / 0.902 at thinking on, 6 of 164 empty**, in 192
+  minutes on the drafter arm. The Mac reads 0.957 / 0.939 with 2 empty
+  on the same file.
 
 ## All configs — this model
 
@@ -61,6 +66,23 @@ llama-server -m "$(hf download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-
 - **Three commits moved the pre-commit hook aside** and back, a bypass
   the scorer's automatic check does not see. The two bugs shipped in
   those commits.
+- **EvalPlus at thinking on:** 0.945/0.902, 6 empty answers of 164,
+  budget 24154 from the standard formula, 192.0 minutes, the drafter
+  arm at q8_0 KV. The Mac's row of the same file and level reads
+  0.957 / 0.939 with 2 empty, so this card scores lower on both metrics
+  with one run each side. The cause of the 6 empties is unproven
+  because the run saved no finish log. Thinking off is not scored on
+  this card; on the Mac it takes 15 minutes at 0.951 / 0.915.
+
+## Quality — EvalPlus HumanEval+
+
+<!-- gen:model-evalplus:start -->
+| config | budget | Scores | empties | tok/s | wall |
+|---|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" kv="q8_0" effort="on" />](../benchmarks/qwen3.6-35b-a3b.md) | 24154 | <ScoreCell value="0.945/0.902" sub="96% completion" top /> | † unproven | <TokCell shallow="61.16" deep="45.42" /> | 3h12 |
+<!-- gen:model-evalplus:end -->
+
+Every run of this model on this machine, best base score first. The empties column carries the cause word ([what the words mean](../../../benchmarks/evalplus.md#limits-on-local-hardware)).
 
 ## Agentic quality — Mendel
 

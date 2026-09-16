@@ -13,3 +13,21 @@ Every config of this model, on every machine, best first.
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-all:end -->
+
+## What the numbers say
+
+- **The ternary claim holds up.** 0.933 / 0.902 on MLX 2-bit and
+  0.927 / 0.890 on the fork with the vendor's q4 KV bias, from 8 GB of
+  weights. Every empty that remains is the output budget, proven.
+- **No complete agent row.** MLX dies near 47K under the agent task;
+  the fork at q4_0 KV floors at 33K used tokens; at f16 KV it holds
+  131K and scored 12.5 guided on 1 of 8. Thinking off looped on
+  identical commands and is not run again.
+- **The fork is the path.** It is the only backend for the ternary
+  GGUF, its q4 KV calibration and the DSpark drafter, and two 48K
+  slots leave the Mac usable while an agent runs.
+- **The retry rule was born here.** A model that does not finish the
+  task cannot score as if it had; a retry after a model failure loses
+  points for each earlier valid attempt.
+- **Pending**: the fork's EvalPlus at f16 KV, and a guided agent row
+  under a thinking budget if the fork build takes the flag.

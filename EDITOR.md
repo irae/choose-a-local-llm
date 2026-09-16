@@ -144,6 +144,15 @@ These rules bind every `reports/<model>.md` page:
   cell and one legend line with the reason; the list is
   `models.<page-slug>.mendelUntrusted` in `models.json`, one entry per
   config with `serving` (and an optional `branch` regex) and `reason`.
+- **Every EvalPlus table on a setup page is generated** (2026-09-16):
+  the comparison page's "Code quality" table sits between
+  `<!-- gen:setup-evalplus:... -->` markers and holds every
+  `evalplusRuns` entry of that setup; each report page's "Quality"
+  table sits between `<!-- gen:model-evalplus:... -->` markers and
+  holds the entries whose `slug` is the page's. Both come from
+  `models.json`, so a new score reaches every page on the next
+  `docs:tables` run. Never hand-write an EvalPlus table on those pages
+  again; the prose under the markers stays hand-written.
 - **Config numbers go at the end of table lines as `#1`, `#2`**, never
   as a `1:`/`2:` prefix.
 - **Every row in `models.json` carries a mnemonic `id`, a `hidden`

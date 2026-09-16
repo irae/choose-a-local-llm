@@ -11,3 +11,23 @@ Every config of this model, on every machine, best first.
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-all:end -->
+
+## What the numbers say
+
+- **The deep secondary on the M1 Max.** The unsloth GGUF at f16 KV
+  serves 197K at 60 → 17 tok/s and finishes the blind agent task at
+  47.5, 8 of 8, at thinking on.
+- **Thinking off wins the single-turn test and loses the agent task.**
+  0.976 / 0.945 in 20 minutes at thinking off; 0.896 / 0.872 with 16
+  empties in almost six hours at thinking on. Both thinking-off agent
+  rows ended on a loop of identical edits, so no agent row runs at
+  thinking off.
+- **The MLX build is retired** after a failed agent smoke; its 46
+  empties are unproven ([why](../setups/kamaji/gemma-4-26b-a4b-mlx-retired.md)).
+- **On the RTX 5060 Ti the NVFP4Q8 repack** keeps attention at Q8 and
+  puts 7 expert layers in host RAM: 97K at 59 → 46 tok/s, 0.909 /
+  0.878 with 14 empty at thinking on, guided 37.5 on 3 of 8, ended on
+  a text loop.
+- **This model loops in both benchmarks.** Its empties at the 30000
+  budget are the first case of the thinking-budget test
+  ([method](../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)).

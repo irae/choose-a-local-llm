@@ -6,7 +6,7 @@ Backends: llama-server, mlx-lm · [GGUF on Hugging Face](https://huggingface.co/
 <div class="kpis">
   <div class="kpi"><b>197K</b><span>GGUF f16 KV ceiling, 17.3 tok/s there</span></div>
   <div class="kpi"><b>0.976 / 0.945</b><span>EvalPlus base / plus, GGUF, thinking off</span><small>100% completion</small></div>
-  <div class="kpi"><b>0.884 / 0.860</b><span>EvalPlus base / plus, GGUF, thinking on</span><small>89% completion</small></div>
+  <div class="kpi"><b>0.896 / 0.872</b><span>EvalPlus base / plus, GGUF, thinking on</span><small>90% completion</small></div>
   <div class="kpi"><b>47.5 / 100</b><span>Mendel blind, GGUF f16 KV, thinking on</span><small>complete</small></div>
 </div>
 <!-- gen:model-kpis:end -->
@@ -129,7 +129,7 @@ thinking off; thinking costs about 3 tok/s.
 **Thinking on costs answers on both builds.** Calibration showed that at
 a 30K output cap 2 of 10 sample problems never finished reasoning. The
 full runs confirmed the cost: 46 of 164 empty on MLX, 16 of 164 on the
-GGUF at f16, same budget. Run 20 re-ran every GGUF empty and proved the
+GGUF at f16, same budget. A re-run of every GGUF empty proved the
 cause: two complete and pass on today's build, and the other sixteen ran
 to the 30000-token cap with the answer still coming. The MLX empties are
 not re-run yet, so their cause stays unproven
@@ -160,11 +160,13 @@ one.
 
 ## Quality — EvalPlus HumanEval+
 
-| config | budget | pass@1 base | pass@1 plus | empty completions | completion |
+<!-- gen:model-evalplus:start -->
+| config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" /> | 8192 | 0.976 | 0.945 | 0/164 | 100% |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" /> | 30000 | 0.884 | 0.860 | 18/164 | 89% |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" /> | 30000 | 0.713 | 0.701 | 46/164 | 72% |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" />](../benchmarks/gemma-4-26b-a4b.md) | 8192 | <ScoreCell value="0.976/0.945" sub="100% completion" top /> | none | <TokCell shallow="60.1" deep="19.1" /> | 0h20 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" />](../benchmarks/gemma-4-26b-a4b.md) | 30000 | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | 16 budget | <TokCell shallow="60.1" deep="19.1" /> | 5h47 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" />](../benchmarks/gemma-4-26b-a4b.md) | 30000 | <ScoreCell value="0.713/0.701" sub="72% completion" /> | † unproven | <TokCell shallow="49.3" deep="23.4" /> | 2h16 |
+<!-- gen:model-evalplus:end -->
 
 The two GGUF rows share the thinking-on score; the MLX row keeps its own.
 
@@ -221,20 +223,8 @@ offers no KV option.
 Wired memory 20.0 GB at 70K. Full curves in
 [the benchmarks](../benchmarks/gemma-4-26b-a4b.md).
 
-## MTP draft depth sweep (32K)
-
-<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" kv="f16" hide="drafter,effort" />
-
-Thinking ON (chat endpoint, `enable_thinking: true`, 1024 tokens):
-
-| --spec-draft-n-max | py tok/s | py accept | js tok/s | js accept |
-|---|--:|--:|--:|--:|
-| **2** | **71.88** | **84%** | **69.25** | **78%** |
-| 3 | 67.94 | 74% | 64.90 | 69% |
-| 4 | 63.97 | 69% | 61.00 | 65% |
-
-Thinking OFF: peak 74.8 py / 71.6 js, also at n-max 2. Full thinking-off
-tables in [the benchmarks](../benchmarks/gemma-4-26b-a4b.md).
+The short-prompt drafter sweeps at both thinking levels are on
+[the benchmarks page](../benchmarks/gemma-4-26b-a4b.md).
 
 ---
 

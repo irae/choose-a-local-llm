@@ -14,3 +14,24 @@ Every config of this model, on every machine, best first.
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-all:end -->
+
+## What the numbers say
+
+- **The fast one with a real window.** On the M1 Max the q8_0 KV arm
+  with its drafter serves 82K at 43.7 → 13.0 tok/s. On the RTX 5060 Ti
+  the same file serves 97K at 61 → 45 tok/s with 21 expert layers in
+  host RAM.
+- **Thinking on is the level for agent work**: 83 guided against 62.5
+  at thinking off on the Mac, on the same window. Thinking off is the
+  single-turn pick: the whole gate runs in 15 minutes at 0.951 / 0.915
+  against 0.957 / 0.939 in five hours.
+- **The mainstream build, not a niche one.** unsloth UD-Q4_K_XL with
+  the embedded MTP drafter on both machines. A community NVFP4 repack
+  failed to load on the card, and the owner's word is a popular stable
+  release over a niche build.
+- **The card scores under the Mac on the same file, one run each
+  side**: 0.945 / 0.902 with 6 empty against 0.957 / 0.939 with 2, and
+  48.5 guided against 83. The card's empties are unproven; a blind
+  agent row on the card is pending.
+- **One context at a time.** The harness almost never runs parallel
+  contexts, so no multi-slot row is scored.

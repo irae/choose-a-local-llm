@@ -158,40 +158,31 @@ whole time, no crash signatures, no unusual compression events.
   floor ~30K, Mac stays usable; add the dflash drafter only for
   shallow-context serving.
 
-## Fork with f16 KV: never measured, and the first thing to measure
+## Fork with f16 KV, no drafter — slow creep, `-c 131072`, wired limit 25000 (2026-09-08)
 
-Every fork sweep on this page used q4 or q8 KV. f16 KV was never tried,
-because the fork's value here was memory and the vendor ships a q4
-calibration file. That leaves the model's main weakness untested.
+Fork revision `abbae72`, `LLAMA_ATTN_ROT_DISABLE=1`, one slot, 60 s
+pause per step. The first request on the server was a 4096-token
+warmup at 16.93 tok/s, discarded.
 
-This machine pays a large, measured penalty for quantized KV
-([why](../../../methodology/kv-cache-pick.md);
-`hardware/kamaji/research/kv-quant-on-m1.md` holds the study). Decode time
-per token is a base plus a term that grows with depth. Across three
-models, every quantized arm costs 2.0 to 4.1 microseconds per cached
-token and every f16 arm costs 0.20 to 0.32. Bonsai on the fork fits
-2.01 at q4 and 2.98 at q8. So this model's 8 tok/s floor near 30K is
-set by the cache type, not by the weights.
+| depth (used tokens) | decode tok/s | wired |
+|---|--:|--:|
+| 4K | 14.95 | 18.3 GB |
+| 8K | 16.25 | 18.3 GB |
+| 16K | 15.62 | 18.3 GB |
+| 25K | 15.07 | 18.3 GB |
+| 33K | 14.45 | 18.3 GB |
+| 41K | 13.92 | 18.3 GB |
+| 49K | 13.40 | 18.3 GB |
+| 66K | 12.50 | 18.3 GB |
+| 82K | 11.45 | 18.6 GB |
+| 98K | 10.76 | 18.6 GB |
+| 115K | 10.24 | 18.2 GB |
+| **131K** | **9.67 — the `-c` boundary, no floor found** | 18.2 GB |
 
-What f16 KV should cost and buy, from the numbers already on this page.
-Bonsai keeps 32 KiB per token at q8, so 64 KiB at f16, over about
-8.8 GB of weights:
-
-| context | KV | total memory | projected decode |
-| --: | --: | --: | --: |
-| 33K | 2.1 GB | 10.9 GB | ~14 tok/s |
-| 64K | 4.0 GB | 12.8 GB | ~12.6 tok/s |
-| 98K | 6.1 GB | 14.9 GB | ~11 tok/s |
-
-The projection uses the measured base of 60.3 ms per token and the f16
-depth term of 0.3 microseconds. If it holds, the floor moves from about
-30K to past 98K, and the model stops needing the `--kv-mean-center`
-bias file at all, because that file corrects q4 quantization error. The
-bias file's calibration corpus was never recorded, so an f16 config
-would also be reproducible where the scored q4 rows are not.
-
-Nothing above is measured. One single-slot depth creep at f16 KV
-settles it.
+Swap never grew; the delta went slightly negative as the sweep went
+deeper. Against the q4_0 rows this is the same weights, the same fork
+and the same machine, with the cache type the only change, and the
+33K floor is gone.
 
 ## Fork multi-slot (2026-08-28)
 

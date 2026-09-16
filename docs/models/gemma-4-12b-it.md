@@ -16,3 +16,20 @@ Every config of this model, on every machine, best first.
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-all:end -->
+
+## What the numbers say
+
+- **One configuration works: llama-server, f16 KV, no drafter,
+  thinking off.** 0.976 / 0.939 on the M1 Max and 0.927 / 0.896 on the
+  RTX 5060 Ti, every answer delivered, above 8 tok/s to 245K on the Mac
+  and 261K on the card.
+- **Thinking on is the pitfall.** On the card thinking on scores
+  0.659 / 0.640 with 53 of 164 empty. On the Mac the thinking-on LM
+  Studio entry was retired for a repetition loop. The 12B fails to
+  converge more often than the 26B.
+- **It fails the agent task everywhere.** Zero commits on the card on
+  both builds and both levels; 37.5 guided on 3 of 8 on the Mac. MLX
+  and LM Studio are ruled out for thinking-on agent work; the GGUF
+  stays in scope. A row with zero commits is never retried on its own.
+- **NVFP4 on the card** fits the trained window in 12.3 GB and reads 2
+  to 5 percent faster than the k-quant. Both are community repacks.

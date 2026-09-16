@@ -17,7 +17,7 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 
 - **27B-class quality from 8 GB of weights** — EvalPlus 0.927 / 0.890 / 98%,
   and the vendor's q4-KV calibration costs no quality. Plain MLX 2-bit
-  reads 0.933 / 0.902 / 99% after run 20 re-ran its empty problems, so
+  reads 0.933 / 0.902 / 99% after a re-run of its empty problems, so
   the two builds sit within one problem of each other.
 - **The flattest speed curve of any model here** (MLX): −23% from 4K to
   49K, never hits the speed floor; the limit is memory (~58-60K).
@@ -61,7 +61,7 @@ Each table row above is one config; start it with its block below.
 <!-- gen:model-configs:start -->
 <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" />
 
-Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak. Run 16 (2026-09-13) read this server with llama-benchy twice and both times the generation thread died on a Metal OOM at the deep cell, at 56320 and then at 52224, with the prompt fill stalled near 47K; the process stayed alive and silent. The ceiling on this machine sits near 47K, not the 58K the 2026-08-29 creep reached, so the harness window is 40960 by the MLX rule and the speed cells keep the creep's numbers with the dagger: no benchy cell survived, because llama-benchy writes its result once at the end of a run.
+Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak. A real-text read of this server on 2026-09-13 ran with llama-benchy twice and both times the generation thread died on a Metal OOM at the deep cell, at 56320 and then at 52224, with the prompt fill stalled near 47K; the process stayed alive and silent. The ceiling on this machine sits near 47K, not the 58K the 2026-08-29 creep reached, so the harness window is 40960 by the MLX rule and the speed cells keep the creep's numbers with the dagger: no benchy cell survived, because llama-benchy writes its result once at the end of a run.
 
 ```bash
 mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
@@ -147,8 +147,8 @@ the budget (10240) and regenerating all 55 truncated completions moved the
 score to 0.933/0.902/99%, the second-largest correction in the project. The
 flawed cap had been hiding most of its ability. The deflated number is on
 [the historical page](../historical.md). The empty completions that remain, two on MLX
-and four on the fork, are the output cap: run 20 re-ran each one and
-every answer was still coming when the budget ran out. The ternary claim holds up: 2-bit compression kept
+and four on the fork, are the output cap: a re-run of each one found
+every answer still coming when the budget ran out. The ternary claim holds up: 2-bit compression kept
 near-27B-class quality, and the vendor's q4-KV calibration then held it
 again (0.927/0.890/98%, slightly above MLX 2-bit).
 
@@ -201,10 +201,12 @@ matches the PQ2_0 variant.
 
 ## Quality — EvalPlus HumanEval+
 
-| config | budget | pass@1 base | pass@1 plus | empty completions | completion |
+<!-- gen:model-evalplus:start -->
+| config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" /> | 10240 | 0.927 | 0.890 | 4/164 (~2%) | 98% |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" /> | 10240 | 0.915 | 0.884 | 5/164 (~3%) | 97% |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" />](../benchmarks/bonsai-27b.md) | 10240 | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | 2 budget | <TokCell shallow="24.5" deep="17.3" /> | 19h24 |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" />](../benchmarks/bonsai-27b.md) | 10240 | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | 4 budget | <TokCell shallow="14.7" deep="7.8" /> | 9h55 |
+<!-- gen:model-evalplus:end -->
 
 ## Agentic quality — Mendel
 
@@ -233,85 +235,24 @@ The window cell is the harness context window of that run. Rows before the KV pi
 
 The full table and the rubric are on [the Mendel page](../../../benchmarks/mendel.md).
 
-## Config 1 (MLX) — decode speed vs used context (slow creep, limit 24000)
+## Decode speed vs used context
 
-| depth (used tokens) | decode tok/s |
-|---|--:|
-| 4K | 24.5 |
-| 8K | 24.2 |
-| 16K | 22.9 |
-| 24K | 22.0 |
-| 32K | 20.5 |
-| 40K | 18.60 |
-| 42K | 18.66 |
-| 50K | 18.36 |
-| 52K | 18.09 |
-| 54K | 17.64 |
-| 56K | 17.69 |
-| **58K** | **17.27 — last stable** |
-| ~60K | Metal OOM — ceiling ~58-60K |
+<ModelSpec base="Ternary-Bonsai-27B" hide="quant,server,publisher,drafter,kv,effort" />
 
-(A transient 44-48K dip from an earlier pass is on
-[the historical page](../historical.md); the watched re-test recovered
-to ~18 tok/s past it.)
+One row per configuration, the shape of
+[the comparison table](../comparison.md#decode-speed-vs-used-context).
+Slow creeps: MLX 2026-08-29 at wired limit 24000, the fork q4_0 rows
+2026-08-30 at 24000, the fork f16 row 2026-09-08 at 25000.
 
-## Config 2 (fork scored) — depth: measured 2026-08-30
+| config | @ 4K | @ 16K | @ 33K | @ 49K | @ 58K | @ 131K | capped by |
+|---|--:|--:|--:|--:|--:|--:|---|
+| **MLX 2-bit, unquantized KV** | **24.5** | **22.9** | **20.5** | **18.4** | **17.3** | | mem — Metal OOM near 60K on the creep; a real-text read dies near 47K, so the harness window is 40960 |
+| fork, q4_0 KV + bias, one slot | 14.8 | 10.8 | 7.9 | | | | speed — under the floor at 33K used tokens |
+| fork, q4_0 KV + bias, 2×48K, one slot decoding | 14.9 | 10.7 | 7.8 | | | | speed — the same floor; both slots decoding read 9.8 and 9.9 each |
+| fork, f16 KV, no drafter, `-c 131072` | 15.0 | 15.6 | 14.5 | 13.4 | | 9.7 | mem — the `-c` boundary itself; no floor found, wired flat at 18.3 GB |
 
-| depth (used tokens) | decode tok/s |
-|---|--:|
-| 4K | 14.79 |
-| 8K | 13.22 |
-| 16K | 10.77 |
-| 24K | 9.08 |
-| **33K** | **7.85 — crosses the 8 tok/s floor** |
-
-9.6 GB RSS at the floor, no compression or swap in the watcher log.
-Matches the plain-q4 proxy (~30K) and the 2×48K single-slot sweep
-almost exactly — the bias and rotation flags do not move the floor.
-Full plain-q4 variant tables (q8, DSpark drafter, 262K alloc) are in
-[the benchmarks](../benchmarks/bonsai-27b.md).
-
-## Config 3 (fork 2×48K) — single-slot depth (one slot decoding, other idle), measured 2026-08-30
-
-| depth (used tokens) | slot-0 tok/s |
-|---|--:|
-| 4K | 14.94 |
-| 8K | 13.15 |
-| 16K | 10.65 |
-| 24K | 9.10 |
-| **33K** | **7.78 — crosses the 8 tok/s floor** |
-
-10.9 GB RSS at the floor, no compression or swap. The idle second slot
-costs almost nothing (floor matches config 2's single-slot floor and
-the plain-q4 proxy). Both slots decoding at once — the worst case, not
-the reported number — ran 9.8/9.9 tok/s each, aggregate 19.7 (from an
-earlier pass, predates the bias flags).
-
-## Config 5 (fork, f16 KV, no drafter) — slow creep, `-c 131072`, wired limit 25000, measured 2026-09-08
-
-Fork revision `abbae72`, `LLAMA_ATTN_ROT_DISABLE=1`, one slot, 60 s
-pause per step. The first request on the server was a 4096-token
-warmup at 16.93 tok/s, discarded.
-
-| depth (used tokens) | decode tok/s | wired |
-|---|--:|--:|
-| 4K | 14.95 | 18.3 GB |
-| 8K | 16.25 | 18.3 GB |
-| 16K | 15.62 | 18.3 GB |
-| 25K | 15.07 | 18.3 GB |
-| 33K | 14.45 | 18.3 GB |
-| 41K | 13.92 | 18.3 GB |
-| 49K | 13.40 | 18.3 GB |
-| 66K | 12.50 | 18.3 GB |
-| 82K | 11.45 | 18.6 GB |
-| 98K | 10.76 | 18.6 GB |
-| 115K | 10.24 | 18.2 GB |
-| **131K** | **9.67 — the `-c` boundary, no floor found** | 18.2 GB |
-
-Swap never grew; the delta went slightly negative as the sweep went
-deeper. Against the q4_0 rows this is the same weights, the same fork
-and the same machine, with the cache type the only change, and the
-33K floor is gone.
+Every full curve, one row per step, is on
+[the benchmarks page](../benchmarks/bonsai-27b.md).
 
 ---
 

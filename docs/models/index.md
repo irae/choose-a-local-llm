@@ -66,17 +66,29 @@ One or two of the three are missing.
 - **Qwen3.8-27B, RTX 5060 Ti, effort xhigh, q8_0 KV:** ISTA IQ3_S-mtp
   85 guided and 91 blind, both 8 of 8. unsloth UD-IQ3_S 79 guided, 7 of
   8. Both read about 29 → 21 tok/s.
-- **Qwen3.8-27B EvalPlus, M1 Max, effort medium:** AtomicChat AD-IQ3_S
-  0.988 base, ISTA IQ3_S-mtp 0.945 plus, MLX 4-bit 0.982 / 0.939. The
-  AtomicChat build ended its blind run on a loop at 3 of 8.
+- **Qwen3.8-27B EvalPlus at effort xhigh:** M1 Max, bartowski Q4_K_M
+  0.957 / 0.939 (96%), unsloth UD-IQ3_S 0.945 / 0.927 (95%), ISTA
+  IQ3_S-mtp 0.945 / 0.921 (97%). RTX 5060 Ti, unsloth 0.957 / 0.921
+  (98%), ISTA 0.945 / 0.909 (96%). The two 3-bit builds sit within one
+  point of each other on both machines. The best base scores of the
+  project, 0.988 (AtomicChat) and 0.982 (MLX), came at effort medium,
+  a level this model is no longer run at; the AtomicChat build ended
+  its blind run on a loop at 3 of 8.
+- **Qwen3.6-35B-A3B UD-Q4_K_XL, thinking on:** M1 Max 0.957 / 0.939
+  and guided 83 on an 82K window; RTX 5060 Ti 0.945 / 0.902 and guided
+  48.5 on a 97K window, one run each side.
 - **MLX 4-bit against a GGUF k-quant, EvalPlus base:** Gemma-4-26B-A4B
   0.171 lower on MLX, Gemma-4-12B 0.067 lower, Qwen3.8-27B level.
 - **MLX 4-bit Qwen3.8-27B on the agent task:** 12.5, 1 of 8, on a
   26624 window.
 - **Gemma-4-12B, RTX 5060 Ti:** NVFP4 reads 2 to 5 percent faster than
-  UD-Q4_K_XL. Both builds end the agent task with zero commits.
+  UD-Q4_K_XL. Both builds end the agent task with zero commits. EvalPlus
+  on NVFP4: 0.927 / 0.896 at thinking off, 0.659 / 0.640 with 53
+  empties at thinking on.
 - **Gemma-4-26B-A4B:** unsloth UD-Q4_K_XL on the M1 Max, blind 47.5, 8
-  of 8. catlilface NVFP4Q8 on the RTX 5060 Ti, guided 37.5, 3 of 8.
+  of 8, EvalPlus 0.976 / 0.945 at thinking off and 0.896 / 0.872 at
+  thinking on. catlilface NVFP4Q8 on the RTX 5060 Ti, guided 37.5, 3 of
+  8, EvalPlus 0.909 / 0.878 at thinking on.
 
 ## Best per machine
 
