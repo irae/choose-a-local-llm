@@ -59,7 +59,7 @@ Each table row above is one config; start it with its block below.
 <!-- gen:model-configs:start -->
 <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" />
 
-pi id `gemma-4-26b-a4b`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. Speeds read 2026-09-12 with llama-benchy on real code text: n-max 2 reads 60.1 tok/s at 4K, 28.2 at 98K and 19.1 at 197K, the fastest arm at every depth against no drafter (54.2, 28.7, 19.2), n-max 1 (58.2, 27.5, 16.4) and n-max 3 (50.8, 25.7, 22.3 with a wide spread), so the drafter at n-max 2 stays. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete. Under a server thinking budget of 19491 tokens (answer budget 2048, `max_tokens` 21539, derived from a calibration with the margin 1.5; the thinking-budget test, 2026-09-16), the same file, drafter and level scored 0.988/0.957 with no empty answer in 165.8 minutes: 16 problems hit the budget and were forced to answer, and 15 of those 16 passed the base tests. The natural run at 30000 left those 16 empty and took 347 minutes. The re-run of the forced failures without the budget is pending, and so is the owner's word on how a budgeted score is shown.
+pi id `gemma-4-26b-a4b`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. Speeds read 2026-09-12 with llama-benchy on real code text: n-max 2 reads 60.1 tok/s at 4K, 28.2 at 98K and 19.1 at 197K, the fastest arm at every depth against no drafter (54.2, 28.7, 19.2), n-max 1 (58.2, 27.5, 16.4) and n-max 3 (50.8, 25.7, 22.3 with a wide spread), so the drafter at n-max 2 stays. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete. Under a server thinking budget of 19491 tokens (answer budget 2048, `max_tokens` 21539, derived from a calibration with the margin 1.5; the thinking-budget test, 2026-09-16), the same file, drafter and level scored 0.988/0.957 with no empty answer in 165.8 minutes: 16 problems hit the budget and were forced to answer, and 15 of those 16 passed the base tests. The natural run at 30000 left those 16 empty and took 347 minutes. The re-run of the two forced failures without the budget changed nothing: one is wrong either way, one hits the 30000 cap either way, so the budget cost no answer and stands. The owner's word on how a budgeted score is shown is pending.
 
 ```bash
 llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
@@ -142,8 +142,10 @@ scored 0.988 / 0.957 with no empty answer in 166 minutes against
 0.896 / 0.872 with 16 empties in 347 minutes at a 30000 output budget.
 The 16 problems that hit the budget were forced to answer, and 15 of
 them passed. That is above the thinking-off score too. The natural
-re-run of the forced failures is pending, and the site shows the
-natural score until the owner decides how a budgeted row reads
+re-run of the two forced failures changed nothing: one is wrong either
+way, one hits the 30000 cap either way, so the budget cost no answer.
+The site shows the natural score until the owner decides how a
+budgeted row reads
 ([limits](../../../benchmarks/evalplus.md#limits-on-local-hardware)). Like Gemma-12B,
 this model does not share a score across its two quants. The MLX
 build rounds every group to one 4-bit grid with no calibration, which
