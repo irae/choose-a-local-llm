@@ -312,14 +312,40 @@ by a larger budget at temperature 0. Killed the scoring run and both
 watchers (one stale watcher from the `-off` block was also still
 running; killed too). Server left running.
 
-**Part 2** (budget 8192, correct): restarting now, resumes at problem
-33 of 164.
+**Part 2** (budget 8192, correct): 2026-09-16T10:55:36Z to
+2026-09-16T14:06:01Z (evaluate included, no crash), resumed at problem
+33 and ran to 164/164, then evaluated. 0/164 empty in this part too —
+the higher budget avoided every empty the calibration's heavy
+non-convergence predicted.
+
+### `gemma12-nvfp4-evalplus-on` close
+
+`FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF`, no drafter, one slot, f16
+KV, ctx 32768, budget 8192 (corrected from 1700 mid-block). Two parts,
+no crash in either: part 1 13.5 min (32/164, budget 1700, all kept),
+part 2 190.4 min (132/164 + evaluate, budget 8192).
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.659 |
+| HumanEval plus | 0.640 |
+| completion rate | 100% |
+| empty | 0/164 |
+| wall | 203.9 min (parts 1+2, gaps excluded) |
+
+Thinking on scores far below thinking off on this build (0.659/0.640
+vs 0.927/0.896) — a real finding, not a budget artifact: the budget
+correction still landed 0/164 empty.
+Files: `results/gemma12-nvfp4-evalplus-on/humaneval/`,
+`results/server-gemma12-nvfp4.log`.
+Deviation: budget correction mid-block (see above), otherwise none.
 
 ## Handing over
 
 `machine-setup`, `qwen38-ista-evalplus-xhigh` (0.945/0.909, 0/164
 empty), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty),
-`qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty) and
-`gemma12-nvfp4-evalplus-off` (0.927/0.896, 0/164 empty) done.
-`gemma12-nvfp4-evalplus-on` corrected to budget 8192 per owner word,
-restarting the watcher and run, resuming at problem 33/164.
+`qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty),
+`gemma26-nvfp4-evalplus-on` (0.909/0.878, 0/164 empty),
+`gemma12-nvfp4-evalplus-off` (0.927/0.896, 0/164 empty) and
+`gemma12-nvfp4-evalplus-on` (0.659/0.640, 0/164 empty) done. On to
+`gemma12-q4kxl-evalplus-on` next.

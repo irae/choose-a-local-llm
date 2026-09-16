@@ -37,3 +37,11 @@ this model.
 
 Wall (new): 51.1 min, one part, no crash. This build's first EvalPlus
 score.
+| old | Gemma-4-12B, GGUF NVFP4 (FreedomAISVR), thinking on | thinking on | — (no EvalPlus ran on this build before) | — | — | — | — | — |
+| new | Gemma-4-12B, GGUF NVFP4 (FreedomAISVR), f16 KV | thinking on | no drafter, budget corrected mid-block (1700 → 8192, floor 8192 applies even non-converging) | 8192 | **0.659** | **0.640** | 100% | 0/164 |
+
+Wall (new): 203.9 min, 2 parts (13.5 + 190.4), gaps excluded. Thinking
+on scores far below thinking off on this build (0.659/0.640 vs
+0.927/0.896) — a real finding: enabling thinking hurts this model on
+HumanEval+, not a budget artifact (0/164 empty at the corrected
+budget).
