@@ -394,9 +394,34 @@ converges normally. Max completion 1011 × 1.5 = 1517 < floor 8192.
 
 Deviation: none.
 
+### `gemma12-q4kxl-evalplus-off` close
+
+`unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL`, no drafter, one slot, f16
+KV, ctx 32768, budget 8192. One part, no crash:
+2026-09-16T19:25:00Z to 2026-09-16T19:51:09Z.
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.951 |
+| HumanEval plus | 0.909 |
+| completion rate | 100% |
+| empty | 0/164 |
+| wall | 26.1 min (one part, no crash) |
+
+Files: `results/gemma12-q4kxl-evalplus-off/humaneval/`,
+`results/server-gemma12-q4kxl.log`.
+Deviation: none. This is the last of the run's planned EvalPlus
+blocks; `retry-sweep` is empty (no block waited on a human).
+
 ## Handing over
 
-`machine-setup` through `gemma12-q4kxl-evalplus-on` all done (see
-above). `gemma12-q4kxl-evalplus-off` calibrated, budget 8192, starting
-the watcher and full run next — the last EvalPlus block before
-`retry-sweep`.
+Every planned block done: `machine-setup`, `qwen38-ista-evalplus-xhigh`
+(0.945/0.909), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921),
+`qwen36-q4kxl-evalplus-on` (0.945/0.902), `gemma26-nvfp4-evalplus-on`
+(0.909/0.878), `gemma12-nvfp4-evalplus-off` (0.927/0.896),
+`gemma12-nvfp4-evalplus-on` (0.659/0.640), `gemma12-q4kxl-evalplus-on`
+(0.793/0.780) and `gemma12-q4kxl-evalplus-off` (0.951/0.909) — every
+row 0/164 empty except the two ISTA-arm-switch and one budget-
+correction deviations noted above. `retry-sweep` empty, nothing
+waited on a human. Stopping the server, cleaning up processes, and
+closing the session next.
