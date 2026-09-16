@@ -32,3 +32,8 @@ Wall (new): 215.3 min, one part, no crash. A different quant/publisher
 than the kamaji pair (NVFP4 vs Q4_K_XL); paired anyway per the "no
 same-build score exists" rule since it is the nearest EvalPlus row for
 this model.
+| old | Gemma-4-12B, GGUF NVFP4 (FreedomAISVR), thinking off | thinking off | — (no EvalPlus ran on this build before, owner note 2026-09-13) | — | — | — | — | — |
+| new | Gemma-4-12B, GGUF NVFP4 (FreedomAISVR), f16 KV | thinking off | no drafter | 8192 | 0.927 | 0.896 | 100% | 0/164 |
+
+Wall (new): 51.1 min, one part, no crash. This build's first EvalPlus
+score.
