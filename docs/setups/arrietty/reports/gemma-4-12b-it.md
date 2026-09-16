@@ -33,14 +33,14 @@ Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; Eval
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
 | <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" /> | **261k** | mem | <TokCell shallow="49.55" deep="33.11" top-shallow top-deep /> | **12.3 GB** | <ScoreCell value="0.927/0.896" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 0h51 · Mendel 0h01">0h52</span> |
-| <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="on" /> | **261k** | mem | <TokCell shallow="49.55" deep="33.11" top-shallow top-deep /> | **12.3 GB** | <ScoreCell value="0.659/0.640" sub="68% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 3h24 · Mendel 0h06">3h29</span> |
+| <ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="on" /> | **261k** | mem | <TokCell shallow="47.39" deep="32.18" top-shallow top-deep /> | **12.7 GB** | <ScoreCell value="0.793/0.780" sub="79% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 4h19 · Mendel 0h05">4h24</span> |
+| <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="on" /> | **261k** | mem | <TokCell shallow="49.55" deep="33.11" top-shallow top-deep /> | **12.3 GB** | <ScoreCell value="0.659/0.640" sub="68% completion" /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 3h24 · Mendel 0h06">3h29</span> |
 
 Rows below 100 percent completeness. Completeness counts three measurements: tok/s, EvalPlus and Mendel.
 
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
 | <ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" top /> | **261k** | mem | <TokCell shallow="47.39" deep="32.18" top-shallow top-deep /> | **12.7 GB** | <ScoreCell value="pending" /> | <ScoreCell value="not run" /> | — |
-| <ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="on" /> | **261k** | mem | <TokCell shallow="47.39" deep="32.18" top-shallow top-deep /> | **12.7 GB** | <ScoreCell value="pending" /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus — · Mendel 0h05">0h05†</span> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -55,6 +55,18 @@ pi id `gemma-4-12b-nvfp4`. A community NVFP4 repack of the model, the run's head
 ```bash
 llama-server -m "$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf)" \
   --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \
+  -ngl 999 --fit off -fa on -c 262144 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
+```
+
+<ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="on" />
+
+pi id `gemma-4-12b-q4kxl`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: right after it found the first dependency, the thinking repeated one line 818 times and filled the output budget, with zero commits. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 8192: 0.793/0.780, 34 empty answers of 164 whose cause is unproven because the run saved no finish log, in 259.0 minutes of active time. Every answered problem passed the base tests: the whole loss is thinking that did not end inside the budget, as the calibration predicted with four of ten answers at the 30000 cap. The NVFP4 build at the same level lost 53 answers, so this k-quant converges more often on this card. Thinking off is pending.
+
+```bash
+llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)" \
+  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 262144 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
@@ -75,18 +87,6 @@ llama-server -m "$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12
 <ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" />
 
 pi id `gemma-4-12b-q4kxl`. The k-quant build the Mac serves, the control for the NVFP4 row on this card. `-c 262144` loads at once and serves the deep cell at 261,120. The agent task runs at thinking on only (owner, 2026-09-14); see the row below.
-
-```bash
-llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)" \
-  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \
-  -ngl 999 --fit off -fa on -c 262144 \
-  --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081
-```
-
-<ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="on" />
-
-pi id `gemma-4-12b-q4kxl`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: right after it found the first dependency, the thinking repeated one line 818 times and filled the output budget, with zero commits.
 
 ```bash
 llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)" \
@@ -120,7 +120,12 @@ llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_
   the first case of the thinking-budget test
   ([method](../../../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)),
   pending.
-- **The k-quant build's EvalPlus is pending** at both levels.
+- **EvalPlus, UD-Q4_K_XL at thinking on:** 0.793/0.780, 34 empty answers
+  of 164, budget 8192, 259.0 minutes. Every answered problem passed the
+  base tests, so the whole loss is thinking that did not end; the cause
+  is unproven for want of a finish log. The k-quant converges more often
+  than the NVFP4 build at this level, 34 empties against 53. Thinking
+  off on this build is pending.
 
 ## Quality — EvalPlus HumanEval+
 
@@ -128,7 +133,8 @@ llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_
 | config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
 | [<ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" />](../benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.927/0.896" sub="100% completion" top /> | none | <TokCell shallow="49.55" deep="33.11" /> | 0h51 |
-| [<ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="on" />](../benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.659/0.640" sub="68% completion" top /> | † unproven | <TokCell shallow="49.55" deep="33.11" /> | 3h24 |
+| [<ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="on" />](../benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.793/0.780" sub="79% completion" top /> | † unproven | <TokCell shallow="47.39" deep="32.18" /> | 4h19 |
+| [<ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="on" />](../benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.659/0.640" sub="68% completion" /> | † unproven | <TokCell shallow="49.55" deep="33.11" /> | 3h24 |
 <!-- gen:model-evalplus:end -->
 
 Every run of this model on this machine, best base score first. The empties column carries the cause word ([what the words mean](../../../benchmarks/evalplus.md#limits-on-local-hardware)).

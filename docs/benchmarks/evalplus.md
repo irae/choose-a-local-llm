@@ -27,6 +27,7 @@ a score; a row names it only where it is part of the quant.
 | [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" hardware="rtx-5060ti-16gb" />](../setups/arrietty/benchmarks/gemma-4-26b-a4b.md) | 12500 | <ScoreCell value="0.909/0.878" sub="91% completion" /> | † unproven | <TokCell shallow="58.77" deep="45.59" /> | 3h35 |
 | [<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" hardware="m1-max-32gb" />](../setups/kamaji/benchmarks/gemma-4-12b-it.md) | 30000 | <ScoreCell value="0.909/0.872" sub="100% completion" /> | none | <TokCell shallow="34.19" deep="23.23" /> | 1h33 |
 | [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" />](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md) | 30000 | <ScoreCell value="0.896/0.872" sub="90% completion" /> | 16 budget | <TokCell shallow="60.1" deep="19.1" /> | 5h47 |
+| [<ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="on" hardware="rtx-5060ti-16gb" />](../setups/arrietty/benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.793/0.780" sub="79% completion" /> | † unproven | <TokCell shallow="47.39" deep="32.18" /> | 4h19 |
 | [<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" hardware="m1-max-32gb" />](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md) | 30000 | <ScoreCell value="0.713/0.701" sub="72% completion" /> | † unproven | <TokCell shallow="49.3" deep="23.4" /> | 2h16 |
 | [<ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="on" hardware="rtx-5060ti-16gb" />](../setups/arrietty/benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.659/0.640" sub="68% completion" /> | † unproven | <TokCell shallow="49.55" deep="33.11" /> | 3h24 |
 <!-- gen:evalplus-table:end -->
@@ -68,6 +69,7 @@ Read the score with its completion:
 | Ternary-Bonsai-27B MLX 2-bit, thinking on | 10240 | 2/164 | budget | 0.944 |
 | Ternary-Bonsai-27B fork q4 KV, thinking on | 10240 | 4/164 | budget | 0.950 |
 | Gemma-4-12B NVFP4, thinking on, RTX 5060 Ti | 8192 | 53/164 | † unproven | 0.974 |
+| Gemma-4-12B UD-Q4_K_XL, thinking on, RTX 5060 Ti | 8192 | 34/164 | † unproven | 1.000 |
 | Gemma-4-26B-A4B NVFP4Q8, thinking on, RTX 5060 Ti | 12500 | 14/164 | † unproven | 0.993 |
 | Qwen3.8-27B ISTA IQ3_S-mtp, xhigh, RTX 5060 Ti | 20500 | 7/164 | † unproven | 0.987 |
 | Qwen3.6-35B-A3B UD-Q4_K_XL, thinking on, RTX 5060 Ti | 24154 | 6/164 | † unproven | 0.981 |

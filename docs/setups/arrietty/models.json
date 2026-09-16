@@ -62,13 +62,14 @@
       "tokShallow": "47.39",
       "tokDeep": "32.18",
       "memory": "12.7 GB",
-      "evalplus": "pending",
+      "evalplus": "0.793/0.780/79%",
       "mendel": "pending",
       "id": "gemma12-q4kxl-on",
+      "evalplusWall": 259.0,
       "spec": { "base": "Gemma-4-12B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/gemma-4-12b-it-GGUF", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
       "command": "llama-server -m \"$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)\" \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-12b-q4kxl`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: right after it found the first dependency, the thinking repeated one line 818 times and filled the output budget, with zero commits.",
+      "note": "pi id `gemma-4-12b-q4kxl`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: right after it found the first dependency, the thinking repeated one line 818 times and filled the output budget, with zero commits. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 8192: 0.793/0.780, 34 empty answers of 164 whose cause is unproven because the run saved no finish log, in 259.0 minutes of active time. Every answered problem passed the base tests: the whole loss is thinking that did not end inside the budget, as the calibration predicted with four of ten answers at the 30000 cap. The NVFP4 build at the same level lost 53 answers, so this k-quant converges more often on this card. Thinking off is pending.",
       "pi": { "provider": "llama", "id": "gemma-4-12b-q4kxl", "contextWindow": 258048, "maxTokens": 8192 }
     },
     {
@@ -274,6 +275,18 @@
       "base": "0.659",
       "plus": "0.640",
       "empty": "53/164"
+    },
+    {
+      "wall": 259.0,
+      "emptyCause": "† unproven",
+      "slug": "gemma-4-12b-it",
+      "model": "Gemma-4-12B (GGUF UD-Q4_K_XL, unsloth, f16 KV)",
+      "mode": "thinking on",
+      "row": "gemma12-q4kxl-on",
+      "budget": 8192,
+      "base": "0.793",
+      "plus": "0.780",
+      "empty": "34/164"
     },
     {
       "wall": 215.3,
