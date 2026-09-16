@@ -72,6 +72,13 @@ Full re-scored result: base 0.896, plus 0.872, 16/164 empty, up slightly from th
 Files: `results/gemma26-gguf-think-rerun/`, `results/server-gemma26-gguf-think-rerun.log`, `results/run-watch-gemma26-gguf-think-rerun.log`.
 Deviation: none.
 
+### `gemma26-mlx-think-rerun`
+
+Served `mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit --prompt-cache-size 2 --port 8081`, thinking on, budget 30000. 46 re-run problems, the run's largest block. Confirmed `pgrep -fl run_codegen_wrapper.py` was clean before the server load. Clean run throughout — no server deaths, unlike `bonsai-mlx-rerun`'s three; this build already passes `--prompt-cache-size 2`, capping the prompt cache the earlier deviation flagged as the likely cause.
+Full re-scored result: base 0.793 (130/164), plus 0.768 (126/164), 31/164 empty, all `cap`. Up from the source row's 0.713/0.701/46 empty — 15 of 46 empties recovered on today's build. Server and watcher stopped (pids 6113, 6839).
+Files: `results/gemma26-mlx-think-rerun/`, `results/server-gemma26-mlx-think-rerun.log`, `results/run-watch-gemma26-mlx-think-rerun.log`.
+Deviation: none.
+
 ## Handing over
 
-`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun`, `bonsai-mlx-rerun`, `qwen36-gguf-think-rerun`, `gemma26-gguf-think-rerun` done. Begin with `gemma26-mlx-think-rerun`. Reminder from this session: after any `kill`/`kill -9` on a `run-humaneval.sh` bash PID, also check `pgrep -fl run_codegen_wrapper.py` before starting the next server — the bash kill does not reliably kill its Python child.
+`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun`, `bonsai-mlx-rerun`, `qwen36-gguf-think-rerun`, `gemma26-gguf-think-rerun`, `gemma26-mlx-think-rerun` done. Begin with `qwen38-unsloth-xhigh-rerun`, then `retry-sweep` (nothing queued there so far — every block this run has either run clean or recovered within its own retries, none needed a human). Reminder from this session: after any `kill`/`kill -9` on a `run-humaneval.sh` bash PID, also check `pgrep -fl run_codegen_wrapper.py` before starting the next server — the bash kill does not reliably kill its Python child.

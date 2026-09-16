@@ -1,0 +1,63 @@
+run-watch: log=hardware/kamaji/benchmarks/bench20/results/server-gemma26-mlx-think-rerun.log output=hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl url=http://127.0.0.1:8081 silence=600s probe_timeout=300s poll=10s mem_log=/Users/irae/.local/share/choose-a-local-llm/run20-gemma26-mlx-think-rerun-mem.log mem_interval=20s
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/kamaji/benchmarks/bench20/results/gemma26-mlx-think-rerun/humaneval/mlx-community--gemma-4-26b-a4b-it-4bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
