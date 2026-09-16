@@ -110,13 +110,14 @@
       "tokShallow": "61.16",
       "tokDeep": "45.42",
       "memory": "14.7 GB",
-      "evalplus": "pending",
+      "evalplus": "0.945/0.902/100%",
       "mendel": "pending",
       "id": "qwen36-q4kxl-on",
+      "evalplusWall": 192,
       "spec": { "base": "Qwen3.6-35B-A3B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/Qwen3.6-35B-A3B-MTP-GGUF", "drafter": "mtp/2", "kv": "q8_0", "effort": "on" },
       "hidden": false,
       "command": "llama-server -m \"$(hf download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf)\" \\\n  --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 \\\n  --spec-type draft-mtp --spec-draft-n-max 2 \\\n  -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.6-35b-a3b-q4kxl`. The build the reference setup serves, with the MTP drafter embedded in the file. The file is larger than the card, so a measured count of expert layers stays in host RAM, and the drafter needs more of the card's memory than no drafter: no drafter serves `-c 98304` at `--n-cpu-moe 17` (55.8 tok/s at 4K, 37.8 at 97K), n-max 1 at 19 (60.6, 37.9), n-max 2 and 3 at 21 (61.2 and 45.4 for n-max 2; 57.9 and 46.8 for n-max 3). n-max 2 is the served arm: fastest at 4K and 65K, and within the spread of n-max 3 at 97K. A community NVFP4 repack was tried first and failed to load (a tensor-count defect); the owner chose the mainstream build over a niche one (2026-09-14). The guided task scored 48.5, 6 of 8 libraries, and ended on a loop at the seventh; three of its commits moved the pre-commit hook aside.",
+      "note": "pi id `qwen3.6-35b-a3b-q4kxl`. The build the reference setup serves, with the MTP drafter embedded in the file. The file is larger than the card, so a measured count of expert layers stays in host RAM, and the drafter needs more of the card's memory than no drafter: no drafter serves `-c 98304` at `--n-cpu-moe 17` (55.8 tok/s at 4K, 37.8 at 97K), n-max 1 at 19 (60.6, 37.9), n-max 2 and 3 at 21 (61.2 and 45.4 for n-max 2; 57.9 and 46.8 for n-max 3). n-max 2 is the served arm: fastest at 4K and 65K, and within the spread of n-max 3 at 97K. A community NVFP4 repack was tried first and failed to load (a tensor-count defect); the owner chose the mainstream build over a niche one (2026-09-14). The guided task scored 48.5, 6 of 8 libraries, and ended on a loop at the seventh; three of its commits moved the pre-commit hook aside. EvalPlus at thinking on, scored 2026-09-16 on the drafter arm at `-c 32768`, budget 24154 from the standard formula: 0.945/0.902, no empty answer of 164, in 192.0 minutes of active time. The Mac's thinking-on row of the same model reads 0.939/0.921 with five empty answers, so this card scores higher on the base metric and lower on `plus`, and it loses no answer to the budget. Swap stayed flat, although the host held only 1.1 to 1.5 GB free with this configuration.",
       "pi": { "provider": "llama", "id": "qwen3.6-35b-a3b-q4kxl", "contextWindow": 94208, "maxTokens": 8192 }
     },
     {
@@ -172,6 +173,18 @@
     }
   },
   "evalplusRuns": [
+    {
+      "wall": 192,
+      "emptyCause": "none",
+      "slug": "qwen3.6-35b-a3b",
+      "model": "Qwen3.6-35B-A3B (GGUF UD-Q4_K_XL, unsloth, MTP, q8_0 KV)",
+      "mode": "thinking on",
+      "row": "qwen36-q4kxl-on",
+      "budget": 24154,
+      "base": "0.945",
+      "plus": "0.902",
+      "empty": "0/164"
+    },
     {
       "wall": 289.6,
       "emptyCause": "none",
