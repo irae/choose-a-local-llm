@@ -46,13 +46,14 @@
       "tokShallow": "47.39",
       "tokDeep": "32.18",
       "memory": "12.7 GB",
-      "evalplus": "pending",
+      "evalplus": "0.951/0.909/100%",
       "mendel": "not run",
       "id": "gemma12-q4kxl-off",
+      "evalplusWall": 26.1,
       "spec": { "base": "Gemma-4-12B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/gemma-4-12b-it-GGUF", "drafter": "", "kv": "f16", "effort": "off" },
       "hidden": false,
       "command": "llama-server -m \"$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)\" \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-12b-q4kxl`. The k-quant build the Mac serves, the control for the NVFP4 row on this card. `-c 262144` loads at once and serves the deep cell at 261,120. The agent task runs at thinking on only (owner, 2026-09-14); see the row below.",
+      "note": "pi id `gemma-4-12b-q4kxl`. The k-quant build the Mac serves, the control for the NVFP4 row on this card. `-c 262144` loads at once and serves the deep cell at 261,120. The agent task runs at thinking on only (owner, 2026-09-14); see the row below. EvalPlus at thinking off, scored 2026-09-16 at `-c 32768`, budget 8192: 0.951/0.909, no empty answer of 164, in 26.1 minutes of active time; the longest calibration answer ran 1011 tokens. The Mac's row of the same file reads 0.976/0.939, and the NVFP4 build on this card 0.927/0.896. Thinking off beats thinking on on both Gemma-12B builds here, 0.951 against 0.793 on this one.",
       "pi": { "provider": "llama", "id": "gemma-4-12b-q4kxl", "contextWindow": 258048, "maxTokens": 8192 }
     },
     {
@@ -287,6 +288,18 @@
       "base": "0.793",
       "plus": "0.780",
       "empty": "34/164"
+    },
+    {
+      "wall": 26.1,
+      "emptyCause": "none",
+      "slug": "gemma-4-12b-it",
+      "model": "Gemma-4-12B (GGUF UD-Q4_K_XL, unsloth, f16 KV)",
+      "mode": "thinking off",
+      "row": "gemma12-q4kxl-off",
+      "budget": 8192,
+      "base": "0.951",
+      "plus": "0.909",
+      "empty": "0/164"
     },
     {
       "wall": 215.3,
