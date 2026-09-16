@@ -34,3 +34,22 @@ The ISTA Qwen3.8 file sits in `~/.cache/llama.cpp/hf/`; `hf download` into the d
 Files: `results/probe-gemma12-nvfp4.json`, `results/server-probe-gemma12-nvfp4.log`.
 Note: `hf download` prints `path=<file>`; every serve command strips the prefix with `sed 's/^path=//'`. `pkill -f` on the server command line kills the runner's own shell; stop servers with `pkill -x llama-server`.
 Deviation: none.
+
+## gemma12-nvfp4-calibrate-think
+
+Gemma-4-12B NVFP4 (`FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF` rev `eb8c8df`), one slot, f16 KV, ctx 32k, no budget flag, thinking on. `nvidia-smi` 8866/16311 MiB. Calibration 20:33 to 21:51 UTC.
+
+| name | value |
+|---|--:|
+| converged | 4 |
+| cut at 30000 | 6 |
+| max reasoning tokens (converged) | 4900 |
+| max answer tokens (converged) | 528 |
+| margin | 1.5 |
+| `gemma12_nvfp4_on_think_budget` | 7350 |
+| `gemma12_nvfp4_on_answer_budget` | 2048 |
+| `gemma12_nvfp4_on_max_tokens` | 9398 |
+
+Every row has `has_separate_reasoning_field: true` (thinking on); `resolved_reasoning_effort` is `null` for Gemma, which has a switch and no level. Cut: HumanEval/32, 39, 76, 99, 124, 145.
+Files: `hardware/arrietty/calibrations/calibration-gemma12-nvfp4-on-think.json`, `results/calibrate-gemma12-nvfp4-on-think.log`, `results/server-gemma12-nvfp4-calibrate-think.log`.
+Deviation: none.
