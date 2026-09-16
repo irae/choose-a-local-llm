@@ -107,7 +107,7 @@ Every remaining empty across all eight rows hit `finish_reason: length` at its b
 
 **Machine state left behind:** GPU idle, no `llama-server` or `mlx_lm.server` process running, wired memory recovered to baseline after the last block. No stray `run_codegen_wrapper.py` processes (checked before every server load after the `qwen36-gguf-think-rerun` incident).
 
-**Evidence archived:** not yet run — the coordinator or the next session should run `tools/archive-evidence.sh hardware/kamaji/benchmarks/bench20/results run20` before closing this run out.
+**Evidence archived:** `tools/archive-evidence.sh hardware/kamaji/benchmarks/bench20/results run20` — 44 files to `~/.local/share/choose-a-local-llm/evidence/run20`.
 
 **Open flags for the owner/coordinator, not stop conditions:**
 1. `bonsai-mlx-rerun`'s `mlx_lm.server` died silently three times on long generations with no OOM signature; a Haiku subagent's research points at unbounded prompt-cache growth as the likely cause (the `--prompt-cache-size 2` flag `gemma26-mlx-think-rerun`'s command already carries avoided the issue there) — worth adding `--prompt-cache-size` or `--prompt-cache-bytes` to future Bonsai MLX serve commands. The subagent's cited GitHub issue numbers are unverified.
