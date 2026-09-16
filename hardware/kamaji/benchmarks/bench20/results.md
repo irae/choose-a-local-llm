@@ -56,3 +56,18 @@ Source: `bench2/results/bonsai-think`. Served `mlx_lm.server --model prism-ml/Te
 
 New score on all 164: base **0.933**, plus **0.902**, empty **2/164** (HumanEval/39, 129). Cause counts: `cap` 2, `model` 0. **Improved from the source row** (`bench2`, base 0.915 / plus 0.884, 5/164 empty): three of the five originally-empty problems now complete and pass on today's build; the other two still cap out at 10240, confirming a real model limitation, not a bug, at this budget. Re-run wall: about 5h20min across three server restarts.
 Files: `results/bonsai-mlx-rerun/`, `results/server-bonsai-mlx-rerun*.log` (four generations across the death/restart cycle).
+
+### `qwen36-gguf-think-rerun`
+
+Source: `bench2/results/qwen36-think`. Removed HumanEval/4 (a server error in the source run, not a model answer) along with the 4 genuine empties. Served `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`, `--alias qwen3.6-35b-a3b`, MTP n-max 3, `-c 32768`, q8_0/q8_0 KV, thinking on, no extra body, budget 26624.
+
+| task id | finish_reason | completion_tokens | result |
+|---|---|--:|---|
+| HumanEval/4 | stop | 6329 | pass (base and plus) — recovered |
+| HumanEval/23 | length | 26624 | fail (base and plus) — genuinely empty |
+| HumanEval/55 | length | 26624 | fail (base and plus) — genuinely empty |
+| HumanEval/107 | stop | 9790 | pass (base and plus) — recovered |
+| HumanEval/121 | stop | 6238 | pass (base and plus) — recovered |
+
+New score on all 164: base **0.957**, plus **0.939**, empty **2/164** (HumanEval/23, 55). Cause counts: `cap` 2, `model` 0. **Improved from the source row** (`bench2`, base 0.939 / plus 0.921, 5/164 empty, one of those five a server error): three real completions recovered and pass, plus the one server-error slot now has a real answer. Re-run wall: about 24 min, clean (no server incidents during this block itself — see the state.md note on a stray-process incident right before the server load, caught and cleared before any codegen started).
+Files: `results/qwen36-gguf-think-rerun/`, `results/server-qwen36-gguf-think-rerun.log`.
