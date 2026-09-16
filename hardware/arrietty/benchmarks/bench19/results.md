@@ -45,3 +45,9 @@ on scores far below thinking off on this build (0.659/0.640 vs
 0.927/0.896) — a real finding: enabling thinking hurts this model on
 HumanEval+, not a budget artifact (0/164 empty at the corrected
 budget).
+| old | Gemma-4-12B, GGUF UD-Q4_K_XL (unsloth), thinking on | thinking on | — (no EvalPlus ran on this build/level before; kamaji only scored thinking off, 0.976/0.939/100%) | — | — | — | — | — |
+| new | Gemma-4-12B, GGUF UD-Q4_K_XL (unsloth), f16 KV | thinking on | no drafter | 8192 | 0.793 | 0.780 | 100% | 0/164 |
+
+Wall (new): 259.0 min, one part, no crash. Thinking on also scores
+below the same build's thinking-off row on kamaji (0.976/0.939) — the
+pattern holds across the two Gemma-12B quants tested this run.

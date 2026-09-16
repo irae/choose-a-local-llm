@@ -356,13 +356,31 @@ formula when it would exceed the floor.
 
 Deviation: none — correct application of the floor rule this time.
 
+### `gemma12-q4kxl-evalplus-on` close
+
+`unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL`, no drafter, one slot, f16
+KV, ctx 32768, budget 8192. One part, no crash:
+2026-09-16T14:28:20Z to 2026-09-16T18:47:18Z.
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.793 |
+| HumanEval plus | 0.780 |
+| completion rate | 100% |
+| empty | 0/164 |
+| wall | 259.0 min (one part, no crash) |
+
+Files: `results/gemma12-q4kxl-evalplus-on/humaneval/`,
+`results/server-gemma12-q4kxl.log`.
+Deviation: none.
+
 ## Handing over
 
 `machine-setup`, `qwen38-ista-evalplus-xhigh` (0.945/0.909, 0/164
 empty), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty),
 `qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty),
 `gemma26-nvfp4-evalplus-on` (0.909/0.878, 0/164 empty),
-`gemma12-nvfp4-evalplus-off` (0.927/0.896, 0/164 empty) and
-`gemma12-nvfp4-evalplus-on` (0.659/0.640, 0/164 empty) done.
-`gemma12-q4kxl-evalplus-on` calibrated, budget 8192, starting the
-watcher and full run next.
+`gemma12-nvfp4-evalplus-off` (0.927/0.896, 0/164 empty),
+`gemma12-nvfp4-evalplus-on` (0.659/0.640, 0/164 empty) and
+`gemma12-q4kxl-evalplus-on` (0.793/0.780, 0/164 empty) done. On to
+`gemma12-q4kxl-evalplus-off` next, same server, thinking off.
