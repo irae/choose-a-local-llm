@@ -340,6 +340,22 @@ Files: `results/gemma12-nvfp4-evalplus-on/humaneval/`,
 `results/server-gemma12-nvfp4.log`.
 Deviation: budget correction mid-block (see above), otherwise none.
 
+## `gemma12-q4kxl-evalplus-on` — running
+
+`unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL`, no drafter, one slot, f16
+KV, ctx 32768 served, vram 9310 MiB, 6577 MiB free after load.
+
+Calibration `gemma12-q4kxl-on`, thinking on: 10/10 rows, 4 `length`
+stops (`HumanEval/32,38,76,145`, all hit the 30000 cap, empty) —
+non-converging. Longest successful completion `HumanEval/99` at 6477
+tokens, which is BELOW the 8192 floor.
+**`gemma12-q4kxl-on_budget` = 8192 (the floor, not 6477+margin)** —
+applying the corrected rule from the previous block: the floor from
+step 2 always applies, step 3's non-converging value only replaces the
+formula when it would exceed the floor.
+
+Deviation: none — correct application of the floor rule this time.
+
 ## Handing over
 
 `machine-setup`, `qwen38-ista-evalplus-xhigh` (0.945/0.909, 0/164
@@ -347,5 +363,6 @@ empty), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty),
 `qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty),
 `gemma26-nvfp4-evalplus-on` (0.909/0.878, 0/164 empty),
 `gemma12-nvfp4-evalplus-off` (0.927/0.896, 0/164 empty) and
-`gemma12-nvfp4-evalplus-on` (0.659/0.640, 0/164 empty) done. On to
-`gemma12-q4kxl-evalplus-on` next.
+`gemma12-nvfp4-evalplus-on` (0.659/0.640, 0/164 empty) done.
+`gemma12-q4kxl-evalplus-on` calibrated, budget 8192, starting the
+watcher and full run next.

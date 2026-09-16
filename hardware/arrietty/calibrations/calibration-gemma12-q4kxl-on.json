@@ -1,0 +1,172 @@
+[
+  {
+    "task_id": "HumanEval/0",
+    "completion_tokens": 1893,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1363,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 40.6,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/10",
+    "completion_tokens": 4539,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1867,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 97.4,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/26",
+    "completion_tokens": 1246,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 947,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 26.3,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/32",
+    "completion_tokens": 30000,
+    "finish_reason": "length",
+    "content_empty": true,
+    "content_len": 0,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 668.0,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/38",
+    "completion_tokens": 30000,
+    "finish_reason": "length",
+    "content_empty": true,
+    "content_len": 0,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 665.2,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/53",
+    "completion_tokens": 669,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 429,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 17.1,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/76",
+    "completion_tokens": 30000,
+    "finish_reason": "length",
+    "content_empty": true,
+    "content_len": 0,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 674.2,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/99",
+    "completion_tokens": 6477,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 2146,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 144.5,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/124",
+    "completion_tokens": 3856,
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 2171,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 84.1,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/145",
+    "completion_tokens": 30000,
+    "finish_reason": "length",
+    "content_empty": true,
+    "content_len": 0,
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 674.5,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  }
+]
