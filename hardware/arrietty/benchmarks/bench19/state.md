@@ -231,10 +231,29 @@ successful completion `HumanEval/32` at 12241 tokens.
 Deviation: none — handled per the same runbook rule as the ista/iq3s
 blocks.
 
+### `gemma26-nvfp4-evalplus-on` close
+
+`catlilface/Gemma-4-26B-A4B-NVFP4-GGUF:Q8`, `--n-cpu-moe 7`, one slot,
+f16 KV, ctx 32768, budget 12500. One part, no crash:
+2026-09-16T04:36:15Z to 2026-09-16T08:11:33Z.
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.909 |
+| HumanEval plus | 0.878 |
+| completion rate | 100% |
+| empty | 0/164 |
+| wall | 215.3 min (one part, no crash) |
+
+Files: `results/gemma26-nvfp4-evalplus-on/humaneval/`,
+`results/server-gemma26-nvfp4.log`.
+Deviation: none.
+
 ## Handing over
 
 `machine-setup`, `qwen38-ista-evalplus-xhigh` (0.945/0.909, 0/164
-empty), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty) and
-`qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty) done.
-`gemma26-nvfp4-evalplus-on` calibrated, budget 12500, starting the
-watcher and full run next.
+empty), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty),
+`qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty) and
+`gemma26-nvfp4-evalplus-on` (0.909/0.878, 0/164 empty) done. On to
+`gemma12-nvfp4-evalplus-off` next (the two Gemma-12B NVFP4 blocks
+share one server, off then on).

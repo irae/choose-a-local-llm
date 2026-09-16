@@ -25,3 +25,10 @@ Wall (new): 289.6 min, one part, no crash.
 | new | Qwen3.6-35B-A3B, GGUF UD-Q4_K_XL, MTP q8_0 KV, `--n-cpu-moe 21` | thinking on | drafter, n-max 2 | 24154 | 0.945 | **0.902** | 100% | **0/164** |
 
 Wall (new): 192.0 min, one part, no crash, swap flat throughout.
+| old | Gemma-4-26B-A4B, GGUF UD-Q4_K_XL (unsloth), MTP f16 KV, thinking on (kamaji, Mac) | thinking on | drafter, n-max 2 | 30000 | 0.884 | 0.860 | 89% | 18/164 |
+| new | Gemma-4-26B-A4B, GGUF NVFP4Q8 (catlilface), `--n-cpu-moe 7` | thinking on | none tried (single arm, no drafter option for this build) | 12500 | **0.909** | **0.878** | 100% | **0/164** |
+
+Wall (new): 215.3 min, one part, no crash. A different quant/publisher
+than the kamaji pair (NVFP4 vs Q4_K_XL); paired anyway per the "no
+same-build score exists" rule since it is the nearest EvalPlus row for
+this model.
