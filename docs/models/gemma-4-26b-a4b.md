@@ -22,8 +22,9 @@ Every config of this model, on every machine, best first.
   empties in almost six hours at thinking on. Both thinking-off agent
   rows ended on a loop of identical edits, so no agent row runs at
   thinking off.
-- **The MLX build is retired** after a failed agent smoke; its 46
-  empties are unproven ([why](../setups/kamaji/gemma-4-26b-a4b-mlx-retired.md)).
+- **The MLX build is retired** after a failed agent smoke; it reads
+  0.793 / 0.768 with 31 empties, every one the budget
+  ([why](../setups/kamaji/gemma-4-26b-a4b-mlx-retired.md)).
 - **On the RTX 5060 Ti the NVFP4Q8 repack** keeps attention at Q8 and
   puts 7 expert layers in host RAM: 97K at 59 → 46 tok/s, 0.909 /
   0.878 with 14 empty at thinking on, guided 37.5 on 3 of 8, ended on

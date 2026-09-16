@@ -25,9 +25,9 @@ build is not run again.
 
 ## Quality was already low
 
-EvalPlus at thinking on read 0.713 / 0.701, with 46 of 164 problems
-empty (72 percent completion): the same convergence failure in another
-form. The GGUF build at the same level reads 0.896 / 0.872.
+EvalPlus at thinking on reads 0.793 / 0.768, with 31 of 164 problems
+empty (81 percent completion), every empty proven as the output budget
+after a re-run: the same convergence failure in another form. The GGUF build at the same level reads 0.896 / 0.872.
 
 ## What it did give
 
