@@ -1,0 +1,31 @@
+/opt/homebrew/Cellar/mlx-lm/0.31.3_2/libexec/lib/python3.14/site-packages/mlx_lm/server.py:1723: UserWarning: mlx_lm.server is not recommended for production as it only implements basic security checks.
+  warnings.warn(
+2026-09-15 22:01:48,509 - INFO - Starting httpd at 127.0.0.1 on port 8081...
+2026-09-15 22:01:48,669 - INFO - HTTP Request: GET https://huggingface.co/api/models/prism-ml/Ternary-Bonsai-27B-mlx-2bit/revision/main "HTTP/1.1 200 OK"
+Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 76473.99it/s]
+127.0.0.1 - - [15/Sep/2026 22:01:49] "GET /v1/models HTTP/1.1" 200 -
+2026-09-15 22:01:54,713 - INFO - Prompt Cache: 0 sequences, 0.00 GB
+2026-09-15 22:01:54,713 - INFO - - assistant: 0 sequences, 0.00 GB
+2026-09-15 22:01:54,713 - INFO - - user: 0 sequences, 0.00 GB
+2026-09-15 22:01:54,713 - INFO - - system: 0 sequences, 0.00 GB
+127.0.0.1 - - [15/Sep/2026 22:01:54] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-15 22:01:55,143 - INFO - Prompt processing progress: 24/26
+2026-09-15 22:01:55,197 - INFO - Prompt processing progress: 25/26
+2026-09-15 22:01:55,241 - INFO - Prompt processing progress: 26/26
+2026-09-15 22:02:21,907 - INFO - Prompt Cache: 3 sequences, 0.50 GB
+2026-09-15 22:02:21,907 - INFO - - assistant: 2 sequences, 0.34 GB
+2026-09-15 22:02:21,907 - INFO - - user: 1 sequences, 0.16 GB
+2026-09-15 22:02:21,907 - INFO - - system: 0 sequences, 0.00 GB
+127.0.0.1 - - [15/Sep/2026 22:02:21] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-15 22:02:22,323 - INFO - Prompt processing progress: 10/12
+2026-09-15 22:02:22,369 - INFO - Prompt processing progress: 11/12
+2026-09-15 22:02:22,412 - INFO - Prompt processing progress: 12/12
+2026-09-15 22:02:33,296 - INFO - Prompt Cache: 6 sequences, 0.97 GB
+2026-09-15 22:02:33,296 - INFO - - assistant: 4 sequences, 0.66 GB
+2026-09-15 22:02:33,296 - INFO - - user: 2 sequences, 0.31 GB
+2026-09-15 22:02:33,296 - INFO - - system: 0 sequences, 0.00 GB
+127.0.0.1 - - [15/Sep/2026 22:02:33] "POST /v1/chat/completions HTTP/1.1" 200 -
+2026-09-15 22:02:33,715 - INFO - Prompt processing progress: 17/149
+2026-09-15 22:02:34,789 - INFO - Prompt processing progress: 147/149
+2026-09-15 22:02:34,845 - INFO - Prompt processing progress: 148/149
+2026-09-15 22:02:34,891 - INFO - Prompt processing progress: 149/149

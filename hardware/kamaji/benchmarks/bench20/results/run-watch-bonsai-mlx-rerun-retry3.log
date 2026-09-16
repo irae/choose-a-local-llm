@@ -1,0 +1,3 @@
+run-watch: log=hardware/kamaji/benchmarks/bench20/results/server-bonsai-mlx-rerun-retry3.log output=hardware/kamaji/benchmarks/bench20/results/bonsai-mlx-rerun/humaneval/prism-ml--Ternary-Bonsai-27B-mlx-2bit_openai_temp_0.0.jsonl url=http://127.0.0.1:8081 silence=600s probe_timeout=300s poll=10s mem_log=/Users/irae/.local/share/choose-a-local-llm/run20-bonsai-mlx-rerun-retry3-mem.log mem_interval=20s
+silence 600s on hardware/kamaji/benchmarks/bench20/results/bonsai-mlx-rerun/humaneval/prism-ml--Ternary-Bonsai-27B-mlx-2bit_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking

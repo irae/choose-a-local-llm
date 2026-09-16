@@ -1,0 +1,3 @@
+run-watch: log=hardware/kamaji/benchmarks/bench20/results/server-qwen38-ista-medium-rerun.log output=hardware/kamaji/benchmarks/bench20/results/qwen38-ista-medium-rerun/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl url=http://127.0.0.1:8081 silence=600s probe_timeout=300s poll=10s mem_log=/Users/irae/.local/share/choose-a-local-llm/run20-qwen38-ista-medium-rerun-mem.log mem_interval=20s
+silence 600s on hardware/kamaji/benchmarks/bench20/results/qwen38-ista-medium-rerun/humaneval/qwen3.8-27b_openai_temp_0.0.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
