@@ -127,13 +127,14 @@
       "tokShallow": "58.77",
       "tokDeep": "45.59",
       "memory": "15.2 GB",
-      "evalplus": "pending",
+      "evalplus": "0.909/0.878/100%",
       "mendel": "pending",
       "id": "gemma26-nvfp4-on",
+      "evalplusWall": 215.3,
       "spec": { "base": "Gemma-4-26B-A4B", "quant": "NVFP4Q8", "server": "llama-server", "publisher": "catlilface", "repo": "catlilface/Gemma-4-26B-A4B-NVFP4-GGUF", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
       "command": "llama-server -m \"$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-NVFP4Q8.gguf)\" \\\n  --alias gemma-4-26b-a4b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off --n-cpu-moe 7 -fa on -c 98304 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-26b-a4b-nvfp4`. A community NVFP4 repack that keeps attention at Q8. The file is larger than the card, so a measured count of expert layers stays in host RAM: 7 is the lowest `--n-cpu-moe` that loads at `-c 98304` and serves a real request at the deep cell (6 runs out of memory at load). The file has no MTP layers, so no drafter arm exists. The guided task scored 37.5, 3 of 8 libraries, and ended on a loop in its text.",
+      "note": "pi id `gemma-4-26b-a4b-nvfp4`. A community NVFP4 repack that keeps attention at Q8. The file is larger than the card, so a measured count of expert layers stays in host RAM: 7 is the lowest `--n-cpu-moe` that loads at `-c 98304` and serves a real request at the deep cell (6 runs out of memory at load). The file has no MTP layers, so no drafter arm exists. The guided task scored 37.5, 3 of 8 libraries, and ended on a loop in its text. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 12500: 0.909/0.878, no empty answer of 164, in 215.3 minutes of active time. Two of ten calibration problems never converged, so the budget sits just above the longest successful answer, and the full run still lost no answer to it. The Mac's nearest row is a different build, the unsloth k-quant at thinking on: 0.884/0.860 with eighteen empty answers at a 30000 budget.",
       "pi": { "provider": "llama", "id": "gemma-4-26b-a4b-nvfp4", "contextWindow": 94208, "maxTokens": 8192 }
     }
   ],
@@ -173,6 +174,18 @@
     }
   },
   "evalplusRuns": [
+    {
+      "wall": 215.3,
+      "emptyCause": "none",
+      "slug": "gemma-4-26b-a4b",
+      "model": "Gemma-4-26B-A4B (GGUF NVFP4Q8, catlilface, f16 KV)",
+      "mode": "thinking on",
+      "row": "gemma26-nvfp4-on",
+      "budget": 12500,
+      "base": "0.909",
+      "plus": "0.878",
+      "empty": "0/164"
+    },
     {
       "wall": 192,
       "emptyCause": "none",
