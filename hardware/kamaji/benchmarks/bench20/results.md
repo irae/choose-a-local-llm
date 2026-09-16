@@ -99,3 +99,28 @@ Source: `bench10/results/gemma26-gguf-think`. Served `unsloth/gemma-4-26b-a4b-it
 
 New score on all 164: base **0.896**, plus **0.872**, empty **16/164**. Cause counts: `cap` 16, `model` 0. Slightly up from the source row (`bench10`, base 0.884 / plus 0.860, 18/164 empty): only 2 of the 18 empties recover at this budget on today's build; the other 16 confirm a real model limitation at 30000, not a bug. Re-run wall: about 2h.
 Files: `results/gemma26-gguf-think-rerun/`, `results/server-gemma26-gguf-think-rerun.log`.
+
+### `gemma26-mlx-think-rerun`
+
+Source: `bench3/results/gemma26-mlx`. Served `mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit --prompt-cache-size 2 --port 8081`, thinking on (default), no extra body, budget 30000. 46 re-run problems, the largest block of this run. Clean run start to finish, no server deaths — this build already caps its prompt cache at 2 sequences, unlike `bonsai-mlx-rerun`'s uncapped one.
+
+New score on all 164: base **0.793** (130/164), plus **0.768** (126/164), empty **31/164**. Cause counts: `cap` 31, `model` 0 — every empty in this row is the output budget, never a model stop. **Improved from the source row** (`bench3`, base 0.713 / plus 0.701, 46/164 empty): 15 of the 46 originally-empty problems now complete on today's build; the other 31 confirm a real model limitation at 30000, not a bug. Re-run wall: about 7h (started 03:07, closed ~09:57).
+Files: `results/gemma26-mlx-think-rerun/`, `results/server-gemma26-mlx-think-rerun.log`.
+
+### `qwen38-unsloth-xhigh-rerun`
+
+Source: `bench18/results/qwen38-unsloth-evalplus-xhigh`. Served `unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S`, `--alias qwen3.8-27b-iq3s`, no drafter, `-c 32768`, f16/f16 KV, `reasoning_effort: xhigh`, budget 20000.
+
+| task id | finish_reason | completion_tokens | result |
+|---|---|--:|---|
+| HumanEval/32 | length | 20000 | fail (base and plus) — genuinely empty |
+| HumanEval/91 | length | 20000 | fail (base and plus) — genuinely empty |
+| HumanEval/99 | length | 20000 | fail (base and plus) — genuinely empty |
+| HumanEval/134 | length | 20000 | fail (base and plus) — genuinely empty |
+| HumanEval/137 | length | 20000 | fail (base and plus) — genuinely empty |
+| HumanEval/138 | length | 20000 | fail (base and plus) — genuinely empty |
+| HumanEval/145 | length | 20000 | fail (base and plus) — genuinely empty |
+| HumanEval/146 | length | 20000 | fail (base and plus) — genuinely empty |
+
+New score on all 164: base **0.945**, plus **0.927**, empty **8/164**. Cause counts: `cap` 8, `model` 0. Unchanged from the source row (`bench18`, same 0.945/0.927/8 empty) — every empty confirmed as the output budget, none recovered at this budget on today's build. Re-run wall: about 3h20min (8 problems, xhigh, each a long completion).
+Files: `results/qwen38-unsloth-xhigh-rerun/`, `results/server-qwen38-unsloth-xhigh-rerun.log`.
