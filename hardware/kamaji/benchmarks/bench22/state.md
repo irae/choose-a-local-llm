@@ -58,3 +58,11 @@ Deviation: `run_codegen_wrapper.py`'s `_task_id_for` loads both `get_human_eval_
 
 Close: HumanEval base 0.988, plus 0.957, 0/164 empty, 16/164 forced (budget message fired, none came back empty). Codegen wall 2:45:47 (18:48–21:33 UTC). Server and watcher stopped. Wired after stop: ~1956 MB, matching the preflight start value.
 Files: `hardware/kamaji/benchmarks/bench22/results/gemma26-gguf-budget-think/`.
+
+### `gemma26-gguf-forced-rerun` — running
+
+`prepare` found 16 forced, 2 forced-failed: `HumanEval/141`, `HumanEval/145`. Served the same config without the two reasoning flags, generous budget `EVALPLUS_MAX_NEW_TOKENS=30000`. Watcher started (pid 85271), codegen started (pid 85772), resuming cleanly from the 162-line jsonl seeded by `prepare`.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/gemma26-gguf-forced-rerun/`.
+Deviation: none.
