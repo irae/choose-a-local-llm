@@ -249,11 +249,24 @@ Files: `results/gemma26-nvfp4-evalplus-on/humaneval/`,
 `results/server-gemma26-nvfp4.log`.
 Deviation: none.
 
+## `gemma12-nvfp4-evalplus-off` — running
+
+`FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF`, no drafter, one slot, f16
+KV, ctx 32768 served, vram 9172 MiB, 6714 MiB free after load — the
+smallest model of the run.
+
+Calibration `gemma12-nvfp4-off`, thinking off: 10/10 rows, 0 `length`
+stops, converges normally. Max completion 949 × 1.5 = 1424 < floor
+8192. `gemma12-nvfp4-off_budget` = 8192 (floor).
+
+Deviation: none.
+
 ## Handing over
 
 `machine-setup`, `qwen38-ista-evalplus-xhigh` (0.945/0.909, 0/164
 empty), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty),
 `qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty) and
-`gemma26-nvfp4-evalplus-on` (0.909/0.878, 0/164 empty) done. On to
-`gemma12-nvfp4-evalplus-off` next (the two Gemma-12B NVFP4 blocks
-share one server, off then on).
+`gemma26-nvfp4-evalplus-on` (0.909/0.878, 0/164 empty) done.
+`gemma12-nvfp4-evalplus-off` calibrated, budget 8192, starting the
+watcher and full run next (server stays up for the following `-on`
+block once this one closes).
