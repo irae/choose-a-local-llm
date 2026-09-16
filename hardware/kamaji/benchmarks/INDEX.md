@@ -7,6 +7,15 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench22, planned 2026-09-16 ([state](bench22/state.md), [results](bench22/results.md))
+
+- Runbook: [bench22/AGENT.md](bench22/AGENT.md). The thinking budget
+  under test (`docs/methodology/evalplus.md`, "Unproven yet"): the MoE
+  26B GGUF, the dense 27B 4-bit and the ternary fork scored again under
+  a server thinking budget, the natural re-run of the forced failures,
+  and one guided agent row of the fork under the budget. Starts after
+  run 20; reads run 21's margin when the coordinator relays one.
+
 ## bench20, planned 2026-09-15 ([state](bench20/state.md), [results](bench20/results.md))
 
 - Runbook: [bench20/AGENT.md](bench20/AGENT.md). Re-runs only the empty

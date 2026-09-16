@@ -131,7 +131,11 @@ Benchmark work:
   context; `docs/methodology/mendel.md`), `loop-check.py` (repetition-loop detector for
   a pi session log: distinct-shape ratio in a sliding window,
   threshold 0.10; catches identical lines, counters, and short
-  cycles).
+  cycles), `thinking-budget.py` (the thinking budget of an EvalPlus
+  run: `derive` the two budgets from a calibration, `prepare` the
+  natural re-run of the problems where the budget fired and the
+  answer failed, `report` the cell of each forced problem and the
+  corrected budget; `docs/methodology/evalplus.md`, "Unproven yet").
 - `tests/`. The tests for the shared tools in `benchmarks/`. One
   command, `tests/run.sh`, and `tests/fixtures/README.md` says where
   every fixture came from.

@@ -155,9 +155,13 @@ def main():
         )
         has_inline_think = bool(content) and "<think>" in content
 
+        details = getattr(resp.usage, "completion_tokens_details", None)
         row = {
             "task_id": task_id,
             "completion_tokens": resp.usage.completion_tokens,
+            "reasoning_tokens": getattr(details, "reasoning_tokens", None),
+            "reasoning_len": len(reasoning) if reasoning else 0,
+            "reasoning_tail": (reasoning or "")[-200:],
             "finish_reason": choice.finish_reason,
             "content_empty": not bool(content and content.strip()),
             "content_len": len(content) if content else 0,

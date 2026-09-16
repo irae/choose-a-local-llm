@@ -104,6 +104,70 @@ its budget and returned empties.
    converges also ends at the budget, so `budget` at a large budget does
    not prove that more budget is enough.
 
+## Unproven yet: a thinking budget instead of a larger output budget
+
+Status: a run decision under test (owner, 2026-09-16), not a rule.
+The discussion and its evidence are in
+`hardware/arrietty/research/thinking-budget.md`. This section says
+what the test is, so a runbook can point here.
+
+The problem it addresses. The cause word `budget` records only the
+finish reason. A model whose thinking never converges ends on `length`
+at every budget, so every empty on every row reads `budget`, and the
+word cannot separate a slow answer from a loop. Rows at the 30000 cap
+still carry empties. A larger output budget costs hours and does not
+remove them.
+
+The test. A serving stack that takes a thinking budget closes the
+thinking at N tokens, injects a fixed message, and the model answers
+with what it has (`llama-server --reasoning-budget N
+--reasoning-budget-message MSG`; the same request field exists in
+other servers, and some accept it without enforcing it). The scored
+run then has no empty from thinking: every problem gets an answer, and
+the finish log's reasoning tail carries the message on every problem
+where the budget fired. That count is the non-convergence count at
+budget N, measured by the same rule on every row.
+
+The two budgets come from the calibration, with
+`benchmarks/thinking-budget.py derive`: the thinking budget from the
+longest converged reasoning, the answer budget from the longest
+converged answer, each times the margin (1.5) with a floor (2048), and
+`max_tokens` is their sum. The calibration runs without the flag, so
+it measures the model's natural convergence.
+
+The proof. A forced answer can pass. A forced answer that fails has
+three possible causes, and one natural re-run of those problems
+separates them, at a generous budget and without the flag,
+`benchmarks/thinking-budget.py prepare` before and `report` after:
+
+- `forced-pass`: the budget fired and the answer passed. The budget was
+  enough for that problem.
+- `forced-fail-late`: the answer passed without the flag at N reasoning
+  tokens. The budget was too small; the corrected budget is the largest
+  such N times the margin. One pass gives N exactly, because temperature
+  0 is deterministic on a fixed serving config. No bisect.
+- `forced-fail-loop`: the answer hit the generous budget without the
+  flag. Non-convergence. No budget helps.
+- `forced-fail-wrong`: the answer failed both ways. The model's own
+  limit.
+
+What the test has to show before it becomes the method: the score
+under the budget against the natural score of the same config, the
+wall against the natural wall, and how many forced problems fall in
+each cell. The trade-off rule, for example "the smallest budget that
+keeps a fixed share of the natural score", is a project decision and
+waits for the owner. The curve of score against budget is a property
+of the build and its serving stack, not of the machine: the same build
+has scored different empty counts on two machines with different KV
+types. The wall is per machine. A stack that does not enforce the
+budget keeps the output budget rule above and its `budget` word.
+
+What this does not cover. An agent turn is short and there are hundreds
+of them, so a thinking budget bites differently there; the agent proxy
+(`mendel.md`) proves that side. A loop across turns, the same tool call
+again and again, is not thinking and no thinking budget sees it; that
+is the harness's job (`hardware/kamaji/research/unscheduled/pi-tool-loop-guard.md`).
+
 ## Crashes and wall time
 
 A server crash does not restart the score. It costs time, and the wall

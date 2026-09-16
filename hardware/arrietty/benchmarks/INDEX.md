@@ -6,6 +6,15 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 `results/`). Run numbers are shared with the Mac
 (`hardware/kamaji/benchmarks/INDEX.md`).
 
+## bench21, planned 2026-09-16 ([state](bench21/state.md), [results](bench21/results.md))
+
+- Runbook: [bench21/AGENT.md](bench21/AGENT.md). The thinking budget
+  under test (`docs/methodology/evalplus.md`, "Unproven yet",
+  `../research/thinking-budget.md`): two run 19 configs scored again
+  under a server thinking budget, then the natural re-run of the
+  problems where the budget fired and the answer failed. Starts after
+  run 19.
+
 ## bench19, started 2026-09-15 ([state](bench19/state.md), [results](bench19/results.md))
 
 - Runbook: [bench19/AGENT.md](bench19/AGENT.md). EvalPlus on every row
