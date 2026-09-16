@@ -37,7 +37,7 @@ Deviation: none.
 
 ## gemma12-nvfp4-calibrate-think
 
-Gemma-4-12B NVFP4 (`FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF` rev `eb8c8df`), one slot, f16 KV, ctx 32k, no budget flag, thinking on. `nvidia-smi` 8866/16311 MiB. Calibration 20:33 to 21:51 UTC.
+Gemma-4-12B NVFP4 (`FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF` rev `eb8c8df`), one slot, f16 KV, ctx 32k, no budget flag, thinking on. `nvidia-smi` 8866/16311 MiB. Calibration 20:33 to 21:36 UTC.
 
 | name | value |
 |---|--:|
@@ -53,3 +53,9 @@ Gemma-4-12B NVFP4 (`FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF` rev `eb8c8df`), one 
 Every row has `has_separate_reasoning_field: true` (thinking on); `resolved_reasoning_effort` is `null` for Gemma, which has a switch and no level. Cut: HumanEval/32, 39, 76, 99, 124, 145.
 Files: `hardware/arrietty/calibrations/calibration-gemma12-nvfp4-on-think.json`, `results/calibrate-gemma12-nvfp4-on-think.log`, `results/server-gemma12-nvfp4-calibrate-think.log`.
 Deviation: none.
+
+## evalplus gemma-4-12b nvfp4/f16/on budget 7k — running
+
+Gemma-4-12B NVFP4 rev `eb8c8df`, one slot, f16 KV, ctx 32k, `--reasoning-budget 7350`, thinking on, `max_tokens` 9398. `nvidia-smi` 9120/16311 MiB after load. Verify request: finish `stop`, 6308 completion tokens, not forced, answer present.
+Wall parts (UTC):
+- part 1 start 21:40
