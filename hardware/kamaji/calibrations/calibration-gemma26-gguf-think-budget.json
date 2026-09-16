@@ -1,0 +1,212 @@
+[
+  {
+    "task_id": "HumanEval/0",
+    "completion_tokens": 1106,
+    "reasoning_tokens": null,
+    "reasoning_len": 2124,
+    "reasoning_tail": "s([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)`\n        *   |2.8-3.0|=0.2. 0.2 < 0.3. Result: `True`. Correct.\n\n    *   Import `List`.\n    *   Define function.\n    *   Implement logic.\n    *   Add test cases.",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1196,
+    "content": "```python\nfrom typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than\n    given threshold.\n    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)\n    False\n    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)\n    True\n    \"\"\"\n    # Iterate through each pair of numbers in the list\n    for i in range(len(numbers)):\n        for j in range(i + 1, len(numbers)):\n            # Calculate the absolute difference between the two numbers\n            if abs(numbers[i] - numbers[j]) < threshold:\n                return True\n    return False\n\n\nif __name__ == \"__main__\":\n    # Test cases provided in the docstring\n    test1 = has_close_elements([1.0, 2.0, 3.0], 0.5)\n    print(f\"Test 1: {test1} (Expected: False)\")\n\n    test2 = has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)\n    print(f\"Test 2: {test2} (Expected: True)\")\n\n    # Additional test cases\n    test3 = has_close_elements([1.0, 1.00001, 3.0], 0.001)\n    print(f\"Test 3: {test3} (Expected: True)\")\n\n    test4 = has_close_elements([1.0, 5.0, 10.0], 0.1)\n    print(f\"Test 4: {test4} (Expected: False)\")\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 15.3,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/10",
+    "completion_tokens": 2391,
+    "reasoning_tokens": null,
+    "reasoning_len": 5417,
+    "reasoning_tail": " `'a' + ''` = `'a'`. Correct.\n\n    If `string = 'ab'`, `len` is 2. `range(2)` gives `i=0, 1`.\n    `i=0`: 'ab' (F)\n    `i=1`: 'b' (T) -> returns `'ab' + 'a'` = `'aba'`. Correct.\n\n    The code is ready.",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1878,
+    "content": "```python\ndef is_palindrome(string: str) -> bool:\n    \"\"\" Test if given string is a palindrome \"\"\"\n    return string == string[::-1]\n\n\ndef make_palindrome(string: str) -> str:\n    \"\"\" Find the shortest palindrome that begins with a supplied string.\n    Algorithm idea is simple:\n    - Find the longest postfix of supplied string that is a palindrome.\n    - Append to the end of the string reverse of a string prefix that comes before the palindromic suffix.\n    >>> make_palindrome('')\n    ''\n    >>> make_palindrome('cat')\n    'catac'\n    >>> make_palindrome('cata')\n    'catac'\n    \"\"\"\n    if not string:\n        return \"\"\n\n    # Iterate through the string to find the first index 'i' \n    # where the suffix starting at 'i' is a palindrome.\n    # Since we start from i=0, the first one we find will be the \n    # longest palindromic suffix.\n    for i in range(len(string)):\n        if is_palindrome(string[i:]):\n            # The part before the palindromic suffix is string[:i]\n            # We need to reverse that prefix and append it to the original string.\n            prefix_to_reverse = string[:i]\n            return string + prefix_to_reverse[::-1]\n            \n    # Fallback (though the loop will always find at least the last character as a palindrome)\n    return string + string[:-1][::-1]\n\n\nif __name__ == \"__main__\":\n    # Test cases provided in the docstring\n    assert make_palindrome('') == ''\n    assert make_palindrome('cat') == 'catac'\n    assert make_palindrome('cata') == 'catac'\n    \n    # Additional test cases\n    assert make_palindrome('a') == 'a'\n    assert make_palindrome('ab') == 'aba'\n    assert make_palindrome('race') == 'racecar'\n    assert make_palindrome('google') == 'googleelgoog' # 'e' is the longest palindromic suffix\n    assert make_palindrome('racecar') == 'racecar'    # already a palindrome\n    \n    print(\"All tests passed!\")\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 33.2,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/26",
+    "completion_tokens": 969,
+    "reasoning_tokens": null,
+    "reasoning_len": 2039,
+    "reasoning_tail": " 4])` -> `[1, 3, 4]` (Correct)\n    *   `remove_duplicates([1, 1, 1])` -> `[]` (Correct)\n    *   `remove_duplicates([1, 2, 3])` -> `[1, 2, 3]` (Correct)\n\n(This matches the provided solution structure).",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1014,
+    "content": "```python\nfrom typing import List\nfrom collections import Counter\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove all elements that occur more than once.\n    Keep order of elements left the same as in the input.\n    >>> remove_duplicates([1, 2, 3, 2, 4])\n    [1, 3, 4]\n    >>> remove_duplicates([1, 1, 1, 2, 3, 3])\n    [2]\n    >>> remove_duplicates([1, 2, 3])\n    [1, 2, 3]\n    >>> remove_duplicates([])\n    []\n    \"\"\"\n    # Count the occurrences of each number in the list\n    counts = Counter(numbers)\n    \n    # Return a new list containing only the numbers that appeared exactly once,\n    # preserving the original order by iterating through the input list.\n    return [x for x in numbers if counts[x] == 1]\n\nif __name__ == \"__main__\":\n    import doctest\n    # Run the doctests to verify the implementation\n    result = doctest.testmod()\n    if result.failed == 0:\n        print(\"All tests passed!\")\n    else:\n        print(f\"{result.failed} tests failed.\")\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 13.2,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/32",
+    "completion_tokens": 13884,
+    "reasoning_tokens": null,
+    "reasoning_len": 37452,
+    "reasoning_tail": "s[:-1])` is fine, but what if `xs` is `[1, 2]`? `xs[:-1]` is `[1]`. `max(abs(c) for c in [1])` is `1`. Correct.\n        What if `xs` is `[1, 0, 0, 1]`? `xs[:-1]` is `[1, 0, 0]`. `max` is `1`. Correct.",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 2564,
+    "content": "```python\nimport math\n\n\ndef poly(xs: list, x: float):\n    \"\"\"\n    Evaluates polynomial with coefficients xs at point x.\n    return xs[0] + xs[1] * x + xs[1] * x^2 + .... xs[n] * x^n\n    \"\"\"\n    return sum([coeff * math.pow(x, i) for i, coeff in enumerate(xs)])\n\n\ndef find_zero(xs: list):\n    \"\"\" xs are coefficients of a polynomial.\n    find_zero find x such that poly(x) = 0.\n    find_zero returns only only zero point, even if there are many.\n    Moreover, find_zero only takes list xs having even number of coefficients\n    and largest non zero coefficient as it guarantees\n    a solution.\n    >>> round(find_zero([1, 2]), 2) # f(x) = 1 + 2x\n    -0.5\n    >>> round(find_zero([-6, 11, -6, 1]), 2) # (x - 1) * (x - 2) * (x - 3) = -6 + 11x - 6x^2 + x^3\n    1.0\n    \"\"\"\n    n = len(xs) - 1\n    \n    # Cauchy's bound for the roots of a polynomial:\n    # All real roots x of a polynomial satisfy |x| < 1 + max(|a_0|, ..., |a_{n-1}|) / |a_n|\n    # Since the number of coefficients is even, the degree n is odd.\n    # An odd-degree polynomial always has at least one real root.\n    max_coeff = max(abs(c) for c in xs[:-1])\n    M = 1 + max_coeff / abs(xs[n])\n    \n    # Initialize the search interval [a, b] using Cauchy's bound.\n    a, b = -M, M\n    fa = poly(xs, a)\n    if fa == 0:\n        return a\n    fb = poly(xs, b)\n    if fb == 0:\n        return b\n    \n    # For an odd-degree polynomial, f(-M) and f(M) must have opposite signs.\n    # If they don't (due to precision or if the degree is even), expand the range.\n    if math.copysign(1, fa) == math.copysign(1, fb):\n        for i in range(1, 100):\n            a -= 10**i\n            fa = poly(xs, a)\n            if fa == 0:\n                return a\n            if math.copysign(1, fa) != math.copysign(1, fb):\n                break\n            b += 10**i\n            fb = poly(xs, b)\n            if fb == 0:\n                return b\n            if math.copysign(1, fa) != math.copysign(1, fb):\n                break\n    \n    # Bisection method to find the root within the interval [a, b].\n    # 100 iterations provide sufficient precision for 64-bit floats.\n    for _ in range(100):\n        mid = (a + b) / 2\n        fmid = poly(xs, mid)\n        if fmid == 0:\n            return mid\n        \n        # Check if the sign changes between a and mid.\n        if math.copysign(1, fa) == math.copysign(1, fmid):\n            a = mid\n            fa = fmid\n        else:\n            b = mid\n            fb = fmid\n            \n    return (a + b) / 2\n\n\nif __name__ == \"__main__\":\n    import doctest\n    doctest.testmod()\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 206.8,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/38",
+    "completion_tokens": 30000,
+    "reasoning_tokens": null,
+    "reasoning_len": 87514,
+    "reasoning_tail": ".\n\n    *   `encode_cyclic` uses `groups = [s[(3 * i):min((3 * i + 3), len(s))] for i in range((len(s) + 2) // 3)]`.\n    *   `decode_cyclic` uses `groups = [s[(3 * i):min((3 * i + 3), len(s))] for i in",
+    "finish_reason": "length",
+    "content_empty": true,
+    "content_len": 0,
+    "content": "",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 463.1,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/39",
+    "completion_tokens": 5581,
+    "reasoning_tokens": null,
+    "reasoning_len": 12383,
+    "reasoning_tail": "nge.\n    `range(3, ..., 2)` correctly skips even numbers.\n    `if num % 2 == 0` handles the only even prime (2) and all other even numbers.\n    `if num < 2` handles 0 and 1.\n    Everything looks good.",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1468,
+    "content": "```python\ndef prime_fib(n: int):\n    \"\"\"\n    prime_fib returns n-th number that is a Fibonacci number and it's also prime.\n    >>> prime_fib(1)\n    2\n    >>> prime_fib(2)\n    3\n    >>> prime_fib(3)\n    5\n    >>> prime_fib(4)\n    13\n    >>> prime_fib(5)\n    89\n    \"\"\"\n    def is_prime(num: int) -> bool:\n        \"\"\"Helper function to check if a number is prime.\"\"\"\n        if num < 2:\n            return False\n        if num == 2:\n            return True\n        if num % 2 == 0:\n            return False\n        # Check odd divisors up to the square root of num\n        for i in range(3, int(num**0.5) + 1, 2):\n            if num % i == 0:\n                return False\n        return True\n\n    count = 0\n    a, b = 0, 1\n    \n    # Iterate through the Fibonacci sequence\n    while True:\n        # Generate the next Fibonacci number\n        a, b = b, a + b\n        \n        # Check if the current Fibonacci number (a) is prime\n        if is_prime(a):\n            count += 1\n            # If we have found the n-th prime Fibonacci number, return it\n            if count == n:\n                return a\n\nif __name__ == \"__main__\":\n    import doctest\n    # Run the doctests provided in the docstring\n    result = doctest.testmod()\n    if result.failed == 0:\n        print(\"All tests passed!\")\n    else:\n        print(f\"{result.failed} tests failed.\")\n\n    # Manual verification of the examples\n    for i in range(1, 6):\n        print(f\"prime_fib({i}) = {prime_fib(i)}\")\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 76.2,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/76",
+    "completion_tokens": 6208,
+    "reasoning_tokens": null,
+    "reasoning_len": 13158,
+    "reasoning_tail": "$ and $n$ are integers.\n\n    One more check: `is_simple_power(1, 4)`.\n    $x=1, n=4$.\n    `n=1`? No.\n    `n=0`? No.\n    `n=-1`? No.\n    `x=1`? Yes, returns `True`. Correct.\n\n    Final code looks good.",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 2383,
+    "content": "```python\ndef is_simple_power(x, n):\n    \"\"\"\n    Returns True if x is a simple power of n (n**k = x for some integer k).\n    \n    Args:\n        x (int): The number to check.\n        n (int): The base number.\n        \n    Returns:\n        bool: True if x is a simple power of n, False otherwise.\n    \"\"\"\n    # Handle cases where n is 1, 0, or -1 to avoid infinite loops or logic errors.\n    # 1**k is always 1 for any integer k.\n    if n == 1:\n        return x == 1\n    \n    # 0**k is 1 if k=0, and 0 if k > 0.\n    if n == 0:\n        return x == 1 or x == 0\n    \n    # (-1)**k is 1 if k is even, and -1 if k is odd.\n    if n == -1:\n        return x == 1 or x == -1\n    \n    # For |n| > 1, n**k grows or oscillates with increasing magnitude.\n    # If x is 1, n**0 = 1 is always true for any n != 0.\n    if x == 1:\n        return True\n    \n    # If |n| > 1, n**k can never be 0 for any integer k.\n    if x == 0:\n        return False\n        \n    # Start with p = n**0 = 1\n    p = 1\n    \n    # Since |n| > 1, the magnitude |p| will eventually reach or exceed |x|.\n    # This loop is efficient as it runs in O(log_|n| |x|) time.\n    while abs(p) < abs(x):\n        p *= n\n        \n    # Check if the calculated power matches x exactly.\n    return p == x\n\nif __name__ == \"__main__\":\n    # Test cases provided in the problem description\n    test_cases = [\n        (1, 4, True),\n        (2, 2, True),\n        (8, 2, True),\n        (3, 2, False),\n        (3, 1, False),\n        (5, 3, False),\n    ]\n\n    # Additional edge cases\n    extra_test_cases = [\n        (1, 1, True),    # 1^k = 1\n        (0, 0, True),    # 0^1 = 0\n        (1, 0, True),    # 0^0 = 1\n        (4, -2, True),   # (-2)^2 = 4\n        (-8, -2, True),  # (-2)^3 = -8\n        (-4, -2, False), # (-2)^k can be 4 or -2, but not -4\n        (0, 2, False),   # 2^k is never 0\n    ]\n\n    print(\"Running provided test cases:\")\n    for x, n, expected in test_cases:\n        result = is_simple_power(x, n)\n        status = \"PASS\" if result == expected else \"FAIL\"\n        print(f\"is_simple_power({x}, {n}) => {result} (Expected: {expected}) [{status}]\")\n\n    print(\"\\nRunning additional edge cases:\")\n    for x, n, expected in extra_test_cases:\n        result = is_simple_power(x, n)\n        status = \"PASS\" if result == expected else \"FAIL\"\n        print(f\"is_simple_power({x}, {n}) => {result} (Expected: {expected}) [{status}]\")\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 86.9,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/99",
+    "completion_tokens": 4191,
+    "reasoning_tokens": null,
+    "reasoning_len": 9232,
+    "reasoning_tail": "gs or infinity/NaN unless specified. The prompt says \"a value (string) representing a number\".\n\n    One more check: `int(num + 0.5)` for `num = 0.0`.\n    `0.0 + 0.5 = 0.5`. `int(0.5)` is `0`. Correct.",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1982,
+    "content": "```python\ndef closest_integer(value):\n    '''\n    Create a function that takes a value (string) representing a number\n    and returns the closest integer to it. If the number is equidistant\n    from two integers, round it away from zero.\n\n    Examples\n    >>> closest_integer(\"10\")\n    10\n    >>> closest_integer(\"15.3\")\n    15\n\n    Note:\n    Rounding away from zero means that if the given number is equidistant\n    from two integers, the one you should return is the one that is the\n    farthest from zero. For example closest_integer(\"14.5\") should\n    return 15 and closest_integer(\"-14.5\") should return -15.\n    '''\n    # Convert the input string to a float to handle decimal values\n    num = float(value)\n    \n    # If the number is non-negative, adding 0.5 and truncating with int()\n    # effectively rounds .5 and above up to the next integer.\n    if num >= 0:\n        return int(num + 0.5)\n    # If the number is negative, subtracting 0.5 and truncating with int()\n    # effectively rounds -.5 and below down (away from zero) to the next integer.\n    else:\n        return int(num - 0.5)\n\nif __name__ == \"__main__\":\n    # Test cases provided in the prompt\n    print(f\"closest_integer('10')    -> Expected: 10, Got: {closest_integer('10')}\")\n    print(f\"closest_integer('15.3')  -> Expected: 15, Got: {closest_integer('15.3')}\")\n    print(f\"closest_integer('14.5')  -> Expected: 15, Got: {closest_integer('14.5')}\")\n    print(f\"closest_integer('-14.5') -> Expected: -15, Got: {closest_integer('-14.5')}\")\n    \n    # Additional edge cases\n    print(f\"closest_integer('0')     -> Expected: 0, Got: {closest_integer('0')}\")\n    print(f\"closest_integer('0.5')   -> Expected: 1, Got: {closest_integer('0.5')}\")\n    print(f\"closest_integer('-0.5')  -> Expected: -1, Got: {closest_integer('-0.5')}\")\n    print(f\"closest_integer('-15.3') -> Expected: -15, Got: {closest_integer('-15.3')}\")\n    print(f\"closest_integer('-15.7') -> Expected: -16, Got: {closest_integer('-15.7')}\")\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 57.7,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/124",
+    "completion_tokens": 6305,
+    "reasoning_tokens": null,
+    "reasoning_len": 14678,
+    "reasoning_tail": "\n    One more thing: `06/04/2020` is `False`.\n    My code: `parts = date.split('-')` results in `['06/04/2020']`. `len(parts)` is 1. `1 != 3` is True. Returns `False`. Correct.\n\n    The code is ready.",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 3095,
+    "content": "```python\ndef valid_date(date):\n    \"\"\"You have to write a function which validates a given date string and\n    returns True if the date is valid otherwise False.\n    The date is valid if all of the following rules are satisfied:\n    1. The date string is not empty.\n    2. The number of days is not less than 1 or higher than 31 days for months 1,3,5,7,8,10,12. \n       And the number of days is not less than 1 or higher than 30 days for months 4,6,9,11. \n       And, the number of days is not less than 1 or higher than 29 for the month 2.\n    3. The months should not be less than 1 or higher than 12.\n    4. The date should be in the format: mm-dd-yyyy\n\n    for example: \n    valid_date('03-11-2000') => True\n    valid_date('15-01-2012') => False\n    valid_date('04-0-2040') => False\n    valid_date('06-04-2020') => True\n    valid_date('06/04/2020') => False\n    \"\"\"\n    # Rule 1: The date string is not empty.\n    if not date:\n        return False\n\n    # Rule 4: The date should be in the format: mm-dd-yyyy\n    # We split the string by '-' and check if we have exactly three parts.\n    parts = date.split('-')\n    if len(parts) != 3:\n        return False\n\n    # To strictly follow 'mm-dd-yyyy', we check the length of each part.\n    # mm (2 digits), dd (2 digits), yyyy (4 digits).\n    if len(parts[0]) != 2 or len(parts[1]) != 2 or len(parts[2]) != 4:\n        return False\n\n    # Check if all parts consist only of digits to avoid ValueError during int conversion.\n    if not (parts[0].isdigit() and parts[1].isdigit() and parts[2].isdigit()):\n        return False\n\n    month = int(parts[0])\n    day = int(parts[1])\n    year = int(parts[2])\n\n    # Rule 3: The months should not be less than 1 or higher than 12.\n    if not (1 <= month <= 12):\n        return False\n\n    # Rule 2: Validate the number of days based on the month.\n    if month in [1, 3, 5, 7, 8, 10, 12]:\n        # Months with 31 days\n        if not (1 <= day <= 31):\n            return False\n    elif month in [4, 6, 9, 11]:\n        # Months with 30 days\n        if not (1 <= day <= 30):\n            return False\n    elif month == 2:\n        # Month 2 (February) has a maximum of 29 days according to the rules provided.\n        if not (1 <= day <= 29):\n            return False\n    else:\n        # This part is logically unreachable due to the month check above.\n        return False\n\n    return True\n\n# Test cases to verify the implementation\nif __name__ == \"__main__\":\n    test_cases = [\n        ('03-11-2000', True),\n        ('15-01-2012', False),\n        ('04-0-2040', False),\n        ('06-04-2020', True),\n        ('06/04/2020', False),\n        ('', False),\n        ('02-29-2020', True),\n        ('02-30-2020', False),\n        ('12-31-1999', True),\n        ('04-31-2020', False),\n        ('01-01-202', False),\n        ('01-01-20200', False),\n        ('aa-bb-cccc', False),\n    ]\n\n    for date_str, expected in test_cases:\n        result = valid_date(date_str)\n        status = \"PASS\" if result == expected else \"FAIL\"\n        print(f\"valid_date('{date_str}') | Expected: {expected} | Result: {result} | {status}\")\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 88.2,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  },
+  {
+    "task_id": "HumanEval/145",
+    "completion_tokens": 30000,
+    "reasoning_tokens": null,
+    "reasoning_len": 66655,
+    "reasoning_tail": "or `-1` is `1`, `-11` is `2`, `1` is `1`, `-12` is `3`, `11` is `2`.\n    *   The sums are `1, 2, 1, 3, 2`.\n    *   If we sort these sums: `1, 1, 2, 2, 3`.\n    *   The numbers with sum 1 are `1` and `-",
+    "finish_reason": "length",
+    "content_empty": true,
+    "content_len": 0,
+    "content": "",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 460.7,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
+    },
+    "resolved_reasoning_effort": null,
+    "resolved_reasoning_effort_source": "unknown"
+  }
+]

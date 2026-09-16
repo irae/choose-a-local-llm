@@ -31,3 +31,19 @@ Both probe servers stopped after their probe. Wired after stop: 133919 pages (~2
 
 Done: versions, probe results and the message recorded here, committed.
 Deviation: none.
+
+## `gemma26-gguf-calibrate-think`
+
+Served without a thinking budget: `llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL --alias gemma-4-26b-a4b --no-mmproj --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 -ngl 999 -fa on -c 32768 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081`, thinking on (`enable_thinking: true`).
+
+Calibration `calibration-gemma26-gguf-think-budget.json`, 10/10 problems, margin 1.5.
+
+`gemma26_think_budget` = 19491
+`gemma26_answer_budget` = 2048
+`gemma26_max_tokens` = 21539
+
+Derive output: converged 8, cut 2, max_reasoning_tokens 12994, max_answer_tokens 1098.
+
+Server kept up for the budget block.
+Files: `hardware/kamaji/calibrations/calibration-gemma26-gguf-think-budget.json`, `hardware/kamaji/benchmarks/bench22/results/gemma26-gguf-calibrate-think/server.log`.
+Deviation: none.
