@@ -100,7 +100,10 @@ llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_
   thinking repeated a planned step hundreds of times and never made
   the tool call: 818 times on the first dependency (UD-Q4_K_XL), 520
   times on a broken `xtend` edit (NVFP4).
-- No EvalPlus ran on this machine (owner, 2026-09-13).
+- **EvalPlus, NVFP4 at thinking off:** 0.927/0.896, no empty answer of
+  164, budget 8192, 51.1 minutes of active time (run 19). The longest
+  calibration answer ran 949 tokens, so the budget floors and the gate
+  costs little. The k-quant build and the thinking-on rows are pending.
 
 ## Agentic quality — Mendel
 
