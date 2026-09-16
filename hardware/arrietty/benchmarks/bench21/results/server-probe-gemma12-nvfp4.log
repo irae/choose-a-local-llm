@@ -1,0 +1,25 @@
+0.00.021.918 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.022.244 W srv  llama_server: -----------------
+0.00.022.245 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.022.245 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.022.245 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.022.246 W srv  llama_server: -----------------
+0.00.023.511 I srv    load_model: loading model '/home/irae/.cache/huggingface/hub/models--FreedomAISVR--Gemma-4-12B-it-NVFP4-GGUF/snapshots/eb8c8df2f0cbb8781ad13b9fb307ae7dc066761d/gemma-4-12b-it-nvfp4.gguf'
+0.00.608.876 W load: control-looking token:    212 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.609.468 W load: control-looking token:     50 '<|tool_response>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.668.932 W load: special_eog_ids contains '<|tool_response>', removing '</s>' token from EOG list
+0.05.612.215 I cmn          init: llama threadpool init, n_threads = 6
+0.05.695.408 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 32768, kv_unified = 'false'
+0.05.702.634 I srv  llama_server: model loaded
+0.05.702.638 I srv  llama_server: listening on http://127.0.0.1:8081
+0.07.699.027 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.07.699.092 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.10.804.669 I slot print_timing: id  0 | task 0 | n_gen =    155, tg =  51.04 t/s, tg_3s =  51.37 t/s
+0.13.805.328 I slot print_timing: id  0 | task 0 | n_gen =    306, tg =  50.68 t/s, tg_3s =  50.32 t/s
+0.16.808.346 I slot print_timing: id  0 | task 0 | n_gen =    458, tg =  50.66 t/s, tg_3s =  50.62 t/s
+0.18.751.469 I slot print_timing: id  0 | task 0 | prompt eval time =      88.19 ms /    32 tokens (    2.76 ms per token,   362.83 tokens per second)
+0.18.751.472 I slot print_timing: id  0 | task 0 |        eval time =   10964.16 ms /   555 tokens (   19.79 ms per token,    50.53 tokens per second)
+0.18.751.472 I slot print_timing: id  0 | task 0 |       total time =   11052.35 ms /   587 tokens
+0.18.751.476 I slot print_timing: id  0 | task 0 |    graphs reused =        552
+0.18.751.508 I slot      release: id  0 | task 0 | stop processing: n_tokens = 586, truncated = 0
+0.34.793.609 I srv    operator(): operator(): cleaning up before exit...

@@ -9,3 +9,28 @@ happen, and the handing-over section at the end.
 |---|---|---|
 | `budget_message` | `Thinking budget reached. Give the final answer now.` | runbook, Essentials |
 | `THINKING_BUDGET_MARGIN` | 1.5 | runbook, planning value |
+| `vram_start_mb` | 926 | `nvidia-smi`, session start 2026-09-16 20:23 UTC |
+| `evalplus_python` | `/home/irae/.local/share/pipx/venvs/evalplus/bin/python` (EvalPlus 0.3.1) | pipx venv |
+| `llama_server` | `~/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/bin/llama-server`, CUDA0 RTX 5060 Ti | run 17 build |
+
+## machine-setup
+
+Worktree `../choose-a-local-llm-run21`, branch `run21` from `origin/master` at `9981cda`.
+Tools: `thinking-budget.py`, `calibrate.py` (writes `reasoning_len`), `run_codegen_wrapper.py` present at `8b49c41`.
+`llama-server --help` prints `--reasoning-budget` and `--reasoning-budget-message`.
+Machine: `gh auth` ok, 35G free on `/home`, 12 GB RAM free, no `llama-server` process.
+The ISTA Qwen3.8 file sits in `~/.cache/llama.cpp/hf/`; `hf download` into the default cache started at 20:24 UTC in the background (`~/.local/share/choose-a-local-llm/run21-ista-download.log`).
+
+**Message probe.** Gemma-4-12B NVFP4, `--reasoning-budget 32`, thinking on, one chat completion at `max_tokens` 2048.
+`nvidia-smi` 8866/16311 MiB with the server up.
+
+| check | result |
+|---|---|
+| `reasoning_content` present | yes |
+| reasoning tail ends with the budget message | yes |
+| `content` non-empty | yes (555 completion tokens, finish `stop`) |
+| `usage.completion_tokens_details` | absent (usage has `prompt_tokens_details` only) |
+
+Files: `results/probe-gemma12-nvfp4.json`, `results/server-probe-gemma12-nvfp4.log`.
+Note: `hf download` prints `path=<file>`; every serve command strips the prefix with `sed 's/^path=//'`. `pkill -f` on the server command line kills the runner's own shell; stop servers with `pkill -x llama-server`.
+Deviation: none.
