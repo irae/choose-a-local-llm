@@ -31,6 +31,13 @@ Full re-scored result: base 0.976, plus 0.933, 1/164 empty, unchanged from the s
 Files: `results/qwen38-ista-low-rerun/`, `results/server-qwen38-ista-low-rerun.log`, `results/run-watch-qwen38-ista-low-rerun.log`.
 Deviation: none.
 
+### `bonsai-fork-rerun`
+
+Model file `~/prism-llama/Bonsai-demo/models/ternary-gguf/27B/Ternary-Bonsai-27B-Q2_g64.gguf` and the bias file `~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf` were both present (the bias file moved off `/tmp` since bench4, not missing). Served with `LLAMA_ATTN_ROT_DISABLE=1`, no drafter, `-c 32768`, q4_0/q4_0 KV, the bias file, alias `bonsai-prism`. First probe timed out at 60s on the no-drafter build (~16.9 t/s); a longer probe confirmed `finish_reason: stop` and a real answer, so the server was never at fault. `finish.jsonl` shows all four re-run problems (`HumanEval/47`, `84`, `97`, `129`) at `finish_reason: length`, `completion_tokens: 10240`, `empty: true`. Cause is `cap` for all four. The watcher's 600s silence probes twice confirmed the server alive and generating (HumanEval/97 ran to n_gen 5798+ before the wakeup check), not stalled — a slow no-drafter build, not a death.
+Full re-scored result: base 0.927, plus 0.890, 4/164 empty, exact match to the source row (`bench4`, 0.927/0.890). Server and watcher stopped (pids 5328, 6806).
+Files: `results/bonsai-fork-rerun/`, `results/server-bonsai-fork-rerun.log`, `results/run-watch-bonsai-fork-rerun.log`.
+Deviation: none.
+
 ## Handing over
 
-`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun` done. Begin with `bonsai-fork-rerun`.
+`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun` done. Begin with `bonsai-mlx-rerun`.
