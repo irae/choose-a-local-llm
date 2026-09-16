@@ -14,8 +14,9 @@ llama-server (CUDA) · measured 2026-09-13 to 2026-09-16
   server crashed three times at about 440 MiB free.
 - **EvalPlus at the default level of each model.** unsloth Qwen3.8
   0.957 / 0.921 and ISTA 0.945 / 0.909 at xhigh; Qwen3.6 0.945 / 0.902
-  and Gemma-26B NVFP4Q8 0.909 / 0.878 at thinking on. Gemma-12B NVFP4:
-  0.927 / 0.896 at thinking off, 0.659 / 0.640 at thinking on. Every
+  and Gemma-26B NVFP4Q8 0.909 / 0.878 at thinking on. Gemma-12B at thinking
+  off: k-quant 0.951 / 0.909, NVFP4 0.927 / 0.896; at thinking on
+  0.793 / 0.780 and 0.659 / 0.640. Every
   thinking-on row left empties; their cause is unproven.
 
 ## Models evaluated
@@ -76,5 +77,5 @@ hours.
 
 - [Decode speed](../../benchmarks/decode-speed.md)
 - [EvalPlus](../../benchmarks/evalplus.md): every row at its default
-  level; the Gemma-12B k-quant rows are pending.
+  level, and both Gemma-12B builds at both levels.
 - [Mendel](../../benchmarks/mendel.md)

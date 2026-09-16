@@ -36,8 +36,8 @@ a score; a row names it only where it is part of the quant.
 - **Empty**: a problem that ran to the budget with no answer. It counts
   as failed.
 - **Completion**: the share of the 164 problems that got an answer.
-- RTX 5060 Ti 16 GB: every row scored at its default level; the
-  Gemma-12B k-quant rows are pending.
+- RTX 5060 Ti 16 GB: every row scored at its default level, and both
+  Gemma-12B builds at both levels.
 - Scores under the uncalibrated budget:
   [historical](../setups/kamaji/historical.md).
 

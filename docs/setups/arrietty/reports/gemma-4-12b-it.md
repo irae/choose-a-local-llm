@@ -11,7 +11,7 @@ Backends: llama-server · [NVFP4 GGUF on Hugging Face](https://huggingface.co/Fr
 </div>
 <!-- gen:model-kpis:end -->
 
-Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; EvalPlus scored 2026-09-16 on the NVFP4 build at both thinking levels. The k-quant build's EvalPlus is pending.
+Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; EvalPlus scored 2026-09-16 on both builds at both thinking levels.
 
 ## Highlights
 
@@ -21,9 +21,10 @@ Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; Eval
 - **The k-quant build is the control.** The same file the reference
   setup serves, read on this card at the same depths, so the NVFP4
   row has a pair.
-- **Thinking off is the level for this model on this card.** EvalPlus
-  0.927 / 0.896 with every answer delivered, in 51 minutes. Thinking
-  on: 0.659 / 0.640 with 53 of 164 empty, in 204 minutes.
+- **Thinking off is the level for this model on this card.** Every
+  answer delivered on both builds, 0.951 / 0.909 on the k-quant in 26
+  minutes and 0.927 / 0.896 on NVFP4 in 51. Thinking on loses a third
+  of the answers on NVFP4 and a fifth on the k-quant.
 - **The agent task fails on every build and level**, with zero commits
   each time.
 
@@ -124,8 +125,11 @@ llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_
   of 164, budget 8192, 259.0 minutes. Every answered problem passed the
   base tests, so the whole loss is thinking that did not end; the cause
   is unproven for want of a finish log. The k-quant converges more often
-  than the NVFP4 build at this level, 34 empties against 53. Thinking
-  off on this build is pending.
+  than the NVFP4 build at this level, 34 empties against 53.
+- **EvalPlus, UD-Q4_K_XL at thinking off:** 0.951/0.909, no empty
+  answer, budget 8192, 26.1 minutes. The Mac's row of the same file
+  reads 0.976/0.939. On this card the k-quant beats the NVFP4 build at
+  both levels on the single-turn test, and reads 2 to 5 percent slower.
 
 ## Quality — EvalPlus HumanEval+
 

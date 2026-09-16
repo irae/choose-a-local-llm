@@ -15,11 +15,28 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
   problems where the budget fired and the answer failed. Starts after
   run 19.
 
-## bench19, started 2026-09-15 ([state](bench19/state.md), [results](bench19/results.md))
+## bench19, 2026-09-15 to 2026-09-16 ([report](bench19/report.md), [state](bench19/state.md), [results](bench19/results.md))
 
 - Runbook: [bench19/AGENT.md](bench19/AGENT.md). EvalPlus on every row
-  of this setup, in the order of the rows' Mendel scores. In progress;
-  findings land here at the close.
+  of this setup, eight blocks, no block waited on a human.
+- **The runner's empty counts were wrong on every thinking-on row.**
+  It wrote `0/164` from a log line; the samples hold 3 to 53 empties.
+  The coordinator re-derived every row. Rule for the next runbooks: the
+  empty count comes from the samples file, with the command written
+  out.
+- **Thinking off beats thinking on on both Gemma-12B builds**, by a
+  wide margin: 0.951 against 0.793 on the k-quant, 0.927 against 0.659
+  on NVFP4, and every failure at thinking on is an empty answer. The
+  k-quant converges more often than NVFP4 at the same budget.
+- **The two 3-bit Qwen3.8 builds sit within one point of the Mac's
+  scores** at xhigh: unsloth 0.957/0.921, ISTA 0.945/0.909, with 3 and
+  7 empties at budgets near 20000.
+- **The desktop's share of the card cost two driver watchdog crashes
+  on the ISTA drafter arm**; the run resumed and every problem counts
+  once. No crash on any no-drafter arm.
+- The run 19 branch predates the finish log, so every empty on this
+  card is `† unproven`; run 21 records the cause on two of these
+  configs under a thinking budget.
 
 ## bench17, 2026-09-13 to 2026-09-15 ([report](bench17/report.md), [state](bench17/state.md), [results](bench17/results.md))
 

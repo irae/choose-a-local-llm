@@ -51,8 +51,8 @@
 - 2026-09-13 to 2026-09-15: real-text speed at depth, the drafter
   arms, the KV type, the guided agent task on every row and the blind
   task on the pick.
-- 2026-09-15 on: EvalPlus on every row at its default level. The
-  Gemma-12B k-quant rows are pending.
+- 2026-09-15 to 2026-09-16: EvalPlus on every row at its default
+  level, and both Gemma-12B builds at both levels.
 - Pending: the thinking-budget test on the two configs named in
   [the method](../../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget);
   the blind agent task on the rows that scored above zero guided.
