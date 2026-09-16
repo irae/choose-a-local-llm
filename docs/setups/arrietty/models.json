@@ -29,13 +29,14 @@
       "tokShallow": "49.55",
       "tokDeep": "33.11",
       "memory": "12.3 GB",
-      "evalplus": "pending",
+      "evalplus": "0.659/0.640/100%",
       "mendel": "pending",
       "id": "gemma12-nvfp4-on",
+      "evalplusWall": 203.9,
       "spec": { "base": "Gemma-4-12B", "quant": "NVFP4", "server": "llama-server", "publisher": "FreedomAISVR", "repo": "FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF", "drafter": "", "kv": "f16", "effort": "on" },
       "hidden": false,
       "command": "llama-server -m \"$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf)\" \\\n  --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-12b-nvfp4`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: after a broken `xtend` edit, the thinking repeated the planned fix 520 times and never made the tool call, with zero commits.",
+      "note": "pi id `gemma-4-12b-nvfp4`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: after a broken `xtend` edit, the thinking repeated the planned fix 520 times and never made the tool call, with zero commits. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 8192: 0.659/0.640, no empty answer of 164, in 203.9 minutes of active time in two parts. The calibration ended 5 of 10 answers at the 30000 cap, so the runner first set 1700 as a waste limiter; the owner restored the 8192 floor after 32 answers, and those 32 stayed. Thinking on scores far below thinking off on this build, 0.659 against 0.927, with no empty answer, so the gap is the model, not the budget. This is the first EvalPlus score for this build at thinking on.",
       "pi": { "provider": "llama", "id": "gemma-4-12b-nvfp4", "contextWindow": 258048, "maxTokens": 8192 }
     },
     {
@@ -185,6 +186,18 @@
       "budget": 8192,
       "base": "0.927",
       "plus": "0.896",
+      "empty": "0/164"
+    },
+    {
+      "wall": 203.9,
+      "emptyCause": "none",
+      "slug": "gemma-4-12b-it",
+      "model": "Gemma-4-12B (GGUF NVFP4, FreedomAISVR, f16 KV)",
+      "mode": "thinking on",
+      "row": "gemma12-nvfp4-on",
+      "budget": 8192,
+      "base": "0.659",
+      "plus": "0.640",
       "empty": "0/164"
     },
     {
