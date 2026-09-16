@@ -38,6 +38,12 @@ Full re-scored result: base 0.927, plus 0.890, 4/164 empty, exact match to the s
 Files: `results/bonsai-fork-rerun/`, `results/server-bonsai-fork-rerun.log`, `results/run-watch-bonsai-fork-rerun.log`.
 Deviation: none.
 
+### `bonsai-mlx-rerun` — running
+
+Served `mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit --port 8081`, thinking on (default), no extra body, budget 10240. Source `bench2/results/bonsai-think`, 5 empty task ids (39, 99, 107, 122, 129).
+
+Deviation: the first server died silently on HumanEval/39 (no crash trace, no OOM in the mem log, free memory stayed flat around 12.8 GB, no swap). The watcher's two 600s-silence probes both failed and it exited 42 (`server-bonsai-mlx-rerun.log`, `run-watch-bonsai-mlx-rerun.log`). No stray process was left; a fresh `mlx_lm.server` came up clean, a real completion probe returned `finish_reason: length`, and the block resumed from the same `jsonl` (159 lines, unchanged) under a new watcher (`server-bonsai-mlx-rerun-retry1.log`, `run-watch-bonsai-mlx-rerun-retry1.log`). No data lost.
+
 ## Handing over
 
-`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun` done. Begin with `bonsai-mlx-rerun`.
+`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun` done. `bonsai-mlx-rerun` in progress (resumed after one server death, see above). Begin next session with `bonsai-mlx-rerun`'s close, then `qwen36-gguf-think-rerun`.
