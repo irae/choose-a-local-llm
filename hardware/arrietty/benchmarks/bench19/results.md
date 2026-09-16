@@ -17,3 +17,7 @@ drafter arm (parts 1-2) triggered a fallback to no-drafter (part 3,
 66/164 solved there); owner word put it back on the drafter for part 4,
 which finished clean. Every problem counts once regardless of which
 arm solved it.
+| old | Qwen3.8-27B, GGUF UD-IQ3_S (unsloth) | xhigh | — (no EvalPlus score exists on any machine for this build/level; the Mac's row is "pending") | — | — | — | — | — |
+| new | Qwen3.8-27B, GGUF UD-IQ3_S (unsloth), q8_0 KV | xhigh | no drafter — owner decision 2026-09-15; a drafter does not change the score at temperature 0 | 19000 | 0.957 | 0.921 | 100% | 0/164 |
+
+Wall (new): 289.6 min, one part, no crash.
