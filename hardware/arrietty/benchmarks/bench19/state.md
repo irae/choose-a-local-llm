@@ -282,11 +282,28 @@ Files: `results/gemma12-nvfp4-evalplus-off/humaneval/`,
 Deviation: none. Server stays up for `gemma12-nvfp4-evalplus-on` next
 (same file, same arm, thinking on).
 
+## `gemma12-nvfp4-evalplus-on` — running
+
+Same server as `gemma12-nvfp4-evalplus-off` (no restart), thinking on
+this time.
+
+Calibration `gemma12-nvfp4-on`: 10/10 rows, **5 `length` stops**
+(`HumanEval/32,76,99,124,145`, all hit the 30000 cap, empty) — heavily
+non-converging, worse than every other build this run. Longest
+successful completion `HumanEval/0` at 1616 tokens.
+`gemma12-nvfp4-on_budget` = 1700 (just above 1616), non-converging
+rule. Expect a real empty rate near 50% and do not chase it with a
+bigger budget — the runbook's own words for this case.
+
+Deviation: none — handled per the same non-converging rule as the
+other blocks; the rate is far higher here (5/10 vs 1-2/10 elsewhere).
+
 ## Handing over
 
 `machine-setup`, `qwen38-ista-evalplus-xhigh` (0.945/0.909, 0/164
 empty), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty),
 `qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty),
 `gemma26-nvfp4-evalplus-on` (0.909/0.878, 0/164 empty) and
-`gemma12-nvfp4-evalplus-off` (0.927/0.896, 0/164 empty) done. On to
-`gemma12-nvfp4-evalplus-on` next, same running server, thinking on.
+`gemma12-nvfp4-evalplus-off` (0.927/0.896, 0/164 empty) done.
+`gemma12-nvfp4-evalplus-on` calibrated, budget 1700 (~50% empty
+expected), starting the watcher and full run next.
