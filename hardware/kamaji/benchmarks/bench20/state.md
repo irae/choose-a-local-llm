@@ -38,7 +38,7 @@ Full re-scored result: base 0.927, plus 0.890, 4/164 empty, exact match to the s
 Files: `results/bonsai-fork-rerun/`, `results/server-bonsai-fork-rerun.log`, `results/run-watch-bonsai-fork-rerun.log`.
 Deviation: none.
 
-### `bonsai-mlx-rerun` — running
+### `bonsai-mlx-rerun`
 
 Served `mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit --port 8081`, thinking on (default), no extra body, budget 10240. Source `bench2/results/bonsai-think`, 5 empty task ids (39, 99, 107, 122, 129).
 
@@ -50,6 +50,11 @@ Third deviation: the server died silently a second time, again right after promp
 
 A subagent (Haiku) researched the pattern: `mlx_lm.server` takes a `--prompt-cache-bytes` flag (confirmed present in this build's `--help`) to cap the KV cache size, a plausible fix for unbounded prompt-cache growth after several requests. Its cited issue numbers are unverified (a Haiku model can misattribute). Note for a future block or run: pass `--prompt-cache-bytes` on this model if the death repeats, and consider periodic restarts for long `mlx_lm.server` EvalPlus runs on Bonsai MLX.
 
+Close: after the third restart, the block finished. The output `jsonl` had 171 raw lines for 164 unique task ids (duplicates from the race and the restart cycle); verified every duplicate pair agreed on pass/fail (the `HumanEval/107` and `122` duplicates differ in wording but all pass, greedy decoding is not always byte-identical across a fresh MLX process, but the tests are behavior tests, not text-diffs). The evaluator's own `pass@1` already used the 164 unique tasks (153/164 = 0.933 base, 148/164 = 0.902 plus, matching the printed score exactly), so no correction was needed there; de-duplicated the `jsonl`/`raw.jsonl` files to 164 lines each for a clean record.
+Final: base 0.933, plus 0.902, 2/164 empty (`HumanEval/39`, `129`, both `cap`). Three of the five source empties (`99`, `107`, `122`) recovered and passed on today's build — an improvement over the source row (`bench2`, 0.915/0.884, 5/164 empty), not a like-for-like repeat. Server and watcher stopped (pids 46642, 47116).
+Files: `results/bonsai-mlx-rerun/`, `results/server-bonsai-mlx-rerun*.log`, `results/run-watch-bonsai-mlx-rerun*.log`.
+Deviation: see the three notes above (server deaths, stray duplicate process, prompt-cache research). Total re-run wall: about 5h20min across three server restarts, most of it in the second restart's long generations for `107`, `122`, `129`.
+
 ## Handing over
 
-`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun` done. `bonsai-mlx-rerun` in progress (resumed after one server death, see above). Begin next session with `bonsai-mlx-rerun`'s close, then `qwen36-gguf-think-rerun`.
+`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun`, `bonsai-mlx-rerun` done. Begin with `qwen36-gguf-think-rerun`.

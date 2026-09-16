@@ -41,3 +41,18 @@ Source: `bench3/results/bonsai-prism`. Served `~/prism-llama/Bonsai-demo/models/
 
 New score on all 164: base **0.927**, plus **0.890**, empty **4/164** (HumanEval/47, 84, 97, 129). Cause counts: `cap` 4, `model` 0. Unchanged from the source row (`bench3`, same 4 empties) — every empty in this row is the output budget, none a model stop. Re-run wall: about 36 min (four problems, no drafter, ~15-17 t/s each).
 Files: `results/bonsai-fork-rerun/`, `results/server-bonsai-fork-rerun.log`.
+
+### `bonsai-mlx-rerun`
+
+Source: `bench2/results/bonsai-think`. Served `mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit --port 8081`, thinking on (default), no extra body, budget 10240. The `mlx_lm.server` process died silently three times during this block (see `state.md` for the full account); each time restarted clean and the block resumed, with no data lost after de-duplicating a few race-condition repeat lines.
+
+| task id | finish_reason | completion_tokens | result |
+|---|---|--:|---|
+| HumanEval/39 | length | 10240 | fail (base and plus) — genuinely empty |
+| HumanEval/99 | stop | 3640 | pass (base and plus) — recovered |
+| HumanEval/107 | stop | 5833 | pass (base and plus) — recovered |
+| HumanEval/122 | stop | 6006 | pass (base and plus) — recovered |
+| HumanEval/129 | length | 10240 | fail (base and plus) — genuinely empty |
+
+New score on all 164: base **0.933**, plus **0.902**, empty **2/164** (HumanEval/39, 129). Cause counts: `cap` 2, `model` 0. **Improved from the source row** (`bench2`, base 0.915 / plus 0.884, 5/164 empty): three of the five originally-empty problems now complete and pass on today's build; the other two still cap out at 10240, confirming a real model limitation, not a bug, at this budget. Re-run wall: about 5h20min across three server restarts.
+Files: `results/bonsai-mlx-rerun/`, `results/server-bonsai-mlx-rerun*.log` (four generations across the death/restart cycle).
