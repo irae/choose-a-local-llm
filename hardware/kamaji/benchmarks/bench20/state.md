@@ -55,6 +55,12 @@ Final: base 0.933, plus 0.902, 2/164 empty (`HumanEval/39`, `129`, both `cap`). 
 Files: `results/bonsai-mlx-rerun/`, `results/server-bonsai-mlx-rerun*.log`, `results/run-watch-bonsai-mlx-rerun*.log`.
 Deviation: see the three notes above (server deaths, stray duplicate process, prompt-cache research). Total re-run wall: about 5h20min across three server restarts, most of it in the second restart's long generations for `107`, `122`, `129`.
 
+### `qwen36-gguf-think-rerun` — running
+
+Source `bench2/results/qwen36-think`. Removed 5 empty task ids (4, 23, 55, 107, 121) — `HumanEval/4` in the source run was a server error, not a model answer, and re-runs like the others per `AGENT.md`. Served `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`, `--alias qwen3.6-35b-a3b`, MTP n-max 3, `-c 32768`, q8_0/q8_0 KV, thinking on, no extra body, budget 26624.
+
+Deviation: right after the first server load, two stray `run_codegen_wrapper.py` processes (pids 20007, 39289) started hitting the fresh server with `bonsai-mlx-rerun` traffic. These were children of the `bonsai-mlx-rerun` retry1/retry2 codegen that survived a `kill -9` on their bash parent (killing the parent bash of `run-humaneval.sh` does not kill the Python child it execs into). Caught immediately from the unexpected `task 0` activity in the fresh server's log and an `lsof -i :8081` check; killed both stray PIDs, confirmed `bonsai-mlx-rerun`'s already-committed files were untouched (`git status` clean, `git diff --stat` empty) and `qwen36-gguf-think-rerun`'s own files were untouched (still 159 lines, the pre-codegen count). Restarted the qwen36 server clean, verified no established connections before probing, real probe returned `finish_reason: stop`. Lesson for the rest of this run: a `kill` or `kill -9` on a `run-humaneval.sh` bash PID does not reliably kill the `run_codegen_wrapper.py` child; check `pgrep -fl run_codegen_wrapper.py` too after any bash-level kill, not just the run-humaneval.sh pid.
+
 ## Handing over
 
-`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun`, `bonsai-mlx-rerun` done. Begin with `qwen36-gguf-think-rerun`.
+`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun`, `bonsai-fork-rerun`, `bonsai-mlx-rerun` done. `qwen36-gguf-think-rerun` in progress (see stray-process deviation above). Begin next session with its close, then `gemma26-gguf-think-rerun`.
