@@ -51,3 +51,10 @@ budget).
 Wall (new): 259.0 min, one part, no crash. Thinking on also scores
 below the same build's thinking-off row on kamaji (0.976/0.939) — the
 pattern holds across the two Gemma-12B quants tested this run.
+| old | Gemma-4-12B, GGUF Q4_K_XL (unsloth), thinking off (kamaji, Mac) | thinking off | no drafter | 8192 | 0.976 | 0.939 | 100% | 0/164 |
+| new | Gemma-4-12B, GGUF UD-Q4_K_XL (unsloth), f16 KV | thinking off | no drafter | 8192 | **0.951** | 0.909 | 100% | 0/164 |
+
+Wall (new): 26.1 min, one part, no crash. The run's last EvalPlus
+block. Slightly below the Mac's own score on the same build/level, a
+small machine-to-machine gap; still much stronger than thinking on
+(0.793/0.780) on this card.

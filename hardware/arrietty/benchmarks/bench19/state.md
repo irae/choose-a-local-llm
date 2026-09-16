@@ -394,9 +394,54 @@ converges normally. Max completion 1011 × 1.5 = 1517 < floor 8192.
 
 Deviation: none.
 
+### `gemma12-q4kxl-evalplus-off` close
+
+`unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL`, no drafter, one slot, f16
+KV, ctx 32768, budget 8192. One part, no crash:
+2026-09-16T19:25:00Z to 2026-09-16T19:51:09Z.
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.951 |
+| HumanEval plus | 0.909 |
+| completion rate | 100% |
+| empty | 0/164 |
+| wall | 26.1 min (one part, no crash) |
+
+Files: `results/gemma12-q4kxl-evalplus-off/humaneval/`,
+`results/server-gemma12-q4kxl.log`.
+Deviation: none. This is the last of the run's planned EvalPlus
+blocks; `retry-sweep` is empty (no block waited on a human).
+
 ## Handing over
 
-`machine-setup` through `gemma12-q4kxl-evalplus-on` all done (see
-above). `gemma12-q4kxl-evalplus-off` calibrated, budget 8192, starting
-the watcher and full run next — the last EvalPlus block before
-`retry-sweep`.
+Every planned block done: `machine-setup`, `qwen38-ista-evalplus-xhigh`
+(0.945/0.909), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921),
+`qwen36-q4kxl-evalplus-on` (0.945/0.902), `gemma26-nvfp4-evalplus-on`
+(0.909/0.878), `gemma12-nvfp4-evalplus-off` (0.927/0.896),
+`gemma12-nvfp4-evalplus-on` (0.659/0.640), `gemma12-q4kxl-evalplus-on`
+(0.793/0.780) and `gemma12-q4kxl-evalplus-off` (0.951/0.909) — every
+row 0/164 empty except the two ISTA-arm-switch and one budget-
+correction deviations noted above. `retry-sweep` empty, nothing
+waited on a human.
+
+## Run close
+
+Server stopped, two stale watchers from earlier blocks found and
+killed (harmless — logged, not restarted), VRAM back to 951 MiB
+(baseline was 921 MiB at session start). Evidence archived:
+`tools/archive-evidence.sh hardware/arrietty/benchmarks/bench19/results run19`
+→ 20 files to `~/.local/share/choose-a-local-llm/evidence/run19`.
+
+Machine left idle, no queued work remains. The coordinator's next
+steps: write `report.md`, add the findings to
+`hardware/arrietty/benchmarks/INDEX.md`, fill the `evalplus` cells in
+`docs/setups/arrietty/models.json` for all 8 rows scored this run, and
+publish. Two open items for the coordinator to note: (1) the
+`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` file is still at its original
+`~/.cache/llama.cpp/hf/` path, deliberately not migrated to the
+default `hf` cache mid-run (it was the live model); a future session
+should migrate it now that the run is done. (2) the `hf-cache-
+migration` branch (commit 56c6e2f, pushed earlier this session, not
+part of run19) holds the doc/tooling fix for the `--local-dir`
+download pattern — still waiting on the coordinator to merge.
