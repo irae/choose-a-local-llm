@@ -24,6 +24,13 @@ Full re-scored result: base 0.976, plus 0.945, 1/164 empty, unchanged from the s
 Files: `results/qwen38-ista-medium-rerun/`, `results/server-qwen38-ista-medium-rerun.log`, `results/run-watch-qwen38-ista-medium-rerun.log`.
 Deviation: none.
 
+### `qwen38-ista-low-rerun`
+
+Served `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, `--no-mmproj`, no drafter (bench13's `ista_evalplus_serving` cell), f16 KV, `-c 32768`, alias `qwen3.8-27b`. Probe: full chat completion, finish_reason `stop`, verified before the watcher started. `finish.jsonl` shows HumanEval/39 at `finish_reason: length`, `completion_tokens: 8192`, `empty: true`. Cause is `cap`.
+Full re-scored result: base 0.976, plus 0.933, 1/164 empty, unchanged from the source row. Server and watcher stopped (pids 99098, 99824).
+Files: `results/qwen38-ista-low-rerun/`, `results/server-qwen38-ista-low-rerun.log`, `results/run-watch-qwen38-ista-low-rerun.log`.
+Deviation: none.
+
 ## Handing over
 
-`machine-setup` and `qwen38-ista-medium-rerun` done. Begin with `qwen38-ista-low-rerun`.
+`machine-setup`, `qwen38-ista-medium-rerun`, `qwen38-ista-low-rerun` done. Begin with `bonsai-fork-rerun`.

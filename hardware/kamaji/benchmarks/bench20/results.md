@@ -16,3 +16,14 @@ Source: `bench12/results/qwen38-ista-mtp`. Served `ISTA-DASLab/Qwen3.8-27B-GSQ-R
 
 New score on all 164: base **0.976**, plus **0.945**, empty **1/164** (HumanEval/39). Cause counts: `cap` 1, `model` 0. Unchanged from the source row (`bench12`, base 0.976, plus 0.945, 1 empty) — the re-run confirms the cause is the output budget cutting the answer, not the model choosing to stop. Re-run wall: about 4 min (one problem, medium effort).
 Files: `results/qwen38-ista-medium-rerun/`, `results/server-qwen38-ista-medium-rerun.log`.
+
+### `qwen38-ista-low-rerun`
+
+Source: `bench13/results/ista-evalplus-low`. Served `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp`, `--no-mmproj`, no drafter, f16 KV, `-c 32768`, alias `qwen3.8-27b`, `reasoning_effort: low`, budget 8192.
+
+| task id | finish_reason | completion_tokens | result |
+|---|---|--:|---|
+| HumanEval/39 | length | 8192 | fail (base and plus) |
+
+New score on all 164: base **0.976**, plus **0.933**, empty **1/164** (HumanEval/39). Cause counts: `cap` 1, `model` 0. Unchanged from the source row (`bench13`, base 0.976, plus 0.933, 1 empty). Same task, same cause as the medium rerun: the budget cuts the answer at both levels. Re-run wall: about 4 min.
+Files: `results/qwen38-ista-low-rerun/`, `results/server-qwen38-ista-low-rerun.log`.
