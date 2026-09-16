@@ -59,3 +59,5 @@ Deviation: none.
 Gemma-4-12B NVFP4 rev `eb8c8df`, one slot, f16 KV, ctx 32k, `--reasoning-budget 7350`, thinking on, `max_tokens` 9398. `nvidia-smi` 9120/16311 MiB after load. Verify request: finish `stop`, 6308 completion tokens, not forced, answer present.
 Wall parts (UTC):
 - part 1 start 21:40
+- part 1 end 21:50 (the Claude Code harness killed the background run task and the watcher on its own low-memory guard; the server stayed up, 17 problems landed; free RAM 1.7 GB, available 12 GB)
+- part 2 start 21:52, resumed with `setsid nohup`, outside the harness's task list, same run directory
