@@ -15,6 +15,7 @@
 # object to merge it into every chat completion request (openai backend only).
 import json
 import os
+import sys
 import signal
 
 import openai
@@ -58,13 +59,17 @@ def _task_id_for(prompt):
     if _task_by_prompt is None:
         from evalplus.data import get_human_eval_plus, get_mbpp_plus
 
+        # Loading a dataset that is not cached makes EvalPlus download
+        # it, and that download hung a run for 26 minutes on 2026-09-16.
+        # Load only the dataset the run named.
+        dataset = "mbpp" if any("mbpp" in a.lower() for a in sys.argv) else "humaneval"
+        loader = get_mbpp_plus if dataset == "mbpp" else get_human_eval_plus
         _task_by_prompt = {}
-        for loader in (get_human_eval_plus, get_mbpp_plus):
-            try:
-                for task_id, task in loader().items():
-                    _task_by_prompt[task["prompt"].strip()] = task_id
-            except Exception:
-                pass
+        try:
+            for task_id, task in loader().items():
+                _task_by_prompt[task["prompt"].strip()] = task_id
+        except Exception:
+            pass
     return _task_by_prompt.get(prompt.strip())
 
 

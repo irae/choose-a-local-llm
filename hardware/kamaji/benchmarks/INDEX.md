@@ -16,11 +16,20 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
   and one guided agent row of the fork under the budget. Starts after
   run 20; reads run 21's margin when the coordinator relays one.
 
-## bench20, planned 2026-09-15 ([state](bench20/state.md), [results](bench20/results.md))
+## bench20, 2026-09-15 to 2026-09-16 ([report](bench20/report.md), [state](bench20/state.md), [results](bench20/results.md))
 
-- Runbook: [bench20/AGENT.md](bench20/AGENT.md). Re-runs only the empty
-  EvalPlus problems of seven scored runs, with the finish reason
-  recorded, so each empty's cause is proven. Starts after run 18.
+- Runbook: [bench20/AGENT.md](bench20/AGENT.md). Re-runs of the empty
+  EvalPlus problems of eight scored runs, with the finish reason
+  recorded.
+- **Every empty on the Mac is the output budget.** 65 problems re-ran,
+  23 completed, 42 hit `length` at the same budget, none stopped with
+  no answer. No `model` cause exists on any row.
+- **Four thinking-on scores moved up**: Bonsai MLX 0.933/0.902,
+  Qwen3.6 GGUF 0.957/0.939, Gemma-26B GGUF 0.896/0.872, Gemma-26B MLX
+  0.793/0.768. Two page readings reversed with them.
+- **Bonsai MLX needs `--prompt-cache-size`**: its server died three
+  times on long generations; the Gemma-26B MLX command with the flag
+  ran clean.
 
 ## bench16, 2026-09-12 to 2026-09-13 ([state](bench16/state.md), [results](bench16/results.md), [report](bench16/report.md))
 

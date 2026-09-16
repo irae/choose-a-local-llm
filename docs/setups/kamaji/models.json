@@ -293,7 +293,7 @@
       "tokShallow": "49.3",
       "tokDeep": "23.4",
       "memory": "20.0 GB",
-      "evalplus": "0.713/0.701/72%",
+      "evalplus": "0.793/0.768/81%",
       "mendel": "failed-smoke",
       "id": "gemma26-mlx",
       "evalplusWall": 136,
