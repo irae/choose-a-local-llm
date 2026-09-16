@@ -216,9 +216,25 @@ Files: `results/qwen36-q4kxl-evalplus-on/humaneval/`,
 `results/server-qwen36-q4kxl.log`.
 Deviation: none.
 
+## `gemma26-nvfp4-evalplus-on` — running
+
+`catlilface/Gemma-4-26B-A4B-NVFP4-GGUF:Q8`, `--n-cpu-moe 7`, one slot,
+f16 KV, ctx 32768 served, vram 14432 MiB, 1454 MiB free after load
+(above this block's 1200 MiB floor).
+
+Calibration `gemma26-nvfp4-on`, thinking on: 10/10 rows, 2 `length`
+stops (`HumanEval/124`, `HumanEval/145`, both hit the 30000 cap,
+empty) — non-converging, same pattern as both Qwen3.8 builds. Longest
+successful completion `HumanEval/32` at 12241 tokens.
+`gemma26-nvfp4_budget` = 12500 (just above 12241), non-converging rule.
+
+Deviation: none — handled per the same runbook rule as the ista/iq3s
+blocks.
+
 ## Handing over
 
 `machine-setup`, `qwen38-ista-evalplus-xhigh` (0.945/0.909, 0/164
 empty), `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty) and
-`qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty) done. On to
-`gemma26-nvfp4-evalplus-on` next.
+`qwen36-q4kxl-evalplus-on` (0.945/0.902, 0/164 empty) done.
+`gemma26-nvfp4-evalplus-on` calibrated, budget 12500, starting the
+watcher and full run next.
