@@ -173,10 +173,33 @@ Files: `results/qwen38-iq3s-evalplus-xhigh/humaneval/`,
 `results/server-qwen38-iq3s.log`.
 Deviation: none.
 
+## `qwen36-q4kxl-evalplus-on` — running
+
+`unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`, MTP draft n-max 2,
+`--n-cpu-moe 21`, one slot, q8_0 KV, ctx 32768 served, vram 14066 MiB,
+1770 MiB free after load. Model file already in the default `hf`
+cache (migrated earlier this session). System under host memory
+pressure with this config (`--n-cpu-moe 21` puts 21 experts' worth of
+weights in host RAM): ~1.1-1.5 GB free, 10-11 GB swap in use, stable
+(not growing) through the calibration. Background wait wrappers
+(`run_in_background`) were repeatedly reaped by the harness's own low-
+memory guard during this block; the actual llama-server and
+calibration processes were unaffected — checked with `ps`/`pgrep`
+directly at each wakeup instead.
+
+Calibration `qwen36-q4kxl-on`, thinking on: 10/10 rows, 0 `length`
+stops — converges normally, unlike both Qwen3.8 builds. Standard
+formula: max completion 16103 × 1.5 = 24154 ≥ floor 8192.
+`qwen36-q4kxl_budget` = 24154.
+
+Deviation: harness background-wait wrappers reaped under host memory
+pressure (not the run's own processes); worked around by polling
+directly. Watching swap for growth during the full run per the
+checklist.
+
 ## Handing over
 
 `machine-setup`, `qwen38-ista-evalplus-xhigh` (0.945/0.909, 0/164
 empty) and `qwen38-iq3s-evalplus-xhigh` (0.957/0.921, 0/164 empty)
-done. On to `qwen36-q4kxl-evalplus-on` next, per the runbook's order
-and arm table (drafter, `--n-cpu-moe 21`, fallback no drafter +
-`--n-cpu-moe 17`).
+done. `qwen36-q4kxl-evalplus-on` calibrated, budget 24154, starting
+the watcher and full run next.
