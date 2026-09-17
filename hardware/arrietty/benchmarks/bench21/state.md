@@ -54,10 +54,35 @@ Every row has `has_separate_reasoning_field: true` (thinking on); `resolved_reas
 Files: `hardware/arrietty/calibrations/calibration-gemma12-nvfp4-on-think.json`, `results/calibrate-gemma12-nvfp4-on-think.log`, `results/server-gemma12-nvfp4-calibrate-think.log`.
 Deviation: none.
 
-## evalplus gemma-4-12b nvfp4/f16/on budget 7k — running
+## evalplus gemma-4-12b nvfp4/f16/on budget 7k
 
 Gemma-4-12B NVFP4 rev `eb8c8df`, one slot, f16 KV, ctx 32k, `--reasoning-budget 7350`, thinking on, `max_tokens` 9398. `nvidia-smi` 9120/16311 MiB after load. Verify request: finish `stop`, 6308 completion tokens, not forced, answer present.
 Wall parts (UTC):
 - part 1 start 21:40
 - part 1 end 21:50 (the Claude Code harness killed the background run task and the watcher on its own low-memory guard; the server stayed up, 17 problems landed; free RAM 1.7 GB, available 12 GB)
 - part 2 start 21:52, resumed with `setsid nohup`, outside the harness's task list, same run directory
+- part 2 end 00:56 (2026-09-17), last problem 00:56:42, evaluate done 00:56:50
+Wall: 10.0 + 184.8 = 194.8 min.
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.976 |
+| HumanEval plus | 0.951 |
+| completion rate | 100% |
+| empty (samples) | 0/164 |
+| forced (finish log) | 45/164 |
+| think budget | 7350 |
+| answer budget | 2048 |
+| `max_tokens` | 9398 |
+| wall | 194.8 min |
+
+Natural run of the same config (`gemma12-nvfp4-on`, models.json): 0.659/0.640/68%, 53/164 empty, budget 8192, wall 203.9 min.
+Forced-failed (prepare): 6 of 45: HumanEval/32, 39, 91, 132, 134, 145.
+Files: `results/gemma12-nvfp4-budget-on/`, `results/server-gemma12-nvfp4-budget-on.log`, `results/run-gemma12-nvfp4-budget-on.log`, `results/watch-gemma12-nvfp4-budget-on.log`, `~/.local/share/choose-a-local-llm/run21-gemma12-nvfp4-budget-on-mem.log`.
+Deviation: the harness killed the run task and the watcher once (part 1 end); the server never died; the wall excludes the 2-minute gap.
+
+## evalplus gemma-4-12b nvfp4/f16/on forced-rerun — running
+
+Same file and arm, no reasoning flags, `max_tokens` 30000, 6 problems. `nvidia-smi` 9058/16311 MiB after load. Verify request: finish `stop`, not forced.
+Wall parts (UTC):
+- part 1 start 01:09 (2026-09-17)
