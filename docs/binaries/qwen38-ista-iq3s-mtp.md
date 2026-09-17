@@ -166,7 +166,9 @@ window. The full curves are on the archive pages of
   0.945 / 0.909 with 7 empties in 217.6 minutes without the budget.
   The two forced failures hit the 30000 cap without the budget too,
   so the budget stands. A second budgeted run at a fixed 8192 thinking
-  budget follows.
+  budget: the same 0.976 / 0.933, no empty answer, 11 forced answers
+  of which 8 pass the base tests and 5 the plus, 175.0 minutes. The
+  natural re-run of its six forced failures follows.
   `hardware/arrietty/benchmarks/bench21/`.
 - Pending — M1 Max: the re-run of the five xhigh empties is not
   scheduled
