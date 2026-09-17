@@ -55,4 +55,7 @@ Every file of this model, on every machine that served it, with every run and a 
 - **The slowest model here, and its empties are its thinking.** At
   xhigh a few problems never converge inside the output budget on both
   machines. A thinking budget on the server is under test on this model
-  ([method](../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)).
+  ([method](../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)):
+  the 4-bit build on the Mac, forced to answer at 30000 thinking
+  tokens, scored 0.982 / 0.951 with no empty answer, against
+  0.957 / 0.939 with six empties without the flag.
