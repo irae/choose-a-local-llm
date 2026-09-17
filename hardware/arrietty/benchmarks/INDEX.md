@@ -6,14 +6,25 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 `results/`). Run numbers are shared with the Mac
 (`hardware/kamaji/benchmarks/INDEX.md`).
 
-## bench21, planned 2026-09-16 ([state](bench21/state.md), [results](bench21/results.md))
+## bench21, 2026-09-16 to 2026-09-17 ([report](bench21/report.md), [state](bench21/state.md), [results](bench21/results.md))
 
 - Runbook: [bench21/AGENT.md](bench21/AGENT.md). The thinking budget
   under test (`docs/methodology/evalplus.md`, "Unproven yet",
   `../research/thinking-budget.md`): two run 19 configs scored again
   under a server thinking budget, then the natural re-run of the
-  problems where the budget fired and the answer failed. Starts after
-  run 19.
+  problems where the budget fired and the answer failed. Ten blocks,
+  no block waited on a human.
+- **A thinking budget removes every empty answer.** Gemma-4-12B NVFP4
+  with thinking on: 0.976/0.951 at a 7350 budget against 0.659/0.640
+  with 53 empties. The ISTA Qwen3.8 at xhigh: 0.976/0.933 against
+  0.945/0.909 with 7 empties.
+- **No forced answer was late.** Every forced failure either loops to
+  30000 without the flag or converges and is still wrong. No budget
+  needed a correction.
+- **A fixed 8192 budget scores the same as the 30000 cap on the ISTA
+  config**, with the same failed problems, in 175.0 minutes against
+  273.4. It forces 11 answers against 6.
+- HumanEval/99 and HumanEval/145 loop on both models at every budget.
 
 ## bench19, 2026-09-15 to 2026-09-16 ([report](bench19/report.md), [state](bench19/state.md), [results](bench19/results.md))
 
