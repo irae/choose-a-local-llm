@@ -103,3 +103,12 @@ Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh
 Close: 1 forced-failed problem re-run (`HumanEval/99`, forced-fail-loop, hits the 30000 cap naturally too). Score base 0.976, plus 0.951 (plus unchanged from the budget block; base moved by one task on a cutoff-content difference, not a real regression). Re-run wall 27 min 30 s. `corrected_think_budget`: unchanged (30000). Server and watcher stopped.
 Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-forced-rerun/`.
 Deviation: none.
+
+## `bonsai-fork-calibrate-think` — running
+
+Served: `LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server -m .../Ternary-Bonsai-27B-Q2_g64.gguf --alias bonsai-prism -ngl 999 -fa on -c 32768 --parallel 1 --cache-type-k q4_0 --cache-type-v q4_0 --kv-mean-center ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf --jinja --port 8081`, thinking on (default), no extra body. Verified with a real request.
+
+Calibration running (pid 93402), `calibration-bonsai-fork-think-budget.json`.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-calibrate-think/`.
