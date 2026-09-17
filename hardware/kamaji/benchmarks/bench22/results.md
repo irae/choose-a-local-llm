@@ -35,3 +35,17 @@ Summary: forced-pass 14, forced-fail-late 0, forced-fail-loop 1, forced-fail-wro
 
 `corrected_think_budget`: unchanged. No late answer appeared once the budget was removed, so 19491 stands as the think budget for this config.
 Files: `hardware/kamaji/benchmarks/bench22/results/gemma26-gguf-forced-rerun/`.
+
+## `qwen38-bartowski-calibrate-xhigh`
+
+Think budget 30000, answer budget 2048, max tokens 32048. Margin 1.5. 9/10 calibration problems converged, 1 cut.
+
+## `qwen38-bartowski-budget-xhigh`
+
+| old/new | Config | Max ctx | pass@1 base | pass@1 plus | empty | forced | wall |
+|---|---|--:|--:|--:|--:|--:|--:|
+| old | dense 27B 4-bit, effort xhigh, no budget | 32k | 0.957 | 0.939 | 6/164 | — | 510.3 min |
+| new | dense 27B 4-bit, effort xhigh, budget 30000 | 32k | **0.982** | **0.951** | **0/164** | 3/164 | 447.8 min |
+
+The old row is the planning snapshot from `docs/setups/kamaji/models.json` (no thinking budget, no forced re-run). The new row is this run, budget 30000 think / 2048 answer / 32048 total. 3 of 164 problems hit the budget message; none of those 3 came back empty.
+Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh/`.
