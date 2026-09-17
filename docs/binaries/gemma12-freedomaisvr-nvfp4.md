@@ -105,4 +105,5 @@ same depths on this card.
   `max_tokens` 9398. The budgeted full run: 0.976 / 0.951, no empty
   answer, 45 forced answers of which 42 pass, 194.8 minutes, against
   0.659 / 0.640 with 53 empties in 203.9 minutes without the budget.
-  The natural re-run of the six forced failures follows. `hardware/arrietty/benchmarks/bench21/`.
+  The natural re-run of the six forced failures found all six at the
+  30000 cap without the budget too, so the 7350 budget stands. `hardware/arrietty/benchmarks/bench21/`.
