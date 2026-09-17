@@ -33,8 +33,11 @@ Every file of this model, on every machine that served it, with every run and a 
   thinking off.** 0.976 / 0.939 on the M1 Max and 0.927 / 0.896 on the
   RTX 5060 Ti, every answer delivered, above 8 tok/s to 245K on the Mac
   and 261K on the card.
-- **Thinking on is the pitfall.** On the card thinking on scores
-  0.659 / 0.640 with 53 of 164 empty. On the Mac the thinking-on LM
+- **Thinking on is the pitfall, and a thinking budget removes it.** On
+  the card thinking on scores 0.659 / 0.640 with 53 of 164 empty; under
+  a 7350-token thinking budget the same config scores 0.976 / 0.951
+  with no empty answer, 45 forced answers of which 42 pass (under
+  test). On the Mac the thinking-on LM
   Studio entry was retired for a repetition loop. The 12B fails to
   converge more often than the 26B.
 - **It fails the agent task everywhere.** Zero commits on the card on

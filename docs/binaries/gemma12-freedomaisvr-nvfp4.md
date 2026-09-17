@@ -102,5 +102,7 @@ same depths on this card.
   empties; the coordinator re-derived 53 from the samples file. `hardware/arrietty/benchmarks/bench19/`.
 - 2026-09-16 — Thinking-budget test started on this file: calibration
   with reasoning lengths, 4 of 10 converged, thinking budget 7350,
-  `max_tokens` 9398; the budgeted full run and the natural re-run of
-  its forced failures follow. `hardware/arrietty/benchmarks/bench21/`.
+  `max_tokens` 9398. The budgeted full run: 0.976 / 0.951, no empty
+  answer, 45 forced answers of which 42 pass, 194.8 minutes, against
+  0.659 / 0.640 with 53 empties in 203.9 minutes without the budget.
+  The natural re-run of the six forced failures follows. `hardware/arrietty/benchmarks/bench21/`.

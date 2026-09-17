@@ -75,7 +75,7 @@ llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_
 
 <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="on" page="/binaries/gemma12-freedomaisvr-nvfp4" />
 
-pi id `gemma-4-12b-nvfp4`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: after a broken `xtend` edit, the thinking repeated the planned fix 520 times and never made the tool call, with zero commits. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 8192: 0.659/0.640, 53 empty answers of 164 whose cause is unproven because the run saved no finish log, in 203.9 minutes of active time in two parts. The calibration ended 5 of 10 answers at the 30000 cap, so the runner first set 1700 as a waste limiter; the owner restored the 8192 floor after 32 answers, and those 32 stayed. Thinking on scores far below thinking off on this build, 0.659 against 0.927, and 53 of the 56 failures are empty answers: the thinking did not end inside 8192 tokens on a third of the problems, as the calibration predicted with five of ten answers at the 30000 cap. This is the first EvalPlus score for this build at thinking on.
+pi id `gemma-4-12b-nvfp4`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: after a broken `xtend` edit, the thinking repeated the planned fix 520 times and never made the tool call, with zero commits. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 8192: 0.659/0.640, 53 empty answers of 164 whose cause is unproven because the run saved no finish log, in 203.9 minutes of active time in two parts. The calibration ended 5 of 10 answers at the 30000 cap, so the runner first set 1700 as a waste limiter; the owner restored the 8192 floor after 32 answers, and those 32 stayed. Thinking on scores far below thinking off on this build, 0.659 against 0.927, and 53 of the 56 failures are empty answers: the thinking did not end inside 8192 tokens on a third of the problems, as the calibration predicted with five of ten answers at the 30000 cap. This is the first EvalPlus score for this build at thinking on. Under a server thinking budget of 7350 tokens (answer budget 2048, `max_tokens` 9398, from a calibration with reasoning lengths and the margin 1.5; the thinking-budget test, 2026-09-16), the same file and level scored 0.976/0.951 with no empty answer in 194.8 minutes: 45 problems hit the budget and were forced to answer, and 42 of those 45 passed the base tests. That is above the thinking-off row of this build, 0.927/0.896. The natural re-run of the six forced failures is pending, and so is the owner's word on how a budgeted score is shown.
 
 ```bash
 llama-server -m "$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf)" \
@@ -119,8 +119,12 @@ llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_
   unproven because the run saved no finish log. The 12B fails to
   converge more often than the 26B, on both machines. This config is
   the first case of the thinking-budget test
-  ([method](../../../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)),
-  pending.
+  ([method](../../../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)).
+  Under a 7350-token thinking budget from its calibration the same
+  config scored 0.976/0.951 with no empty answer in 195 minutes: 45
+  problems were forced to answer and 42 of them passed, above the
+  thinking-off row. The site shows the natural score until the owner
+  decides how a budgeted row reads.
 - **EvalPlus, UD-Q4_K_XL at thinking on:** 0.793/0.780, 34 empty answers
   of 164, budget 8192, 259.0 minutes. Every answered problem passed the
   base tests, so the whole loss is thinking that did not end; the cause
