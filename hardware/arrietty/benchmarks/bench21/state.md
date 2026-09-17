@@ -119,3 +119,9 @@ Calibration 02:13 to 03:16 UTC.
 Every row `resolved_reasoning_effort: xhigh`, source requested. Cut: HumanEval/99, 145.
 Files: `hardware/arrietty/calibrations/calibration-qwen38-ista-xhigh-think.json`, `results/calibrate-qwen38-ista-xhigh-think.log`, `results/server-qwen38-ista-calibrate-think.log`.
 Deviation: none.
+
+## evalplus qwen-3.8-27b gsq-iq3s/q8/xhigh budget 30k — running
+
+Qwen3.8-27B ISTA GSQ-RCO IQ3_S rev `d562806`, no drafter, q8_0 KV, ctx 32k, `--reasoning-budget 30000`, effort xhigh, `max_tokens` 32048. `nvidia-smi` 13629/16311 MiB after load. Verify request: finish `stop`, 4892 completion tokens, not forced, answer present.
+Wall parts (UTC):
+- part 1 start 03:21 (2026-09-17)
