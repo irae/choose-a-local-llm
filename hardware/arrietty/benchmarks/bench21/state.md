@@ -163,3 +163,9 @@ Wall: 37.2 min.
 Both forced-failed problems (HumanEval/99, 145) hit 30000 without the flag: non-convergence. Corrected think budget: unchanged (no late answer). Combined samples score 0.970/0.933.
 Files: `results/qwen38-ista-forced-rerun/` (`report.md`, `forced.json`), `results/server-qwen38-ista-forced-rerun.log`, `results/run-qwen38-ista-forced-rerun.log`, `results/watch-qwen38-ista-forced-rerun.log`.
 Deviation: none.
+
+## evalplus qwen-3.8-27b gsq-iq3s/q8/xhigh budget8192 — running
+
+Same file and arm as `qwen38-ista-budget-xhigh`, `--reasoning-budget 8192` (owner-chosen round value, run decision 2026-09-16), same answer budget 2048, `max_tokens` 10240. `nvidia-smi` 13639/16311 MiB after load. Verify request: finish `stop`, 8354 completion tokens, forced true, answer present.
+Wall parts (UTC):
+- part 1 start 09:03 (2026-09-17)
