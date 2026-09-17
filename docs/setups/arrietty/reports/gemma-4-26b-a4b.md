@@ -29,7 +29,7 @@ Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; Eval
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" page="/setups/arrietty/binaries/gemma26-catlilface-nvfp4q8" top /> | **97k** | mem | <TokCell shallow="58.77" deep="45.59" top-shallow top-deep /> | **15.2 GB** | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 3h35 · Mendel 0h23">3h58</span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" top /> | **97k** | mem | <TokCell shallow="58.77" deep="45.59" top-shallow top-deep /> | **15.2 GB** | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 3h35 · Mendel 0h23">3h58</span> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -37,7 +37,7 @@ Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; Eval
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" page="/setups/arrietty/binaries/gemma26-catlilface-nvfp4q8" />
+<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" />
 
 pi id `gemma-4-26b-a4b-nvfp4`. A community NVFP4 repack that keeps attention at Q8. The file is larger than the card, so a measured count of expert layers stays in host RAM: 7 is the lowest `--n-cpu-moe` that loads at `-c 98304` and serves a real request at the deep cell (6 runs out of memory at load). The file has no MTP layers, so no drafter arm exists. The guided task scored 37.5, 3 of 8 libraries, and ended on a loop in its text. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 12500: 0.909/0.878, 14 empty answers of 164 whose cause is unproven because the run saved no finish log, in 215.3 minutes of active time. Two of ten calibration problems never converged, so the budget sits just above the longest successful answer, and the full run left 14 answers empty. The Mac's nearest row is a different build, the unsloth k-quant at thinking on: 0.884/0.860 with eighteen empty answers at a 30000 budget.
 
@@ -71,7 +71,7 @@ llama-server -m "$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-
 <!-- gen:model-evalplus:start -->
 | config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" page="/setups/arrietty/binaries/gemma26-catlilface-nvfp4q8" />](../benchmarks/gemma-4-26b-a4b.md) | 12500 | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | † unproven | <TokCell shallow="58.77" deep="45.59" /> | 3h35 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" />](../benchmarks/gemma-4-26b-a4b.md) | 12500 | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | † unproven | <TokCell shallow="58.77" deep="45.59" /> | 3h35 |
 <!-- gen:model-evalplus:end -->
 
 Every run of this model on this machine, best base score first. The empties column carries the cause word ([what the words mean](../../../benchmarks/evalplus.md#limits-on-local-hardware)).
@@ -83,7 +83,7 @@ Guided test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" page="/setups/arrietty/binaries/gemma26-catlilface-nvfp4q8" /> | guided-v3.0 | 96k | **37.5** | 3/8/partial | 22.5 | 6,687k | 90k | 1 | 137 | 6 | thinking |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" /> | guided-v3.0 | 96k | **37.5** | 3/8/partial | 22.5 | 6,687k | 90k | 1 | 137 | 6 | thinking |
 
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:model-mendel:end -->

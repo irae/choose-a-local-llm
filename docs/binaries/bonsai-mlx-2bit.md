@@ -1,9 +1,9 @@
-# Ternary-Bonsai-27B MLX 2-bit (prism-ml) on M1 Max 32 GB
+# Ternary-Bonsai-27B MLX 2-bit (prism-ml)
 
 File: [`prism-ml/Ternary-Bonsai-27B-mlx-2bit`](https://huggingface.co/prism-ml/Ternary-Bonsai-27B-mlx-2bit),
 MLX 2-bit, about 7.2 GB. Ternary (2-bit) weights on the Qwen3.6-27B
 base; no MTP head (removed from the checkpoint). Server: `mlx_lm.server`,
-unquantized (f16) KV. Every run of this file on this machine is on this
+unquantized (f16) KV. Every run of this file on every machine is on this
 page, retired and superseded rows included; a run a harness or serving
 defect voided is not.
 
@@ -17,19 +17,19 @@ defect voided is not.
   58K to near 47K between the first creep and a later real-text read,
   so the served window is 40960. The model has not finished the agent
   task at either thinking level in any attempt.
-- **Where it stands.** EvalPlus 0.933/0.902 at thinking on, 0.927/0.902
-  at thinking off, both on a 10240-token budget. No Mendel row for
-  either thinking level currently stands: the blind row is capped to
-  37.5 on a 3-of-8 partial, and every guided attempt at thinking off
-  is invalid.
+- **Where it stands.** EvalPlus 0.933/0.902 at thinking on, budget
+  10240; 0.927/0.902 at thinking off, budget 8192. No Mendel row is
+  complete: the current blind row is capped to 37.5 on a 3-of-8
+  partial, the current guided row to 12.5 on a 1-of-8 partial, and
+  every guided attempt at thinking off is invalid.
 
 ## Configurations
 
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" page="/setups/kamaji/binaries/bonsai-mlx-2bit" top /> | **40k** | mem | <TokCell shallow="24.5" deep="17.3" stale top-shallow top-deep /> | **22.5 GB** | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | <ScoreCell value="37.5†" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 19h24 · Mendel 5h00">24h24</span> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" page="/setups/kamaji/binaries/bonsai-mlx-2bit" /> | **40k** | mem | <TokCell shallow="24.5" deep="17.3" stale top-shallow top-deep /> | **22.5 GB** | <ScoreCell value="0.927/0.902" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 0h46 · Mendel 3h07">3h53</span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" top /> | **40k** | mem | <TokCell shallow="24.5" deep="17.3" stale top-shallow top-deep /> | **22.5 GB** | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | <ScoreCell value="37.5†" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 19h24 · Mendel 5h00">24h24</span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" /> | **40k** | mem | <TokCell shallow="24.5" deep="17.3" stale top-shallow top-deep /> | **22.5 GB** | <ScoreCell value="0.927/0.902" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 0h46 · Mendel 3h07">3h53</span> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:binary-rows:end -->
@@ -39,12 +39,13 @@ defect voided is not.
 <!-- gen:binary-evalplus:start -->
 | config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" page="/setups/kamaji/binaries/bonsai-mlx-2bit" />](../benchmarks/bonsai-27b.md) | 10240 | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | 2 budget | <TokCell shallow="24.5" deep="17.3" /> | 19h24 |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" />](../setups/kamaji/benchmarks/bonsai-27b.md) | 10240 | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | 2 budget | <TokCell shallow="24.5" deep="17.3" /> | 19h24 |
 <!-- gen:binary-evalplus:end -->
 
-Every empty on this file is the output budget: the 2026-09-16 re-run
-of the two thinking-on empties (budget 10240) completed both under the
-same budget, finish reason `length`.
+Every empty on this file is the output budget. The 2026-09-16 re-run
+took the five thinking-on empties at budget 10240: three completed and
+passed, and the two that remain hit the cap again with
+`finish_reason: length`.
 
 ## Agent task — Mendel, every prompt version
 
@@ -53,16 +54,16 @@ Blind test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" page="/setups/kamaji/binaries/bonsai-mlx-2bit" /> | blind-v1.0 | 56k | **37.5** (raw 58) | 3/8/partial | 101.8 | 887k | 28k | 0 | 53 | 3 |  |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" page="/setups/kamaji/binaries/bonsai-mlx-2bit" /> | blind-v1.1 | 56k | **37.5** (raw 55) | 3/8/partial | 300.0 | 3,555k | 52k | 0 | 135 | 4 | thinking |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" /> | blind-v1.0 | 56k | **37.5** (raw 58) | 3/8/partial | 101.8 | 887k | 28k | 0 | 53 | 3 |  |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" /> | blind-v1.1 | 56k | **37.5** (raw 55) | 3/8/partial | 300.0 | 3,555k | 52k | 0 | 135 | 4 | thinking |
 
 Guided test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" page="/setups/kamaji/binaries/bonsai-mlx-2bit" /> | guided-v2.1 | 56k | **37.5** (raw 69) | 3/8/partial | 230.3 | 2,142k | 51k | 0 | 94 | 3 |  |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" page="/setups/kamaji/binaries/bonsai-mlx-2bit" /> | guided-v3.0 | 56k | **12.5** (raw 59) | 1/8/partial | 300.0 | 3,619k | 46k | 0 | 122 | 1 |  |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" page="/setups/kamaji/binaries/bonsai-mlx-2bit" /> | guided-v3.0 | 56k | **0** (raw 25) | 0/8/model-failed | 186.9 | 1,969k | 27k | 0 | 105 | 0 | tool call |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" /> | guided-v2.1 | 56k | **37.5** (raw 69) | 3/8/partial | 230.3 | 2,142k | 51k | 0 | 94 | 3 |  |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" /> | guided-v3.0 | 56k | **12.5** (raw 59) | 1/8/partial | 300.0 | 3,619k | 46k | 0 | 122 | 1 |  |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" /> | guided-v3.0 | 56k | **0** (raw 25) | 0/8/model-failed | 186.9 | 1,969k | 27k | 0 | 105 | 0 | tool call |
 
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:binary-mendel:end -->
@@ -78,6 +79,8 @@ stop condition for.
 
 ## Speed and context
 
+Measured on the M1 Max 32 GB, the only machine that served this file.
+
 <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" hide="drafter,effort" />
 
 | measurement | date | config | result |
@@ -91,7 +94,7 @@ The real-text ceiling of 2026-09-12/13 sits well under the 2026-08-29
 creep's 58K, so the served window is now 40960 (the MLX 5-percent
 window rule, owner, 2026-09-12) and the speed and memory cells on this
 page carry the 2026-08-29 creep's numbers marked stale. The full
-curves are on [the benchmarks page](../benchmarks/bonsai-27b.md).
+curves are on [the benchmarks page](../setups/kamaji/benchmarks/bonsai-27b.md).
 
 ## Log
 

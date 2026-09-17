@@ -41,8 +41,8 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-unsloth-q4kxl" top /> | **245k** | mem | <TokCell shallow="25.0" deep="9.2" top-shallow top-deep /> | **13.9 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 0h43 · Mendel 1h38">2h21</span> |
-| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-lmstudio-mlx-4bit" /> 💀 | ***131k*** | *mem* | ****34.19*** → ***23.23**** | ***17.2 GB*** | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 1h33 · Mendel —">1h33†</span> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" top /> | **245k** | mem | <TokCell shallow="25.0" deep="9.2" top-shallow top-deep /> | **13.9 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 0h43 · Mendel 1h38">2h21</span> |
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/binaries/gemma12-lmstudio-mlx-4bit" /> 💀 | ***131k*** | *mem* | ****34.19*** → ***23.23**** | ***17.2 GB*** | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 1h33 · Mendel —">1h33†</span> |
 
 💀 LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned. [Why it is not a candidate](../lmstudio-retired.md).
 
@@ -50,9 +50,9 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-unsloth-q4kxl" top /> | **2x82k** | mem | <TokCell shallow="25.0" deep="15.7" stale top-shallow top-deep /> | **13.8 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 0h43 · Mendel —">0h43†</span> |
-| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-unsloth-q4kxl" top /> | **4x49k** | mem | <TokCell shallow="42.9" deep="27.7" stale top-shallow top-deep /> | 25.1 GB | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 0h43 · Mendel —">0h43†</span> |
-| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" effort="off" page="/setups/kamaji/binaries/gemma12-unsloth-q4kxl" top /> | 16k | speed | <TokCell shallow="13.8" deep="6.5" stale /> | **10.5 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 0h43 · Mendel —">0h43†</span> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" top /> | **2x82k** | mem | <TokCell shallow="25.0" deep="15.7" stale top-shallow top-deep /> | **13.8 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 0h43 · Mendel —">0h43†</span> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" top /> | **4x49k** | mem | <TokCell shallow="42.9" deep="27.7" stale top-shallow top-deep /> | 25.1 GB | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 0h43 · Mendel —">0h43†</span> |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" top /> | 16k | speed | <TokCell shallow="13.8" deep="6.5" stale /> | **10.5 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 0h43 · Mendel —">0h43†</span> |
 
 † from an earlier serving config or method; re-run pending.
 
@@ -64,7 +64,7 @@ Retired entries: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on
 Each table row above is one config; start it with its block below.
 
 <!-- gen:model-configs:start -->
-<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-unsloth-q4kxl" />
+<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />
 
 pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.
 
@@ -76,7 +76,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-lmstudio-mlx-4bit" />
+<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/binaries/gemma12-lmstudio-mlx-4bit" />
 
 LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.
 
@@ -85,7 +85,7 @@ LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bi
 ~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y
 ```
 
-<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-unsloth-q4kxl" />
+<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />
 
 pi id `gemma-4-12b-2x`. Measured 2026-09-08 at wired limit 25000, both slots swept in turn. The clean per-slot depth is 81958 tokens, and it does not move with `-c`: at every allocation from 221184 up, the sweep stopped on swap growth at the step past 81958, and at `-c 196608` the same depth ran clean to the slot's own window. A larger `-c` loads (770048 serves a short completion) and buys no depth. Two slots hold about 71 percent of the single slot's 114718 clean depth at `-c 131072`. The EvalPlus score is the single-slot config's, same weights and cache type.
 
@@ -97,7 +97,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-unsloth-q4kxl" />
+<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />
 
 pi id `gemma-4-12b-4x`. Measured 2026-09-05 at f16 KV: 655360 is the largest `-c` that serves a real completion (688128 loads but fails on compute buffers at the first depth step), 163840 per slot. One slot swept with the other three loaded and idle: swap grew at 66K, so the last clean row is 49K at 27.7 tok/s. The machine ran this sweep with free memory near zero and heavy compaction on every step, with swap already in use at session start; the row is honest to that state and a re-measure after a reboot may read deeper.
 
@@ -110,7 +110,7 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
   --jinja --port 8081
 ```
 
-<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" effort="off" page="/setups/kamaji/binaries/gemma12-unsloth-q4kxl" />
+<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" drafter="mtp/4" kv="q8_0" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />
 
 The q8 KV variant with the MTP drafter. Re-measured 2026-09-03 under wired limit 24000: no OOM at load, unlike the qwen3.6 MTP dagger sweep.
 
@@ -187,8 +187,8 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 <!-- gen:model-evalplus:start -->
 | config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-unsloth-q4kxl" />](../benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | none | <TokCell shallow="25.0" deep="9.2" /> | 0h43 |
-| [<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-lmstudio-mlx-4bit" />](../benchmarks/gemma-4-12b-it.md) | 30000 | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | none | <TokCell shallow="34.19" deep="23.23" /> | 1h33 |
+| [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | none | <TokCell shallow="25.0" deep="9.2" /> | 0h43 |
+| [<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/binaries/gemma12-lmstudio-mlx-4bit" />](../benchmarks/gemma-4-12b-it.md) | 30000 | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | none | <TokCell shallow="34.19" deep="23.23" /> | 1h33 |
 <!-- gen:model-evalplus:end -->
 
 ## Agentic quality — Mendel
@@ -198,13 +198,13 @@ Blind test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-unsloth-q4kxl" /> | blind-v1.1 | 256k | **0** | 0/8/model-failed | 80.3 | 9,994k | 179k | 0 | 92 | 0 |  |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" /> | blind-v1.1 | 256k | **0** | 0/8/model-failed | 80.3 | 9,994k | 179k | 0 | 92 | 0 |  |
 
 Guided test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-unsloth-q4kxl" /> | guided-v3.0 | 256k | **37.5** (raw 58) | 3/8/partial | 97.6 | 6,453k | 125k | 0 | 132 | 3 | text |
+| <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" /> | guided-v3.0 | 256k | **37.5** (raw 58) | 3/8/partial | 97.6 | 6,453k | 125k | 0 | 132 | 3 | text |
 
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:model-mendel:end -->

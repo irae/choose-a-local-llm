@@ -142,20 +142,15 @@ function repoOf(row) {
 
 // Every binary page, by setup and by the four spec fields that name a
 // model file, so a config cell can link to the page of its file.
+const BINARIES = JSON.parse(readFileSync('docs/binaries.json', 'utf8'))
+const binaryKey = (spec) => ['base', 'quant', 'publisher', 'server'].map((k) => spec?.[k] || '').join('|')
 const BINARY_PAGES = new Map(
-  globSync('docs/setups/*/models.json').flatMap((f) => {
-    const setup = f.split('/')[2]
-    return (JSON.parse(readFileSync(f, 'utf8')).binaries || []).map((b) => [
-      `${setup}|${['base', 'quant', 'publisher', 'server'].map((k) => b.spec[k] || '').join('|')}`,
-      `/setups/${setup}/binaries/${b.id}`,
-    ])
-  }),
+  BINARIES.flatMap((b) => [b.spec.quant, ...(b.quantAliases || [])].map((quant) => [binaryKey({ ...b.spec, quant }), `/binaries/${b.id}`])),
 )
-const binaryPageOf = (spec, setup) => {
-  const key = ['base', 'quant', 'publisher', 'server'].map((k) => spec?.[k] || '').join('|')
-  if (setup) return BINARY_PAGES.get(`${setup}|${key}`) || ''
-  const hits = [...BINARY_PAGES.entries()].filter(([k]) => k.endsWith(`|${key}`))
-  return hits.length === 1 ? hits[0][1] : ''
+const binaryPageOf = (spec) => BINARY_PAGES.get(binaryKey(spec)) || ''
+const binaryMatch = (b) => {
+  const keys = new Set([b.spec.quant, ...(b.quantAliases || [])].map((quant) => binaryKey({ ...b.spec, quant })))
+  return (spec) => keys.has(binaryKey(spec))
 }
 
 function specTag(spec, { hide = '', label = '', repo = '', top = false, hardware = '', setup = '' } = {}) {
@@ -179,7 +174,7 @@ function specTag(spec, { hide = '', label = '', repo = '', top = false, hardware
     `kv="${spec.kv}"`,
     spec.effort && !hideEffort ? `effort="${spec.effort}"` : '',
     hardware ? `hardware="${hardware}"` : '',
-    binaryPageOf(spec, setup) ? `page="${binaryPageOf(spec, setup)}"` : '',
+    binaryPageOf(spec) ? `page="${binaryPageOf(spec)}"` : '',
     hide ? `hide="${hide}"` : '',
     top ? 'top' : '',
   ].filter(Boolean)
@@ -513,7 +508,7 @@ function thinkingLevel(branch) {
   return m ? m[1] : 'default'
 }
 
-function renderModelMendel(slug, blindRows, guidedRows, untrusted = [], match = null) {
+function renderModelMendel(slug, blindRows, guidedRows, untrusted = [], match = null, { hardware: showHardware = false } = {}) {
   const distrust = (r) => untrusted.find((u) =>
     (!u.serving || u.serving === r.serving) && (!u.branch || new RegExp(u.branch).test(r.branch)))
   const tagged = [
@@ -555,7 +550,7 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = [], match = 
     const state = r.invalid === 'True' ? 'invalid' : r['telemetry.commits'] === '0' ? 'model-failed' : r.partial === 'True' ? 'partial' : 'done'
     const loop = r['telemetry.loop_flag'] === 'LOOP' ? esc(r['telemetry.loop_kind'] || 'yes') : ''
     return `| ${[
-      specTag(mendelSpec(r), { label: r.model, setup: hardwareOf(r) }) + (distrust(r) ? ` ${distrust(r).marker || '†'}` : ''),
+      specTag(mendelSpec(r), { label: r.model, setup: hardwareOf(r), hardware: showHardware ? HARDWARE_SLUG[hardwareOf(r)] : '' }) + (distrust(r) ? ` ${distrust(r).marker || '†'}` : ''),
       `${test}-${esc(r.prompt_version)}`,
       config(r),
       score,
@@ -675,7 +670,7 @@ function topSet(rows, read, { lower = false } = {}) {
   return new Set(rows.filter((r, i) => vals[i] !== null && (vals[i] === ranked[0] || vals[i] === second || near(vals[i]))))
 }
 
-function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = true, hardware = false, hide = '' } = {}) {
+function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = true, hardware = false, hide = '', pageLink = (r) => r.abandoned.page } = {}) {
   const header = [
     `| Model / Config | Ctx | Cap | tok/s |${memory ? ' Memory<br>(at max ctx) |' : ''} HumanEval+ | Coding | Wall |`,
     `|---|--:|:--:|--:|${memory ? '--:|' : ''}--:|--:|--:|`,
@@ -728,11 +723,13 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     : []
   const seenPages = new Set()
   for (const r of ordered) {
-    if (!r.abandoned || seenPages.has(r.abandoned.page)) continue
-    seenPages.add(r.abandoned.page)
+    if (!r.abandoned) continue
+    const page = pageLink(r)
+    if (seenPages.has(page)) continue
+    seenPages.add(page)
     legend.push(
       '',
-      `${r.abandoned.marker || '💀'} ${r.abandoned.reason} [Why it is not a candidate](${r.abandoned.page}).`,
+      `${r.abandoned.marker || '💀'} ${r.abandoned.reason} [Why it is not a candidate](${page}).`,
     )
   }
   return [...header, ...body, ...legend].join('\n')
@@ -913,8 +910,8 @@ for (const dataFile of dataFiles) {
   const mendelBlind = currentPromptVersion(mendelBlindAll.filter((r) => r.invalid !== 'True'))
   const mendelGuided = currentPromptVersion(mendelGuidedAll.filter((r) => r.invalid !== 'True'))
   const rawLocal = (r) => r.local === 'True' && r.invalid !== 'True'
-  const mendelBlindRaw = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8')).filter(ofSetup).filter(rawLocal)
-  const mendelGuidedRaw = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8')).filter(ofSetup).filter(rawLocal)
+  data.mendelBlindRaw = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8')).filter(ofSetup).filter(rawLocal)
+  data.mendelGuidedRaw = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8')).filter(ofSetup).filter(rawLocal)
   deriveMendel(data.rows, mendelBlind, mendelGuided)
   const blindRuns = mendelRuns('benchmarks/mendel/results.json', data.setup).filter(live)
   const guidedRuns = mendelRuns('benchmarks/mendel/results-guided.json', data.setup).filter(live)
@@ -982,29 +979,37 @@ for (const dataFile of dataFiles) {
       console.log(`updated: ${target}`)
     }
   }
+}
 
-  // A binary page shows every run of one model file on this machine:
-  // every row, hidden or abandoned included, retired rows as a bare
-  // line, every EvalPlus run, and every valid Mendel run of any prompt
-  // version, runs on retired builds included.
-  for (const b of data.binaries || []) {
-    const target = `${setupDir}/binaries/${b.id}.md`
+// A binary page shows every run of one model file on every machine:
+// every row, hidden or abandoned included, retired rows as a bare line,
+// every EvalPlus run, and every valid Mendel run of any prompt version,
+// runs on retired builds included.
+function writeBinaryPages(datas) {
+  for (const b of BINARIES) {
+    const target = `docs/binaries/${b.id}.md`
     if (!existsSync(target)) {
       console.warn(`binary page missing: ${target}`)
       continue
     }
-    const same = (spec) => ['base', 'quant', 'publisher', 'server'].every((k) => (spec?.[k] || '') === (b.spec[k] || ''))
-    const rows = data.rows.filter((r) => same(r.spec))
+    const same = binaryMatch(b)
+    const rows = datas.flatMap((data) => data.rows.filter((r) => same(r.spec)).map((r) => ({ ...r, hardwareSlug: data.hardwareSlug, data })))
     const live = sortRows(rows.filter((r) => !r.retired))
-    const parts = [live.length ? renderTable(live, { footnotes: false, sort: false }) : 'No configuration row.']
-    for (const r of rows.filter((r) => r.retired)) parts.push('', `Retired entry: ${r.config} — ${r.retired.reason} ([details](../${r.retired.details.replace(/^\.\.\//, '')})).`)
+    const parts = [live.length ? renderTable(live, { footnotes: false, sort: false, hardware: true, pageLink: (r) => `../setups/${r.data.setup}/${r.abandoned.page.replace(/^\.\.\//, '')}` }) : 'No configuration row.']
+    for (const r of rows.filter((r) => r.retired)) {
+      parts.push('', `Retired entry (${r.data.hardwareName || r.hardwareSlug}): ${r.config} — ${r.retired.reason} ([details](../setups/${r.data.setup}/${r.retired.details.replace(/^\.\.\//, '')})).`)
+    }
+    const evalplus = renderEvalplusTable(datas, { match: same, linkOf: (r) => `../setups/${r.data.setup}/benchmarks/${r.slug}.md` })
+    const blind = datas.flatMap((data) => data.mendelBlindRaw)
+    const guided = datas.flatMap((data) => data.mendelGuidedRaw)
+    const mendel = renderModelMendel(null, blind, guided, [], (r) => same(mendelSpec(r)), { hardware: true })
     const original = readFileSync(target, 'utf8')
     let updated = applyBlock(original, BINARY_ROWS_START, BINARY_ROWS_END, parts.join('\n'), target)
-    updated = applyBlock(updated, BINARY_EVALPLUS_START, BINARY_EVALPLUS_END, renderEvalplusTable([data], { match: same, linkOf: (r) => `../benchmarks/${r.slug}.md`, hardware: false }), target)
-    updated = applyBlock(updated, BINARY_MENDEL_START, BINARY_MENDEL_END, renderModelMendel(null, mendelBlindRaw, mendelGuidedRaw, [], (r) => same(mendelSpec(r))), target)
+    updated = applyBlock(updated, BINARY_EVALPLUS_START, BINARY_EVALPLUS_END, evalplus, target)
+    updated = applyBlock(updated, BINARY_MENDEL_START, BINARY_MENDEL_END, mendel, target)
     if (updated === original) continue
     if (CHECK) {
-      console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)
+      console.error(`STALE: ${target} does not match docs/binaries.json. Run \`npm run docs:tables\`.`)
       drift = true
     } else {
       writeFileSync(target, updated)
@@ -1037,8 +1042,16 @@ writeBlock('docs/models/index.md', '<!-- gen:models-incomplete:start -->', '<!--
 for (const [slug, rows] of modelsAll) {
   writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-all:start -->', '<!-- gen:model-all:end -->', renderTable(rows, { memory: false, hardware: true, hide: 'server' }))
 }
+for (const slug of new Set(BINARIES.map((b) => b.model))) {
+  const lines = BINARIES.filter((b) => b.model === slug).map((b) => {
+    const machines = b.setups.map((id) => HARDWARE_SLUG[id]).join(', ')
+    return `- [${b.title}](../binaries/${b.id}.md) — ${machines}`
+  })
+  writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-binaries:start -->', '<!-- gen:model-binaries:end -->', lines.join('\n'))
+}
 
 mendelSiteRows = setupsAll.flatMap((data) => data.rows)
+writeBinaryPages(setupsAll)
 writeBlock('docs/benchmarks/evalplus.md', EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(setupsAll))
 writeBlock('docs/benchmarks/decode-speed.md', DECODE_START, DECODE_END, renderDecodeSummary(setupsAll))
 writeBlock('docs/benchmarks/mendel.md', MENDEL_LOCAL_START, MENDEL_LOCAL_END, mendelTable(currentPromptVersion(blindRunsAll), { global: true }))

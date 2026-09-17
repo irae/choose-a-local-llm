@@ -5,12 +5,22 @@ Every config of this model, on every machine, best first.
 <!-- gen:model-all:start -->
 | Model / Config | Ctx | Cap | tok/s | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/setups/kamaji/binaries/gemma26-unsloth-ud-q4kxl" hide="server" top /> | **197k** | mem | <TokCell shallow="60.1" deep="19.1" top-shallow /> | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="47.5" pill="mendel-blind" top /> | <span title="EvalPlus 5h47 · Mendel 1h21">7h08</span> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" hardware="rtx-5060ti-16gb" page="/setups/arrietty/binaries/gemma26-catlilface-nvfp4q8" hide="server" top /> | **97k** | mem | <TokCell shallow="58.77" deep="45.59" top-deep /> | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 3h35 · Mendel 0h23">3h58</span> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/setups/kamaji/binaries/gemma26-unsloth-ud-q4kxl" hide="server" /> | **2x82k** | mem | <TokCell shallow="66.6" deep="33.6" stale top-shallow top-deep /> | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h47 · Mendel —">5h47†</span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" hide="server" top /> | **197k** | mem | <TokCell shallow="60.1" deep="19.1" top-shallow /> | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="47.5" pill="mendel-blind" top /> | <span title="EvalPlus 5h47 · Mendel 1h21">7h08</span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/gemma26-catlilface-nvfp4q8" hide="server" top /> | **97k** | mem | <TokCell shallow="58.77" deep="45.59" top-deep /> | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 3h35 · Mendel 0h23">3h58</span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" hide="server" /> | **2x82k** | mem | <TokCell shallow="66.6" deep="33.6" stale top-shallow top-deep /> | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h47 · Mendel —">5h47†</span> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-all:end -->
+
+## Files
+
+Every file of this model, on every machine that served it, with every run and a log.
+
+<!-- gen:model-binaries:start -->
+- [Gemma-4-26B-A4B UD-Q4_K_XL (unsloth)](../binaries/gemma26-unsloth-ud-q4kxl.md) — m1-max-32gb
+- [Gemma-4-26B-A4B MLX 4-bit (mlx-community)](../binaries/gemma26-mlx-4bit.md) — m1-max-32gb
+- [Gemma-4-26B-A4B NVFP4Q8 (catlilface)](../binaries/gemma26-catlilface-nvfp4q8.md) — rtx-5060ti-16gb
+<!-- gen:model-binaries:end -->
 
 ## What the numbers say
 

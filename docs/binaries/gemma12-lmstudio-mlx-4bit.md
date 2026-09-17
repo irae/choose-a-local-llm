@@ -1,9 +1,9 @@
-# Gemma-4-12B MLX 4-bit (lmstudio-community) on M1 Max 32 GB
+# Gemma-4-12B MLX 4-bit (lmstudio-community)
 
 File: [`lmstudio-community/gemma-4-12B-it-MLX-4bit`](https://huggingface.co/lmstudio-community/gemma-4-12B-it-MLX-4bit),
 about 6.3 GB in LM Studio's own model cache. That cache carries no
 revision reference; the machine cannot pin the exact upstream commit.
-Server: LM Studio (`lms`). Every run of this file on this machine is on
+Server: LM Studio (`lms`). Every run of this file on every machine is on
 this page, retired and abandoned rows included; a run a harness or
 serving defect voided is not.
 
@@ -27,11 +27,11 @@ serving defect voided is not.
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-lmstudio-mlx-4bit" /> 💀 | ***131k*** | *mem* | ****34.19*** → ***23.23**** | ***17.2 GB*** | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 1h33 · Mendel —">1h33†</span> |
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/gemma12-lmstudio-mlx-4bit" /> 💀 | ***131k*** | *mem* | ****34.19*** → ***23.23**** | ***17.2 GB*** | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 1h33 · Mendel —">1h33†</span> |
 
-💀 LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned. [Why it is not a candidate](../lmstudio-retired.md).
+💀 LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned. [Why it is not a candidate](../setups/kamaji/lmstudio-retired.md).
 
-Retired entry: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on repetition loop; entry gone from the model store ([details](../lmstudio-retired.md)).
+Retired entry (M1 Max 32 GB): Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on repetition loop; entry gone from the model store ([details](../setups/kamaji/lmstudio-retired.md)).
 <!-- gen:binary-rows:end -->
 
 † from an earlier serving config or method; re-run pending.
@@ -41,7 +41,7 @@ Retired entry: Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on r
 <!-- gen:binary-evalplus:start -->
 | config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma12-lmstudio-mlx-4bit" />](../benchmarks/gemma-4-12b-it.md) | 30000 | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | none | <TokCell shallow="34.19" deep="23.23" /> | 1h33 |
+| [<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/gemma12-lmstudio-mlx-4bit" />](../setups/kamaji/benchmarks/gemma-4-12b-it.md) | 30000 | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | none | <TokCell shallow="34.19" deep="23.23" /> | 1h33 |
 <!-- gen:binary-evalplus:end -->
 
 The thinking-off row (`gemma-4-12b-it-mlx`) has no empty answer. The
@@ -59,14 +59,14 @@ Blind test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="high" page="/setups/kamaji/binaries/gemma12-lmstudio-mlx-4bit" /> | blind-v1.1 | 144k | **0** (raw 30.5) | 0/8/model-failed | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="high" hardware="m1-max-32gb" page="/binaries/gemma12-lmstudio-mlx-4bit" /> | blind-v1.1 | 144k | **0** (raw 30.5) | 0/8/model-failed | 49.5 | 218k | 28k | 0 | 15 | 0 |  |
 
 Guided test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="high" page="/setups/kamaji/binaries/gemma12-lmstudio-mlx-4bit" /> | guided-v3.0 | 160k | **0** (raw 30) | 0/8/model-failed | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
-| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="low" page="/setups/kamaji/binaries/gemma12-lmstudio-mlx-4bit" /> | guided-v3.0 | 160k | **0** (raw 29.5) | 0/8/model-failed | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="high" hardware="m1-max-32gb" page="/binaries/gemma12-lmstudio-mlx-4bit" /> | guided-v3.0 | 160k | **0** (raw 30) | 0/8/model-failed | 46.0 | 306k | 30k | 0 | 21 | 0 |  |
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="low" hardware="m1-max-32gb" page="/binaries/gemma12-lmstudio-mlx-4bit" /> | guided-v3.0 | 160k | **0** (raw 29.5) | 0/8/model-failed | 99.0 | 1,971k | 45k | 3 | 130 | 0 | tool call |
 
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:binary-mendel:end -->
@@ -75,7 +75,7 @@ Every Mendel run of this file ran the thinking-on entry
 (`google/gemma-4-12b`), which is retired and excluded from the site's
 Mendel tables by rule; the generated block above is expected to be
 empty or to omit these rows. The three runs, in full, are on
-[the LM Studio page](../lmstudio-retired.md): blind at high, 30.5/100,
+[the LM Studio page](../setups/kamaji/lmstudio-retired.md): blind at high, 30.5/100,
 0 of 8 libraries, 0 commits, a newline flood in the thinking channel
 after the first real edit attempt; guided at high, 30/100, 0 of 8, 0
 commits, the same flood; guided at low, 29.5/100, 0 of 8, 0 commits, a
@@ -84,6 +84,8 @@ collapse the same way regardless of the requested thinking level,
 because thinking cannot be turned off on this entry.
 
 ## Speed and context
+
+Measured on the M1 Max 32 GB, the only machine that served this file.
 
 <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" hide="drafter,effort" />
 
@@ -97,10 +99,11 @@ because thinking cannot be turned off on this entry.
 | forensic ceiling readings | 2026-08-29 | `lms load` at various `-c` values | every override path ignored; auto-fit always lands at 158,464 tokens under the 24000 MB wired limit; `--estimate-only` reports 8.83 GB for a request the engine's own math prices at about 29 GB, so it cannot be used as a fit check |
 
 `gemma-4-12b-it-mlx` reads the fastest Gemma-4-12B curve measured on
-this machine: 34.19 tok/s shallow, 23.23 deep, in 17.2 GB, against 24.64
-down to 8.86 for the GGUF configuration on the current build. The full
-account is on [the LM Studio page](../lmstudio-retired.md) and
-[the Gemma-12B archive page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
+this machine: 34.19 tok/s at 4,115 used tokens and 23.23 at 131,098, in
+17.2 GB, against the GGUF configuration's 24.64 and 8.86 at 245,810
+(both 2026-09-04, chat path, wired limit 24000). The full
+account is on [the LM Studio page](../setups/kamaji/lmstudio-retired.md) and
+[the Gemma-12B archive page](../setups/kamaji/benchmarks/gemma-4-12b-it.md#the-retired-entry).
 
 ## Log
 

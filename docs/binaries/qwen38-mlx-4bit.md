@@ -1,16 +1,16 @@
-# Qwen3.8-27B MLX 4-bit (mlx-community) on M1 Max 32 GB
+# Qwen3.8-27B MLX 4-bit (mlx-community)
 
 File: [`mlx-community/Qwen3.8-27B-4bit`](https://huggingface.co/mlx-community/Qwen3.8-27B-4bit),
 revision `3e6447f`, about 16.1 GB, mlx-lm's 4-bit repack. Server:
 `mlx_lm.server`, unquantized (f16) KV; MLX has no `-c` preallocation, so
 the KV grows per request up to the trained window, memory permitting.
-Every run of this file on this machine is on this page, retired and
+Every run of this file on every machine is on this page, retired and
 superseded rows included; a run a harness or serving defect voided is
 not.
 
-- **Why it is here.** The first Qwen3.8-27B file measured on this
-  machine, picked on night one as the MLX arm of the MLX-versus-GGUF
-  comparison, alongside the bartowski GGUF build.
+- **Why it is here.** The first Qwen3.8-27B file measured on the M1
+  Max 32 GB, picked on 2026-08-26 as the MLX arm of the
+  MLX-versus-GGUF comparison, beside the bartowski GGUF build.
 - **What it settled.** MLX's Metal ceiling on this model sits at 28K
   to 30K context under the slow-creep rule, far short of the roughly
   46K an agent run needs, so no Mendel attempt on this build has ever
@@ -19,15 +19,19 @@ not.
   can never serve here. The owner ruled the model "not run" on Mendel
   on 2026-09-10.
 - **Where it stands.** Complete on EvalPlus at both effort levels
-  (0.982/0.939 medium, 0.976/0.927 low), with no scored agent-task row.
+  (0.982/0.939 at medium, budget 8192, 2026-08-27; 0.976/0.927 at low,
+  2026-08-31), with no scored agent-task row. Qwen3.8-27B is never run
+  at effort medium since 2026-09-09 (owner rule,
+  `benchmarks/PLANNING.md`), so the medium rows keep their numbers as a
+  record, with no re-run.
 
 ## Configurations
 
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" page="/setups/kamaji/binaries/qwen38-mlx-4bit" top /> | **25k** | mem | <TokCell shallow="17.3" deep="14.8" top-shallow top-deep /> | **22.0 GB** | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5†" note="13%" pill="mendel-blind" top /> | <span title="EvalPlus 2h09 · Mendel 1h25">3h34</span> |
-| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" page="/setups/kamaji/binaries/qwen38-mlx-4bit" top /> | **25k** | mem | <TokCell shallow="17.3" deep="14.8" top-shallow top-deep /> | **22.0 GB** | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" /> | <span title="EvalPlus 3h32 · Mendel —">3h32†</span> |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" top /> | **25k** | mem | <TokCell shallow="17.3" deep="14.8" top-shallow top-deep /> | **22.0 GB** | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5†" note="13%" pill="mendel-blind" top /> | <span title="EvalPlus 2h09 · Mendel 1h25">3h34</span> |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" top /> | **25k** | mem | <TokCell shallow="17.3" deep="14.8" top-shallow top-deep /> | **22.0 GB** | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" /> | <span title="EvalPlus 3h32 · Mendel —">3h32†</span> |
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+
@@ -35,7 +39,7 @@ not.
 <!-- gen:binary-evalplus:start -->
 | config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" page="/setups/kamaji/binaries/qwen38-mlx-4bit" />](../benchmarks/qwen3.8-27b.md) | 8192 | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | none | <TokCell shallow="17.3" deep="14.8" /> | 3h32 |
+| [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" />](../setups/kamaji/benchmarks/qwen3.8-27b.md) | 8192 | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | none | <TokCell shallow="17.3" deep="14.8" /> | 3h32 |
 <!-- gen:binary-evalplus:end -->
 
 The medium-effort pass ran clean at 0 empty completions after a
@@ -50,14 +54,14 @@ Blind test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" page="/setups/kamaji/binaries/qwen38-mlx-4bit" /> | blind-v1.0 | 26k | **37.5** (raw 80) | 3/8/partial | 253.5 | 1,777k | 24k | 0 | 135 | 6 |  |
-| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" page="/setups/kamaji/binaries/qwen38-mlx-4bit" /> | blind-v1.1 | 26k | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" /> | blind-v1.0 | 26k | **37.5** (raw 80) | 3/8/partial | 253.5 | 1,777k | 24k | 0 | 135 | 6 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" /> | blind-v1.1 | 26k | **12.5** (raw 67.5) | 1/8/partial | 85.2 | 610k | 24k | 0 | 29 | 1 |  |
 
 Guided test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" page="/setups/kamaji/binaries/qwen38-mlx-4bit" /> | guided-v2.1 | 26k | **75** (raw 84) | 6/8/partial | 153.8 | 1,123k | 23k | 0 | 95 | 6 |  |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" /> | guided-v2.1 | 26k | **75** (raw 84) | 6/8/partial | 153.8 | 1,123k | 23k | 0 | 95 | 6 |  |
 
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:binary-mendel:end -->
@@ -73,15 +77,17 @@ compaction fired in only one of six recorded sessions.
 
 ## Speed and context
 
+Measured on the M1 Max 32 GB, the only machine that served this file.
+
 <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" hide="drafter,effort" />
 
 | measurement | date | config | result |
 |---|---|---|---|
 | fast sweep, no pause | 2026-08-26 | `mlx_lm` API, 32-token probes | clean to 48K, 96 tok/s there; Metal OOM at 64K; superseded by the slow-creep rule |
 | slow-creep re-test | 2026-08-29 | wired limit 24000, 25 s pause per step | last stable 28K at 15.29 tok/s; ceiling 28-30K |
-| MTP-on-MLX probe | before 2026-08-30 | `mlx_vlm.generate`, draft `Qwen3.8-27B-MTP-4bit`, depth 2 | 20.24 tok/s (py), 22.49 tok/s (js), 82.8-97.1% acceptance; CLI only, no server API |
+| MTP-on-MLX probe | before 2026-08-30 | `mlx_vlm.generate`, draft `Qwen3.8-27B-MTP-4bit` rev `b643c01`, depth fixed at 2 | 20.24 tok/s (py), 22.49 tok/s (js), 82.8% and 97.1% acceptance, 17.1 GB peak; CLI only, no server API (`hardware/kamaji/research/run2/`) |
 
-The full curves are on [the benchmarks page](../benchmarks/qwen3.8-27b.md).
+The full curves are on [the benchmarks page](../setups/kamaji/benchmarks/qwen3.8-27b.md).
 
 ## Log
 
@@ -98,15 +104,13 @@ The full curves are on [the benchmarks page](../benchmarks/qwen3.8-27b.md).
   budget: 0.982/0.939, 0 empty, after fixing a `mlx_lm.server` Metal
   resource-limit crash that had hung one request forever.
   `hardware/kamaji/benchmarks/bench2/`.
-- Before 2026-09-02 — First Mendel attempt, blind v1.0 at effort
-  medium: 80/100, partial, closed at 3 of 8 libraries on a roughly
-  4-hour time budget. Superseded by the prompt-version reset of
-  2026-09-02; kept as a record on
-  [the historical page](../historical.md).
-- 2026-08-30 to 2026-09-01 — Mendel blind v1.0 at effort medium
-  re-scored 37.5/100 once partial scoring was capped at 12.5 points
-  per completed library (raw 80, 3 of 8); guided v2.1 at effort low
-  scored 75/100, partial, 6 of 8 (raw 84).
+- 2026-08-30 to 2026-09-01 — First Mendel attempts. Blind v1.0 at
+  effort medium closed at 3 of 8 libraries after 253.5 minutes: raw
+  80, re-scored 37.5/100 once partial scoring was capped at 12.5
+  points per completed library. Guided v2.1 at effort low scored
+  75/100, partial, 6 of 8 (raw 84). Prompt v1.0 is superseded by the
+  prompt-version reset of 2026-09-02; the row stays as a record on
+  [the historical page](../setups/kamaji/historical.md).
   `hardware/kamaji/benchmarks/bench5/`.
 - 2026-08-31 — EvalPlus at effort low: 0.976/0.927, 100% completion.
   `hardware/kamaji/benchmarks/bench6/`.
@@ -129,9 +133,9 @@ The full curves are on [the benchmarks page](../benchmarks/qwen3.8-27b.md).
   compaction trigger, or a measured margin, against the research item
   on MLX Metal-OOM margins.
   `hardware/kamaji/benchmarks/unscheduled/qwen38-mlx-window.md`.
-- 2026-09-10 — Ruled "not run" at effort medium: no Mendel attempt on
-  this file has ever finished, the GGUF build already holds the
-  model's scored agent-task row, and nothing else waits on the margin
-  research. The effort-low row's `mendel` cell stays `pending`, marked
+- 2026-09-10 — The owner ruled the model "not run" on Mendel at effort
+  medium: no Mendel attempt on this file has ever finished, the GGUF
+  build already holds the model's scored agent-task row, and nothing
+  else waits on the margin research. The effort-low row's `mendel` cell stays `pending`, marked
   stale, since it shares the model's speed curve with the medium row
   but was never itself retried.

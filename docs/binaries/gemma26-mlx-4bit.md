@@ -1,7 +1,7 @@
-# Gemma-4-26B-A4B MLX 4-bit (mlx-community) on M1 Max 32 GB
+# Gemma-4-26B-A4B MLX 4-bit (mlx-community)
 
 File: [`mlx-community/gemma-4-26b-a4b-it-4bit`](https://huggingface.co/mlx-community/gemma-4-26b-a4b-it-4bit),
-4-bit MLX repack. Server: mlx_lm.server. Every run of this file on this
+4-bit MLX repack. Server: mlx_lm.server. Every run of this file on every
 machine is on this page, retired and superseded rows included; a run a
 harness or serving defect voided is not.
 
@@ -12,17 +12,19 @@ harness or serving defect voided is not.
   model finishes the agent task; the runtime is the difference. Owner
   ruling: "the MLX build `mlx-community/gemma-4-26b-a4b-it-4bit` is no
   longer a candidate here" (owner, 2026-09-12).
-- **Where it stands.** Retired 2026-09-12. Its speed and quality numbers
-  stay on record because they are real and explain the decision.
+- **Where it stands.** Retired 2026-09-12. Its speed and quality
+  numbers stay on record because they are real and explain the
+  decision. The score on record is the re-run one of 2026-09-16,
+  0.793/0.768 with 31 empty answers of 164 at budget 30000.
 
 ## Configurations
 
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" page="/setups/kamaji/binaries/gemma26-mlx-4bit" /> 💀 | ***66k*** | *mem* | ****49.3*** → ***23.4**** | ***20.0 GB*** | <ScoreCell value="0.793/0.768" sub="81% completion" top /> | <ScoreCell value="0" note="0%" pill="failed-smoke" /> | <span title="EvalPlus 9h06 · Mendel —">9h06†</span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-mlx-4bit" /> 💀 | ***66k*** | *mem* | ****49.3*** → ***23.4**** | ***20.0 GB*** | <ScoreCell value="0.793/0.768" sub="81% completion" top /> | <ScoreCell value="0" note="0%" pill="failed-smoke" /> | <span title="EvalPlus 9h06 · Mendel —">9h06†</span> |
 
-💀 This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task. [Why it is not a candidate](../gemma-4-26b-a4b-mlx-retired.md).
+💀 This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task. [Why it is not a candidate](../setups/kamaji/gemma-4-26b-a4b-mlx-retired.md).
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+
@@ -30,7 +32,7 @@ harness or serving defect voided is not.
 <!-- gen:binary-evalplus:start -->
 | config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" page="/setups/kamaji/binaries/gemma26-mlx-4bit" />](../benchmarks/gemma-4-26b-a4b.md) | 30000 | <ScoreCell value="0.793/0.768" sub="81% completion" top /> | 31 budget | <TokCell shallow="49.3" deep="23.4" /> | 9h06 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-mlx-4bit" />](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md) | 30000 | <ScoreCell value="0.793/0.768" sub="81% completion" top /> | 31 budget | <TokCell shallow="49.3" deep="23.4" /> | 9h06 |
 <!-- gen:binary-evalplus:end -->
 
 The first run (2026-08-29) scored 0.713/0.701 with 46 of 164 problems
@@ -53,7 +55,9 @@ no OOM and no server death. A failed smoke means no full agent run.
 
 ## Speed and context
 
-<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" />
+Measured on the M1 Max 32 GB, the only machine that served this file.
+
+<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" hide="drafter,effort" />
 
 | measurement | date | config | result |
 |---|---|---|---|
@@ -61,7 +65,7 @@ no OOM and no server death. A failed smoke means no full agent run.
 | Metal OOM ceiling | 2026-08-29 | same run, wired limit 24000 | OOM near 72K; gfx-resident 20.0 GB at the last stable depth |
 | real-text speed, llama-benchy | 2026-09-12 | wired limit 25000 | 49.3 tok/s at 4K, 23.4 at 64K |
 
-The full curve is on [the benchmarks page](../benchmarks/gemma-4-26b-a4b.md).
+The full curve is on [the benchmarks page](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md).
 
 ## Log
 

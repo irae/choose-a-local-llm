@@ -1,9 +1,9 @@
-# Gemma-4-26B-A4B NVFP4Q8 (catlilface) on RTX 5060 Ti 16 GB
+# Gemma-4-26B-A4B NVFP4Q8 (catlilface)
 
 File: [`catlilface/Gemma-4-26B-A4B-NVFP4-GGUF`](https://huggingface.co/catlilface/Gemma-4-26B-A4B-NVFP4-GGUF),
 `Gemma4-26b-NVFP4Q8.gguf`, about 15 GB, a community NVFP4 repack that
 keeps attention at Q8. Server: llama-server on CUDA, f16 KV. Every run
-of this file on this machine is on this page, retired and superseded
+of this file on every machine is on this page, retired and superseded
 rows included; a run a harness or serving defect voided is not.
 
 - **Why it is here.** The card runs NVFP4 natively, and this is the
@@ -23,7 +23,7 @@ rows included; a run a harness or serving defect voided is not.
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" page="/setups/arrietty/binaries/gemma26-catlilface-nvfp4q8" top /> | **97k** | mem | <TokCell shallow="58.77" deep="45.59" top-shallow top-deep /> | **15.2 GB** | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 3h35 · Mendel 0h23">3h58</span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/gemma26-catlilface-nvfp4q8" top /> | **97k** | mem | <TokCell shallow="58.77" deep="45.59" top-shallow top-deep /> | **15.2 GB** | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 3h35 · Mendel 0h23">3h58</span> |
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+
@@ -31,13 +31,13 @@ rows included; a run a harness or serving defect voided is not.
 <!-- gen:binary-evalplus:start -->
 | config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" page="/setups/arrietty/binaries/gemma26-catlilface-nvfp4q8" />](../benchmarks/gemma-4-26b-a4b.md) | 12500 | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | † unproven | <TokCell shallow="58.77" deep="45.59" /> | 3h35 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/gemma26-catlilface-nvfp4q8" />](../setups/arrietty/benchmarks/gemma-4-26b-a4b.md) | 12500 | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | † unproven | <TokCell shallow="58.77" deep="45.59" /> | 3h35 |
 <!-- gen:binary-evalplus:end -->
 
-The empties are unproven because the run saved no finish log. Two of
-ten calibration problems never converged, so the budget sits just
-above the longest successful answer, and the full run left 14 answers
-empty.
+The run served `-c 32768` at budget 12500. It left 14 empty answers of
+164; their cause is unproven because the run saved no finish log. Two
+of ten calibration problems never converged, so the budget sits just
+above the longest successful answer.
 
 ## Agent task — Mendel, every prompt version
 
@@ -46,7 +46,7 @@ Guided test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" page="/setups/arrietty/binaries/gemma26-catlilface-nvfp4q8" /> | guided-v3.0 | 96k | **37.5** | 3/8/partial | 22.5 | 6,687k | 90k | 1 | 137 | 6 | thinking |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/gemma26-catlilface-nvfp4q8" /> | guided-v3.0 | 96k | **37.5** | 3/8/partial | 22.5 | 6,687k | 90k | 1 | 137 | 6 | thinking |
 
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:binary-mendel:end -->
@@ -59,23 +59,26 @@ full test suite first.
 
 ## Speed and context
 
+Measured on the RTX 5060 Ti 16 GB, the only machine that served this file.
+
 <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" kv="f16" hide="drafter,effort" />
 
 | measurement | date | config | result |
 |---|---|---|---|
 | real text, llama-benchy | 2026-09-13 to 2026-09-15 | no drafter, `--n-cpu-moe 7`, `-c 98304` | 58.77 tok/s at 4K, 45.59 at 97280; 15.2 GB of VRAM |
 
-The Mac's k-quant of the same model at f16 KV, n-max 2, reads 60.1 tok/s
-at 4K and 19.1 at its 197K deep cell (2026-09-12). The full curves are on
-[the benchmarks page](../benchmarks/gemma-4-26b-a4b.md).
+The Mac's k-quant of the same model at f16 KV, n-max 2, reads 60.1
+tok/s at 4K, 28.2 at 98K and 19.1 at its 197K deep cell (2026-09-12). The full curves are on
+[the benchmarks page](../setups/arrietty/benchmarks/gemma-4-26b-a4b.md).
 
 ## Log
 
 - 2026-09-13 to 2026-09-15 — First run on this machine. A
   `--n-cpu-moe` ladder found 7 the lowest layer count that loads at
-  `-c 98304` and serves the deep cell; 6 runs out of memory at load
-  (12 passed at load with 13495 MiB, 6 failed). No MTP layers, so no
-  drafter arm. Real-text speed: 58.77 tok/s at 4K, 45.59 at 97280, on
+  `-c 98304` and serves the deep cell; 6 runs out of memory at load.
+  The ladder read 12 at 13495 MiB, 9 at 14719 MiB and 7 at 15535 MiB,
+  and 7 also served a real request the size of the deep cell before
+  the run committed to it. No MTP layers, so no drafter arm. Real-text speed: 58.77 tok/s at 4K, 45.59 at 97280, on
   a clean 97280-token depth with flat VRAM and swap. A smoke pass ran
   10 tool calls and 1 commit, clean, no loop, in 30 s. The guided task
   scored 37.5, 3 of 8 libraries (raw 65, capped), ended on a 475-times

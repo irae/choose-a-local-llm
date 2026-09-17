@@ -1,18 +1,20 @@
-# Gemma-4-26B-A4B UD-Q4_K_XL (unsloth) on M1 Max 32 GB
+# Gemma-4-26B-A4B UD-Q4_K_XL (unsloth)
 
 File: [`unsloth/gemma-4-26b-a4b-it-GGUF`](https://huggingface.co/unsloth/gemma-4-26b-a4b-it-GGUF),
 `UD-Q4_K_XL`, about 14.2 GB, a mixture-of-experts model with 26B total
 parameters and about 4B active per token. Server: llama-server, with
 an MTP draft head (`mtp-gemma-4-26B-A4B-it.gguf`, about 460 MB), n-max
-2. Every run of this file on this machine is on this page, retired
+2. Every run of this file on every machine is on this page, retired
 and superseded rows included; a run a harness or serving defect voided
 is not.
 
 - **Why it is here.** The only MoE build of the 26B model on this
   machine, and the first file measured on this hardware.
-- **What it settled.** f16 KV holds the full trained-context ceiling
-  this model reaches on the Mac, 212992 tokens, after a parked spell
-  at q8_0 KV. Thinking on passes the agent task; thinking off loops on
+- **What it settled.** f16 KV lifts this model out of the 8 tok/s
+  floor, after a parked spell at q8_0 KV: `-c 212992` is the largest
+  that loads on the Mac (229376 and 262144 OOM at load), and it holds
+  17.30 tok/s at 196,618 used tokens. Memory sets that ceiling, not
+  the trained window. Thinking on passes the agent task; thinking off loops on
   the same five edit calls every time. A server thinking budget of
   19491 tokens turns every one of the model's long-thinking empties
   into a scored answer, at a fraction of the wall clock.
@@ -25,8 +27,8 @@ is not.
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/setups/kamaji/binaries/gemma26-unsloth-ud-q4kxl" top /> | **197k** | mem | <TokCell shallow="60.1" deep="19.1" top-shallow top-deep /> | **25.6 GB** | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="47.5" pill="mendel-blind" top /> | <span title="EvalPlus 5h47 · Mendel 1h21">7h08</span> |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/setups/kamaji/binaries/gemma26-unsloth-ud-q4kxl" top /> | **2x82k** | mem | <TokCell shallow="66.6" deep="33.6" stale top-shallow top-deep /> | **25.3 GB** | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h47 · Mendel —">5h47†</span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" top /> | **197k** | mem | <TokCell shallow="60.1" deep="19.1" top-shallow top-deep /> | **25.6 GB** | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="47.5" pill="mendel-blind" top /> | <span title="EvalPlus 5h47 · Mendel 1h21">7h08</span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" top /> | **2x82k** | mem | <TokCell shallow="66.6" deep="33.6" stale top-shallow top-deep /> | **25.3 GB** | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h47 · Mendel —">5h47†</span> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:binary-rows:end -->
@@ -36,8 +38,8 @@ is not.
 <!-- gen:binary-evalplus:start -->
 | config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma26-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-26b-a4b.md) | 8192 | <ScoreCell value="0.976/0.945" sub="100% completion" top /> | none | <TokCell shallow="60.1" deep="19.1" /> | 0h20 |
-| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/setups/kamaji/binaries/gemma26-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-26b-a4b.md) | 30000 | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | 16 budget | <TokCell shallow="60.1" deep="19.1" /> | 5h47 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" />](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md) | 8192 | <ScoreCell value="0.976/0.945" sub="100% completion" top /> | none | <TokCell shallow="60.1" deep="19.1" /> | 0h20 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" />](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md) | 30000 | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | 16 budget | <TokCell shallow="60.1" deep="19.1" /> | 5h47 |
 <!-- gen:binary-evalplus:end -->
 
 Every empty at thinking on and 30000 tokens is the output budget, not
@@ -54,16 +56,16 @@ Blind test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/setups/kamaji/binaries/gemma26-unsloth-ud-q4kxl" /> | blind-v1.1 | 208k | **47.5** | 8/8/done | 80.8 | 23,832k | 209k | 1 | 246 | 21 |  |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="q8_0" effort="on" page="/setups/kamaji/binaries/gemma26-unsloth-ud-q4kxl" /> | blind-v1.0 | 256k | **38** | 8/8/partial | 104.0 | 8,150k | 142k | 0 | 115 | 9 |  |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma26-unsloth-ud-q4kxl" /> | blind-v1.1 | 208k | **12.5** | 1/8/partial | 28.0 | 8,053k | 136k | 0 | 120 | 7 | tool call |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" /> | blind-v1.1 | 208k | **47.5** | 8/8/done | 80.8 | 23,832k | 209k | 1 | 246 | 21 |  |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="q8_0" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" /> | blind-v1.0 | 256k | **38** | 8/8/partial | 104.0 | 8,150k | 142k | 0 | 115 | 9 |  |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" /> | blind-v1.1 | 208k | **12.5** | 1/8/partial | 28.0 | 8,053k | 136k | 0 | 120 | 7 | tool call |
 
 Guided test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/setups/kamaji/binaries/gemma26-unsloth-ud-q4kxl" /> | guided-v3.0 | 208k | **57** | 7/8/partial | 115.1 | 24,803k | 209k | 2 | 269 | 13 |  |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" page="/setups/kamaji/binaries/gemma26-unsloth-ud-q4kxl" /> | guided-v3.0 | 208k | **25** | 2/8/partial | 20.4 | 2,605k | 73k | 0 | 91 | 3 | tool call |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" /> | guided-v3.0 | 208k | **57** | 7/8/partial | 115.1 | 24,803k | 209k | 2 | 269 | 13 |  |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" /> | guided-v3.0 | 208k | **25** | 2/8/partial | 20.4 | 2,605k | 73k | 0 | 91 | 3 | tool call |
 
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:binary-mendel:end -->
@@ -76,6 +78,8 @@ two memory kills on earlier tries. The thinking-on blind row scored
 
 ## Speed and context
 
+Measured on the M1 Max 32 GB, the only machine that served this file.
+
 <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" kv="f16" hide="drafter,effort" />
 
 | measurement | date | config | result |
@@ -84,13 +88,13 @@ two memory kills on earlier tries. The thinking-on blind row scored
 | MTP sweep, thinking off | 2026-08-28 | n-max 2 to 4, 32K, f16 KV | n-max 2 peak, 74.81 tok/s py / 71.59 js at 88%/81% acceptance |
 | context ramp | 2026-08-28 | q8_0 KV, `-c 262144`, limit 25000 | 23.5 tok/s at 4K down to 7.97 at 24.5K, under the 8 tok/s floor |
 | KV pick, short creep | 2026-09-04 | q8_0 vs f16, `-c 40960` | q8_0 6.3 tok/s, f16 45.9 tok/s at the same memory; f16 picked |
-| full creep, f16 KV | 2026-09-04 | `-c 212992`, the largest `-c` that loads (229376 and 262144 OOM) | 17.3 tok/s at 197K, up from 8 tok/s at 24K on the old q8_0 pick |
+| full creep, f16 KV | 2026-09-04/05 | `-c 212992`, the largest `-c` that loads (229376 and 262144 OOM) | 17.30 tok/s at 196,618 used tokens, up from 7.97 at 24.5K on the old q8_0 pick |
 | two-slot creep | 2026-09-05 | `-c 202752`, 2×101376, f16 KV | window-bound at 81958 tokens per slot, 33.56 tok/s there |
 | real text, llama-benchy | 2026-09-12 | n-max 2, f16 KV | 60.1 tok/s at 4K, 28.2 at 98K, 19.1 at 197K; fastest arm of four drafter settings at every depth |
 | projector loaded | 2026-09-11 | f16 KV, no drafter, `-c 204800`, `--ubatch-size 2048` | loads and serves one image request at 7894 filled prompt tokens; no drafter fits beside the projector at this `-c` |
 
 The full curves are on
-[the benchmarks page](../benchmarks/gemma-4-26b-a4b.md).
+[the benchmarks page](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md).
 
 ## Log
 
@@ -106,10 +110,10 @@ The full curves are on
 - 2026-08-30 — Parked: excluded from the run's queue with a reminder
   to the owner that it is still owed a full run.
   `hardware/kamaji/benchmarks/bench5/`.
-- 2026-09-04 — Back in the running. The KV pick moves this file from
-  q8_0 to f16: short creep reads 6.3 tok/s at q8_0 against 45.9 at
-  f16, same memory. The full creep at f16 finds 212992 the largest
-  `-c` that loads and holds 17.3 tok/s at 197K.
+- 2026-09-04/05 — Back in the running. The KV pick moves this file
+  from q8_0 to f16: short creep reads 6.3 tok/s at q8_0 against 45.9
+  at f16, same memory. The full creep at f16 finds 212992 the largest
+  `-c` that loads and holds 17.30 tok/s at 196,618 used tokens.
   `hardware/kamaji/benchmarks/bench9/`.
 - 2026-09-05 to 2026-09-06 — f16 EvalPlus re-score, both thinking
   modes: thinking on 0.884/0.860/89% with 18/164 empty at the 30000

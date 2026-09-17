@@ -1,8 +1,8 @@
-# Qwen3.6-35B-A3B MLX 4-bit (mlx-community) on M1 Max 32 GB
+# Qwen3.6-35B-A3B MLX 4-bit (mlx-community)
 
 File: [`mlx-community/Qwen3.6-35B-A3B-4bit`](https://huggingface.co/mlx-community/Qwen3.6-35B-A3B-4bit),
 4-bit MLX repack. Server: mlx_lm.server, unquantized (f16) KV. Every run
-of this file on this machine is on this page, retired and superseded
+of this file on every machine is on this page, retired and superseded
 rows included; a run a harness or serving defect voided is not.
 
 - **Why it is here.** The MLX build of the 35B-A3B MoE, run beside the
@@ -13,16 +13,18 @@ rows included; a run a harness or serving defect voided is not.
   is 5 percent under the measured ceiling, rounded down (owner rule,
   2026-09-12), because the runtime often triggers macOS memory
   compression near its ceiling and dies.
-- **Where it stands.** Blind 37.5 on the agent task on a 36864 window,
-  far under the GGUF build's 62.5 on an 81920 window. No EvalPlus run
-  has been scheduled on this file.
+- **Where it stands.** Blind 37.5 on the agent task (raw 51.5, 3 of 8
+  libraries) on a 36864 window, far under the same model's GGUF build,
+  which scored blind 50.5 complete on an 81920 window. No EvalPlus run
+  has been scheduled on this file; the configuration row carries the
+  GGUF sibling's score under the shared-score rule.
 
 ## Configurations
 
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" page="/setups/kamaji/binaries/qwen36-mlx-4bit" top /> | **37k** | mem | <TokCell shallow="54.5" deep="39.1" top-shallow top-deep /> | **24.6 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 5h02 · Mendel 0h19">5h20</span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-mlx-4bit" top /> | **37k** | mem | <TokCell shallow="54.5" deep="39.1" top-shallow top-deep /> | **24.6 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 5h02 · Mendel 0h19">5h20</span> |
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+
@@ -41,7 +43,7 @@ Blind test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" page="/setups/kamaji/binaries/qwen36-mlx-4bit" /> | blind-v1.1 | 32k | **37.5** | 3/8/partial | 18.5 | 1,318k | 31k | 1 | 63 | 3 |  |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-mlx-4bit" /> | blind-v1.1 | 32k | **37.5** | 3/8/partial | 18.5 | 1,318k | 31k | 1 | 63 | 3 |  |
 
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:binary-mendel:end -->
@@ -55,6 +57,8 @@ HEAD after two rejected commit attempts.
 
 ## Speed and context
 
+Measured on the M1 Max 32 GB, the only machine that served this file.
+
 <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" hide="drafter,effort" />
 
 | measurement | date | config | result |
@@ -63,7 +67,7 @@ HEAD after two rejected commit attempts.
 | creep at wired limit 25000 | 2026-09-06 | no MTP, `--prompt-cache-size 2` | 37.4 tok/s at 40982, wired memory 24.6 GB; the generation thread died on a Metal OOM at the next step while `/health` kept answering |
 | real text, llama-benchy | 2026-09-12 | at the 36864 window | 54.5 tok/s at 4K, 39.1 at 35840, within four percent of the creep |
 
-The full curves are on [the benchmarks page](../benchmarks/qwen3.6-35b-a3b.md).
+The full curves are on [the benchmarks page](../setups/kamaji/benchmarks/qwen3.6-35b-a3b.md).
 
 ## Log
 

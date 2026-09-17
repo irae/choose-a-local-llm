@@ -1,13 +1,17 @@
-# Qwen3.6-35B-A3B NVFP4-MTP (michaelw9999) on RTX 5060 Ti 16 GB
+# Qwen3.6-35B-A3B NVFP4-MTP (michaelw9999)
 
 File: [`michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF`](https://huggingface.co/michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF),
 `Qwen3.6-35B-A3B-NVFP4-MTP-HQ.gguf`, revision `df112dd`, about 20.5 GB,
-an NVFP4 repack with an embedded MTP head. The file never loaded, so
-no configuration row and no run exists for it on this machine.
+an NVFP4 repack with an embedded MTP head. Server: llama-server, on
+the RTX 5060 Ti 16 GB, the only machine that tried it. The file never
+loaded, so no configuration row and no run exists for it on any
+machine. Every run of this file on every machine is on this page,
+retired and superseded rows included; a run a harness or serving
+defect voided is not.
 
 - **Why it is here.** The card runs NVFP4 natively (Blackwell, compute
-  capability 12.0), so the first run's list carried an NVFP4 build of
-  this model, and this was the only community NVFP4-plus-MTP repack
+  capability 12.0), so the card's first runbook carried an NVFP4 build
+  of this model, and this was the only community NVFP4-plus-MTP repack
   named for it.
 - **What it settled.** The file does not load. `llama-server` fails
   at `done_getting_tensors` with "wrong number of tensors; expected
@@ -19,7 +23,7 @@ no configuration row and no run exists for it on this machine.
 - **Where it stands.** Dropped. The owner's word, 2026-09-14: "a
   popular stable release over a niche build." The unsloth
   `Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf` file serves this model on the card
-  instead; see `qwen36-unsloth-ud-q4kxl.md`.
+  instead; see [that file's page](qwen36-unsloth-ud-q4kxl.md).
 
 ## Configurations
 
@@ -46,6 +50,8 @@ No Mendel run yet.
 No agent run yet.
 
 ## Speed and context
+
+Measured on the RTX 5060 Ti 16 GB, the only machine that served this file.
 
 No speed measurement exists; the file never loaded.
 
