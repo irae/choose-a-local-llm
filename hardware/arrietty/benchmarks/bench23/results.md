@@ -46,3 +46,24 @@ Deviation: the file's load log shows `blk.64.nextn.*` tensors
 every load. This is evidence of an MTP/draft head present in the file.
 Per the runbook, no drafter arm runs in this run regardless; recorded
 here and in `state.md` as the runbook requires.
+
+## `sweep-qwen38-oblit-q3km`
+
+Config: q8_0 KV (the pick), `-c 65536`, no drafter, port 8081. Tool
+`llama-benchy` `204acec`. Corpus `corpus-mendel-js.txt`. Depths 4096,
+24576, `oblit_q3km_c` − 1024 = 64512.
+
+| depth | tok/s | peak tok/s | prompt tok/s | VRAM used | MemAvailable |
+|--:|--:|--:|--:|--:|--:|
+| 4096 | 22.67 ± 0.13 | 23.00 | 797.16 ± 2.23 | 15689 MiB | ~19.4M kB |
+| 24576 | 20.65 ± 0.01 | 21.00 | 756.72 ± 0.09 | 15689 MiB | ~19.4M kB |
+| 64512 | 16.74 ± 0.71 | 17.50 | 618.36 ± 5.33 | 15691 MiB | 19423820 kB |
+
+`oblit_q3km_clean` = the deepest depth at or above 8 tok/s = **64512**
+(16.74 tok/s there, well above the floor; no depth fell under 8 tok/s
+in this sweep). A table and no pick; the coordinator names what the
+row serves.
+
+Files: `results/benchy-qwen38-oblit-q3km-q8.md`,
+`results/benchy-qwen38-oblit-q3km-q8-vm.log`,
+`results/server-sweep-qwen38-oblit-q3km.log`.

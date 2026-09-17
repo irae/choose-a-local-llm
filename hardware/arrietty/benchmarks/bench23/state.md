@@ -13,7 +13,7 @@ happen, and the handing-over section at the end.
 | `oblit_q3km_c_f16` | 32768 | `qwen38-oblit-q3km-kvpick`, 40960 OOMs |
 | `oblit_q3km_c` | 65536 (q8_0) | `qwen38-oblit-q3km-kvpick`, the larger of the two |
 | `oblit_q3km_kv` | `q8_0` | `qwen38-oblit-q3km-kvpick`, gate passed (65536 ≥ 32768) |
-| `oblit_q3km_clean` | pending | `sweep-qwen38-oblit-q3km` |
+| `oblit_q3km_clean` | 64512 | `sweep-qwen38-oblit-q3km`, deepest tested depth, 16.74 tok/s, all depths above the 8 tok/s floor |
 | `oblit_q3km_window` | pending | `qwen38-oblit-q3km-smoke-medium` |
 | `oblit_q3km_think_budget` | pending | `qwen38-oblit-q3km-calibrate-think` |
 | `oblit_q3km_answer_budget` | pending | `qwen38-oblit-q3km-calibrate-think` |
@@ -66,7 +66,14 @@ Deviation: the load log shows `blk.64.nextn.*` tensors (an MTP/draft
 head) present in the file and ignored as unused on every load. No
 drafter arm runs in this run regardless (runbook, "The file").
 
+## `sweep-qwen38-oblit-q3km` — done
+
+Table in `results.md`. Tool `llama-benchy` `204acec`. All three depths
+(4096, 24576, 64512) served cleanly, tg tok/s 22.67 to 16.74, never
+under the 8 tok/s floor. `oblit_q3km_clean` = 64512. Corpus server
+stopped after this block, as the runbook requires.
+
 ## Handing-over
 
-`machine-setup` and `qwen38-oblit-q3km-kvpick` done. Next:
-`sweep-qwen38-oblit-q3km`.
+`machine-setup`, `qwen38-oblit-q3km-kvpick`, `sweep-qwen38-oblit-q3km`
+done. Next: `qwen38-oblit-q3km-calibrate-think`.
