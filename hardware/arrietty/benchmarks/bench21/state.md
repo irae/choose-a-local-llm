@@ -190,4 +190,6 @@ Deviation: none.
 
 ## evalplus qwen-3.8-27b gsq-iq3s/q8/xhigh forced-rerun-8192 — running
 
-Same file and arm, no reasoning flags, `max_tokens` 30000, 6 problems.
+Same file and arm, no reasoning flags, `max_tokens` 30000, 6 problems. `nvidia-smi` 13542/16311 MiB after load. Verify request: finish `stop`, not forced.
+Wall parts (UTC):
+- part 1 start 12:11 (2026-09-17)
