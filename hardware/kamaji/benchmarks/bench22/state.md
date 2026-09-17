@@ -95,3 +95,11 @@ Deviation: the watcher exited with a `SERVER DEAD` verdict at 39/164 problems, b
 
 Close: HumanEval base 0.982, plus 0.951, 0/164 empty, 3/164 forced (budget message fired, none came back empty). Codegen wall 7:27:46 (23:52 16 Sep – 07:19 17 Sep UTC). Server and watcher stopped.
 Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh/`.
+
+### `qwen38-bartowski-forced-rerun` — running
+
+`prepare` found 3 forced, 1 forced-failed: `HumanEval/99`. Served the same config without the two reasoning flags, generous budget `EVALPLUS_MAX_NEW_TOKENS=30000`. Watcher started at `RUNWATCH_SILENCE=2700` from the start this time. Codegen resuming cleanly from the 163-line jsonl seeded by `prepare`.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-forced-rerun/`.
+Deviation: none.
