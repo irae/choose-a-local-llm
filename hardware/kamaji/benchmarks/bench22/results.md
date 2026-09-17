@@ -49,3 +49,18 @@ Think budget 30000, answer budget 2048, max tokens 32048. Margin 1.5. 9/10 calib
 
 The old row is the planning snapshot from `docs/setups/kamaji/models.json` (no thinking budget, no forced re-run). The new row is this run, budget 30000 think / 2048 answer / 32048 total. 3 of 164 problems hit the budget message; none of those 3 came back empty.
 Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh/`.
+
+## `qwen38-bartowski-forced-rerun`
+
+1 of the 3 forced problems had failed a test: `HumanEval/99`. Re-run at a generous budget (30000 tokens, no reasoning flags). Score at close: base 0.976, plus 0.951. Wall 27 min 30 s.
+
+| task_id | cell | forced_tokens | natural_finish | natural_tokens | natural_reasoning_tokens |
+|---|---|--:|---|--:|--:|
+| HumanEval/99 | forced-fail-loop | 30212 | length | 30000 | 30000 |
+
+Summary: forced-pass 2, forced-fail-late 0, forced-fail-loop 1, forced-fail-wrong 0.
+
+`HumanEval/99` hits the 30000-token cap even with no budget: a genuine long-running or looping problem, not a budget artifact. The base score moved from 0.982 to 0.976 because the natural length-capped continuation for this one task differs slightly at the cutoff from the budget-message continuation and lands on the other side of a base test; the plus score, the score this run is judged on, is unchanged.
+
+`corrected_think_budget`: unchanged. No late answer appeared once the budget was removed, so 30000 stands as the think budget for this config.
+Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-forced-rerun/`.

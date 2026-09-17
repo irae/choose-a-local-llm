@@ -100,6 +100,6 @@ Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh
 
 `prepare` found 3 forced, 1 forced-failed: `HumanEval/99`. Served the same config without the two reasoning flags, generous budget `EVALPLUS_MAX_NEW_TOKENS=30000`. Watcher started at `RUNWATCH_SILENCE=2700` from the start this time. Codegen resuming cleanly from the 163-line jsonl seeded by `prepare`.
 
-still running.
+Close: 1 forced-failed problem re-run (`HumanEval/99`, forced-fail-loop, hits the 30000 cap naturally too). Score base 0.976, plus 0.951 (plus unchanged from the budget block; base moved by one task on a cutoff-content difference, not a real regression). Re-run wall 27 min 30 s. `corrected_think_budget`: unchanged (30000). Server and watcher stopped.
 Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-forced-rerun/`.
 Deviation: none.
