@@ -115,5 +115,6 @@ The full curves, including the context ramp measured at the retired
   reasoning ran 22947 tokens, so the thinking budget sits at the 30000
   cap. The budgeted full run: 0.982 / 0.951, no empty answer, 3 forced
   answers and all 3 pass, 447.8 minutes, against 0.957 / 0.939 with 6
-  empties in 510.3 minutes without the budget. The natural re-run of
-  the forced failures follows. `hardware/kamaji/benchmarks/bench22/`.
+  empties in 510.3 minutes without the budget. The one forced answer
+  that failed the plus tests hits the cap without the budget too, so
+  the budget stands. `hardware/kamaji/benchmarks/bench22/`.
