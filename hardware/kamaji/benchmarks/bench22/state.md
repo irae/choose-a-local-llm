@@ -103,3 +103,27 @@ Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh
 Close: 1 forced-failed problem re-run (`HumanEval/99`, forced-fail-loop, hits the 30000 cap naturally too). Score base 0.976, plus 0.951 (plus unchanged from the budget block; base moved by one task on a cutoff-content difference, not a real regression). Re-run wall 27 min 30 s. `corrected_think_budget`: unchanged (30000). Server and watcher stopped.
 Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-forced-rerun/`.
 Deviation: none.
+
+## `bonsai-fork-calibrate-think` — running
+
+Served: `LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server -m .../Ternary-Bonsai-27B-Q2_g64.gguf --alias bonsai-prism -ngl 999 -fa on -c 32768 --parallel 1 --cache-type-k q4_0 --cache-type-v q4_0 --kv-mean-center ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf --jinja --port 8081`, thinking on (default), no extra body. Verified with a real request.
+
+Calibration done, 10/10 problems. Derive: converged 10, cut 0, max_reasoning_tokens 4992, max_answer_tokens 760.
+
+`bonsai_fork_think_budget` = 7488
+`bonsai_fork_answer_budget` = 2048
+`bonsai_fork_max_tokens` = 9536
+
+Files: `hardware/kamaji/calibrations/calibration-bonsai-fork-think-budget.json`, `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-calibrate-think/`.
+Deviation: none.
+
+## Pause (owner request, 2026-09-17)
+
+The owner asked to pause after this calibration closes and needs the Mac
+for other work. Server and watcher stopped, GPU freed. Resume at
+`bonsai-fork-budget-think` when the owner says go: serve the fork with
+`--reasoning-budget 7488 --reasoning-budget-message "$BUDGET_MSG"` added
+to the calibrate command above, verify, start the watcher
+(`RUNWATCH_SILENCE` generous, single-slot server), then the full 164 run
+at `EVALPLUS_MAX_NEW_TOKENS=9536`. No block is mid-run; nothing to
+resume mid-block.
