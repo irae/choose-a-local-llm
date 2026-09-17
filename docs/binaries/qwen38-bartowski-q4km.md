@@ -110,7 +110,10 @@ The full curves, including the context ramp measured at the retired
   drafter: 12.4 tok/s at 4K and 9.7 at 65.5K, above the drafter arm at
   both depths; the served command drops the drafter.
   `hardware/kamaji/benchmarks/bench16/`.
-- 2026-09-16 — The thinking-budget test started on the M1 Max 32 GB.
-  The blocks on this file (a calibration at effort xhigh, the budgeted
-  full run, and the re-run of the forced failures) are pending; the
-  calibration is running. `hardware/kamaji/benchmarks/bench22/`.
+- 2026-09-16 to 2026-09-17 — M1 Max: the thinking-budget test, effort
+  xhigh, f16 KV, MTP n-max 3. The calibration's longest converged
+  reasoning ran 22947 tokens, so the thinking budget sits at the 30000
+  cap. The budgeted full run: 0.982 / 0.951, no empty answer, 3 forced
+  answers and all 3 pass, 447.8 minutes, against 0.957 / 0.939 with 6
+  empties in 510.3 minutes without the budget. The natural re-run of
+  the forced failures follows. `hardware/kamaji/benchmarks/bench22/`.
