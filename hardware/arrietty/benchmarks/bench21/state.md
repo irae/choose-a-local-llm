@@ -81,8 +81,25 @@ Forced-failed (prepare): 6 of 45: HumanEval/32, 39, 91, 132, 134, 145.
 Files: `results/gemma12-nvfp4-budget-on/`, `results/server-gemma12-nvfp4-budget-on.log`, `results/run-gemma12-nvfp4-budget-on.log`, `results/watch-gemma12-nvfp4-budget-on.log`, `~/.local/share/choose-a-local-llm/run21-gemma12-nvfp4-budget-on-mem.log`.
 Deviation: the harness killed the run task and the watcher once (part 1 end); the server never died; the wall excludes the 2-minute gap.
 
-## evalplus gemma-4-12b nvfp4/f16/on forced-rerun — running
+## evalplus gemma-4-12b nvfp4/f16/on forced-rerun
 
 Same file and arm, no reasoning flags, `max_tokens` 30000, 6 problems. `nvidia-smi` 9058/16311 MiB after load. Verify request: finish `stop`, not forced.
 Wall parts (UTC):
 - part 1 start 01:09 (2026-09-17)
+- part 1 end 02:11 (2026-09-17), last problem 02:11:10, evaluate done 02:11:17
+Wall: 62.3 min.
+
+| cell | count |
+|---|--:|
+| forced-pass | 39 |
+| forced-fail-late | 0 |
+| forced-fail-loop | 6 |
+| forced-fail-wrong | 0 |
+
+All 6 forced-failed problems (HumanEval/32, 39, 91, 132, 134, 145) hit 30000 without the flag: non-convergence. Corrected think budget: unchanged (no late answer). Combined samples score 0.957/0.951 (the 6 loops are empty there).
+Files: `results/gemma12-nvfp4-forced-rerun/` (`report.md`, `forced.json`), `results/server-gemma12-nvfp4-forced-rerun.log`, `results/run-gemma12-nvfp4-forced-rerun.log`, `results/watch-gemma12-nvfp4-forced-rerun.log`.
+Deviation: none.
+
+## qwen38-ista-calibrate-think — running
+
+Qwen3.8-27B ISTA GSQ-RCO IQ3_S (`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` rev `d562806`, 12.1 GB, default hf cache), no drafter, q8_0 KV, ctx 32k, no budget flag, effort xhigh. `nvidia-smi` 13629/16311 MiB after load, no CUDA error. Calibration start 02:13 UTC.
