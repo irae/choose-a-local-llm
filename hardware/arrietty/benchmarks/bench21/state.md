@@ -100,6 +100,22 @@ All 6 forced-failed problems (HumanEval/32, 39, 91, 132, 134, 145) hit 30000 wit
 Files: `results/gemma12-nvfp4-forced-rerun/` (`report.md`, `forced.json`), `results/server-gemma12-nvfp4-forced-rerun.log`, `results/run-gemma12-nvfp4-forced-rerun.log`, `results/watch-gemma12-nvfp4-forced-rerun.log`.
 Deviation: none.
 
-## qwen38-ista-calibrate-think — running
+## qwen38-ista-calibrate-think
 
 Qwen3.8-27B ISTA GSQ-RCO IQ3_S (`ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` rev `d562806`, 12.1 GB, default hf cache), no drafter, q8_0 KV, ctx 32k, no budget flag, effort xhigh. `nvidia-smi` 13629/16311 MiB after load, no CUDA error. Calibration start 02:13 UTC.
+Calibration 02:13 to 03:16 UTC.
+
+| name | value |
+|---|--:|
+| converged | 8 |
+| cut at 30000 | 2 |
+| max reasoning tokens (converged) | 22947 |
+| max answer tokens (converged) | 1045 |
+| margin | 1.5 |
+| `qwen38_ista_xhigh_think_budget` | 30000 (22947 × 1.5 = 34420, held at the 30000 cap by `derive`) |
+| `qwen38_ista_xhigh_answer_budget` | 2048 |
+| `qwen38_ista_xhigh_max_tokens` | 32048 |
+
+Every row `resolved_reasoning_effort: xhigh`, source requested. Cut: HumanEval/99, 145.
+Files: `hardware/arrietty/calibrations/calibration-qwen38-ista-xhigh-think.json`, `results/calibrate-qwen38-ista-xhigh-think.log`, `results/server-qwen38-ista-calibrate-think.log`.
+Deviation: none.

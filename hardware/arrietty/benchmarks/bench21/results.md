@@ -76,3 +76,7 @@ Gemma-4-12B NVFP4, thinking on, f16 KV, no reasoning flags, `max_tokens` 30000, 
 `corrected_think_budget	unchanged	no late answer`  
 
 Summary: forced-pass 39, forced-fail-late 0, forced-fail-loop 6, forced-fail-wrong 0. Corrected think budget: unchanged, no late answer. Every forced failure is a loop at 30000 without the flag, so 7350 loses no answer that more thinking would have found. Re-run wall 62.3 min (one part, 01:09 to 02:11:17 UTC, evaluate included).
+
+## qwen38-ista-calibrate-think
+
+Qwen3.8-27B ISTA GSQ-RCO IQ3_S, effort xhigh, q8_0 KV, no drafter, no thinking budget. 8 of 10 converged, 2 cut at 30000. Longest converged reasoning 22947 tokens, longest converged answer 1045. With margin 1.5, floor 2048 and the 30000 cap: think budget 30000, answer budget 2048, `max_tokens` 32048.
