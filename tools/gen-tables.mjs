@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { globSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 
@@ -36,6 +36,12 @@ const MODEL_EVALPLUS_START = '<!-- gen:model-evalplus:start -->'
 const MODEL_EVALPLUS_END = '<!-- gen:model-evalplus:end -->'
 const SETUP_EVALPLUS_START = '<!-- gen:setup-evalplus:start -->'
 const SETUP_EVALPLUS_END = '<!-- gen:setup-evalplus:end -->'
+const BINARY_ROWS_START = '<!-- gen:binary-rows:start -->'
+const BINARY_ROWS_END = '<!-- gen:binary-rows:end -->'
+const BINARY_EVALPLUS_START = '<!-- gen:binary-evalplus:start -->'
+const BINARY_EVALPLUS_END = '<!-- gen:binary-evalplus:end -->'
+const BINARY_MENDEL_START = '<!-- gen:binary-mendel:start -->'
+const BINARY_MENDEL_END = '<!-- gen:binary-mendel:end -->'
 
 // Minimal CSV parser: handles quoted fields with embedded commas/quotes.
 function parseCsv(text) {
@@ -488,13 +494,13 @@ function thinkingLevel(branch) {
   return m ? m[1] : 'default'
 }
 
-function renderModelMendel(slug, blindRows, guidedRows, untrusted = []) {
+function renderModelMendel(slug, blindRows, guidedRows, untrusted = [], match = null) {
   const distrust = (r) => untrusted.find((u) =>
     (!u.serving || u.serving === r.serving) && (!u.branch || new RegExp(u.branch).test(r.branch)))
   const tagged = [
     ...blindRows.map((r) => ({ r, test: 'blind' })),
     ...guidedRows.map((r) => ({ r, test: 'guided' })),
-  ].filter(({ r }) => MENDEL_SLUGS[r.model] === slug)
+  ].filter(({ r }) => (match ? match(r) : MENDEL_SLUGS[r.model] === slug))
   if (!tagged.length) return 'No Mendel run yet.'
 
   const capped = (r) => {
@@ -793,7 +799,7 @@ function renderModelConfigs(data, model) {
   return blocks.join('\n\n')
 }
 
-function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHardware = true } = {}) {
+function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHardware = true, match = null } = {}) {
   const header = [
     '| config | budget | Scores | empties | tok/s | wall |',
     '|---|--:|--:|--:|--:|--:|',
@@ -812,6 +818,7 @@ function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHard
   const runs = datas
     .flatMap((data) => (data.evalplusRuns || []).map((r) => ({ ...r, data })))
     .filter((r) => !onlySlug || r.slug === onlySlug)
+    .filter((r) => !match || match(r.spec || r.data.rows.find((x) => x.id === r.row)?.spec))
     .sort((a, b) => parseFloat(b.base) - parseFloat(a.base) || parseFloat(b.plus) - parseFloat(a.plus))
   if (!runs.length) return 'No EvalPlus run yet.'
   const link = linkOf || ((r) => `../setups/${r.data.setup}/benchmarks/${r.slug}.md`)
@@ -885,6 +892,9 @@ for (const dataFile of dataFiles) {
   const mendelGuidedAll = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8')).filter(ofSetup).filter(live)
   const mendelBlind = currentPromptVersion(mendelBlindAll.filter((r) => r.invalid !== 'True'))
   const mendelGuided = currentPromptVersion(mendelGuidedAll.filter((r) => r.invalid !== 'True'))
+  const rawLocal = (r) => r.local === 'True' && r.invalid !== 'True'
+  const mendelBlindRaw = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8')).filter(ofSetup).filter(rawLocal)
+  const mendelGuidedRaw = parseCsv(readFileSync('benchmarks/mendel/results-guided.csv', 'utf8')).filter(ofSetup).filter(rawLocal)
   deriveMendel(data.rows, mendelBlind, mendelGuided)
   const blindRuns = mendelRuns('benchmarks/mendel/results.json', data.setup).filter(live)
   const guidedRuns = mendelRuns('benchmarks/mendel/results-guided.json', data.setup).filter(live)
@@ -943,6 +953,35 @@ for (const dataFile of dataFiles) {
     updated = applyBlock(updated, CONFIGS_START, CONFIGS_END, renderModelConfigs(data, model), target)
     updated = applyBlock(updated, MODEL_MENDEL_START, MODEL_MENDEL_END, renderModelMendel(slug, mendelBlindAll, mendelGuidedAll, model.mendelUntrusted), target)
     updated = applyBlock(updated, MODEL_EVALPLUS_START, MODEL_EVALPLUS_END, renderEvalplusTable([data], { slug, linkOf: (r) => `../benchmarks/${r.slug}.md`, hardware: false }), target)
+    if (updated === original) continue
+    if (CHECK) {
+      console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)
+      drift = true
+    } else {
+      writeFileSync(target, updated)
+      console.log(`updated: ${target}`)
+    }
+  }
+
+  // A binary page shows every run of one model file on this machine:
+  // every row, hidden or abandoned included, retired rows as a bare
+  // line, every EvalPlus run, and every valid Mendel run of any prompt
+  // version, runs on retired builds included.
+  for (const b of data.binaries || []) {
+    const target = `${setupDir}/binaries/${b.id}.md`
+    if (!existsSync(target)) {
+      console.warn(`binary page missing: ${target}`)
+      continue
+    }
+    const same = (spec) => ['base', 'quant', 'publisher', 'server'].every((k) => (spec?.[k] || '') === (b.spec[k] || ''))
+    const rows = data.rows.filter((r) => same(r.spec))
+    const live = sortRows(rows.filter((r) => !r.retired))
+    const parts = [live.length ? renderTable(live, { footnotes: false, sort: false }) : 'No configuration row.']
+    for (const r of rows.filter((r) => r.retired)) parts.push('', `Retired entry: ${r.config} — ${r.retired.reason} ([details](../${r.retired.details.replace(/^\.\.\//, '')})).`)
+    const original = readFileSync(target, 'utf8')
+    let updated = applyBlock(original, BINARY_ROWS_START, BINARY_ROWS_END, parts.join('\n'), target)
+    updated = applyBlock(updated, BINARY_EVALPLUS_START, BINARY_EVALPLUS_END, renderEvalplusTable([data], { match: same, linkOf: (r) => `../benchmarks/${r.slug}.md`, hardware: false }), target)
+    updated = applyBlock(updated, BINARY_MENDEL_START, BINARY_MENDEL_END, renderModelMendel(null, mendelBlindRaw, mendelGuidedRaw, [], (r) => same(mendelSpec(r))), target)
     if (updated === original) continue
     if (CHECK) {
       console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)

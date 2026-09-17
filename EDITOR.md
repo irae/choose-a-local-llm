@@ -195,6 +195,48 @@ These rules bind every `reports/<model>.md` page:
   rule also carries that row's completion. Write `base/plus/—` only
   when no empty count exists anywhere for the score.
 
+## Binary pages (`setups/<setup>/binaries/<id>.md`)
+
+One page per model file per machine (owner, 2026-09-16). It aggregates
+every run of that file on that machine: every configuration row,
+hidden and abandoned ones included, retired rows as a bare line; every
+EvalPlus run; every valid Mendel run of every prompt version, runs on
+retired builds included. A run a harness or serving defect voided is
+not shown. The list of binaries is `binaries` in the setup's
+`models.json` (`id`, `title`, `spec` with base, quant, publisher and
+server, `repo`, `file`, optional `revision`); a row belongs to a page
+when those four spec fields match. The sidebar lists the pages under
+each setup.
+
+Page shape, in this order:
+
+1. Title: "<binary title> on <hardware>".
+2. File line: the Hub link, the file name, the revision when known,
+   the size, the server. One sentence that says the page holds every
+   run of the file, retired rows included, voided runs excluded.
+3. Three bullets: why the file is here, what it settled, where it
+   stands. The owner's decisions in the owner's words where they
+   exist.
+4. **Configurations**: the generated block between
+   `<!-- gen:binary-rows:... -->` markers.
+5. **Quality — EvalPlus HumanEval+**: the generated block between
+   `<!-- gen:binary-evalplus:... -->` markers, then one or two lines
+   on the cause of the empties.
+6. **Agent task — Mendel, every prompt version**: the generated block
+   between `<!-- gen:binary-mendel:... -->` markers, then one or two
+   lines that say how the rows ended.
+7. **Speed and context**: a hand-written table, one row per
+   measurement, with date, config and result, and a `ModelSpec` line
+   under the heading. Full curves stay on the archive page; link it.
+8. **Log**: chronological bullets, oldest first, one per event: the
+   date, what happened in one to three sentences, and the pointer to
+   the run kit folder (`hardware/<id>/benchmarks/bench<N>/`) or the
+   research kit. A run number appears only inside that path. The last
+   bullet may say what is pending.
+
+Never hand-edit inside the markers. `npm run docs:tables` fills the
+three blocks and warns when a listed binary has no page.
+
 ## The decode-speed page (`benchmarks/decode-speed.md`)
 
 This page is a written story, not a data dump. Keep its shape when you
