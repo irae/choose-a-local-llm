@@ -91,3 +91,21 @@ Qwen3.8-27B ISTA GSQ-RCO IQ3_S, effort xhigh, q8_0 KV, ctx 32k, think budget 300
 | new | — | Qwen3.8-27B, GGUF, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, no drafter, effort xhigh, think budget 30000 | 32048 (30000 + 2048) | **0.976/0.933/100%** | **0/164** | 6/164 | **273.4 min** |
 
 Wall: one part, 03:21 to 07:54:25 UTC, evaluate included. Empty count from the samples, forced count from `finish.jsonl` with the budget message. The budget fired on 6 problems; 4 passed, 2 failed and go to the forced re-run.
+
+## qwen38-ista-forced-rerun
+
+Qwen3.8-27B ISTA GSQ-RCO IQ3_S, effort xhigh, q8_0 KV, no reasoning flags, `max_tokens` 30000, the 6 forced problems of the budget block (`prepare` kept the 4 forced-pass ones as-is and generated the 2 forced-failed problems fresh).
+
+| task_id | cell | forced_tokens | natural_finish | natural_tokens | natural_reasoning_tokens |
+|---|---|---|---|---|---|
+| HumanEval/36 | forced-pass | 30152 |  |  |  |
+| HumanEval/99 | forced-fail-loop | 30264 | length | 30000 | 30000 |
+| HumanEval/101 | forced-pass | 30123 |  |  |  |
+| HumanEval/108 | forced-pass | 30233 |  |  |  |
+| HumanEval/145 | forced-fail-loop | 30080 | length | 30000 | 30000 |
+| HumanEval/146 | forced-pass | 30207 |  |  |  |
+
+`summary	forced-pass=4	forced-fail-late=0	forced-fail-loop=2	forced-fail-wrong=0`  
+`corrected_think_budget	unchanged	no late answer`  
+
+Summary: forced-pass 4, forced-fail-late 0, forced-fail-loop 2, forced-fail-wrong 0. Corrected think budget: unchanged, no late answer. Both forced failures are loops at 30000 without the flag, so 30000 loses no answer that more thinking would have found. Re-run wall 37.2 min (one part, 08:15 to 08:52:14 UTC, evaluate included).

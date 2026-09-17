@@ -145,8 +145,21 @@ Forced-failed (prepare): 2 of 6: HumanEval/99, 145.
 Files: `results/qwen38-ista-budget-xhigh/`, `results/server-qwen38-ista-budget-xhigh.log`, `results/run-qwen38-ista-budget-xhigh.log`, `results/watch-qwen38-ista-budget-xhigh.log`, `~/.local/share/choose-a-local-llm/run21-qwen38-ista-budget-xhigh-mem.log`.
 Deviation: none. (The harness killed a wait loop of the runner on its memory guard; the run and the server were detached and unaffected.)
 
-## evalplus qwen-3.8-27b gsq-iq3s/q8/xhigh forced-rerun — running
+## evalplus qwen-3.8-27b gsq-iq3s/q8/xhigh forced-rerun
 
 Same file and arm, no reasoning flags, `max_tokens` 30000, 2 problems. `nvidia-smi` 13634/16311 MiB after load. Verify request: finish `stop`, not forced.
 Wall parts (UTC):
 - part 1 start 08:15 (2026-09-17)
+- part 1 end 08:52, last problem 08:52:06, evaluate done 08:52:14
+Wall: 37.2 min.
+
+| cell | count |
+|---|--:|
+| forced-pass | 4 |
+| forced-fail-late | 0 |
+| forced-fail-loop | 2 |
+| forced-fail-wrong | 0 |
+
+Both forced-failed problems (HumanEval/99, 145) hit 30000 without the flag: non-convergence. Corrected think budget: unchanged (no late answer). Combined samples score 0.970/0.933.
+Files: `results/qwen38-ista-forced-rerun/` (`report.md`, `forced.json`), `results/server-qwen38-ista-forced-rerun.log`, `results/run-qwen38-ista-forced-rerun.log`, `results/watch-qwen38-ista-forced-rerun.log`.
+Deviation: none.
