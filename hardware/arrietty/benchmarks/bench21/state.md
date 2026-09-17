@@ -120,8 +120,33 @@ Every row `resolved_reasoning_effort: xhigh`, source requested. Cut: HumanEval/9
 Files: `hardware/arrietty/calibrations/calibration-qwen38-ista-xhigh-think.json`, `results/calibrate-qwen38-ista-xhigh-think.log`, `results/server-qwen38-ista-calibrate-think.log`.
 Deviation: none.
 
-## evalplus qwen-3.8-27b gsq-iq3s/q8/xhigh budget 30k — running
+## evalplus qwen-3.8-27b gsq-iq3s/q8/xhigh budget 30k
 
 Qwen3.8-27B ISTA GSQ-RCO IQ3_S rev `d562806`, no drafter, q8_0 KV, ctx 32k, `--reasoning-budget 30000`, effort xhigh, `max_tokens` 32048. `nvidia-smi` 13629/16311 MiB after load. Verify request: finish `stop`, 4892 completion tokens, not forced, answer present.
 Wall parts (UTC):
 - part 1 start 03:21 (2026-09-17)
+- part 1 end 07:54, last problem 07:54:16, evaluate done 07:54:25
+Wall: 273.4 min (one part).
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.976 |
+| HumanEval plus | 0.933 |
+| completion rate | 100% |
+| empty (samples) | 0/164 |
+| forced (finish log) | 6/164 |
+| think budget | 30000 |
+| answer budget | 2048 |
+| `max_tokens` | 32048 |
+| wall | 273.4 min |
+
+Natural run of the same config (`qwen38-ista-xhigh`, models.json): 0.945/0.909/96%, 7/164 empty, budget 20500, wall 217.6 min.
+Forced-failed (prepare): 2 of 6: HumanEval/99, 145.
+Files: `results/qwen38-ista-budget-xhigh/`, `results/server-qwen38-ista-budget-xhigh.log`, `results/run-qwen38-ista-budget-xhigh.log`, `results/watch-qwen38-ista-budget-xhigh.log`, `~/.local/share/choose-a-local-llm/run21-qwen38-ista-budget-xhigh-mem.log`.
+Deviation: none. (The harness killed a wait loop of the runner on its memory guard; the run and the server were detached and unaffected.)
+
+## evalplus qwen-3.8-27b gsq-iq3s/q8/xhigh forced-rerun — running
+
+Same file and arm, no reasoning flags, `max_tokens` 30000, 2 problems. `nvidia-smi` 13634/16311 MiB after load. Verify request: finish `stop`, not forced.
+Wall parts (UTC):
+- part 1 start 08:15 (2026-09-17)
