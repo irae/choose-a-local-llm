@@ -140,7 +140,25 @@ function repoOf(row) {
   return m[1]
 }
 
-function specTag(spec, { hide = '', label = '', repo = '', top = false, hardware = '' } = {}) {
+// Every binary page, by setup and by the four spec fields that name a
+// model file, so a config cell can link to the page of its file.
+const BINARY_PAGES = new Map(
+  globSync('docs/setups/*/models.json').flatMap((f) => {
+    const setup = f.split('/')[2]
+    return (JSON.parse(readFileSync(f, 'utf8')).binaries || []).map((b) => [
+      `${setup}|${['base', 'quant', 'publisher', 'server'].map((k) => b.spec[k] || '').join('|')}`,
+      `/setups/${setup}/binaries/${b.id}`,
+    ])
+  }),
+)
+const binaryPageOf = (spec, setup) => {
+  const key = ['base', 'quant', 'publisher', 'server'].map((k) => spec?.[k] || '').join('|')
+  if (setup) return BINARY_PAGES.get(`${setup}|${key}`) || ''
+  const hits = [...BINARY_PAGES.entries()].filter(([k]) => k.endsWith(`|${key}`))
+  return hits.length === 1 ? hits[0][1] : ''
+}
+
+function specTag(spec, { hide = '', label = '', repo = '', top = false, hardware = '', setup = '' } = {}) {
   for (const k of ['base', 'quant', 'server', 'publisher', 'kv']) {
     if (k === 'server' && hide.split(',').includes('server')) continue
     if (!spec?.[k]) throw new Error(`spec ${label || JSON.stringify(spec)}: missing ${k}`)
@@ -161,6 +179,7 @@ function specTag(spec, { hide = '', label = '', repo = '', top = false, hardware
     `kv="${spec.kv}"`,
     spec.effort && !hideEffort ? `effort="${spec.effort}"` : '',
     hardware ? `hardware="${hardware}"` : '',
+    binaryPageOf(spec, setup) ? `page="${binaryPageOf(spec, setup)}"` : '',
     hide ? `hide="${hide}"` : '',
     top ? 'top' : '',
   ].filter(Boolean)
@@ -293,7 +312,7 @@ const HARDWARE_SLUG = Object.fromEntries(
 function mendelCell(r, { global = false } = {}) {
   const slug = MENDEL_SLUGS[r.model]
   const setup = hardwareOf(r)
-  const tag = specTag(mendelSpec(r), { label: r.model, hardware: global ? HARDWARE_SLUG[setup] : '' })
+  const tag = specTag(mendelSpec(r), { label: r.model, hardware: global ? HARDWARE_SLUG[setup] : '', setup })
   const reports = global ? `../setups/${setup}/reports` : '../reports'
   return slug ? `[${tag}](${reports}/${slug}.md)` : tag
 }
@@ -536,7 +555,7 @@ function renderModelMendel(slug, blindRows, guidedRows, untrusted = [], match = 
     const state = r.invalid === 'True' ? 'invalid' : r['telemetry.commits'] === '0' ? 'model-failed' : r.partial === 'True' ? 'partial' : 'done'
     const loop = r['telemetry.loop_flag'] === 'LOOP' ? esc(r['telemetry.loop_kind'] || 'yes') : ''
     return `| ${[
-      specTag(mendelSpec(r), { label: r.model }) + (distrust(r) ? ` ${distrust(r).marker || '†'}` : ''),
+      specTag(mendelSpec(r), { label: r.model, setup: hardwareOf(r) }) + (distrust(r) ? ` ${distrust(r).marker || '†'}` : ''),
       `${test}-${esc(r.prompt_version)}`,
       config(r),
       score,
@@ -697,7 +716,7 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     const tok = r.abandoned
       ? `*${cell(r, 'tokShallow')} → ${cell(r, 'tokDeep')}*`
       : `<TokCell shallow="${r.tokShallow}" deep="${r.tokDeep}"${tokStale ? ' stale' : ''}${top.tokShallow.has(r) ? ' top-shallow' : ''}${top.tokDeep.has(r) ? ' top-deep' : ''} />`
-    const spec = specTag(r.spec, { label: r.id, repo: repoOf(r), top: top.composite.has(r), hardware: hardware ? r.hardwareSlug : '', hide })
+    const spec = specTag(r.spec, { label: r.id, repo: repoOf(r), top: top.composite.has(r), hardware: hardware ? r.hardwareSlug : '', hide, setup: r.setup })
     const config = r.abandoned ? `${spec} ${r.abandoned.marker || '💀'}` : spec
     const ev = evalplusCell(r.evalplus)
     const md = mendelCellParts(r)
@@ -793,7 +812,7 @@ function renderModelTable(data, model) {
 
 function renderModelConfigs(data, model) {
   const blocks = modelRows(data, model).map((r) => {
-    const spec = specTag(r.spec, { label: r.id, repo: repoOf(r) })
+    const spec = specTag(r.spec, { label: r.id, repo: repoOf(r), setup: r.setup })
     return [spec, '', ...(r.note ? [r.note, ''] : []), '```bash', r.command, '```'].join('\n')
   })
   return blocks.join('\n\n')
@@ -824,10 +843,10 @@ function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHard
   const link = linkOf || ((r) => `../setups/${r.data.setup}/benchmarks/${r.slug}.md`)
   const specOf = (r) => {
     const hardware = showHardware ? r.data.hardwareSlug : ''
-    if (r.spec) return specTag(r.spec, { label: r.model, hardware })
+    if (r.spec) return specTag(r.spec, { label: r.model, hardware, setup: r.data.setup })
     const row = r.data.rows.find((x) => x.id === r.row)
     if (!row) throw new Error(`EvalPlus run "${r.model}" names no row and no spec`)
-    return specTag(row.spec, { label: row.id, repo: repoOf(row), hardware })
+    return specTag(row.spec, { label: row.id, repo: repoOf(row), hardware, setup: r.data.setup })
   }
   const top = topSet(runs, (r) => parseFloat(r.base))
   const body = runs.map((r) => {
@@ -858,7 +877,7 @@ function renderDecodeSummary(datas) {
     return [...backends.values()].map((rows) => {
       const complete = rows.filter((r) => !hasPending(r))
       const pick = sortRows(complete.length ? complete : rows)[0]
-      return `| [${specTag(pick.spec, { label: pick.id, repo: repoOf(pick), hardware: data.hardwareSlug })}](../setups/${data.setup}/benchmarks/${slug}.md) | ${cell(pick, 'tokShallow')} → ${cell(pick, 'tokDeep')} | ${cell(pick, 'maxCtx')} | ${cell(pick, 'gatedBy')} |`
+      return `| [${specTag(pick.spec, { label: pick.id, repo: repoOf(pick), hardware: data.hardwareSlug, setup: data.setup })}](../setups/${data.setup}/benchmarks/${slug}.md) | ${cell(pick, 'tokShallow')} → ${cell(pick, 'tokDeep')} | ${cell(pick, 'maxCtx')} | ${cell(pick, 'gatedBy')} |`
     })
   }))
   const legend = anyStale
@@ -886,6 +905,7 @@ for (const dataFile of dataFiles) {
   const setupDir = dataFile.replace(/\/models\.json$/, '')
   const data = JSON.parse(readFileSync(dataFile, 'utf8'))
   checkRows(data.rows, data.setup)
+  for (const r of data.rows) r.setup = data.setup
   const ofSetup = (r) => r.local !== 'True' || hardwareOf(r) === data.setup
   const live = ((retired) => (r) => !retired(r))(onRetiredBuild(data.rows))
   const mendelBlindAll = parseCsv(readFileSync('benchmarks/mendel/results.csv', 'utf8')).filter(ofSetup).filter(live)

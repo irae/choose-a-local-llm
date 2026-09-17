@@ -1,4 +1,5 @@
 <script setup>
+import { withBase, useData } from 'vitepress'
 const props = defineProps({
   base: { type: String, default: '' },
   quant: { type: String, default: '' },
@@ -9,6 +10,7 @@ const props = defineProps({
   kv: { type: String, default: '' },
   effort: { type: String, default: '' },
   hardware: { type: String, default: '' },
+  page: { type: String, default: '' },
   hide: { type: String, default: '' },
   top: { type: Boolean, default: false },
 })
@@ -39,6 +41,8 @@ if (props.drafter && !/^[a-z]+(\/\d+)?$/.test(props.drafter)) {
 }
 
 const card = props.repo ? `https://huggingface.co/${props.repo}` : ''
+const { site } = useData()
+const pageHref = props.page ? withBase(props.page + (site.value.cleanUrls ? '' : '.html')) : ''
 const title = show('quant') ? `${props.base} ${props.quant}` : props.base
 const hasServing = show('server') || show('publisher') || show('hardware')
 const hasPills = show('drafter') || show('kv') || show('effort')
@@ -46,7 +50,7 @@ const hasPills = show('drafter') || show('kv') || show('effort')
 
 <template>
   <span class="ms" :class="{ 'ms-top': top }">
-    <span class="ms-name">{{ title }}</span>
+    <a v-if="pageHref" class="ms-name ms-link" :href="pageHref">{{ title }}</a><span v-else class="ms-name">{{ title }}</span>
     <span v-if="hasServing || hasPills" class="ms-sub">
       <span v-if="show('hardware')" class="ms-serving ms-hardware">{{ hardware }}</span><span v-if="show('hardware') && (show('publisher') || show('server'))" class="ms-serving">,</span>
       <a v-if="show('publisher')" class="ms-publisher" :href="card" target="_blank" rel="noreferrer">{{ publisher }}</a><span v-if="show('publisher') && show('server')" class="ms-serving">,</span>

@@ -276,3 +276,12 @@
   line-height: 1.35;
   color: var(--vp-c-text-3);
 }
+
+.vp-doc a.ms-link,
+.vp-doc a.ms-link:hover {
+  color: inherit;
+  text-decoration: none;
+}
+.vp-doc a.ms-link:hover {
+  text-decoration: underline;
+}
