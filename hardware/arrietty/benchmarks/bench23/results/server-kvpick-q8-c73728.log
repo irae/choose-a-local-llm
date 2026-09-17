@@ -1,0 +1,31 @@
+0.00.039.425 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.039.733 W srv  llama_server: -----------------
+0.00.039.734 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.039.734 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.039.734 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.039.734 W srv  llama_server: -----------------
+0.00.040.970 I srv    load_model: loading model '/home/irae/.cache/huggingface/hub/models--OBLITERATUS--Qwen3.8-27B-OBLITERATED/snapshots/a58c3b53b3ce71551eafde2ed5ec8df48e0f4ff8/Qwen3.8-27B-OBLITERATED-Q3_K_M.gguf'
+0.00.473.070 W model has unused tensor blk.64.attn_norm.weight (size = 20480 bytes) -- ignoring
+0.00.473.074 W model has unused tensor blk.64.post_attention_norm.weight (size = 20480 bytes) -- ignoring
+0.00.473.080 W model has unused tensor blk.64.attn_q.weight (size = 27033600 bytes) -- ignoring
+0.00.473.083 W model has unused tensor blk.64.attn_k.weight (size = 2252800 bytes) -- ignoring
+0.00.473.085 W model has unused tensor blk.64.attn_v.weight (size = 2949120 bytes) -- ignoring
+0.00.473.092 W model has unused tensor blk.64.attn_output.weight (size = 17694720 bytes) -- ignoring
+0.00.473.094 W model has unused tensor blk.64.attn_q_norm.weight (size = 1024 bytes) -- ignoring
+0.00.473.096 W model has unused tensor blk.64.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.473.098 W model has unused tensor blk.64.ffn_gate.weight (size = 38297600 bytes) -- ignoring
+0.00.473.100 W model has unused tensor blk.64.ffn_down.weight (size = 50135040 bytes) -- ignoring
+0.00.473.102 W model has unused tensor blk.64.ffn_up.weight (size = 38297600 bytes) -- ignoring
+0.00.473.105 W model has unused tensor blk.64.nextn.eh_proj.weight (size = 22528000 bytes) -- ignoring
+0.00.473.107 W model has unused tensor blk.64.nextn.enorm.weight (size = 20480 bytes) -- ignoring
+0.00.473.110 W model has unused tensor blk.64.nextn.hnorm.weight (size = 20480 bytes) -- ignoring
+0.00.473.116 W model has unused tensor blk.64.nextn.shared_head_norm.weight (size = 20480 bytes) -- ignoring
+0.02.244.558 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 440.28 MiB on device 0: cudaMalloc failed: out of memory
+0.02.244.563 E ggml_gallocr_reserve_n_impl: failed to allocate CUDA0 buffer of size 461668608
+0.02.244.563 E graph_reserve: failed to allocate compute buffers
+0.02.247.575 E llama_init_from_model: failed to initialize the context: failed to allocate compute pp buffers
+0.02.247.579 E cmn  common_init_: failed to create context with model '/home/irae/.cache/huggingface/hub/models--OBLITERATUS--Qwen3.8-27B-OBLITERATED/snapshots/a58c3b53b3ce71551eafde2ed5ec8df48e0f4ff8/Qwen3.8-27B-OBLITERATED-Q3_K_M.gguf'
+0.02.247.582 E cmn  common_init_: failed to create context with model '/home/irae/.cache/huggingface/hub/models--OBLITERATUS--Qwen3.8-27B-OBLITERATED/snapshots/a58c3b53b3ce71551eafde2ed5ec8df48e0f4ff8/Qwen3.8-27B-OBLITERATED-Q3_K_M.gguf'
+0.02.247.586 E srv    load_model: failed to create_context with model '/home/irae/.cache/huggingface/hub/models--OBLITERATUS--Qwen3.8-27B-OBLITERATED/snapshots/a58c3b53b3ce71551eafde2ed5ec8df48e0f4ff8/Qwen3.8-27B-OBLITERATED-Q3_K_M.gguf'
+0.02.247.587 I srv    operator(): operator(): cleaning up before exit...
+0.02.247.940 E srv  llama_server: exiting due to model loading error

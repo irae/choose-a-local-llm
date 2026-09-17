@@ -9,10 +9,10 @@ happen, and the handing-over section at the end.
 |---|---|---|
 | `budget_message` | `Thinking budget reached. Give the final answer now.` | runbook, Essentials |
 | `THINKING_BUDGET_MARGIN` | 1.5 | runbook, planning value |
-| `oblit_q3km_c_q8` | pending | `qwen38-oblit-q3km-kvpick` |
-| `oblit_q3km_c_f16` | pending | `qwen38-oblit-q3km-kvpick` |
-| `oblit_q3km_c` | pending | `qwen38-oblit-q3km-kvpick`, the larger of the two |
-| `oblit_q3km_kv` | pending | `qwen38-oblit-q3km-kvpick` |
+| `oblit_q3km_c_q8` | 65536 | `qwen38-oblit-q3km-kvpick`, 73728 OOMs |
+| `oblit_q3km_c_f16` | 32768 | `qwen38-oblit-q3km-kvpick`, 40960 OOMs |
+| `oblit_q3km_c` | 65536 (q8_0) | `qwen38-oblit-q3km-kvpick`, the larger of the two |
+| `oblit_q3km_kv` | `q8_0` | `qwen38-oblit-q3km-kvpick`, gate passed (65536 ≥ 32768) |
 | `oblit_q3km_clean` | pending | `sweep-qwen38-oblit-q3km` |
 | `oblit_q3km_window` | pending | `qwen38-oblit-q3km-smoke-medium` |
 | `oblit_q3km_think_budget` | pending | `qwen38-oblit-q3km-calibrate-think` |
@@ -55,6 +55,18 @@ KV heads, head dimension 256). The ladder replaces it.
 - Result dirs created: `hardware/arrietty/benchmarks/bench23/results`,
   `~/.local/share/choose-a-local-llm`, `~/.local/share/mendel-benchmark`.
 
+## `qwen38-oblit-q3km-kvpick` — done
+
+Ladders in `results.md`. q8_0 serves at 65536, fails at 73728. f16
+serves at 32768, fails at 40960. Gate: `oblit_q3km_c` = 65536 (q8_0),
+at or above the 32768 floor. Gate passes, pick `q8_0`. Run goes on to
+`sweep-qwen38-oblit-q3km`.
+
+Deviation: the load log shows `blk.64.nextn.*` tensors (an MTP/draft
+head) present in the file and ignored as unused on every load. No
+drafter arm runs in this run regardless (runbook, "The file").
+
 ## Handing-over
 
-`machine-setup` done. Next: `qwen38-oblit-q3km-kvpick`.
+`machine-setup` and `qwen38-oblit-q3km-kvpick` done. Next:
+`sweep-qwen38-oblit-q3km`.
