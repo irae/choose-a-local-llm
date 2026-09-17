@@ -91,6 +91,7 @@ Served with the budget: `--reasoning-budget 30000 --reasoning-budget-message "$B
 
 Watcher started (pid 97728). Codegen started (pid 97975), `EVALPLUS_MAX_NEW_TOKENS=32048`. MBPP cache already fixed from the earlier block, no repeat of that deviation.
 
+Deviation: the watcher exited with a `SERVER DEAD` verdict at 39/164 problems, but the server was not dead: `/health` answered `ok`, `server.log` showed steady `n_gen` growth on the live task, and no death signature printed. Cause: `--parallel 1` gives the server one slot; the watcher's probe request queues behind a long xhigh turn near the 30000-token budget and cannot get a slot before its own 300s timeout, twice in a row, so the watcher reads "no probe answered" as death. This matches the checklist's own warning ("a probe queued behind a long turn on a one-slot server fails the same way") but the watcher's two-probe escalation still fired. Did not kill the healthy, still-generating server; restarted only the watcher, first at `RUNWATCH_SILENCE=2700`, then at `RUNWATCH_SILENCE=3600` (a full single-slot turn at the worst observed pace, ~9 tok/s over a 32048-token budget, can run close to an hour). No data lost, no server restart. Flag for a future run: a budget block with `--parallel 1` and a budget near or above 20000 tokens needs a `RUNWATCH_SILENCE` sized to the worst-case single-turn wall time, not the 600s default.
+
 still running.
 Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh/`.
-Deviation: none.
