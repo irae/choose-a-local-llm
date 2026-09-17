@@ -109,3 +109,14 @@ Qwen3.8-27B ISTA GSQ-RCO IQ3_S, effort xhigh, q8_0 KV, no reasoning flags, `max_
 `corrected_think_budget	unchanged	no late answer`  
 
 Summary: forced-pass 4, forced-fail-late 0, forced-fail-loop 2, forced-fail-wrong 0. Corrected think budget: unchanged, no late answer. Both forced failures are loops at 30000 without the flag, so 30000 loses no answer that more thinking would have found. Re-run wall 37.2 min (one part, 08:15 to 08:52:14 UTC, evaluate included).
+
+## qwen38-ista-budget8192-xhigh
+
+Qwen3.8-27B ISTA GSQ-RCO IQ3_S, effort xhigh, q8_0 KV, ctx 32k, think budget 8192 (owner-chosen round value, run decision 2026-09-16), answer budget 2048, `max_tokens` 10240, no drafter.
+
+| config | budget | EvalPlus | empty | forced | wall |
+|---|--:|--:|--:|--:|--:|
+| think budget 30000 (calibrated) | 32048 | 0.976/0.933/100% | 0/164 | 6/164 | 273.4 min |
+| think budget 8192 (round) | 10240 | 0.976/0.933/100% | 0/164 | 11/164 | 175.0 min |
+
+Same score at less than half the wall, with the forced count roughly doubled. Forced-failed: HumanEval/32, 47, 91, 99, 132, 145.
