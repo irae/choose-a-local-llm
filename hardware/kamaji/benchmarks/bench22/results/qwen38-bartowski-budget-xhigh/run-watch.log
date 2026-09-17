@@ -1,0 +1,7 @@
+run-watch: log=hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh/server.log output=hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.raw.jsonl url=http://127.0.0.1:8081 silence=600s probe_timeout=300s poll=10s mem_log=/Users/irae/.local/share/choose-a-local-llm/run22-qwen38-budget-xhigh-mem.log mem_interval=20s
+silence 600s on hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.raw.jsonl: probing one real completion
+  probe 1 of 2 did not return within 300s. A probe queued behind a live turn fails the same way; waiting 600s more
+silence 600s on hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.raw.jsonl: probing one real completion
+  probe 1 of 2 did not return within 300s. A probe queued behind a live turn fails the same way; waiting 600s more
+silence 600s on hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.raw.jsonl: probing one real completion
+SERVER DEAD: two probes did not return, each after 600s without output growth on hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-budget-xhigh/humaneval/qwen3.8-27b_openai_temp_0.0.raw.jsonl
