@@ -158,11 +158,15 @@ window. The full curves are on the archive pages of
 - 2026-09-16 — M1 Max: re-run of the empty EvalPlus problems at medium
   and low. HumanEval/39 hits the 8192 budget at both levels, cause
   `budget`; neither score moved. `hardware/kamaji/benchmarks/bench20/`.
-- 2026-09-16 — RTX 5060 Ti: the thinking-budget test started on this
-  machine; the blocks on this file (a calibration with reasoning
-  lengths, the budgeted full run at the calibrated budget and at a
-  fixed 8192, and the natural re-run of the forced failures) are
-  pending. `hardware/arrietty/benchmarks/bench21/`.
+- 2026-09-16 to 2026-09-17 — RTX 5060 Ti: the thinking-budget test,
+  effort xhigh, q8_0 KV, no drafter. The calibration's longest
+  converged reasoning ran 22947 tokens, so the thinking budget sits at
+  the 30000 cap. The budgeted full run: 0.976 / 0.933, no empty
+  answer, 6 forced answers of which 4 pass, 273.4 minutes, against
+  0.945 / 0.909 with 7 empties in 217.6 minutes without the budget.
+  The natural re-run of the two forced failures and a second budgeted
+  run at a fixed 8192 thinking budget follow.
+  `hardware/arrietty/benchmarks/bench21/`.
 - Pending — M1 Max: the re-run of the five xhigh empties is not
   scheduled
   ([method](../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)).

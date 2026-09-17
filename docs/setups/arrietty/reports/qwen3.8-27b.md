@@ -44,7 +44,7 @@ Each table row above is one config; start it with its block below.
 <!-- gen:model-configs:start -->
 <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" page="/binaries/qwen38-ista-iq3s-mtp" />
 
-pi id `qwen3.8-27b-ista`. The 3-bit build the reference setup serves, at its revision `d562806`. The file sets `min_p 0.0` in its sampling defaults, where the unsloth file sets none. The drafter arms need a smaller `-c`: n-max 1 and 2 serve `-c 57344`, n-max 3 `-c 49152`; n-max 2 is the fastest arm (45.9 tok/s at 4K, 26.2 at 56K). n-max 2 served the guided task first, and the server died three times with a GPU launch timeout: the desktop shares the card, and about 440 MiB stayed free. No drafter leaves 1.2 GB free and served the guided and blind tasks with no crash. The best agent rows on this machine: guided 85 and blind 91, both 8 of 8. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20500: 0.945/0.909, 7 empty answers of 164 whose cause is unproven because the run saved no finish log, in 217.6 minutes of active time. Two driver watchdog crashes on the drafter arm forced a temporary no-drafter arm; a drafter does not change an answer at temperature 0, so every problem counts once.
+pi id `qwen3.8-27b-ista`. The 3-bit build the reference setup serves, at its revision `d562806`. The file sets `min_p 0.0` in its sampling defaults, where the unsloth file sets none. The drafter arms need a smaller `-c`: n-max 1 and 2 serve `-c 57344`, n-max 3 `-c 49152`; n-max 2 is the fastest arm (45.9 tok/s at 4K, 26.2 at 56K). n-max 2 served the guided task first, and the server died three times with a GPU launch timeout: the desktop shares the card, and about 440 MiB stayed free. No drafter leaves 1.2 GB free and served the guided and blind tasks with no crash. The best agent rows on this machine: guided 85 and blind 91, both 8 of 8. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20500: 0.945/0.909, 7 empty answers of 164 whose cause is unproven because the run saved no finish log, in 217.6 minutes of active time. Two driver watchdog crashes on the drafter arm forced a temporary no-drafter arm; a drafter does not change an answer at temperature 0, so every problem counts once. Under a server thinking budget of 30000 tokens (the derive cap; the calibration's longest converged reasoning ran 22947 tokens; answer budget 2048, `max_tokens` 32048; the thinking-budget test, 2026-09-17), the same build and level scored 0.976/0.933 with no empty answer in 273.4 minutes: 6 problems hit the budget and were forced to answer, and 4 of the 6 passed the base tests. The natural run at 20500 left 7 empty in 217.6 minutes. The natural re-run of the two forced failures is pending, then a second budgeted run at a fixed 8192 thinking budget; the owner's word on how a budgeted score is shown is pending too.
 
 ```bash
 llama-server -m "$(hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf)" \
@@ -94,7 +94,10 @@ llama-server -m "$(hf download unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-IQ3_S.ggu
   within about one point on base. Every empty here is unproven because
   the run saved no finish log; on the Mac the ISTA empties were proven
   as the budget. The ISTA row is the second case of the thinking-budget
-  test, pending.
+  test: forced to answer at 30000 thinking tokens it scored 0.976/0.933
+  with no empty answer in 273 minutes, 6 forced answers of which 4
+  pass; the site shows the natural score until the owner decides how a
+  budgeted row reads.
 
 ## Quality — EvalPlus HumanEval+
 
