@@ -237,6 +237,12 @@ Page shape, in this order:
 Never hand-edit inside the markers. `npm run docs:tables` fills the
 three blocks and warns when a listed binary has no page.
 
+Every generated config cell links its model name to the binary page
+of that file on that machine: the generator sets the `page` attribute
+of `ModelSpec` when a `binaries` entry matches the four spec fields.
+A hand-written `ModelSpec` line carries no link unless it names
+`page`.
+
 ## The decode-speed page (`benchmarks/decode-speed.md`)
 
 This page is a written story, not a data dump. Keep its shape when you
