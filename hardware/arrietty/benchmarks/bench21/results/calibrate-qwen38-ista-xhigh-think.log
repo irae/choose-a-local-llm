@@ -1,0 +1,1 @@
+event	reasoning_effort	resolved=xhigh	source=requested	requested_extra_body={"chat_template_kwargs": {"reasoning_effort": "xhigh"}}
