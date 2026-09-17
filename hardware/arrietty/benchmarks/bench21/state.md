@@ -188,8 +188,21 @@ Forced-failed (prepare): 6 of 11: HumanEval/32, 47, 91, 99, 132, 145.
 Files: `results/qwen38-ista-budget8192-xhigh/`, `results/server-qwen38-ista-budget8192-xhigh.log`, `results/run-qwen38-ista-budget8192-xhigh.log`, `results/watch-qwen38-ista-budget8192-xhigh.log`.
 Deviation: none.
 
-## evalplus qwen-3.8-27b gsq-iq3s/q8/xhigh forced-rerun-8192 — running
+## evalplus qwen-3.8-27b gsq-iq3s/q8/xhigh forced-rerun-8192
 
 Same file and arm, no reasoning flags, `max_tokens` 30000, 6 problems. `nvidia-smi` 13542/16311 MiB after load. Verify request: finish `stop`, not forced.
 Wall parts (UTC):
 - part 1 start 12:11 (2026-09-17)
+- part 1 end 13:21, last problem 13:21:32, evaluate done 13:21:40
+Wall: 69.5 min.
+
+| cell | count |
+|---|--:|
+| forced-pass | 5 |
+| forced-fail-late | 0 |
+| forced-fail-loop | 2 |
+| forced-fail-wrong | 4 |
+
+Combined samples score 0.970/0.933. Corrected think budget: unchanged (no late answer). 4 of 6 forced-failed problems (HumanEval/32, 47, 91, 132) converged naturally between 10.4k and 23k reasoning tokens but the answer still failed at the generous budget, so the cause is the model, not the budget; 2 (HumanEval/99, 145) are loops at 30000.
+Files: `results/qwen38-ista-forced-rerun-8192/` (`report.md`, `forced.json`), `results/server-qwen38-ista-forced-rerun-8192.log`, `results/run-qwen38-ista-forced-rerun-8192.log`, `results/watch-qwen38-ista-forced-rerun-8192.log`.
+Deviation: none.
