@@ -6,5 +6,5 @@ budget block with score, empties, forced count and wall, the forced
 re-run with the report table, and the blind row with its peak context
 and tool-call count.
 
-The run is parked. It starts only when run 23 aborts at its context
-gate.
+The run has not started. It runs after run 23, whatever run 23 did
+(owner, 2026-09-17).

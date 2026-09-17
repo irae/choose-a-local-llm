@@ -1,12 +1,13 @@
 # Run 24 — the same binary in Q4_K_M, with weights in host RAM
 
-**This run is parked.** It starts only when run 23 aborts at its
-context gate, and the coordinator tells you to start (owner,
-2026-09-17). Run 23 measures whether the Q3_K_M build of this binary
-holds a 32K window inside the card. When it does, this run never runs
-and its number stays taken. When it does not, this run is the answer:
-the larger quantization, a fixed 64K window, and the part of the
-weights that does not fit in host RAM.
+**This run waits for run 23 and then runs, whatever run 23 did**
+(owner, 2026-09-17). One model serves on this card at a time, so the
+run starts only when the coordinator tells you to start. Run 23
+measures the Q3_K_M build of the same binary inside the card. When it
+aborts at its context gate, this run is the answer to that abort. When
+it finishes, this run is the second point of the pair: the larger
+quantization at a window the card alone cannot hold. Either way, the
+blocks below do not change.
 
 About one and a half days of machine time, because host RAM is slower
 than VRAM. The list below is the order and the run ends when the list

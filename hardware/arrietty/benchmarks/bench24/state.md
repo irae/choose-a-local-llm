@@ -29,9 +29,11 @@ at 65536 tokens at q8_0, about 200 MiB of linear-attention state, about
 
 ## Why this run exists
 
-Run 23 aborts at its context gate when no cache type holds 32768
-tokens on the Q3_K_M build. Copy its two ladder values and its abort
-line here in `machine-setup`. The run has not started.
+This run measures the Q4_K_M build of the same binary that run 23
+measures in Q3_K_M. It runs after run 23, whatever run 23 did (owner,
+2026-09-17). In `machine-setup`, copy run 23's two ladder values, and
+its abort line when it has one, from `master` into this file. They say
+what the card holds without host RAM. The run has not started.
 
 ## Handing-over
 
