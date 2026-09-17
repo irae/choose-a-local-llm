@@ -1,0 +1,44 @@
+0.00.026.475 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.027.439 W srv  llama_server: -----------------
+0.00.027.441 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.027.442 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.027.442 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.027.442 W srv  llama_server: -----------------
+0.00.028.829 I srv    load_model: loading model '/home/irae/.cache/huggingface/hub/models--ISTA-DASLab--Qwen3.8-27B-GSQ-RCO-GGUF/snapshots/d562806dbafae37109975e970aae91b43e73b440/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf'
+0.00.465.094 W model has unused tensor blk.64.attn_norm.weight (size = 20480 bytes) -- ignoring
+0.00.465.099 W model has unused tensor blk.64.post_attention_norm.weight (size = 20480 bytes) -- ignoring
+0.00.465.105 W model has unused tensor blk.64.attn_q.weight (size = 51609600 bytes) -- ignoring
+0.00.465.108 W model has unused tensor blk.64.attn_k.weight (size = 4300800 bytes) -- ignoring
+0.00.465.110 W model has unused tensor blk.64.attn_v.weight (size = 4300800 bytes) -- ignoring
+0.00.465.118 W model has unused tensor blk.64.attn_output.weight (size = 25804800 bytes) -- ignoring
+0.00.465.120 W model has unused tensor blk.64.attn_q_norm.weight (size = 1024 bytes) -- ignoring
+0.00.465.123 W model has unused tensor blk.64.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.465.133 W model has unused tensor blk.64.ffn_gate.weight (size = 73113600 bytes) -- ignoring
+0.00.465.135 W model has unused tensor blk.64.ffn_down.weight (size = 73113600 bytes) -- ignoring
+0.00.465.137 W model has unused tensor blk.64.ffn_up.weight (size = 73113600 bytes) -- ignoring
+0.00.465.141 W model has unused tensor blk.64.nextn.eh_proj.weight (size = 43008000 bytes) -- ignoring
+0.00.465.144 W model has unused tensor blk.64.nextn.enorm.weight (size = 20480 bytes) -- ignoring
+0.00.465.146 W model has unused tensor blk.64.nextn.hnorm.weight (size = 20480 bytes) -- ignoring
+0.00.465.153 W model has unused tensor blk.64.nextn.shared_head_norm.weight (size = 20480 bytes) -- ignoring
+0.07.769.014 I cmn          init: llama threadpool init, n_threads = 6
+0.07.990.601 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 32768, kv_unified = 'false'
+0.07.994.474 W srv          init: chat template supports preserving reasoning, it is enabled by default (may use more tokens, disable via --no-reasoning-preserve)
+0.07.995.283 I srv  llama_server: model loaded
+0.07.995.286 I srv  llama_server: listening on http://127.0.0.1:8081
+0.09.763.634 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.09.763.696 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.13.406.510 I slot print_timing: id  0 | task 0 | n_gen =    100, tg =  30.15 t/s, tg_3s =  30.46 t/s
+0.14.130.578 I slot print_timing: id  0 | task 0 | prompt eval time =     359.74 ms /    73 tokens (    4.93 ms per token,   202.92 tokens per second)
+0.14.130.580 I slot print_timing: id  0 | task 0 |        eval time =    4007.12 ms /   122 tokens (   33.12 ms per token,    30.20 tokens per second)
+0.14.130.581 I slot print_timing: id  0 | task 0 |       total time =    4366.86 ms /   195 tokens
+0.14.130.584 I slot print_timing: id  0 | task 0 |    graphs reused =        121
+0.14.130.627 I slot      release: id  0 | task 0 | stop processing: n_tokens = 194, truncated = 0
+0.25.626.355 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.159 (> 0.100 thold), f_keep = 0.206
+0.25.820.363 I slot launch_slot_: id  0 | task 125 | processing task, is_child = 0
+0.29.548.704 I slot print_timing: id  0 | task 125 | n_gen =    100, tg =  30.15 t/s, tg_3s =  30.45 t/s
+0.32.558.090 I slot print_timing: id  0 | task 125 | n_gen =    191, tg =  30.19 t/s, tg_3s =  30.24 t/s
+0.35.572.006 I slot print_timing: id  0 | task 125 | n_gen =    282, tg =  30.19 t/s, tg_3s =  30.19 t/s
+0.38.580.572 I slot print_timing: id  0 | task 125 | n_gen =    373, tg =  30.21 t/s, tg_3s =  30.25 t/s
+0.41.585.902 I slot print_timing: id  0 | task 125 | n_gen =    464, tg =  30.22 t/s, tg_3s =  30.28 t/s
+0.44.595.976 I slot print_timing: id  0 | task 125 | n_gen =    555, tg =  30.22 t/s, tg_3s =  30.23 t/s
+0.47.611.147 I slot print_timing: id  0 | task 125 | n_gen =    646, tg =  30.22 t/s, tg_3s =  30.18 t/s

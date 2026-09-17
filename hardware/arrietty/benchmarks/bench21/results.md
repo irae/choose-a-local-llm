@@ -80,3 +80,14 @@ Summary: forced-pass 39, forced-fail-late 0, forced-fail-loop 6, forced-fail-wro
 ## qwen38-ista-calibrate-think
 
 Qwen3.8-27B ISTA GSQ-RCO IQ3_S, effort xhigh, q8_0 KV, no drafter, no thinking budget. 8 of 10 converged, 2 cut at 30000. Longest converged reasoning 22947 tokens, longest converged answer 1045. With margin 1.5, floor 2048 and the 30000 cap: think budget 30000, answer budget 2048, `max_tokens` 32048.
+
+## qwen38-ista-budget-xhigh
+
+Qwen3.8-27B ISTA GSQ-RCO IQ3_S, effort xhigh, q8_0 KV, ctx 32k, think budget 30000, answer budget 2048, `max_tokens` 32048, no drafter.
+
+| old/new | # | Config | budget | EvalPlus | empty | forced | wall |
+|---|--:|---|--:|--:|--:|--:|--:|
+| old | — | Qwen3.8-27B, GGUF, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, no drafter, effort xhigh (natural, run 19) | 20500 | 0.945/0.909/96% | 7/164 | — | 217.6 min |
+| new | — | Qwen3.8-27B, GGUF, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, no drafter, effort xhigh, think budget 30000 | 32048 (30000 + 2048) | **0.976/0.933/100%** | **0/164** | 6/164 | **273.4 min** |
+
+Wall: one part, 03:21 to 07:54:25 UTC, evaluate included. Empty count from the samples, forced count from `finish.jsonl` with the budget message. The budget fired on 6 problems; 4 passed, 2 failed and go to the forced re-run.
