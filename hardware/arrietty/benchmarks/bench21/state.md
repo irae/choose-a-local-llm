@@ -206,3 +206,20 @@ Wall: 69.5 min.
 Combined samples score 0.970/0.933. Corrected think budget: unchanged (no late answer). 4 of 6 forced-failed problems (HumanEval/32, 47, 91, 132) converged naturally between 10.4k and 23k reasoning tokens but the answer still failed at the generous budget, so the cause is the model, not the budget; 2 (HumanEval/99, 145) are loops at 30000.
 Files: `results/qwen38-ista-forced-rerun-8192/` (`report.md`, `forced.json`), `results/server-qwen38-ista-forced-rerun-8192.log`, `results/run-qwen38-ista-forced-rerun-8192.log`, `results/watch-qwen38-ista-forced-rerun-8192.log`.
 Deviation: none.
+
+## Handing over
+
+Run 21 ends here: every block of "The order" ran and closed, `retry-sweep` is empty (every failure this run hit was recovered inside its own block: the harness's low-memory kill of the run task and watcher, twice, on `gemma12-nvfp4-budget-on` and never elsewhere, resumed in place with `setsid nohup` outside the harness's task list).
+
+What ran, in order: `machine-setup`, `gemma12-nvfp4-calibrate-think`, `gemma12-nvfp4-budget-on`, `gemma12-nvfp4-forced-rerun`, `qwen38-ista-calibrate-think`, `qwen38-ista-budget-xhigh`, `qwen38-ista-forced-rerun`, `qwen38-ista-budget8192-xhigh`, `qwen38-ista-forced-rerun-8192`. All ten commits are on `run21`, pushed, at `33ec503`.
+
+Headline results (full detail in `results.md`):
+- Gemma-4-12B NVFP4, thinking on, think budget 7350: 0.976/0.951, 0/164 empty (natural: 0.659/0.640, 53 empty). All 45 forced problems that failed (6) were non-convergent loops; the budget lost no answer the natural run got by luck alone.
+- Qwen3.8-27B ISTA xhigh, think budget 30000: 0.976/0.933, 0/164 empty (natural: 0.945/0.909, 7 empty). 6 forced-failed, all 2 fail-loop plus 4 that the round-8192 test below separates further.
+- Qwen3.8-27B ISTA xhigh, think budget 8192 (owner's round value): same score 0.976/0.933, 0/164 empty, but 11 forced and a forced re-run that shows 4 of them are genuine model failures (the model converges naturally between 10.4k and 23k reasoning tokens and is still wrong), not budget shortfall. Total wall 244.5 min against 310.6 min for the 30000 budget: 8192 is cheaper but trades some of its margin for more forced answers that need the natural re-run to classify.
+
+No gate changed and no margin change arrived from the coordinator; `THINKING_BUDGET_MARGIN` stayed at 1.5 throughout.
+
+Machine state left behind: no `llama-server` process, `nvidia-smi` at 1039 MiB (baseline ~1000-1130 across the session), working tree clean, `run21` pushed and matching origin. Evidence archived: `tools/archive-evidence.sh` moved 32 files to `~/.local/share/choose-a-local-llm/evidence/run21`. Memory logs for every scoring run sit under `~/.local/share/choose-a-local-llm/run21-*-mem.log`; the ISTA download log is `~/.local/share/choose-a-local-llm/run21-ista-download.log`.
+
+Nothing else queued. The GPU is idle because the run's list ended, not because of an open question.
