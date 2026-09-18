@@ -932,6 +932,21 @@ function renderModelCompare(slug, datas) {
   ].join('\n')
 }
 
+// The agent table of a model page is the site-wide table of
+// docs/benchmarks/mendel.md with one filter changed, so a column added there
+// appears here too and the two can never drift apart.
+function renderModelAgent(slug) {
+  const mine = (rows) => currentPromptVersion(rows).filter((r) => MENDEL_SLUGS[r.model] === slug)
+  const blind = mine(blindRunsAll)
+  const guided = mine(guidedRunsAll)
+  if (!blind.length && !guided.length) return 'No agent run yet.'
+  const out = []
+  if (blind.length) out.push('Blind test:', '', mendelTable(blind, { global: true }), '')
+  if (guided.length) out.push('Guided test:', '', mendelTable(guided, { global: true }), '')
+  out.push('Older prompt versions of these runs are on [the agent-task page](../benchmarks/mendel.md).')
+  return out.join('\n')
+}
+
 // The depth grid of every curve table. A reading snaps to its nearest
 // bucket, so arms that served different `-c` values line up in one column
 // instead of each claiming its own. The exact depth stays in the data and
@@ -1245,7 +1260,7 @@ for (const [slug, rows] of modelsAll) {
     `docs/models/${slug}.md`,
     MODEL_MENDEL_START,
     MODEL_MENDEL_END,
-    renderModelMendel(slug, blindRunsAll, guidedRunsAll, [], null, { hardware: true }),
+    renderModelAgent(slug),
   )
   writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-curve:start -->', '<!-- gen:model-curve:end -->', renderModelCurve(slug, setupsAll))
   const compare = renderModelCompare(slug, setupsAll)
