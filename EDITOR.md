@@ -620,6 +620,34 @@ recorded until every surface agrees. Change all of these in the same pass.
 If a new wired limit supersedes a number, move the old one into the
 setup's `historical.md`; do not delete it.
 
+## Decode curves on a model page
+
+Each model page ends with one table: every arm that was measured for
+that model, on every machine, at every depth that was read. The data is
+the `curves` array of each setup's `models.json`, and
+`tools/gen-tables.mjs` renders it between the
+`<!-- gen:model-curve:... -->` markers. A row of `models.json` holds
+only a shallow and a deep cell, and an arm that was measured and never
+served has no row at all, so the curve needs its own list.
+
+One entry per arm: `model` (the page slug), `arm` (the quant, the cache
+type, the drafter arm, any offload flag), `method`, `points` (depth in
+tokens to tok/s), `served`, `run`, and `c` with `cAt` where the arm
+needed its own `-c`. The machine is not a heading and not a column: one
+table mixes machines, so it is the first part of the arm label.
+
+**A legacy reading belongs on the page** (owner, 2026-09-18). The
+project measured decode with its context-creep tool before it measured
+it with `llama-benchy` on real text, and many of those readings were
+taken under an older wired limit. They are not comparable with a benchy
+reading, and they are still the only curve many arms have. So they are
+published with `"method": "creep"` and their `wired` limit, and the
+generator marks them with a dagger and a note that says which tool read
+them. This is the one place where "No superseded number on a current
+page" does not apply: a re-run replaces a daggered reading when there
+is time for one, and until then an approximation beats an empty table.
+The comparison and pick tables stay benchy-only.
+
 ## How to import a simulator(mendel) run
 
 A run is not imported until **four** artifacts carry it. Three of them

@@ -152,7 +152,7 @@
       },
       "hidden": false,
       "command": "llama-server -m \"$(hf download unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-IQ3_S.gguf)\" \\\n  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 65536 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 GB. The KV type was measured on this card: q8_0 serves `-c 65536`, and f16 serves only `-c 53248` (24.3 tok/s at its deep cell), because a larger f16 window loads but runs out of memory on the first real request. q8_0 is the served type. The MTP drafter was read after the agent row, at the same `-c`: n-max 1 reads 37.2 \u2192 26.3 tok/s and n-max 2 47.1 \u2192 30.8, both faster than no drafter at every depth; n-max 3 needs `-c 57344`. The guided task ran with no drafter: 79, 7 of 8 libraries, stopped when the output-budget nudges ran out. EvalPlus at effort xhigh, scored 2026-09-16 with no drafter at `-c 32768`, budget 19000: 0.957/0.921, 3 empty answers of 164 whose cause is unproven because the run saved no finish log, in 289.6 minutes of active time. Two of ten calibration problems never converged, so the budget sits just above the longest successful answer. No earlier score exists for this build at this level on any machine.",
+      "note": "pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 GB. The KV type was measured on this card: q8_0 serves `-c 65536`, and f16 serves only `-c 53248` (24.3 tok/s at its deep cell), because a larger f16 window loads but runs out of memory on the first real request. q8_0 is the served type. The MTP drafter was read after the agent row, at the same `-c`: n-max 1 reads 37.2 → 26.3 tok/s and n-max 2 47.1 → 30.8, both faster than no drafter at every depth; n-max 3 needs `-c 57344`. The guided task ran with no drafter: 79, 7 of 8 libraries, stopped when the output-budget nudges ran out. EvalPlus at effort xhigh, scored 2026-09-16 with no drafter at `-c 32768`, budget 19000: 0.957/0.921, 3 empty answers of 164 whose cause is unproven because the run saved no finish log, in 289.6 minutes of active time. Two of ten calibration problems never converged, so the budget sits just above the longest successful answer. No earlier score exists for this build at this level on any machine.",
       "pi": {
         "provider": "llama",
         "id": "qwen3.8-27b-iq3s",
@@ -534,7 +534,7 @@
     },
     {
       "wall": 203.9,
-      "emptyCause": "\u2020 unproven",
+      "emptyCause": "† unproven",
       "slug": "gemma-4-12b-it",
       "model": "Gemma-4-12B (GGUF NVFP4, FreedomAISVR, f16 KV)",
       "mode": "thinking on",
@@ -546,7 +546,7 @@
     },
     {
       "wall": 259.0,
-      "emptyCause": "\u2020 unproven",
+      "emptyCause": "† unproven",
       "slug": "gemma-4-12b-it",
       "model": "Gemma-4-12B (GGUF UD-Q4_K_XL, unsloth, f16 KV)",
       "mode": "thinking on",
@@ -570,7 +570,7 @@
     },
     {
       "wall": 215.3,
-      "emptyCause": "\u2020 unproven",
+      "emptyCause": "† unproven",
       "slug": "gemma-4-26b-a4b",
       "model": "Gemma-4-26B-A4B (GGUF NVFP4Q8, catlilface, f16 KV)",
       "mode": "thinking on",
@@ -582,7 +582,7 @@
     },
     {
       "wall": 192,
-      "emptyCause": "\u2020 unproven",
+      "emptyCause": "† unproven",
       "slug": "qwen3.6-35b-a3b",
       "model": "Qwen3.6-35B-A3B (GGUF UD-Q4_K_XL, unsloth, MTP, q8_0 KV)",
       "mode": "thinking on",
@@ -594,7 +594,7 @@
     },
     {
       "wall": 289.6,
-      "emptyCause": "\u2020 unproven",
+      "emptyCause": "† unproven",
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF UD-IQ3_S, unsloth, q8_0 KV)",
       "mode": "effort xhigh",
@@ -606,7 +606,7 @@
     },
     {
       "wall": 217.6,
-      "emptyCause": "\u2020 unproven",
+      "emptyCause": "† unproven",
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, q8_0 KV)",
       "mode": "effort xhigh",
@@ -664,7 +664,8 @@
         "65536": 28.2,
         "211968": 14.5
       },
-      "run": "bench24"
+      "run": "bench24",
+      "method": "benchy"
     },
     {
       "model": "bonsai-27b",
@@ -678,7 +679,8 @@
         "65536": 32.2,
         "121856": 25.1
       },
-      "run": "bench24"
+      "run": "bench24",
+      "method": "benchy"
     },
     {
       "model": "bonsai-27b",
@@ -692,7 +694,8 @@
         "65536": 26.5,
         "244736": 12.8
       },
-      "run": "bench24"
+      "run": "bench24",
+      "method": "benchy"
     },
     {
       "model": "qwen3.8-27b",
@@ -705,7 +708,8 @@
         "24576": 20.65,
         "64512": 16.74
       },
-      "run": "bench23"
+      "run": "bench23",
+      "method": "benchy"
     },
     {
       "model": "qwen3.8-27b",
@@ -719,7 +723,8 @@
         "49152": 2.67,
         "64512": 2.31
       },
-      "run": "bench25"
+      "run": "bench25",
+      "method": "benchy"
     },
     {
       "model": "gemma-4-12b-it",
