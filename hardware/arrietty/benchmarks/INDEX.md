@@ -6,6 +6,37 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 `results/`). Run numbers are shared with the Mac
 (`hardware/kamaji/benchmarks/INDEX.md`).
 
+## bench24, 2026-09-17 to 2026-09-18 ([report](bench24/report.md), [state](bench24/state.md), [results](bench24/results.md))
+
+- Runbook: [bench24/AGENT.md](bench24/AGENT.md). A ternary-weight 27B
+  model released 2026-09-17, measured the same day: two GGUF packings,
+  both KV types laddered, both swept, one EvalPlus under a thinking
+  budget with its forced re-run, a smoke and a blind agent row. Every
+  row is served by the publisher's llama.cpp fork, release
+  `prism-b10685-7dffb15`; the stock binary makes garbage from these
+  files.
+- **A 27B model at a 208K window on this card.** Ternary weights cost
+  6.71 GiB, so the KV cache becomes the large allocation: `-c 212992`
+  at q8_0 on the larger packing, `-c 245760` on the smaller one, 81%
+  and 94% of the trained window. Every other 27B build here serves
+  65536. Both sweeps end on a window verdict with no depth under the 8
+  tok/s floor.
+- **The window is used, not offered.** The blind row peaked at 192679
+  tokens of 208896, 92.2%, with zero compactions. It is the first row
+  in the project where the agent task itself went past 64K.
+- **The fastest and the highest-scoring 27B build on this card**: 46.0
+  tok/s at 4K against 29.43 for the 3-bit build, and 0.982 / 0.939 on
+  HumanEval+ with no empty answer.
+- **The agent score does not follow the quality gate**: 60/100 blind
+  against 91 for the 3-bit build. The row completed with 16 commits, no
+  loop and no nudge, so the loss is judgment, not a harness failure: a
+  CRITICAL trap-C regression, a missed trap B, no dependency pruning,
+  Prettier left failing.
+- **Four problems loop with or without a budget.** Three of seven
+  forced answers passed; the four that failed hit the 30000-token cap
+  unconverged in the natural re-run, so no forced answer was late and
+  the derived budget of 25209 stands.
+
 ## bench21, 2026-09-16 to 2026-09-17 ([report](bench21/report.md), [state](bench21/state.md), [results](bench21/results.md))
 
 - Runbook: [bench21/AGENT.md](bench21/AGENT.md). The thinking budget

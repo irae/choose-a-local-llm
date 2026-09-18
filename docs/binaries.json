@@ -280,5 +280,39 @@
     "setups": [
       "arrietty"
     ]
+  },
+  {
+    "id": "bonsai2-prism-pq2",
+    "model": "bonsai-2-27b",
+    "title": "Ternary-Bonsai-2-27B PQ2_0 (prism-ml, prism fork)",
+    "spec": {
+      "base": "Ternary-Bonsai-2-27B",
+      "quant": "PQ2_0",
+      "publisher": "prism-ml",
+      "server": "prism-llama"
+    },
+    "repo": "prism-ml/Ternary-Bonsai-2-27B-gguf",
+    "file": "Ternary-Bonsai-2-27B-PQ2_0.gguf",
+    "revision": "6ed5e12",
+    "setups": [
+      "arrietty"
+    ]
+  },
+  {
+    "id": "bonsai2-prism-ptq1",
+    "model": "bonsai-2-27b",
+    "title": "Ternary-Bonsai-2-27B PTQ1_0 (prism-ml, prism fork)",
+    "spec": {
+      "base": "Ternary-Bonsai-2-27B",
+      "quant": "PTQ1_0",
+      "publisher": "prism-ml",
+      "server": "prism-llama"
+    },
+    "repo": "prism-ml/Ternary-Bonsai-2-27B-gguf",
+    "file": "Ternary-Bonsai-2-27B-PTQ1_0.gguf",
+    "revision": "6ed5e12",
+    "setups": [
+      "arrietty"
+    ]
   }
 ]

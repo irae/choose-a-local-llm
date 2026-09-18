@@ -16,11 +16,25 @@
       "mendel": "pending",
       "id": "gemma12-nvfp4-off",
       "evalplusWall": 51.1,
-      "spec": { "base": "Gemma-4-12B", "quant": "NVFP4", "server": "llama-server", "publisher": "FreedomAISVR", "repo": "FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF", "drafter": "", "kv": "f16", "effort": "off" },
+      "spec": {
+        "base": "Gemma-4-12B",
+        "quant": "NVFP4",
+        "server": "llama-server",
+        "publisher": "FreedomAISVR",
+        "repo": "FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "off"
+      },
       "hidden": false,
       "command": "llama-server -m \"$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf)\" \\\n  --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-12b-nvfp4`. A community NVFP4 repack of the model, the run's headline NVFP4 row: the weights leave room for the trained 262,144 window at f16 KV. `-c 262144` loads at once and serves the deep cell at 261,120; the window is the model's own limit, not the card's. It reads 2 to 5 percent faster than the k-quant build on this card. The guided task at thinking off ended model-failed: the same tool call five times in a row, before the first commit. EvalPlus at thinking off, scored 2026-09-16 at `-c 32768`, budget 8192: 0.927/0.896, no empty answer of 164, in 51.1 minutes of active time. This is the first EvalPlus score for this build. The budget floors at 8192 because the longest calibration answer ran 949 tokens, so thinking off costs almost nothing here.",
-      "pi": { "provider": "llama", "id": "gemma-4-12b-nvfp4", "contextWindow": 258048, "maxTokens": 8192 }
+      "pi": {
+        "provider": "llama",
+        "id": "gemma-4-12b-nvfp4",
+        "contextWindow": 258048,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Gemma-4-12B, GGUF, NVFP4, f16 KV, no drafter, thinking on",
@@ -33,11 +47,25 @@
       "mendel": "pending",
       "id": "gemma12-nvfp4-on",
       "evalplusWall": 203.9,
-      "spec": { "base": "Gemma-4-12B", "quant": "NVFP4", "server": "llama-server", "publisher": "FreedomAISVR", "repo": "FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF", "drafter": "", "kv": "f16", "effort": "on" },
+      "spec": {
+        "base": "Gemma-4-12B",
+        "quant": "NVFP4",
+        "server": "llama-server",
+        "publisher": "FreedomAISVR",
+        "repo": "FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "on"
+      },
       "hidden": false,
       "command": "llama-server -m \"$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf)\" \\\n  --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-12b-nvfp4`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: after a broken `xtend` edit, the thinking repeated the planned fix 520 times and never made the tool call, with zero commits. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 8192: 0.659/0.640, 53 empty answers of 164 whose cause is unproven because the run saved no finish log, in 203.9 minutes of active time in two parts. The calibration ended 5 of 10 answers at the 30000 cap, so the runner first set 1700 as a waste limiter; the owner restored the 8192 floor after 32 answers, and those 32 stayed. Thinking on scores far below thinking off on this build, 0.659 against 0.927, and 53 of the 56 failures are empty answers: the thinking did not end inside 8192 tokens on a third of the problems, as the calibration predicted with five of ten answers at the 30000 cap. This is the first EvalPlus score for this build at thinking on. Under a server thinking budget of 7350 tokens (answer budget 2048, `max_tokens` 9398, from a calibration with reasoning lengths and the margin 1.5; the thinking-budget test, 2026-09-16), the same file and level scored 0.976/0.951 with no empty answer in 194.8 minutes: 45 problems hit the budget and were forced to answer, and 42 of those 45 passed the base tests. That is above the thinking-off row of this build, 0.927/0.896. The natural re-run of the six forced failures changed nothing: all six hit the 30000 cap without the budget too, so the budget cost no answer and stands. The owner's word on how a budgeted score is shown is pending.",
-      "pi": { "provider": "llama", "id": "gemma-4-12b-nvfp4", "contextWindow": 258048, "maxTokens": 8192 }
+      "pi": {
+        "provider": "llama",
+        "id": "gemma-4-12b-nvfp4",
+        "contextWindow": 258048,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Gemma-4-12B, GGUF, UD-Q4_K_XL, f16 KV, no drafter, thinking off",
@@ -50,11 +78,25 @@
       "mendel": "not run",
       "id": "gemma12-q4kxl-off",
       "evalplusWall": 26.1,
-      "spec": { "base": "Gemma-4-12B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/gemma-4-12b-it-GGUF", "drafter": "", "kv": "f16", "effort": "off" },
+      "spec": {
+        "base": "Gemma-4-12B",
+        "quant": "UD-Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "repo": "unsloth/gemma-4-12b-it-GGUF",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "off"
+      },
       "hidden": false,
       "command": "llama-server -m \"$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)\" \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-12b-q4kxl`. The k-quant build the Mac serves, the control for the NVFP4 row on this card. `-c 262144` loads at once and serves the deep cell at 261,120. The agent task runs at thinking on only (owner, 2026-09-14); see the row below. EvalPlus at thinking off, scored 2026-09-16 at `-c 32768`, budget 8192: 0.951/0.909, no empty answer of 164, in 26.1 minutes of active time; the longest calibration answer ran 1011 tokens. The Mac's row of the same file reads 0.976/0.939, and the NVFP4 build on this card 0.927/0.896. Thinking off beats thinking on on both Gemma-12B builds here, 0.951 against 0.793 on this one.",
-      "pi": { "provider": "llama", "id": "gemma-4-12b-q4kxl", "contextWindow": 258048, "maxTokens": 8192 }
+      "pi": {
+        "provider": "llama",
+        "id": "gemma-4-12b-q4kxl",
+        "contextWindow": 258048,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Gemma-4-12B, GGUF, UD-Q4_K_XL, f16 KV, no drafter, thinking on",
@@ -67,11 +109,25 @@
       "mendel": "pending",
       "id": "gemma12-q4kxl-on",
       "evalplusWall": 259.0,
-      "spec": { "base": "Gemma-4-12B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/gemma-4-12b-it-GGUF", "drafter": "", "kv": "f16", "effort": "on" },
+      "spec": {
+        "base": "Gemma-4-12B",
+        "quant": "UD-Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "repo": "unsloth/gemma-4-12b-it-GGUF",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "on"
+      },
       "hidden": false,
       "command": "llama-server -m \"$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)\" \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-12b-q4kxl`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: right after it found the first dependency, the thinking repeated one line 818 times and filled the output budget, with zero commits. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 8192: 0.793/0.780, 34 empty answers of 164 whose cause is unproven because the run saved no finish log, in 259.0 minutes of active time. Every answered problem passed the base tests: the whole loss is thinking that did not end inside the budget, as the calibration predicted with four of ten answers at the 30000 cap. The NVFP4 build at the same level lost 53 answers, so this k-quant converges more often on this card. Thinking off is pending.",
-      "pi": { "provider": "llama", "id": "gemma-4-12b-q4kxl", "contextWindow": 258048, "maxTokens": 8192 }
+      "pi": {
+        "provider": "llama",
+        "id": "gemma-4-12b-q4kxl",
+        "contextWindow": 258048,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Qwen3.8-27B, GGUF, UD-IQ3_S, no drafter, effort xhigh",
@@ -84,11 +140,25 @@
       "mendel": "pending",
       "id": "qwen38-iq3s-xhigh",
       "evalplusWall": 289.6,
-      "spec": { "base": "Qwen3.8-27B", "quant": "UD-IQ3_S", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/Qwen3.8-27B-GGUF", "drafter": "", "kv": "q8_0", "effort": "xhigh" },
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "UD-IQ3_S",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "repo": "unsloth/Qwen3.8-27B-GGUF",
+        "drafter": "",
+        "kv": "q8_0",
+        "effort": "xhigh"
+      },
       "hidden": false,
       "command": "llama-server -m \"$(hf download unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-IQ3_S.gguf)\" \\\n  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 65536 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
       "note": "pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 GB. The KV type was measured on this card: q8_0 serves `-c 65536`, and f16 serves only `-c 53248` (24.3 tok/s at its deep cell), because a larger f16 window loads but runs out of memory on the first real request. q8_0 is the served type. The MTP drafter was read after the agent row, at the same `-c`: n-max 1 reads 37.2 → 26.3 tok/s and n-max 2 47.1 → 30.8, both faster than no drafter at every depth; n-max 3 needs `-c 57344`. The guided task ran with no drafter: 79, 7 of 8 libraries, stopped when the output-budget nudges ran out. EvalPlus at effort xhigh, scored 2026-09-16 with no drafter at `-c 32768`, budget 19000: 0.957/0.921, 3 empty answers of 164 whose cause is unproven because the run saved no finish log, in 289.6 minutes of active time. Two of ten calibration problems never converged, so the budget sits just above the longest successful answer. No earlier score exists for this build at this level on any machine.",
-      "pi": { "provider": "llama", "id": "qwen3.8-27b-iq3s", "contextWindow": 61440, "maxTokens": 8192 }
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b-iq3s",
+        "contextWindow": 61440,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Qwen3.8-27B, GGUF, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, no drafter, effort xhigh",
@@ -101,11 +171,25 @@
       "mendel": "pending",
       "id": "qwen38-ista-xhigh",
       "evalplusWall": 217.6,
-      "spec": { "base": "Qwen3.8-27B", "quant": "IQ3_S-mtp", "server": "llama-server", "publisher": "ISTA-DASLab", "repo": "ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF", "drafter": "", "kv": "q8_0", "effort": "xhigh" },
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "IQ3_S-mtp",
+        "server": "llama-server",
+        "publisher": "ISTA-DASLab",
+        "repo": "ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF",
+        "drafter": "",
+        "kv": "q8_0",
+        "effort": "xhigh"
+      },
       "hidden": false,
       "command": "llama-server -m \"$(hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf)\" \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 65536 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
       "note": "pi id `qwen3.8-27b-ista`. The 3-bit build the reference setup serves, at its revision `d562806`. The file sets `min_p 0.0` in its sampling defaults, where the unsloth file sets none. The drafter arms need a smaller `-c`: n-max 1 and 2 serve `-c 57344`, n-max 3 `-c 49152`; n-max 2 is the fastest arm (45.9 tok/s at 4K, 26.2 at 56K). n-max 2 served the guided task first, and the server died three times with a GPU launch timeout: the desktop shares the card, and about 440 MiB stayed free. No drafter leaves 1.2 GB free and served the guided and blind tasks with no crash. The best agent rows on this machine: guided 85 and blind 91, both 8 of 8. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20500: 0.945/0.909, 7 empty answers of 164 whose cause is unproven because the run saved no finish log, in 217.6 minutes of active time. Two driver watchdog crashes on the drafter arm forced a temporary no-drafter arm; a drafter does not change an answer at temperature 0, so every problem counts once. Under a server thinking budget of 30000 tokens (the derive cap; the calibration's longest converged reasoning ran 22947 tokens; answer budget 2048, `max_tokens` 32048; the thinking-budget test, 2026-09-17), the same build and level scored 0.976/0.933 with no empty answer in 273.4 minutes: 6 problems hit the budget and were forced to answer, and 5 of the 6 passed the base tests, 4 the plus tests. The natural run at 20500 left 7 empty in 217.6 minutes. The two forced failures hit the 30000 cap without the budget too (the natural re-run, 37.2 minutes), so the budget stands. A second budgeted run at a fixed 8192 thinking budget (answer budget 2048, `max_tokens` 10240) scored the same 0.976/0.933 with no empty answer in 175.0 minutes: 11 problems were forced to answer, and 8 of the 11 passed the base tests, 5 the plus tests. Its six forced failures do not pass without the budget: two hit the 30000 cap and four converge between 10379 and 22947 reasoning tokens and fail the same tests, as they do in the 30000 run, so the 8192 budget lost no answer. The owner's word on how a budgeted score is shown is pending.",
-      "pi": { "provider": "llama", "id": "qwen3.8-27b-ista", "contextWindow": 61440, "maxTokens": 8192 }
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b-ista",
+        "contextWindow": 61440,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Qwen3.6-35B-A3B, GGUF, UD-Q4_K_XL, MTP, q8_0 KV, experts partly in host RAM, thinking on",
@@ -118,11 +202,25 @@
       "mendel": "pending",
       "id": "qwen36-q4kxl-on",
       "evalplusWall": 192,
-      "spec": { "base": "Qwen3.6-35B-A3B", "quant": "UD-Q4_K_XL", "server": "llama-server", "publisher": "unsloth", "repo": "unsloth/Qwen3.6-35B-A3B-MTP-GGUF", "drafter": "mtp/2", "kv": "q8_0", "effort": "on" },
+      "spec": {
+        "base": "Qwen3.6-35B-A3B",
+        "quant": "UD-Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "repo": "unsloth/Qwen3.6-35B-A3B-MTP-GGUF",
+        "drafter": "mtp/2",
+        "kv": "q8_0",
+        "effort": "on"
+      },
       "hidden": false,
       "command": "llama-server -m \"$(hf download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf)\" \\\n  --alias qwen3.6-35b-a3b-q4kxl --no-mmproj --parallel 1 \\\n  --spec-type draft-mtp --spec-draft-n-max 2 \\\n  -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
       "note": "pi id `qwen3.6-35b-a3b-q4kxl`. The build the reference setup serves, with the MTP drafter embedded in the file. The file is larger than the card, so a measured count of expert layers stays in host RAM, and the drafter needs more of the card's memory than no drafter: no drafter serves `-c 98304` at `--n-cpu-moe 17` (55.8 tok/s at 4K, 37.8 at 97K), n-max 1 at 19 (60.6, 37.9), n-max 2 and 3 at 21 (61.2 and 45.4 for n-max 2; 57.9 and 46.8 for n-max 3). n-max 2 is the served arm: fastest at 4K and 65K, and within the spread of n-max 3 at 97K. A community NVFP4 repack was tried first and failed to load (a tensor-count defect); the owner chose the mainstream build over a niche one (2026-09-14). The guided task scored 48.5, 6 of 8 libraries, and ended on a loop at the seventh; three of its commits moved the pre-commit hook aside. EvalPlus at thinking on, scored 2026-09-16 on the drafter arm at `-c 32768`, budget 24154 from the standard formula: 0.945/0.902, 6 empty answers of 164 whose cause is unproven because the run saved no finish log, in 192.0 minutes of active time. The Mac's thinking-on row of the same model reads 0.939/0.921 with five empty answers, so this card scores higher on the base metric and lower on `plus`, with one empty answer more. Swap stayed flat, although the host held only 1.1 to 1.5 GB free with this configuration.",
-      "pi": { "provider": "llama", "id": "qwen3.6-35b-a3b-q4kxl", "contextWindow": 94208, "maxTokens": 8192 }
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.6-35b-a3b-q4kxl",
+        "contextWindow": 94208,
+        "maxTokens": 8192
+      }
     },
     {
       "config": "Gemma-4-26B-A4B, GGUF, NVFP4, f16 KV, experts partly in host RAM, thinking on",
@@ -135,11 +233,86 @@
       "mendel": "pending",
       "id": "gemma26-nvfp4-on",
       "evalplusWall": 215.3,
-      "spec": { "base": "Gemma-4-26B-A4B", "quant": "NVFP4Q8", "server": "llama-server", "publisher": "catlilface", "repo": "catlilface/Gemma-4-26B-A4B-NVFP4-GGUF", "drafter": "", "kv": "f16", "effort": "on" },
+      "spec": {
+        "base": "Gemma-4-26B-A4B",
+        "quant": "NVFP4Q8",
+        "server": "llama-server",
+        "publisher": "catlilface",
+        "repo": "catlilface/Gemma-4-26B-A4B-NVFP4-GGUF",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "on"
+      },
       "hidden": false,
       "command": "llama-server -m \"$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-NVFP4Q8.gguf)\" \\\n  --alias gemma-4-26b-a4b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off --n-cpu-moe 7 -fa on -c 98304 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "pi id `gemma-4-26b-a4b-nvfp4`. A community NVFP4 repack that keeps attention at Q8. The file is larger than the card, so a measured count of expert layers stays in host RAM: 7 is the lowest `--n-cpu-moe` that loads at `-c 98304` and serves a real request at the deep cell (6 runs out of memory at load). The file has no MTP layers, so no drafter arm exists. The guided task scored 37.5, 3 of 8 libraries, and ended on a loop in its text. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 12500: 0.909/0.878, 14 empty answers of 164 whose cause is unproven because the run saved no finish log, in 215.3 minutes of active time. Two of ten calibration problems never converged, so the budget sits just above the longest successful answer, and the full run left 14 answers empty. The Mac's nearest row is a different build, the unsloth k-quant at thinking on: 0.884/0.860 with eighteen empty answers at a 30000 budget.",
-      "pi": { "provider": "llama", "id": "gemma-4-26b-a4b-nvfp4", "contextWindow": 94208, "maxTokens": 8192 }
+      "pi": {
+        "provider": "llama",
+        "id": "gemma-4-26b-a4b-nvfp4",
+        "contextWindow": 94208,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Ternary-Bonsai-2-27B, GGUF, PQ2_0 (prism-ml), q8_0 KV, no drafter, effort xhigh",
+      "maxCtx": "208k",
+      "gatedBy": "mem",
+      "tokShallow": "46.0",
+      "tokDeep": "14.5",
+      "memory": "15.4 GB",
+      "evalplus": "0.982/0.939/100%",
+      "mendel": "pending",
+      "id": "bonsai2-pq2-xhigh",
+      "evalplusWall": 176.1,
+      "spec": {
+        "base": "Ternary-Bonsai-2-27B",
+        "quant": "PQ2_0",
+        "server": "prism-llama",
+        "publisher": "prism-ml",
+        "repo": "prism-ml/Ternary-Bonsai-2-27B-gguf",
+        "drafter": "",
+        "kv": "q8_0",
+        "effort": "xhigh"
+      },
+      "hidden": false,
+      "command": "llama-server -m \"$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PQ2_0.gguf)\" \\\n  --alias bonsai2-27b-pq2 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 212992 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "pi id `bonsai2-27b-pq2`, revision `6ed5e12`, 6.71 GiB of weights. The ternary build that changes what this card holds: `-c 212992` at q8_0, against 65536 for every 12 GiB 27B build here, and f16 stops at 122880. The sweep found no speed ceiling: 46.0 tok/s at 4K, 38.2 at 24K, 28.2 at 65K and 14.5 at 211968, VRAM flat at 15735 MiB. EvalPlus at effort xhigh, scored 2026-09-18 under a server thinking budget of 25209 (answer budget 2048, `max_tokens` 27257, the calibration's longest converged reasoning 16806 tokens): 0.982/0.939 with no empty answer in 176.1 minutes. Seven problems hit the budget and were forced to answer; three passed. The four that failed hit the 30000-token cap unconverged in the natural re-run, so no forced answer was late and the budget stands. The blind agent row at a 208896 window scored 60 with a CRITICAL worst defect, complete in 1:32:27, 245 tool calls, 16 commits, no repetition loop, no nudge, and a peak context of 192679 tokens, 92.2% of the window and zero compactions: the first row in this project where the task itself went past 64K. The loss is judgment, not a harness failure: a trap-C regression that deletes the debug manifest in an exit hook, a missed trap B, no dependency pruning, and Prettier left failing. The stock llama.cpp binary does not serve this file: it rejects `PQ2_0` and `PTQ1_0` as unknown types and makes garbage from a `Q2_0` file, because it has no Hadamard activation runtime. Every number here is measured with fork `PrismML-Eng/llama.cpp` release `prism-b10685-7dffb15` (commit `7dffb158d`), one release behind `latest`, whose Linux CUDA asset was still building on 2026-09-17. A different fork release is a different serving stack. The model card publishes `min_p 0.0` in `general.sampling.*`; the server applies `min_p 0.05`, and the agent row samples, so the measured value is the one that counts. Vision is a separate `mmproj` file and this machine never fetched it; every command carries `--no-mmproj`.",
+      "pi": {
+        "provider": "llama",
+        "id": "bonsai2-27b-pq2",
+        "contextWindow": 208896,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Ternary-Bonsai-2-27B, GGUF, PTQ1_0 (prism-ml), q8_0 KV, no drafter, effort xhigh",
+      "maxCtx": "240k",
+      "gatedBy": "mem",
+      "tokShallow": "41.7",
+      "tokDeep": "12.8",
+      "memory": "15.5 GB",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "id": "bonsai2-ptq1-xhigh",
+      "spec": {
+        "base": "Ternary-Bonsai-2-27B",
+        "quant": "PTQ1_0",
+        "server": "prism-llama",
+        "publisher": "prism-ml",
+        "repo": "prism-ml/Ternary-Bonsai-2-27B-gguf",
+        "drafter": "",
+        "kv": "q8_0",
+        "effort": "xhigh"
+      },
+      "hidden": false,
+      "command": "llama-server -m \"$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf)\" \\\n  --alias bonsai2-27b-ptq1 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 245760 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "pi id `bonsai2-27b-ptq1`, revision `6ed5e12`, 5.54 GiB of weights. The smaller packing and the larger window: `-c 245760` at q8_0, 94% of the trained 262144, where f16 aborts on a live CUDA out-of-memory at 147456 and tops out at 139264. The sweep found no speed ceiling: 41.7 tok/s at 4K, 34.9 at 24K, 26.5 at 65K and 12.8 at 244736, VRAM flat at 15837 MiB. No EvalPlus row and no agent row yet, so nothing is known about what the smaller packing costs in quality. The stock llama.cpp binary does not serve this file: it rejects `PQ2_0` and `PTQ1_0` as unknown types and makes garbage from a `Q2_0` file, because it has no Hadamard activation runtime. Every number here is measured with fork `PrismML-Eng/llama.cpp` release `prism-b10685-7dffb15` (commit `7dffb158d`), one release behind `latest`, whose Linux CUDA asset was still building on 2026-09-17. A different fork release is a different serving stack. The model card publishes `min_p 0.0` in `general.sampling.*`; the server applies `min_p 0.05`, and the agent row samples, so the measured value is the one that counts. Vision is a separate `mmproj` file and this machine never fetched it; every command carries `--no-mmproj`.",
+      "pi": {
+        "provider": "llama",
+        "id": "bonsai2-27b-ptq1",
+        "contextWindow": 245760,
+        "maxTokens": 8192
+      }
     }
   ],
   "models": {
@@ -250,6 +423,36 @@
           "sub": "91% completion"
         }
       }
+    },
+    "bonsai-2-27b": {
+      "rowMatch": "Ternary-Bonsai-2-27B",
+      "kpis": [
+        "window",
+        "decodeShallow",
+        "evalplus",
+        "mendelBlind"
+      ],
+      "stats": {
+        "window": {
+          "value": "208k",
+          "label": "usable context, PQ2_0, q8_0 KV",
+          "sub": "240k on PTQ1_0"
+        },
+        "decodeShallow": {
+          "value": "46.0 tok/s",
+          "label": "decode at 4K, PQ2_0, q8_0 KV"
+        },
+        "evalplus": {
+          "value": "0.982 / 0.939",
+          "label": "EvalPlus base / plus, PQ2_0, effort xhigh",
+          "sub": "100% completion"
+        },
+        "mendelBlind": {
+          "value": "60",
+          "label": "Mendel blind, PQ2_0, effort xhigh",
+          "sub": "peak 92.2% of a 208896 window"
+        }
+      }
     }
   },
   "evalplusRuns": [
@@ -348,6 +551,18 @@
       "base": "0.945",
       "plus": "0.909",
       "empty": "7/164"
+    },
+    {
+      "wall": 176.1,
+      "emptyCause": "none",
+      "slug": "bonsai-2-27b",
+      "model": "Ternary-Bonsai-2-27B (GGUF PQ2_0, prism-ml, q8_0 KV, prism fork)",
+      "mode": "effort xhigh, think budget 25209",
+      "row": "bonsai2-pq2-xhigh",
+      "budget": 27257,
+      "base": "0.982",
+      "plus": "0.939",
+      "empty": "0/164"
     }
   ],
   "mendelWalls": {

@@ -1,0 +1,119 @@
+# Ternary Bonsai-2-27B on RTX 5060 Ti 16 GB
+
+Backends: prism-llama · [GGUF on Hugging Face](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf)
+
+<!-- gen:model-kpis:start -->
+<div class="kpis">
+  <div class="kpi"><b>208k</b><span>usable context, PQ2_0, q8_0 KV</span><small>240k on PTQ1_0</small></div>
+  <div class="kpi"><b>46.0 tok/s</b><span>decode at 4K, PQ2_0, q8_0 KV</span></div>
+  <div class="kpi"><b>0.982 / 0.939</b><span>EvalPlus base / plus, PQ2_0, effort xhigh</span><small>100% completion</small></div>
+  <div class="kpi"><b>60</b><span>Mendel blind, PQ2_0, effort xhigh</span><small>peak 92.2% of a 208896 window</small></div>
+</div>
+<!-- gen:model-kpis:end -->
+
+Published 2026-09-17 and measured the same day: both packings laddered
+and swept, EvalPlus and the blind agent row on PQ2_0.
+
+## Highlights
+
+- **Ternary weights change what this card holds.** 6.71 GiB for PQ2_0
+  and 5.54 GiB for PTQ1_0, against 12 GiB and more for every other 27B
+  build here. The KV cache becomes the large allocation, and the card
+  serves 208K and 240K tokens where the others serve 64K.
+- **The window is used, not offered.** The blind agent row peaked at
+  192679 tokens of a 208896 window, 92.2%, with zero compactions. It is
+  the first row on this machine where the task itself went past 64K.
+- **The fastest 27B build here**: 46.0 tok/s at 4K and 28.2 at 65K,
+  against 29.43 and 21.13 for the 3-bit Qwen build.
+- **The best quality gate here**: 0.982 / 0.939 with no empty answer,
+  under a 25209-token thinking budget at effort xhigh.
+- **The agent score does not follow.** 60 blind, against 91 for the
+  3-bit Qwen build. The row completed with 16 commits, no repetition
+  loop and no nudge, so the loss is judgment, not a harness failure.
+- **Only the publisher's fork serves these files.** Stock llama.cpp
+  rejects both packings and makes garbage from a plain 2-bit file,
+  because it has no Hadamard activation runtime. The fork release is
+  part of each row's identity.
+
+## All configs — this model
+
+<!-- gen:model-table:start -->
+| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
+|---|--:|:--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-pq2" top /> | **208k** | mem | <TokCell shallow="46.0" deep="14.5" top-shallow top-deep /> | **15.4 GB** | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="60" pill="mendel-blind" top /> | <span title="EvalPlus 2h56 · Mendel 1h32">4h29</span> |
+
+Rows below 100 percent completeness. Completeness counts three measurements: tok/s, EvalPlus and Mendel.
+
+| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
+|---|--:|:--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **240k** | mem | <TokCell shallow="41.7" deep="12.8" top-shallow top-deep /> | **15.5 GB** | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
+<!-- gen:model-table:end -->
+
+## Configs
+
+Each table row above is one config; start it with its block below.
+
+<!-- gen:model-configs:start -->
+<ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-pq2" />
+
+pi id `bonsai2-27b-pq2`, revision `6ed5e12`, 6.71 GiB of weights. The ternary build that changes what this card holds: `-c 212992` at q8_0, against 65536 for every 12 GiB 27B build here, and f16 stops at 122880. The sweep found no speed ceiling: 46.0 tok/s at 4K, 38.2 at 24K, 28.2 at 65K and 14.5 at 211968, VRAM flat at 15735 MiB. EvalPlus at effort xhigh, scored 2026-09-18 under a server thinking budget of 25209 (answer budget 2048, `max_tokens` 27257, the calibration's longest converged reasoning 16806 tokens): 0.982/0.939 with no empty answer in 176.1 minutes. Seven problems hit the budget and were forced to answer; three passed. The four that failed hit the 30000-token cap unconverged in the natural re-run, so no forced answer was late and the budget stands. The blind agent row at a 208896 window scored 60 with a CRITICAL worst defect, complete in 1:32:27, 245 tool calls, 16 commits, no repetition loop, no nudge, and a peak context of 192679 tokens, 92.2% of the window and zero compactions: the first row in this project where the task itself went past 64K. The loss is judgment, not a harness failure: a trap-C regression that deletes the debug manifest in an exit hook, a missed trap B, no dependency pruning, and Prettier left failing. The stock llama.cpp binary does not serve this file: it rejects `PQ2_0` and `PTQ1_0` as unknown types and makes garbage from a `Q2_0` file, because it has no Hadamard activation runtime. Every number here is measured with fork `PrismML-Eng/llama.cpp` release `prism-b10685-7dffb15` (commit `7dffb158d`), one release behind `latest`, whose Linux CUDA asset was still building on 2026-09-17. A different fork release is a different serving stack. The model card publishes `min_p 0.0` in `general.sampling.*`; the server applies `min_p 0.05`, and the agent row samples, so the measured value is the one that counts. Vision is a separate `mmproj` file and this machine never fetched it; every command carries `--no-mmproj`.
+
+```bash
+llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PQ2_0.gguf)" \
+  --alias bonsai2-27b-pq2 --no-mmproj --parallel 1 \
+  -ngl 999 --fit off -fa on -c 212992 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081
+```
+
+<ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" />
+
+pi id `bonsai2-27b-ptq1`, revision `6ed5e12`, 5.54 GiB of weights. The smaller packing and the larger window: `-c 245760` at q8_0, 94% of the trained 262144, where f16 aborts on a live CUDA out-of-memory at 147456 and tops out at 139264. The sweep found no speed ceiling: 41.7 tok/s at 4K, 34.9 at 24K, 26.5 at 65K and 12.8 at 244736, VRAM flat at 15837 MiB. No EvalPlus row and no agent row yet, so nothing is known about what the smaller packing costs in quality. The stock llama.cpp binary does not serve this file: it rejects `PQ2_0` and `PTQ1_0` as unknown types and makes garbage from a `Q2_0` file, because it has no Hadamard activation runtime. Every number here is measured with fork `PrismML-Eng/llama.cpp` release `prism-b10685-7dffb15` (commit `7dffb158d`), one release behind `latest`, whose Linux CUDA asset was still building on 2026-09-17. A different fork release is a different serving stack. The model card publishes `min_p 0.0` in `general.sampling.*`; the server applies `min_p 0.05`, and the agent row samples, so the measured value is the one that counts. Vision is a separate `mmproj` file and this machine never fetched it; every command carries `--no-mmproj`.
+
+```bash
+llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf)" \
+  --alias bonsai2-27b-ptq1 --no-mmproj --parallel 1 \
+  -ngl 999 --fit off -fa on -c 245760 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081
+```
+<!-- gen:model-configs:end -->
+
+## Quality — EvalPlus HumanEval+
+
+<!-- gen:model-evalplus:start -->
+| config | budget | Scores | empties | tok/s | wall |
+|---|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-pq2" />](../benchmarks/bonsai-2-27b.md) | 27257 | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | none | <TokCell shallow="46.0" deep="14.5" /> | 2h56 |
+<!-- gen:model-evalplus:end -->
+
+Every run of this model on this machine, best base score first. The empties column carries the cause word ([what the words mean](../../../benchmarks/evalplus.md#limits-on-local-hardware)).
+
+The scored run carries a server thinking budget of 25209 tokens, from a
+calibration whose longest converged reasoning ran 16806 tokens. Seven
+problems hit the budget and were forced to answer; three passed, and
+the four that failed hit the 30000-token cap unconverged in the natural
+re-run, so no forced answer was late and the budget needed no
+correction. The owner's word on how a budgeted score is shown is
+pending.
+
+## Agentic quality — Mendel
+
+<!-- gen:model-mendel:start -->
+Blind test:
+
+| config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
+|---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-pq2" /> | blind-v1.1 | 208k | **60** | 8/8/done | 92.4 | 19,572k | 193k | 0 | 245 | 16 |  |
+
+The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
+<!-- gen:model-mendel:end -->
+
+The window cell is the harness context window of that run.
+
+The blind row lost its points to judgment, not to the harness: a
+CRITICAL trap-C regression that deletes the debug manifest in an exit
+hook, a missed trap B, no dependency pruning at all, and Prettier left
+failing. Test discipline and commit craft scored near full.
+
+Full data: [the benchmarks page](../benchmarks/bonsai-2-27b.md).
