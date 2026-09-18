@@ -123,6 +123,25 @@ Planning value 122880 — the f16 ceiling `bonsai2-pq2-kvpick` already measured 
 
 Files: `results/server-kvpick-pq2-f16-arm-122880.log`, `results/kvpick-pq2-f16-arm-122880-probe.json`.
 
+## `sweep-bonsai2-pq2-f16`
+
+`Ternary-Bonsai-2-27B-PQ2_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, f16 KV, `-c 122880`, `--cache-ram 0` for the measurement. Tokenizer `unsloth/Qwen3.8-27B`. Corpus `corpus-mendel-js.txt` (restarted for this block). Tool `local-llm-eval-tools` at `204acec`. Depths 4096, 24576, 65536, 121856 (= 122880 − 1024).
+
+| arm | depth | tok/s (tg256) | prompt tok/s (pp512) | VRAM used | MemAvailable |
+|---|--:|--:|--:|--:|--:|
+| f16 | 4096 | 46.29 ± 0.01 | 969.88 ± 0.52 | 15464 MiB | ~18.6 GB |
+| f16 | 24576 | 40.47 ± 0.08 | 899.59 ± 0.29 | 15464 MiB | ~18.6 GB |
+| f16 | 65536 | 32.17 ± 0.03 | 761.47 ± 0.13 | 15464 MiB | ~18.6 GB |
+| f16 | 121856 | 25.09 ± 0.00 | 625.61 ± 0.04 | 15464 MiB | ~18.6 GB |
+
+VRAM flat across every depth (15464 MiB), no swap growth. Every depth clears the 8 tok/s floor; the deepest tested depth is the deepest clean depth.
+
+`bonsai2_pq2_f16_clean` = 121856 (deepest tested depth, still above the floor at 25.09 tok/s).
+
+Files: `results/benchy-bonsai2-pq2-f16.md`, `results/benchy-bonsai2-pq2-f16.out.log`, `results/benchy-bonsai2-pq2-f16-vm.log`, `results/server-sweep-pq2-f16-arm.log`.
+
+**A table and no pick.**
+
 Files: `results/mendel-blind-bonsai2-pq2.out.log`, `results/mendel-blind-bonsai2-pq2-evidence.json`, session `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-xhigh-blind-session.jsonl`, meta `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-xhigh-blind-meta.json`.
 
 ## `bonsai2-pq2-calibrate-think`

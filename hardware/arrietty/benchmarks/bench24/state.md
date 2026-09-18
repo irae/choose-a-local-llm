@@ -32,6 +32,7 @@ happen, and the handing-over section at the end.
 | `vram_start_mb` | 626 MiB of 16311 MiB | `nvidia-smi`, session start |
 | `evalplus_python` | `/home/irae/.local/share/pipx/venvs/evalplus/bin/python` | pipx venv, EvalPlus 0.3.1 |
 | `bonsai2_pq2_f16_c` | 122880 | `bonsai2-pq2-f16-kvpick` |
+| `bonsai2_pq2_f16_clean` | 121856 | `sweep-bonsai2-pq2-f16` |
 
 Planning estimate, not a result: about 34 MiB of KV per 1024 tokens at
 q8_0, from the `qwen35` architecture. With weights of about 6.7 GiB,
