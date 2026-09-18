@@ -373,3 +373,49 @@ Per-criterion breakdown (criterion / max / scored / evidence):
 Sum 57.5, exact.
 
 Files: `results/mendel-blind-bonsai2-ptq1.out.log`, `results/mendel-blind-bonsai2-ptq1-evidence.json`, session `~/.local/share/mendel-benchmark/runs/bonsai2-27b-ptq1-xhigh-blind-session.jsonl`, meta `~/.local/share/mendel-benchmark/runs/bonsai2-27b-ptq1-xhigh-blind-meta.json`.
+
+## `bonsai2-ptq1-f16-mendel-blind-xhigh`
+
+`model`: `bonsai2-27b-ptq1-f16 (prism-ml PTQ1_0, xhigh, arrietty)`. `model_id`: `prism-ml/Ternary-Bonsai-2-27B-gguf`, file `Ternary-Bonsai-2-27B-PTQ1_0.gguf`, revision `6ed5e12bf84b7a63069882c91dd9e9218647d17b`. `hardware`: `arrietty`.
+
+Config note: fork `PrismML-Eng/llama.cpp` release `prism-b10685-7dffb15` (commit `7dffb158d`) — the stock llama.cpp binary produces garbage on this file; `-c 139264`, cache type **f16** (`bonsai2-ptq1-f16-kvpick`); window 135168 (`bonsai2_ptq1_f16_clean` 138240 rounded to a multiple of 4096, never the q8_0 arm's window); reserve 8192, keep-recent pi's default (window > 65536); 1 compaction; `vram 16311 MiB`; sampling as the server applies it, temperature 1.0, top_p 0.95, top_k 20, min_p 0.05. **No smoke precedes this row: the larger packing already passed its smoke on this binary at this level, and the owner accepts that evidence for the smaller packing (owner, 2026-09-18). This row ran before any EvalPlus score on this file, so the 0.800 gate does not apply to it (owner, 2026-09-18).**
+
+Branch `bonsai2-27b-ptq1-f16-xhigh-issue-13`, base commit `2652ed6c`. Started `2026-09-18T17:05:06Z`, ended `2026-09-18T18:33:29Z`, wall 1:28:23. `end_reason`: complete. Loop flag: ok, worst ratio 0.22 (thinking). 17 commits, all `chore` type — unlike the three sibling rows (`fix(...)`), which cost those rows commit-craft points. 1 compaction (at threshold, `2026-09-18T17:58:36Z`). 0 nudges, 0 retries.
+
+| field | value |
+|---|--:|
+| score | 82/100 |
+| tasks | 1/1 (single blind task) |
+| worst defect | CRITICAL |
+| stop reason | complete |
+| tool calls | 258 |
+| peak ctx | 127141/135168 (94.1%) |
+| known events | 1 compaction |
+| elapsed | 1:28:23 |
+
+`peak_context` verified with `benchmark/count-tool-calls.mjs`: `tool_calls 258, assistant_msgs 235, peak_context 127141`.
+
+**Score: 82/100 — the best of the four blind rows in this run.** Scored by a judgment subagent from the evidence pack, the session log, and the worktree diff — never from the model's own claims. The subagent showed its own arithmetic; this run independently re-verified it (13+16+8+5+12+8+9+5+4+2 = 82, exact).
+
+**Worst defect: CRITICAL.** Commit `8918fcc` does a naive `.then()` swap on `fs.promises.glob()` in `packages/mendel-development/apply-extra-options.js` — trap A. The rubric's own runtime repro confirms it throws (`runtime_checks.trap_a.out`: "THREW: TypeError fs.promises.glob(...).then is not a function"). No test in the repo covers this file, so the model never caught it.
+
+**This row does not repeat either sibling defect.** `validate-manifest.js` uses `fs.mkdtempSync` with no exit hook (correct — the trap-C regression the other three rows' PQ2_0/PTQ1_0 q8_0 siblings hit does not appear here). The `tmp` replacements in `mendel-manifest-extract-bundles` and `mendel-manifest-uglify` add `fs.rmSync` inside `t.teardown()`, not a process exit hook — safe. The chalk port fully removes `chalk.level` forcing, matching the blind prompt's Node-defaults instruction exactly (the MEDIUM defect the PQ2_0 f16 sibling carried does not appear here either).
+
+Per-criterion breakdown (criterion / max / scored / evidence):
+
+| # | criterion | max | scored | evidence |
+|--:|---|--:|--:|---|
+| 1 | Bugs remaining | 25 | 13 | Critical trap A (weight 3) plus one self-acknowledged minor glob dotfile-matching regression in `mendel-mocha-runner` (weight 1): 25 − 3×4. |
+| 2 | Task completion | 20 | 16 | All 8 libraries done; model found and explicitly left the `mendel-requirify` `rimraf` reference unfixed ("Out of scope... left alone" in TASKS.md), `static_completeness.clean: false`. |
+| 3 | node_modules pruned | 8 | 8 | Real `pnpm install` after nearly every commit; lockfile shrank 96 lines; `root_devdeps.removed: true`. |
+| 4 | Prettier/ESLint | 5 | 5 | `eslint.ok: true`; `prettier.ok: false` only flags the uncommitted `TASKS.md`, not branch code; `lint_self_runs: 18`. |
+| 5 | Commit craft | 12 | 12 | All 17/17 `chore`, 0 multi-package, no `--no-verify`, no `git add -A`, no TASKS.md leak. |
+| 6 | Right the first time | 8 | 8 | No repair/revert commits; 17 planned commits = 17 actual. |
+| 7 | Test discipline | 10 | 9 | Full-suite runs after commits 5, 10, 15, and final, matching the every-5-commits cadence (`full_suite_runs: 8`). |
+| 8 | House conventions | 5 | 5 | Minimal diffs, keeps existing style conventions, no drive-by churn. |
+| 9 | Task list | 4 | 4 | TASKS.md lists libraries upfront, sub-items per package, checked off per commit. |
+| 10 | Truncated noisy commands | 3 | 2 | `truncation_share: 74%`, most noisy commands piped through tail/head. |
+
+Sum 82, exact.
+
+Files: `results/mendel-blind-bonsai2-ptq1-f16.out.log`, `results/mendel-blind-bonsai2-ptq1-f16-evidence.json`, session `~/.local/share/mendel-benchmark/runs/bonsai2-27b-ptq1-f16-xhigh-blind-session.jsonl`, meta `~/.local/share/mendel-benchmark/runs/bonsai2-27b-ptq1-f16-xhigh-blind-meta.json`.

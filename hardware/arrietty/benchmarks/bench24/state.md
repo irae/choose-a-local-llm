@@ -40,6 +40,15 @@ happen, and the handing-over section at the end.
 | `bonsai2_ptq1_window` | 241664 | `bonsai2-ptq1-mendel-blind-xhigh` |
 | `bonsai2_ptq1_blind` | 57.5/100, worst defect CRITICAL, end_reason complete | `bonsai2-ptq1-mendel-blind-xhigh` |
 | `bonsai2_ptq1_f16_window` | 135168 | `bonsai2-ptq1-f16-mendel-blind-xhigh` |
+| `bonsai2_ptq1_f16_blind` | 82/100, worst defect CRITICAL (trap A), end_reason complete | `bonsai2-ptq1-f16-mendel-blind-xhigh` |
+
+## EvalPlus group order
+
+The four blind scores, sorted best first: `ptq1-f16` 82, `pq2-f16` 72, `ptq1` (q8_0) 57.5. This is a sort of three numbers, not a pick, so it stayed with the runner (owner via coordinator, 2026-09-18).
+
+Group order: **`ptq1-f16`, then `pq2-f16`, then `ptq1`.** Order inside each group is fixed: calibrate, budget-xhigh, forced-rerun.
+
+`pq2-f16-evalplus-calibrate` was started first (started while `ptq1-f16`'s blind score was still computing, to keep the card busy) and stopped after 1 row once the 82 score landed and beat 72 — `calibrate.py` resumes the file that exists, so that row is not lost; the group resumes it when its turn comes.
 
 Planning estimate, not a result: about 34 MiB of KV per 1024 tokens at
 q8_0, from the `qwen35` architecture. With weights of about 6.7 GiB,
