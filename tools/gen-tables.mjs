@@ -1,4 +1,4 @@
-import { readFileSync, statSync, writeFileSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { globSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 
@@ -352,10 +352,17 @@ function checkMendelImport() {
       continue
     }
     if (!existsSync(html)) continue
-    // The report HTML is generated from the JSON, so an HTML older than the
-    // JSON is a report that never saw the newest run.
-    if (statSync(html).mtimeMs < statSync(json).mtimeMs) {
-      errors.push(`${test}: ${html} is older than ${json}; generate-report.mjs did not run after the import`)
+    // The report HTML is generated from the JSON. File times say nothing here,
+    // because a clone gives every file the same checkout time, so the test is
+    // the newest run itself: the one an import just added is the one a
+    // forgotten `generate-report.mjs` leaves out. Older runs may be missing on
+    // purpose, so only the last one is checked.
+    const runs = JSON.parse(readFileSync(json, 'utf8')).runs
+    const newest = runs[runs.length - 1]?.model
+    const page = readFileSync(html, 'utf8')
+    const escaped = String(newest).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    if (newest && !page.includes(newest) && !page.includes(escaped)) {
+      errors.push(`${test}: ${html} does not show "${newest}"; generate-report.mjs did not run after the import`)
     }
   }
   if (!errors.length) return

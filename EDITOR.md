@@ -679,9 +679,12 @@ Then mirror into this repo, all four files together:
    tools/gen-tables.mjs`, `node tools/sync-static.mjs` and `npm run
    verify`.
 
-`npm run docs:tables` counts the runs in the mirrored CSV, the mirrored
-JSON and the mirrored `report.html` and fails when they disagree, with
-the words **simulator import was partial**. That check is the guard;
+`npm run docs:tables` counts the runs in the mirrored CSV and the
+mirrored JSON, and checks that the newest run of each JSON appears in
+the matching `report.html`. It fails when they disagree, with the words
+**simulator import was partial**. It does not compare file times: a
+clone gives every file the same checkout time, so a time test passes
+here and fails in CI. That check is the guard;
 the list above is how to satisfy it.
 
 ## How to add a model to an existing setup
