@@ -45,7 +45,8 @@ included; a run a harness or serving defect voided is not.
 No EvalPlus run yet.
 <!-- gen:binary-evalplus:end -->
 
-No EvalPlus run yet.
+No EvalPlus run yet. Both arms of this file are scheduled in the run
+that measured it.
 
 ## Agent task — Mendel, every prompt version
 
@@ -60,7 +61,14 @@ Blind test:
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:binary-mendel:end -->
 
-No agent row yet.
+Both rows ran without a smoke and before any EvalPlus score of this
+file, so the 0.800 gate did not apply to them (owner, 2026-09-18). The
+f16 row is the best agent row of this model on this card. Its worst
+defect is trap A, a naive `.then()` on `fs.promises.glob()` that
+throws; the q8_0 row carried the trap-C exit hook that deletes the
+debug manifest, the same defect its sibling file hit at the same cache
+type. All 17 commits of the f16 row are `chore`-typed, where every
+other row of this model used `fix(...)`.
 
 ## Speed and context
 
@@ -73,15 +81,18 @@ file.
 |---|---|---|---|
 | KV pick | 2026-09-18 | q8_0 against f16, ladder from the trained 262144 | q8_0 serves `-c 245760`; f16 aborts on a live CUDA out-of-memory at 147456 and tops out at 139264 |
 | Sweep | 2026-09-18 | q8_0, `-c 245760`, no drafter, depths 4096 / 24576 / 65536 / 244736 | 41.7 / 34.9 / 26.5 / 12.8 tok/s, no depth under the floor, VRAM flat 15837 MiB |
+| KV ladder | 2026-09-18 | f16, from the trained 262144 | `-c 139264` serves; 147456 aborts on a live CUDA out-of-memory |
+| Sweep | 2026-09-18 | f16, `-c 139264`, no drafter, depths 4096 / 24576 / 65536 / 138240 | 42.1 / 37.3 / 30.1 / 22.4 tok/s, no depth under the floor, VRAM flat ~15355 MiB |
 
 The full curves stay in the run kit,
 `hardware/arrietty/benchmarks/bench24/results/`.
 
 ## Log
 
-- **2026-09-18** — laddered and swept beside the larger packing, on the
-  same fork build, in the run that adopted this model. Run kit:
-  `hardware/arrietty/benchmarks/bench24/`.
-- **Pending** — an EvalPlus row and an agent row, so the pair with the
-  larger packing can be read; a mainline llama.cpp row when mainline
-  learns these types.
+- **2026-09-18** — laddered and swept at q8_0 beside the larger
+  packing, on the same fork build, in the run that adopted this model.
+  Then laddered and swept at f16, and given a blind agent row at each
+  cache type. Run kit: `hardware/arrietty/benchmarks/bench24/`.
+- **Pending** — an EvalPlus row at each cache type, both scheduled in
+  the same run; a mainline llama.cpp row when mainline learns these
+  types.

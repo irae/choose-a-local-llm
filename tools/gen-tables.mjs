@@ -930,11 +930,14 @@ function renderModelCompare(slug, datas) {
   const sibling = datas.flatMap((data) => Object.entries(data.models || {}))
     .find(([key, model]) => key === slug && model.compareWith)?.[1]?.compareWith
   if (!sibling) return ''
-  const rows = modelsAll.get(sibling) || []
-  if (!rows.length) return `No row for [${sibling}](./${sibling}.md) yet.`
+  const theirs = modelsAll.get(sibling) || []
+  if (!theirs.length) return `No row for [${sibling}](./${sibling}.md) yet.`
   const title = (readFileSync(`docs/models/${sibling}.md`, 'utf8').match(/^# (.+)$/m) || [, sibling])[1]
+  // Both models in one table, ranked together. Two tables side by side make a
+  // reader hold numbers in their head; one table answers the question by eye.
+  const rows = [...(modelsAll.get(slug) || []), ...theirs]
   return [
-    `Every config of [${title}](./${sibling}.md), for reading beside the table above.`,
+    `Every config of both models, ranked together. The other model is [${title}](./${sibling}.md).`,
     '',
     renderTable(rows, { memory: false, hardware: true, hide: 'server', footnotes: false }),
   ].join('\n')
