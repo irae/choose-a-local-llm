@@ -36,6 +36,12 @@ Every file of this model, on every machine that served it, with every run and a 
 
 Every config of this model on every machine, fastest at 4K first. The cap word under the numbers says what ended the curve: `speed` is the 8 tok/s floor, `mem` is memory.
 
+### Decode curve, by depth
+
+<!-- gen:model-curve:start -->
+No decode curve recorded yet.
+<!-- gen:model-curve:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:model-evalplus:start -->

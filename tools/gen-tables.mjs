@@ -940,6 +940,45 @@ function renderModelSpeed(rows) {
   return [...header, ...body, ...legend].join('\n')
 }
 
+// One decode curve per model page: the per-depth readings of every arm that
+// was measured for that model on that machine, the shape the decode-speed
+// page carries per machine. The data lives in `curves` in each setup's
+// models.json, because a row holds only its shallow and deep cells and an
+// arm that was measured and not served has no row at all.
+function renderModelCurve(slug, datas) {
+  const entries = datas.flatMap((data) =>
+    (data.curves || []).filter((c) => c.model === slug).map((c) => ({ ...c, setup: data.setup, hardwareName: data.hardwareName || data.hardwareSlug })),
+  )
+  if (!entries.length) return 'No decode curve recorded yet.'
+  const byMachine = new Map()
+  for (const e of entries) {
+    if (!byMachine.has(e.hardwareName)) byMachine.set(e.hardwareName, [])
+    byMachine.get(e.hardwareName).push(e)
+  }
+  const out = []
+  for (const [machine, arms] of byMachine) {
+    const depths = [...new Set(arms.flatMap((a) => Object.keys(a.points || {})).map(Number))].sort((x, y) => x - y)
+    const label = (d) => (d >= 1024 ? `${Math.round(d / 1024)}K` : String(d))
+    out.push(`**${machine}**`, '')
+    out.push(`| arm | ${depths.map(label).join(' | ')} |`)
+    out.push(`|---|${depths.map(() => '--:').join('|')}|`)
+    for (const a of arms) {
+      const cells = depths.map((d) => {
+        const v = (a.points || {})[String(d)]
+        if (v == null) return ''
+        const n = Number(v)
+        const shown = Number.isFinite(n) ? n.toFixed(n >= 100 ? 0 : 2).replace(/0$/, '') : String(v)
+        const text = a.c && a.cAt && String(a.cAt) === String(d) ? `${shown} (${label(a.c)})` : shown
+        return a.served ? `**${text}**` : text
+      })
+      out.push(`| ${a.arm} | ${cells.join(' | ')} |`)
+    }
+    out.push('')
+  }
+  out.push('The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.')
+  return out.join('\n')
+}
+
 function renderDecodeSummary(datas) {
   const header = [
     '| best curve | tok/s (shallow → deep) | at |',
@@ -1162,6 +1201,7 @@ for (const [slug, rows] of modelsAll) {
     renderModelMendel(slug, blindRunsAll, guidedRunsAll, [], null, { hardware: true }),
   )
   writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-speed:start -->', '<!-- gen:model-speed:end -->', renderModelSpeed(rows))
+  writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-curve:start -->', '<!-- gen:model-curve:end -->', renderModelCurve(slug, setupsAll))
 }
 for (const slug of new Set(BINARIES.map((b) => b.model))) {
   const lines = BINARIES.filter((b) => b.model === slug).map((b) => {

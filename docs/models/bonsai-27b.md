@@ -49,6 +49,20 @@ Every file of this model, on every machine that served it, with every run and a 
 
 Every config of this model on every machine, fastest at 4K first. The cap word under the numbers says what ended the curve: `speed` is the 8 tok/s floor, `mem` is memory.
 
+### Decode curve, by depth
+
+<!-- gen:model-curve:start -->
+**RTX 5060 Ti 16 GB**
+
+| arm | 4K | 24K | 64K | 119K | 207K | 239K |
+|---|--:|--:|--:|--:|--:|--:|
+| PQ2_0, q8_0 KV, no drafter | **46.0** | **38.2** | **28.2** |  | **14.5 (208K)** |  |
+| PQ2_0, f16 KV, no drafter | 46.3 | 40.5 | 32.2 | 25.1 (120K) |  |  |
+| PTQ1_0, q8_0 KV, no drafter | **41.7** | **34.9** | **26.5** |  |  | **12.8 (240K)** |
+
+The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
+<!-- gen:model-curve:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:model-evalplus:start -->

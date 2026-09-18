@@ -650,5 +650,76 @@
     "qwen3.8-27b-ista-xhigh-guided-v3-issue-13": 214.8,
     "gemma-4-12b-q4kxl-high-guided-v3-issue-13": 5.3,
     "gemma-4-12b-nvfp4-high-guided-v3-issue-13": 5.5
-  }
+  },
+  "curves": [
+    {
+      "model": "bonsai-27b",
+      "arm": "PQ2_0, q8_0 KV, no drafter",
+      "c": 212992,
+      "cAt": 211968,
+      "served": true,
+      "points": {
+        "4096": 46.0,
+        "24576": 38.2,
+        "65536": 28.2,
+        "211968": 14.5
+      },
+      "run": "bench24"
+    },
+    {
+      "model": "bonsai-27b",
+      "arm": "PQ2_0, f16 KV, no drafter",
+      "c": 122880,
+      "cAt": 121856,
+      "served": false,
+      "points": {
+        "4096": 46.3,
+        "24576": 40.5,
+        "65536": 32.2,
+        "121856": 25.1
+      },
+      "run": "bench24"
+    },
+    {
+      "model": "bonsai-27b",
+      "arm": "PTQ1_0, q8_0 KV, no drafter",
+      "c": 245760,
+      "cAt": 244736,
+      "served": true,
+      "points": {
+        "4096": 41.7,
+        "24576": 34.9,
+        "65536": 26.5,
+        "244736": 12.8
+      },
+      "run": "bench24"
+    },
+    {
+      "model": "qwen3.8-27b",
+      "arm": "Q3_K_M (OBLITERATUS), q8_0 KV, no drafter",
+      "c": 65536,
+      "cAt": 64512,
+      "served": true,
+      "points": {
+        "4096": 22.67,
+        "24576": 20.65,
+        "64512": 16.74
+      },
+      "run": "bench23"
+    },
+    {
+      "model": "qwen3.8-27b",
+      "arm": "Q4_K_M (OBLITERATUS), q8_0 KV, `-ngl 45`",
+      "c": 65536,
+      "cAt": 64512,
+      "served": true,
+      "points": {
+        "4096": 5.13,
+        "24576": 3.49,
+        "49152": 2.67,
+        "64512": 2.31
+      },
+      "run": "bench25"
+    }
+  ]
 }
