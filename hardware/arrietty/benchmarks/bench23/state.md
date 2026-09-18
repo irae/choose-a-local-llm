@@ -95,9 +95,54 @@ Served q8_0 KV, `-c 32768`, `--reasoning-budget 3986`,
 VRAM 14437 / 16311 MiB. Starting the watcher and the full 164-problem
 run next.
 
+## Pause (owner needs the card, 2026-09-17)
+
+Stopped inside `qwen38-oblit-q3km-budget-medium`. Its samples file
+holds **132 of 164** problems when the stop happened:
+`hardware/arrietty/benchmarks/bench23/results/qwen38-oblit-q3km-budget-medium/humaneval/qwen3.8-27b-oblit-q3km_openai_temp_0.0.raw.jsonl`.
+Nothing in that directory was touched or cleaned up.
+
+Stopped, in order: the scoring script
+(`run_codegen_wrapper.py`), the watcher (`run-watch.sh`), then
+`llama-server` (`pkill -x llama-server`). `nvidia-smi` read 626 MiB
+used after the stop, against a session-start baseline of 614 MiB
+(`vram_start_mb` in "Values" above) — the card is free.
+
+**To resume the block**, bring the server back first:
+
+```bash
+export PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/bin:$PATH"
+export LD_LIBRARY_PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/lib:$LD_LIBRARY_PATH"
+export BUDGET_MSG="Thinking budget reached. Give the final answer now."
+llama-server -m "/home/irae/.cache/huggingface/hub/models--OBLITERATUS--Qwen3.8-27B-OBLITERATED/snapshots/a58c3b53b3ce71551eafde2ed5ec8df48e0f4ff8/Qwen3.8-27B-OBLITERATED-Q3_K_M.gguf" \
+  --alias qwen3.8-27b-oblit-q3km --no-mmproj --parallel 1 \
+  -ngl 999 --fit off -fa on -c 32768 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --reasoning-budget 3986 \
+  --reasoning-budget-message "$BUDGET_MSG" \
+  --jinja --port 8081 2>&1 \
+  | tee hardware/arrietty/benchmarks/bench23/results/server-qwen38-oblit-q3km-budget-medium.log
+```
+
+Then start the watcher, then resume the run — it skips the 132
+problems already in the samples file and generates only the rest:
+
+```bash
+export EVALPLUS_PYTHON="/home/irae/.local/share/pipx/venvs/evalplus/bin/python"
+RESULTS_BASE=hardware/arrietty/benchmarks/bench23/results \
+  EVALPLUS_MAX_NEW_TOKENS=6034 \
+  benchmarks/run-humaneval.sh qwen38-oblit-q3km-budget-medium qwen3.8-27b-oblit-q3km \
+  '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'
+```
+
+Machine state left behind: no `llama-server` process, no watcher, no
+scoring process. Corpus server (port 8089) was already stopped after
+`sweep-qwen38-oblit-q3km`. The worktree and branch `run23` stay as
+they are; this is a pause, not a close-out. No later block started.
+
 ## Handing-over
 
 `machine-setup`, `qwen38-oblit-q3km-kvpick`, `sweep-qwen38-oblit-q3km`,
 `qwen38-oblit-q3km-calibrate-think` done.
-`qwen38-oblit-q3km-budget-medium` server up and verified, full run
-starting.
+`qwen38-oblit-q3km-budget-medium` paused at 132/164 problems, owner
+needs the card. Resume with the commands in "Pause" above.
