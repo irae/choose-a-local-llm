@@ -41,6 +41,9 @@ happen, and the handing-over section at the end.
 | `bonsai2_ptq1_blind` | 57.5/100, worst defect CRITICAL, end_reason complete | `bonsai2-ptq1-mendel-blind-xhigh` |
 | `bonsai2_ptq1_f16_window` | 135168 | `bonsai2-ptq1-f16-mendel-blind-xhigh` |
 | `bonsai2_ptq1_f16_blind` | 82/100, worst defect CRITICAL (trap A), end_reason complete | `bonsai2-ptq1-f16-mendel-blind-xhigh` |
+| `bonsai2_ptq1_f16_think_budget` | 30000 (capped) | `bonsai2-ptq1-f16-evalplus-calibrate` |
+| `bonsai2_ptq1_f16_answer_budget` | 2048 | `bonsai2-ptq1-f16-evalplus-calibrate` |
+| `bonsai2_ptq1_f16_max_tokens` | 32048 | `bonsai2-ptq1-f16-evalplus-calibrate` |
 
 ## EvalPlus group order
 
