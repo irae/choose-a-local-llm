@@ -1,0 +1,259 @@
+{
+  "branch": "bonsai2-27b-ptq1-xhigh-issue-13",
+  "base": "2652ed6c3530b3e1a284b2d27bc525be65e99a0e",
+  "generated": "2026-09-18T17:04:09.803Z",
+  "static_completeness": {
+    "stale_requires": [
+      "bonsai2-27b-ptq1-xhigh-issue-13:legacy-packages/mendel-requirify/test/mendel-requirify.js:9:var rimraf = require('rimraf');",
+      "bonsai2-27b-ptq1-xhigh-issue-13:legacy-packages/mendel-requirify/test/requirify.js:5:const rimraf = require('rimraf');"
+    ],
+    "stale_package_json": [
+      "bonsai2-27b-ptq1-xhigh-issue-13:legacy-packages/mendel-requirify/package.json:26:    \"rimraf\": \"^6.1.3\",",
+      "bonsai2-27b-ptq1-xhigh-issue-13:package.json:88:    \"tmp\": \"^0.2.7\""
+    ],
+    "clean": false,
+    "note": "fixture js/es5/foo/browser.js excluded where present"
+  },
+  "lockfile": {
+    "numstat": "0\t93\tpnpm-lock.yaml",
+    "added": 0,
+    "removed": 93,
+    "shrank": true
+  },
+  "root_devdeps": {
+    "still_declared": [
+      "tmp"
+    ],
+    "removed": false
+  },
+  "commit_craft": {
+    "commits": 17,
+    "non_chore": [
+      "fix(planout-example): drop uuid in favor of crypto.randomUUID",
+      "fix(mendel-config): drop xtend in favor of Object.assign",
+      "fix(mendel-core): drop xtend in favor of Object.assign",
+      "fix(mendel-core): drop urlsafe-base64 in favor of Buffer base64url",
+      "fix(mendel-pipeline): drop rimraf in favor of fs.rmSync in test helper",
+      "fix(mendel-transform-less): drop rimraf in favor of fs.rmSync in test",
+      "fix(mendel-mocha-runner): drop glob in favor of fs.globSync",
+      "fix(mendel-development): drop glob in favor of fs.promises.glob",
+      "fix(mendel-deps): drop glob in favor of fs.globSync in tests",
+      "fix(mendel-pipeline): drop chalk in favor of util.styleText",
+      "fix(mendel-manifest-extract-bundles): drop tmp in favor of fs.mkdtempSync",
+      "fix(mendel-development): drop tmp in favor of fs.mkdtempSync",
+      "fix(mendel-manifest-uglify): drop tmp in favor of fs.mkdtempSync",
+      "fix(mendel-development): drop shasum in favor of crypto.createHash",
+      "fix(mendel-outlet-manifest): drop shasum in favor of crypto.createHash"
+    ],
+    "multi_package": [],
+    "tasks_md_leak": [],
+    "per_commit": [
+      {
+        "hash": "925652d",
+        "subject": "fix(planout-example): drop uuid in favor of crypto.randomUUID",
+        "chore": false,
+        "packages": [
+          "examples/planout-example"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "6a21141",
+        "subject": "fix(mendel-config): drop xtend in favor of Object.assign",
+        "chore": false,
+        "packages": [
+          "packages/mendel-config"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "72a2475",
+        "subject": "fix(mendel-core): drop xtend in favor of Object.assign",
+        "chore": false,
+        "packages": [
+          "packages/mendel-core"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "d718707",
+        "subject": "fix(mendel-core): drop urlsafe-base64 in favor of Buffer base64url",
+        "chore": false,
+        "packages": [
+          "packages/mendel-core"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "9b52303",
+        "subject": "fix(mendel-pipeline): drop rimraf in favor of fs.rmSync in test helper",
+        "chore": false,
+        "packages": [
+          "packages/mendel-pipeline"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "65da469",
+        "subject": "fix(mendel-transform-less): drop rimraf in favor of fs.rmSync in test",
+        "chore": false,
+        "packages": [
+          "packages/mendel-transform-less"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "afbea12",
+        "subject": "fix(mendel-mocha-runner): drop glob in favor of fs.globSync",
+        "chore": false,
+        "packages": [
+          "packages/mendel-mocha-runner"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "d02d5b7",
+        "subject": "fix(mendel-development): drop glob in favor of fs.promises.glob",
+        "chore": false,
+        "packages": [
+          "packages/mendel-development"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "4d19e29",
+        "subject": "fix(mendel-deps): drop glob in favor of fs.globSync in tests",
+        "chore": false,
+        "packages": [
+          "packages/mendel-deps"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "fd0c938",
+        "subject": "fix(mendel-pipeline): drop chalk in favor of util.styleText",
+        "chore": false,
+        "packages": [
+          "packages/mendel-pipeline"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "c4fbf57",
+        "subject": "fix(mendel-manifest-extract-bundles): drop tmp in favor of fs.mkdtempSync",
+        "chore": false,
+        "packages": [
+          "packages/mendel-manifest-extract-bundles"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "0779660",
+        "subject": "fix(mendel-development): drop tmp in favor of fs.mkdtempSync",
+        "chore": false,
+        "packages": [
+          "packages/mendel-development"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "4a23f96",
+        "subject": "fix(mendel-manifest-uglify): drop tmp in favor of fs.mkdtempSync",
+        "chore": false,
+        "packages": [
+          "packages/mendel-manifest-uglify"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "9378574",
+        "subject": "fix(mendel-development): drop shasum in favor of crypto.createHash",
+        "chore": false,
+        "packages": [
+          "packages/mendel-development"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "e9cd887",
+        "subject": "fix(mendel-outlet-manifest): drop shasum in favor of crypto.createHash",
+        "chore": false,
+        "packages": [
+          "packages/mendel-outlet-manifest"
+        ],
+        "tasks_md": false
+      },
+      {
+        "hash": "408caee",
+        "subject": "chore(deps): sync lockfile after removing small utility deps",
+        "chore": true,
+        "packages": [],
+        "tasks_md": false
+      },
+      {
+        "hash": "e59bf1c",
+        "subject": "chore: drop unused rimraf devDependency from root",
+        "chore": true,
+        "packages": [
+          "root"
+        ],
+        "tasks_md": false
+      }
+    ]
+  },
+  "session_habits": {
+    "bash_commands": 140,
+    "noisy_commands": 86,
+    "truncated_noisy": 43,
+    "truncation_share": 50,
+    "no_verify": [],
+    "git_add_all": [
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && node -e \"const {randomUUID}=require('crypto'); const id=randomUUID(); console.log('randomUUID works:', id, 'len', id.length); const {v4}=require('uuid'); console.log('uuid v4 still present as dep? (should be gone)')\" && git add -A && git commit -m \"fix(planout-example): drop uuid in favor of crypto.randomUUID\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && sed -i 's|- \\[ \\] 2. `xtend`.*|- [x] 2. `xtend` → `Object.assign({}, a, b)`\\n  - [x] mendel-config|' TASKS.md && git add -A && git commit -m \"fix(mendel-config): drop xtend in favor of Object.assign\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && sed -i 's|- \\[ \\] mendel-core$/- [x] mendel-core/' TASKS.md && git add -A && git commit -m \"fix(mendel-core): drop xtend in favor of Object.assign\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-core): drop xtend in favor of Object.assign\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && sed -i 's|- \\[ \\] 3. `urlsafe-base64`.*|- [x] 3. `urlsafe-base64` → Buffer base64url|; s|- \\[ \\] mendel-core$/- [x] mendel-core/' TASKS.md && git add -A && git commit -m \"fix(mendel-core): drop urlsafe-base64 in favor of Buffer base64url\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-core): drop urlsafe-base64 in favor of Buffer base64url\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-pipeline): drop rimraf in favor of fs.rmSync in test helper\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-transform-less): drop rimraf in favor of fs.rmSync in test\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-mocha-runner): drop glob in favor of fs.globSync\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-development): drop glob in favor of fs.promises.glob\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-deps): drop glob in favor of fs.globSync in tests\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-pipeline): drop chalk in favor of util.styleText\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-manifest-extract-bundles): drop tmp in favor of fs.mkdtempSync\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-development): drop tmp in favor of fs.mkdtempSync\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-manifest-uglify): drop tmp in favor of fs.mkdtempSync\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-development): drop shasum in favor of crypto.createHash\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"fix(mendel-outlet-manifest): drop shasum in favor of crypto.createHash\"",
+      "cd ~/code/mendel-bench-bonsai2-27b-ptq1-xhigh && git add -A && git commit -m \"chore: drop unused rimraf devDependency from root\""
+    ],
+    "full_suite_runs": 7,
+    "commit_cmds": 19,
+    "lint_self_runs": 2
+  },
+  "runner": {
+    "end_reason": "complete",
+    "nudges_tooling": 0,
+    "nudges_model": 1,
+    "model_nudge_causes": [
+      "model stopped; TASKS.md has unchecked items"
+    ],
+    "baseline_dirty": [],
+    "warnings": [],
+    "thinking_level": "xhigh"
+  },
+  "runtime_checks": {
+    "prettier": {
+      "ok": false,
+      "out": "Checking formatting...\n[warn] TASKS.md\n[warn] Code style issues found in the above file. Run Prettier with --write to fix."
+    },
+    "eslint": {
+      "ok": true,
+      "out": ""
+    },
+    "trap_a": {
+      "ok": true,
+      "out": "SYNC OK, pending= 1"
+    }
+  }
+}

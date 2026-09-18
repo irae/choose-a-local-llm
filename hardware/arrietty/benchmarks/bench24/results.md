@@ -329,3 +329,47 @@ VRAM flat across every depth (15353-15357 MiB, a 4 MiB drift, no swap growth). E
 Files: `results/benchy-bonsai2-ptq1-f16.md`, `results/benchy-bonsai2-ptq1-f16.out.log`, `results/benchy-bonsai2-ptq1-f16-vm.log`.
 
 **A table and no pick.**
+
+## `bonsai2-ptq1-mendel-blind-xhigh`
+
+`model`: `bonsai2-27b-ptq1 (prism-ml PTQ1_0, xhigh, arrietty)`. `model_id`: `prism-ml/Ternary-Bonsai-2-27B-gguf`, file `Ternary-Bonsai-2-27B-PTQ1_0.gguf`, revision `6ed5e12bf84b7a63069882c91dd9e9218647d17b`. `hardware`: `arrietty`.
+
+Config note: fork `PrismML-Eng/llama.cpp` release `prism-b10685-7dffb15` (commit `7dffb158d`) — the stock llama.cpp binary produces garbage on this file; `-c 245760`, cache type q8_0 (`bonsai2-ptq1-kvpick`); window 241664 (`bonsai2_ptq1_clean` 244736 rounded to a multiple of 4096, never the f16 arm's window); reserve 8192, keep-recent pi's default (window > 65536); 0 compactions; `vram 16311 MiB`; sampling as the server applies it, temperature 1.0, top_p 0.95, top_k 20, min_p 0.05. **No smoke precedes this row: the larger packing already passed its smoke on this binary at this level, and the owner accepts that evidence for the smaller packing (owner, 2026-09-18). This row ran before any EvalPlus score on this file, so the 0.800 gate does not apply to it (owner, 2026-09-18).**
+
+Branch `bonsai2-27b-ptq1-xhigh-issue-13`, base commit `2652ed6c`. Started `2026-09-18T15:00:43Z`, ended `2026-09-18T17:03:47Z`, wall 2:03:04. `end_reason`: complete. Loop flag: ok, worst ratio 0.28 (thinking). 17 commits, 0 compactions. 1 model nudge (`2026-09-18T16:36:33Z`, "model stopped; TASKS.md has unchecked items"), 0 tooling nudges, 0 retries.
+
+| field | value |
+|---|--:|
+| score | 57.5/100 |
+| tasks | 1/1 (single blind task) |
+| worst defect | CRITICAL |
+| stop reason | complete |
+| tool calls | 254 |
+| peak ctx | 225161/241664 (93.2%) |
+| known events | 1 nudge |
+| elapsed | 2:03:04 |
+
+`peak_context` verified with `benchmark/count-tool-calls.mjs`: `tool_calls 254, assistant_msgs 256, peak_context 225161`.
+
+**Score: 57.5/100.** Scored by a judgment subagent from the evidence pack, the session log, and the worktree diff — never from the model's own claims. The subagent checked its own arithmetic and showed the sum; this run independently re-verified it (10+12+8+0+4+6+9+4+2.5+2 = 57.5, exact).
+
+**Worst defect: CRITICAL.** `packages/mendel-development/validate-manifest.js` adds an exit hook, `process.on('exit', () => fs.rmSync(tempDir, {recursive:true,force:true}))`, one line after the code writes and logs the debug manifest's path — the same trap-C regression class the sibling `bonsai2-27b-pq2` q8_0 row hit (this run's own file, a smaller quant of the same model, reproduces the same defect independently).
+
+Per-criterion breakdown (criterion / max / scored / evidence):
+
+| # | criterion | max | scored | evidence |
+|--:|---|--:|--:|---|
+| 1 | Bugs remaining | 25 | 10 | Critical exit-hook regression (weight 3) plus a medium chalk regression (weight 2): 25 − 3×5. |
+| 2 | Task completion | 20 | 12 | `mendel-requirify` still leaves `rimraf` in 2 test files and its `package.json`; root `package.json` still declares `tmp`. TASKS.md shows the model explicitly reasoned both out of scope. |
+| 3 | node_modules pruned | 8 | 8 | `pnpm install --no-audit --no-frozen-lockfile` run to completion; lockfile shrank 93 lines to 0. |
+| 4 | Prettier/ESLint | 5 | 0 | `runtime_checks.prettier.ok: false` (`[warn] TASKS.md`), not clean on re-run. |
+| 5 | Commit craft | 12 | 4 | 15/17 commits `fix(...)`, not `chore`; no multi-package commits (full credit there); 18 `git add -A` uses forfeit the hygiene component. |
+| 6 | Right the first time | 8 | 6 | 1 model nudge ("TASKS.md has unchecked items"), −2 per rubric; no other repair commits. |
+| 7 | Test discipline | 10 | 9 | Full-suite runs at commits 5, 10, 15 match the every-5-commits cadence; `full_suite_runs: 7`. |
+| 8 | House conventions | 5 | 4 | Tight diff (39 files, +114/−191), style-matched; the exit-hook cleanup is unrequested logic (already penalized under criterion 1). |
+| 9 | Task list | 4 | 2.5 | TASKS.md lists all 8 libraries upfront with sub-items, ticked faithfully. |
+| 10 | Truncated noisy commands | 3 | 2 | `truncation_share: 50%` (43/86 noisy commands piped through tail/head). |
+
+Sum 57.5, exact.
+
+Files: `results/mendel-blind-bonsai2-ptq1.out.log`, `results/mendel-blind-bonsai2-ptq1-evidence.json`, session `~/.local/share/mendel-benchmark/runs/bonsai2-27b-ptq1-xhigh-blind-session.jsonl`, meta `~/.local/share/mendel-benchmark/runs/bonsai2-27b-ptq1-xhigh-blind-meta.json`.
