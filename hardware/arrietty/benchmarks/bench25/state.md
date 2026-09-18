@@ -18,9 +18,13 @@ happen, and the handing-over section at the end.
 | `oblit_q4km_answer_budget` | pending | `qwen38-oblit-q4km-calibrate-think` |
 | `oblit_q4km_max_tokens` | pending | `qwen38-oblit-q4km-calibrate-think` |
 | `runwatch_silence` | pending | runner, raised for a slow offload server |
-| `vram_start_mb` | pending | `nvidia-smi`, session start |
-| `evalplus_python` | pending | pipx venv |
-| `llama_server` | pending | run 17 build |
+| `evalplus_python` | `/home/irae/.local/share/pipx/venvs/evalplus/bin/python` | pipx venv, already installed |
+| `llama_server` | `0.4.0-dev (build 10809, commit 5266f24da)`, `v0.4.0-sm120` build | run 17 build, this machine |
+| `disk_avail_before_dl` | 29G | `df -h ~`, before the download, file is 15.66 GiB |
+| `mem_available_before_dl` | ~20.2 GB | `free -m`, before the download |
+| `file_sha256` | `1f74330b211a8253c96f1bf586cba6eb56d37117c97ed9e6eec18c198a4e7fe5` | downloaded file, matches HF blob name |
+| `file_size_bytes` | 16810705952 | matches the runbook's stated size |
+| `vram_start_mb` | 638 MiB used / 16311 MiB total | `nvidia-smi`, after download |
 
 Planning estimate, not a result: 16040 MiB of weights, 2176 MiB of KV
 at 65536 tokens at q8_0, about 200 MiB of linear-attention state, about
@@ -31,10 +35,31 @@ at 65536 tokens at q8_0, about 200 MiB of linear-attention state, about
 
 This run measures the Q4_K_M build of the same binary that run 23
 measures in Q3_K_M. It runs after run 23, whatever run 23 did (owner,
-2026-09-17). In `machine-setup`, copy run 23's two ladder values, and
-its abort line when it has one, from `master` into this file. They say
-what the card holds without host RAM. The run has not started.
+2026-09-17). Run 23's two ladder values, from `master`:
+`oblit_q3km_c_q8` = 65536, `oblit_q3km_c_f16` = 32768. Run 23's
+context gate **passed** (65536 ≥ 32768, pick q8_0) — it did not abort.
+Run 23 finished its whole list; its Mendel smoke failed on a
+tool-calling-format problem with the binary's chat template, not on
+context or budget. So this run is the second point of the pair: the
+larger quantization at the fixed 65536 window the card alone cannot
+hold, not the answer to an abort.
+
+## `machine-setup` — done
+
+- `benchmarks/thinking-budget.py`, `benchmarks/calibrate.py`,
+  `benchmarks/run_codegen_wrapper.py` all present, last touching
+  commit `8b49c41`. `calibrate.py` writes `reasoning_len`. No merge
+  needed.
+- CUDA exports verified, `CUDA0` device present, `--reasoning-budget`
+  and `--reasoning-budget-message` both print in `--help`.
+- `EVALPLUS_PYTHON` set and working.
+- Disk checked before the download: 29G available, well over the
+  15.66 GiB file. `MemAvailable` before the download: ~20.2 GB.
+- File downloaded (slow, ~30 MB/min, unauthenticated HF rate limit,
+  about 20 minutes wall). sha256 and size match the runbook.
+- Corpus server up on port 8089 from this worktree, hash verified.
+- Result dirs created.
 
 ## Handing-over
 
-The run has not started.
+`machine-setup` done. Next: `qwen38-oblit-q4km-offload-ladder`.
