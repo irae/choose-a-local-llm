@@ -9,12 +9,18 @@ this file on every machine is on this page, retired and superseded rows
 included; a run a harness or serving defect voided is not.
 
 - **Why it is here.** It is the cheaper of the two servable packings in
-  the repository, and the pair says what the smaller packing costs.
-  Stock llama.cpp cannot serve either file: it rejects both types and
-  has no Hadamard activation runtime.
+  the repository, and the pair says what the packing costs. The two
+  files hold the same ternary weights and differ only in how they store
+  a trit: this one packs trits densely at 1.75 bits per weight, the
+  larger one gives each trit its own 2-bit slot at 2.13. The publisher
+  reports no quality difference between them and picks between them by
+  hardware. Stock llama.cpp cannot serve either file: it rejects both
+  types and has no Hadamard activation runtime.
 - **What it settled.** The smaller packing buys window. It serves
   `-c 245760` at q8_0, 94% of the trained 262144, where the larger
-  packing reaches 212992. f16 is not usable at depth here: it aborted
+  packing reaches 212992, which is the "memory is tightest" case the
+  publisher names for this pack. f16 is not usable at depth here: it
+  aborted
   on a live CUDA out-of-memory at 147456, mid-evaluation rather than at
   load, and tops out at 139264. Speed is a little under the larger
   packing at every depth: 41.7 / 34.9 / 26.5 / 12.8 tok/s at 4096 /

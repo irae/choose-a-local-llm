@@ -72,6 +72,12 @@ The window cell is the harness context window of that run.
 
 ## What the numbers say
 
+- **Generation 2 ships one model in two packings, not two models.**
+  Both hold the same ternary weights: one gives each trit a 2-bit slot
+  at 2.13 bits per weight, the other packs trits densely at 1.75. The
+  publisher reports no quality difference and picks by hardware, and
+  this card agrees with that guidance: the 2-bit-slot pack decodes
+  faster here at every depth, and the dense pack buys 32K more window.
 - **Generation 2 is the one that changed what a 16 GB card holds.** Its
   packings cost 6.71 and 5.54 GiB, so the KV cache becomes the large
   allocation, not the model. The card serves 208K tokens on the larger

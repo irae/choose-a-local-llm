@@ -2,7 +2,9 @@
 
 File: [`prism-ml/Ternary-Bonsai-2-27B-gguf`](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf),
 `Ternary-Bonsai-2-27B-PQ2_0.gguf`, revision `6ed5e12`, 7,206,168,928
-bytes (6.71 GiB), a ternary GGUF in the packed 2-bit layout.
+bytes (6.71 GiB), a ternary GGUF that stores each trit in its own 2-bit slot, 2.13 bits
+per weight. The repository's other servable file holds the same weights
+packed densely at 1.75 bits per weight.
 Server: the PrismML llama.cpp fork (`prism-llama`), release
 `prism-b10685-7dffb15`, commit `7dffb158d`, CUDA 12.8. Every run of
 this file on every machine is on this page, retired and superseded rows
