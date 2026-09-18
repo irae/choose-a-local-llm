@@ -12,10 +12,14 @@ happen, and the handing-over section at the end.
 | `llama_server_prism` | `~/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/llama-server` | the fork, "The server" |
 | `prism_fork_commit` | `7dffb158d` (release tag `prism-b10685-7dffb15`, build 10685) | the fork, "The server" |
 | `budget_flags_present` | yes, both `--reasoning-budget` and `--reasoning-budget-message` | "The server", step 5 |
-| `bonsai2_27b_pq2_c_q8` | pending | `bonsai2-pq2-kvpick` |
-| `bonsai2_27b_pq2_c_f16` | pending | `bonsai2-pq2-kvpick` |
-| `bonsai2_27b_pq2_c` | pending | `bonsai2-pq2-kvpick` |
-| `bonsai2_27b_pq2_kv` | pending | `bonsai2-pq2-kvpick` |
+| `bonsai2_27b_pq2_c_q8` | 212992 | `bonsai2-pq2-kvpick` |
+| `bonsai2_27b_pq2_c_f16` | 122880 | `bonsai2-pq2-kvpick` |
+| `bonsai2_27b_pq2_c` | 212992 | `bonsai2-pq2-kvpick` |
+| `bonsai2_27b_pq2_kv` | q8_0 | `bonsai2-pq2-kvpick` |
+| `sampling_temperature` | 1.0 | server `/props`, `bonsai2-pq2-kvpick` |
+| `sampling_top_p` | 0.95 | server `/props`, `bonsai2-pq2-kvpick` |
+| `sampling_top_k` | 20 | server `/props`, `bonsai2-pq2-kvpick` |
+| `sampling_min_p` | 0.05 | server `/props`, `bonsai2-pq2-kvpick` (runbook expected 0.0 from GGUF metadata) |
 | `bonsai2_pq2_clean` | pending | `sweep-bonsai2-pq2` |
 | `bonsai2_pq2_window` | pending | `bonsai2-pq2-smoke-xhigh` |
 | `bonsai2_pq2_think_budget` | pending | `bonsai2-pq2-calibrate-think` |
@@ -71,4 +75,4 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 
 ## Handing-over
 
-`machine-setup` and "The server" gate are done. Next: the ladder, then `bonsai2-pq2-kvpick`.
+`machine-setup`, "The server" gate, and `bonsai2-pq2-kvpick` are done. Next: `sweep-bonsai2-pq2`.
