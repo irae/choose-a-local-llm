@@ -36,6 +36,10 @@ Site and process docs:
 - [EDITOR.md](./EDITOR.md). Read it before you change any page,
   wording, or layout. Page shape, vocabulary, where each file lives,
   how to record a measurement across every surface.
+- [CONTENT-MAP.md](./CONTENT-MAP.md). Read it before you add a model,
+  a binary, a row, a score, a simulator run or a decode curve, and
+  after any change to `tools/gen-tables.mjs`. Which source feeds which
+  generated block on which page, the join keys, and the checklists.
 - [docs/methodology.md](./docs/methodology.md). The rules for
   measurements, split by task. Read its table and open the page for
   what you are about to do. The pages, and when they save you:
@@ -385,6 +389,9 @@ Benchmark work:
   worktree of `../mendel` on the `benchmark` branch, which carries the
   whole Mendel project; a blanket add stages files that belong to
   other branches. Add named files only.
+- **A change to the data reaches every page it feeds.** `CONTENT-MAP.md`
+  says which pages, per kind of change, and `npm run docs:check` runs
+  `tools/check-content-map.mjs` to keep the map true to the generator.
 - **No superseded number on a current page.** Not in a table, not in
   prose. Old figures move to the setup's `historical.md`, which opens
   with a red warning that tells readers not to use them. Only the
