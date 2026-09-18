@@ -16,6 +16,7 @@ Every config of this model, on every machine, best first.
 | <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-atomicchat-ad-iq3s" hide="server" /> | 104k | mem | <TokCell shallow="14.3" deep="9.6" /> | <ScoreCell value="0.988/0.927" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" /> | <span title="EvalPlus 3h11 · Mendel 1h00">4h10</span> |
 | <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" hide="server" /> | 25k | mem | <TokCell shallow="17.3" deep="14.8" /> | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5†" note="13%" pill="mendel-blind" /> | <span title="EvalPlus 2h09 · Mendel 1h25">3h34</span> |
 | <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" hide="server" /> | 25k | mem | <TokCell shallow="17.3" deep="14.8" /> | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" /> | <span title="EvalPlus 3h32 · Mendel —">3h32†</span> |
+| <ModelSpec base="Qwen3.8-27B" quant="Q3_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" kv="q8_0" effort="medium" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-obliteratus-q3km" hide="server" /> | 65k | mem | <TokCell shallow="22.67" deep="16.74" /> | <ScoreCell value="0.854/0.787" sub="100% completion" /> | <ScoreCell value="0" note="0%" pill="failed-smoke" /> | <span title="EvalPlus 1h29 · Mendel —">1h29†</span> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-all:end -->
@@ -31,6 +32,7 @@ Every file of this model, on every machine that served it, with every run and a 
 - [Qwen3.8-27B AD-IQ3_S (AtomicChat)](../binaries/qwen38-atomicchat-ad-iq3s.md) — m1-max-32gb
 - [Qwen3.8-27B UD-Q3_K_XL (unsloth)](../binaries/qwen38-unsloth-ud-q3kxl.md) — m1-max-32gb
 - [Qwen3.8-27B MLX 4-bit (mlx-community)](../binaries/qwen38-mlx-4bit.md) — m1-max-32gb
+- [Qwen3.8-27B Q3_K_M (OBLITERATUS)](../binaries/qwen38-obliteratus-q3km.md) — rtx-5060ti-16gb
 <!-- gen:model-binaries:end -->
 
 ## What the numbers say

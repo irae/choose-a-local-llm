@@ -314,5 +314,22 @@
     "setups": [
       "arrietty"
     ]
+  },
+  {
+    "id": "qwen38-obliteratus-q3km",
+    "model": "qwen3.8-27b",
+    "title": "Qwen3.8-27B Q3_K_M (OBLITERATUS)",
+    "spec": {
+      "base": "Qwen3.8-27B",
+      "quant": "Q3_K_M",
+      "publisher": "OBLITERATUS",
+      "server": "llama-server"
+    },
+    "repo": "OBLITERATUS/Qwen3.8-27B-OBLITERATED",
+    "file": "Qwen3.8-27B-OBLITERATED-Q3_K_M.gguf",
+    "revision": "a58c3b5",
+    "setups": [
+      "arrietty"
+    ]
   }
 ]

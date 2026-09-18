@@ -35,6 +35,7 @@ Speed, context, drafter arms and both agent tasks measured 2026-09-13 to 2026-09
 |---|--:|:--:|--:|--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" page="/binaries/qwen38-ista-iq3s-mtp" top /> | **65k** | mem | <TokCell shallow="29.43" deep="21.13" top-shallow top-deep /> | **14.8 GB** | <ScoreCell value="0.945/0.909" sub="96% completion" top /> | <ScoreCell value="91" pill="mendel-blind" top /> | <span title="EvalPlus 3h38 · Mendel 1h15">4h53</span> |
 | <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" page="/binaries/qwen38-unsloth-ud-iq3s" top /> | **65k** | mem | <TokCell shallow="29.36" deep="20.92" top-shallow top-deep /> | **14.2 GB** | <ScoreCell value="0.957/0.921" sub="98% completion" top /> | <ScoreCell value="79" note="88%" pill="mendel-guided" top /> | <span title="EvalPlus 4h50 · Mendel 4h46">9h36</span> |
+| <ModelSpec base="Qwen3.8-27B" quant="Q3_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" kv="q8_0" effort="medium" page="/binaries/qwen38-obliteratus-q3km" /> | **65k** | mem | <TokCell shallow="22.67" deep="16.74" /> | 15.3 GB | <ScoreCell value="0.854/0.787" sub="100% completion" /> | <ScoreCell value="0" note="0%" pill="failed-smoke" /> | <span title="EvalPlus 1h29 · Mendel —">1h29†</span> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -61,6 +62,18 @@ pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 
 ```bash
 llama-server -m "$(hf download unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-IQ3_S.gguf)" \
   --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \
+  -ngl 999 --fit off -fa on -c 65536 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081
+```
+
+<ModelSpec base="Qwen3.8-27B" quant="Q3_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" kv="q8_0" effort="medium" page="/binaries/qwen38-obliteratus-q3km" />
+
+pi id `qwen3.8-27b-oblit-q3km`, revision `a58c3b5`, 12.57 GiB of weights. An abliterated repack of the dense 27B model. **This build cannot do the agent task**: its smoke ended with zero tool calls in 9 seconds, because the file's own chat template carries no `tools` and no `tool_call` handling, so `--jinja` has nothing to parse and the model writes its calls as literal text. A thinking block was present in the session log, so the level reached the server; the fault is the file, not the harness or the window. A tools-capable template supplied to the server would be a different serving config and a different row. The larger quant still keeps the window: q8_0 serves `-c 65536`, the same as the two 3-bit builds of this model here, where f16 stops at 32768. Speed 22.67 tok/s at 4K, 20.65 at 24K and 16.74 at 64512, about 23 percent under the 3-bit builds at both ends, with no depth under the 8 tok/s floor. EvalPlus at **effort medium, an owner overrule of 2026-09-17** (`AGENTS.md` bans medium for this model everywhere else), scored 2026-09-18 under a server thinking budget of 3986 (answer budget 2048, `max_tokens` 6034): 0.854/0.787 with 3 empty answers of 164 whose cause is the model, in 89 minutes. Five problems hit the budget and were forced to answer; one passed. The four that failed fail again without the budget at the 30000-token cap, as wrong answers and not as loops, so the budget lost nothing. Medium reasons far shorter than xhigh on this model, which is why the budget is 3986 against 25209 on a ternary build at xhigh. Build and level moved together in this run, so neither alone explains the quality against the 3-bit builds at xhigh. An xhigh row is pending.
+
+```bash
+llama-server -m "$(hf download OBLITERATUS/Qwen3.8-27B-OBLITERATED Qwen3.8-27B-OBLITERATED-Q3_K_M.gguf)" \
+  --alias qwen3.8-27b-oblit-q3km --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 65536 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
@@ -107,6 +120,7 @@ llama-server -m "$(hf download unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-IQ3_S.ggu
 |---|--:|--:|--:|--:|--:|
 | [<ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" page="/binaries/qwen38-unsloth-ud-iq3s" />](../benchmarks/qwen3.8-27b.md) | 19000 | <ScoreCell value="0.957/0.921" sub="98% completion" top /> | † unproven | <TokCell shallow="29.36" deep="20.92" /> | 4h50 |
 | [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" page="/binaries/qwen38-ista-iq3s-mtp" />](../benchmarks/qwen3.8-27b.md) | 20500 | <ScoreCell value="0.945/0.909" sub="96% completion" top /> | † unproven | <TokCell shallow="29.43" deep="21.13" /> | 3h38 |
+| [<ModelSpec base="Qwen3.8-27B" quant="Q3_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" kv="q8_0" effort="medium" page="/binaries/qwen38-obliteratus-q3km" />](../benchmarks/qwen3.8-27b.md) | 6034 | <ScoreCell value="0.854/0.787" sub="98% completion" /> | model | <TokCell shallow="22.67" deep="16.74" /> | 1h29 |
 <!-- gen:model-evalplus:end -->
 
 Every run of this model on this machine, best base score first. The empties column carries the cause word ([what the words mean](../../../benchmarks/evalplus.md#limits-on-local-hardware)).

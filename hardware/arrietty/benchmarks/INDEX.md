@@ -6,6 +6,38 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 `results/`). Run numbers are shared with the Mac
 (`hardware/kamaji/benchmarks/INDEX.md`).
 
+## bench23, 2026-09-17 to 2026-09-18 ([report](bench23/report.md), [state](bench23/state.md), [results](bench23/results.md))
+
+- Runbook: [bench23/AGENT.md](bench23/AGENT.md). A community Q3_K_M
+  build of the dense 27B model, abliterated by its publisher, adopted
+  at effort medium by owner overrule. The run carried a context gate
+  that would have aborted it under a 32768-token window; the gate did
+  not fire. An owner pause in the middle gave the card to a model
+  released that day.
+- **The larger quant keeps the window.** q8_0 serves `-c 65536`, the
+  same window the two 3-bit builds of this model get here, although the
+  file is about 0.6 GiB larger; f16 stops at 32768. Speed 22.67 / 20.65
+  / 16.74 tok/s, about 23 percent under the 3-bit builds at both ends.
+- **This build cannot do the agent task, and the file is the cause.**
+  The smoke ended with zero tool calls in 9 seconds: the model wrote
+  its calls as literal text, because the file's own chat template
+  carries no `tools` and no `tool_call` handling, so `--jinja` has
+  nothing to parse. The abliterated repack shipped a stripped template.
+  A re-run of the same config cannot fix it; a tools-capable template
+  supplied to the server is a different row.
+- **Medium costs this model most of its quality**: 0.854 / 0.787,
+  against 0.945 / 0.909 for the 3-bit build at xhigh. Build and level
+  moved together, so neither alone is proven.
+- **The first config whose forced failures are wrong answers, not
+  loops.** Medium reasons short, so the derived budget is 3986 tokens
+  and the run took 89 minutes, the cheapest EvalPlus on a 27B model
+  here. Of five forced answers one passed; the four that failed failed
+  again without the budget, as wrong answers.
+- **A converged answer can still be empty.** One calibration row
+  reasoned 13358 characters and finished on `stop` with an empty
+  answer, with no budget flag and no `length` cut. The derive tool
+  already drops such a row, so the budget came from the next longest.
+
 ## bench24, 2026-09-17 to 2026-09-18 ([report](bench24/report.md), [state](bench24/state.md), [results](bench24/results.md))
 
 - Runbook: [bench24/AGENT.md](bench24/AGENT.md). A ternary-weight 27B
