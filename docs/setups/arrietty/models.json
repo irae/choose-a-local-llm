@@ -488,8 +488,8 @@
         }
       }
     },
-    "bonsai-27b": {
-      "rowMatch": "Ternary-Bonsai-",
+    "bonsai-2-27b": {
+      "rowMatch": "Ternary-Bonsai-2-",
       "kpis": [
         "window",
         "decodeShallow",
@@ -516,7 +516,8 @@
           "label": "Mendel blind, PQ2_0, effort xhigh",
           "sub": "peak 92.2% of a 208896 window"
         }
-      }
+      },
+      "compareWith": "bonsai-27b"
     }
   },
   "evalplusRuns": [
@@ -619,7 +620,7 @@
     {
       "wall": 176.1,
       "emptyCause": "none",
-      "slug": "bonsai-27b",
+      "slug": "bonsai-2-27b",
       "model": "Ternary-Bonsai-2-27B (GGUF PQ2_0, prism-ml, q8_0 KV, prism fork)",
       "mode": "effort xhigh, think budget 25209",
       "row": "bonsai2-pq2-xhigh",
@@ -653,7 +654,7 @@
   },
   "curves": [
     {
-      "model": "bonsai-27b",
+      "model": "bonsai-2-27b",
       "arm": "PQ2_0, q8_0 KV, no drafter",
       "c": 212992,
       "cAt": 211968,
@@ -668,7 +669,7 @@
       "method": "benchy"
     },
     {
-      "model": "bonsai-27b",
+      "model": "bonsai-2-27b",
       "arm": "PQ2_0, f16 KV, no drafter",
       "c": 122880,
       "cAt": 121856,
@@ -683,7 +684,7 @@
       "method": "benchy"
     },
     {
-      "model": "bonsai-27b",
+      "model": "bonsai-2-27b",
       "arm": "PTQ1_0, q8_0 KV, no drafter",
       "c": 245760,
       "cAt": 244736,

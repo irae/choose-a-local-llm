@@ -1,21 +1,18 @@
-# Ternary Bonsai 27B
+# Ternary Bonsai-27B
 
-Both generations of the ternary 27B model, on every machine, best
-first. Generation 2 is a different model, not a re-quantization of
-generation 1, and its rows carry the base `Ternary-Bonsai-2-27B`. They
-share a page because they share a lineage, a publisher and a backend:
-neither runs on stock llama.cpp.
+Every config of this model, on every machine, best first. Its successor
+is [Ternary Bonsai-2-27B](./bonsai-2-27b.md), a different model rather
+than a re-quantization, and the two are compared at the end of this
+page.
 
 <!-- gen:model-all:start -->
 | Model / Config | Ctx | tok/s | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" hide="server" top /> | **208k** | <TokCell shallow="46.0" deep="14.5" cap="mem" top-shallow top-deep /> | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="59.5" pill="mendel-blind" top /> | <span title="EvalPlus 2h56 · Mendel 1h32"><b>4h29</b></span> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" hide="server" top /> | 40k | <TokCell shallow="24.5" deep="17.3" cap="mem" stale top-deep /> | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | <ScoreCell value="37.5†" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 19h24 · Mendel 5h00">24h24</span> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" hide="server" top /> | 33k | <TokCell shallow="14.7" deep="7.8" cap="speed" /> | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 9h55 · Mendel 5h00">14h55</span> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" hide="server" /> | 2x48k | <TokCell shallow="14.9" deep="7.8" cap="speed" stale /> | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 9h55 · Mendel —">9h55†</span> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" hide="server" /> | 40k | <TokCell shallow="24.5" deep="17.3" cap="mem" stale top-deep /> | <ScoreCell value="0.927/0.902" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 0h46 · Mendel 3h07"><b>3h53</b></span> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" hide="server" /> | 131k | <TokCell shallow="15.0" deep="9.7" cap="mem" stale /> | <ScoreCell value="pending" /> | <ScoreCell value="12.5" note="13%" pill="mendel-guided" /> | <span title="EvalPlus — · Mendel 3h15">3h15†</span> |
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" hide="server" /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" hide="server" top /> | **40k** | <TokCell shallow="24.5" deep="17.3" cap="mem" stale top-shallow top-deep /> | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | <ScoreCell value="37.5†" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 19h24 · Mendel 5h00">24h24</span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" hide="server" top /> | 33k | <TokCell shallow="14.7" deep="7.8" cap="speed" top-shallow /> | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 9h55 · Mendel 5h00"><b>14h55</b></span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" hide="server" /> | **2x48k** | <TokCell shallow="14.9" deep="7.8" cap="speed" stale top-shallow /> | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 9h55 · Mendel —">9h55†</span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" hide="server" /> | **40k** | <TokCell shallow="24.5" deep="17.3" cap="mem" stale top-shallow top-deep /> | <ScoreCell value="0.927/0.902" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 0h46 · Mendel 3h07"><b>3h53</b></span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" hide="server" /> | **131k** | <TokCell shallow="15.0" deep="9.7" cap="mem" stale top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="12.5" note="13%" pill="mendel-guided" /> | <span title="EvalPlus — · Mendel 3h15">3h15†</span> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-all:end -->
@@ -27,21 +24,16 @@ Every file of this model, on every machine that served it, with every run and a 
 <!-- gen:model-binaries:start -->
 - [Ternary-Bonsai-27B MLX 2-bit (prism-ml)](../binaries/bonsai-mlx-2bit.md) — m1-max-32gb
 - [Ternary-Bonsai-27B Q2_g64 (prism-ml, prism fork)](../binaries/bonsai-prism-q2g64.md) — m1-max-32gb
-- [Ternary-Bonsai-2-27B PQ2_0 (prism-ml, prism fork)](../binaries/bonsai2-prism-pq2.md) — rtx-5060ti-16gb
-- [Ternary-Bonsai-2-27B PTQ1_0 (prism-ml, prism fork)](../binaries/bonsai2-prism-ptq1.md) — rtx-5060ti-16gb
 <!-- gen:model-binaries:end -->
 
 ## Speed and context
 
 <!-- gen:model-curve:start -->
-| arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K | 128K | 208K | 240K |
-|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| rtx-5060ti-16gb, PQ2_0, f16 KV, no drafter, -c 120K | <CurveCell value="46.3" /> |  |  | <CurveCell value="40.5" depth="24.0K" /> |  |  |  | <CurveCell value="32.2" depth="64.0K" /> |  |  | <CurveCell value="25.1" depth="119.0K" /> |  |  |
-| rtx-5060ti-16gb, PQ2_0, q8_0 KV, no drafter, -c 208K | <CurveCell value="46.0" served /> |  |  | <CurveCell value="38.2" depth="24.0K" served /> |  |  |  | <CurveCell value="28.2" depth="64.0K" served /> |  |  |  | <CurveCell value="14.5" served /> |  |
-| rtx-5060ti-16gb, PTQ1_0, q8_0 KV, no drafter, -c 240K | <CurveCell value="41.7" served /> |  |  | <CurveCell value="34.9" depth="24.0K" served /> |  |  |  | <CurveCell value="26.5" depth="64.0K" served /> |  |  |  |  | <CurveCell value="12.8" served /> |
-| m1-max-32gb, 2-bit, f16 KV, no drafter (MLX), wired 24000 † | <CurveCell value="24.5" /> | <CurveCell value="24.2" /> | <CurveCell value="22.9" /> | <CurveCell value="22.0" depth="24.0K" /> | <CurveCell value="20.5" depth="32.0K" /> | <CurveCell value="12.1" depth="44.0K" /> | <CurveCell value="17.69" depth="56.0K" /> | <CurveCell value="17.27" depth="58.0K" /> |  |  |  |  |  |
-| m1-max-32gb, Q2_g64, f16 KV, no drafter (prism fork), -c 128K, wired 25000 † | <CurveCell value="14.95" /> | <CurveCell value="16.25" /> | <CurveCell value="15.62" /> | <CurveCell value="15.07" depth="25.0K" /> | <CurveCell value="14.45" depth="33.0K" /> | <CurveCell value="13.92" depth="41.0K" /> | <CurveCell value="13.4" depth="49.0K" /> | <CurveCell value="12.5" depth="66.0K" /> | <CurveCell value="11.45" /> | <CurveCell value="10.76" /> | <CurveCell value="9.67" depth="128.0K" /> |  |  |
-| m1-max-32gb, Q4_0 KV + bias, no drafter (prism fork), wired 24000 † | <CurveCell value="14.79" /> | <CurveCell value="13.22" /> | <CurveCell value="10.77" /> | <CurveCell value="9.08" depth="24.0K" /> | <CurveCell value="7.85" depth="32.0K" /> |  |  |  |  |  |  |  |  |
+| arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K | 128K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| m1-max-32gb, 2-bit, f16 KV, no drafter (MLX), wired 24000 † | <CurveCell value="24.5" /> | <CurveCell value="24.2" /> | <CurveCell value="22.9" /> | <CurveCell value="22.0" depth="24.0K" /> | <CurveCell value="20.5" depth="32.0K" /> | <CurveCell value="12.1" depth="44.0K" /> | <CurveCell value="17.69" depth="56.0K" /> | <CurveCell value="17.27" depth="58.0K" /> |  |  |  |
+| m1-max-32gb, Q2_g64, f16 KV, no drafter (prism fork), -c 128K, wired 25000 † | <CurveCell value="14.95" /> | <CurveCell value="16.25" /> | <CurveCell value="15.62" /> | <CurveCell value="15.07" depth="25.0K" /> | <CurveCell value="14.45" depth="33.0K" /> | <CurveCell value="13.92" depth="41.0K" /> | <CurveCell value="13.4" depth="49.0K" /> | <CurveCell value="12.5" depth="66.0K" /> | <CurveCell value="11.45" /> | <CurveCell value="10.76" /> | <CurveCell value="9.67" /> |
+| m1-max-32gb, Q4_0 KV + bias, no drafter (prism fork), wired 24000 † | <CurveCell value="14.79" /> | <CurveCell value="13.22" /> | <CurveCell value="10.77" /> | <CurveCell value="9.08" depth="24.0K" /> | <CurveCell value="7.85" depth="32.0K" /> |  |  |  |  |  |  |
 
 The served arm of each config is in bold. A pill under a reading is the depth it was read at, where the arms of that column did not share one.
 
@@ -53,7 +45,6 @@ The served arm of each config is in bold. A pill under a reading is the depth it
 <!-- gen:model-evalplus:start -->
 | config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" />](../setups/arrietty/benchmarks/bonsai-27b.md) | 27257 | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | none | <TokCell shallow="46.0" deep="14.5" /> | 2h56 |
 | [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" />](../setups/kamaji/benchmarks/bonsai-27b.md) | 10240 | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | 2 budget | <TokCell shallow="24.5" deep="17.3" /> | 19h24 |
 | [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" />](../setups/kamaji/benchmarks/bonsai-27b.md) | 10240 | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | 4 budget | <TokCell shallow="14.7" deep="7.8" /> | 9h55 |
 <!-- gen:model-evalplus:end -->
@@ -67,7 +58,6 @@ Blind test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" /> | blind-v1.1 | ?k | **59.5** | 8/8/done | NaN | — | — | 0 | 0 | 0 |  |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" /> | blind-v1.0 | ?k | **37.5** (raw 58) | 3/8/done | NaN | — | — | 0 | 0 | 0 |  |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" /> | blind-v1.1 | ?k | **37.5** (raw 55) | 3/8/done | NaN | — | — | 0 | 0 | 0 |  |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" /> | blind-v1.1 | ?k | **12.5** (raw 60.5) | 1/8/done | NaN | — | — | 0 | 0 | 0 |  |
@@ -89,38 +79,35 @@ The window cell is the harness context window of that run.
 
 ## What the numbers say
 
-- **Generation 2 ships one model in two packings, not two models.**
-  Both hold the same ternary weights: one gives each trit a 2-bit slot
-  at 2.13 bits per weight, the other packs trits densely at 1.75. The
-  publisher reports no quality difference and picks by hardware, and
-  this card agrees with that guidance: the 2-bit-slot pack decodes
-  faster here at every depth, and the dense pack buys 32K more window.
-- **Generation 2 is the one that changed what a 16 GB card holds.** Its
-  packings cost 6.71 and 5.54 GiB, so the KV cache becomes the large
-  allocation, not the model. The card serves 208K tokens on the larger
-  packing and 240K on the smaller one, where every 12 GiB 27B build on
-  the same machine serves 64K. Generation 1 never reached a usable
-  window on the Mac: 33K at its scored config, 131K at f16 KV.
-- **Generation 2 is the first row in this project where the agent task
-  itself went past 64K.** It peaked at 192679 tokens of a 208896
-  window, 92.2%, with zero compactions.
-- **The quality gate rises with the generation**: 0.982 / 0.939 at
-  effort xhigh on generation 2, against 0.933 / 0.902 on generation 1's
-  MLX build and 0.927 / 0.890 on its fork build. Generation 1 carried
-  8 GB of weights and generation 2 carries 6.7.
-- **The agent task separates them further.** Generation 1 has no
-  complete agent row: MLX dies near 47K, the fork at q4_0 KV floors at
-  33K, and its best guided row reached 1 of 8 libraries. Generation 2
-  completed the blind task with 16 commits, no repetition loop and no
-  nudge, and scored 59.5.
-- **A fork is the only backend for either generation.** Stock
-  llama.cpp has no Hadamard activation runtime, so it rejects the
-  ternary packings or makes garbage from them. The fork release is part
-  of each row's identity.
+- **The ternary claim holds up.** 0.933 / 0.902 on MLX 2-bit and
+  0.927 / 0.890 on the fork with the vendor's q4 KV bias, from 8 GB of
+  weights.
+- **No complete agent row.** MLX dies near 47K under the agent task;
+  the fork at q4_0 KV floors at 33K used tokens; at f16 KV it holds
+  131K and scored 12.5 guided on 1 of 8. Thinking off looped on
+  identical commands and is not run again.
+- **The fork is the path.** It is the only backend for the ternary
+  GGUF, its q4 KV calibration and the DSpark drafter, and two 48K slots
+  leave the Mac usable while an agent runs.
 - **The retry rule was born here.** A model that does not finish the
   task cannot score as if it had; a retry after a model failure loses
   points for each earlier valid attempt.
-- **Pending**: a quality gate and an agent row on generation 2's
-  smaller packing, its f16 KV arm, a guided row to pair with its blind
-  59.5, and a mainline row for either generation when mainline learns
-  these types.
+- **Pending**: the fork's EvalPlus at f16 KV, and a guided agent row
+  under a thinking budget if the fork build takes the flag.
+
+## Against Ternary Bonsai-2-27B
+
+<!-- gen:model-compare:start -->
+Every config of [Ternary Bonsai-2-27B](./bonsai-2-27b.md), for reading beside the table above.
+
+| Model / Config | Ctx | tok/s | HumanEval+ | Coding | Wall |
+|---|--:|--:|--:|--:|--:|
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" hide="server" top /> | **208k** | <TokCell shallow="46.0" deep="14.5" cap="mem" top-shallow top-deep /> | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="59.5" pill="mendel-blind" top /> | <span title="EvalPlus 2h56 · Mendel 1h32"><b>4h29</b></span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" hide="server" top /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
+<!-- gen:model-compare:end -->
+
+The successor is the same idea with less weight and a far larger
+window: 6.71 and 5.54 GiB against this model's 8 GB, 208K and 240K
+tokens of context on a 16 GB card, and a blind agent row that finishes.
+This generation's rows stay as the record of what the first ternary
+build did.

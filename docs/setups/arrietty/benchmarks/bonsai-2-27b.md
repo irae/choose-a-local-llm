@@ -7,7 +7,7 @@ CUDA 12.8. The stock llama.cpp binary does not serve these files.
 The full data of every measurement of this model on this machine lands
 here as the runs close. Raw evidence:
 `hardware/arrietty/benchmarks/bench24/` in the repo. The report page:
-[Ternary Bonsai-2-27B](../reports/bonsai-27b.md).
+[Ternary Bonsai-2-27B](../reports/bonsai-2-27b.md).
 
 ## KV pick, 2026-09-17 and 2026-09-18
 

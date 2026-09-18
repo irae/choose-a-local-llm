@@ -117,7 +117,7 @@ const MENDEL_SLUGS = {
   'gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, high, arrietty)': 'gemma-4-12b-it',
   'gemma-4-12b-q4kxl (unsloth UD-Q4_K_XL, high, arrietty)': 'gemma-4-12b-it',
   'qwen3.6-35b-a3b-q4kxl (unsloth UD-Q4_K_XL, n-max2, high, arrietty)': 'qwen3.6-35b-a3b',
-  'bonsai2-27b-pq2 (prism-ml PQ2_0, xhigh, arrietty)': 'bonsai-27b',
+  'bonsai2-27b-pq2 (prism-ml PQ2_0, xhigh, arrietty)': 'bonsai-2-27b',
   'qwen3.8-27b-ista (ISTA-DASLab IQ3_S-mtp, xhigh, arrietty)': 'qwen3.8-27b',
   'qwen3.8-27b-iq3s (unsloth UD-IQ3_S, xhigh, kamaji)': 'qwen3.8-27b',
 }
@@ -904,6 +904,23 @@ function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHard
   return [...header, ...body].join('\n')
 }
 
+// The sibling table: a model page that names a `compareWith` model shows
+// that model's rows beside its own, so the two generations of one lineage can
+// be read together without merging them into one page.
+function renderModelCompare(slug, datas) {
+  const sibling = datas.flatMap((data) => Object.entries(data.models || {}))
+    .find(([key, model]) => key === slug && model.compareWith)?.[1]?.compareWith
+  if (!sibling) return ''
+  const rows = modelsAll.get(sibling) || []
+  if (!rows.length) return `No row for [${sibling}](./${sibling}.md) yet.`
+  const title = (readFileSync(`docs/models/${sibling}.md`, 'utf8').match(/^# (.+)$/m) || [, sibling])[1]
+  return [
+    `Every config of [${title}](./${sibling}.md), for reading beside the table above.`,
+    '',
+    renderTable(rows, { memory: false, hardware: true, hide: 'server', footnotes: false }),
+  ].join('\n')
+}
+
 // The depth grid of every curve table. A reading snaps to its nearest
 // bucket, so arms that served different `-c` values line up in one column
 // instead of each claiming its own. The exact depth stays in the data and
@@ -1220,6 +1237,8 @@ for (const [slug, rows] of modelsAll) {
     renderModelMendel(slug, blindRunsAll, guidedRunsAll, [], null, { hardware: true }),
   )
   writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-curve:start -->', '<!-- gen:model-curve:end -->', renderModelCurve(slug, setupsAll))
+  const compare = renderModelCompare(slug, setupsAll)
+  if (compare) writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-compare:start -->', '<!-- gen:model-compare:end -->', compare)
 }
 for (const slug of new Set(BINARIES.map((b) => b.model))) {
   const lines = BINARIES.filter((b) => b.model === slug).map((b) => {

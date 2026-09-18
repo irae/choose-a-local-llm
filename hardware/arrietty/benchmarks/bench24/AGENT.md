@@ -57,15 +57,26 @@ blocks run with a thinking budget when the server supports one.
 - `bonsai2-pq2-f16-kvpick`
 - `sweep-bonsai2-pq2-f16`
 - `bonsai2-pq2-mendel-blind-xhigh-f16`
+- `bonsai2-ptq1-f16-kvpick`
+- `sweep-bonsai2-ptq1-f16`
+- `bonsai2-ptq1-calibrate-think`
+- `bonsai2-ptq1-budget-xhigh`
+- `bonsai2-ptq1-forced-rerun`
+- `bonsai2-pq2-f16-calibrate-think`
+- `bonsai2-pq2-budget-xhigh-f16`
+- `bonsai2-pq2-forced-rerun-f16`
+- `bonsai2-ptq1-smoke-xhigh-f16`
+- `bonsai2-ptq1-mendel-guided-xhigh-f16`
 - `retry-sweep`
 
 The second file's two blocks sit between the EvalPlus work and the
 agent row on purpose: they are speed blocks, and every speed block runs
 before the next agent row (owner rule, 2026-09-14).
 
-The last three blocks were added on 2026-09-18, after the first ten
-closed. They measure the same PQ2_0 file at the other cache type. Read
-"The f16 arm" below before you start them.
+The blocks after `bonsai2-pq2-mendel-blind-xhigh` were added on
+2026-09-18, after the first ten closed. They measure the other cache
+type and close the gaps this run left. Read "The f16 arm" and "The
+second wave" below before you start them.
 
 ## Essentials
 
@@ -555,6 +566,65 @@ Technical English. After the run, `pkill -f "Mendel Daemon"`.
 Write `bonsai2_pq2_f16_blind` in `state.md` with the score, the
 libraries done and the end reason.
 
+## The second wave
+
+Added by the owner on 2026-09-18, after the f16 arm of the larger
+packing was under way. Three things were missing from this run and they
+are now in it.
+
+**The smaller packing at f16.** `bonsai2-ptq1-f16-kvpick` and
+`sweep-bonsai2-ptq1-f16` do for `PTQ1_0` exactly what the f16 arm did
+for `PQ2_0`: the ladder at `--cache-type-k f16 --cache-type-v f16`,
+then the sweep at that ceiling. Planning value for the first ladder
+load: **139264**, the f16 ceiling `bonsai2-ptq1-kvpick` already
+measured, where 147456 aborted on a live CUDA out-of-memory. Alias
+`bonsai2-27b-ptq1-f16`. Follow the shape of "The f16 arm" above for
+both blocks, with `ptq1` in every path and mnemonic.
+
+**A quality gate for each file.** The run scored `PQ2_0` at q8_0 and
+nothing else, so two EvalPlus rows are missing: the smaller packing has
+none at all, and the larger packing has none at f16.
+
+- `bonsai2-ptq1-calibrate-think`, `bonsai2-ptq1-budget-xhigh` and
+  `bonsai2-ptq1-forced-rerun` score `PTQ1_0` at its **q8_0** pick, the
+  arm the site serves for that file.
+- `bonsai2-pq2-f16-calibrate-think`, `bonsai2-pq2-budget-xhigh-f16` and
+  `bonsai2-pq2-forced-rerun-f16` score `PQ2_0` at **f16**.
+
+Each triple is the same shape as `bonsai2-pq2-calibrate-think`,
+`bonsai2-pq2-budget-xhigh` and `bonsai2-pq2-forced-rerun` above: a
+calibration with no budget flag, then the scored run under the derived
+budget at `-c 32768`, then the natural re-run of the forced failures at
+`EVALPLUS_MAX_NEW_TOKENS=30000`. Every calibration gets its own name
+and its own file; `calibrate.py` resumes a file that exists, so a
+reused name silently scores the wrong config. Use
+`bonsai2-ptq1-xhigh-think` and `bonsai2-pq2-f16-xhigh-think`.
+
+**A guided agent row on the smaller packing at f16.**
+`bonsai2-ptq1-smoke-xhigh-f16` and
+`bonsai2-ptq1-mendel-guided-xhigh-f16`. This file has met neither the
+smoke nor the agent task on any cache type, so it takes a smoke first,
+unlike the f16 arm of the larger packing. The smoke follows
+`bonsai2-pq2-smoke-xhigh` with the `ptq1-f16` alias and this arm's own
+window. A smoke fail means the guided row does not run.
+
+The guided row is simulator(mendel) **guided**, prompt v3.0, base tag
+`benchmark-guided-base`, not the blind test the rows above ran. Read
+`docs/methodology/mendel.md`, "Two tests", before it. Its gate is the
+EvalPlus base pass@1 of `bonsai2-ptq1-budget-xhigh`, at 0.800.
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<bonsai2_ptq1_f16_window> \
+  ./run-worker.sh bonsai2-27b-ptq1-f16 pi guided xhigh
+```
+
+Row `model` value: `bonsai2-27b-ptq1-f16 (prism-ml PTQ1_0, xhigh,
+arrietty)`. The config note carries what every row of this run carries,
+with the cache type `f16`, this arm's `-c` and window, and the fork
+release. Verify `peak_context` before the row commits, score it in a
+subagent on the best available model, and put peak context and the
+tool-call count in `results.md` beside the score.
+
 ## `retry-sweep`
 
 The blocks that waited on a human, oldest first.
@@ -565,7 +635,8 @@ The blocks that waited on a human, oldest first.
   build, the WebGPU space.
 - Any level but xhigh. The card says `low` is not supported, and
   `medium` is not this run's question.
-- EvalPlus, a calibration or a smoke in the f16 arm.
+- EvalPlus, a calibration or a smoke in the f16 arm of the larger
+  packing, except the EvalPlus triple that "The second wave" names.
 - A drafter, any weight in host RAM, any MLX or LM Studio server, any
   other model. The f16 arm of the PQ2_0 file is in this run by the
   owner's word; no other second cache type is.
