@@ -71,6 +71,29 @@ Files: `results/benchy-bonsai2-pq2-q8.md`, `results/benchy-bonsai2-pq2-q8.out.lo
 
 Files: `results/mendel-smoke-bonsai2-pq2.log`.
 
+## `bonsai2-pq2-mendel-blind-xhigh`
+
+`model`: `bonsai2-27b-pq2 (prism-ml PQ2_0, xhigh, arrietty)`. `model_id`: `prism-ml/Ternary-Bonsai-2-27B-gguf`, file `Ternary-Bonsai-2-27B-PQ2_0.gguf`, revision `6ed5e12bf84b7a63069882c91dd9e9218647d17b`. `hardware`: `arrietty`.
+
+Config note: fork `PrismML-Eng/llama.cpp` release `prism-b10685-7dffb15` (commit `7dffb158d`) — **the stock llama.cpp binary produces garbage on this file**; `-c 212992`, cache type q8_0 (`bonsai2-pq2-kvpick`); window 208896 (`bonsai2_pq2_clean` 211968 rounded to a multiple of 4096, `bonsai2-pq2-smoke-xhigh`); reserve 8192, keep-recent pi's default (window > 65536); 0 compactions; `vram 16311 MiB`; sampling as the server applies it, temperature 1.0, top_p 0.95, top_k 20, min_p 0.05 (`bonsai2-pq2-kvpick`, `/props`).
+
+Branch `bonsai2-27b-pq2-xhigh-issue-13`, base commit `2652ed6c`. Started `2026-09-18T08:04:13Z`, ended `2026-09-18T09:36:40Z`, wall 1:32:27. `end_reason`: complete. Loop flag: ok, worst ratio 0.27 (thinking). 16 commits (16 non-chore, 0 multi-package, 0 TASKS.md leaks). 0 nudges (tooling or model), 0 respawns, 0 retries.
+
+| field | value |
+|---|--:|
+| score | - |
+| tasks | 1/1 (single blind task) |
+| worst defect | - |
+| stop reason | complete |
+| tool calls | 245 |
+| peak ctx | 192679/208896 (92.2%) |
+| known events | 0 |
+| elapsed | 1:32:27 |
+
+`peak_context` verified with `benchmark/count-tool-calls.mjs` against the session log: `tool_calls 245, assistant_msgs 216, peak_context 192679` — agrees with the worker's own `contextUsage.tokens`. Score and worst defect await the coordinator's judgement pass on the evidence pack (criteria 1, 6, 8, 9 need a verdict `score.mjs` cannot make on its own).
+
+Files: `results/mendel-blind-bonsai2-pq2.out.log`, `results/mendel-blind-bonsai2-pq2-evidence.json`, session `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-xhigh-blind-session.jsonl`, meta `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-xhigh-blind-meta.json`.
+
 ## `bonsai2-pq2-calibrate-think`
 
 `Ternary-Bonsai-2-27B-PQ2_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, pick q8_0, `-c 32768`, no reasoning-budget flag. Calibration name `bonsai2-pq2-xhigh-think`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`. All 10 rows resolve `resolved_reasoning_effort: "xhigh"` from the request; no level mismatch.

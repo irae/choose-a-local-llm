@@ -76,4 +76,4 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 
 ## Handing-over
 
-`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, `bonsai2-pq2-calibrate-think`, `bonsai2-pq2-budget-xhigh` (gate passed: base 0.982 ≥ 0.800), `bonsai2-pq2-forced-rerun`, `bonsai2-ptq1-kvpick`, `sweep-bonsai2-ptq1`, and `bonsai2-pq2-smoke-xhigh` (pass, 37s, 1 commit) are done. Registered `bonsai2-27b-pq2` in `~/.pi/agent/models.json`. Next: `bonsai2-pq2-mendel-blind-xhigh`.
+`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, `bonsai2-pq2-calibrate-think`, `bonsai2-pq2-budget-xhigh` (gate passed: base 0.982 ≥ 0.800), `bonsai2-pq2-forced-rerun`, `bonsai2-ptq1-kvpick`, `sweep-bonsai2-ptq1`, `bonsai2-pq2-smoke-xhigh` (pass, 37s, 1 commit), and `bonsai2-pq2-mendel-blind-xhigh` (complete, 245 tool calls, peak ctx 192679/208896, loop ok, wall 1:32:27) are done. Score/worst defect await the coordinator's judgement pass. Next: `retry-sweep` (empty — no block waited on a human).
