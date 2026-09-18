@@ -140,9 +140,17 @@ scoring process. Corpus server (port 8089) was already stopped after
 `sweep-qwen38-oblit-q3km`. The worktree and branch `run23` stay as
 they are; this is a pause, not a close-out. No later block started.
 
+## Resume (2026-09-18)
+
+Card confirmed free (626 MiB used, no `llama-server` process). Merged
+`origin/master` (fast-forward, brought in bench24 close-out and
+bench25 setup, no conflict). Server brought back with the command in
+"Pause" above, watcher armed, run resumed: it skipped the 132
+existing problems and is generating the remaining 32.
+
 ## Handing-over
 
 `machine-setup`, `qwen38-oblit-q3km-kvpick`, `sweep-qwen38-oblit-q3km`,
 `qwen38-oblit-q3km-calibrate-think` done.
-`qwen38-oblit-q3km-budget-medium` paused at 132/164 problems, owner
-needs the card. Resume with the commands in "Pause" above.
+`qwen38-oblit-q3km-budget-medium` resumed, generating problems 132
+through 164.
