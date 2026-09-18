@@ -38,13 +38,50 @@ Every file of this model, on every machine that served it, with every run and a 
 
 ## Speed and context
 
+<!-- gen:model-speed:start -->
+| Config | Ctx | tok/s | Memory<br>(at max ctx) |
+|---|--:|--:|--:|
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-ista-iq3s-mtp" hide="server" /> | 65k | <TokCell shallow="29.43" deep="21.13" cap="mem" top-shallow top-deep /> | **14.8 GB** |
+| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-unsloth-ud-iq3s" hide="server" /> | 65k | <TokCell shallow="29.36" deep="20.92" cap="mem" top-shallow top-deep /> | **14.2 GB** |
+| <ModelSpec base="Qwen3.8-27B" quant="Q3_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" kv="q8_0" effort="medium" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-obliteratus-q3km" hide="server" /> | 65k | <TokCell shallow="22.67" deep="16.74" cap="mem" /> | **15.3 GB** |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" hide="server" /> | 25k | <TokCell shallow="17.3" deep="14.8" cap="mem" /> | 22.0 GB |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" hide="server" /> | 25k | <TokCell shallow="17.3" deep="14.8" cap="mem" /> | 22.0 GB |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-ista-iq3s-mtp" hide="server" /> | **128k** | <TokCell shallow="15.1" deep="9.7" cap="mem" stale /> | 24.2 GB |
+| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-atomicchat-ad-iq3s" hide="server" /> | 104k | <TokCell shallow="14.3" deep="9.6" cap="mem" /> | 24.1 GB |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" hardware="m1-max-32gb" page="/binaries/qwen38-ista-iq3s-mtp" hide="server" /> | **147k** | <TokCell shallow="14.1" deep="8.1" cap="speed" /> | 24.4 GB |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" hardware="m1-max-32gb" page="/binaries/qwen38-ista-iq3s-mtp" hide="server" /> | **147k** | <TokCell shallow="14.1" deep="8.1" cap="speed" /> | 24.4 GB |
+| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" hardware="m1-max-32gb" page="/binaries/qwen38-unsloth-ud-iq3s" hide="server" /> | **147k** | <TokCell shallow="13.60" deep="7.97" cap="speed" /> | 25.5 GB |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" hardware="m1-max-32gb" page="/binaries/qwen38-bartowski-q4km" hide="server" /> | 72k | <TokCell shallow="12.4" deep="9.7" cap="mem" /> | 25.0 GB |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-bartowski-q4km" hide="server" /> | 72k | <TokCell shallow="12.4" deep="9.7" cap="mem" /> | 25.0 GB |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" offload="ngl 45/64" kv="q8_0" effort="medium" hardware="rtx-5060ti-16gb" hide="server" /> | 64k | <TokCell shallow="5.13" deep="2.31" cap="speed" /> | **13.1 GB** |
+
+† from an earlier serving config or method; re-run pending.
+<!-- gen:model-speed:end -->
+
+Every config of this model on every machine, fastest at 4K first. The cap word under the numbers says what ended the curve: `speed` is the 8 tok/s floor, `mem` is memory.
+
+### Decode curve, by depth
+
 <!-- gen:model-curve:start -->
-| arm | 4K | 24K | 48K | 63K |
-|---|--:|--:|--:|--:|
-| rtx-5060ti-16gb, Q3_K_M (OBLITERATUS), q8_0 KV, no drafter | **22.67** | **20.65** |  | **16.74 (64K)** |
-| rtx-5060ti-16gb, Q4_K_M (OBLITERATUS), q8_0 KV, `-ngl 45` | **5.13** | **3.49** | **2.67** | **2.31 (64K)** |
+| arm | 4K | 8K | 16K | 22K | 24K | 26K | 28K | 32K | 40K | 47K | 48K | 51K | 55K | 63K | 64K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, MTP n-max 2 | 47.05 |  |  |  | 37.84 |  |  |  |  |  |  |  |  | 30.82 (64K) |  |
+| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 2 | 45.88 |  |  |  | 31.89 |  |  |  |  |  |  |  | 26.19 (56K) |  |  |
+| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, MTP n-max 3 | 41.42 |  |  |  | 37.61 |  |  |  |  |  |  |  | 28.57 (56K) |  |  |
+| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 3 | 37.33 |  |  |  | 30.8 |  |  |  |  | 31.58 (48K) |  |  |  |  |  |
+| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, MTP n-max 1 | 37.16 |  |  |  | 34.34 |  |  |  |  |  |  |  |  | 26.28 (64K) |  |
+| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 1 | 33.4 |  |  |  | 29.68 |  |  |  |  |  |  |  | 24.64 (56K) |  |  |
+| rtx-5060ti-16gb, UD-IQ3_S, f16 KV, no drafter | 29.96 |  |  |  | 27.21 |  |  |  |  |  |  | 24.34 (52K) |  |  |  |
+| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, no drafter | **29.43** |  |  |  | **25.89** |  |  |  |  |  |  |  |  | **21.13 (64K)** |  |
+| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, no drafter | **29.36** |  |  |  | **25.84** |  |  |  |  |  |  |  |  | **20.92 (64K)** |  |
+| rtx-5060ti-16gb, Q3_K_M (OBLITERATUS), q8_0 KV, no drafter | **22.67** |  |  |  | **20.65** |  |  |  |  |  |  |  |  | **16.74 (64K)** |  |
+| m1-max-32gb, 4-bit, f16 KV, no drafter, wired 24000 † |  | **17.1** | **16.4** | **10.23** | **14.79** | **15.19** | **15.29 (24K)** |  |  |  |  |  |  |  |  |
+| m1-max-32gb, Q4_K_M (bartowski), MTP n-max 3, f16 KV, wired 25000 † | 11.77 | 18.2 | 16.1 |  | 17.2 |  |  | 16.4 | 15.6 |  | 15.0 |  |  |  | 8.57 (72K) |
+| rtx-5060ti-16gb, Q4_K_M (OBLITERATUS), q8_0 KV, `-ngl 45` | **5.13** |  |  |  | **3.49** |  |  |  |  |  | **2.67** |  |  | **2.31 (64K)** |  |
 
 The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
+
+† read with the context-creep tool of an earlier version of this project, not with `llama-benchy` on real text. The two methods do not give the same number. A reading stays until a re-run replaces it.
 <!-- gen:model-curve:end -->
 
 ## Quality — EvalPlus HumanEval+

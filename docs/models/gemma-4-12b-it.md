@@ -30,7 +30,15 @@ Every file of this model, on every machine that served it, with every run and a 
 ## Speed and context
 
 <!-- gen:model-curve:start -->
-No decode curve recorded yet.
+| arm | 4K | 8K | 16K | 24K | 32K | 49K | 80K | 96K | 255K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| rtx-5060ti-16gb, NVFP4, f16 KV, no drafter | **49.55** |  |  |  |  |  |  | **41.57** | **33.11 (256K)** |
+| rtx-5060ti-16gb, UD-Q4_K_XL, f16 KV, no drafter | **47.39** |  |  |  |  |  |  | **40.26** | **32.18 (256K)** |
+| m1-max-32gb, Q4_K_XL, f16 KV, no drafter, 2 slots, wired 25000 † | **25.0** | **24.1** | **22.8** | **21.5** | **20.6** | **18.6** | **15.7 (80K)** |  |  |
+
+The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
+
+† read with the context-creep tool of an earlier version of this project, not with `llama-benchy` on real text. The two methods do not give the same number. A reading stays until a re-run replaces it.
 <!-- gen:model-curve:end -->
 
 ## Quality — EvalPlus HumanEval+
