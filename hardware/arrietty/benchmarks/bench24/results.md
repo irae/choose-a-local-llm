@@ -462,3 +462,20 @@ Forced task ids: `HumanEval/32`, `HumanEval/39`, `HumanEval/80`, `HumanEval/95`,
 **This row is the first EvalPlus score for `PTQ1_0` on any cache type.** Base pass@1 0.970 ≥ 0.800.
 
 Files: `results/bonsai2-ptq1-f16-evalplus-budget-xhigh/`, `results/server-bonsai2-ptq1-f16-evalplus-budget-xhigh.log`, `results/watcher-bonsai2-ptq1-f16-evalplus-budget-xhigh.log`, `results/run-bonsai2-ptq1-f16-evalplus-budget-xhigh.out.log`.
+
+## `bonsai2-ptq1-f16-evalplus-forced-rerun`
+
+Natural re-run (no reasoning-budget flags), same config, `EVALPLUS_MAX_NEW_TOKENS=30000`. Prepared from `bonsai2-ptq1-f16-evalplus-budget-xhigh`: 6 forced, 2 forced-failed (`HumanEval/32`, `99`), regenerated only those 2. Wall 0:25:18.
+
+| task_id | cell | forced_tokens | natural_finish | natural_tokens | natural_reasoning_tokens |
+|---|---|--:|---|--:|--:|
+| HumanEval/32 | forced-fail-loop | 31000 | length | 30000 | 30000 |
+| HumanEval/39 | forced-pass | 30540 | | | |
+| HumanEval/80 | forced-pass | 30209 | | | |
+| HumanEval/95 | forced-pass | 30405 | | | |
+| HumanEval/99 | forced-fail-loop | 30212 | length | 30000 | 30000 |
+| HumanEval/137 | forced-pass | 30316 | | | |
+
+Summary: forced-pass=4, forced-fail-late=0, forced-fail-loop=2, forced-fail-wrong=0. `corrected_think_budget`: unchanged, no late answer — both forced-failed problems still hit the 30000-token generous cap unconverged, genuine non-convergence.
+
+Files: `results/bonsai2-ptq1-f16-evalplus-forced-rerun/`, `results/server-bonsai2-ptq1-f16-evalplus-forced-rerun.log`, `results/watcher-bonsai2-ptq1-f16-evalplus-forced-rerun.log`, `results/run-bonsai2-ptq1-f16-evalplus-forced-rerun.out.log`.
