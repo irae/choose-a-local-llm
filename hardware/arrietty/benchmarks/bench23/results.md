@@ -123,3 +123,30 @@ Files: `results/qwen38-oblit-q3km-forced-rerun/humaneval/`,
 `results/qwen38-oblit-q3km-forced-rerun/finish.jsonl`,
 `results/qwen38-oblit-q3km-forced-rerun/forced.json`,
 `results/server-qwen38-oblit-q3km-forced-rerun.log`.
+
+## `qwen38-oblit-q3km-smoke-medium`
+
+Config: q8_0 KV, `-c 65536` (`oblit_q3km_c`), no reasoning flag.
+`oblit_q3km_window` = 61440 (`oblit_q3km_clean` 64512 rounded down to
+a multiple of 4096, at or under 65536).
+
+```
+SMOKE-MENDEL model=qwen3.8-27b-oblit-q3km level=medium task=xtend window=61440 calls=0 distinct=0 longest_run=0 loop=ok:1.00 compactions=0 splits=0 peak=994 commits=0 clean=yes end=stop wall_s=9 verdict=fail
+```
+
+**Fail**: 0 calls, 0 commits, 9 s wall. The session log holds a
+`thinking` block on the assistant's turn, so the pi entry reached the
+server (not the no-thinking-block stop-and-ask case). The model wrote
+its tool calls as literal text inside a `<tool_call>` block instead of
+the structured tool-call format the harness parses, so the harness
+executed nothing and the model stopped with no commits after reading
+the three fixture files.
+
+The blind row does not run for this config. Deviation: this run's pi
+config had no entry for the alias `qwen3.8-27b-oblit-q3km`; one was
+added to `~/.pi/agent/models.json` (llama provider, same shape as
+`qwen3.8-27b-ista`, `chat_template_kwargs.reasoning_effort`) before
+the smoke could run at all — recorded in `state.md`.
+
+Files: `results/mendel-smoke-qwen38-oblit-q3km.log`,
+`results/server-qwen38-oblit-q3km-smoke-medium.log`.

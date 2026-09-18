@@ -14,7 +14,7 @@ happen, and the handing-over section at the end.
 | `oblit_q3km_c` | 65536 (q8_0) | `qwen38-oblit-q3km-kvpick`, the larger of the two |
 | `oblit_q3km_kv` | `q8_0` | `qwen38-oblit-q3km-kvpick`, gate passed (65536 ≥ 32768) |
 | `oblit_q3km_clean` | 64512 | `sweep-qwen38-oblit-q3km`, deepest tested depth, 16.74 tok/s, all depths above the 8 tok/s floor |
-| `oblit_q3km_window` | pending | `qwen38-oblit-q3km-smoke-medium` |
+| `oblit_q3km_window` | 61440 | `qwen38-oblit-q3km-smoke-medium`, 64512 rounded down to a multiple of 4096, at or under 65536 |
 | `oblit_q3km_think_budget` | 3986 | `qwen38-oblit-q3km-calibrate-think`, max_reasoning 2657 × 1.5 |
 | `oblit_q3km_answer_budget` | 2048 | `qwen38-oblit-q3km-calibrate-think`, max_answer 548 × 1.5 = 822, floor 2048 |
 | `oblit_q3km_max_tokens` | 6034 | `qwen38-oblit-q3km-calibrate-think`, think + answer |
@@ -172,9 +172,57 @@ budget artifact. 1 `forced-pass` (`HumanEval/94`).
 `corrected_think_budget` unchanged, no late answer. Wall ≈16 min.
 Server and watcher stopped, VRAM back to baseline (626 MiB).
 
+## `qwen38-oblit-q3km-smoke-medium` — done, fail
+
+Deviation: `~/.pi/agent/models.json` had no entry for the alias
+`qwen3.8-27b-oblit-q3km`. Added one under the `llama` provider,
+matching `qwen3.8-27b-ista`'s shape (`chat_template_kwargs.
+reasoning_effort`, `thinkingLevelMap` low/medium/xhigh),
+`contextWindow` 65536, `maxTokens` 8192, before the smoke tool's own
+window-pinning step could find the model at all. First attempt without
+the entry: `pi exited 1 after 0s`, provider `none`, verdict fail
+(harness never reached the server). Second attempt, entry in place:
+provider `llama`, `pi exited 0 after 9s`.
+
+Full line: `SMOKE-MENDEL model=qwen3.8-27b-oblit-q3km level=medium
+task=xtend window=61440 calls=0 distinct=0 longest_run=0 loop=ok:1.00
+compactions=0 splits=0 peak=994 commits=0 clean=yes end=stop wall_s=9
+verdict=fail`.
+
+Verdict: **fail**, real (not a wiring problem). The session log holds
+a `thinking` block on the assistant's turn, so the entry reached the
+server and this is not the no-thinking-block stop-and-ask case. The
+model wrote its tool calls as literal text inside a `<tool_call>`
+block instead of the structured tool-call format llama-server's
+`--jinja` mode parses for this harness; the harness executed nothing,
+so 0 calls, 0 commits. The blind row does not run for this config.
+Server stopped, VRAM back to baseline (626 MiB). No Mendel Daemon
+process was left running.
+
 ## Handing-over
 
-`machine-setup`, `qwen38-oblit-q3km-kvpick`, `sweep-qwen38-oblit-q3km`,
-`qwen38-oblit-q3km-calibrate-think`, `qwen38-oblit-q3km-budget-medium`,
-`qwen38-oblit-q3km-forced-rerun` done. Next:
-`qwen38-oblit-q3km-smoke-medium`.
+**What ran.** `machine-setup`, `qwen38-oblit-q3km-kvpick`,
+`sweep-qwen38-oblit-q3km`, `qwen38-oblit-q3km-calibrate-think`,
+`qwen38-oblit-q3km-budget-medium`, `qwen38-oblit-q3km-forced-rerun`,
+`qwen38-oblit-q3km-smoke-medium` all done. `retry-sweep` is empty:
+nothing in this run waited on a human. The run reaches the end of its
+list.
+
+**What a gate changed and why.** The context gate passed cleanly
+(65536 ≥ 32768, pick q8_0). The agent gate passed cleanly (base 0.854
+≥ 0.800). The Mendel smoke failed: 0 calls, 0 commits, the model wrote
+its tool calls as literal text instead of the structured format the
+harness parses. `qwen38-oblit-q3km-mendel-blind-medium` does not run
+because of that fail; this is a real tool-calling-format problem with
+this build under this harness, not a context or budget problem, and
+not fixed by retrying the same config.
+
+**Machine state left behind.** No `llama-server` process, no watcher,
+no scoring process, no Mendel Daemon process. VRAM 626 MiB, at the
+session's own baseline (614 MiB at start). Corpus server (port 8089)
+was stopped after `sweep-qwen38-oblit-q3km`, as the runbook said.
+`~/.pi/agent/models.json` now carries a permanent entry for
+`qwen3.8-27b-oblit-q3km` (added this run, needed for the smoke).
+
+**Evidence archived**: 27 files to
+`~/.local/share/choose-a-local-llm/evidence/run23`.
