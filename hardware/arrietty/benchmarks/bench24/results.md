@@ -419,3 +419,28 @@ Per-criterion breakdown (criterion / max / scored / evidence):
 Sum 82, exact.
 
 Files: `results/mendel-blind-bonsai2-ptq1-f16.out.log`, `results/mendel-blind-bonsai2-ptq1-f16-evidence.json`, session `~/.local/share/mendel-benchmark/runs/bonsai2-27b-ptq1-f16-xhigh-blind-session.jsonl`, meta `~/.local/share/mendel-benchmark/runs/bonsai2-27b-ptq1-f16-xhigh-blind-meta.json`.
+
+## `bonsai2-ptq1-f16-evalplus-calibrate`
+
+`Ternary-Bonsai-2-27B-PTQ1_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, f16 KV (`bonsai2-ptq1-f16-kvpick`), `-c 32768`, no reasoning-budget flag. Calibration name `bonsai2-ptq1-f16-xhigh-think`, alias `bonsai2-27b-ptq1-f16`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`.
+
+| task_id | finish_reason | reasoning_len (chars) |
+|---|---|--:|
+| HumanEval/0 | stop | 2930 |
+| HumanEval/10 | stop | 33291 |
+| HumanEval/26 | stop | 2075 |
+| HumanEval/32 | length | 94482 |
+| HumanEval/38 | stop | 4468 |
+| HumanEval/39 | length | 51565 |
+| HumanEval/76 | stop | 34657 |
+| HumanEval/99 | length | 36846 |
+| HumanEval/124 | stop | 7263 |
+| HumanEval/145 | stop | 76819 |
+
+7 converged, 3 cut, no converged row with an empty answer.
+
+`thinking-budget.py derive`: converged 7, cut 3, max_reasoning_tokens 23805, max_answer_tokens 274, think_budget 30000 (capped — 23805 × 1.5 = 35707.5 exceeds the 30000 cap), answer_budget 2048 (floor), max_tokens 32048.
+
+`bonsai2_ptq1_f16_think_budget` = 30000, `bonsai2_ptq1_f16_answer_budget` = 2048, `bonsai2_ptq1_f16_max_tokens` = 32048.
+
+Files: `hardware/arrietty/calibrations/calibration-bonsai2-ptq1-f16-xhigh-think.json`, `results/server-bonsai2-ptq1-f16-evalplus-calibrate.log`.
