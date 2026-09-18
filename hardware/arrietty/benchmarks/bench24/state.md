@@ -76,4 +76,27 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 
 ## Handing-over
 
-`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, `bonsai2-pq2-calibrate-think`, `bonsai2-pq2-budget-xhigh` (gate passed: base 0.982 ≥ 0.800), `bonsai2-pq2-forced-rerun`, `bonsai2-ptq1-kvpick`, `sweep-bonsai2-ptq1`, `bonsai2-pq2-smoke-xhigh` (pass, 37s, 1 commit), and `bonsai2-pq2-mendel-blind-xhigh` (complete, 245 tool calls, peak ctx 192679/208896, loop ok, wall 1:32:27) are done. Score/worst defect await the coordinator's judgement pass. Next: `retry-sweep` (empty — no block waited on a human).
+**The run ended: every block on the list ran, in order.**
+
+- `machine-setup`: both files fetched and hash-checked; the fork's newest release lacked a Linux CUDA asset (CI still building), so the prior release `prism-b10685-7dffb15` was used instead — it detects the card and proves out.
+- "The server" gate: passed on the first try with the prebuilt binary; no source build was needed (this machine has no cmake or CUDA toolkit, so a source build would have needed `sudo` — never triggered because the prebuilt worked).
+- `bonsai2-pq2-kvpick`: q8_0 picked, `-c` 212992.
+- `sweep-bonsai2-pq2`: clean to the deepest tested depth (211968, 14.5 tok/s).
+- `bonsai2-pq2-calibrate-think`: 7/10 converged; think_budget 25209, answer_budget 2048, max_tokens 27257.
+- `bonsai2-pq2-budget-xhigh`: base 0.982, plus 0.939, 0 empty, 7 forced. Agent gate passed (0.800 floor), so the smoke and blind row ran.
+- `bonsai2-pq2-forced-rerun`: 4 forced-failed, all four forced-fail-loop (genuine non-convergence). Corrected budget unchanged.
+- `bonsai2-ptq1-kvpick`: q8_0 picked, `-c` 245760 (near the full 262144 trained window — the smaller weights leave much more KV room than PQ2). f16 hit a live CUDA OOM abort at 147456, not just a clean reject.
+- `sweep-bonsai2-ptq1`: clean to the deepest tested depth (244736, 12.8 tok/s).
+- `bonsai2-pq2-smoke-xhigh`: pass, 37s, 1 commit, no loop. Registered `bonsai2-27b-pq2` in `~/.pi/agent/models.json` for this (backup at `~/.pi/agent/models.json.bak-run24`).
+- `bonsai2-pq2-mendel-blind-xhigh`: end_reason complete, 245 tool calls, peak ctx 192679/208896 (92.2%), loop flag ok, 0 compactions, wall 1:32:27. Evidence pack built with `score.mjs`; **score and worst defect are not decided — that judgement is the coordinator's, not mechanical.**
+- `retry-sweep`: empty. No block waited on a human this run; every recoverable failure (a few CUDA OOMs during the kvpick ladders) was retried inside its own block per the owner rule.
+
+**Deviations from the runbook, all told to the coordinator at the block they happened:**
+1. The fork's release used is `prism-b10685-7dffb15`, not literally the tag `releases/latest` resolved to at run start — that newest tag's Linux/macOS assets were not yet uploaded when the run began.
+2. No source build attempted or needed: the prebuilt CUDA 12.8 binary loads and serves correctly on this sm120 card via PTX JIT, so the "no release matches this card" branch of the runbook did not apply as written.
+3. The GGUF metadata's `min_p 0.0` line in the runbook's Essentials does not match what the server actually applies (`min_p 0.05`, read from `/props`); every config note in this run carries the measured value.
+4. `bonsai2-pq2-forced-rerun`'s summary note originally said "every forced problem still passed" — corrected after the forced-rerun block found 4 of 7 forced problems actually failed their tests.
+
+**Machine state left behind**: no `llama-server` process running, port 8081 free, VRAM at 626 MiB (baseline). Corpus server (port 8089) stopped after `sweep-bonsai2-ptq1`. `~/.pi/agent/models.json` carries one new entry, `bonsai2-27b-pq2`, with a backup alongside it. The Mendel worktree `~/code/mendel-bench-bonsai2-27b-pq2-xhigh` and its branch `bonsai2-27b-pq2-xhigh-issue-13` are left in place, unscored, per house rules — do not delete until scored. No `Mendel Daemon` process was left running.
+
+**Evidence archived**: `tools/archive-evidence.sh hardware/arrietty/benchmarks/bench24/results run24` run at session close.
