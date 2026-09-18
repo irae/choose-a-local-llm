@@ -164,8 +164,17 @@ Served the same config without the two reasoning flags, `-c 32768`,
 `EVALPLUS_MAX_NEW_TOKENS=30000`. Watcher armed, run generating the 4
 removed problems.
 
+## `qwen38-oblit-q3km-forced-rerun` — done
+
+Report table in `results.md`. 4 forced-failed problems, all
+`forced-fail-wrong`: the model's own limit at every budget, not a
+budget artifact. 1 `forced-pass` (`HumanEval/94`).
+`corrected_think_budget` unchanged, no late answer. Wall ≈16 min.
+Server and watcher stopped, VRAM back to baseline (626 MiB).
+
 ## Handing-over
 
 `machine-setup`, `qwen38-oblit-q3km-kvpick`, `sweep-qwen38-oblit-q3km`,
-`qwen38-oblit-q3km-calibrate-think`, `qwen38-oblit-q3km-budget-medium`
-done, gate passed. `qwen38-oblit-q3km-forced-rerun` running.
+`qwen38-oblit-q3km-calibrate-think`, `qwen38-oblit-q3km-budget-medium`,
+`qwen38-oblit-q3km-forced-rerun` done. Next:
+`qwen38-oblit-q3km-smoke-medium`.
