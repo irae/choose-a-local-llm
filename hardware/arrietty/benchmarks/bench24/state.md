@@ -76,4 +76,4 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 
 ## Handing-over
 
-`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, and `bonsai2-pq2-calibrate-think` are done. Next: `bonsai2-pq2-budget-xhigh`.
+`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, `bonsai2-pq2-calibrate-think`, `bonsai2-pq2-budget-xhigh` (gate passed: base 0.982 ≥ 0.800), and `bonsai2-pq2-forced-rerun` are done. vram back to 626 MiB after both. Next: `bonsai2-ptq1-kvpick`.

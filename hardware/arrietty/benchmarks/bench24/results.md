@@ -87,3 +87,39 @@ Files: `results/benchy-bonsai2-pq2-q8.md`, `results/benchy-bonsai2-pq2-q8.out.lo
 `bonsai2_pq2_think_budget` = 25209, `bonsai2_pq2_answer_budget` = 2048, `bonsai2_pq2_max_tokens` = 27257.
 
 Files: `hardware/arrietty/calibrations/calibration-bonsai2-pq2-xhigh-think.json`, `results/server-bonsai2-pq2-calibrate-think.log`.
+
+## `bonsai2-pq2-budget-xhigh`
+
+`Ternary-Bonsai-2-27B-PQ2_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, pick q8_0, `-c 32768`, `--reasoning-budget 25209 --reasoning-budget-message "Thinking budget reached. Give the final answer now."`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`, `EVALPLUS_MAX_NEW_TOKENS=27257`. Full 164-problem HumanEval run, `2026-09-18T03:03:04Z` to `2026-09-18T05:58:51Z`, wall 2:56:03. VRAM 8871 MiB stable.
+
+| metric | value |
+|---|--:|
+| HumanEval base pass@1 | 0.982 |
+| HumanEval plus pass@1 | 0.939 |
+| completion rate | 100% |
+| empty (from samples) | 0/164 |
+| forced (budget fired) | 7/164 |
+
+Forced task ids: `HumanEval/32`, `HumanEval/64`, `HumanEval/80`, `HumanEval/91`, `HumanEval/99`, `HumanEval/137`, `HumanEval/145`. Correction: "0 empty" means no sample was blank, not that every forced problem passed its test — `bonsai2-pq2-forced-rerun` below found 4 of the 7 forced problems failed their tests (non-empty wrong answers).
+
+**The agent gate**: base pass@1 0.982 ≥ 0.800 — pass. `bonsai2-pq2-smoke-xhigh` and the blind row proceed.
+
+Files: `results/bonsai2-pq2-budget-xhigh/`, `results/server-bonsai2-pq2-budget-xhigh.log`, `results/watcher-bonsai2-pq2-budget-xhigh.log`, `results/run-bonsai2-pq2-budget-xhigh.out.log`.
+
+## `bonsai2-pq2-forced-rerun`
+
+Natural re-run (no reasoning-budget flags), same config, `EVALPLUS_MAX_NEW_TOKENS=30000`. Prepared from `bonsai2-pq2-budget-xhigh`: 7 forced, 4 forced-failed (`HumanEval/32`, `91`, `99`, `145`), regenerated only those 4. Wall 0:48:28.
+
+| task_id | cell | forced_tokens | natural_finish | natural_tokens | natural_reasoning_tokens |
+|---|---|--:|---|--:|--:|
+| HumanEval/32 | forced-fail-loop | 26055 | length | 30000 | 30000 |
+| HumanEval/64 | forced-pass | 27257 | | | |
+| HumanEval/80 | forced-pass | 25425 | | | |
+| HumanEval/91 | forced-fail-loop | 25519 | length | 30000 | 30000 |
+| HumanEval/99 | forced-fail-loop | 25421 | length | 30000 | 30000 |
+| HumanEval/137 | forced-pass | 25621 | | | |
+| HumanEval/145 | forced-fail-loop | 25323 | length | 30000 | 30000 |
+
+Summary: forced-pass=3, forced-fail-late=0, forced-fail-loop=4, forced-fail-wrong=0. `corrected_think_budget`: unchanged, no late answer (every forced-failed problem still hit the 30000-token generous cap unconverged — the budget was not too small, these four are genuine non-convergence).
+
+Files: `results/bonsai2-pq2-forced-rerun/`, `results/server-bonsai2-pq2-forced-rerun.log`, `results/watcher-bonsai2-pq2-forced-rerun.log`, `results/run-bonsai2-pq2-forced-rerun.out.log`.
