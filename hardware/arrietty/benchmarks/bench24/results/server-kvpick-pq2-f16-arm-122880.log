@@ -1,0 +1,20 @@
+0.00.043.227 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.043.516 W srv  llama_server: -----------------
+0.00.043.517 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.043.517 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.043.517 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.043.517 W srv  llama_server: -----------------
+0.00.044.805 I srv    load_model: loading model '/home/irae/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-2-27B-gguf/blobs/3907dc1658db1f78a9826bf8d5bcb8dc65db0d466388937af57f2294fae62ec1'
+0.05.531.881 I cmn          init: llama threadpool init, n_threads = 6
+0.05.896.258 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 122880, kv_unified = 'false'
+0.05.896.498 W srv          init: --cache-idle-slots requires --cache-ram, disabling
+0.05.901.318 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.05.901.608 I srv  llama_server: model loaded
+0.05.901.612 I srv  llama_server: listening on http://127.0.0.1:8081
+0.23.003.942 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.23.003.994 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.25.757.598 I slot print_timing: id  0 | task 0 | prompt eval time =     235.60 ms /    61 tokens (    3.86 ms per token,   258.91 tokens per second)
+0.25.757.600 I slot print_timing: id  0 | task 0 |        eval time =    2517.98 ms /   122 tokens (   20.81 ms per token,    48.05 tokens per second)
+0.25.757.601 I slot print_timing: id  0 | task 0 |       total time =    2753.58 ms /   183 tokens
+0.25.757.604 I slot print_timing: id  0 | task 0 |    graphs reused =        121
+0.25.757.647 I slot      release: id  0 | task 0 | stop processing: n_tokens = 182, truncated = 0
