@@ -63,6 +63,14 @@ Files: `results/benchy-bonsai2-pq2-q8.md`, `results/benchy-bonsai2-pq2-q8.out.lo
 
 **A table and no pick.**
 
+## `bonsai2-pq2-smoke-xhigh`
+
+`bonsai2_pq2_window` = 208896 (`bonsai2_pq2_clean` 211968 rounded down to a multiple of 4096, at or under `-c` 212992). Registered `bonsai2-27b-pq2` in `~/.pi/agent/models.json` (llama provider, `qwen35`-family template, `reasoning_effort` chat-template kwarg — same pattern as `qwen3.8-27b-iq3s`; backup kept at `~/.pi/agent/models.json.bak-run24`).
+
+`SMOKE_MENDEL_CONTEXT_WINDOW=208896 benchmarks/mendel-smoke.sh bonsai2-27b-pq2 xhigh`: task xtend, 12 tool calls (12 distinct), 1 commit, clean tree, no repetition loop, 0 compactions, peak 4418 tokens, wall 37s. **verdict: pass.** Session log carries 8 reasoning blocks — the thinking-on entry reached the server.
+
+Files: `results/mendel-smoke-bonsai2-pq2.log`.
+
 ## `bonsai2-pq2-calibrate-think`
 
 `Ternary-Bonsai-2-27B-PQ2_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, pick q8_0, `-c 32768`, no reasoning-budget flag. Calibration name `bonsai2-pq2-xhigh-think`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`. All 10 rows resolve `resolved_reasoning_effort: "xhigh"` from the request; no level mismatch.

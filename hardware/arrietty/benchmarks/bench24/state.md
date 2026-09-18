@@ -76,4 +76,4 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 
 ## Handing-over
 
-`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, `bonsai2-pq2-calibrate-think`, `bonsai2-pq2-budget-xhigh` (gate passed: base 0.982 ≥ 0.800), `bonsai2-pq2-forced-rerun`, `bonsai2-ptq1-kvpick`, and `sweep-bonsai2-ptq1` are done. Corpus server (port 8089) stopped per the runbook. vram back to 626 MiB. Next: `bonsai2-pq2-smoke-xhigh` (the agent gate passed, so the smoke and blind row run).
+`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, `bonsai2-pq2-calibrate-think`, `bonsai2-pq2-budget-xhigh` (gate passed: base 0.982 ≥ 0.800), `bonsai2-pq2-forced-rerun`, `bonsai2-ptq1-kvpick`, `sweep-bonsai2-ptq1`, and `bonsai2-pq2-smoke-xhigh` (pass, 37s, 1 commit) are done. Registered `bonsai2-27b-pq2` in `~/.pi/agent/models.json`. Next: `bonsai2-pq2-mendel-blind-xhigh`.

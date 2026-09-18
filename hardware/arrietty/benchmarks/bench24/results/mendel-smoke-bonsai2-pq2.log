@@ -1,0 +1,8 @@
+mendel-smoke: model bonsai2-27b-pq2, thinking xhigh, task xtend, cap 1500s
+mendel-smoke: everything lands in /home/irae/.cache/choose-a-local-llm/mendel-smoke.HHHHKP
+mendel-smoke: fixture ready (xtend, 2 files, 310 bytes under lib), one commit, clean tree
+mendel-smoke: compaction settings {"enabled": true, "reserveTokens": 8192}
+mendel-smoke: contextWindow 208896 pinned on provider llama
+mendel-smoke: pi config pinned at /home/irae/.cache/choose-a-local-llm/mendel-smoke.HHHHKP/pi-agent
+mendel-smoke: pi exited 0 after 37s, session /home/irae/.cache/choose-a-local-llm/mendel-smoke.HHHHKP/session/2026-09-18T07-57-11-562Z_01a0b384-fa0a-7582-bf81-7d480ff5d383.jsonl
+SMOKE-MENDEL model=bonsai2-27b-pq2 level=xhigh task=xtend window=208896 calls=12 distinct=12 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=4418 commits=1 clean=yes end=stop wall_s=37 verdict=pass
