@@ -156,8 +156,16 @@ Wall 89 min across two parts (the pause gap excluded). Agent gate:
 0.854 ≥ 0.800, passes. Smoke and blind row run next, after the forced
 re-run.
 
+## `qwen38-oblit-q3km-forced-rerun` — running
+
+`thinking-budget.py prepare`: 5 forced, 4 forced-failed
+(`HumanEval/116`, `HumanEval/130`, `HumanEval/32`, `HumanEval/73`).
+Served the same config without the two reasoning flags, `-c 32768`,
+`EVALPLUS_MAX_NEW_TOKENS=30000`. Watcher armed, run generating the 4
+removed problems.
+
 ## Handing-over
 
 `machine-setup`, `qwen38-oblit-q3km-kvpick`, `sweep-qwen38-oblit-q3km`,
 `qwen38-oblit-q3km-calibrate-think`, `qwen38-oblit-q3km-budget-medium`
-done, gate passed. Next: `qwen38-oblit-q3km-forced-rerun`.
+done, gate passed. `qwen38-oblit-q3km-forced-rerun` running.
