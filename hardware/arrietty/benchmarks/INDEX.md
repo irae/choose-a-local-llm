@@ -38,6 +38,25 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
   answer, with no budget flag and no `length` cut. The derive tool
   already drops such a row, so the budget came from the next longest.
 
+## bench25, 2026-09-18 ([report](bench25/report.md), [state](bench25/state.md), [results](bench25/results.md))
+
+- Runbook: [bench25/AGENT.md](bench25/AGENT.md). The Q4_K_M build of the
+  same abliterated 27B file that run 23 measured, served with part of
+  its weights in host RAM: `-c 65536` fixed, q8_0 KV, and an `-ngl`
+  ladder under a VRAM cap of 13811 MiB that leaves 2.5 GB for the
+  system. That cap is this run's own rule; the card has no reserve rule.
+- **`-ngl 45` of 64 is what fits**, at 13426 MiB under a real 64K
+  request. 47 and 51 go over the cap at load.
+- **Weights in host RAM cost about 4.4 times the speed**: 5.13 tok/s at
+  4K against 22.67 for the same model's Q3_K_M inside the card, and
+  2.31 against 16.74 at about 64K. No depth reaches the 8 tok/s floor.
+- **Memory was never the limit; the bus was.** VRAM held flat at 13422
+  MiB against the 13811 cap through the whole sweep.
+- **The run ended at the sweep on its speed gate** (coordinator,
+  2026-09-18): scoring a config that already fails the floor would
+  spend most of a day. No quality row and no agent row exist for this
+  build, and none is planned on this card.
+
 ## bench24, 2026-09-17 to 2026-09-18 ([report](bench24/report.md), [state](bench24/state.md), [results](bench24/results.md))
 
 - Runbook: [bench24/AGENT.md](bench24/AGENT.md). A ternary-weight 27B

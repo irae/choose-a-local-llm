@@ -48,6 +48,7 @@ hours.
 |---|--:|--:|--:|--:|--:|
 | <ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" top /> | **261k** | <TokCell shallow="47.39" deep="32.18" cap="mem" top-shallow top-deep /> | <ScoreCell value="0.951/0.909" sub="100% completion" top /> | <ScoreCell value="not run" /> | <span title="EvalPlus 0h26 · Mendel —">0h26†</span> |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" kv="q8_0" effort="medium" top /> | 64k | <TokCell shallow="5.13" deep="2.31" cap="speed" /> | <ScoreCell value="not run" /> | <ScoreCell value="not run" /> | — |
 
 Fewer than two rows pass the filter of this table, so it shows every row it can hold.
 <!-- gen:models-evaluated-partial:end -->
