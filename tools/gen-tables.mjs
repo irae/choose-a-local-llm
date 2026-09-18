@@ -407,7 +407,7 @@ function pill(text, tone = 'gray') {
 
 function mendelWindow(r) {
   const note = String(r.config_note || '')
-  const m = note.match(/(?:contextWindow|window)\s+(\d{4,6})/)
+  const m = note.match(/(?:contextWindow|window)\s+(\d{4,6})/i)
   if (m) return Number(m[1])
   const t = r.telemetry
   const peak = Number(t.peak_context)
