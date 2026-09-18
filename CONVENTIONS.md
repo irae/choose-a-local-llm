@@ -17,6 +17,7 @@ Which file governs which kind of page:
 | Research kits (`hardware/kamaji/research/run<N>/`) | same shape, goals not blocks | `benchmarks/PLANNING.md`; a research run brings findings and options, not decisions |
 | Backlog (`backlog/<mnemonic>.md`) | one item per file, **only on an explicit owner request** (`AGENTS.md`); everything else goes to `HANDOFF.md` or the run's `state.md` | opens with status, filing date, origin, and whether it needs hardware; restates the situation so nobody digs old runs; lists entry points and evidence files; is not a prompt. `backlog/index.md` lists every item in priority order with a checkbox the owner marks (legend in that file). When the work lands on `master`, the file is deleted in the same commit and its line moves to the index's Changelog |
 | `HANDOFF.md` | coordinator state, gitignored | `benchmarks/PLANNING.md`: small, pointers only, desired next state |
+| Generated blocks (`<!-- gen:... -->`) | every page kind above | `CONTENT-MAP.md`: which source feeds which block on which page, the join keys, the checklist per kind of change; `tools/check-content-map.mjs` keeps it true |
 
 Rules that apply to every markdown file:
 
@@ -84,6 +85,7 @@ though it now lives outside this repo
   `creep_<backend>.py`, `<thing>-watch.sh`, `<verb>-<object>.mjs`.
 
 Before a commit: `npm run verify` for anything under `docs/` or
-`tools/gen-tables.mjs`. For anything under `benchmarks/` or
+`tools/gen-tables.mjs`. A change to `tools/gen-tables.mjs` also follows
+`CONTENT-MAP.md`, "Re-index the tree". For anything under `benchmarks/` or
 `tools/sweeps/`, run the tool once against a live target and quote the
 output.

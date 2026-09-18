@@ -328,7 +328,9 @@ committed measurement, the block that measures it comes first.
    with a clean handing-over section, and the coordinator adds the
    run's findings to `hardware/<hardware-id>/benchmarks/INDEX.md`,
    and writes the run's final derived values into the owner's harness
-   file and the site in the same pass.
+   file and the site in the same pass. The site part follows the
+   checklists of `CONTENT-MAP.md`, one per kind of change, so the
+   result reaches every page that shows it.
 11. Read the finished runbook once more as the runner would, in the
    order the list at the top gives,
    and ask of every number: is this identity, or a measurement
