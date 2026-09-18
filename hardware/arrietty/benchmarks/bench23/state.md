@@ -15,9 +15,9 @@ happen, and the handing-over section at the end.
 | `oblit_q3km_kv` | `q8_0` | `qwen38-oblit-q3km-kvpick`, gate passed (65536 ≥ 32768) |
 | `oblit_q3km_clean` | 64512 | `sweep-qwen38-oblit-q3km`, deepest tested depth, 16.74 tok/s, all depths above the 8 tok/s floor |
 | `oblit_q3km_window` | pending | `qwen38-oblit-q3km-smoke-medium` |
-| `oblit_q3km_think_budget` | pending | `qwen38-oblit-q3km-calibrate-think` |
-| `oblit_q3km_answer_budget` | pending | `qwen38-oblit-q3km-calibrate-think` |
-| `oblit_q3km_max_tokens` | pending | `qwen38-oblit-q3km-calibrate-think` |
+| `oblit_q3km_think_budget` | 3986 | `qwen38-oblit-q3km-calibrate-think`, max_reasoning 2657 × 1.5 |
+| `oblit_q3km_answer_budget` | 2048 | `qwen38-oblit-q3km-calibrate-think`, max_answer 548 × 1.5 = 822, floor 2048 |
+| `oblit_q3km_max_tokens` | 6034 | `qwen38-oblit-q3km-calibrate-think`, think + answer |
 | `vram_start_mb` | 614 MiB used / 16311 MiB total | `nvidia-smi`, session start, 2026-09-17 |
 | `evalplus_python` | `/home/irae/.local/share/pipx/venvs/evalplus/bin/python` | pipx venv, already installed |
 | `llama_server` | `0.4.0-dev (build 10809, commit 5266f24da)`, `v0.4.0-sm120` build | run 17 build, this machine |
@@ -73,7 +73,22 @@ Table in `results.md`. Tool `llama-benchy` `204acec`. All three depths
 under the 8 tok/s floor. `oblit_q3km_clean` = 64512. Corpus server
 stopped after this block, as the runbook requires.
 
+## `qwen38-oblit-q3km-calibrate-think` — done
+
+Served without a thinking budget, q8_0 KV, `-c 32768`. All 10
+calibration rows resolved to `medium` (`resolved_reasoning_effort`,
+source `requested`). 9 converged, 0 cut. `HumanEval/32` finished on
+its own (`finish_reason: stop`) with an empty answer after a very long
+reasoning chain (`content_empty: true`, `wall_s` 257.8); this is the
+model's own natural non-convergence, not a budget artifact, and the
+derive tool counted it as converged from its measured reasoning token
+count. Derived: think budget 3986 (2657 × 1.5), answer budget 2048
+(548 × 1.5 = 822, floor 2048), max_tokens 6034.
+Files: `hardware/arrietty/calibrations/calibration-qwen38-oblit-q3km-medium-think.json`,
+`results/calibrate-think-stdout.log`, `results/server-calibrate-think.log`.
+
 ## Handing-over
 
-`machine-setup`, `qwen38-oblit-q3km-kvpick`, `sweep-qwen38-oblit-q3km`
-done. Next: `qwen38-oblit-q3km-calibrate-think`.
+`machine-setup`, `qwen38-oblit-q3km-kvpick`, `sweep-qwen38-oblit-q3km`,
+`qwen38-oblit-q3km-calibrate-think` done. Server still up (same `-c`
+as the next block). Next: `qwen38-oblit-q3km-budget-medium`.
