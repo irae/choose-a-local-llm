@@ -1,0 +1,212 @@
+[
+  {
+    "task_id": "HumanEval/0",
+    "completion_tokens": 466,
+    "reasoning_tokens": null,
+    "reasoning_len": 969,
+    "reasoning_tail": "1.0, 2.0, 3.0], threshold 0.5: differences are 1.0, 2.0, 1.0 - all >= 0.5, so False\n- [1.0, 2.8, 3.0, 4.0, 5.0, 2.0], threshold 0.3: 2.8 and 3.0 differ by 0.2 < 0.3, so True\n\nThe solution is correct.\n",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 544,
+    "content": "\n\n```python\nfrom typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than\n    given threshold.\n    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)\n    False\n    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)\n    True\n    \"\"\"\n    for i in range(len(numbers)):\n        for j in range(i + 1, len(numbers)):\n            if abs(numbers[i] - numbers[j]) < threshold:\n                return True\n    return False\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 20.6,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "medium"
+      }
+    },
+    "resolved_reasoning_effort": "medium",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/10",
+    "completion_tokens": 829,
+    "reasoning_tokens": null,
+    "reasoning_len": 1961,
+    "reasoning_tail": "e is 'ac'. Result: 'cat' + 'ac' = 'catac'. \u2713\n- 'cata': i=0, 'cata' != 'atac', i=1, 'ata' == 'ata', so prefix is 'c', reverse is 'c'. Result: 'cata' + 'c' = 'catac'. \u2713\n\nGreat, the solution is correct.\n",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 906,
+    "content": "\n\n```python\ndef is_palindrome(string: str) -> bool:\n    \"\"\" Test if given string is a palindrome \"\"\"\n    return string == string[::-1]\n\n\ndef make_palindrome(string: str) -> str:\n    \"\"\" Find the shortest palindrome that begins with a supplied string.\n    Algorithm idea is simple:\n    - Find the longest postfix of supplied string that is a palindrome.\n    - Append to the end of the string reverse of a string prefix that comes before the palindromic suffix.\n    >>> make_palindrome('')\n    ''\n    >>> make_palindrome('cat')\n    'catac'\n    >>> make_palindrome('cata')\n    'catac'\n    \"\"\"\n    # Find the longest palindromic suffix\n    for i in range(len(string)):\n        if string[i:] == string[i:][::-1]:\n            # The prefix before the palindromic suffix, reversed, is appended\n            return string + string[:i][::-1]\n    # Fallback (should not be reached)\n    return string + string[::-1]\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 36.0,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "medium"
+      }
+    },
+    "resolved_reasoning_effort": "medium",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/26",
+    "completion_tokens": 283,
+    "reasoning_tokens": null,
+    "reasoning_len": 531,
+    "reasoning_tail": "aintain original order\n\nFor example: [1, 2, 3, 2, 4] \u2192 1 appears once, 2 appears twice, 3 appears once, 4 appears once \u2192 [1, 3, 4]\n\nI'll write the solution using a counter or by counting occurrences.\n",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 498,
+    "content": "\n\n```python\nfrom typing import List\n\n\ndef remove_duplicates(numbers: List[int]) -> List[int]:\n    \"\"\" From a list of integers, remove all elements that occur more than once.\n    Keep order of elements left the same as in the input.\n    >>> remove_duplicates([1, 2, 3, 2, 4])\n    [1, 3, 4]\n    \"\"\"\n    # Count occurrences\n    count = {}\n    for n in numbers:\n        count[n] = count.get(n, 0) + 1\n    # Keep only elements that occur exactly once\n    return [n for n in numbers if count[n] == 1]\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 12.6,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "medium"
+      }
+    },
+    "resolved_reasoning_effort": "medium",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/32",
+    "completion_tokens": 5905,
+    "reasoning_tokens": null,
+    "reasoning_len": 13358,
+    "reasoning_tail": "11)^2 + xs[3]*(6/11)^3\n        # p'(6/11) = xs[1] + 2*xs[2]*(6/11) + 3*xs[3]*(6/11)^2\n        \n        # This is getting complicated. Let me just use the code.\n        \n        # p(x) = sum(xs[i] * x^",
+    "finish_reason": "stop",
+    "content_empty": true,
+    "content_len": 0,
+    "content": "",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 257.8,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "medium"
+      }
+    },
+    "resolved_reasoning_effort": "medium",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/38",
+    "completion_tokens": 452,
+    "reasoning_tokens": null,
+    "reasoning_len": 638,
+    "reasoning_tail": "plit into groups of 3\n- For each group of 3, it should cycle back: (group[-1] + group[:-1]) - so \"bca\" becomes \"abc\"\n- Groups with fewer than 3 characters remain unchanged\n\nLet me write the solution.\n",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 911,
+    "content": "\n\n```python\ndef encode_cyclic(s: str):\n    \"\"\"\n    returns encoded string by cycling groups of three characters.\n    \"\"\"\n    # split string to groups. Each of length 3.\n    groups = [s[(3 * i):min((3 * i + 3), len(s))] for i in range((len(s) + 2) // 3)]\n    # cycle elements in each group. Unless group has fewer elements than 3.\n    groups = [(group[1:] + group[0]) if len(group) == 3 else group for group in groups]\n    return \"\".join(groups)\n\n\ndef decode_cyclic(s: str):\n    \"\"\"\n    takes as input string encoded with encode_cyclic function. Returns decoded string.\n    \"\"\"\n    # split string to groups. Each of length 3.\n    groups = [s[(3 * i):min((3 * i + 3), len(s))] for i in range((len(s) + 2) // 3)]\n    # cycle elements back in each group. Unless group has fewer elements than 3.\n    groups = [(group[-1] + group[:-1]) if len(group) == 3 else group for group in groups]\n    return \"\".join(groups)\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 20.0,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "medium"
+      }
+    },
+    "resolved_reasoning_effort": "medium",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/39",
+    "completion_tokens": 630,
+    "reasoning_tokens": null,
+    "reasoning_len": 1066,
+    "reasoning_tail": "            if count == n:\n                return a\n```\n\nLet me verify:\n- prime_fib(1) = 2 \u2713\n- prime_fib(2) = 3 \u2713\n- prime_fib(3) = 5 \u2713\n- prime_fib(4) = 13 \u2713\n- prime_fib(5) = 89 \u2713\n\nThis looks correct.\n",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 733,
+    "content": "\n\n```python\ndef prime_fib(n: int):\n    \"\"\"\n    prime_fib returns n-th number that is a Fibonacci number and it's also prime.\n    >>> prime_fib(1)\n    2\n    >>> prime_fib(2)\n    3\n    >>> prime_fib(3)\n    5\n    >>> prime_fib(4)\n    13\n    >>> prime_fib(5)\n    89\n    \"\"\"\n    def is_prime(num):\n        if num < 2:\n            return False\n        if num == 2:\n            return True\n        if num % 2 == 0:\n            return False\n        for i in range(3, int(num**0.5) + 1, 2):\n            if num % i == 0:\n                return False\n        return True\n\n    a, b = 0, 1\n    count = 0\n    while True:\n        a, b = b, a + b\n        if is_prime(a):\n            count += 1\n            if count == n:\n                return a\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 27.5,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "medium"
+      }
+    },
+    "resolved_reasoning_effort": "medium",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/76",
+    "completion_tokens": 658,
+    "reasoning_tokens": null,
+    "reasoning_len": 1110,
+    "reasoning_tail": " x=3, n=2: no integer k gives 2**k = 3, so false\nFor x=3, n=1: 1**k = 1 for all k, so false (since x=3)\nFor x=5, n=3: no integer k gives 3**k = 5, so false\n\nThis looks correct. Let me write the code.\n",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 779,
+    "content": "\n\n```python\ndef is_simple_power(x, n):\n    \"\"\"Your task is to write a function that returns true if a number x is a simple\n    power of n and false in other cases.\n    x is a simple power of n if n**int=x\n    For example:\n    is_simple_power(1, 4) => true\n    is_simple_power(2, 2) => true\n    is_simple_power(8, 2) => true\n    is_simple_power(3, 2) => false\n    is_simple_power(3, 1) => false\n    is_simple_power(5, 3) => false\n    \"\"\"\n    # Check if x is a non-negative integer power of n\n    power = 1\n    while power < x:\n        power *= n\n    return power == x\n```\n\nThis solution iteratively computes powers of `n` starting from `n**0 = 1` and checks if any of them equals `x`. The loop terminates when `power >= x`, and we return `True` if `power == x`, `False` otherwise.",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 28.8,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "medium"
+      }
+    },
+    "resolved_reasoning_effort": "medium",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/99",
+    "completion_tokens": 1352,
+    "reasoning_tokens": null,
+    "reasoning_len": 3200,
+    "reasoning_tail": "(v) - int(abs(v)) = 14.5 - 14 = 0.5 >= 0.5, return -14 - 1 = -15. Correct.\n- v = 14.5, int(v) = 14, v - int(v) = 0.5 >= 0.5, return 14 + 1 = 15. Correct.\n\nThis works. Let me write the final solution.\n",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 883,
+    "content": "\n\n```python\ndef closest_integer(value):\n    '''\n    Create a function that takes a value (string) representing a number\n    and returns the closest integer to it. If the number is equidistant\n    from two integers, round it away from zero.\n\n    Examples\n    >>> closest_integer(\"10\")\n    10\n    >>> closest_integer(\"15.3\")\n    15\n\n    Note:\n    Rounding away from zero means that if the given number is equidistant\n    from two integers, the one you should return is the one that is the\n    farthest from zero. For example closest_integer(\"14.5\") should\n    return 15 and closest_integer(\"-14.5\") should return -15.\n    '''\n    v = float(value)\n    if v >= 0:\n        if v - int(v) >= 0.5:\n            return int(v) + 1\n        else:\n            return int(v)\n    else:\n        if abs(v) - int(abs(v)) >= 0.5:\n            return int(v) - 1\n        else:\n            return int(v)\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 58.8,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "medium"
+      }
+    },
+    "resolved_reasoning_effort": "medium",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/124",
+    "completion_tokens": 1112,
+    "reasoning_tokens": null,
+    "reasoning_len": 1498,
+    "reasoning_tail": "), day 0 < 1 -> False\n- '06-04-2020': month=6, day=4, year=2020 -> month 6 is in (4,6,9,11), day 4 is 1-30 -> True\n- '06/04/2020': split by '-' gives ['06/04/2020'] -> len != 3 -> False\n\nAll correct.\n",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1456,
+    "content": "\n\n```python\ndef valid_date(date):\n    \"\"\"You have to write a function which validates a given date string and\n    returns True if the date is valid otherwise False.\n    The date is valid if all of the following rules are satisfied:\n    1. The date string is not empty.\n    2. The number of days is not less than 1 or higher than 31 days for months 1,3,5,7,8,10,12. And the number of days is not less than 1 or higher than 30 days for months 4,6,9,11. And, the number of days is not less than 1 or higher than 29 for the month 2.\n    3. The months should not be less than 1 or higher than 12.\n    4. The date should be in the format: mm-dd-yyyy\n\n    for example: \n    valid_date('03-11-2000') => True\n\n    valid_date('15-01-2012') => False\n\n    valid_date('04-0-2040') => False\n\n    valid_date('06-04-2020') => True\n\n    valid_date('06/04/2020') => False\n    \"\"\"\n    if not date:\n        return False\n\n    parts = date.split('-')\n    if len(parts) != 3:\n        return False\n\n    try:\n        month = int(parts[0])\n        day = int(parts[1])\n        year = int(parts[2])\n    except ValueError:\n        return False\n\n    if month < 1 or month > 12:\n        return False\n\n    if month in (1, 3, 5, 7, 8, 10, 12):\n        if day < 1 or day > 31:\n            return False\n    elif month in (4, 6, 9, 11):\n        if day < 1 or day > 30:\n            return False\n    elif month == 2:\n        if day < 1 or day > 29:\n            return False\n\n    return True\n```",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 48.5,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "medium"
+      }
+    },
+    "resolved_reasoning_effort": "medium",
+    "resolved_reasoning_effort_source": "requested"
+  },
+  {
+    "task_id": "HumanEval/145",
+    "completion_tokens": 3205,
+    "reasoning_tokens": null,
+    "reasoning_len": 6403,
+    "reasoning_tail": "ctually, I just want to double-check my digit sum for -12. The digits of 12 are 1 and 2, sum is 3. Yes.\n\nAnd for 11, digits are 1 and 1, sum is 2. Yes.\n\nOK, I'm confident in my code. Let me finalize.\n",
+    "finish_reason": "stop",
+    "content_empty": false,
+    "content_len": 1322,
+    "content": "\n\n```python\ndef order_by_points(nums):\n    \"\"\"\n    Write a function which sorts the given list of integers\n    in ascending order according to the sum of their digits.\n    Note: if there are several items with similar sum of their digits,\n    order them based on their index in original list.\n\n    For example:\n    >>> order_by_points([1, 11, -1, -11, -12]) == [-1, -11, 1, -12, 11]\n    >>> order_by_points([]) == []\n    \"\"\"\n    # Compute the sum of digits for each number\n    # and sort by that sum (stable sort preserves original order for ties)\n    def digit_sum(n):\n        n = abs(n)\n        s = 0\n        while n > 0:\n            s += n % 10\n            n //= 10\n        return s\n\n    # Use a simple stable sort (Python's sort is stable)\n    # We sort by digit sum\n    result = list(nums)\n    # Insertion sort for stability\n    for i in range(len(result)):\n        for j in range(i, 0, -1):\n            if digit_sum(result[j]) < digit_sum(result[j - 1]):\n                result[j], result[j - 1] = result[j - 1], result[j]\n            else:\n                break\n    return result\n```\n\nThis function computes the sum of the digits of the absolute value of each integer and sorts the list in ascending order of that sum. Python's sort is stable, so elements with equal digit sums retain their original relative order.",
+    "has_separate_reasoning_field": true,
+    "has_inline_think_tag": false,
+    "wall_s": 139.0,
+    "requested_extra_body": {
+      "chat_template_kwargs": {
+        "reasoning_effort": "medium"
+      }
+    },
+    "resolved_reasoning_effort": "medium",
+    "resolved_reasoning_effort_source": "requested"
+  }
+]
