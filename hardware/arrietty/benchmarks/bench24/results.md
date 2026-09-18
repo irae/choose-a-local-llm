@@ -113,6 +113,16 @@ Per-criterion breakdown (criterion / max / scored / evidence):
 
 Sum 59.5, rounds to **60/100**.
 
+## `bonsai2-pq2-f16-kvpick`
+
+`Ternary-Bonsai-2-27B-PQ2_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, `--cache-type-k f16 --cache-type-v f16`, `--no-mmproj --parallel 1 -ngl 999 --fit off -fa on --cache-ram 0`, port 8081. Type fixed to f16; only the serving ceiling was open.
+
+Planning value 122880 — the f16 ceiling `bonsai2-pq2-kvpick` already measured for this file, where 131072 failed. Loaded at 122880: pass. The gap to the known fail (131072) is already 8192, the ladder's finest step, so no further bisection is possible or needed.
+
+`bonsai2_pq2_f16_c` = 122880. Verified with one real chat completion (200 OK, correct answer).
+
+Files: `results/server-kvpick-pq2-f16-arm-122880.log`, `results/kvpick-pq2-f16-arm-122880-probe.json`.
+
 Files: `results/mendel-blind-bonsai2-pq2.out.log`, `results/mendel-blind-bonsai2-pq2-evidence.json`, session `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-xhigh-blind-session.jsonl`, meta `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-xhigh-blind-meta.json`.
 
 ## `bonsai2-pq2-calibrate-think`
