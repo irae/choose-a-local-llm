@@ -28,7 +28,7 @@ rows included; a run a harness or serving defect voided is not.
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-atomicchat-ad-iq3s" top /> | **104k** | <TokCell shallow="14.3" deep="9.6" cap="mem" top-shallow top-deep /> | **24.1 GB** | <ScoreCell value="0.988/0.927" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 3h11 · Mendel 1h00">4h10</span> |
+| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-atomicchat-ad-iq3s" top /> | **104k** | <TokCell shallow="14.3" deep="9.6" cap="mem" top-shallow top-deep /> | **24.1 GB** | <ScoreCell value="0.988/0.927" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 3h11 · Mendel 1h00"><b>4h10</b></span> |
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+

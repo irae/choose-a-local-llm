@@ -117,7 +117,7 @@ const MENDEL_SLUGS = {
   'gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, high, arrietty)': 'gemma-4-12b-it',
   'gemma-4-12b-q4kxl (unsloth UD-Q4_K_XL, high, arrietty)': 'gemma-4-12b-it',
   'qwen3.6-35b-a3b-q4kxl (unsloth UD-Q4_K_XL, n-max2, high, arrietty)': 'qwen3.6-35b-a3b',
-  'bonsai2-27b-pq2 (prism-ml PQ2_0, xhigh, arrietty)': 'bonsai-2-27b',
+  'bonsai2-27b-pq2 (prism-ml PQ2_0, xhigh, arrietty)': 'bonsai-27b',
   'qwen3.8-27b-ista (ISTA-DASLab IQ3_S-mtp, xhigh, arrietty)': 'qwen3.8-27b',
   'qwen3.8-27b-iq3s (unsloth UD-IQ3_S, xhigh, kamaji)': 'qwen3.8-27b',
 }
@@ -720,11 +720,19 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     const m = Math.round(min)
     return `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}`
   }
-  const wall = (r) => {
+  // A partial wall is not a contender: one missing part makes the sum look
+  // smaller than a row that measured both.
+  const wallTotal = (r) => {
+    if (r.evalplusWall == null || r.simulatorWall == null) return NaN
+    return Number(r.evalplusWall) + Number(r.simulatorWall)
+  }
+  const wall = (r, isTop = false) => {
     if (r.evalplusWall == null && r.simulatorWall == null) return '—'
     const sum = (Number(r.evalplusWall) || 0) + (Number(r.simulatorWall) || 0)
     const partial = r.evalplusWall == null || r.simulatorWall == null ? '†' : ''
-    return `<span title="EvalPlus ${hm(r.evalplusWall)} · Mendel ${hm(r.simulatorWall)}">${hm(sum)}${partial}</span>`
+    const text = `${hm(sum)}${partial}`
+    const body = isTop ? `<b>${text}</b>` : text
+    return `<span title="EvalPlus ${hm(r.evalplusWall)} · Mendel ${hm(r.simulatorWall)}">${body}</span>`
   }
   const ordered = sort ? sortRows(rows) : rows
   const num = (s) => parseFloat(String(s).replace(/[^\d.]/g, ''))
@@ -736,6 +744,7 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     evalplus: topSet(ordered, (r) => parseScore(r.evalplus) >= 0 ? parseScore(r.evalplus) : NaN),
     mendel: topSet(ordered, (r) => (mendelFailedCell(r) ? NaN : parseMendel(r.mendel) ?? NaN)),
     composite: topSet(ordered, (r) => (mendelFailedCell(r) ? NaN : composite(r) ?? NaN)),
+    wall: topSet(ordered, wallTotal, { lower: true }),
   }
   let anyStale = false
   const cell = (r, field) => {
@@ -757,7 +766,7 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
     const ev = evalplusCell(r.evalplus)
     const md = mendelCellParts(r)
     const stale = (f) => ((r.stale || []).includes(f) ? '†' : '')
-    return `| ${config} | ${cell(r, 'maxCtx')} | ${tok} |${memory ? ` ${cell(r, 'memory')} |` : ''} ${scoreTag(ev.value + stale('evalplus'), ev.sub, top.evalplus.has(r))} | ${scoreTag(md.value + stale('mendel'), '', top.mendel.has(r), md.pill, md.note)} | ${wall(r)} |`
+    return `| ${config} | ${cell(r, 'maxCtx')} | ${tok} |${memory ? ` ${cell(r, 'memory')} |` : ''} ${scoreTag(ev.value + stale('evalplus'), ev.sub, top.evalplus.has(r))} | ${scoreTag(md.value + stale('mendel'), '', top.mendel.has(r), md.pill, md.note)} | ${wall(r, top.wall.has(r))} |`
   })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']

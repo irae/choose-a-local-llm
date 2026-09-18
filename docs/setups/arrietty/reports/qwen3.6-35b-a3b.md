@@ -31,7 +31,7 @@ Speed, context, drafter arms and the guided agent task measured 2026-09-13 to 20
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" kv="q8_0" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **97k** | <TokCell shallow="61.16" deep="45.42" cap="mem" top-shallow top-deep /> | **14.7 GB** | <ScoreCell value="0.945/0.902" sub="96% completion" top /> | <ScoreCell value="48.5" note="75%" pill="mendel-guided" top /> | <span title="EvalPlus 3h12 · Mendel 0h27">3h39</span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" kv="q8_0" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **97k** | <TokCell shallow="61.16" deep="45.42" cap="mem" top-shallow top-deep /> | **14.7 GB** | <ScoreCell value="0.945/0.902" sub="96% completion" top /> | <ScoreCell value="48.5" note="75%" pill="mendel-guided" top /> | <span title="EvalPlus 3h12 · Mendel 0h27"><b>3h39</b></span> |
 <!-- gen:model-table:end -->
 
 ## Configs

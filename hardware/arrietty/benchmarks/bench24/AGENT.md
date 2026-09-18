@@ -54,11 +54,18 @@ blocks run with a thinking budget when the server supports one.
 - `sweep-bonsai2-ptq1`
 - `bonsai2-pq2-smoke-xhigh`
 - `bonsai2-pq2-mendel-blind-xhigh`
+- `bonsai2-pq2-f16-kvpick`
+- `sweep-bonsai2-pq2-f16`
+- `bonsai2-pq2-mendel-blind-xhigh-f16`
 - `retry-sweep`
 
 The second file's two blocks sit between the EvalPlus work and the
 agent row on purpose: they are speed blocks, and every speed block runs
 before the next agent row (owner rule, 2026-09-14).
+
+The last three blocks were added on 2026-09-18, after the first ten
+closed. They measure the same PQ2_0 file at the other cache type. Read
+"The f16 arm" below before you start them.
 
 ## Essentials
 
@@ -439,6 +446,115 @@ row commits, and put peak context and the tool-call count in
 The 300-minute wall gives a partial, which is a row. After the run,
 `pkill -f "Mendel Daemon"`.
 
+## The f16 arm
+
+Added by the owner on 2026-09-18, after the first ten blocks closed.
+
+The blocks above picked q8_0 because it held the larger window, 212992
+against 122880, and every number this build carries was measured at
+q8_0. f16 is the other half of the pair: a smaller window at a cache
+the model reads without quantization error. These three blocks give
+that arm a window, a speed curve and one blind agent row.
+
+**No EvalPlus, no calibration and no smoke in this arm** (owner,
+2026-09-18). The same file already passed both gates at q8_0, on this
+same fork binary and at this same level: the quality gate scored
+0.982/0.939 and the smoke passed with one commit and no loop. The cache
+type is a serving parameter, not a different model, so the gates are
+not repeated. The blind row runs on the strength of those.
+
+The alias for this arm is `bonsai2-27b-pq2-f16`, not the
+`bonsai2-27b-pq2` of the blocks above: the two rows share a file and
+differ in the cache type, and the harness entry carries a different
+window. A missing harness entry never skips a block; write it in the
+run's pinned config from the block's values.
+
+### `bonsai2-pq2-f16-kvpick`
+
+Read `docs/methodology/kv-cache-pick.md`. Only the serving ceiling is
+open here; the type is fixed. Use run 17's ladder,
+`hardware/arrietty/benchmarks/bench17/AGENT.md`, section "The ladder",
+steps 1 to 4, with `$LLAMA_SERVER`.
+
+Fixed: the PQ2_0 file, `--cache-type-k f16 --cache-type-v f16`,
+`--no-mmproj`, `--parallel 1`, `-ngl 999`, `--fit off`, `-fa on`,
+`--cache-ram 0` for the measurement only, port 8081. Derived: `-c`.
+
+Planning value for the first load: **122880**, the f16 ceiling
+`bonsai2-pq2-kvpick` already measured for this file, where 131072
+failed. It is a planning value, not a result. A candidate `-c` counts
+only when one real request of about that size serves, never a
+one-token probe.
+
+Write `bonsai2_pq2_f16_c` and the ladder lines in `state.md`.
+
+Done: the ladder and the value in `results.md` and `state.md`. Commit,
+push, message the coordinator.
+
+### `sweep-bonsai2-pq2-f16`
+
+Read `docs/methodology/context-creep.md`, "Speed measurement rules".
+Same `llama-benchy` shape as the sweeps above, `<arm>` equal to `f16`.
+The corpus server was stopped after `sweep-bonsai2-ptq1`; start it
+again for this block and stop it after.
+
+Fixed: the PQ2_0 file, f16 KV, no drafter. Derived: `-c` from
+`bonsai2_pq2_f16_c`; depths 4096, 24576, 65536 and `-c` minus 1024.
+Drop any depth above `-c` minus 1024.
+
+Write `bonsai2_pq2_f16_clean` in `state.md`: the deepest depth at or
+above 8 tok/s. **A table and no pick.**
+
+Done: one table in `results.md`. Commit, push, message the
+coordinator. Stop the corpus server.
+
+### `bonsai2-pq2-mendel-blind-xhigh-f16`
+
+Read `docs/methodology/mendel.md`, "House rules for runs from this
+project" and "Comparing two builds of one model".
+
+simulator(mendel) blind, prompt v1.1, base tag `benchmark-blind-base`,
+level xhigh, alias `bonsai2-27b-pq2-f16`. **No smoke precedes this
+row**, by "The f16 arm" above.
+
+Fixed: the serving config of `sweep-bonsai2-pq2-f16`, without
+`--cache-ram 0` and with no reasoning flag. Derived: the window
+`bonsai2_pq2_f16_window`, which is `bonsai2_pq2_f16_clean` rounded down
+to a multiple of 4096, at or under `-c`, never smaller (owner rule,
+2026-09-06); `maxTokens` and `reserveTokens` 8192; keep budget 8192
+under a window of 65536, pi's default 20000 above it.
+
+**Never match the q8_0 row's window.** Give this arm the window its own
+sweep measured (`docs/methodology/mendel.md`, "Comparing two builds of
+one model"). A matched window punishes the arm with less room and
+turns a cache difference into a truncation event.
+
+Before the run: `gh auth status` must pass, and `git stash clear` in
+`~/code/mendel-benchmark` (owner rule, 2026-09-12).
+
+```bash
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<bonsai2_pq2_f16_window> \
+  ./run-worker.sh bonsai2-27b-pq2-f16 pi blind xhigh
+```
+
+Row `model` value: `bonsai2-27b-pq2-f16 (prism-ml PQ2_0, xhigh,
+arrietty)`; `model_id` the repo and file at the revision; `hardware`
+`arrietty`. The config note carries everything the q8_0 row's note
+carries, with the cache type `f16`, this arm's `-c` and window, and the
+line "no smoke: the same file passed its smoke at q8_0 in this run
+(owner, 2026-09-18)".
+
+Verify `peak_context` with `benchmark/count-tool-calls.mjs` before the
+row commits, and put peak context and the tool-call count in
+`results.md` beside the score. Score it in a subagent on the best
+available model, from the evidence pack, the session log and the
+worktree diff, never from the model's own claims; tell that subagent to
+read `CONVENTIONS.md` first and to write in ASD-STE100 Simplified
+Technical English. After the run, `pkill -f "Mendel Daemon"`.
+
+Write `bonsai2_pq2_f16_blind` in `state.md` with the score, the
+libraries done and the end reason.
+
 ## `retry-sweep`
 
 The blocks that waited on a human, oldest first.
@@ -449,8 +565,10 @@ The blocks that waited on a human, oldest first.
   build, the WebGPU space.
 - Any level but xhigh. The card says `low` is not supported, and
   `medium` is not this run's question.
-- A drafter, a second cache type after each pick, any weight in host
-  RAM, any MLX or LM Studio server, any other model.
+- EvalPlus, a calibration or a smoke in the f16 arm.
+- A drafter, any weight in host RAM, any MLX or LM Studio server, any
+  other model. The f16 arm of the PQ2_0 file is in this run by the
+  owner's word; no other second cache type is.
 - Any measurement taken with the stock llama.cpp binary.
 - Anything at all inside run 23's worktree, branch or run folder.
 

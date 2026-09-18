@@ -283,7 +283,7 @@
   },
   {
     "id": "bonsai2-prism-pq2",
-    "model": "bonsai-2-27b",
+    "model": "bonsai-27b",
     "title": "Ternary-Bonsai-2-27B PQ2_0 (prism-ml, prism fork)",
     "spec": {
       "base": "Ternary-Bonsai-2-27B",
@@ -300,7 +300,7 @@
   },
   {
     "id": "bonsai2-prism-ptq1",
-    "model": "bonsai-2-27b",
+    "model": "bonsai-27b",
     "title": "Ternary-Bonsai-2-27B PTQ1_0 (prism-ml, prism fork)",
     "spec": {
       "base": "Ternary-Bonsai-2-27B",

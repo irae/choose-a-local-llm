@@ -455,8 +455,8 @@
         }
       }
     },
-    "bonsai-2-27b": {
-      "rowMatch": "Ternary-Bonsai-2-27B",
+    "bonsai-27b": {
+      "rowMatch": "Ternary-Bonsai-",
       "kpis": [
         "window",
         "decodeShallow",
@@ -586,7 +586,7 @@
     {
       "wall": 176.1,
       "emptyCause": "none",
-      "slug": "bonsai-2-27b",
+      "slug": "bonsai-27b",
       "model": "Ternary-Bonsai-2-27B (GGUF PQ2_0, prism-ml, q8_0 KV, prism fork)",
       "mode": "effort xhigh, think budget 25209",
       "row": "bonsai2-pq2-xhigh",

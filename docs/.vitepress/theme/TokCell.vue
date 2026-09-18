@@ -27,6 +27,6 @@ const right = computed(() => pad(props.deep))
     ><span class="tk"
       ><span v-if="stale" class="tk-stale">†</span
       ><pre class="tk-pre"><b v-if="topShallow">{{ left }}</b><template v-else>{{ left }}</template><span class="tk-arrow">→</span><b v-if="topDeep">{{ right }}</b><template v-else>{{ right }}</template></pre></span
-    ><span v-if="cap" class="ms-pill">{{ cap }}</span></span
+    ><span v-if="cap" class="cs-sub"><span class="ms-pill cs-pill cs-pill-gray">{{ cap }}</span></span></span
   >
 </template>
