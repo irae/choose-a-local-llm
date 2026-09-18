@@ -33,6 +33,8 @@ happen, and the handing-over section at the end.
 | `evalplus_python` | `/home/irae/.local/share/pipx/venvs/evalplus/bin/python` | pipx venv, EvalPlus 0.3.1 |
 | `bonsai2_pq2_f16_c` | 122880 | `bonsai2-pq2-f16-kvpick` |
 | `bonsai2_pq2_f16_clean` | 121856 | `sweep-bonsai2-pq2-f16` |
+| `bonsai2_pq2_f16_window` | 118784 | `bonsai2-pq2-mendel-blind-xhigh-f16` |
+| `bonsai2_pq2_f16_blind` | 72/100, worst defect MEDIUM, end_reason complete | `bonsai2-pq2-mendel-blind-xhigh-f16` |
 
 Planning estimate, not a result: about 34 MiB of KV per 1024 tokens at
 q8_0, from the `qwen35` architecture. With weights of about 6.7 GiB,
@@ -103,4 +105,12 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 
 **Evidence archived**: `tools/archive-evidence.sh hardware/arrietty/benchmarks/bench24/results run24` run at session close, and again after the score landed. `pkill -f "Mendel Daemon"` checked; none was running.
 
-**Owner word, 2026-09-18**: the coordinator asked me to score the blind row myself (a subagent on the best available model, never a smaller one), then stop and hold the card for run 23's resume. Done. No block after `bonsai2-pq2-mendel-blind-xhigh` ran; the GPU was not touched again after this row closed.
+**Owner word, 2026-09-18, first close**: the coordinator asked me to score the blind row myself (a subagent on the best available model, never a smaller one), then stop and hold the card for run 23's resume. Done at commit `9256151`. No block after `bonsai2-pq2-mendel-blind-xhigh` ran; the GPU was not touched again after this row closed.
+
+**Owner word, 2026-09-18, reopen**: the owner added the f16 arm — three more blocks after the run first closed (`bonsai2-pq2-f16-kvpick`, `sweep-bonsai2-pq2-f16`, `bonsai2-pq2-mendel-blind-xhigh-f16`). Master gained the commits locally (not yet on origin) before the reopen; `git merge master` brought them into `run24`. All three new blocks ran on the same fork binary at the same level, **no EvalPlus, no calibration and no smoke in this arm** — the q8_0 arm of the same file already passed both gates.
+
+- `bonsai2-pq2-f16-kvpick`: `-c` 122880 confirmed (the fail at 131072 was already known from the q8_0-arm's earlier ladder; the gap was already the ladder's finest step, so one load closed it).
+- `sweep-bonsai2-pq2-f16`: clean to 121856, deepest tested (25.1 tok/s).
+- `bonsai2-pq2-mendel-blind-xhigh-f16`: end_reason complete, 230 tool calls, peak ctx 110354/118784, loop ok, 1 compaction, wall 1:14:44. Scored by a judgment subagent: **72/100, worst defect MEDIUM** (the chalk port keeps forced `enableColor`, against the blind prompt's Node-defaults requirement). The CRITICAL exit-hook regression from the sibling q8_0 row does not repeat here. **Correction caught and fixed**: the scoring subagent's own headline claimed 78/100, but its ten-criterion breakdown summed to 72; the verified sum, 72, is what's recorded — the subagent's unsupported round-up was not used.
+
+No `Mendel Daemon` process was left running. Registered `bonsai2-27b-pq2-f16` in `~/.pi/agent/models.json`, alongside the earlier `bonsai2-27b-pq2` entry (same backup file). GPU idle at 622-626 MiB baseline after every block of this arm; no server left running.
