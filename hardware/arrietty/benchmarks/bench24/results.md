@@ -444,3 +444,21 @@ Files: `results/mendel-blind-bonsai2-ptq1-f16.out.log`, `results/mendel-blind-bo
 `bonsai2_ptq1_f16_think_budget` = 30000, `bonsai2_ptq1_f16_answer_budget` = 2048, `bonsai2_ptq1_f16_max_tokens` = 32048.
 
 Files: `hardware/arrietty/calibrations/calibration-bonsai2-ptq1-f16-xhigh-think.json`, `results/server-bonsai2-ptq1-f16-evalplus-calibrate.log`.
+
+## `bonsai2-ptq1-f16-evalplus-budget-xhigh`
+
+`Ternary-Bonsai-2-27B-PTQ1_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, f16 KV, `-c 32768`, `--reasoning-budget 30000 --reasoning-budget-message "Thinking budget reached. Give the final answer now."`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`, `EVALPLUS_MAX_NEW_TOKENS=32048`. Full 164-problem HumanEval run, `2026-09-18T19:38:36Z` to `2026-09-18T22:53:47Z`, wall 3:15:30.
+
+| metric | value |
+|---|--:|
+| HumanEval base pass@1 | 0.970 |
+| HumanEval plus pass@1 | 0.939 |
+| completion rate | 100% |
+| empty (from samples) | 0/164 |
+| forced (budget fired) | 6/164 |
+
+Forced task ids: `HumanEval/32`, `HumanEval/39`, `HumanEval/80`, `HumanEval/95`, `HumanEval/99`, `HumanEval/137`. Whether each still passed its test is checked in `bonsai2-ptq1-f16-evalplus-forced-rerun` below, not assumed from "not empty."
+
+**This row is the first EvalPlus score for `PTQ1_0` on any cache type.** Base pass@1 0.970 ≥ 0.800.
+
+Files: `results/bonsai2-ptq1-f16-evalplus-budget-xhigh/`, `results/server-bonsai2-ptq1-f16-evalplus-budget-xhigh.log`, `results/watcher-bonsai2-ptq1-f16-evalplus-budget-xhigh.log`, `results/run-bonsai2-ptq1-f16-evalplus-budget-xhigh.out.log`.
