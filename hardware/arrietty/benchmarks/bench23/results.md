@@ -67,3 +67,34 @@ row serves.
 Files: `results/benchy-qwen38-oblit-q3km-q8.md`,
 `results/benchy-qwen38-oblit-q3km-q8-vm.log`,
 `results/server-sweep-qwen38-oblit-q3km.log`.
+
+## `qwen38-oblit-q3km-budget-medium`
+
+Config: q8_0 KV, `-c 32768`, `--reasoning-budget 3986`,
+`--reasoning-budget-message` set to `$BUDGET_MSG`, level medium (owner
+overrule). `max_tokens` 6034.
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.854 |
+| HumanEval plus | 0.787 |
+| empty (from samples) | 3/164 |
+| forced (budget fired) | 5/164 |
+| wall | 89 min (2 parts) |
+
+Empty: `HumanEval/108`, `HumanEval/114`, `HumanEval/129`. All three
+`finish_reason: stop`, no budget hit in the reasoning tail — cause
+`model`, not `budget`.
+
+Wall parts (UTC): part 1, 2026-09-18T00:06:54 to 2026-09-18T01:19:28
+(≈1h13m, 132/164 problems, ends at the owner's pause); part 2,
+2026-09-18T09:40:42 to 2026-09-18T09:56:27 (≈16m, the remaining
+32/164 plus evaluate). The pause gap between the parts (≈8h21m) does
+not count.
+
+**The agent gate.** Base pass@1 0.854 is at or above the 0.800 floor.
+Gate passes: `qwen38-oblit-q3km-smoke-medium` and the blind row run.
+
+Files: `results/qwen38-oblit-q3km-budget-medium/humaneval/`,
+`results/qwen38-oblit-q3km-budget-medium/finish.jsonl`,
+`results/server-qwen38-oblit-q3km-budget-medium.log`.
