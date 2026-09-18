@@ -120,6 +120,7 @@ const MENDEL_SLUGS = {
   'bonsai2-27b-pq2 (prism-ml PQ2_0, xhigh, arrietty)': 'bonsai-2-27b',
   'bonsai2-27b-pq2-f16 (prism-ml PQ2_0, xhigh, arrietty)': 'bonsai-2-27b',
   'bonsai2-27b-ptq1 (prism-ml PTQ1_0, xhigh, arrietty)': 'bonsai-2-27b',
+  'bonsai2-27b-ptq1-f16 (prism-ml PTQ1_0, xhigh, arrietty)': 'bonsai-2-27b',
   'qwen3.8-27b-ista (ISTA-DASLab IQ3_S-mtp, xhigh, arrietty)': 'qwen3.8-27b',
   'qwen3.8-27b-iq3s (unsloth UD-IQ3_S, xhigh, kamaji)': 'qwen3.8-27b',
 }
@@ -282,6 +283,7 @@ const MENDEL_SPECS = {
   'gemma-4-12b-nvfp4 (FreedomAISVR NVFP4, high, arrietty)': { base: 'Gemma-4-12B', quant: 'NVFP4', publisher: 'FreedomAISVR', repo: 'FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF', drafter: '', binary: true },
   'gemma-4-12b-q4kxl (unsloth UD-Q4_K_XL, high, arrietty)': { base: 'Gemma-4-12B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/gemma-4-12b-it-GGUF', drafter: '', binary: true },
   'qwen3.6-35b-a3b-q4kxl (unsloth UD-Q4_K_XL, n-max2, high, arrietty)': { base: 'Qwen3.6-35B-A3B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/Qwen3.6-35B-A3B-MTP-GGUF', drafter: 'mtp/2', binary: true },
+  'bonsai2-27b-ptq1-f16 (prism-ml PTQ1_0, xhigh, arrietty)': { base: 'Ternary-Bonsai-2-27B', quant: 'PTQ1_0', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-2-27B-gguf', drafter: '', server: 'prism-llama', kv: 'f16' },
   'bonsai2-27b-ptq1 (prism-ml PTQ1_0, xhigh, arrietty)': { base: 'Ternary-Bonsai-2-27B', quant: 'PTQ1_0', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-2-27B-gguf', drafter: '', server: 'prism-llama', kv: 'q8_0' },
   'bonsai2-27b-pq2-f16 (prism-ml PQ2_0, xhigh, arrietty)': { base: 'Ternary-Bonsai-2-27B', quant: 'PQ2_0', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-2-27B-gguf', drafter: '', server: 'prism-llama', kv: 'f16' },
   'bonsai2-27b-pq2 (prism-ml PQ2_0, xhigh, arrietty)': { base: 'Ternary-Bonsai-2-27B', quant: 'PQ2_0', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-2-27B-gguf', drafter: '', server: 'prism-llama', kv: 'q8_0' },

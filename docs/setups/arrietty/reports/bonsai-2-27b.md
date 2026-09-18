@@ -46,8 +46,9 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **135k** | <TokCell shallow="42.1" deep="22.4" cap="mem" top-shallow top-deep /> | **15.0 GB** | <ScoreCell value="pending" /> | <ScoreCell value="82" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 1h28">1h28†</span> |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-pq2" top /> | **119k** | <TokCell shallow="46.3" deep="25.1" cap="mem" top-shallow top-deep /> | **15.1 GB** | <ScoreCell value="pending" /> | <ScoreCell value="72" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 1h15">1h15†</span> |
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow top-deep /> | **15.5 GB** | <ScoreCell value="pending" /> | <ScoreCell value="57.5" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 2h03">2h03†</span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow /> | 15.5 GB | <ScoreCell value="pending" /> | <ScoreCell value="57.5" pill="mendel-blind" /> | <span title="EvalPlus — · Mendel 2h03">2h03†</span> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -64,6 +65,18 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
   --alias bonsai2-27b-pq2 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 212992 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081
+```
+
+<ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" />
+
+pi id `bonsai2-27b-ptq1-f16`, the dense packing at f16. **The best blind agent row of this model on this card, 82**, against 72 for the larger packing at f16 and 59.5 and 57.5 for the two q8_0 arms. Its worst defect is a different class from its three siblings: trap A, a naive `.then()` on `fs.promises.glob()` that throws, where the others carried a trap-C exit hook or a chalk regression. All 17 of its commits are `chore`-typed, where the sibling rows used `fix(...)`, and it is the only row of the four with no repair commit and a real `pnpm install` after nearly every commit. `-c 139264`, window 135168, peak context 127141 with one compaction. 42.1 tok/s at 4K and 22.4 at 138240. Served by the PrismML llama.cpp fork, release `prism-b10685-7dffb15`; the stock binary makes garbage from this file. No smoke, and the row ran before any EvalPlus score of this file, so the 0.800 gate did not apply (owner, 2026-09-18). EvalPlus is scheduled.
+
+```bash
+llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf)" \
+  --alias bonsai2-27b-ptq1-f16 --no-mmproj --parallel 1 \
+  -ngl 999 --fit off -fa on -c 139264 \
+  --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
 ```
 
@@ -117,6 +130,7 @@ Blind test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" /> | blind-v1.1 | 128k | **82** | 8/8/done | 88.4 | 15,676k | 127k | 1 | 258 | 17 |  |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-pq2" /> | blind-v1.1 | 112k | **72** | 8/8/done | 74.7 | 14,833k | 110k | 1 | 230 | 13 |  |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-pq2" /> | blind-v1.1 | 208k | **59.5** | 8/8/done | 92.4 | 19,572k | 193k | 0 | 245 | 16 |  |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" /> | blind-v1.1 | 256k | **57.5** | 8/8/done | 123.1 | 25,992k | 225k | 0 | 254 | 17 |  |
