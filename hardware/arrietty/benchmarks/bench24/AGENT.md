@@ -66,7 +66,7 @@ blocks run with a thinking budget when the server supports one.
 - `bonsai2-pq2-budget-xhigh-f16`
 - `bonsai2-pq2-forced-rerun-f16`
 - `bonsai2-ptq1-smoke-xhigh-f16`
-- `bonsai2-ptq1-mendel-guided-xhigh-f16`
+- `bonsai2-ptq1-mendel-blind-xhigh-f16`
 - `retry-sweep`
 
 The second file's two blocks sit between the EvalPlus work and the
@@ -600,22 +600,24 @@ and its own file; `calibrate.py` resumes a file that exists, so a
 reused name silently scores the wrong config. Use
 `bonsai2-ptq1-xhigh-think` and `bonsai2-pq2-f16-xhigh-think`.
 
-**A guided agent row on the smaller packing at f16.**
+**A blind agent row on the smaller packing at f16.**
 `bonsai2-ptq1-smoke-xhigh-f16` and
-`bonsai2-ptq1-mendel-guided-xhigh-f16`. This file has met neither the
+`bonsai2-ptq1-mendel-blind-xhigh-f16`. This file has met neither the
 smoke nor the agent task on any cache type, so it takes a smoke first,
 unlike the f16 arm of the larger packing. The smoke follows
 `bonsai2-pq2-smoke-xhigh` with the `ptq1-f16` alias and this arm's own
-window. A smoke fail means the guided row does not run.
+window. A smoke fail means the agent row does not run.
 
-The guided row is simulator(mendel) **guided**, prompt v3.0, base tag
-`benchmark-guided-base`, not the blind test the rows above ran. Read
-`docs/methodology/mendel.md`, "Two tests", before it. Its gate is the
-EvalPlus base pass@1 of `bonsai2-ptq1-budget-xhigh`, at 0.800.
+The row is simulator(mendel) **blind**, prompt v1.1, base tag
+`benchmark-blind-base`, the same test every agent row of this run ran.
+**No guided row runs on this model** (owner, 2026-09-18): the model has
+shown it performs, and a guided score would not pay for its hours. Its
+gate is the EvalPlus base pass@1 of `bonsai2-ptq1-budget-xhigh`, at
+0.800.
 
 ```bash
 cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<bonsai2_ptq1_f16_window> \
-  ./run-worker.sh bonsai2-27b-ptq1-f16 pi guided xhigh
+  ./run-worker.sh bonsai2-27b-ptq1-f16 pi blind xhigh
 ```
 
 Row `model` value: `bonsai2-27b-ptq1-f16 (prism-ml PTQ1_0, xhigh,

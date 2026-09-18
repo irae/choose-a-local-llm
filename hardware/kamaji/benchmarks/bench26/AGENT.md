@@ -283,7 +283,8 @@ The blocks that waited on a human, oldest first.
 - A second serving config per file beyond its ladder and its sweep.
 - A drafter, the F16 file, the `-dev` repository, the mmproj, the MLX
   build, LM Studio.
-- A guided agent row. The card runs that one; this machine runs blind.
+- A guided agent row (owner, 2026-09-18). Every agent row of this
+  project on this model is blind.
 - Any measurement taken with a stock llama.cpp binary.
 
 ## After the run
