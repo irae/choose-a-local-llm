@@ -1,0 +1,61 @@
+0.00.039.856 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.040.121 W srv  llama_server: -----------------
+0.00.040.122 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.040.122 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.040.122 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.040.122 W srv  llama_server: -----------------
+0.00.041.368 I srv    load_model: loading model '/home/irae/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-2-27B-gguf/blobs/53107f530aa52eb00912263ab1ee29bd199261c87cd7b4ad4ca1318c1fe33ee3'
+0.01.217.777 I cmn          init: llama threadpool init, n_threads = 6
+/home/runner/work/llama.cpp/llama.cpp/ggml/src/ggml-cuda/ggml-cuda.cu:107: CUDA error
+0.01.249.530 E CUDA error: out of memory
+0.01.249.533 E   current device: 0, in function cublas_handle at /home/runner/work/llama.cpp/llama.cpp/ggml/src/ggml-cuda/../ggml-cuda/common.cuh:1552
+0.01.249.534 E   cudaMalloc(&cublas_workspaces[device][curr_stream_no], cublas_workspace_sizes[device])
+[New LWP 3852709]
+[New LWP 3852708]
+[New LWP 3852707]
+[New LWP 3852706]
+[New LWP 3852705]
+[New LWP 3852704]
+[New LWP 3852703]
+[New LWP 3852702]
+[New LWP 3852701]
+[New LWP 3852700]
+[New LWP 3852699]
+[New LWP 3852698]
+[New LWP 3852697]
+[New LWP 3852696]
+[New LWP 3852695]
+[New LWP 3852694]
+[New LWP 3852693]
+[New LWP 3852692]
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.archlinux.org>
+Enable debuginfod for this session? (y or [n]) [answered N; input not from terminal]
+Debuginfod has been disabled.
+To make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib/libthread_db.so.1".
+0x00007fdfe54a0952 in ?? () from /usr/lib/libc.so.6
+#0  0x00007fdfe54a0952 in ?? () from /usr/lib/libc.so.6
+#1  0x00007fdfe550550b in wait4 () from /usr/lib/libc.so.6
+#2  0x00007fdfe5b4ad9b in ggml_print_backtrace () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libggml-base.so.0
+#3  0x00007fdfe5b4af32 in ggml_abort () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libggml-base.so.0
+#4  0x00007fdfd9aa5406 in ggml_cuda_error(char const*, char const*, char const*, int, char const*) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libggml-cuda.so.0
+#5  0x00007fdfd9ab39f7 in void ggml_cuda_mul_mat_cublas_impl<(ggml_type)30>(ggml_backend_cuda_context&, ggml_tensor const*, ggml_tensor const*, ggml_tensor*) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libggml-cuda.so.0
+#6  0x00007fdfd9ab6fe9 in ggml_cuda_compute_forward(ggml_backend_cuda_context&, ggml_tensor*) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libggml-cuda.so.0
+#7  0x00007fdfd9aba06a in ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context*, ggml_cgraph*, bool, bool, void const*) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libggml-cuda.so.0
+#8  0x00007fdfd9abc432 in ggml_backend_cuda_graph_compute(ggml_backend*, ggml_cgraph*) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libggml-cuda.so.0
+#9  0x00007fdfe5b6a8a7 in ggml_backend_sched_graph_compute_async () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libggml-base.so.0
+#10 0x00007fdfe4afab21 in llama_context::graph_compute(ggml_cgraph*, bool) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libllama.so.0
+#11 0x00007fdfe4afdaeb in llama_context::process_ubatch(llama_ubatch const&, llm_graph_type, llama_memory_context_i*, ggml_status&) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libllama.so.0
+#12 0x00007fdfe4b05637 in llama_context::decode(llama_batch const&) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libllama.so.0
+#13 0x00007fdfe4b069e0 in llama_decode () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libllama.so.0
+#14 0x00007fdfe5014450 in common_init_from_params(common_params&, bool) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libllama-common.so.0
+#15 0x00007fdfe5d7b939 in server_context_impl::load_model(common_params&) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libllama-server-impl.so
+#16 0x00007fdfe5ccdb2d in llama_server(common_params&, int, char**) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libllama-server-impl.so
+#17 0x00007fdfe5ccf3cf in llama_server(int, char**) () from /home/irae/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/libllama-server-impl.so
+#18 0x00007fdfe5427781 in ?? () from /usr/lib/libc.so.6
+#19 0x00007fdfe54278b9 in __libc_start_main () from /usr/lib/libc.so.6
+#20 0x00005582fe02e295 in _start ()
+[Inferior 1 (process 3852689) detached]

@@ -1,0 +1,15 @@
+0.00.017.411 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.017.693 W srv  llama_server: -----------------
+0.00.017.693 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.017.694 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.017.694 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.017.694 W srv  llama_server: -----------------
+0.00.018.908 I srv    load_model: loading model '/home/irae/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-2-27B-gguf/blobs/53107f530aa52eb00912263ab1ee29bd199261c87cd7b4ad4ca1318c1fe33ee3'
+0.01.112.974 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 12288.00 MiB on device 0: cudaMalloc failed: out of memory
+0.01.112.979 E alloc_tensor_range: failed to allocate CUDA0 buffer of size 12884901888
+0.01.113.344 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache
+0.01.113.348 E cmn  common_init_: failed to create context with model '/home/irae/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-2-27B-gguf/blobs/53107f530aa52eb00912263ab1ee29bd199261c87cd7b4ad4ca1318c1fe33ee3'
+0.01.113.351 E cmn  common_init_: failed to create context with model '/home/irae/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-2-27B-gguf/blobs/53107f530aa52eb00912263ab1ee29bd199261c87cd7b4ad4ca1318c1fe33ee3'
+0.01.113.356 E srv    load_model: failed to create_context with model '/home/irae/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-2-27B-gguf/blobs/53107f530aa52eb00912263ab1ee29bd199261c87cd7b4ad4ca1318c1fe33ee3'
+0.01.113.363 I srv    operator(): operator(): cleaning up before exit...
+0.01.114.267 E srv  llama_server: exiting due to model loading error

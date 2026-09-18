@@ -123,3 +123,36 @@ Natural re-run (no reasoning-budget flags), same config, `EVALPLUS_MAX_NEW_TOKEN
 Summary: forced-pass=3, forced-fail-late=0, forced-fail-loop=4, forced-fail-wrong=0. `corrected_think_budget`: unchanged, no late answer (every forced-failed problem still hit the 30000-token generous cap unconverged — the budget was not too small, these four are genuine non-convergence).
 
 Files: `results/bonsai2-pq2-forced-rerun/`, `results/server-bonsai2-pq2-forced-rerun.log`, `results/watcher-bonsai2-pq2-forced-rerun.log`, `results/run-bonsai2-pq2-forced-rerun.out.log`.
+
+## `bonsai2-ptq1-kvpick`
+
+`Ternary-Bonsai-2-27B-PTQ1_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, `--no-mmproj --parallel 1 -ngl 999 --fit off -fa on`, port 8081.
+
+Ladder, `--cache-type-k q8_0 --cache-type-v q8_0`:
+
+| `-c` | result |
+|--:|---|
+| 262144 | fail, CUDA OOM allocating 1370 MiB |
+| 131072 | pass |
+| 196608 | pass |
+| 229376 | pass |
+| 245760 | pass |
+| 253952 | fail, CUDA OOM allocating 1330 MiB |
+
+`bonsai2_27b_ptq1_c_q8` = 245760. Verified with one real chat completion (200 OK, correct answer).
+
+Ladder, `--cache-type-k f16 --cache-type-v f16`:
+
+| `-c` | result |
+|--:|---|
+| 131072 | pass |
+| 196608 | fail, CUDA OOM allocating 12288 MiB |
+| 163840 | fail, CUDA OOM allocating 10240 MiB |
+| 147456 | fail, CUDA OOM abort during first eval (compute buffer, not the load itself — a live crash, not a clean "model loaded" reject) |
+| 139264 | pass |
+
+`bonsai2_27b_ptq1_c_f16` = 139264. Verified with one real chat completion (200 OK, correct answer).
+
+**Pick**: q8_0, larger serving `-c` (245760 vs 139264). `bonsai2_27b_ptq1_kv` = `q8_0`, `bonsai2_27b_ptq1_c` = 245760.
+
+Files: `results/server-kvpick-ptq1-q8-*.log`, `results/server-kvpick-ptq1-f16-*.log`, `results/kvpick-ptq1-*-probe.json`.

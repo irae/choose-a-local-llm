@@ -26,8 +26,8 @@ happen, and the handing-over section at the end.
 | `bonsai2_pq2_think_budget` | 25209 | `bonsai2-pq2-calibrate-think` |
 | `bonsai2_pq2_answer_budget` | 2048 | `bonsai2-pq2-calibrate-think` |
 | `bonsai2_pq2_max_tokens` | 27257 | `bonsai2-pq2-calibrate-think` |
-| `bonsai2_27b_ptq1_c` | pending | `bonsai2-ptq1-kvpick` |
-| `bonsai2_27b_ptq1_kv` | pending | `bonsai2-ptq1-kvpick` |
+| `bonsai2_27b_ptq1_c` | 245760 | `bonsai2-ptq1-kvpick` |
+| `bonsai2_27b_ptq1_kv` | q8_0 | `bonsai2-ptq1-kvpick` |
 | `bonsai2_ptq1_clean` | pending | `sweep-bonsai2-ptq1` |
 | `vram_start_mb` | pending | `nvidia-smi`, session start |
 | `evalplus_python` | pending | pipx venv |
@@ -76,4 +76,4 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 
 ## Handing-over
 
-`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, `bonsai2-pq2-calibrate-think`, `bonsai2-pq2-budget-xhigh` (gate passed: base 0.982 ≥ 0.800), and `bonsai2-pq2-forced-rerun` are done. vram back to 626 MiB after both. Next: `bonsai2-ptq1-kvpick`.
+`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, `bonsai2-pq2-calibrate-think`, `bonsai2-pq2-budget-xhigh` (gate passed: base 0.982 ≥ 0.800), `bonsai2-pq2-forced-rerun`, and `bonsai2-ptq1-kvpick` are done. vram back to 626 MiB. Next: `sweep-bonsai2-ptq1`.
