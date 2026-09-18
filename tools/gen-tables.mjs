@@ -904,6 +904,42 @@ function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHard
   return [...header, ...body].join('\n')
 }
 
+// One speed table per model page: every config of that model on every
+// machine, fastest-shallow first, with the same top-set bolding the other
+// tables use. It answers "how fast is this model here" without the quality
+// columns getting in the way.
+function renderModelSpeed(rows) {
+  const header = [
+    '| Config | Ctx | tok/s | Memory<br>(at max ctx) |',
+    '|---|--:|--:|--:|',
+  ]
+  const num = (v) => parseFloat(String(v).replace(/[^\d.]/g, ''))
+  const ordered = [...rows].sort((a, b) => (num(b.tokShallow) || -Infinity) - (num(a.tokShallow) || -Infinity))
+  const top = {
+    tokShallow: topSet(ordered, (r) => num(r.tokShallow)),
+    tokDeep: topSet(ordered, (r) => num(r.tokDeep)),
+    maxCtx: topSet(ordered, (r) => parseCtx(r.maxCtx)),
+    memory: topSet(ordered, (r) => num(r.memory), { lower: true }),
+  }
+  let anyStale = false
+  const cell = (r, field) => {
+    const stale = (r.stale || []).includes(field)
+    if (stale) anyStale = true
+    const value = `${r[field]}${stale ? '†' : ''}`
+    return top[field]?.has(r) ? `**${value}**` : value
+  }
+  const body = ordered.map((r) => {
+    const tokStale = ['tokShallow', 'tokDeep'].some((f) => (r.stale || []).includes(f))
+    if (tokStale) anyStale = true
+    const capWord = (r.stale || []).includes('gatedBy') ? `${r.gatedBy}†` : r.gatedBy
+    const tok = `<TokCell shallow="${r.tokShallow}" deep="${r.tokDeep}" cap="${capWord}"${tokStale ? ' stale' : ''}${top.tokShallow.has(r) ? ' top-shallow' : ''}${top.tokDeep.has(r) ? ' top-deep' : ''} />`
+    const spec = specTag(r.spec, { label: r.id, repo: repoOf(r), hardware: r.hardwareSlug, hide: 'server', setup: r.setup })
+    return `| ${spec} | ${cell(r, 'maxCtx')} | ${tok} | ${cell(r, 'memory')} |`
+  })
+  const legend = anyStale ? ['', '† from an earlier serving config or method; re-run pending.'] : []
+  return [...header, ...body, ...legend].join('\n')
+}
+
 function renderDecodeSummary(datas) {
   const header = [
     '| best curve | tok/s (shallow → deep) | at |',
@@ -1125,6 +1161,7 @@ for (const [slug, rows] of modelsAll) {
     MODEL_MENDEL_END,
     renderModelMendel(slug, blindRunsAll, guidedRunsAll, [], null, { hardware: true }),
   )
+  writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-speed:start -->', '<!-- gen:model-speed:end -->', renderModelSpeed(rows))
 }
 for (const slug of new Set(BINARIES.map((b) => b.model))) {
   const lines = BINARIES.filter((b) => b.model === slug).map((b) => {
