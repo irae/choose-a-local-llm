@@ -88,7 +88,7 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 - `bonsai2-ptq1-kvpick`: q8_0 picked, `-c` 245760 (near the full 262144 trained window — the smaller weights leave much more KV room than PQ2). f16 hit a live CUDA OOM abort at 147456, not just a clean reject.
 - `sweep-bonsai2-ptq1`: clean to the deepest tested depth (244736, 12.8 tok/s).
 - `bonsai2-pq2-smoke-xhigh`: pass, 37s, 1 commit, no loop. Registered `bonsai2-27b-pq2` in `~/.pi/agent/models.json` for this (backup at `~/.pi/agent/models.json.bak-run24`).
-- `bonsai2-pq2-mendel-blind-xhigh`: end_reason complete, 245 tool calls, peak ctx 192679/208896 (92.2%), loop flag ok, 0 compactions, wall 1:32:27. Evidence pack built with `score.mjs`; **score and worst defect are not decided — that judgement is the coordinator's, not mechanical.**
+- `bonsai2-pq2-mendel-blind-xhigh`: end_reason complete, 245 tool calls, peak ctx 192679/208896 (92.2%), loop flag ok, 0 compactions, wall 1:32:27. Scored by a judgment subagent (best available model) from the evidence pack, the session log, and the worktree diff: **60/100, worst defect CRITICAL** (an exit-hook `fs.rmSync` deletes the debug manifest the user needs to inspect, before they can read it — commit `ede1f89c`). Full per-criterion breakdown in `results.md`.
 - `retry-sweep`: empty. No block waited on a human this run; every recoverable failure (a few CUDA OOMs during the kvpick ladders) was retried inside its own block per the owner rule.
 
 **Deviations from the runbook, all told to the coordinator at the block they happened:**
@@ -99,4 +99,6 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 
 **Machine state left behind**: no `llama-server` process running, port 8081 free, VRAM at 626 MiB (baseline). Corpus server (port 8089) stopped after `sweep-bonsai2-ptq1`. `~/.pi/agent/models.json` carries one new entry, `bonsai2-27b-pq2`, with a backup alongside it. The Mendel worktree `~/code/mendel-bench-bonsai2-27b-pq2-xhigh` and its branch `bonsai2-27b-pq2-xhigh-issue-13` are left in place, unscored, per house rules — do not delete until scored. No `Mendel Daemon` process was left running.
 
-**Evidence archived**: `tools/archive-evidence.sh hardware/arrietty/benchmarks/bench24/results run24` run at session close.
+**Evidence archived**: `tools/archive-evidence.sh hardware/arrietty/benchmarks/bench24/results run24` run at session close, and again after the score landed. `pkill -f "Mendel Daemon"` checked; none was running.
+
+**Owner word, 2026-09-18**: the coordinator asked me to score the blind row myself (a subagent on the best available model, never a smaller one), then stop and hold the card for run 23's resume. Done. No block after `bonsai2-pq2-mendel-blind-xhigh` ran; the GPU was not touched again after this row closed.

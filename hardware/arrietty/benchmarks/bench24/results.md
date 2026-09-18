@@ -81,16 +81,37 @@ Branch `bonsai2-27b-pq2-xhigh-issue-13`, base commit `2652ed6c`. Started `2026-0
 
 | field | value |
 |---|--:|
-| score | - |
+| score | 60/100 |
 | tasks | 1/1 (single blind task) |
-| worst defect | - |
+| worst defect | CRITICAL |
 | stop reason | complete |
 | tool calls | 245 |
 | peak ctx | 192679/208896 (92.2%) |
 | known events | 0 |
 | elapsed | 1:32:27 |
 
-`peak_context` verified with `benchmark/count-tool-calls.mjs` against the session log: `tool_calls 245, assistant_msgs 216, peak_context 192679` — agrees with the worker's own `contextUsage.tokens`. Score and worst defect await the coordinator's judgement pass on the evidence pack (criteria 1, 6, 8, 9 need a verdict `score.mjs` cannot make on its own).
+`peak_context` verified with `benchmark/count-tool-calls.mjs` against the session log: `tool_calls 245, assistant_msgs 216, peak_context 192679` — agrees with the worker's own `contextUsage.tokens`.
+
+**Score: 60/100.** Scored by a judgment subagent from the evidence pack, the session log, and the worktree diff — never from the model's own claims.
+
+**Worst defect: CRITICAL.** Commit `ede1f89c` (`packages/mendel-development/validate-manifest.js`) adds `process.on('exit', () => fs.rmSync(tempDir, {recursive:true, force:true}))` right after the code writes and prints the debug manifest path — the exact trap-C regression the rubric warns about: the file the user needs to inspect is deleted before they can read it.
+
+Per-criterion breakdown (criterion / max / scored / evidence):
+
+| # | criterion | max | scored | evidence |
+|--:|---|--:|--:|---|
+| 1 | Bugs remaining | 25 | 10 | Critical: exit-hook trap-C regression. Medium: chalk port drops `enableColor` handling entirely (commit `55398f75` removes the level-set line with no replacement; `cli.js:55` and tests still pass `enableColor`). Trap A passed (`trap_a.ok: true`). |
+| 2 | Task completion | 20 | 13 | All 8 libraries touched, but `static_completeness.clean: false` — 2 stale `require('rimraf')` in `legacy-packages/mendel-requirify` (trap B, missed, not in TASKS.md), plus stale `rimraf`/`tmp` entries in two `package.json` files. |
+| 3 | node_modules pruned | 8 | 0 | `lockfile.numstat: "no change"`, `shrank: false`; no `pnpm install` in the session log; `root_devdeps.removed: false` (`tmp` still declared). |
+| 4 | Prettier/ESLint | 5 | 2 | `runtime_checks.eslint.ok: true`; `runtime_checks.prettier.ok: false` (`[warn] TASKS.md`, never reformatted). |
+| 5 | Commit craft | 12 | 8 | 16/16 commits `fix(...)`, not `chore`; one package per commit (4/4); no `--no-verify`, no `git add -A`, no TASKS.md leak. |
+| 6 | Right the first time | 8 | 8 | No repair/fixup commits; 0 model nudges, 0 tooling nudges. |
+| 7 | Test discipline | 10 | 9 | `full_suite_runs: 7` over 16 commits (beats the every-5 mandate); `lint_self_runs: 13`. |
+| 8 | House conventions | 5 | 4 | Diffs minimal, style-matched (kept `var`, function shape); one added comment is explanatory, not churn. |
+| 9 | Task list | 4 | 4 | TASKS.md lists all 8 libraries upfront, ticked, with discovery notes. |
+| 10 | Truncated noisy commands | 3 | 1.5 | `truncation_share: 65%` (50/77 noisy commands piped through tail/head). |
+
+Sum 59.5, rounds to **60/100**.
 
 Files: `results/mendel-blind-bonsai2-pq2.out.log`, `results/mendel-blind-bonsai2-pq2-evidence.json`, session `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-xhigh-blind-session.jsonl`, meta `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-xhigh-blind-meta.json`.
 
