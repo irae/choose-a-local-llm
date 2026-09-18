@@ -1,0 +1,3 @@
+elapsed 186.0115828514099
+usage: {'completion_tokens': 100, 'prompt_tokens': 63740, 'total_tokens': 63840, 'prompt_tokens_details': {'cached_tokens': 8192}}
+finish: length

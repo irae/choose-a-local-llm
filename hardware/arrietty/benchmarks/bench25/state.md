@@ -11,7 +11,7 @@ happen, and the handing-over section at the end.
 | `THINKING_BUDGET_MARGIN` | 1.5 | runbook, planning value |
 | `vram_cap_mb` | 13811 | owner, 2026-09-17, 2.5 GB free of 16311 MiB |
 | `serving_c` | 65536 | owner, 2026-09-17, fixed |
-| `oblit_q4km_ngl` | pending | `qwen38-oblit-q4km-offload-ladder` |
+| `oblit_q4km_ngl` | 45 | `qwen38-oblit-q4km-offload-ladder`, 47 OOMs the cap |
 | `oblit_q4km_clean` | pending | `sweep-qwen38-oblit-q4km` |
 | `oblit_q4km_window` | pending | `qwen38-oblit-q4km-smoke-medium` |
 | `oblit_q4km_think_budget` | pending | `qwen38-oblit-q4km-calibrate-think` |
@@ -60,6 +60,21 @@ hold, not the answer to an abort.
 - Corpus server up on port 8089 from this worktree, hash verified.
 - Result dirs created.
 
+## `qwen38-oblit-q4km-offload-ladder` — done
+
+Ladder in `results.md`: 43 pass, 51 fail, 47 fail, 45 pass.
+`oblit_q4km_ngl` = 45 (13397 MiB at load, 13426 MiB under a real
+~64K-token request, both under the 13811 cap). No gate fired — a
+serving `-ngl` was found. Server stopped, VRAM back to baseline (624
+MiB).
+
+Deviation: the tool's own background-task memory tracker killed two
+verification client attempts mid-request (host RAM pressure from the
+offloaded layers), while the server itself stayed healthy both times.
+The third attempt, run fully detached (`nohup` outside the tool's
+tracking), completed cleanly. No effect on the ladder's result.
+
 ## Handing-over
 
-`machine-setup` done. Next: `qwen38-oblit-q4km-offload-ladder`.
+`machine-setup`, `qwen38-oblit-q4km-offload-ladder` done. Next:
+`sweep-qwen38-oblit-q4km`.
