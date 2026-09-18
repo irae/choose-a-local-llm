@@ -110,6 +110,7 @@ machine.
 | adapter sha256 | `f1669534803d340a496015f5c45125f3437b4d13ec764f40e34488ce83967f42` |
 | adapter size | 9,682,464 bytes |
 | adapter repo | `Continuum-AI-Corp/OrcaBonsai-27B-Uncensored`, clone at commit `947a80c` |
+| adapter metadata | 258 tensors, 129 `lora_a`/`lora_b` pairs, architecture `qwen35`, `adapter.lora_alpha` 1.0 |
 | server | the PrismML fork, release `prism-b10685-7dffb15`, commit `7dffb158d` |
 | alias | `bonsai2-27b-ptq1-f16-orca` |
 | KV | f16 |
