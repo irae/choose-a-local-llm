@@ -310,3 +310,22 @@ Planning value 139264 — the f16 ceiling `bonsai2-ptq1-kvpick` already measured
 `bonsai2_ptq1_f16_c` = 139264. Verified with one real chat completion (200 OK, correct answer).
 
 Files: `results/server-kvpick-ptq1-f16-arm-139264.log`, `results/kvpick-ptq1-f16-arm-139264-probe.json`.
+
+## `sweep-bonsai2-ptq1-f16`
+
+`Ternary-Bonsai-2-27B-PTQ1_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, f16 KV, `-c 139264`, `--cache-ram 0` for the measurement. Tokenizer `unsloth/Qwen3.8-27B`. Corpus `corpus-mendel-js.txt` (restarted for this block). Tool `local-llm-eval-tools` at `204acec`. Depths 4096, 24576, 65536, 138240 (= 139264 − 1024).
+
+| arm | depth | tok/s (tg256) | prompt tok/s (pp512) | VRAM used | MemAvailable |
+|---|--:|--:|--:|--:|--:|
+| f16 | 4096 | 42.06 ± 0.04 | 454.29 ± 0.32 | 15353-15357 MiB | ~17.0-17.9 GB |
+| f16 | 24576 | 37.31 ± 0.00 | 440.68 ± 0.02 | 15353-15357 MiB | ~17.0-17.9 GB |
+| f16 | 65536 | 30.13 ± 0.02 | 404.69 ± 0.01 | 15353-15357 MiB | ~17.0-17.9 GB |
+| f16 | 138240 | 22.37 ± 0.04 | 352.89 ± 0.01 | 15353-15357 MiB | ~17.0-17.9 GB |
+
+VRAM flat across every depth (15353-15357 MiB, a 4 MiB drift, no swap growth). Every depth clears the 8 tok/s floor; the deepest tested depth is the deepest clean depth.
+
+`bonsai2_ptq1_f16_clean` = 138240 (deepest tested depth, still above the floor at 22.37 tok/s).
+
+Files: `results/benchy-bonsai2-ptq1-f16.md`, `results/benchy-bonsai2-ptq1-f16.out.log`, `results/benchy-bonsai2-ptq1-f16-vm.log`.
+
+**A table and no pick.**

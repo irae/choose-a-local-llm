@@ -36,6 +36,7 @@ happen, and the handing-over section at the end.
 | `bonsai2_pq2_f16_window` | 118784 | `bonsai2-pq2-mendel-blind-xhigh-f16` |
 | `bonsai2_pq2_f16_blind` | 72/100, worst defect MEDIUM, end_reason complete | `bonsai2-pq2-mendel-blind-xhigh-f16` |
 | `bonsai2_ptq1_f16_c` | 139264 | `bonsai2-ptq1-f16-kvpick` |
+| `bonsai2_ptq1_f16_clean` | 138240 | `sweep-bonsai2-ptq1-f16` |
 
 Planning estimate, not a result: about 34 MiB of KV per 1024 tokens at
 q8_0, from the `qwen35` architecture. With weights of about 6.7 GiB,
