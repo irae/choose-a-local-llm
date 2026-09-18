@@ -44,6 +44,8 @@ happen, and the handing-over section at the end.
 | `bonsai2_ptq1_f16_think_budget` | 30000 (capped) | `bonsai2-ptq1-f16-evalplus-calibrate` |
 | `bonsai2_ptq1_f16_answer_budget` | 2048 | `bonsai2-ptq1-f16-evalplus-calibrate` |
 | `bonsai2_ptq1_f16_max_tokens` | 32048 | `bonsai2-ptq1-f16-evalplus-calibrate` |
+| `bonsai2_ptq1_f16_evalplus` | base 0.970, plus 0.939, 0 empty, 6 forced, gate passed | `bonsai2-ptq1-f16-evalplus-budget-xhigh` |
+| `bonsai2_ptq1_f16_forced_rerun` | 4 forced-pass, 2 forced-fail-loop, budget unchanged | `bonsai2-ptq1-f16-evalplus-forced-rerun` |
 
 ## EvalPlus group order
 
