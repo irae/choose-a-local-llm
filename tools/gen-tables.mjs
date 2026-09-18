@@ -172,6 +172,7 @@ function specTag(spec, { hide = '', label = '', repo = '', top = false, hardware
     `publisher="${spec.publisher}"`,
     `repo="${card}"`,
     spec.drafter ? `drafter="${spec.drafter}"` : '',
+    spec.offload ? `offload="${spec.offload}"` : '',
     `kv="${spec.kv}"`,
     spec.effort && !hideEffort ? `effort="${spec.effort}"` : '',
     hardware ? `hardware="${hardware}"` : '',

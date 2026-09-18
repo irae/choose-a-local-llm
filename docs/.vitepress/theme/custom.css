@@ -269,6 +269,8 @@
 }
 
 .vp-doc .cs-pill-gray { --ms-tint: #7c8390; }
+.vp-doc .ms-offload { font-variant-numeric: tabular-nums; }
+
 .vp-doc .cs-pill-yellow { --ms-tint: #b8912a; }
 .vp-doc .cs-pill-green { --ms-tint: #4c9a63; }
 .vp-doc .cs-pill-red { --ms-tint: #c25b6e; }
