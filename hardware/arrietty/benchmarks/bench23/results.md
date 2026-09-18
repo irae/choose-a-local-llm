@@ -98,3 +98,28 @@ Gate passes: `qwen38-oblit-q3km-smoke-medium` and the blind row run.
 Files: `results/qwen38-oblit-q3km-budget-medium/humaneval/`,
 `results/qwen38-oblit-q3km-budget-medium/finish.jsonl`,
 `results/server-qwen38-oblit-q3km-budget-medium.log`.
+
+## `qwen38-oblit-q3km-forced-rerun`
+
+Same config, q8_0 KV, `-c 32768`, no reasoning flags,
+`EVALPLUS_MAX_NEW_TOKENS=30000`. Prepare: 5 forced, 4 forced-failed.
+
+| task_id | cell | forced_tokens | natural_finish | natural_tokens |
+|---|---|--:|---|--:|
+| HumanEval/32 | forced-fail-wrong | 5169 | stop | 5905 |
+| HumanEval/73 | forced-fail-wrong | 4158 | stop | 6273 |
+| HumanEval/94 | forced-pass | 4604 | — | — |
+| HumanEval/116 | forced-fail-wrong | 5672 | stop | 4686 |
+| HumanEval/130 | forced-fail-wrong | 5106 | stop | 4155 |
+
+Summary: forced-pass 1, forced-fail-late 0, forced-fail-loop 0,
+forced-fail-wrong 4. `corrected_think_budget`: unchanged, no late
+answer. Every forced failure is the model's own limit, not a budget
+artifact — a larger budget would not have helped any of these four.
+
+Wall: ≈16 min (one part, no crash).
+
+Files: `results/qwen38-oblit-q3km-forced-rerun/humaneval/`,
+`results/qwen38-oblit-q3km-forced-rerun/finish.jsonl`,
+`results/qwen38-oblit-q3km-forced-rerun/forced.json`,
+`results/server-qwen38-oblit-q3km-forced-rerun.log`.
