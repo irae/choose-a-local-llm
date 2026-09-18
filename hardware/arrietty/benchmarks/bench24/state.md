@@ -23,9 +23,9 @@ happen, and the handing-over section at the end.
 | `bonsai2_pq2_clean` | 211968 | `sweep-bonsai2-pq2` |
 | `eval_tools_hash` | `204acec` | `local-llm-eval-tools`, `sweep-bonsai2-pq2` |
 | `bonsai2_pq2_window` | pending | `bonsai2-pq2-smoke-xhigh` |
-| `bonsai2_pq2_think_budget` | pending | `bonsai2-pq2-calibrate-think` |
-| `bonsai2_pq2_answer_budget` | pending | `bonsai2-pq2-calibrate-think` |
-| `bonsai2_pq2_max_tokens` | pending | `bonsai2-pq2-calibrate-think` |
+| `bonsai2_pq2_think_budget` | 25209 | `bonsai2-pq2-calibrate-think` |
+| `bonsai2_pq2_answer_budget` | 2048 | `bonsai2-pq2-calibrate-think` |
+| `bonsai2_pq2_max_tokens` | 27257 | `bonsai2-pq2-calibrate-think` |
 | `bonsai2_27b_ptq1_c` | pending | `bonsai2-ptq1-kvpick` |
 | `bonsai2_27b_ptq1_kv` | pending | `bonsai2-ptq1-kvpick` |
 | `bonsai2_ptq1_clean` | pending | `sweep-bonsai2-ptq1` |
@@ -76,4 +76,4 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 
 ## Handing-over
 
-`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, and `sweep-bonsai2-pq2` are done. Next: `bonsai2-pq2-calibrate-think`.
+`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, and `bonsai2-pq2-calibrate-think` are done. Next: `bonsai2-pq2-budget-xhigh`.

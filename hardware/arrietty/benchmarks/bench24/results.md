@@ -62,3 +62,28 @@ VRAM flat across every depth (15735 MiB), no swap growth. Every depth clears the
 Files: `results/benchy-bonsai2-pq2-q8.md`, `results/benchy-bonsai2-pq2-q8.out.log`, `results/benchy-bonsai2-pq2-q8-vm.log`, `results/server-sweep-pq2-q8.log`.
 
 **A table and no pick.**
+
+## `bonsai2-pq2-calibrate-think`
+
+`Ternary-Bonsai-2-27B-PQ2_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, pick q8_0, `-c 32768`, no reasoning-budget flag. Calibration name `bonsai2-pq2-xhigh-think`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`. All 10 rows resolve `resolved_reasoning_effort: "xhigh"` from the request; no level mismatch.
+
+| task_id | finish_reason | reasoning_len (chars) | wall_s |
+|---|---|--:|--:|
+| HumanEval/0 | stop | 2474 | 15.6 |
+| HumanEval/10 | stop | 41282 | - |
+| HumanEval/26 | stop | 3395 | - |
+| HumanEval/32 | length | 84642 | 721.0 |
+| HumanEval/38 | stop | 4425 | - |
+| HumanEval/39 | stop | 9363 | - |
+| HumanEval/76 | stop | 48380 | - |
+| HumanEval/99 | length | 33429 | 719.8 |
+| HumanEval/124 | stop | 11191 | - |
+| HumanEval/145 | length | 99016 | 719.1 |
+
+7 converged, 3 cut at the generous wall-clock cap (~720s each, non-convergence, not a token cap). No converged row had an empty answer.
+
+`thinking-budget.py derive`: converged 7, cut 3, max_reasoning_tokens 16806, max_answer_tokens 453, think_budget 25209, answer_budget 2048 (floor), max_tokens 27257.
+
+`bonsai2_pq2_think_budget` = 25209, `bonsai2_pq2_answer_budget` = 2048, `bonsai2_pq2_max_tokens` = 27257.
+
+Files: `hardware/arrietty/calibrations/calibration-bonsai2-pq2-xhigh-think.json`, `results/server-bonsai2-pq2-calibrate-think.log`.
