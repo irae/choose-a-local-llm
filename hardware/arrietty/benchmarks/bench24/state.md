@@ -9,31 +9,28 @@ happen, and the handing-over section at the end.
 |---|---|---|
 | `budget_message` | `Thinking budget reached. Give the final answer now.` | runbook, Essentials |
 | `THINKING_BUDGET_MARGIN` | 1.5 | runbook, planning value |
-| `vram_cap_mb` | 13811 | owner, 2026-09-17, 2.5 GB free of 16311 MiB |
-| `serving_c` | 65536 | owner, 2026-09-17, fixed |
-| `oblit_q4km_ngl` | pending | `qwen38-oblit-q4km-offload-ladder` |
-| `oblit_q4km_clean` | pending | `sweep-qwen38-oblit-q4km` |
-| `oblit_q4km_window` | pending | `qwen38-oblit-q4km-smoke-medium` |
-| `oblit_q4km_think_budget` | pending | `qwen38-oblit-q4km-calibrate-think` |
-| `oblit_q4km_answer_budget` | pending | `qwen38-oblit-q4km-calibrate-think` |
-| `oblit_q4km_max_tokens` | pending | `qwen38-oblit-q4km-calibrate-think` |
-| `runwatch_silence` | pending | runner, raised for a slow offload server |
+| `llama_server_prism` | pending | the fork, "The server" |
+| `prism_fork_commit` | pending | the fork, "The server" |
+| `budget_flags_present` | pending | "The server", step 5 |
+| `bonsai2_27b_pq2_c_q8` | pending | `bonsai2-pq2-kvpick` |
+| `bonsai2_27b_pq2_c_f16` | pending | `bonsai2-pq2-kvpick` |
+| `bonsai2_27b_pq2_c` | pending | `bonsai2-pq2-kvpick` |
+| `bonsai2_27b_pq2_kv` | pending | `bonsai2-pq2-kvpick` |
+| `bonsai2_pq2_clean` | pending | `sweep-bonsai2-pq2` |
+| `bonsai2_pq2_window` | pending | `bonsai2-pq2-smoke-xhigh` |
+| `bonsai2_pq2_think_budget` | pending | `bonsai2-pq2-calibrate-think` |
+| `bonsai2_pq2_answer_budget` | pending | `bonsai2-pq2-calibrate-think` |
+| `bonsai2_pq2_max_tokens` | pending | `bonsai2-pq2-calibrate-think` |
+| `bonsai2_27b_ptq1_c` | pending | `bonsai2-ptq1-kvpick` |
+| `bonsai2_27b_ptq1_kv` | pending | `bonsai2-ptq1-kvpick` |
+| `bonsai2_ptq1_clean` | pending | `sweep-bonsai2-ptq1` |
 | `vram_start_mb` | pending | `nvidia-smi`, session start |
 | `evalplus_python` | pending | pipx venv |
-| `llama_server` | pending | run 17 build |
 
-Planning estimate, not a result: 16040 MiB of weights, 2176 MiB of KV
-at 65536 tokens at q8_0, about 200 MiB of linear-attention state, about
-600 MiB of compute buffers, against the cap of 13811 MiB, which gives
-`-ngl 43` of 64 as the first load of the ladder.
-
-## Why this run exists
-
-This run measures the Q4_K_M build of the same binary that run 23
-measures in Q3_K_M. It runs after run 23, whatever run 23 did (owner,
-2026-09-17). In `machine-setup`, copy run 23's two ladder values, and
-its abort line when it has one, from `master` into this file. They say
-what the card holds without host RAM. The run has not started.
+Planning estimate, not a result: about 34 MiB of KV per 1024 tokens at
+q8_0, from the `qwen35` architecture. With weights of about 6.7 GiB,
+the card may hold the whole trained window of 262144 tokens. The
+ladder decides.
 
 ## Handing-over
 

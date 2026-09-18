@@ -1,17 +1,9 @@
-# Run 24 — the same binary in Q4_K_M, with weights in host RAM
+# Run 24 — Ternary Bonsai 2 27B on the RTX 5060 Ti 16 GB (Linux)
 
-**This run waits for run 23 and then runs, whatever run 23 did**
-(owner, 2026-09-17). One model serves on this card at a time, so the
-run starts only when the coordinator tells you to start. Run 23
-measures the Q3_K_M build of the same binary inside the card. When it
-aborts at its context gate, this run is the answer to that abort. When
-it finishes, this run is the second point of the pair: the larger
-quantization at a window the card alone cannot hold. Either way, the
-blocks below do not change.
-
-About one and a half days of machine time, because host RAM is slower
-than VRAM. The list below is the order and the run ends when the list
-ends or the owner says stop.
+Start at once, 2026-09-17, on the owner's word. The card is free: run
+23 is paused inside its EvalPlus block and its runner keeps its
+worktree. About one day of machine time. The list below is the order
+and the run ends when the list ends or the owner says stop.
 
 You are the runner, on the Linux machine. Read this file, then the
 pages each block names at its start, and nothing else. Write all prose
@@ -35,16 +27,16 @@ tell the coordinator before the first block.
 
 ## What this run is for
 
-The owner's word (2026-09-17): when the 3-bit build of this binary
-cannot hold a useful window inside the card, try the Q4_K_M build the
-other way round. Fix the window at 64K, keep the KV cache and as many
-layers as fit in VRAM, and let host RAM hold the rest.
+The owner's word (2026-09-17): a model released today, to measure at
+effort xhigh. It is a ternary-weight build of a 27B model, in two
+packings of about 6.7 and 5.5 GiB. Every other 27B build this card has
+served needs 12 GiB or more, so this one changes what the card can
+hold: the weights leave far more room for the KV cache than any 27B
+build measured here.
 
-The run answers two questions: what this build costs in speed when
-part of it lives in host RAM, and what it scores at that window. It
-also feeds the reasoning context cap decision
+The run also feeds the reasoning context cap decision
 (`docs/methodology/evalplus.md`, "Unproven yet"), so the EvalPlus
-block runs with the thinking budget and the forced re-run follows it.
+blocks run with a thinking budget when the server supports one.
 
 **This run measures; it decides nothing.**
 
@@ -53,24 +45,29 @@ block runs with the thinking budget and the forced re-run follows it.
 **This list is the order.**
 
 - `machine-setup`
-- `qwen38-oblit-q4km-offload-ladder`
-- `sweep-qwen38-oblit-q4km`
-- `qwen38-oblit-q4km-calibrate-think`
-- `qwen38-oblit-q4km-budget-medium`
-- `qwen38-oblit-q4km-forced-rerun`
-- `qwen38-oblit-q4km-smoke-medium`
-- `qwen38-oblit-q4km-mendel-blind-medium`
+- `bonsai2-pq2-kvpick`
+- `sweep-bonsai2-pq2`
+- `bonsai2-pq2-calibrate-think`
+- `bonsai2-pq2-budget-xhigh`
+- `bonsai2-pq2-forced-rerun`
+- `bonsai2-ptq1-kvpick`
+- `sweep-bonsai2-ptq1`
+- `bonsai2-pq2-smoke-xhigh`
+- `bonsai2-pq2-mendel-blind-xhigh`
 - `retry-sweep`
+
+The second file's two blocks sit between the EvalPlus work and the
+agent row on purpose: they are speed blocks, and every speed block runs
+before the next agent row (owner rule, 2026-09-14).
 
 ## Essentials
 
 - `bench24/state.md` holds what earlier sessions did. Resume where its
   handing-over section says.
 - **FIRST ACTION after the wakeup:** `cd
-  ../choose-a-local-llm-run24`, the worktree the coordinator created
+  ../choose-a-local-llm-run24`, the worktree the coordinator prepared
   for you on branch `run24`. Verify with `pwd` and `git worktree
-  list`. If it does not exist: `git fetch origin && git worktree add
-  ../choose-a-local-llm-run24 -b run24 origin/master`. Every command
+  list`, and `git log --oneline -1` must show this kit. Every command
   of this run happens there.
 - **Branches, exactly.** You work on `run24` and only on `run24`. To
   take an update: `git fetch origin && git merge origin/master`, then
@@ -85,22 +82,17 @@ block runs with the thinking budget and the forced re-run follows it.
   MiB`, the CUDA death signatures, the CUDA exports in every new
   shell, one model on the GPU at a time on port 8081, the desktop
   shares the card, no sudo, downloads never block, `hf cache ls`.
-- **This run has a VRAM reserve, and it is the only one that has.**
-  This card has no reserve rule (owner, 2026-09-15); every other run
-  fills the card. Here the owner set one, because the weights spill to
-  host RAM anyway and the desktop must keep drawing: **used VRAM stays
-  at or below 13811 MiB**, which leaves 2.5 GB of the 16311 MiB free
-  for the system (owner, 2026-09-17). Read `nvidia-smi` after every
-  load and after the first real request of every block, and write both
-  numbers in `state.md`. A load over the cap is a fail of that
-  `-ngl`, not a result.
-- **Effort medium on Qwen3.8 is an owner overrule for this run**
-  (owner, 2026-09-17). `AGENTS.md` bans medium for this model and the
-  ban stays in force everywhere else. Here the owner named medium as
-  the level of this binary's first rows. Serve medium and do not stop
-  and ask about it. No other level runs in this run.
-- **The download is authorized** (owner, 2026-09-17), for the one file
-  this runbook names and for no other file of that repository.
+- **Run 23 is paused, not finished.** Its worktree
+  `../choose-a-local-llm-run23` and its branch stay as they are. Never
+  touch them, never kill a process you did not start, and never delete
+  anything under `hardware/arrietty/benchmarks/bench23/`.
+- **This model needs a different llama.cpp**, and that is the first
+  gate of the run. See "The server" below.
+- **Effort xhigh** is the level of every block. It is this model's
+  published default, and the owner named it (owner, 2026-09-17). The
+  card says `low` is not supported. No other level runs in this run.
+- **The downloads are authorized** (owner, 2026-09-17), for the files
+  this runbook names and for no other file.
 - **The budget message is fixed for the whole run**, in every serve
   command that carries a thinking budget:
 
@@ -108,17 +100,13 @@ block runs with the thinking budget and the forced re-run follows it.
   export BUDGET_MSG="Thinking budget reached. Give the final answer now."
   ```
 
-  The finish log keeps the last 200 characters of the reasoning, and
-  the message lands there, so a forced answer is one whose reasoning
-  tail contains it.
 - **No temperature and no sampling parameter is passed to any
-  server.** EvalPlus sends temperature 0 itself. This file's own
-  sampling defaults come from the GGUF; read them from the load log
-  and write them in `state.md`.
+  server.** EvalPlus sends temperature 0 itself. This model publishes
+  its own sampling defaults in the GGUF metadata (`general.sampling.*`,
+  thinking mode: temperature 1.0, top_p 0.95, top_k 20, min_p 0.0).
+  Read what the server actually applies from the load log and write it
+  in `state.md`; every config note of this build carries it.
 - **The margin.** `THINKING_BUDGET_MARGIN` is 1.5, the planning value.
-  If a coordinator message names a new margin before the
-  `*-calibrate-*` block starts, use it and write the value and the
-  message time in `state.md`. Never wait for one.
 - **Count empties from the samples, never from a log line.** After
   every scoring run:
 
@@ -139,23 +127,19 @@ block runs with the thinking budget and the forced re-run follows it.
   empty` on rows whose samples held up to 53 empty answers; the
   coordinator corrected the site. Do not repeat that.
 - Every scoring run starts `benchmarks/run-watch.sh` as the checklist
-  says, with the CUDA signatures. **Raise `RUNWATCH_SILENCE`** for
-  this run: a one-slot server under a large thinking budget, with part
-  of its weights in host RAM, is slow enough for the silence probe to
-  read a busy server as dead (run 22 saw the false exit 42 on faster
-  hardware). Write the value you used in `state.md`.
+  says, with the CUDA signatures.
 - **Crashes and wall:** `docs/methodology/evalplus.md`, "Crashes and
   wall time". Write every part in `state.md` in UTC.
 - Commit on `run24` as results land. Push `run24` at every block close
   and message the coordinator session with the block, the config, the
   result line and the commit id. **No message between pushes** (owner
   rule, 2026-09-11). Every gate and every stop-and-ask goes to the
-  coordinator with the block, the condition and your candidate answer.
-  Never ask the owner a multiple-choice question. Never run a bare
-  `git stash`.
+  coordinator with the block, the condition and your candidate answer;
+  keep the GPU busy with the next block that does not depend on it.
+  Never message the run 23 runner. Never ask the owner a
+  multiple-choice question. Never run a bare `git stash`.
 - **A recoverable failure is retried at once, inside its block.**
-  Resume the same run directory; `run-humaneval.sh` skips the problems
-  it already has. `retry-sweep` holds only what needed a human.
+  `retry-sweep` holds only what needed a human.
 - A bug in a run tool goes to a subagent on the best available model
   at once; the run does not wait for it.
 - Archive evidence before a session closes:
@@ -165,40 +149,78 @@ block runs with the thinking budget and the forced re-run follows it.
   `hardware/arrietty/calibrations/` or
   `~/.local/share/choose-a-local-llm/`. Nothing under `/tmp`.
 
-## The file
+## The files
 
-Fixed identity, the same in every block:
+Fixed identity. Repo `prism-ml/Ternary-Bonsai-2-27B-gguf` at revision
+`6ed5e12bf84b7a63069882c91dd9e9218647d17b`, Apache 2.0, architecture
+`qwen35`, trained context 262144.
 
-| field | value |
-|---|---|
-| repo | `OBLITERATUS/Qwen3.8-27B-OBLITERATED` |
-| file | `Qwen3.8-27B-OBLITERATED-Q4_K_M.gguf` |
-| revision | `a58c3b53b3ce71551eafde2ed5ec8df48e0f4ff8` |
-| size | 16,810,705,952 bytes |
-| alias | `qwen3.8-27b-oblit-q4km` |
-| level | medium (owner overrule, 2026-09-17) |
-| extra body | `{"chat_template_kwargs":{"reasoning_effort":"medium"}}` |
-| tokenizer | `unsloth/Qwen3.8-27B` |
-| vision | off, always: `--no-mmproj` |
-| drafter | none, always |
-| serving `-c` | **65536, fixed** (owner, 2026-09-17) |
-| KV type | `q8_0`, fixed: f16 at this window does not fit on this card |
+| id | file | size | alias |
+|---|---|--:|---|
+| primary | `Ternary-Bonsai-2-27B-PQ2_0.gguf` | 7,206,168,928 B | `bonsai2-27b-pq2` |
+| second | `Ternary-Bonsai-2-27B-PTQ1_0.gguf` | 5,946,648,928 B | `bonsai2-27b-ptq1` |
 
 ```bash
-hf download OBLITERATUS/Qwen3.8-27B-OBLITERATED Qwen3.8-27B-OBLITERATED-Q4_K_M.gguf \
-  --revision a58c3b53b3ce71551eafde2ed5ec8df48e0f4ff8
+hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PQ2_0.gguf \
+  --revision 6ed5e12bf84b7a63069882c91dd9e9218647d17b
+hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf \
+  --revision 6ed5e12bf84b7a63069882c91dd9e9218647d17b
 ```
 
-The file is 15.66 GiB, larger than the card, so this build cannot serve
-from VRAM alone. That is the point of the run, not a fault.
+Fetch both in `machine-setup`; a download never blocks a block.
+Record each sha256 and size in `state.md`, and compare the size with
+this table. A mismatch is stop and ask.
 
-The vision weights sit in a separate `mmproj` file of that repository.
-Do not fetch it. `--no-mmproj` is in every serve command.
+Every serve command of this run carries `--no-mmproj`. The vision
+weights are a separate file of that repository and this run never
+fetches them. `--parallel 1`, `-ngl 999`, `--fit off`, `-fa on`, port
+8081, as every block on this card.
 
-Record the sha256 of the downloaded file in `state.md`. Check that
-`df -h ~` leaves 20 GB free before the download, and that `free -m`
-shows at least 8 GB of `MemAvailable` before every load, because host
-RAM holds the layers the card does not.
+**Do not fetch** `Ternary-Bonsai-2-27B-F16.gguf` (53.8 GB; the disk
+does not hold it) or anything from the `-dev` repository. The `-dev`
+file names a fork requirement of its own and is not in this run.
+
+## The server
+
+**This model does not run on the llama.cpp build this machine uses.**
+The model card is explicit: stock llama.cpp rejects `PQ2_0` and
+`PTQ1_0` as unknown types, and it loads a `Q2_0` file incorrectly and
+produces garbage, because it has no Hadamard activation runtime. The
+build for this run comes from the publisher's fork,
+`PrismML-Eng/llama.cpp`.
+
+This is the first gate of the run, and it has no fallback inside the
+run: a wrong binary produces numbers that look like results and are
+not.
+
+1. Take the fork's newest release binary with CUDA support, from
+   <https://github.com/PrismML-Eng/llama.cpp/releases/latest>, into
+   `~/.local/share/choose-a-local-llm/llama.cpp-prism/`. Never under
+   `/tmp`.
+2. No release binary matches this card (CUDA, compute 12.0, `sm120`):
+   build the fork from source in
+   `~/.local/share/choose-a-local-llm/llama.cpp-prism/src`, with the
+   same CMake flags run 17 used for the stock build. Read the fork's
+   own build instructions first; its extra runtime may need a flag the
+   stock build does not have. A build needs no `sudo`; a step that
+   does is stop and ask.
+3. **Prove the binary before any measurement.** Serve the primary file
+   at a small `-c` and send one chat completion with `curl`, a short
+   coding question, thinking on at xhigh. Record the answer in
+   `state.md`. Garbage text, an empty answer, a refusal to load the
+   type, or any `unknown type` line in the log is **stop and ask**, and
+   no block of this run starts.
+4. Record the fork's version, its commit and where the binary lives in
+   `state.md`. Every serve command of this run uses that binary, and
+   `$LLAMA_SERVER` in the commands below means it.
+5. **Check the thinking-budget flags on the fork:**
+   `$LLAMA_SERVER --help | grep -A1 reasoning-budget`. Both flags
+   present: the run is as written. **Either flag missing:** every
+   `*-budget-*` block becomes a natural run at
+   `EVALPLUS_MAX_NEW_TOKENS=30000` with no reasoning flag, the
+   `*-forced-rerun` blocks do not run, and you write that deviation in
+   `state.md` and tell the coordinator at the block close. Do not wait
+   for an answer.
 
 ## `machine-setup`
 
@@ -207,279 +229,230 @@ Read `docs/methodology/evalplus.md`, whole, with "Unproven yet".
 1. `git log --oneline -1 -- benchmarks/thinking-budget.py
    benchmarks/calibrate.py benchmarks/run_codegen_wrapper.py`: all
    three must be present and `calibrate.py` must write
-   `reasoning_len` (grep it). If not, `git fetch origin && git merge
+   `reasoning_len`. If not, `git fetch origin && git merge
    origin/master` first.
-2. The CUDA exports, then `llama-server --help | grep -A1
-   reasoning-budget`: both flags must print. A build without them is
-   stop and ask.
-3. `export EVALPLUS_PYTHON=...` as run 19's `machine-setup` step 1
+2. `export EVALPLUS_PYTHON=...` as run 19's `machine-setup` step 1
    says; `evalplus.codegen --help | head -2`.
-4. Fetch the file of "The file" above, and record its sha256 and the
-   `hf cache ls` line in `state.md`.
-5. **The corpus server**, for the speed block: `cd
-   hardware/kamaji/research/run4/results && python3 -m http.server 8089
-   --bind 127.0.0.1` in the background for the whole run; stop it after
-   `sweep-qwen38-oblit-q4km`. The file is `corpus-mendel-js.txt`,
-   sha256
+3. The read-only machine checks of run 19's Essentials. Record
+   `vram_start_mb`, `MemAvailable`, and `df -h ~`. The two files need
+   13.2 GB of disk.
+4. Start both downloads of "The files", then do "The server", steps 1
+   to 5, while they run.
+5. **The corpus server**: `cd hardware/kamaji/research/run4/results &&
+   python3 -m http.server 8089 --bind 127.0.0.1` in the background;
+   stop it after `sweep-bonsai2-ptq1`. The file is
+   `corpus-mendel-js.txt`, sha256
    `f4cbe063ef231d753e736b60107b6601705a1acb448b05d9f8b8afbdfcec583c`;
-   verify it once.
-6. Read run 23's `state.md` and `results.md` on `master` and copy its
-   two ladder values and its abort line into this run's `state.md`.
-   They say why this run exists.
-7. `mkdir -p hardware/arrietty/benchmarks/bench24/results
+   verify it once. Port 8089 may already be busy: check for a stale
+   server before you start one, and never kill the run 23 runner's
+   processes.
+6. `mkdir -p hardware/arrietty/benchmarks/bench24/results
    ~/.local/share/choose-a-local-llm ~/.local/share/mendel-benchmark`.
 
-Done: every version and every hash in `state.md`, committed. No result
-table.
+Done: every version, hash, the fork's commit and the probe answer in
+`state.md`, committed. No result table.
 
-## `qwen38-oblit-q4km-offload-ladder`
+## The ladder
 
-Read `docs/methodology/memory-ceiling.md`, "Know which limit actually
-gates the OOM", and run 17's ladder,
-`hardware/arrietty/benchmarks/bench17/AGENT.md`, section "The ladder",
-for the load-failure signatures.
+Run 17's ladder, `hardware/arrietty/benchmarks/bench17/AGENT.md`,
+section "The ladder", steps 1 to 4, with `$LLAMA_SERVER` in place of
+`llama-server`. This is a dense model and no part of it goes to host
+RAM, so the `--n-cpu-moe` part of that section does not apply.
 
-Here `-c` is fixed and the layer count is the variable, the opposite of
-every earlier ladder on this card. This is a dense model, so the knob
-is `-ngl N`, the count of layers on the GPU, and **not**
-`--n-cpu-moe`.
+## The kvpick blocks
 
-Fixed: the file, `-c 65536`, `--cache-type-k q8_0 --cache-type-v q8_0`,
-`--no-mmproj`, `--parallel 1`, no drafter, `--fit off`, `-fa on`, port
-8081, and the VRAM cap of 13811 MiB. Derived: `-ngl`.
+Read `docs/methodology/kv-cache-pick.md`.
 
-```bash
-llama-server -m "$(hf download OBLITERATUS/Qwen3.8-27B-OBLITERATED Qwen3.8-27B-OBLITERATED-Q4_K_M.gguf --revision a58c3b53b3ce71551eafde2ed5ec8df48e0f4ff8 | sed 's/^path=//')" \
-  --alias qwen3.8-27b-oblit-q4km --no-mmproj --parallel 1 \
-  -ngl <N> --fit off -fa on -c 65536 \
-  --cache-type-k q8_0 --cache-type-v q8_0 --cache-ram 0 \
-  --jinja --port 8081 2>&1 \
-  | tee hardware/arrietty/benchmarks/bench24/results/server-offload-ladder-ngl<N>.log
-```
+One block per file: `bonsai2-pq2-kvpick` and `bonsai2-ptq1-kvpick`.
 
-1. Read `n_layer` from the load log of the first load, whatever that
-   load does. The planning value is 64. A layer count you cannot read
-   is stop and ask.
-2. Start at `-ngl 43`, the planning value. It comes from this
-   arithmetic, which is a planning estimate and never a result: 16040
-   MiB of weights, 2176 MiB of KV at 65536 tokens at q8_0, about 200
-   MiB of linear-attention state, about 600 MiB of compute buffers, and
-   the cap of 13811 MiB.
-3. A load is a **fail** when it ends in `CUDA error`, `out of memory`
-   or `cudaMalloc failed`, or when `nvidia-smi` reads over 13811 MiB.
-   Lower `-ngl` by 8 and load again.
-4. A load is a **pass** only when one real request of about 64K tokens
-   serves and `nvidia-smi` stays at or below the cap under that
-   request. A one-token probe proves nothing here
+These weights are small, so the KV cache is the large allocation here,
+not the model. **Start the ladder at the trained context, `-c 262144`,
+and step down from there**; do not start at a value copied from a 12
+GiB build. A planning estimate, from the architecture and never a
+result: about 34 MiB of KV per 1024 tokens at q8_0, and twice that at
+f16. It says the card may hold the whole trained window at q8_0. Prove
+it or find where it stops.
+
+1. Ladder at `--cache-type-k q8_0 --cache-type-v q8_0`. Write
+   `<alias>_c_q8`.
+2. Ladder at `--cache-type-k f16 --cache-type-v f16`. Write
+   `<alias>_c_f16`.
+3. A candidate `-c` counts only when one real request of about that
+   size serves, never a one-token probe
    (`docs/methodology/kv-cache-pick.md`, "Pitfalls").
-5. Bisect between the last fail and the last pass in steps of 2, at
-   most eight loads in all, and end on the **largest passing `-ngl`**.
-   More layers on the card is more speed, so this ladder climbs to the
-   limit and does not settle for a safe value (owner rule, 2026-09-06,
-   the same rule the window follows).
-6. Write `oblit_q4km_ngl`, the ladder lines, the VRAM used at load and
-   under the deep request, and the `MemAvailable` before and after the
-   load, in `state.md`.
+4. The pick is the type with the larger serving `-c`; at equal `-c`,
+   the faster type at 32K from the sweep of that file. Write
+   `<alias>_kv` and `<alias>_c` in `state.md`.
 
-**The gate.** No `-ngl` from 0 upward serves 65536 tokens inside the
-cap: that is stop and ask to the coordinator, with the ladder, both
-memory readings and your candidate answer. Do not lower `-c` on your
-own; 65536 is the owner's fixed value for this run.
+There is **no context gate in this run**. A small window is a result
+here, not a stop.
 
-Done: the ladder and `oblit_q4km_ngl` in `results.md` and `state.md`.
+Done: both ladders and the pick in `results.md` and `state.md`.
 Commit, push, message the coordinator.
 
-## `sweep-qwen38-oblit-q4km`
+## The sweep blocks
 
 Read `docs/methodology/context-creep.md`, "Speed measurement rules".
 
-The creep tool does not run on this machine (it reads `vm_stat`).
-Speed comes from `llama-benchy`, with run 17's command shape,
+The creep tool does not run on this machine. Speed comes from
+`llama-benchy`, with run 17's command shape,
 `hardware/arrietty/benchmarks/bench17/AGENT.md`, section "The benchy
-command", with `bench24` in every path and `<arm>` equal to
-`ngl<oblit_q4km_ngl>`.
+command", `bench24` in every path, `<arm>` the cache type of the pick.
 
-Fixed: the file, `-c 65536`, q8_0 KV, `oblit_q4km_ngl`, no drafter.
-Depths: 4096, 24576, 49152 and 64512 (`-c` minus 1024).
+Fixed: the file, its pick, no drafter. Derived: `-c` from
+`<alias>_c`; depths 4096, 24576, 65536, and `<alias>_c` minus 1024.
+Drop any depth above `<alias>_c` minus 1024.
 
-Write `oblit_q4km_clean` in `state.md`: the deepest depth at or above 8
+Tokenizer for `llama-benchy`: this architecture is `qwen35`, so use
+`unsloth/Qwen3.8-27B`, the base tokenizer the other blocks of this
+card use. A tokenizer that fails to load is a deviation to write down,
+and then the block uses the tokenizer the fork's own server reports.
+
+Write `<alias>_clean` in `state.md`: the deepest depth at or above 8
 tok/s. **A table and no pick.**
 
-**The speed gate.** The deep cell reads under 8 tok/s: write the table,
-tell the coordinator with your candidate answer, and wait for its
-answer before the calibrate block starts. A full EvalPlus at that
-speed is many hours, and whether the run spends them is the
-coordinator's call, not yours. The rest of the run is unchanged when
-the answer is to go on.
+Done: one table per file in `results.md`. Commit, push, message the
+coordinator. Stop the corpus server after `sweep-bonsai2-ptq1`.
 
-Done: one table in `results.md`, one line per depth, with tok/s, sd,
-prompt tok/s, VRAM used and `MemAvailable`. Commit, push, message the
-coordinator. Stop the corpus server.
-
-## `qwen38-oblit-q4km-calibrate-think`
+## `bonsai2-pq2-calibrate-think`
 
 Read `docs/methodology/evalplus.md`, "Calibrate the output budget
 FIRST" and "Unproven yet".
 
-Calibration name: `qwen38-oblit-q4km-medium-think`. Serve the config of
-the ladder, at `-c 65536` with `oblit_q4km_ngl`, without a thinking
-budget and without `--cache-ram 0`.
+Calibration name `bonsai2-pq2-xhigh-think`, alias `bonsai2-27b-pq2`,
+extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`.
+Serve at `-c 32768` with the pick, no thinking budget.
 
-1. **Serve**, then
+```bash
+CALIBRATION_DIR=hardware/arrietty/calibrations "$EVALPLUS_PYTHON" \
+  benchmarks/calibrate.py bonsai2-pq2-xhigh-think bonsai2-27b-pq2 \
+  '{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'
+benchmarks/thinking-budget.py derive \
+  hardware/arrietty/calibrations/calibration-bonsai2-pq2-xhigh-think.json
+```
 
-   ```bash
-   CALIBRATION_DIR=hardware/arrietty/calibrations "$EVALPLUS_PYTHON" \
-     benchmarks/calibrate.py qwen38-oblit-q4km-medium-think qwen3.8-27b-oblit-q4km \
-     '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'
-   ```
+Check `resolved_reasoning_effort` on every row. A row that resolves to
+another level is stop and ask: the fork's template may not take the
+same keyword. Write `bonsai2_pq2_think_budget`,
+`bonsai2_pq2_answer_budget` and `bonsai2_pq2_max_tokens` in `state.md`
+with the converged and cut counts and the margin.
 
-   Check `resolved_reasoning_effort` on every row. A row that resolves
-   to another level is stop and ask.
-2. **Derive**:
-
-   ```bash
-   benchmarks/thinking-budget.py derive \
-     hardware/arrietty/calibrations/calibration-qwen38-oblit-q4km-medium-think.json
-   ```
-
-   Write `oblit_q4km_think_budget`, `oblit_q4km_answer_budget` and
-   `oblit_q4km_max_tokens` in `state.md` with the converged and cut
-   counts and the margin used. Keep the server up for the next block.
+**A converged row with an empty answer is not a converged row.** The
+derive tool already drops it. When one appears, write its task id, its
+reasoning length and its wall time in `state.md`: run 23 found one at
+effort medium and it is evidence the experiment wants.
 
 Done: the three values in `state.md`, committed. Push, message the
 coordinator.
 
-## `qwen38-oblit-q4km-budget-medium`
+## `bonsai2-pq2-budget-xhigh`
 
 Read `docs/methodology/evalplus.md`, "Steps".
 
-1. **Serve** the ladder's config with the thinking budget appended:
-   `--reasoning-budget <oblit_q4km_think_budget>
-   --reasoning-budget-message "$BUDGET_MSG"`, log to
-   `results/server-qwen38-oblit-q4km-budget-medium.log`. Verify with a
-   real request, read `nvidia-smi` against the cap, write both in
-   `state.md`.
-2. **Start the watcher** as the checklist says, with the raised
-   `RUNWATCH_SILENCE`.
+1. **Serve** at `-c 32768` with the pick, plus `--reasoning-budget
+   <bonsai2_pq2_think_budget> --reasoning-budget-message "$BUDGET_MSG"`
+   (or without them, by "The server" step 5). Log to
+   `results/server-bonsai2-pq2-budget-xhigh.log`. Verify with a real
+   request, read `nvidia-smi`, write both in `state.md`.
+2. **Start the watcher.**
 3. **Run** the full 164:
 
    ```bash
    RESULTS_BASE=hardware/arrietty/benchmarks/bench24/results \
-     EVALPLUS_MAX_NEW_TOKENS=<oblit_q4km_max_tokens> \
-     benchmarks/run-humaneval.sh qwen38-oblit-q4km-budget-medium qwen3.8-27b-oblit-q4km \
-     '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'
+     EVALPLUS_MAX_NEW_TOKENS=<bonsai2_pq2_max_tokens> \
+     benchmarks/run-humaneval.sh bonsai2-pq2-budget-xhigh bonsai2-27b-pq2 \
+     '{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}'
    ```
 
 4. **Done**: base and plus pass@1, the empty count from the samples,
-   the forced count from the finish log, the think and answer budgets,
-   `max_tokens`, `-ngl`, and the wall with its parts, as one row in
-   `results.md`. Commit, push, message the coordinator. Stop the
-   watcher.
+   the forced count from the finish log, both budgets, `max_tokens`
+   and the wall with its parts, as one row in `results.md`. Commit,
+   push, message the coordinator. Stop the watcher.
 
-**The agent gate.** `docs/methodology/evalplus.md` gates an agent row
-at 0.800 base pass@1. A score under 0.800 means
-`qwen38-oblit-q4km-smoke-medium` and the blind row do not run: write
-the gate line, tell the coordinator, and go to `retry-sweep`.
+**The agent gate.** A base pass@1 under 0.800 means
+`bonsai2-pq2-smoke-xhigh` and the blind row do not run: write the gate
+line, tell the coordinator, and go on with the second file's blocks.
 
-## `qwen38-oblit-q4km-forced-rerun`
+## `bonsai2-pq2-forced-rerun`
 
-The natural re-run of the problems where the budget fired and the
-answer failed, without the flag, at a generous budget. Follow run 21's
-block, `hardware/arrietty/benchmarks/bench21/AGENT.md`, section "The
-forced re-run blocks", steps 1 to 6, with these values:
+Follow run 21's block,
+`hardware/arrietty/benchmarks/bench21/AGENT.md`, section "The forced
+re-run blocks", steps 1 to 6, with the `bench24` paths, the
+`bonsai2-pq2-budget-xhigh` directory as the budget directory, and
+`EVALPLUS_MAX_NEW_TOKENS=30000`. Zero forced-failed problems: write
+that and start the next block. This block does not run when the fork
+has no budget flags.
 
-- budget directory:
-  `hardware/arrietty/benchmarks/bench24/results/qwen38-oblit-q4km-budget-medium`
-- this block's directory:
-  `hardware/arrietty/benchmarks/bench24/results/qwen38-oblit-q4km-forced-rerun`
-- `EVALPLUS_MAX_NEW_TOKENS=30000`
-- the same serve command as the block above, with the two reasoning
-  flags removed.
-
-Zero forced-failed problems: write that in `results.md` and
-`state.md`, skip the rest of the block, start the next.
-
-## `qwen38-oblit-q4km-smoke-medium`
+## `bonsai2-pq2-smoke-xhigh`
 
 Read `docs/methodology/mendel.md`, "The smoke" and "Window and
 budget".
 
-Serve the ladder's config, without `--cache-ram 0` and without a
-reasoning flag. Pin the harness window `oblit_q4km_window`:
-`oblit_q4km_clean` rounded down to a multiple of 4096, at or under
-65536, never smaller (owner rule, 2026-09-06). Write the window and its
-source in `state.md` before the smoke.
+Serve the primary file with its pick and `-c` from
+`bonsai2_27b_pq2_c`, no reasoning flag. Pin
+`bonsai2_pq2_window`: `bonsai2_pq2_clean` rounded down to a multiple of
+4096, at or under `-c`, never smaller (owner rule, 2026-09-06).
 
 ```bash
-SMOKE_MENDEL_CONTEXT_WINDOW=<oblit_q4km_window> benchmarks/mendel-smoke.sh \
-  qwen3.8-27b-oblit-q4km medium 2>&1 \
-  | tee hardware/arrietty/benchmarks/bench24/results/mendel-smoke-qwen38-oblit-q4km.log
+SMOKE_MENDEL_CONTEXT_WINDOW=<bonsai2_pq2_window> benchmarks/mendel-smoke.sh \
+  bonsai2-27b-pq2 xhigh 2>&1 \
+  | tee hardware/arrietty/benchmarks/bench24/results/mendel-smoke-bonsai2-pq2.log
 ```
 
 Pass is one commit, clean tree, no repetition loop, inside the cap. A
-fail means the blind row does not run; write the smoke line and go on.
-A server that dies during the smoke is a fail of this config, not a
-retry. After the smoke, read its session log for a thinking block:
-medium is thinking on, so most turns show one. No thinking block means
-the pi entry did not reach the server, and that is stop and ask.
+fail means the blind row does not run. After the smoke, read its
+session log for a thinking block; none means the pi entry did not
+reach the server, and that is stop and ask.
 
-## `qwen38-oblit-q4km-mendel-blind-medium`
+## `bonsai2-pq2-mendel-blind-xhigh`
 
 Read `docs/methodology/mendel.md`, whole, with "House rules for runs
-from this project" and "Comparing two builds of one model".
+from this project".
 
 simulator(mendel) blind, prompt v1.1, base tag `benchmark-blind-base`.
-The owner asked for blind before guided on this binary (owner,
-2026-09-17). Fixed: the server of the smoke unchanged, level medium.
-Derived: the window from `oblit_q4km_window`; `maxTokens` and
-`reserveTokens` 8192, the worker's pin; keep budget pi's default 20000
-when the window is above 65536, 8192 under it.
+Fixed: the server of the smoke unchanged, level xhigh. Derived: the
+window from `bonsai2_pq2_window`; `maxTokens` and `reserveTokens`
+8192; keep budget 8192 under a window of 65536, pi's default 20000
+above it.
 
 Before the run: `gh auth status` must pass, and `git stash clear` in
 `~/code/mendel-benchmark` (owner rule, 2026-09-12).
 
 ```bash
-cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<oblit_q4km_window> \
-  ./run-worker.sh qwen3.8-27b-oblit-q4km pi blind medium
+cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<bonsai2_pq2_window> \
+  ./run-worker.sh bonsai2-27b-pq2 pi blind xhigh
 ```
 
-Row `model` value: `qwen3.8-27b-oblit-q4km (OBLITERATUS Q4_K_M,
-medium, arrietty)`; `model_id` the repo and file at the revision;
-`hardware` `arrietty`. The config note carries the file and its
-revision, the llama.cpp version, `-c 65536`, the q8_0 cache, `-ngl
-<oblit_q4km_ngl>` of `n_layer` with the rest in host RAM, the VRAM cap
-of 13811 MiB with its owner date, the window, the reserve, the keep
-budget, the compaction count, the source block of each value, `vram
-16311 MiB`, the sampling defaults the file sets, the temperature and
-top_p from the run's `meta.json`, and the line "effort medium by owner
-overrule, 2026-09-17".
+Row `model` value: `bonsai2-27b-pq2 (prism-ml PQ2_0, xhigh,
+arrietty)`; `model_id` the repo and file at the revision; `hardware`
+`arrietty`. The config note carries the file and its revision, **the
+fork and its commit**, the `-c`, the cache type, the window, the
+reserve, the keep budget, the compaction count, the source block of
+each value, `vram 16311 MiB`, the sampling defaults the server
+applied, and the temperature and top_p from the run's `meta.json`.
+The fork belongs in the note of every row of this run: a reader who
+takes the stock binary gets garbage from these files.
 
 Verify `peak_context` with `benchmark/count-tool-calls.mjs` before the
 row commits, and put peak context and the tool-call count in
-`results.md` beside the score. This is the first row of this project
-served with weights in host RAM, so the tool-call count and the wall
-matter as much as the score. A row that ends on the model's own
-repetition loop is a valid partial. A server that dies mid-run is a
-row at the state it reached. The 300-minute wall gives a partial, which
-is a row and not a failure. After the run, `pkill -f "Mendel Daemon"`.
-
-Write `oblit_q4km_blind` in `state.md` with the score, the libraries
-done and the end reason.
+`results.md`. A row that ends on a repetition loop is a valid partial.
+The 300-minute wall gives a partial, which is a row. After the run,
+`pkill -f "Mendel Daemon"`.
 
 ## `retry-sweep`
 
-The blocks that waited on a human, oldest first. A run the machine
-killed was already resumed inside its block.
+The blocks that waited on a human, oldest first.
 
 ## Not in this run
 
-- Any other file of that repository, the `mmproj` file included.
-- Any other level. Medium is the only level of this run.
-- A guided simulator(mendel) row. The owner keeps it optional and the
-  coordinator decides it after the blind row (owner, 2026-09-17).
-- A `-c` other than 65536, an f16 KV cache, a drafter arm, any MLX or
-  LM Studio server, any other model.
-- Any change to the VRAM cap or to the margin on your own reading.
+- The F16 file, the `-dev` repository, the mmproj files, the MLX
+  build, the WebGPU space.
+- Any level but xhigh. The card says `low` is not supported, and
+  `medium` is not this run's question.
+- A drafter, a second cache type after each pick, any weight in host
+  RAM, any MLX or LM Studio server, any other model.
+- Any measurement taken with the stock llama.cpp binary.
+- Anything at all inside run 23's worktree, branch or run folder.
 
 ## After the run
 
