@@ -149,9 +149,17 @@ what says how much.
 4. **Prove the pair before any measurement.** Serve the config at a
    small `-c` and send one chat completion with `curl`, thinking on at
    xhigh. The answer must be coherent. Then read the server log for the
-   adapter: it must report the LoRA loaded, with its tensor count.
-   Garbage text, a refusal to load the adapter, or a silent load with
-   no adapter line is **stop and ask**.
+   adapter. It must print, from `llama-adapter.cpp`:
+
+   ```text
+   llama_adapter_lora_init_impl: loading lora adapter from '<path>' ...
+   llama_adapter_lora_init_impl: loaded 258 tensors from lora file
+   ```
+
+   plus a `LoRA buffer size = ... MiB` line per buffer. **258, not
+   129**: the log counts every tensor, and the publisher's 129 counts
+   the `lora_a`/`lora_b` pairs. Garbage text, a refusal to load the
+   adapter, or a silent load with no adapter line is **stop and ask**.
 5. `export EVALPLUS_PYTHON=...` as run 19's `machine-setup` says.
 6. **The corpus server**: `cd hardware/kamaji/research/run4/results &&
    python3 -m http.server 8089 --bind 127.0.0.1` in the background;
