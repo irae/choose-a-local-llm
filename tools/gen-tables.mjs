@@ -436,6 +436,12 @@ const mendelCtxUse = (r) => (Number(r.telemetry.compactions) || 0) * 100 + (Math
 function mendelRow(r, { test = '', top = {}, global = false } = {}) {
   const t = r.telemetry
   const k = (v) => (v == null || v === '' ? '—' : `${Math.round(Number(v) / 1000)}k`)
+  // Two readings of one run: what the model generated, and what the whole run
+  // billed. The second is mostly prompt-cache reads, so it is an API-cost
+  // figure, not a measure of work the GPU repeated.
+  const m = (v) => (v == null || v === '' ? '—' : `${(Number(v) / 1e6).toFixed(1)}M`)
+  const tokensCell = (t) =>
+    t.tokens_total ? `<span class="ctxuse">${k(t.tokens_out)}<br>${pill(m(t.tokens_total), 'gray')}</span>` : k(t.tokens_out)
   const bold = (text, set) => (set?.has(r) ? `**${text}**` : text)
   const done = r.libraries_done
   const cap = mendelCapped(r)
@@ -479,7 +485,7 @@ function mendelRow(r, { test = '', top = {}, global = false } = {}) {
     score,
     wall,
     ctxSpeed,
-    k(t.tokens_out),
+    tokensCell(t),
     ctx,
     bugsCell,
     twoLines(stats),
@@ -507,7 +513,7 @@ function twoLines(pills) {
 
 function mendelTable(rows, { test = false, global = false } = {}) {
   const header = [
-    `| Model / Config |${test ? ' Test |' : ''} Score | Wall | Ctx / speed | Tokens | Ctx use | Bugs | Stats |`,
+    `| Model / Config |${test ? ' Test |' : ''} Score | Wall | Ctx / speed | Out/Total | Ctx use | Bugs | Stats |`,
     `|---|${test ? '---|' : ''}--:|--:|--:|--:|--:|---|---|`,
   ]
   const capped = (r) => Math.min(Number(r.score_total), (100 * r.libraries_done) / 8)
