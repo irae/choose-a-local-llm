@@ -73,12 +73,15 @@ blocks run with a thinking budget when the server supports one.
 - `retry-sweep`
 
 The two agent rows run first, and the three EvalPlus groups follow in
-an order the coordinator sets (owner, 2026-09-18): the arm with the
-best agent score is scored first. The groups are `ptq1-f16`, `pq2-f16`
-and `ptq1`, and the list above holds the planning order. **At the close
-of `bonsai2-ptq1-f16-mendel-blind-xhigh`, ask the coordinator for the
-group order and use the answer.** Never reorder inside a group: a
-calibrate block feeds its budget block, which feeds its forced re-run.
+the order of their arms' agent scores, best first (owner, 2026-09-18).
+The groups are `ptq1-f16`, `pq2-f16` and `ptq1`; the list above holds
+the planning order. **You sort them yourself** at the close of
+`bonsai2-ptq1-f16-mendel-blind-xhigh`: read the blind score of each
+arm, order the groups by it, and write the order and the three scores
+in `state.md`. The `pq2-f16` arm scored 72 in this run. This is a sort
+of three numbers, not a pick, so it needs no coordinator. Never reorder
+inside a group: a calibrate block feeds its budget block, which feeds
+its forced re-run.
 
 The second file's two blocks sit between the EvalPlus work and the
 agent row on purpose: they are speed blocks, and every speed block runs
