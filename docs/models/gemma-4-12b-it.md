@@ -30,15 +30,15 @@ Every file of this model, on every machine that served it, with every run and a 
 ## Speed and context
 
 <!-- gen:model-curve:start -->
-| arm | 4K | 4K | 4K | 8K | 8K | 16K | 16K | 24K | 24K | 32K | 32K | 40K | 48K | 48K | 64K | 64K | 80K | 80K | 96K | 96K | 112K | 128K | 160K | 176K | 192K | 208K | 224K | 240K | 255K |
-|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| rtx-5060ti-16gb, NVFP4, f16 KV, no drafter | **49.55** |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | **41.57** |  |  |  |  |  |  |  |  |  | **33.11 (256K)** |
-| rtx-5060ti-16gb, UD-Q4_K_XL, f16 KV, no drafter | **47.39** |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | **40.26** |  |  |  |  |  |  |  |  |  | **32.18 (256K)** |
-| m1-max-32gb, LM Studio MLX 4-bit, retired, wired 24000 † |  |  | 34.19 |  |  |  | 32.05 |  |  |  | 30.59 |  |  |  | 27.08 |  |  |  |  | 24.52 |  | 23.23 |  |  |  |  |  |  |  |
-| m1-max-32gb, Q4_K_XL, f16 KV, no drafter, 2 slots, wired 25000 † |  | **24.98** |  | **24.14** |  | **22.83** |  |  | **21.53** | **20.57** |  | **19.51** |  | **18.63** |  | **16.93** |  | **15.72 (96K)** |  |  |  |  |  |  |  |  |  |  |  |
-| m1-max-32gb, Q4_K_XL, f16 KV, no drafter, 1 slot, wired 24000 † |  |  | 24.64 |  | 24.05 |  | 22.66 | 21.59 |  |  | 20.58 |  | 18.75 |  | 17.42 |  | 15.87 |  |  | 14.91 | 13.94 | 13.04 | 11.3 | 10.72 | 10.24 | 9.69 | 9.24 | 8.86 |  |
+| arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K | 128K | 160K | 192K | 208K | 240K | 256K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| rtx-5060ti-16gb, NVFP4, f16 KV, no drafter, -c 256K | <CurveCell value="49.55" served /> |  |  |  |  |  |  |  |  | <CurveCell value="41.57" served /> |  |  |  |  |  | <CurveCell value="33.11" served /> |
+| rtx-5060ti-16gb, UD-Q4_K_XL, f16 KV, no drafter, -c 256K | <CurveCell value="47.39" served /> |  |  |  |  |  |  |  |  | <CurveCell value="40.26" served /> |  |  |  |  |  | <CurveCell value="32.18" served /> |
+| m1-max-32gb, LM Studio MLX 4-bit, retired, wired 24000 † | <CurveCell value="34.19" /> |  | <CurveCell value="32.05" /> |  | <CurveCell value="30.59" /> |  |  | <CurveCell value="27.08" /> |  | <CurveCell value="24.52" /> | <CurveCell value="23.23" /> |  |  |  |  |  |
+| m1-max-32gb, Q4_K_XL, f16 KV, no drafter, 2 slots, -c 96K, wired 25000 † | <CurveCell value="24.98" served /> | <CurveCell value="24.14" served /> | <CurveCell value="22.83" served /> | <CurveCell value="21.53" served /> | <CurveCell value="20.57" served /> | <CurveCell value="19.51" served /> | <CurveCell value="18.63" served /> | <CurveCell value="16.93" served /> | <CurveCell value="15.72" served /> |  |  |  |  |  |  |  |
+| m1-max-32gb, Q4_K_XL, f16 KV, no drafter, 1 slot, wired 24000 † | <CurveCell value="24.64" /> | <CurveCell value="24.05" /> | <CurveCell value="22.66" /> | <CurveCell value="21.59" /> | <CurveCell value="20.58" /> |  | <CurveCell value="18.75" /> | <CurveCell value="17.42" /> | <CurveCell value="15.87" /> | <CurveCell value="14.91" /> | <CurveCell value="13.04" /> | <CurveCell value="11.3" /> | <CurveCell value="10.24" /> | <CurveCell value="9.69" /> | <CurveCell value="8.86" /> |  |
 
-The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
+The served arm of each config is in bold. A pill under a reading is the depth it was read at, where the arms of that column did not share one.
 
 † read with the context-creep tool of an earlier version of this project, not with `llama-benchy` on real text. The two methods do not give the same number. A reading stays until a re-run replaces it.
 <!-- gen:model-curve:end -->

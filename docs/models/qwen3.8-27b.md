@@ -39,25 +39,25 @@ Every file of this model, on every machine that served it, with every run and a 
 ## Speed and context
 
 <!-- gen:model-curve:start -->
-| arm | 4K | 4K | 8K | 8K | 16K | 16K | 22K | 24K | 24K | 26K | 28K | 32K | 40K | 47K | 48K | 48K | 51K | 55K | 56K | 63K | 64K | 64K | 80K | 96K | 112K | 128K | 144K | 160K |
-|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, MTP n-max 2 | 47.05 |  |  |  |  |  |  | 37.84 |  |  |  |  |  |  |  |  |  |  |  | 30.82 (64K) |  |  |  |  |  |  |  |  |
-| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 2 | 45.88 |  |  |  |  |  |  | 31.89 |  |  |  |  |  |  |  |  |  | 26.19 (56K) |  |  |  |  |  |  |  |  |  |  |
-| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, MTP n-max 3 | 41.42 |  |  |  |  |  |  | 37.61 |  |  |  |  |  |  |  |  |  | 28.57 (56K) |  |  |  |  |  |  |  |  |  |  |
-| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 3 | 37.33 |  |  |  |  |  |  | 30.8 |  |  |  |  |  | 31.58 (48K) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, MTP n-max 1 | 37.16 |  |  |  |  |  |  | 34.34 |  |  |  |  |  |  |  |  |  |  |  | 26.28 (64K) |  |  |  |  |  |  |  |  |
-| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 1 | 33.4 |  |  |  |  |  |  | 29.68 |  |  |  |  |  |  |  |  |  | 24.64 (56K) |  |  |  |  |  |  |  |  |  |  |
-| rtx-5060ti-16gb, UD-IQ3_S, f16 KV, no drafter | 29.96 |  |  |  |  |  |  | 27.21 |  |  |  |  |  |  |  |  | 24.34 (52K) |  |  |  |  |  |  |  |  |  |  |  |
-| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, no drafter | **29.43** |  |  |  |  |  |  | **25.89** |  |  |  |  |  |  |  |  |  |  |  | **21.13 (64K)** |  |  |  |  |  |  |  |  |
-| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, no drafter | **29.36** |  |  |  |  |  |  | **25.84** |  |  |  |  |  |  |  |  |  |  |  | **20.92 (64K)** |  |  |  |  |  |  |  |  |
-| rtx-5060ti-16gb, Q3_K_M (OBLITERATUS), q8_0 KV, no drafter | **22.67** |  |  |  |  |  |  | **20.65** |  |  |  |  |  |  |  |  |  |  |  | **16.74 (64K)** |  |  |  |  |  |  |  |  |
-| m1-max-32gb, Q4_K_M (bartowski), MTP n-max 3, f16 KV, wired 25000 † |  |  |  | 18.21 |  | 16.08 |  |  | 17.22 |  |  | 16.4 | 15.61 |  |  | 14.97 |  |  | 14.3 (72K) |  |  |  |  |  |  |  |  |  |
-| m1-max-32gb, 4-bit, f16 KV, no drafter, wired 24000 † |  |  | **17.1** |  | **16.4** |  | **10.23** | **14.79** |  | **15.19** | **15.29 (24K)** |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| m1-max-32gb, IQ3_S-mtp (ISTA GSQ-RCO), f16 KV, no drafter, wired 24000 † |  | 14.14 |  | 13.82 |  | 13.25 |  |  | 12.83 |  |  | 12.39 | 11.95 |  |  | 11.51 |  |  |  |  |  | 10.9 | 10.24 | 9.69 | 9.19 | 8.72 | 8.3 | 7.94 (160K) |
-| m1-max-32gb, Q4_K_M (bartowski), MTP n-max 3, f16 KV | 11.77 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 8.57 (72K) |  |  |  |  |  |  |  |
-| rtx-5060ti-16gb, Q4_K_M (OBLITERATUS), q8_0 KV, `-ngl 45` | **5.13** |  |  |  |  |  |  | **3.49** |  |  |  |  |  |  | **2.67** |  |  |  |  | **2.31 (64K)** |  |  |  |  |  |  |  |  |
+| arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K | 128K | 160K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, MTP n-max 2, -c 64K | <CurveCell value="47.05" /> |  |  | <CurveCell value="37.84" depth="24.0K" /> |  |  |  | <CurveCell value="30.82" depth="63.0K" /> |  |  |  |  |
+| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 2, -c 56K | <CurveCell value="45.88" /> |  |  | <CurveCell value="31.89" depth="24.0K" /> |  |  | <CurveCell value="26.19" depth="55.0K" /> |  |  |  |  |  |
+| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, MTP n-max 3, -c 56K | <CurveCell value="41.42" /> |  |  | <CurveCell value="37.61" depth="24.0K" /> |  |  | <CurveCell value="28.57" depth="55.0K" /> |  |  |  |  |  |
+| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 3, -c 48K | <CurveCell value="37.33" /> |  |  | <CurveCell value="30.8" depth="24.0K" /> |  |  | <CurveCell value="31.58" depth="47.0K" /> |  |  |  |  |  |
+| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, MTP n-max 1, -c 64K | <CurveCell value="37.16" /> |  |  | <CurveCell value="34.34" depth="24.0K" /> |  |  |  | <CurveCell value="26.28" depth="63.0K" /> |  |  |  |  |
+| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 1, -c 56K | <CurveCell value="33.4" /> |  |  | <CurveCell value="29.68" depth="24.0K" /> |  |  | <CurveCell value="24.64" depth="55.0K" /> |  |  |  |  |  |
+| rtx-5060ti-16gb, UD-IQ3_S, f16 KV, no drafter, -c 52K | <CurveCell value="29.96" /> |  |  | <CurveCell value="27.21" depth="24.0K" /> |  |  | <CurveCell value="24.34" depth="51.0K" /> |  |  |  |  |  |
+| rtx-5060ti-16gb, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, no drafter, -c 64K | <CurveCell value="29.43" served /> |  |  | <CurveCell value="25.89" depth="24.0K" served /> |  |  |  | <CurveCell value="21.13" depth="63.0K" served /> |  |  |  |  |
+| rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, no drafter, -c 64K | <CurveCell value="29.36" served /> |  |  | <CurveCell value="25.84" depth="24.0K" served /> |  |  |  | <CurveCell value="20.92" depth="63.0K" served /> |  |  |  |  |
+| rtx-5060ti-16gb, Q3_K_M (OBLITERATUS), q8_0 KV, no drafter, -c 64K | <CurveCell value="22.67" served /> |  |  | <CurveCell value="20.65" depth="24.0K" served /> |  |  |  | <CurveCell value="16.74" depth="63.0K" served /> |  |  |  |  |
+| m1-max-32gb, Q4_K_M (bartowski), MTP n-max 3, f16 KV, -c 72K, wired 25000 † |  | <CurveCell value="18.21" /> | <CurveCell value="16.08" /> | <CurveCell value="17.22" depth="24.0K" /> | <CurveCell value="16.4" /> | <CurveCell value="15.61" /> | <CurveCell value="14.97" depth="48.0K" /> | <CurveCell value="14.3" depth="56.0K" /> |  |  |  |  |
+| m1-max-32gb, 4-bit, f16 KV, no drafter, -c 24K, wired 24000 † |  | <CurveCell value="17.1" served /> | <CurveCell value="16.4" served /> | <CurveCell value="15.29" depth="28.0K" served /> |  |  |  |  |  |  |  |  |
+| m1-max-32gb, IQ3_S-mtp (ISTA GSQ-RCO), f16 KV, no drafter, -c 160K, wired 24000 † | <CurveCell value="14.14" /> | <CurveCell value="13.82" /> | <CurveCell value="13.25" /> | <CurveCell value="12.83" depth="24.0K" /> | <CurveCell value="12.39" /> | <CurveCell value="11.95" /> | <CurveCell value="11.51" depth="48.0K" /> | <CurveCell value="10.9" depth="64.0K" /> | <CurveCell value="10.24" /> | <CurveCell value="9.69" /> | <CurveCell value="8.72" /> | <CurveCell value="7.94" /> |
+| m1-max-32gb, Q4_K_M (bartowski), MTP n-max 3, f16 KV, -c 72K | <CurveCell value="11.77" /> |  |  |  |  |  |  | <CurveCell value="8.57" depth="64.0K" /> |  |  |  |  |
+| rtx-5060ti-16gb, Q4_K_M (OBLITERATUS), q8_0 KV, `-ngl 45`, -c 64K | <CurveCell value="5.13" served /> |  |  | <CurveCell value="3.49" depth="24.0K" served /> |  |  | <CurveCell value="2.67" depth="48.0K" served /> | <CurveCell value="2.31" depth="63.0K" served /> |  |  |  |  |
 
-The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
+The served arm of each config is in bold. A pill under a reading is the depth it was read at, where the arms of that column did not share one.
 
 † read with the context-creep tool of an earlier version of this project, not with `llama-benchy` on real text. The two methods do not give the same number. A reading stays until a re-run replaces it.
 <!-- gen:model-curve:end -->

@@ -34,16 +34,16 @@ Every file of this model, on every machine that served it, with every run and a 
 ## Speed and context
 
 <!-- gen:model-curve:start -->
-| arm | 4K | 8K | 16K | 24K | 25K | 32K | 33K | 40K | 41K | 42K | 44K | 46K | 48K | 49K | 50K | 52K | 54K | 56K | 58K | 64K | 66K | 82K | 98K | 115K | 119K | 128K | 207K | 239K |
-|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| rtx-5060ti-16gb, PQ2_0, f16 KV, no drafter | 46.3 |  |  | 40.5 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 32.2 |  |  |  |  | 25.1 (120K) |  |  |  |
-| rtx-5060ti-16gb, PQ2_0, q8_0 KV, no drafter | **46.0** |  |  | **38.2** |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | **28.2** |  |  |  |  |  |  | **14.5 (208K)** |  |
-| rtx-5060ti-16gb, PTQ1_0, q8_0 KV, no drafter | **41.7** |  |  | **34.9** |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | **26.5** |  |  |  |  |  |  |  | **12.8 (240K)** |
-| m1-max-32gb, 2-bit, f16 KV, no drafter (MLX), wired 24000 † | 24.5 | 24.2 | 22.9 | 22.0 |  | 20.5 |  | 18.6 |  | 18.66 | 12.1 | 11.89 | 11.33 |  | 18.36 | 18.09 | 17.64 | 17.69 | 17.27 |  |  |  |  |  |  |  |  |  |
-| m1-max-32gb, Q2_g64, f16 KV, no drafter (prism fork), wired 25000 † | 14.95 | 16.25 | 15.62 |  | 15.07 |  | 14.45 |  | 13.92 |  |  |  |  | 13.4 |  |  |  |  |  |  | 12.5 | 11.45 | 10.76 | 10.24 |  | 9.67 (128K) |  |  |
-| m1-max-32gb, Q4_0 KV + bias, no drafter (prism fork), wired 24000 † | 14.79 | 13.22 | 10.77 | 9.08 |  | 7.85 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K | 128K | 208K | 240K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| rtx-5060ti-16gb, PQ2_0, f16 KV, no drafter, -c 120K | <CurveCell value="46.3" /> |  |  | <CurveCell value="40.5" depth="24.0K" /> |  |  |  | <CurveCell value="32.2" depth="64.0K" /> |  |  | <CurveCell value="25.1" depth="119.0K" /> |  |  |
+| rtx-5060ti-16gb, PQ2_0, q8_0 KV, no drafter, -c 208K | <CurveCell value="46.0" served /> |  |  | <CurveCell value="38.2" depth="24.0K" served /> |  |  |  | <CurveCell value="28.2" depth="64.0K" served /> |  |  |  | <CurveCell value="14.5" served /> |  |
+| rtx-5060ti-16gb, PTQ1_0, q8_0 KV, no drafter, -c 240K | <CurveCell value="41.7" served /> |  |  | <CurveCell value="34.9" depth="24.0K" served /> |  |  |  | <CurveCell value="26.5" depth="64.0K" served /> |  |  |  |  | <CurveCell value="12.8" served /> |
+| m1-max-32gb, 2-bit, f16 KV, no drafter (MLX), wired 24000 † | <CurveCell value="24.5" /> | <CurveCell value="24.2" /> | <CurveCell value="22.9" /> | <CurveCell value="22.0" depth="24.0K" /> | <CurveCell value="20.5" depth="32.0K" /> | <CurveCell value="12.1" depth="44.0K" /> | <CurveCell value="17.69" depth="56.0K" /> | <CurveCell value="17.27" depth="58.0K" /> |  |  |  |  |  |
+| m1-max-32gb, Q2_g64, f16 KV, no drafter (prism fork), -c 128K, wired 25000 † | <CurveCell value="14.95" /> | <CurveCell value="16.25" /> | <CurveCell value="15.62" /> | <CurveCell value="15.07" depth="25.0K" /> | <CurveCell value="14.45" depth="33.0K" /> | <CurveCell value="13.92" depth="41.0K" /> | <CurveCell value="13.4" depth="49.0K" /> | <CurveCell value="12.5" depth="66.0K" /> | <CurveCell value="11.45" /> | <CurveCell value="10.76" /> | <CurveCell value="9.67" depth="128.0K" /> |  |  |
+| m1-max-32gb, Q4_0 KV + bias, no drafter (prism fork), wired 24000 † | <CurveCell value="14.79" /> | <CurveCell value="13.22" /> | <CurveCell value="10.77" /> | <CurveCell value="9.08" depth="24.0K" /> | <CurveCell value="7.85" depth="32.0K" /> |  |  |  |  |  |  |  |  |
 
-The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
+The served arm of each config is in bold. A pill under a reading is the depth it was read at, where the arms of that column did not share one.
 
 † read with the context-creep tool of an earlier version of this project, not with `llama-benchy` on real text. The two methods do not give the same number. A reading stays until a re-run replaces it.
 <!-- gen:model-curve:end -->

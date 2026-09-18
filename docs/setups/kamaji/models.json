@@ -229,7 +229,7 @@
       },
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S \\\n  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 188416 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b-iq3s`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build. Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20000 on the same build served at `-c 32768`: 0.945/0.927, eight empty of 164, in 615.6 minutes of active time. Same base score as the ISTA build on this Mac and a higher `plus` score, at a smaller budget. A re-run of the eight empty problems on 2026-09-16 proved every one as the output budget, with the answer still coming at 20000 tokens; none was recovered. That re-run adds 200 minutes to the wall. Mendel blind at effort xhigh: 90.5/100, complete 8/8, with an anomaly \u2014 the model merged `master` into its own branch mid-run and imported infrastructure the blind base hides, so the row is not strictly base-comparable. Mendel guided at effort xhigh: 62.5 displayed of 76 raw, a valid partial at the 300-minute wall cap, 5 of 8 libraries. The drafter arms are pending.",
+      "note": "pi id `qwen3.8-27b-iq3s`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build. Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20000 on the same build served at `-c 32768`: 0.945/0.927, eight empty of 164, in 615.6 minutes of active time. Same base score as the ISTA build on this Mac and a higher `plus` score, at a smaller budget. A re-run of the eight empty problems on 2026-09-16 proved every one as the output budget, with the answer still coming at 20000 tokens; none was recovered. That re-run adds 200 minutes to the wall. Mendel blind at effort xhigh: 90.5/100, complete 8/8, with an anomaly — the model merged `master` into its own branch mid-run and imported infrastructure the blind base hides, so the row is not strictly base-comparable. Mendel guided at effort xhigh: 62.5 displayed of 76 raw, a valid partial at the 300-minute wall cap, 5 of 8 libraries. The drafter arms are pending.",
       "pi": {
         "provider": "llama",
         "id": "qwen3.8-27b-iq3s",
@@ -436,7 +436,7 @@
       },
       "hidden": false,
       "abandoned": {
-        "marker": "\ud83d\udc80",
+        "marker": "💀",
         "page": "../gemma-4-26b-a4b-mlx-retired.md",
         "reason": "This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task."
       },
@@ -549,7 +549,7 @@
       },
       "hidden": false,
       "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y",
-      "note": "LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only \u2014 in multi-turn tool work it loops on the thought channel.",
+      "note": "LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bit`): thinking is off and the API cannot turn it on (probed 2026-09-04). Single-turn work only — in multi-turn tool work it loops on the thought channel.",
       "pi": {
         "provider": "lmstudio",
         "id": "gemma-4-12b-it-mlx",
@@ -557,7 +557,7 @@
         "maxTokens": 8192
       },
       "abandoned": {
-        "marker": "\ud83d\udc80",
+        "marker": "💀",
         "page": "../lmstudio-retired.md",
         "reason": "LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned."
       }
@@ -746,7 +746,7 @@
       "note": "Extra body per request: `{\"chat_template_kwargs\":{\"enable_thinking\":false}}`. Curve shared with the thinking-on row: same server, same weights."
     },
     {
-      "config": "Ternary-Bonsai-27B, GGUF\u2075, q4_0 KV + bias, thinking on",
+      "config": "Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on",
       "maxCtx": "33k",
       "gatedBy": "speed",
       "tokShallow": "14.7",
@@ -777,7 +777,7 @@
       }
     },
     {
-      "config": "Ternary-Bonsai-27B, GGUF\u2075, q4_0 KV + bias, 2 slots, thinking on",
+      "config": "Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on",
       "maxCtx": "2x48k",
       "gatedBy": "speed",
       "tokShallow": "14.9",
@@ -805,7 +805,7 @@
       "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism-2x \\\n  -ngl 999 -fa on -c 98304 --parallel 2 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081"
     },
     {
-      "config": "Ternary-Bonsai-27B, GGUF\u2075, f16 KV, no drafter, thinking on",
+      "config": "Ternary-Bonsai-27B, GGUF⁵, f16 KV, no drafter, thinking on",
       "maxCtx": "131k",
       "gatedBy": "mem",
       "tokShallow": "15.0",
@@ -868,7 +868,7 @@
           "sub": "99% completion"
         },
         "multiAgent": {
-          "value": "2\u00d748K",
+          "value": "2×48K",
           "label": "two fork slots, 10.9 GB at the floor"
         },
         "weights": {
@@ -898,7 +898,7 @@
       "mendelUntrusted": [
         {
           "serving": "lm-studio",
-          "marker": "\ud83d\udc80",
+          "marker": "💀",
           "page": "../lmstudio-retired.md",
           "reason": "LM Studio is retired here: every agent run ended with zero commits."
         }
@@ -940,7 +940,7 @@
           "label": "EvalPlus, thinking on"
         },
         "slots": {
-          "value": "2\u00d782K",
+          "value": "2×82K",
           "label": "two llama slots at f16 KV, 13.8 GB"
         },
         "shallowLlama": {
@@ -1056,7 +1056,7 @@
         {
           "serving": "llama-server",
           "branch": "high-guided-v3",
-          "marker": "\u23f3",
+          "marker": "⏳",
           "page": "../index.md#the-wired-limit-25000",
           "reason": "this row ran on a 122880-token harness window; at wired 25000 the q8_0 arm serves `-c 98304`, so the window is out of reach. The score stands as a record; a re-run at the served window is pending, at low priority.",
           "linkText": "What the machine serves at wired 25000"
@@ -1440,8 +1440,9 @@
         "57362": 35.03,
         "65578": 33.64
       },
-      "run": "bench14",
-      "method": "benchy"
+      "run": "bench15",
+      "method": "creep",
+      "wired": 25000
     },
     {
       "model": "qwen3.6-35b-a3b",

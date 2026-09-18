@@ -28,19 +28,19 @@ Every file of this model, on every machine that served it, with every run and a 
 ## Speed and context
 
 <!-- gen:model-curve:start -->
-| arm | 4K | 4K | 8K | 16K | 16K | 24K | 32K | 33K | 37K | 40K | 48K | 48K | 56K | 64K | 64K | 80K | 95K | 96K |
-|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| m1-max-32gb, UD-Q4_K_XL, MTP n-max 3, f16 KV, wired 25000 † |  | 69.12 | 71.34 |  | 65.66 | 61.03 | 56.52 |  |  | 52.6 (40K) |  |  |  |  |  |  |  |  |
-| rtx-5060ti-16gb, UD-Q4_K_XL, MTP n-max 2, q8_0 KV, `--n-cpu-moe 21` | **61.16** |  |  |  |  |  |  |  |  |  |  |  |  | **50.04** |  |  | **45.42 (96K)** |  |
-| rtx-5060ti-16gb, UD-Q4_K_XL, MTP n-max 1, q8_0 KV, `--n-cpu-moe 19` | 60.6 |  |  |  |  |  |  |  |  |  |  |  |  | 44.12 |  |  | 37.92 (96K) |  |
-| rtx-5060ti-16gb, UD-Q4_K_XL, MTP n-max 3, q8_0 KV, `--n-cpu-moe 21` | 57.85 |  |  |  |  |  |  |  |  |  |  |  |  | 47.25 |  |  | 46.76 (96K) |  |
-| rtx-5060ti-16gb, UD-Q4_K_XL, q8_0 KV, no drafter, `--n-cpu-moe 17` | 55.81 |  |  |  |  |  |  |  |  |  |  |  |  | 42.52 |  |  | 37.8 (96K) |  |
-| m1-max-32gb, 4-bit, f16 KV, no drafter, wired 24000 † | **53.3** |  |  | **49.6** |  |  |  | **42.2** | **42.0 (36K)** |  |  |  |  |  |  |  |  |  |
-| m1-max-32gb, UD-Q4_K_XL, f16 KV, no drafter |  | 50.49 | 48.41 |  | 46.17 | 43.71 | 41.5 |  |  | 39.32 |  | 37.2 | 35.03 |  | 33.64 (64K) |  |  |  |
-| m1-max-32gb, UD-Q4_K_XL, MTP n-max 3, q8_0 KV, wired 25000 † |  |  | 44.1 |  | 31.15 | 24.16 | 19.64 |  |  | 16.55 |  |  | 12.58 |  | 11.23 |  |  | 7.86 (96K) |
-| m1-max-32gb, UD-Q4_K_XL, MTP n-max 3, q8_0 KV | **43.68** |  |  |  |  |  |  |  |  |  | **19.23** |  |  |  |  | **13.01 (96K)** |  |  |
+| arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| m1-max-32gb, UD-Q4_K_XL, MTP n-max 3, f16 KV, -c 40K, wired 25000 † | <CurveCell value="69.12" /> | <CurveCell value="71.34" /> | <CurveCell value="65.66" /> | <CurveCell value="61.03" /> | <CurveCell value="56.52" depth="32.0K" /> | <CurveCell value="52.6" depth="40.0K" /> |  |  |  |  |
+| rtx-5060ti-16gb, UD-Q4_K_XL, MTP n-max 2, q8_0 KV, `--n-cpu-moe 21`, -c 96K | <CurveCell value="61.16" served /> |  |  |  |  |  |  | <CurveCell value="50.04" served /> |  | <CurveCell value="45.42" depth="95.0K" served /> |
+| rtx-5060ti-16gb, UD-Q4_K_XL, MTP n-max 1, q8_0 KV, `--n-cpu-moe 19`, -c 96K | <CurveCell value="60.6" /> |  |  |  |  |  |  | <CurveCell value="44.12" /> |  | <CurveCell value="37.92" depth="95.0K" /> |
+| rtx-5060ti-16gb, UD-Q4_K_XL, MTP n-max 3, q8_0 KV, `--n-cpu-moe 21`, -c 96K | <CurveCell value="57.85" /> |  |  |  |  |  |  | <CurveCell value="47.25" /> |  | <CurveCell value="46.76" depth="95.0K" /> |
+| rtx-5060ti-16gb, UD-Q4_K_XL, q8_0 KV, no drafter, `--n-cpu-moe 17`, -c 96K | <CurveCell value="55.81" /> |  |  |  |  |  |  | <CurveCell value="42.52" /> |  | <CurveCell value="37.8" depth="95.0K" /> |
+| m1-max-32gb, 4-bit, f16 KV, no drafter, -c 36K, wired 24000 † | <CurveCell value="53.3" served /> |  | <CurveCell value="49.6" served /> |  | <CurveCell value="42.2" depth="33.0K" served /> | <CurveCell value="42.0" depth="37.0K" served /> |  |  |  |  |
+| m1-max-32gb, UD-Q4_K_XL, f16 KV, no drafter, -c 64K, wired 25000 † | <CurveCell value="50.49" /> | <CurveCell value="48.41" /> | <CurveCell value="46.17" /> | <CurveCell value="43.71" /> | <CurveCell value="41.5" depth="32.0K" /> | <CurveCell value="39.32" depth="40.0K" /> | <CurveCell value="37.2" /> | <CurveCell value="33.64" /> |  |  |
+| m1-max-32gb, UD-Q4_K_XL, MTP n-max 3, q8_0 KV, -c 96K, wired 25000 † |  | <CurveCell value="44.1" /> | <CurveCell value="31.15" /> | <CurveCell value="24.16" /> | <CurveCell value="19.64" depth="32.0K" /> | <CurveCell value="16.55" depth="40.0K" /> |  | <CurveCell value="11.23" /> |  | <CurveCell value="7.86" depth="96.0K" /> |
+| m1-max-32gb, UD-Q4_K_XL, MTP n-max 3, q8_0 KV, -c 96K | <CurveCell value="43.68" served /> |  |  |  |  |  | <CurveCell value="19.23" served /> |  | <CurveCell value="13.01" served /> |  |
 
-The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
+The served arm of each config is in bold. A pill under a reading is the depth it was read at, where the arms of that column did not share one.
 
 † read with the context-creep tool of an earlier version of this project, not with `llama-benchy` on real text. The two methods do not give the same number. A reading stays until a re-run replaces it.
 <!-- gen:model-curve:end -->

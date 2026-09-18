@@ -904,6 +904,32 @@ function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHard
   return [...header, ...body].join('\n')
 }
 
+// The depth grid of every curve table. A reading snaps to its nearest
+// bucket, so arms that served different `-c` values line up in one column
+// instead of each claiming its own. The exact depth stays in the data and
+// reaches the page as a pill, but only where a bucket holds more than one.
+const CURVE_BUCKETS = [
+  4096, 8192, 16384, 24576, 32768, 40960, 49152, 65536, 81920, 98304,
+  131072, 163840, 196608, 212992, 245760, 262144,
+]
+
+function curveBucket(depth) {
+  return CURVE_BUCKETS.reduce((best, b) => (Math.abs(b - depth) < Math.abs(best - depth) ? b : best), CURVE_BUCKETS[0])
+}
+
+// Every cell of a curve table is built here and nowhere else, and this
+// checks the result. A hand-written cell, or a new shape invented later,
+// fails the build instead of reaching the page.
+const CURVE_CELL = /^<CurveCell value="\d+(\.\d+)?"( depth="\d+(\.\d+)?K")?( served)? \/>$/
+
+function curveCell(value, { depth = '', served = false } = {}) {
+  const n = Number(value)
+  const shown = Number.isFinite(n) ? String(n.toFixed(n >= 100 ? 0 : 2).replace(/0$/, '')) : String(value)
+  const cell = `<CurveCell value="${shown}"${depth ? ` depth="${depth}"` : ''}${served ? ' served' : ''} />`
+  if (!CURVE_CELL.test(cell)) throw new Error(`curve cell "${cell}" does not match the one allowed shape`)
+  return cell
+}
+
 // One decode curve per model page: every arm that was measured for this
 // model, on every machine, at every depth that was read. The machine is part
 // of the arm, because one table mixes them. The data lives in `curves` in
@@ -916,32 +942,47 @@ function renderModelCurve(slug, datas) {
       .map((c) => ({ ...c, machine: data.hardwareSlug })),
   )
   if (!arms.length) return 'No decode curve recorded yet.'
-  const depths = [...new Set(arms.flatMap((a) => Object.keys(a.points || {})).map(Number))].sort((x, y) => x - y)
-  const label = (d) => (d >= 1024 ? `${Math.round(d / 1024)}K` : String(d))
-  const shallow = (a) => {
-    const first = depths.find((d) => (a.points || {})[String(d)] != null)
-    return first == null ? -Infinity : Number(a.points[String(first)])
-  }
-  const ordered = [...arms].sort((a, b) => shallow(b) - shallow(a))
+  const label = (d) => `${Math.round(d / 1024)}K`
+  // The pill exists to tell two readings of one bucket apart, so it carries
+  // a decimal where the rounded label would not.
+  const pill = (d) => `${(d / 1024).toFixed(1)}K`
+  // Bucket every reading first, so a column knows whether its readings came
+  // from one depth or several before any cell is written.
+  const binned = arms.map((a) => {
+    const bins = new Map()
+    for (const [depth, value] of Object.entries(a.points || {})) {
+      const b = curveBucket(Number(depth))
+      const prev = bins.get(b)
+      if (!prev || Number(depth) > prev.depth) bins.set(b, { depth: Number(depth), value })
+    }
+    return { ...a, bins }
+  })
+  const buckets = [...new Set(binned.flatMap((a) => [...a.bins.keys()]))].sort((x, y) => x - y)
+  const mixed = new Set(
+    buckets.filter((b) => new Set(binned.map((a) => a.bins.get(b)?.depth).filter(Boolean).map(pill)).size > 1),
+  )
   let anyCreep = false
-  const rows = ordered.map((a) => {
+  const shallowOf = (a) => {
+    const first = buckets.find((b) => a.bins.has(b))
+    return first == null ? -Infinity : Number(a.bins.get(first).value)
+  }
+  const rows = [...binned].sort((a, b) => shallowOf(b) - shallowOf(a)).map((a) => {
     const creep = a.method === 'creep'
     if (creep) anyCreep = true
-    const wired = creep && a.wired ? `, wired ${a.wired}` : ''
-    const name = `${a.machine}, ${a.arm}${wired}${creep ? ' †' : ''}`
-    const cells = depths.map((d) => {
-      const v = (a.points || {})[String(d)]
-      if (v == null) return ''
-      const n = Number(v)
-      const shown = Number.isFinite(n) ? n.toFixed(n >= 100 ? 0 : 2).replace(/0$/, '') : String(v)
-      const text = a.c && a.cAt && String(a.cAt) === String(d) ? `${shown} (${label(a.c)})` : shown
-      return a.served ? `**${text}**` : text
+    const parts = [a.machine, a.arm]
+    if (a.c) parts.push(`-c ${label(a.c)}`)
+    if (creep && a.wired) parts.push(`wired ${a.wired}`)
+    const name = `${parts.join(', ')}${creep ? ' †' : ''}`
+    const cells = buckets.map((b) => {
+      const hit = a.bins.get(b)
+      if (!hit) return ''
+      return curveCell(hit.value, { depth: mixed.has(b) ? pill(hit.depth) : '', served: a.served })
     })
     return `| ${name} | ${cells.join(' | ')} |`
   })
   const legend = [
     '',
-    'The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.',
+    'The served arm of each config is in bold. A pill under a reading is the depth it was read at, where the arms of that column did not share one.',
   ]
   if (anyCreep) {
     legend.push(
@@ -950,8 +991,8 @@ function renderModelCurve(slug, datas) {
     )
   }
   return [
-    `| arm | ${depths.map(label).join(' | ')} |`,
-    `|---|${depths.map(() => '--:').join('|')}|`,
+    `| arm | ${buckets.map(label).join(' | ')} |`,
+    `|---|${buckets.map(() => '--:').join('|')}|`,
     ...rows,
     ...legend,
   ].join('\n')
@@ -1197,6 +1238,31 @@ writeBlock('docs/benchmarks/mendel.md', MENDEL_CLOUD_START, MENDEL_CLOUD_END, re
 writeBlock('docs/benchmarks/mendel.md', MENDEL_GUIDED_START, MENDEL_GUIDED_END, mendelTable(currentPromptVersion(guidedRunsAll), { global: true }))
 writeBlock('docs/benchmarks/mendel.md', MENDEL_GUIDED_CLOUD_START, MENDEL_GUIDED_CLOUD_END, renderMendelGuidedCloud(cloudGuided))
 writeBlock('docs/benchmarks/mendel.md', MENDEL_STALE_START, MENDEL_STALE_END, renderMendelStale(blindRunsAll, guidedRunsAll))
+
+// The cell shapes the pages are allowed to carry. Every one of them is built
+// by a function above, so a cell in any other shape came from a hand edit or
+// from an agent that invented one, and it fails the build.
+const CELL_SHAPES = [
+  ['CurveCell', CURVE_CELL],
+  ['TokCell', /^<TokCell shallow="[^"]+" deep="[^"]+"( cap="[^"]*")?( stale)?( top-shallow)?( top-deep)? \/>$/],
+]
+{
+  const bad = []
+  for (const file of globSync('docs/**/*.md')) {
+    const text = readFileSync(file, 'utf8')
+    for (const [name, shape] of CELL_SHAPES) {
+      for (const m of text.matchAll(new RegExp(`<${name}[^>]*/>`, 'g'))) {
+        if (!shape.test(m[0])) bad.push(`${file}: ${m[0]}`)
+      }
+    }
+  }
+  if (bad.length) {
+    console.error('cell shape check failed: a cell is not in the one shape its renderer writes.')
+    for (const b of bad.slice(0, 20)) console.error('  ' + b)
+    if (bad.length > 20) console.error(`  ... and ${bad.length - 20} more`)
+    process.exit(1)
+  }
+}
 
 if (CHECK && drift) process.exit(1)
 if (!CHECK) console.log('tables generated from docs/setups/*/models.json')

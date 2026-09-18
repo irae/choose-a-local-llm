@@ -232,6 +232,22 @@
   vertical-align: middle;
 }
 
+/* Decode-curve cell: the reading, and under it the exact depth when the
+   column's bucket holds more than one. The stack is tight, so a column with
+   pills is no taller than one without. */
+.vp-doc .cc {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15em;
+  vertical-align: middle;
+}
+
+.vp-doc .cc-value {
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
 /* Mendel page tables: a group of pills wraps onto two lines by width;
    the context-use cell stacks its overflow reading. */
 .vp-doc .pills {

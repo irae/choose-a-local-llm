@@ -25,13 +25,13 @@ Every file of this model, on every machine that served it, with every run and a 
 ## Speed and context
 
 <!-- gen:model-curve:start -->
-| arm | 4K | 4K | 8K | 16K | 16K | 24K | 25K | 32K | 33K | 48K | 49K | 60K | 62K | 64K | 64K | 66K | 68K | 70K | 80K | 95K | 96K | 112K | 128K | 144K | 160K | 176K | 192K |
-|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| m1-max-32gb, UD-Q4_K_XL, MTP, f16 KV, wired 24000 † |  | 61.25 | 64.95 |  | 56.65 | 52.72 |  | 46.46 |  | 41.04 |  |  |  |  | 36.22 |  |  |  | 33.25 |  | 28.73 | 26.38 | 25.17 | 22.07 | 21.25 | 20.73 | 17.3 (208K) |
-| rtx-5060ti-16gb, NVFP4Q8, f16 KV, `--n-cpu-moe 7` | **58.77** |  |  |  |  |  |  |  |  |  |  |  |  | **49.56** |  |  |  |  |  | **45.59 (96K)** |  |  |  |  |  |  |  |
-| m1-max-32gb, 4-bit, f16 KV, no drafter, wired 24000 † | 51.1 |  |  | 43.5 |  |  | 39.6 |  | 35.6 |  | 28.8 | 24.96 | 13.44 | 23.91 |  | 13.07 | 23.08 | 12.83 (64K) |  |  |  |  |  |  |  |  |  |
+| arm | 4K | 8K | 16K | 24K | 32K | 48K | 64K | 80K | 96K | 128K | 160K | 192K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| m1-max-32gb, UD-Q4_K_XL, MTP, f16 KV, -c 208K, wired 24000 † | <CurveCell value="61.25" /> | <CurveCell value="64.95" /> | <CurveCell value="56.65" /> | <CurveCell value="52.72" depth="24.0K" /> | <CurveCell value="46.46" depth="32.0K" /> | <CurveCell value="41.04" depth="48.0K" /> | <CurveCell value="36.22" depth="64.0K" /> | <CurveCell value="33.25" /> | <CurveCell value="28.73" depth="96.0K" /> | <CurveCell value="25.17" /> | <CurveCell value="21.25" /> | <CurveCell value="17.3" /> |
+| rtx-5060ti-16gb, NVFP4Q8, f16 KV, `--n-cpu-moe 7`, -c 96K | <CurveCell value="58.77" served /> |  |  |  |  |  | <CurveCell value="49.56" depth="64.0K" served /> |  | <CurveCell value="45.59" depth="95.0K" served /> |  |  |  |
+| m1-max-32gb, 4-bit, f16 KV, no drafter, -c 64K, wired 24000 † | <CurveCell value="51.1" /> |  | <CurveCell value="43.5" /> | <CurveCell value="39.6" depth="24.5K" /> | <CurveCell value="35.6" depth="33.0K" /> | <CurveCell value="28.8" depth="49.0K" /> | <CurveCell value="12.83" depth="70.0K" /> |  |  |  |  |  |
 
-The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
+The served arm of each config is in bold. A pill under a reading is the depth it was read at, where the arms of that column did not share one.
 
 † read with the context-creep tool of an earlier version of this project, not with `llama-benchy` on real text. The two methods do not give the same number. A reading stays until a re-run replaces it.
 <!-- gen:model-curve:end -->
