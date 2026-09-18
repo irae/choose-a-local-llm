@@ -37,6 +37,9 @@ happen, and the handing-over section at the end.
 | `bonsai2_pq2_f16_blind` | 72/100, worst defect MEDIUM, end_reason complete | `bonsai2-pq2-mendel-blind-xhigh-f16` |
 | `bonsai2_ptq1_f16_c` | 139264 | `bonsai2-ptq1-f16-kvpick` |
 | `bonsai2_ptq1_f16_clean` | 138240 | `sweep-bonsai2-ptq1-f16` |
+| `bonsai2_ptq1_window` | 241664 | `bonsai2-ptq1-mendel-blind-xhigh` |
+| `bonsai2_ptq1_blind` | 57.5/100, worst defect CRITICAL, end_reason complete | `bonsai2-ptq1-mendel-blind-xhigh` |
+| `bonsai2_ptq1_f16_window` | 135168 | `bonsai2-ptq1-f16-mendel-blind-xhigh` |
 
 Planning estimate, not a result: about 34 MiB of KV per 1024 tokens at
 q8_0, from the `qwen35` architecture. With weights of about 6.7 GiB,
