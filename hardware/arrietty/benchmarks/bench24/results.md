@@ -256,3 +256,47 @@ VRAM flat across every depth (15837 MiB), no swap growth. Every depth clears the
 Files: `results/benchy-bonsai2-ptq1-q8.md`, `results/benchy-bonsai2-ptq1-q8.out.log`, `results/benchy-bonsai2-ptq1-q8-vm.log`, `results/server-sweep-ptq1-q8.log`.
 
 **A table and no pick.**
+
+## `bonsai2-pq2-mendel-blind-xhigh-f16`
+
+`model`: `bonsai2-27b-pq2-f16 (prism-ml PQ2_0, xhigh, arrietty)`. `model_id`: `prism-ml/Ternary-Bonsai-2-27B-gguf`, file `Ternary-Bonsai-2-27B-PQ2_0.gguf`, revision `6ed5e12bf84b7a63069882c91dd9e9218647d17b`. `hardware`: `arrietty`.
+
+Config note: fork `PrismML-Eng/llama.cpp` release `prism-b10685-7dffb15` (commit `7dffb158d`) — the stock llama.cpp binary produces garbage on this file; `-c 122880`, cache type **f16** (`bonsai2-pq2-f16-kvpick`); window 118784 (`bonsai2_pq2_f16_clean` 121856 rounded to a multiple of 4096, never the q8_0 row's window); reserve 8192, keep-recent pi's default (window > 65536); 1 compaction; `vram 16311 MiB`; sampling as the server applies it, temperature 1.0, top_p 0.95, top_k 20, min_p 0.05. **No smoke: the same file passed its smoke at q8_0 in this run (owner, 2026-09-18).**
+
+Branch `bonsai2-27b-pq2-f16-xhigh-issue-13`, base commit `2652ed6c`. Started `2026-09-18T12:45:31Z`, ended `2026-09-18T14:00:15Z`, wall 1:14:44. `end_reason`: complete. Loop flag: ok, worst ratio 0.35 (thinking). 13 commits, 1 compaction (at threshold, `2026-09-18T13:25:29Z`). 0 nudges, 0 retries.
+
+| field | value |
+|---|--:|
+| score | 72/100 |
+| tasks | 1/1 (single blind task) |
+| worst defect | MEDIUM |
+| stop reason | complete |
+| tool calls | 230 |
+| peak ctx | 110354/118784 (92.9%) |
+| known events | 1 compaction |
+| elapsed | 1:14:44 |
+
+`peak_context` verified with `benchmark/count-tool-calls.mjs` against the session log: `tool_calls 230, assistant_msgs 231, peak_context 110354`. This is the peak over the session, not the post-compaction figure the worker's own `contextUsage.tokens` (99991) reports — the rule is never the value after a compaction.
+
+**Score: 72/100.** Scored by a judgment subagent from the evidence pack, the session log, and the worktree diff — never from the model's own claims. **Correction**: the subagent's own final line claimed 78/100, but its ten-criterion breakdown sums to 72; this run recomputed the sum and used the verified total, 72, not the subagent's unsupported round-up.
+
+**Worst defect: MEDIUM.** The chalk swap keeps `enableColor` forcing (`cli-printer.js:18`, `this._colorEnabled = options.enableColor !== false`; `cli.js:55` still passes `enableColor: true`), against the blind prompt's requirement that color follow Node's own defaults with no forced enable/disable. **The CRITICAL exit-hook regression from the sibling q8_0 row does not repeat here** — `validate-manifest.js` switches cleanly to `fs.mkdtempSync` with no exit hook (confirmed in the worktree diff).
+
+Per-criterion breakdown (criterion / max / scored / evidence):
+
+| # | criterion | max | scored | evidence |
+|--:|---|--:|--:|---|
+| 1 | Bugs remaining | 25 | 19 | One medium bug, the chalk `enableColor` forcing above. Trap A passes clean (`trap_a.ok: true`). |
+| 2 | Task completion | 20 | 15 | 7/8 libraries fully done; `mendel-requirify` still requires `rimraf` in two test files and its `package.json` (trap B missed, `static_completeness.stale_requires`/`stale_package_json`). |
+| 3 | node_modules pruned | 8 | 7 | Lockfile shrank by 96 lines; `pnpm install` run and committed, though its output was piped through `tail`. |
+| 4 | Prettier/ESLint | 5 | 3 | ESLint clean; Prettier fails on `TASKS.md` only (`runtime_checks.prettier.ok: false`). Model self-ran lint once (`lint_self_runs: 1`). |
+| 5 | Commit craft | 12 | 4 | All 13 commits `fix:`, none `chore`; 2 multi-package commits; `git add -A` used in every commit (no `--no-verify`, no TASKS.md leak). |
+| 6 | Right the first time | 8 | 8 | No repair/fixup commits; 0 model nudges. |
+| 7 | Test discipline | 10 | 8 | `full_suite_runs: 7` across 13 commits, roughly every 2 commits — denser than the every-5 mandate. |
+| 8 | House conventions | 5 | 4 | Minimal, style-matched diff (39 files); one explanatory drive-by comment. |
+| 9 | Task list | 4 | 3 | Not directly inspectable from the evidence pack; session log shows a per-package commit cadence consistent with progressive discovery. |
+| 10 | Truncated noisy commands | 3 | 1 | `truncation_share: 55%` (42/76 noisy commands piped through tail/head). |
+
+Sum 72, exact (subagent's own arithmetic; its reported headline of 78 was not supported and is not used).
+
+Files: `results/mendel-blind-bonsai2-pq2-f16.out.log`, `results/mendel-blind-bonsai2-pq2-f16-evidence.json`, session `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-f16-xhigh-blind-session.jsonl`, meta `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-f16-xhigh-blind-meta.json`.
