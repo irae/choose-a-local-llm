@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { readFileSync, statSync, writeFileSync, existsSync } from 'node:fs'
 import { globSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 
@@ -325,6 +325,44 @@ function currentPromptVersion(rows) {
   const latest = rows.map((r) => r.prompt_version).sort((a, b) => num(a) - num(b)).at(-1)
   return rows.filter((r) => r.prompt_version === latest)
 }
+
+// A run reaches the site through four mirrored artifacts: the CSV feeds the
+// per-model and per-binary tables, the JSON feeds the site-wide tables, and
+// the two report HTML files are served whole. A run written to one and not
+// the others shows up on some pages and not others, so the counts must agree
+// before anything is generated. EDITOR.md, "How to import a simulator(mendel)
+// run", says how to satisfy this.
+function checkMendelImport() {
+  const countCsv = (f) => parseCsv(readFileSync(f, 'utf8')).length
+  const countJson = (f) => JSON.parse(readFileSync(f, 'utf8')).runs.length
+  const pairs = [
+    ['blind', 'benchmarks/mendel/results.csv', 'benchmarks/mendel/results.json', 'benchmarks/mendel/report.html'],
+    ['guided', 'benchmarks/mendel/results-guided.csv', 'benchmarks/mendel/results-guided.json', 'benchmarks/mendel/report-guided.html'],
+  ]
+  const errors = []
+  for (const [test, csv, json, html] of pairs) {
+    if (!existsSync(csv) || !existsSync(json)) continue
+    const inCsv = countCsv(csv)
+    const inJson = countJson(json)
+    if (inCsv !== inJson) {
+      errors.push(`${test}: ${csv} has ${inCsv} runs, ${json} has ${inJson}`)
+      continue
+    }
+    if (!existsSync(html)) continue
+    // The report HTML is generated from the JSON, so an HTML older than the
+    // JSON is a report that never saw the newest run.
+    if (statSync(html).mtimeMs < statSync(json).mtimeMs) {
+      errors.push(`${test}: ${html} is older than ${json}; generate-report.mjs did not run after the import`)
+    }
+  }
+  if (!errors.length) return
+  console.error('simulator import was partial: the mirrored artifacts do not agree.')
+  for (const e of errors) console.error('  ' + e)
+  console.error('Fix: EDITOR.md, "How to import a simulator(mendel) run" — write the CSV and the JSON,')
+  console.error('re-run generate-report.mjs in ../mendel-benchmark/benchmark, then mirror all of them.')
+  process.exit(1)
+}
+checkMendelImport()
 
 // The local Mendel tables read the mirrored results JSON: it carries the
 // defect list and the nudge counts, which the CSV does not.
@@ -674,8 +712,8 @@ function topSet(rows, read, { lower = false } = {}) {
 
 function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = true, hardware = false, hide = '', pageLink = (r) => r.abandoned.page } = {}) {
   const header = [
-    `| Model / Config | Ctx | Cap | tok/s |${memory ? ' Memory<br>(at max ctx) |' : ''} HumanEval+ | Coding | Wall |`,
-    `|---|--:|:--:|--:|${memory ? '--:|' : ''}--:|--:|--:|`,
+    `| Model / Config | Ctx | tok/s |${memory ? ' Memory<br>(at max ctx) |' : ''} HumanEval+ | Coding | Wall |`,
+    `|---|--:|--:|${memory ? '--:|' : ''}--:|--:|--:|`,
   ]
   const hm = (min) => {
     if (min == null || Number.isNaN(Number(min))) return '—'
@@ -710,15 +748,16 @@ function renderTable(rows, { footnotes = true, sort = true, start = 0, memory = 
   const body = ordered.map((r, i) => {
     const tokStale = ['tokShallow', 'tokDeep'].some((f) => (r.stale || []).includes(f))
     if (tokStale) anyStale = true
+    const capWord = (r.stale || []).includes('gatedBy') ? `${r.gatedBy}†` : r.gatedBy
     const tok = r.abandoned
-      ? `*${cell(r, 'tokShallow')} → ${cell(r, 'tokDeep')}*`
-      : `<TokCell shallow="${r.tokShallow}" deep="${r.tokDeep}"${tokStale ? ' stale' : ''}${top.tokShallow.has(r) ? ' top-shallow' : ''}${top.tokDeep.has(r) ? ' top-deep' : ''} />`
+      ? `*${cell(r, 'tokShallow')} → ${cell(r, 'tokDeep')}, ${capWord}*`
+      : `<TokCell shallow="${r.tokShallow}" deep="${r.tokDeep}" cap="${capWord}"${tokStale ? ' stale' : ''}${top.tokShallow.has(r) ? ' top-shallow' : ''}${top.tokDeep.has(r) ? ' top-deep' : ''} />`
     const spec = specTag(r.spec, { label: r.id, repo: repoOf(r), top: top.composite.has(r), hardware: hardware ? r.hardwareSlug : '', hide, setup: r.setup })
     const config = r.abandoned ? `${spec} ${r.abandoned.marker || '💀'}` : spec
     const ev = evalplusCell(r.evalplus)
     const md = mendelCellParts(r)
     const stale = (f) => ((r.stale || []).includes(f) ? '†' : '')
-    return `| ${config} | ${cell(r, 'maxCtx')} | ${cell(r, 'gatedBy')} | ${tok} |${memory ? ` ${cell(r, 'memory')} |` : ''} ${scoreTag(ev.value + stale('evalplus'), ev.sub, top.evalplus.has(r))} | ${scoreTag(md.value + stale('mendel'), '', top.mendel.has(r), md.pill, md.note)} | ${wall(r)} |`
+    return `| ${config} | ${cell(r, 'maxCtx')} | ${tok} |${memory ? ` ${cell(r, 'memory')} |` : ''} ${scoreTag(ev.value + stale('evalplus'), ev.sub, top.evalplus.has(r))} | ${scoreTag(md.value + stale('mendel'), '', top.mendel.has(r), md.pill, md.note)} | ${wall(r)} |`
   })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']
@@ -857,16 +896,12 @@ function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHard
 
 function renderDecodeSummary(datas) {
   const header = [
-    '| best curve | tok/s (shallow → deep) | at | gated by |',
-    '|---|--:|--:|---|',
+    '| best curve | tok/s (shallow → deep) | at |',
+    '|---|--:|--:|',
   ]
   let anyStale = false
-  const cell = (r, field) => {
-    const stale = (r.stale || []).includes(field)
-    if (stale) anyStale = true
-    return `${r[field]}${stale ? '†' : ''}`
-  }
-  const body = datas.flatMap((data) => Object.entries(data.models || {}).flatMap(([slug, model]) => {
+  const num = (s) => parseFloat(String(s).replace(/[^\d.]/g, ''))
+  const picks = datas.flatMap((data) => Object.entries(data.models || {}).flatMap(([slug, model]) => {
     const backends = new Map()
     for (const r of modelRows(data, model).filter((r) => !r.abandoned)) {
       const backend = (r.config.split(',')[1] || '').trim().replace(/[^A-Za-z].*$/, '') || 'other'
@@ -876,9 +911,31 @@ function renderDecodeSummary(datas) {
     return [...backends.values()].map((rows) => {
       const complete = rows.filter((r) => !hasPending(r))
       const pick = sortRows(complete.length ? complete : rows)[0]
-      return `| [${specTag(pick.spec, { label: pick.id, repo: repoOf(pick), hardware: data.hardwareSlug, setup: data.setup })}](../setups/${data.setup}/benchmarks/${slug}.md) | ${cell(pick, 'tokShallow')} → ${cell(pick, 'tokDeep')} | ${cell(pick, 'maxCtx')} | ${cell(pick, 'gatedBy')} |`
+      return { ...pick, setup: data.setup, hardwareSlug: data.hardwareSlug, slug }
     })
   }))
+  // The page is about speed, so it reads fastest-shallow first, and the
+  // bolding is the one every other table uses: the top set per column.
+  const ordered = [...picks].sort((a, b) => (num(b.tokShallow) || -Infinity) - (num(a.tokShallow) || -Infinity))
+  const top = {
+    tokShallow: topSet(ordered, (r) => num(r.tokShallow)),
+    tokDeep: topSet(ordered, (r) => num(r.tokDeep)),
+    maxCtx: topSet(ordered, (r) => parseCtx(r.maxCtx)),
+  }
+  const cell = (r, field) => {
+    const stale = (r.stale || []).includes(field)
+    if (stale) anyStale = true
+    const value = `${r[field]}${stale ? '†' : ''}`
+    return top[field]?.has(r) ? `**${value}**` : value
+  }
+  const body = ordered.map((r) => {
+    const tokStale = ['tokShallow', 'tokDeep'].some((f) => (r.stale || []).includes(f))
+    if (tokStale) anyStale = true
+    const capWord = (r.stale || []).includes('gatedBy') ? `${r.gatedBy}†` : r.gatedBy
+    const tok = `<TokCell shallow="${r.tokShallow}" deep="${r.tokDeep}" cap="${capWord}"${tokStale ? ' stale' : ''}${top.tokShallow.has(r) ? ' top-shallow' : ''}${top.tokDeep.has(r) ? ' top-deep' : ''} />`
+    const label = specTag(r.spec, { label: r.id, repo: repoOf(r), hardware: r.hardwareSlug, setup: r.setup })
+    return `| [${label}](../setups/${r.setup}/benchmarks/${r.slug}.md) | ${tok} | ${cell(r, 'maxCtx')} |`
+  })
   const legend = anyStale
     ? ['', '† from an earlier serving config or method; re-run pending.']
     : []
@@ -1043,6 +1100,21 @@ writeBlock('docs/models/index.md', '<!-- gen:models-complete:start -->', '<!-- g
 writeBlock('docs/models/index.md', '<!-- gen:models-incomplete:start -->', '<!-- gen:models-incomplete:end -->', renderTable(allModelRows.filter((r) => !isComplete(r)), { memory: false, hardware: true, hide: 'server' }))
 for (const [slug, rows] of modelsAll) {
   writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-all:start -->', '<!-- gen:model-all:end -->', renderTable(rows, { memory: false, hardware: true, hide: 'server' }))
+  // The same two tables the setup report and the binary page carry, filtered
+  // to this model and pooled across every machine. One renderer each, so a
+  // change to a table reaches every page that shows it.
+  writeBlock(
+    `docs/models/${slug}.md`,
+    MODEL_EVALPLUS_START,
+    MODEL_EVALPLUS_END,
+    renderEvalplusTable(setupsAll, { slug, linkOf: (r) => `../setups/${r.data.setup}/benchmarks/${r.slug}.md`, hardware: true }),
+  )
+  writeBlock(
+    `docs/models/${slug}.md`,
+    MODEL_MENDEL_START,
+    MODEL_MENDEL_END,
+    renderModelMendel(slug, blindRunsAll, guidedRunsAll, [], null, { hardware: true }),
+  )
 }
 for (const slug of new Set(BINARIES.map((b) => b.model))) {
   const lines = BINARIES.filter((b) => b.model === slug).map((b) => {

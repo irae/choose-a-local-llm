@@ -7,7 +7,7 @@ export default defineConfig({
   base: '/choose-a-local-llm/',
   vite: {
     server: {
-      allowedHosts: ['irae-kamaji.tailc9708.ts.net', '100.73.3.114'],
+      allowedHosts: true,
     },
   },
   cleanUrls: true,

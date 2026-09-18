@@ -20,9 +20,9 @@ harness or serving defect voided is not.
 ## Configurations
 
 <!-- gen:binary-rows:start -->
-| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
-|---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-mlx-4bit" /> 💀 | ***66k*** | *mem* | ****49.3*** → ***23.4**** | ***20.0 GB*** | <ScoreCell value="0.793/0.768" sub="81% completion" top /> | <ScoreCell value="0" note="0%" pill="failed-smoke" /> | <span title="EvalPlus 9h06 · Mendel —">9h06†</span> |
+| Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
+|---|--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-mlx-4bit" /> 💀 | ***66k*** | ****49.3*** → ***23.4***, mem* | ***20.0 GB*** | <ScoreCell value="0.793/0.768" sub="81% completion" top /> | <ScoreCell value="0" note="0%" pill="failed-smoke" /> | <span title="EvalPlus 9h06 · Mendel —">9h06†</span> |
 
 💀 This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task. [Why it is not a candidate](../setups/kamaji/gemma-4-26b-a4b-mlx-retired.md).
 <!-- gen:binary-rows:end -->

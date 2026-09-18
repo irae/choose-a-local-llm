@@ -27,9 +27,9 @@ included; a run a harness or serving defect voided is not.
 ## Configurations
 
 <!-- gen:binary-rows:start -->
-| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
-|---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" top /> | **240k** | mem | <TokCell shallow="41.7" deep="12.8" top-shallow top-deep /> | **15.5 GB** | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
+| Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
+|---|--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" top /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow top-deep /> | **15.5 GB** | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+

@@ -28,10 +28,10 @@ not.
 ## Configurations
 
 <!-- gen:binary-rows:start -->
-| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
-|---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" top /> | **25k** | mem | <TokCell shallow="17.3" deep="14.8" top-shallow top-deep /> | **22.0 GB** | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5†" note="13%" pill="mendel-blind" top /> | <span title="EvalPlus 2h09 · Mendel 1h25">3h34</span> |
-| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" top /> | **25k** | mem | <TokCell shallow="17.3" deep="14.8" top-shallow top-deep /> | **22.0 GB** | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" /> | <span title="EvalPlus 3h32 · Mendel —">3h32†</span> |
+| Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
+|---|--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" top /> | **25k** | <TokCell shallow="17.3" deep="14.8" cap="mem" top-shallow top-deep /> | **22.0 GB** | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5†" note="13%" pill="mendel-blind" top /> | <span title="EvalPlus 2h09 · Mendel 1h25">3h34</span> |
+| <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" top /> | **25k** | <TokCell shallow="17.3" deep="14.8" cap="mem" top-shallow top-deep /> | **22.0 GB** | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" /> | <span title="EvalPlus 3h32 · Mendel —">3h32†</span> |
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+

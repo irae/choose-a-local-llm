@@ -620,6 +620,42 @@ recorded until every surface agrees. Change all of these in the same pass.
 If a new wired limit supersedes a number, move the old one into the
 setup's `historical.md`; do not delete it.
 
+## How to import a simulator(mendel) run
+
+A run is not imported until **four** artifacts carry it. Three of them
+feed different pages, so writing one and not the others puts the row on
+some pages and not others. This failed once, on 2026-09-18: only the
+CSVs were mirrored, so the row reached the model, binary and setup
+pages and was missing from the site-wide agent page and from the static
+report.
+
+In `../mendel-benchmark/benchmark/`, the source of truth:
+
+1. `results.csv` (or `results-guided.csv`): one line per run.
+2. `results.json` (or `results-guided.json`): the same run with the
+   defect list, the nudge counts, the `cost` block and `matrix_cells`,
+   one cell per data row of `matrix_rows`. **The site's local tables read
+   the JSON, never the CSV**, because the CSV has no defects and no
+   nudges. `score_total` must equal the sum of `scores`, and each scored
+   `matrix_cells` entry must carry the same number in `<b>`; the report
+   generator refuses the file otherwise, so never round a score here.
+3. `node generate-report.mjs` (add `--guided` for the guided run), which
+   rewrites `report.html` from the JSON.
+
+Then mirror into this repo, all four files together:
+
+4. Copy `results.csv`, `results-guided.csv`, `results.json`,
+   `results-guided.json`, `report.html` and `report-guided.html` into
+   `benchmarks/mendel/`, rename `rtx-5060ti-16gb` to `arrietty` and
+   `m1-max-32gb` to `kamaji` in the copies, then `node
+   tools/gen-tables.mjs`, `node tools/sync-static.mjs` and `npm run
+   verify`.
+
+`npm run docs:tables` counts the runs in the mirrored CSV, the mirrored
+JSON and the mirrored `report.html` and fails when they disagree, with
+the words **simulator import was partial**. That check is the guard;
+the list above is how to satisfy it.
+
 ## How to add a model to an existing setup
 
 1. Create `docs/setups/<setup>/benchmarks/<model>.md` and

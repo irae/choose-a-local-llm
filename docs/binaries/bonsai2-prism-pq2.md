@@ -22,7 +22,7 @@ included; a run a harness or serving defect voided is not.
   no speed ceiling at all: 46.0 tok/s at 4K down to 14.5 at 211968,
   every cell above the 8 tok/s floor, VRAM flat at 15735 MiB.
 - **Where it stands.** EvalPlus 0.982/0.939 with no empty answer, the
-  best quality gate on this card. The blind agent row scored 60 with a
+  best quality gate on this card. The blind agent row scored 59.5 with a
   CRITICAL worst defect, and it is the first row in this project where
   the task itself went past 64K: peak context 192679 of a 208896
   window, 92.2%, zero compactions. A guided row and a cheaper fixed
@@ -31,9 +31,9 @@ included; a run a harness or serving defect voided is not.
 ## Configurations
 
 <!-- gen:binary-rows:start -->
-| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
-|---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" top /> | **208k** | mem | <TokCell shallow="46.0" deep="14.5" top-shallow top-deep /> | **15.4 GB** | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="60" pill="mendel-blind" top /> | <span title="EvalPlus 2h56 · Mendel 1h32">4h29</span> |
+| Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
+|---|--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" top /> | **208k** | <TokCell shallow="46.0" deep="14.5" cap="mem" top-shallow top-deep /> | **15.4 GB** | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="59.5" pill="mendel-blind" top /> | <span title="EvalPlus 2h56 · Mendel 1h32">4h29</span> |
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+
@@ -59,13 +59,13 @@ Blind test:
 
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" /> | blind-v1.1 | 208k | **60** | 8/8/done | 92.4 | 19,572k | 193k | 0 | 245 | 16 |  |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" /> | blind-v1.1 | 208k | **59.5** | 8/8/done | 92.4 | 19,572k | 193k | 0 | 245 | 16 |  |
 
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.
 <!-- gen:binary-mendel:end -->
 
 The blind row ended `complete`, with 16 commits, no repetition loop and
-no nudge, so its 60 is judgment and not a harness failure. The worst
+no nudge, so its 59.5 is judgment and not a harness failure. The worst
 defect is CRITICAL: an exit hook added in
 `packages/mendel-development/validate-manifest.js` removes the
 temporary directory, so the debug manifest the code has just printed is
@@ -100,7 +100,7 @@ The full curves stay in the run kit,
   derived thinking budget, the natural re-run of its forced failures,
   the smoke and the blind agent row. Run kit:
   `hardware/arrietty/benchmarks/bench24/`.
-- **Pending** — a guided agent row to pair with the blind 60; a fixed
+- **Pending** — a guided agent row to pair with the blind 59.5; a fixed
   thinking budget against the derived 25209, as the 3-bit build tested
   8192 against the cap; a mainline llama.cpp row when mainline learns
   these types, because a mainline binary is preferable to a fork.

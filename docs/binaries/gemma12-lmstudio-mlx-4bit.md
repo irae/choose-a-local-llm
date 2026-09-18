@@ -25,9 +25,9 @@ serving defect voided is not.
 ## Configurations
 
 <!-- gen:binary-rows:start -->
-| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
-|---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/gemma12-lmstudio-mlx-4bit" /> 💀 | ***131k*** | *mem* | ****34.19*** → ***23.23**** | ***17.2 GB*** | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 1h33 · Mendel —">1h33†</span> |
+| Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
+|---|--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/gemma12-lmstudio-mlx-4bit" /> 💀 | ***131k*** | ****34.19*** → ***23.23***, mem* | ***17.2 GB*** | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 1h33 · Mendel —">1h33†</span> |
 
 💀 LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned. [Why it is not a candidate](../setups/kamaji/lmstudio-retired.md).
 

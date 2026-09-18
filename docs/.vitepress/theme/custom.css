@@ -220,6 +220,17 @@
   color: inherit;
 }
 
+/* tok/s cell carries the cap word on the line under the numbers, in the
+   same pill every ModelSpec uses. The stack stays tight so a row with a
+   cap is no taller than a row without one. */
+.vp-doc .tkw {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15em;
+  vertical-align: middle;
+}
+
 /* Mendel page tables: a group of pills wraps onto two lines by width;
    the context-use cell stacks its overflow reading. */
 .vp-doc .pills {

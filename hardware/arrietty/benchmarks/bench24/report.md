@@ -46,7 +46,7 @@ that failed a test:
 
 | Agent row | Window | Score | Worst defect | Calls | Peak ctx | End | Wall |
 |---|--:|--:|---|--:|--:|---|--:|
-| PQ2_0, blind, xhigh | 208896 | **60/100** | CRITICAL | 245 | 192679 (92.2%) | complete | 1:32:27 |
+| PQ2_0, blind, xhigh | 208896 | **59.5/100** | CRITICAL | 245 | 192679 (92.2%) | complete | 1:32:27 |
 
 ## Findings
 
@@ -71,7 +71,7 @@ that failed a test:
   base and 0.939 plus, 100% completion, no empty answer. At the short
   prompt this build is level with the best Mac rows and above every
   other row measured here.
-- **The agent score does not follow the quality gate.** 60/100 blind,
+- **The agent score does not follow the quality gate.** 59.5/100 blind,
   against 91 for the ISTA 3-bit build on the same machine. The row
   completed, committed 16 times, never looped, and used no nudges, so
   the loss is not a harness failure and not non-convergence. It is
@@ -106,4 +106,4 @@ that failed a test:
   would say whether the smaller packing costs anything.
 - A mainline llama.cpp row, when mainline learns these types. A
   mainline binary is preferable to a fork (owner, 2026-09-17).
-- A guided agent row on PQ2_0, to pair with the blind 60.
+- A guided agent row on PQ2_0, to pair with the blind 59.5.

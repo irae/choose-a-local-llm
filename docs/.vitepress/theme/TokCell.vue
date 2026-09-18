@@ -4,6 +4,7 @@ import { computed } from 'vue'
 const props = defineProps({
   shallow: { type: String, default: '' },
   deep: { type: String, default: '' },
+  cap: { type: String, default: '' },
   stale: { type: Boolean, default: false },
   topShallow: { type: Boolean, default: false },
   topDeep: { type: Boolean, default: false },
@@ -22,5 +23,10 @@ const right = computed(() => pad(props.deep))
 </script>
 
 <template>
-  <span class="tk"><span v-if="stale" class="tk-stale">†</span><pre class="tk-pre"><b v-if="topShallow">{{ left }}</b><template v-else>{{ left }}</template><span class="tk-arrow">→</span><b v-if="topDeep">{{ right }}</b><template v-else>{{ right }}</template></pre></span>
+  <span class="tkw"
+    ><span class="tk"
+      ><span v-if="stale" class="tk-stale">†</span
+      ><pre class="tk-pre"><b v-if="topShallow">{{ left }}</b><template v-else>{{ left }}</template><span class="tk-arrow">→</span><b v-if="topDeep">{{ right }}</b><template v-else>{{ right }}</template></pre></span
+    ><span v-if="cap" class="ms-pill">{{ cap }}</span></span
+  >
 </template>

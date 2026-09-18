@@ -59,7 +59,7 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 - **The fastest and the highest-scoring 27B build on this card**: 46.0
   tok/s at 4K against 29.43 for the 3-bit build, and 0.982 / 0.939 on
   HumanEval+ with no empty answer.
-- **The agent score does not follow the quality gate**: 60/100 blind
+- **The agent score does not follow the quality gate**: 59.5/100 blind
   against 91 for the 3-bit build. The row completed with 16 commits, no
   loop and no nudge, so the loss is judgment, not a harness failure: a
   CRITICAL trap-C regression, a missed trap B, no dependency pruning,

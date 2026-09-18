@@ -44,20 +44,20 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
 ## All configs — this model
 
 <!-- gen:model-table:start -->
-| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
-|---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **82k** | speed | <TokCell shallow="43.7" deep="13.0" /> | 25.6 GB | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="83" pill="mendel-guided" top /> | <span title="EvalPlus 5h02 · Mendel 1h32">6h33</span> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **82k** | speed | <TokCell shallow="43.7" deep="13.0" /> | 25.6 GB | <ScoreCell value="0.951/0.915" sub="100% completion" top /> | <ScoreCell value="62.5" pill="mendel-guided" top /> | <span title="EvalPlus 0h15 · Mendel 1h29">1h44</span> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" /> | **66k** | mem | <TokCell shallow="50.5" deep="33.6" stale top-shallow top-deep /> | **25.0 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="50" pill="mendel-blind" /> | <span title="EvalPlus 5h02 · Mendel 0h33">5h35</span> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" page="/binaries/qwen36-mlx-4bit" /> | 37k | mem | <TokCell shallow="54.5" deep="39.1" top-shallow top-deep /> | **24.6 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" /> | <span title="EvalPlus 5h02 · Mendel 0h19">5h20</span> |
+| Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
+|---|--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **82k** | <TokCell shallow="43.7" deep="13.0" cap="speed" /> | 25.6 GB | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="83" pill="mendel-guided" top /> | <span title="EvalPlus 5h02 · Mendel 1h32">6h33</span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **82k** | <TokCell shallow="43.7" deep="13.0" cap="speed" /> | 25.6 GB | <ScoreCell value="0.951/0.915" sub="100% completion" top /> | <ScoreCell value="62.5" pill="mendel-guided" top /> | <span title="EvalPlus 0h15 · Mendel 1h29">1h44</span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" /> | **66k** | <TokCell shallow="50.5" deep="33.6" cap="mem" stale top-shallow top-deep /> | **25.0 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="50" pill="mendel-blind" /> | <span title="EvalPlus 5h02 · Mendel 0h33">5h35</span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" page="/binaries/qwen36-mlx-4bit" /> | 37k | <TokCell shallow="54.5" deep="39.1" cap="mem" top-shallow top-deep /> | **24.6 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" /> | <span title="EvalPlus 5h02 · Mendel 0h19">5h20</span> |
 
 † from an earlier serving config or method; re-run pending.
 
 Rows below 100 percent completeness. Completeness counts three measurements: tok/s, EvalPlus and Mendel.
 
-| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
-|---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **41k** | mem | <TokCell shallow="69.1" deep="52.6" stale top-shallow top-deep /> | **25.1 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h02 · Mendel —">5h02†</span> |
+| Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
+|---|--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **41k** | <TokCell shallow="69.1" deep="52.6" cap="mem" stale top-shallow top-deep /> | **25.1 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h02 · Mendel —">5h02†</span> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->

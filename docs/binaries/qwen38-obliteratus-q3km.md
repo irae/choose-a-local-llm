@@ -27,9 +27,9 @@ defect voided is not.
 ## Configurations
 
 <!-- gen:binary-rows:start -->
-| Model / Config | Ctx | Cap | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
-|---|--:|:--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.8-27B" quant="Q3_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" kv="q8_0" effort="medium" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-obliteratus-q3km" /> | **65k** | mem | <TokCell shallow="22.67" deep="16.74" top-shallow top-deep /> | **15.3 GB** | <ScoreCell value="0.854/0.787" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="failed-smoke" /> | <span title="EvalPlus 1h29 · Mendel —">1h29†</span> |
+| Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
+|---|--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Qwen3.8-27B" quant="Q3_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" kv="q8_0" effort="medium" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-obliteratus-q3km" /> | **65k** | <TokCell shallow="22.67" deep="16.74" cap="mem" top-shallow top-deep /> | **15.3 GB** | <ScoreCell value="0.854/0.787" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="failed-smoke" /> | <span title="EvalPlus 1h29 · Mendel —">1h29†</span> |
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+
