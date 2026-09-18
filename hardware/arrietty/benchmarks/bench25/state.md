@@ -12,7 +12,7 @@ happen, and the handing-over section at the end.
 | `vram_cap_mb` | 13811 | owner, 2026-09-17, 2.5 GB free of 16311 MiB |
 | `serving_c` | 65536 | owner, 2026-09-17, fixed |
 | `oblit_q4km_ngl` | 45 | `qwen38-oblit-q4km-offload-ladder`, 47 OOMs the cap |
-| `oblit_q4km_clean` | pending | `sweep-qwen38-oblit-q4km` |
+| `oblit_q4km_clean` | none, all depths under 8 tok/s | `sweep-qwen38-oblit-q4km` |
 | `oblit_q4km_window` | pending | `qwen38-oblit-q4km-smoke-medium` |
 | `oblit_q4km_think_budget` | pending | `qwen38-oblit-q4km-calibrate-think` |
 | `oblit_q4km_answer_budget` | pending | `qwen38-oblit-q4km-calibrate-think` |
@@ -74,7 +74,60 @@ offloaded layers), while the server itself stayed healthy both times.
 The third attempt, run fully detached (`nohup` outside the tool's
 tracking), completed cleanly. No effect on the ladder's result.
 
+## `sweep-qwen38-oblit-q4km` — done, speed gate fires
+
+Table in `results.md`. 4096 at 5.13 tok/s down to 64512 at 2.31 tok/s,
+none reach the 8 tok/s floor. VRAM held at 13422-13424 MiB across the
+sweep, well under the 13811 cap; the offload cost is speed, not
+memory. Candidate answer sent to the coordinator: this build, at this
+`-ngl` and window, is too slow for a full EvalPlus run to be worth its
+wall time. Corpus server and model server stopped.
+
+## Pause (owner word, 2026-09-18)
+
+Finished at the `sweep-qwen38-oblit-q4km` block boundary, as asked.
+No later block started; `retry-sweep` did not run.
+
+Server stopped (`kill -9` on the `llama-server` PID), corpus server on
+port 8089 stopped. `nvidia-smi` confirmed free: 622 MiB used, at the
+session's own baseline (638 MiB at start).
+
+**Next block on the list**: `qwen38-oblit-q4km-calibrate-think` — but
+it is gated. The speed gate at the sweep found every depth under the
+8 tok/s floor, so this block does not start until the coordinator
+answers whether the run should still spend the hours a full EvalPlus
+run costs at this speed.
+
+**To resume the sweep's server** (if the coordinator says go on):
+
+```bash
+export PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/bin:$PATH"
+export LD_LIBRARY_PATH="$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/lib:$LD_LIBRARY_PATH"
+llama-server -m "/home/irae/.cache/huggingface/hub/models--OBLITERATUS--Qwen3.8-27B-OBLITERATED/snapshots/a58c3b53b3ce71551eafde2ed5ec8df48e0f4ff8/Qwen3.8-27B-OBLITERATED-Q4_K_M.gguf" \
+  --alias qwen3.8-27b-oblit-q4km --no-mmproj --parallel 1 \
+  -ngl 45 --fit off -fa on -c 65536 \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --jinja --port 8081 2>&1 \
+  | tee hardware/arrietty/benchmarks/bench25/results/server-qwen38-oblit-q4km-calibrate-think.log
+```
+
+(no `--cache-ram 0` for this block, as the runbook's
+`qwen38-oblit-q4km-calibrate-think` section says.) Then:
+
+```bash
+export EVALPLUS_PYTHON="/home/irae/.local/share/pipx/venvs/evalplus/bin/python"
+CALIBRATION_DIR=hardware/arrietty/calibrations "$EVALPLUS_PYTHON" \
+  benchmarks/calibrate.py qwen38-oblit-q4km-medium-think qwen3.8-27b-oblit-q4km \
+  '{"chat_template_kwargs":{"reasoning_effort":"medium"}}'
+```
+
+Machine state left behind: no `llama-server` process, no corpus
+server, no watcher, no scoring process. The worktree and branch
+`run25` stay as they are; this is a pause, not a close-out.
+
 ## Handing-over
 
-`machine-setup`, `qwen38-oblit-q4km-offload-ladder` done. Next:
-`sweep-qwen38-oblit-q4km`.
+`machine-setup`, `qwen38-oblit-q4km-offload-ladder`,
+`sweep-qwen38-oblit-q4km` done. Paused at the sweep's close, per the
+owner's word. `qwen38-oblit-q4km-calibrate-think` waits on the
+coordinator's answer to the speed gate.
