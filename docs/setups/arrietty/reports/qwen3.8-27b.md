@@ -41,7 +41,7 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" offload="ngl 45/64" kv="q8_0" effort="medium" top /> | **64k** | <TokCell shallow="5.13" deep="2.31" cap="speed" top-shallow top-deep /> | **13.1 GB** | <ScoreCell value="not run" /> | <ScoreCell value="not run" /> | — |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" offload="ngl 45/64" kv="q8_0" effort="medium" page="/binaries/qwen38-obliteratus-q4km" top /> | **64k** | <TokCell shallow="5.13" deep="2.31" cap="speed" top-shallow top-deep /> | **13.1 GB** | <ScoreCell value="not run" /> | <ScoreCell value="not run" /> | — |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -85,7 +85,7 @@ llama-server -m "$(hf download OBLITERATUS/Qwen3.8-27B-OBLITERATED Qwen3.8-27B-O
   --jinja --port 8081
 ```
 
-<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" offload="ngl 45/64" kv="q8_0" effort="medium" />
+<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" offload="ngl 45/64" kv="q8_0" effort="medium" page="/binaries/qwen38-obliteratus-q4km" />
 
 pi id `qwen3.8-27b-oblit-q4km`, revision `a58c3b5`, 15.66 GiB of weights, larger than the card. The one row on this machine that keeps part of a model in host RAM by design: `-ngl 45` of 64 layers on the card, 19 in host RAM, at a fixed `-c 65536` under a VRAM cap of 13811 MiB that leaves 2.5 GB for the system (owner, 2026-09-18; the card has no reserve rule otherwise). The ladder: 43 loads at 12945 MiB, 47 and 51 go over the cap at load, 45 loads at 13397 MiB and holds 13426 MiB under a real 64K request. **The row does not reach the usability floor**: 5.13 tok/s at 4K, 3.49 at 24K, 2.67 at 49K and 2.31 at 64512, where 8 tok/s is the floor. Against the same model's Q3_K_M inside the card, that is about 4.4 times slower at both ends. Memory was never the limit: VRAM held flat at 13422 MiB against the cap through the whole sweep, so the cost is the transfer of 19 layers per token, not capacity. The run ended at the sweep on its speed gate (coordinator, 2026-09-18), so no EvalPlus row and no agent row exist for this build and none is planned here. Halving the window to 32768 frees 1088 MiB of cache, about four more layers at the ladder's own 226 MiB per layer, which still does not reach the floor.
 
