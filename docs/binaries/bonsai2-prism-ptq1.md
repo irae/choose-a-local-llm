@@ -35,14 +35,16 @@ included; a run a harness or serving defect voided is not.
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" top /> | **135k** | <TokCell shallow="42.1" deep="22.4" cap="mem" top-shallow top-deep /> | **15.0 GB** | <ScoreCell value="pending" /> | <ScoreCell value="82" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 1h28">1h28†</span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" top /> | **135k** | <TokCell shallow="42.1" deep="22.4" cap="mem" top-shallow top-deep /> | **15.0 GB** | <ScoreCell value="0.970/0.939" sub="100% completion" top /> | <ScoreCell value="82" pill="mendel-blind" top /> | <span title="EvalPlus 3h16 · Mendel 1h28"><b>4h44</b></span> |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" top /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow top-deep /> | **15.5 GB** | <ScoreCell value="pending" /> | <ScoreCell value="73.5" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 2h03">2h03†</span> |
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
-No EvalPlus run yet.
+| config | budget | Scores | empties | tok/s | wall |
+|---|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" />](../setups/arrietty/benchmarks/bonsai-2-27b.md) | 32048 | <ScoreCell value="0.970/0.939" sub="100% completion" top /> | none | <TokCell shallow="42.1" deep="22.4" /> | 3h16 |
 <!-- gen:binary-evalplus:end -->
 
 No EvalPlus run yet. Both arms of this file are scheduled in the run
