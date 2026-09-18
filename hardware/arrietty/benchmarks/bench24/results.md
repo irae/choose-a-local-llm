@@ -156,3 +156,22 @@ Ladder, `--cache-type-k f16 --cache-type-v f16`:
 **Pick**: q8_0, larger serving `-c` (245760 vs 139264). `bonsai2_27b_ptq1_kv` = `q8_0`, `bonsai2_27b_ptq1_c` = 245760.
 
 Files: `results/server-kvpick-ptq1-q8-*.log`, `results/server-kvpick-ptq1-f16-*.log`, `results/kvpick-ptq1-*-probe.json`.
+
+## `sweep-bonsai2-ptq1`
+
+`Ternary-Bonsai-2-27B-PTQ1_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, pick q8_0, `-c 245760`, `--cache-ram 0` for the measurement. Tokenizer `unsloth/Qwen3.8-27B`. Corpus `corpus-mendel-js.txt`. Tool `local-llm-eval-tools` at `204acec`. Depths 4096, 24576, 65536, 244736 (= 245760 − 1024).
+
+| arm | depth | tok/s (tg256) | prompt tok/s (pp512) | VRAM used | MemAvailable |
+|---|--:|--:|--:|--:|--:|
+| q8 | 4096 | 41.69 ± 0.00 | 452.74 ± 0.06 | 15837 MiB | ~18.7 GB |
+| q8 | 24576 | 34.89 ± 0.00 | 439.02 ± 0.02 | 15837 MiB | ~18.7 GB |
+| q8 | 65536 | 26.48 ± 0.00 | 402.04 ± 0.02 | 15837 MiB | ~18.7 GB |
+| q8 | 244736 | 12.79 ± 0.00 | 288.05 ± 0.17 | 15837 MiB | ~18.7 GB |
+
+VRAM flat across every depth (15837 MiB), no swap growth. Every depth clears the 8 tok/s floor; the deepest tested depth is the deepest clean depth.
+
+`bonsai2_ptq1_clean` = 244736 (deepest tested depth, still above the floor at 12.79 tok/s).
+
+Files: `results/benchy-bonsai2-ptq1-q8.md`, `results/benchy-bonsai2-ptq1-q8.out.log`, `results/benchy-bonsai2-ptq1-q8-vm.log`, `results/server-sweep-ptq1-q8.log`.
+
+**A table and no pick.**

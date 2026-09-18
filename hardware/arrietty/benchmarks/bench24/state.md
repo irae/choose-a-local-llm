@@ -28,7 +28,7 @@ happen, and the handing-over section at the end.
 | `bonsai2_pq2_max_tokens` | 27257 | `bonsai2-pq2-calibrate-think` |
 | `bonsai2_27b_ptq1_c` | 245760 | `bonsai2-ptq1-kvpick` |
 | `bonsai2_27b_ptq1_kv` | q8_0 | `bonsai2-ptq1-kvpick` |
-| `bonsai2_ptq1_clean` | pending | `sweep-bonsai2-ptq1` |
+| `bonsai2_ptq1_clean` | 244736 | `sweep-bonsai2-ptq1` |
 | `vram_start_mb` | pending | `nvidia-smi`, session start |
 | `evalplus_python` | pending | pipx venv |
 
@@ -76,4 +76,4 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 
 ## Handing-over
 
-`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, `bonsai2-pq2-calibrate-think`, `bonsai2-pq2-budget-xhigh` (gate passed: base 0.982 ≥ 0.800), `bonsai2-pq2-forced-rerun`, and `bonsai2-ptq1-kvpick` are done. vram back to 626 MiB. Next: `sweep-bonsai2-ptq1`.
+`machine-setup`, "The server" gate, `bonsai2-pq2-kvpick`, `sweep-bonsai2-pq2`, `bonsai2-pq2-calibrate-think`, `bonsai2-pq2-budget-xhigh` (gate passed: base 0.982 ≥ 0.800), `bonsai2-pq2-forced-rerun`, `bonsai2-ptq1-kvpick`, and `sweep-bonsai2-ptq1` are done. Corpus server (port 8089) stopped per the runbook. vram back to 626 MiB. Next: `bonsai2-pq2-smoke-xhigh` (the agent gate passed, so the smoke and blind row run).
