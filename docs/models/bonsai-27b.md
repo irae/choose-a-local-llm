@@ -52,6 +52,12 @@ Every config of this model on every machine, fastest at 4K first. The cap word u
 ### Decode curve, by depth
 
 <!-- gen:model-curve:start -->
+**M1 Max 32 GB**
+
+| arm | 4K | 8K | 16K | 25K | 33K | 41K | 49K | 66K | 82K | 98K | 115K | 128K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| Q2_g64, f16 KV, no drafter (prism fork) | 14.95 | 16.25 | 15.62 | 15.07 | 14.45 | 13.92 | 13.4 | 12.5 | 11.45 | 10.76 | 10.24 | 9.67 (128K) |
+
 **RTX 5060 Ti 16 GB**
 
 | arm | 4K | 24K | 64K | 119K | 207K | 239K |

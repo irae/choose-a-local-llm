@@ -49,7 +49,20 @@ Every config of this model on every machine, fastest at 4K first. The cap word u
 ### Decode curve, by depth
 
 <!-- gen:model-curve:start -->
-No decode curve recorded yet.
+**M1 Max 32 GB**
+
+| arm | 4K | 8K | 16K | 24K | 32K | 49K | 80K |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| Q4_K_XL, f16 KV, no drafter, 2 slots | **25.0** | **24.1** | **22.8** | **21.5** | **20.6** | **18.6** | **15.7 (80K)** |
+
+**RTX 5060 Ti 16 GB**
+
+| arm | 4K | 96K | 255K |
+|---|--:|--:|--:|
+| NVFP4, f16 KV, no drafter | **49.55** | **41.57** | **33.11 (256K)** |
+| UD-Q4_K_XL, f16 KV, no drafter | **47.39** | **40.26** | **32.18 (256K)** |
+
+The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
 <!-- gen:model-curve:end -->
 
 ## Quality — EvalPlus HumanEval+

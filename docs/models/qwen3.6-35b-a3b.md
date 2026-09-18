@@ -45,7 +45,24 @@ Every config of this model on every machine, fastest at 4K first. The cap word u
 ### Decode curve, by depth
 
 <!-- gen:model-curve:start -->
-No decode curve recorded yet.
+**M1 Max 32 GB**
+
+| arm | 4K | 4K | 8K | 8K | 16K | 16K | 24K | 24K | 32K | 32K | 33K | 37K | 40K | 40K | 48K | 48K | 56K | 64K | 64K | 80K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| 4-bit, f16 KV, no drafter | **53.3** |  |  |  | **49.6** |  |  |  |  |  | **42.2** | **42.0 (36K)** |  |  |  |  |  |  |  |  |
+| UD-Q4_K_XL, f16 KV, no drafter |  | 50.49 |  | 48.41 |  | 46.17 |  | 43.71 |  | 41.5 |  |  |  | 39.32 |  | 37.2 | 35.03 |  | 33.64 (64K) |  |
+| UD-Q4_K_XL, MTP n-max 3, q8_0 KV | **43.68** |  | **44.1** |  | **31.2** |  | **24.2** |  | **19.6** |  |  |  | **16.6** |  | **19.23** |  |  | **11.2** |  | **13.01 (96K)** |
+
+**RTX 5060 Ti 16 GB**
+
+| arm | 4K | 64K | 95K |
+|---|--:|--:|--:|
+| UD-Q4_K_XL, q8_0 KV, no drafter, `--n-cpu-moe 17` | 55.81 | 42.52 | 37.8 (96K) |
+| UD-Q4_K_XL, MTP n-max 1, q8_0 KV, `--n-cpu-moe 19` | 60.6 | 44.12 | 37.92 (96K) |
+| UD-Q4_K_XL, MTP n-max 2, q8_0 KV, `--n-cpu-moe 21` | **61.16** | **50.04** | **45.42 (96K)** |
+| UD-Q4_K_XL, MTP n-max 3, q8_0 KV, `--n-cpu-moe 21` | 57.85 | 47.25 | 46.76 (96K) |
+
+The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
 <!-- gen:model-curve:end -->
 
 ## Quality — EvalPlus HumanEval+

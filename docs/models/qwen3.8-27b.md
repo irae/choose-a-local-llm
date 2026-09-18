@@ -63,12 +63,28 @@ Every config of this model on every machine, fastest at 4K first. The cap word u
 ### Decode curve, by depth
 
 <!-- gen:model-curve:start -->
+**M1 Max 32 GB**
+
+| arm | 4K | 8K | 16K | 22K | 24K | 26K | 28K | 32K | 40K | 48K | 64K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| 4-bit, f16 KV, no drafter |  | **17.1** | **16.4** | **10.23** | **14.79** | **15.19** | **15.29 (24K)** |  |  |  |  |
+| Q4_K_M (bartowski), MTP n-max 3, f16 KV | 11.77 | 18.2 | 16.1 |  | 17.2 |  |  | 16.4 | 15.6 | 15.0 | 8.57 (72K) |
+
 **RTX 5060 Ti 16 GB**
 
-| arm | 4K | 24K | 48K | 63K |
-|---|--:|--:|--:|--:|
-| Q3_K_M (OBLITERATUS), q8_0 KV, no drafter | **22.67** | **20.65** |  | **16.74 (64K)** |
-| Q4_K_M (OBLITERATUS), q8_0 KV, `-ngl 45` | **5.13** | **3.49** | **2.67** | **2.31 (64K)** |
+| arm | 4K | 24K | 47K | 48K | 51K | 55K | 63K |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| Q3_K_M (OBLITERATUS), q8_0 KV, no drafter | **22.67** | **20.65** |  |  |  |  | **16.74 (64K)** |
+| Q4_K_M (OBLITERATUS), q8_0 KV, `-ngl 45` | **5.13** | **3.49** |  | **2.67** |  |  | **2.31 (64K)** |
+| IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, no drafter | **29.43** | **25.89** |  |  |  |  | **21.13 (64K)** |
+| IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 1 | 33.4 | 29.68 |  |  |  | 24.64 (56K) |  |
+| IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 2 | 45.88 | 31.89 |  |  |  | 26.19 (56K) |  |
+| IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 3 | 37.33 | 30.8 | 31.58 (48K) |  |  |  |  |
+| UD-IQ3_S, q8_0 KV, no drafter | **29.36** | **25.84** |  |  |  |  | **20.92 (64K)** |
+| UD-IQ3_S, f16 KV, no drafter | 29.96 | 27.21 |  |  | 24.34 (52K) |  |  |
+| UD-IQ3_S, q8_0 KV, MTP n-max 1 | 37.16 | 34.34 |  |  |  |  | 26.28 (64K) |
+| UD-IQ3_S, q8_0 KV, MTP n-max 2 | 47.05 | 37.84 |  |  |  |  | 30.82 (64K) |
+| UD-IQ3_S, q8_0 KV, MTP n-max 3 | 41.42 | 37.61 |  |  |  | 28.57 (56K) |  |
 
 The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
 <!-- gen:model-curve:end -->
