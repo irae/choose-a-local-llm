@@ -300,3 +300,13 @@ Per-criterion breakdown (criterion / max / scored / evidence):
 Sum 72, exact (subagent's own arithmetic; its reported headline of 78 was not supported and is not used).
 
 Files: `results/mendel-blind-bonsai2-pq2-f16.out.log`, `results/mendel-blind-bonsai2-pq2-f16-evidence.json`, session `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-f16-xhigh-blind-session.jsonl`, meta `~/.local/share/mendel-benchmark/runs/bonsai2-27b-pq2-f16-xhigh-blind-meta.json`.
+
+## `bonsai2-ptq1-f16-kvpick`
+
+`Ternary-Bonsai-2-27B-PTQ1_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, `--cache-type-k f16 --cache-type-v f16`, `--no-mmproj --parallel 1 -ngl 999 --fit off -fa on --cache-ram 0`, port 8081. Type fixed to f16; only the serving ceiling was open.
+
+Planning value 139264 — the f16 ceiling `bonsai2-ptq1-kvpick` already measured for this file, where 147456 aborted on a live CUDA out-of-memory. Loaded at 139264: pass. The gap to the known fail (147456) is already 8192, the ladder's finest step, so no further bisection is possible or needed.
+
+`bonsai2_ptq1_f16_c` = 139264. Verified with one real chat completion (200 OK, correct answer).
+
+Files: `results/server-kvpick-ptq1-f16-arm-139264.log`, `results/kvpick-ptq1-f16-arm-139264-probe.json`.
