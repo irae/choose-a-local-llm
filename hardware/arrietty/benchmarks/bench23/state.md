@@ -87,8 +87,17 @@ count. Derived: think budget 3986 (2657 × 1.5), answer budget 2048
 Files: `hardware/arrietty/calibrations/calibration-qwen38-oblit-q3km-medium-think.json`,
 `results/calibrate-think-stdout.log`, `results/server-calibrate-think.log`.
 
+## `qwen38-oblit-q3km-budget-medium` — running
+
+Served q8_0 KV, `-c 32768`, `--reasoning-budget 3986`,
+`--reasoning-budget-message "$BUDGET_MSG"`. Verified with a real
+200-token request, `finish_reason: length` as expected mid-reasoning.
+VRAM 14437 / 16311 MiB. Starting the watcher and the full 164-problem
+run next.
+
 ## Handing-over
 
 `machine-setup`, `qwen38-oblit-q3km-kvpick`, `sweep-qwen38-oblit-q3km`,
-`qwen38-oblit-q3km-calibrate-think` done. Server still up (same `-c`
-as the next block). Next: `qwen38-oblit-q3km-budget-medium`.
+`qwen38-oblit-q3km-calibrate-think` done.
+`qwen38-oblit-q3km-budget-medium` server up and verified, full run
+starting.
