@@ -148,9 +148,16 @@ bench25 setup, no conflict). Server brought back with the command in
 "Pause" above, watcher armed, run resumed: it skipped the 132
 existing problems and is generating the remaining 32.
 
+## `qwen38-oblit-q3km-budget-medium` — done
+
+Full table in `results.md`. Base 0.854, plus 0.787, 3/164 empty (all
+cause `model`, not `budget`), 5/164 forced by the thinking budget.
+Wall 89 min across two parts (the pause gap excluded). Agent gate:
+0.854 ≥ 0.800, passes. Smoke and blind row run next, after the forced
+re-run.
+
 ## Handing-over
 
 `machine-setup`, `qwen38-oblit-q3km-kvpick`, `sweep-qwen38-oblit-q3km`,
-`qwen38-oblit-q3km-calibrate-think` done.
-`qwen38-oblit-q3km-budget-medium` resumed, generating problems 132
-through 164.
+`qwen38-oblit-q3km-calibrate-think`, `qwen38-oblit-q3km-budget-medium`
+done, gate passed. Next: `qwen38-oblit-q3km-forced-rerun`.

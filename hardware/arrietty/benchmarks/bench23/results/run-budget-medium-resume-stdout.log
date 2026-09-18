@@ -136,3 +136,48 @@ Codegen: HumanEval/130 @ qwen3.8-27b-oblit-q3km (resuming from 1)
 Codegen: HumanEval/131 @ qwen3.8-27b-oblit-q3km (resuming from 1)
 Codegen: HumanEval/132 @ qwen3.8-27b-oblit-q3km
 Codegen: HumanEval/133 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/134 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/135 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/136 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/137 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/138 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/139 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/140 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/141 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/142 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/143 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/144 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/145 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/146 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/147 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/148 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/149 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/150 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/151 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/152 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/153 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/154 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/155 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/156 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/157 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/158 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/159 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/160 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/161 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/162 @ qwen3.8-27b-oblit-q3km
+Codegen: HumanEval/163 @ qwen3.8-27b-oblit-q3km
+humaneval •100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 164/164 • 0:16:08
+/home/irae/code/choose-a-local-llm-run23/hardware/arrietty/benchmarks/bench23/results/qwen38-oblit-q3km-budget-medium/humaneval/qwen3.8-27b-oblit-q3km_openai_temp_0.0.jsonl
+Load from ground-truth from /home/irae/.cache/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl
+Reading samples...
+0it [00:00, ?it/s]1it [00:00,  1.57it/s]164it [00:00, 250.10it/s]
+  0%|          | 0/164 [00:00<?, ?it/s]  1%|          | 1/164 [00:00<01:53,  1.44it/s]  7%|▋         | 12/164 [00:00<00:07, 19.87it/s] 13%|█▎        | 21/164 [00:00<00:04, 33.08it/s] 23%|██▎       | 37/164 [00:01<00:02, 58.27it/s] 29%|██▉       | 48/164 [00:01<00:01, 69.84it/s] 37%|███▋      | 61/164 [00:01<00:01, 84.21it/s] 45%|████▍     | 73/164 [00:01<00:00, 92.69it/s] 52%|█████▏    | 85/164 [00:01<00:00, 82.21it/s] 58%|█████▊    | 95/164 [00:01<00:01, 59.84it/s] 63%|██████▎   | 103/164 [00:02<00:01, 47.47it/s] 68%|██████▊   | 112/164 [00:02<00:00, 54.16it/s] 73%|███████▎  | 120/164 [00:02<00:00, 57.79it/s] 78%|███████▊  | 128/164 [00:02<00:00, 50.91it/s] 82%|████████▏ | 135/164 [00:02<00:00, 52.06it/s] 87%|████████▋ | 143/164 [00:02<00:00, 54.51it/s] 91%|█████████ | 149/164 [00:02<00:00, 44.18it/s] 98%|█████████▊| 160/164 [00:03<00:00, 55.99it/s]100%|██████████| 164/164 [00:05<00:00, 30.89it/s]
+humaneval (base tests)
+pass@1:	0.854
+humaneval+ (base + extra tests)
+pass@1:	0.787
+=== done: qwen38-oblit-q3km-budget-medium ===
+humaneval (base tests)
+pass@1:	0.854
+humaneval+ (base + extra tests)
+pass@1:	0.787
