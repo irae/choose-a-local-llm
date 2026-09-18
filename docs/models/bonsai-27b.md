@@ -33,32 +33,12 @@ Every file of this model, on every machine that served it, with every run and a 
 
 ## Speed and context
 
-<!-- gen:model-speed:start -->
-| Config | Ctx | tok/s | Memory<br>(at max ctx) |
-|---|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" hide="server" /> | **208k** | <TokCell shallow="46.0" deep="14.5" cap="mem" top-shallow top-deep /> | 15.4 GB |
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" hide="server" /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow /> | 15.5 GB |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" hide="server" /> | 40k | <TokCell shallow="24.5" deep="17.3" cap="mem" stale top-deep /> | 22.5 GB |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" hide="server" /> | 40k | <TokCell shallow="24.5" deep="17.3" cap="mem" stale top-deep /> | 22.5 GB |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" hide="server" /> | 131k | <TokCell shallow="15.0" deep="9.7" cap="mem" stale /> | 18.6 GB |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" hide="server" /> | 2x48k | <TokCell shallow="14.9" deep="7.8" cap="speed" stale /> | **10.9 GB** |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" hide="server" /> | 33k | <TokCell shallow="14.7" deep="7.8" cap="speed" /> | **9.6 GB** |
-
-† from an earlier serving config or method; re-run pending.
-<!-- gen:model-speed:end -->
-
-Every config of this model on every machine, fastest at 4K first. The cap word under the numbers says what ended the curve: `speed` is the 8 tok/s floor, `mem` is memory.
-
-### Decode curve, by depth
-
 <!-- gen:model-curve:start -->
-**RTX 5060 Ti 16 GB**
-
 | arm | 4K | 24K | 64K | 119K | 207K | 239K |
 |---|--:|--:|--:|--:|--:|--:|
-| PQ2_0, q8_0 KV, no drafter | **46.0** | **38.2** | **28.2** |  | **14.5 (208K)** |  |
-| PQ2_0, f16 KV, no drafter | 46.3 | 40.5 | 32.2 | 25.1 (120K) |  |  |
-| PTQ1_0, q8_0 KV, no drafter | **41.7** | **34.9** | **26.5** |  |  | **12.8 (240K)** |
+| rtx-5060ti-16gb, PQ2_0, f16 KV, no drafter | 46.3 | 40.5 | 32.2 | 25.1 (120K) |  |  |
+| rtx-5060ti-16gb, PQ2_0, q8_0 KV, no drafter | **46.0** | **38.2** | **28.2** |  | **14.5 (208K)** |  |
+| rtx-5060ti-16gb, PTQ1_0, q8_0 KV, no drafter | **41.7** | **34.9** | **26.5** |  |  | **12.8 (240K)** |
 
 The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.
 <!-- gen:model-curve:end -->

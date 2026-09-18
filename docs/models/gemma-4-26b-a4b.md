@@ -24,20 +24,6 @@ Every file of this model, on every machine that served it, with every run and a 
 
 ## Speed and context
 
-<!-- gen:model-speed:start -->
-| Config | Ctx | tok/s | Memory<br>(at max ctx) |
-|---|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" hide="server" /> | **2x82k** | <TokCell shallow="66.6" deep="33.6" cap="mem" stale top-shallow top-deep /> | **25.3 GB** |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" hide="server" /> | **197k** | <TokCell shallow="60.1" deep="19.1" cap="mem" top-shallow /> | **25.6 GB** |
-| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/gemma26-catlilface-nvfp4q8" hide="server" /> | **97k** | <TokCell shallow="58.77" deep="45.59" cap="mem" top-deep /> | **15.2 GB** |
-
-† from an earlier serving config or method; re-run pending.
-<!-- gen:model-speed:end -->
-
-Every config of this model on every machine, fastest at 4K first. The cap word under the numbers says what ended the curve: `speed` is the 8 tok/s floor, `mem` is memory.
-
-### Decode curve, by depth
-
 <!-- gen:model-curve:start -->
 No decode curve recorded yet.
 <!-- gen:model-curve:end -->

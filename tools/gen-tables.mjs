@@ -940,43 +940,57 @@ function renderModelSpeed(rows) {
   return [...header, ...body, ...legend].join('\n')
 }
 
-// One decode curve per model page: the per-depth readings of every arm that
-// was measured for that model on that machine, the shape the decode-speed
-// page carries per machine. The data lives in `curves` in each setup's
-// models.json, because a row holds only its shallow and deep cells and an
-// arm that was measured and not served has no row at all.
+// One decode curve per model page: every arm that was measured for this
+// model, on every machine, at every depth that was read. The machine is part
+// of the arm, because one table mixes them. The data lives in `curves` in
+// each setup's models.json, because a row holds only its shallow and deep
+// cells and an arm that was measured and never served has no row at all.
 function renderModelCurve(slug, datas) {
-  const entries = datas.flatMap((data) =>
-    (data.curves || []).filter((c) => c.model === slug).map((c) => ({ ...c, setup: data.setup, hardwareName: data.hardwareName || data.hardwareSlug })),
+  const arms = datas.flatMap((data) =>
+    (data.curves || [])
+      .filter((c) => c.model === slug)
+      .map((c) => ({ ...c, machine: data.hardwareSlug })),
   )
-  if (!entries.length) return 'No decode curve recorded yet.'
-  const byMachine = new Map()
-  for (const e of entries) {
-    if (!byMachine.has(e.hardwareName)) byMachine.set(e.hardwareName, [])
-    byMachine.get(e.hardwareName).push(e)
+  if (!arms.length) return 'No decode curve recorded yet.'
+  const depths = [...new Set(arms.flatMap((a) => Object.keys(a.points || {})).map(Number))].sort((x, y) => x - y)
+  const label = (d) => (d >= 1024 ? `${Math.round(d / 1024)}K` : String(d))
+  const shallow = (a) => {
+    const first = depths.find((d) => (a.points || {})[String(d)] != null)
+    return first == null ? -Infinity : Number(a.points[String(first)])
   }
-  const out = []
-  for (const [machine, arms] of byMachine) {
-    const depths = [...new Set(arms.flatMap((a) => Object.keys(a.points || {})).map(Number))].sort((x, y) => x - y)
-    const label = (d) => (d >= 1024 ? `${Math.round(d / 1024)}K` : String(d))
-    out.push(`**${machine}**`, '')
-    out.push(`| arm | ${depths.map(label).join(' | ')} |`)
-    out.push(`|---|${depths.map(() => '--:').join('|')}|`)
-    for (const a of arms) {
-      const cells = depths.map((d) => {
-        const v = (a.points || {})[String(d)]
-        if (v == null) return ''
-        const n = Number(v)
-        const shown = Number.isFinite(n) ? n.toFixed(n >= 100 ? 0 : 2).replace(/0$/, '') : String(v)
-        const text = a.c && a.cAt && String(a.cAt) === String(d) ? `${shown} (${label(a.c)})` : shown
-        return a.served ? `**${text}**` : text
-      })
-      out.push(`| ${a.arm} | ${cells.join(' | ')} |`)
-    }
-    out.push('')
+  const ordered = [...arms].sort((a, b) => shallow(b) - shallow(a))
+  let anyCreep = false
+  const rows = ordered.map((a) => {
+    const creep = a.method === 'creep'
+    if (creep) anyCreep = true
+    const wired = creep && a.wired ? `, wired ${a.wired}` : ''
+    const name = `${a.machine}, ${a.arm}${wired}${creep ? ' †' : ''}`
+    const cells = depths.map((d) => {
+      const v = (a.points || {})[String(d)]
+      if (v == null) return ''
+      const n = Number(v)
+      const shown = Number.isFinite(n) ? n.toFixed(n >= 100 ? 0 : 2).replace(/0$/, '') : String(v)
+      const text = a.c && a.cAt && String(a.cAt) === String(d) ? `${shown} (${label(a.c)})` : shown
+      return a.served ? `**${text}**` : text
+    })
+    return `| ${name} | ${cells.join(' | ')} |`
+  })
+  const legend = [
+    '',
+    'The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.',
+  ]
+  if (anyCreep) {
+    legend.push(
+      '',
+      '† read with the context-creep tool of an earlier version of this project, not with `llama-benchy` on real text. The two methods do not give the same number. A reading stays until a re-run replaces it.',
+    )
   }
-  out.push('The served arm of each config is in bold. A bracket after a reading is the `-c` that arm needed.')
-  return out.join('\n')
+  return [
+    `| arm | ${depths.map(label).join(' | ')} |`,
+    `|---|${depths.map(() => '--:').join('|')}|`,
+    ...rows,
+    ...legend,
+  ].join('\n')
 }
 
 function renderDecodeSummary(datas) {
@@ -1200,7 +1214,6 @@ for (const [slug, rows] of modelsAll) {
     MODEL_MENDEL_END,
     renderModelMendel(slug, blindRunsAll, guidedRunsAll, [], null, { hardware: true }),
   )
-  writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-speed:start -->', '<!-- gen:model-speed:end -->', renderModelSpeed(rows))
   writeBlock(`docs/models/${slug}.md`, '<!-- gen:model-curve:start -->', '<!-- gen:model-curve:end -->', renderModelCurve(slug, setupsAll))
 }
 for (const slug of new Set(BINARIES.map((b) => b.model))) {
