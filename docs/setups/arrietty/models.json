@@ -108,7 +108,7 @@
       "evalplus": "0.793/0.780/79%",
       "mendel": "pending",
       "id": "gemma12-q4kxl-on",
-      "evalplusWall": 259.0,
+      "evalplusWall": 259,
       "spec": {
         "base": "Gemma-4-12B",
         "quant": "UD-Q4_K_XL",
@@ -326,7 +326,7 @@
       "evalplus": "0.854/0.787/100%",
       "mendel": "failed-smoke",
       "id": "qwen38-oblit-q3km-medium",
-      "evalplusWall": 89.0,
+      "evalplusWall": 89,
       "spec": {
         "base": "Qwen3.8-27B",
         "quant": "Q3_K_M",
@@ -607,7 +607,7 @@
       "empty": "53/164"
     },
     {
-      "wall": 259.0,
+      "wall": 259,
       "emptyCause": "† unproven",
       "slug": "gemma-4-12b-it",
       "model": "Gemma-4-12B (GGUF UD-Q4_K_XL, unsloth, f16 KV)",
@@ -691,7 +691,7 @@
       "empty": "0/164"
     },
     {
-      "wall": 89.0,
+      "wall": 89,
       "emptyCause": "model",
       "slug": "qwen3.8-27b",
       "model": "Qwen3.8-27B (GGUF Q3_K_M, OBLITERATUS, q8_0 KV)",
@@ -733,7 +733,7 @@
       "cAt": 211968,
       "served": true,
       "points": {
-        "4096": 46.0,
+        "4096": 46,
         "24576": 38.2,
         "65536": 28.2,
         "211968": 14.5
@@ -769,6 +769,36 @@
         "244736": 12.8
       },
       "run": "bench24",
+      "method": "benchy"
+    },
+    {
+      "model": "bonsai-2-27b",
+      "arm": "PTQ1_0, f16 KV, no drafter",
+      "c": 139264,
+      "cAt": 138240,
+      "served": true,
+      "points": {
+        "4096": 42.1,
+        "24576": 37.3,
+        "65536": 30.1,
+        "138240": 22.4
+      },
+      "run": "bench24",
+      "method": "benchy"
+    },
+    {
+      "model": "bonsai-2-27b",
+      "arm": "PTQ1_0, f16 KV, refusal-ablation LoRA at scale 1.0",
+      "c": 139264,
+      "cAt": 138240,
+      "served": false,
+      "points": {
+        "4096": 40.8,
+        "24576": 36.2,
+        "65536": 29.2,
+        "138240": 22
+      },
+      "run": "bench27",
       "method": "benchy"
     },
     {

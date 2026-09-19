@@ -27,9 +27,11 @@ Every file of this model, on every machine that served it, with every run and a 
 <!-- gen:model-curve:start -->
 | arm | 4K | 24K | 64K | 128K | 208K | 240K |
 |---|--:|--:|--:|--:|--:|--:|
-| rtx-5060ti-16gb, PQ2_0, f16 KV, no drafter, -c 120K | <CurveCell value="46.3" /> | <CurveCell value="40.5" /> | <CurveCell value="32.2" /> | <CurveCell value="25.1" /> |  |  |
+| rtx-5060ti-16gb, PQ2_0, f16 KV, no drafter, -c 120K | <CurveCell value="46.3" /> | <CurveCell value="40.5" /> | <CurveCell value="32.2" /> | <CurveCell value="25.1" depth="119.0K" /> |  |  |
 | rtx-5060ti-16gb, PQ2_0, q8_0 KV, no drafter, -c 208K | <CurveCell value="46.0" served /> | <CurveCell value="38.2" served /> | <CurveCell value="28.2" served /> |  | <CurveCell value="14.5" served /> |  |
+| rtx-5060ti-16gb, PTQ1_0, f16 KV, no drafter, -c 136K | <CurveCell value="42.1" served /> | <CurveCell value="37.3" served /> | <CurveCell value="30.1" served /> | <CurveCell value="22.4" depth="135.0K" served /> |  |  |
 | rtx-5060ti-16gb, PTQ1_0, q8_0 KV, no drafter, -c 240K | <CurveCell value="41.7" served /> | <CurveCell value="34.9" served /> | <CurveCell value="26.5" served /> |  |  | <CurveCell value="12.8" served /> |
+| rtx-5060ti-16gb, PTQ1_0, f16 KV, refusal-ablation LoRA at scale 1.0, -c 136K | <CurveCell value="40.8" /> | <CurveCell value="36.2" /> | <CurveCell value="29.2" /> | <CurveCell value="22.0" depth="135.0K" /> |  |  |
 
 The served arm of each config is in bold. A pill under a reading is the depth it was read at, where the arms of that column did not share one.
 <!-- gen:model-curve:end -->
