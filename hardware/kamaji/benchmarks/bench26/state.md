@@ -73,6 +73,19 @@ no empty, 7 forced. Blind agent row: 59.5, peak context 192679 of a
 - Result: all 4 hit `length` at 30000 tokens, all reasoning (about 1800 s each). Cells: forced-pass 3 (HumanEval/80, /129, /137), forced-fail-loop 4, forced-fail-late 0, forced-fail-wrong 0. Corrected think budget: unchanged, no late answer.
 - With the natural re-run the score is 0.976 base and 0.939 plus on the 4 problems merged into the run (base 0.988 before), because the 4 loops are empty answers. The budgeted run score stays 0.988/0.939.
 
+## bonsai2-smoke-xhigh-mac
+
+- Gate: budget run base 0.988, above 0.800. Server PTQ1_0 `-c 262144`, f16 KV, `--cache-ram 0` (deviation: the runbook allows it for the measurement only; kept because the wired memory reads 25.8 GB at load), no drafter, no reasoning flag. Log `results/server-bonsai2-agent.log`.
+- Window `bonsai2_ptq1_window` 159744 (clean depth 163858 rounded down to 4096). Reserve 8192.
+- pi entry `bonsai2-27b-ptq1-mac` added to `~/.pi/agent/models.json`; original saved as `~/.pi/agent/models.json.bak-run26`.
+- Smoke line: `SMOKE-MENDEL model=bonsai2-27b-ptq1-mac level=xhigh task=xtend window=159744 calls=10 distinct=10 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=5106 commits=1 clean=yes end=stop wall_s=139 verdict=pass`. The session log holds 7 thinking blocks. Log `results/mendel-smoke-bonsai2-ptq1.log`.
+- The smoke ended at 15:18Z and the blind row started at 15:35Z, because a wakeup fell between them. The GPU was idle for 17 minutes.
+- Swap used read 474 MB after the smoke (62 MB before). Start value for the blind row: 474 MB.
+
+## bonsai2-mendel-blind-xhigh-mac
+
+- Started 15:35Z. Worktree `../mendel-bench-bonsai2-27b-ptq1-mac-xhigh`, branch `bonsai2-27b-ptq1-mac-xhigh-issue-13`, window 159744, keep budget pi default 20000 (window above 65536), `maxTokens` and reserve 8192. Watcher on the server log. Log `results/mendel-blind-bonsai2-ptq1.log`.
+
 ## Disk clean-up, 2026-09-19 (owner)
 
 Owner approved the deletion. No partial download existed. Removed from the Hugging Face cache: `mlx-community/gemma-4-26b-a4b-it-4bit`, `mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx-community/Qwen3.8-27B-4bit`, `AtomicChat/Qwen3.8-27B-GGUF`, and four files of `prism-ml/Ternary-Bonsai-27B-gguf` (`Q2_0`, `PQ2_0`, `dspark-bf16`, `dspark-Q4_1`). Free space on the data volume went from 13 GB to 96 GB. Free space read by `df -h` after the clean-up: 96Gi free, 90% used. The MLX pack download stays at the start of `bonsai2-mlx-probe-mac`; under 20 GB free at that point is stop and ask. The older bartowski Q4_K_M revision waits for the owner: `refs/main` points to `125a02a`, not to `f0eec4a`.
