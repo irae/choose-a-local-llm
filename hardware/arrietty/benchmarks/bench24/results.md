@@ -547,3 +547,28 @@ Natural re-run (no reasoning-budget flags), same config, `EVALPLUS_MAX_NEW_TOKEN
 Summary: forced-pass=3, forced-fail-late=0, forced-fail-loop=3, forced-fail-wrong=0. `corrected_think_budget`: unchanged, no late answer. All three forced-failed problems hit the 30000-token cap without an answer, so they are non-convergence, not a small budget.
 
 Files: `results/bonsai2-pq2-f16-evalplus-forced-rerun/`, `results/server-bonsai2-pq2-f16-evalplus-forced-rerun.log`, `results/watcher-bonsai2-pq2-f16-evalplus-forced-rerun.log`, `results/run-bonsai2-pq2-f16-evalplus-forced-rerun.out.log`.
+
+## `bonsai2-ptq1-evalplus-calibrate`
+
+`Ternary-Bonsai-2-27B-PTQ1_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, q8_0 KV (`bonsai2-ptq1-kvpick`), `-c 32768`, no reasoning-budget flag. Calibration name `bonsai2-ptq1-xhigh-think`, alias `bonsai2-27b-ptq1`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`. All 10 rows resolve `xhigh`. The first 5 rows come from an earlier pass that the coordinator stopped (same server config, same file name); `calibrate.py` resumed the file for the other 5. The earlier report said 1 saved row; the file held 5.
+
+| task_id | finish_reason | reasoning_len (chars) |
+|---|---|--:|
+| HumanEval/0 | stop | 2332 |
+| HumanEval/10 | stop | 35446 |
+| HumanEval/26 | stop | 2094 |
+| HumanEval/32 | stop | 80253 |
+| HumanEval/38 | stop | 5853 |
+| HumanEval/39 | length | 70173 |
+| HumanEval/76 | length | 74912 |
+| HumanEval/99 | length | 32650 |
+| HumanEval/124 | stop | 8651 |
+| HumanEval/145 | length | 102013 |
+
+6 converged, 4 cut, no converged row with an empty answer.
+
+`thinking-budget.py derive`: converged 6, cut 4, max_reasoning_tokens 24083, max_answer_tokens 1273, think_budget 30000 (capped, 24083 x 1.5 = 36124.5 is above the cap), answer_budget 2048 (floor), max_tokens 32048.
+
+`bonsai2_ptq1_think_budget` = 30000, `bonsai2_ptq1_answer_budget` = 2048, `bonsai2_ptq1_max_tokens` = 32048.
+
+Files: `hardware/arrietty/calibrations/calibration-bonsai2-ptq1-xhigh-think.json`, `results/server-bonsai2-ptq1-calibrate-think.log` (first 5 rows), `results/server-bonsai2-ptq1-evalplus-calibrate.log` (rest).
