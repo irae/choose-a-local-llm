@@ -12,8 +12,8 @@ happen, and the handing-over section at the end.
 | `adapter_size` | 9682464 | coordinator, verified 2026-09-18 |
 | `llama_server_prism` | `prism-b10685-7dffb15`, commit `7dffb158d` | run 24, already installed |
 | `orca_c` | 139264 | `orca-ptq1-f16-ladder`, planning value 139264 |
-| `orca_clean` | pending | `sweep-orca-ptq1-f16` |
-| `orca_window` | pending | the agent row |
+| `orca_clean` | 138240 | `sweep-orca-ptq1-f16` |
+| `orca_window` | 135168 | the agent row |
 | `vram_start_mb` | 618 | `nvidia-smi`, session start |
 
 The unablated arm of the same file and cache, from run 24, to read
@@ -146,6 +146,10 @@ Probe at `-c 8192` after the go: `GET /lora-adapters` returned id 0, scale 1.0; 
 Planning value 139264 (run 24's f16 ceiling, no adapter), full command with the adapter, `--fit off`. Load: passes, VRAM 15375 MiB of 16311 MiB, no CUDA error, all layers on the GPU. Real request: 138053 prompt tokens, 16 completion tokens, served in 6 min 38 s (no cache), VRAM 15385 MiB under it. Zero `CUDA error`, `out of memory` or `cudaMalloc` lines in `results/server-orca-ladder-139264.log`.
 
 `orca_c` = **139264**. The adapter costs no window: the ceiling equals run 24's unablated ceiling. No bisect load, because the planning value already passes and run 24 measured the next step up as a fail for this file.
+
+## `sweep-orca-ptq1-f16`
+
+Done. 40.76 / 36.18 / 29.15 / 22.03 tok/s at 4096 / 24576 / 65536 / 138240. `orca_clean` 138240; `orca_window` 135168 (138240 rounded down to a multiple of 4096, from this arm's own sweep). Corpus server stopped. Sweep server stopped.
 
 ## Handing-over
 
