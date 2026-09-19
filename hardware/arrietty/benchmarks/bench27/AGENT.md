@@ -74,6 +74,13 @@ does not apply to the agent row; write that line in its config note.
   worktree, branch or processes, and never kill a server you did not
   start.
 - **Effort xhigh**, the level of every row of this model.
+- **`vram 16311 MiB` is the card's capacity, not a measurement.** Every
+  config note of this machine carries it, where a Mac note carries its
+  wired limit, so a reader sees what the config had to fit inside. It
+  never changes and it is never replaced with the memory a config used.
+  The memory a config used goes in `state.md` and in the block's own
+  table in `results.md`, from `nvidia-smi` at load and under the first
+  real request.
 - **No temperature and no sampling parameter is passed to any server.**
   Record what the server applies; run 24 measured `min_p 0.05` where
   the model card publishes `0.0`.
