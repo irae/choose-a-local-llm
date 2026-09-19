@@ -58,6 +58,18 @@ no empty, 7 forced. Blind agent row: 59.5, peak context 192679 of a
 - 6 converged, 4 cut at 30000 (`length`): HumanEval/32, /39, /99, /145. Four `length` stops in ten: the thinking does not converge on those problems. No converged row has an empty answer.
 - Budgets (`THINKING_BUDGET_MARGIN` 1.5): `bonsai2_ptq1_think_budget` 16056, `bonsai2_ptq1_answer_budget` 2048, `bonsai2_ptq1_max_tokens` 18104. Longest converged reasoning 10704 tokens, longest answer 330.
 
+## bonsai2-budget-xhigh-mac
+
+- PTQ1_0, `-c 32768`, f16 KV, xhigh, `--reasoning-budget 16056` with the fixed message, `EVALPLUS_MAX_NEW_TOKENS=18104`, 6 problems seeded from the calibration. Server log `results/server-bonsai2-budget-xhigh-mac.log`.
+- One part, no crash: 07:14Z to 12:51Z, 337 min. Calibration wall 145.9 min. Wall 482.9 min.
+- Base 0.988, plus 0.939. Empty 0/164 (from the samples). Forced 7/164 (from `finish.jsonl`): HumanEval/32, /39, /80, /99, /129, /137, /145.
+- Swap did not grow in the run. The watcher raised one silence probe that queued behind a live turn, as it says it can.
+- The card scored 0.982/0.939 at a 25209 budget with 7 forced.
+
+## Disk clean-up, 2026-09-19 (owner)
+
+Owner approved the deletion. No partial download existed. Removed from the Hugging Face cache: `mlx-community/gemma-4-26b-a4b-it-4bit`, `mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx-community/Qwen3.8-27B-4bit`, `AtomicChat/Qwen3.8-27B-GGUF`, and four files of `prism-ml/Ternary-Bonsai-27B-gguf` (`Q2_0`, `PQ2_0`, `dspark-bf16`, `dspark-Q4_1`). Free space on the data volume went from 13 GB to 96 GB. Free space read by `df -h` after the clean-up: 96Gi free, 90% used. The MLX pack download stays at the start of `bonsai2-mlx-probe-mac`; under 20 GB free at that point is stop and ask. The older bartowski Q4_K_M revision waits for the owner: `refs/main` points to `125a02a`, not to `f0eec4a`.
+
 ## Handing-over
 
 The run has not started.
