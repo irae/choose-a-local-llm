@@ -75,16 +75,10 @@ no empty, 7 forced. Blind agent row: 59.5, peak context 192679 of a
 
 ## bonsai2-smoke-xhigh-mac
 
-- Gate: budget run base 0.988, above 0.800. Server PTQ1_0 `-c 262144`, f16 KV, `--cache-ram 0` (deviation: the runbook allows it for the measurement only; kept because the wired memory reads 25.8 GB at load), no drafter, no reasoning flag. Log `results/server-bonsai2-agent.log`.
+- Gate: budget run base 0.988, above 0.800. Server PTQ1_0 `-c 262144`, f16 KV, `--cache-ram 0` (deviation: the runbook allows it for the measurement only; kept because the wired memory reads 25.8 GB at load), no drafter, no reasoning flag.
 - Window `bonsai2_ptq1_window` 159744 (clean depth 163858 rounded down to 4096). Reserve 8192.
 - pi entry `bonsai2-27b-ptq1-mac` added to `~/.pi/agent/models.json`; original saved as `~/.pi/agent/models.json.bak-run26`.
 - Smoke line: `SMOKE-MENDEL model=bonsai2-27b-ptq1-mac level=xhigh task=xtend window=159744 calls=10 distinct=10 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=5106 commits=1 clean=yes end=stop wall_s=139 verdict=pass`. The session log holds 7 thinking blocks. Log `results/mendel-smoke-bonsai2-ptq1.log`.
-- The smoke ended at 15:18Z and the blind row started at 15:35Z, because a wakeup fell between them. The GPU was idle for 17 minutes.
-- Swap used read 474 MB after the smoke (62 MB before). Start value for the blind row: 474 MB.
-
-## bonsai2-mendel-blind-xhigh-mac
-
-- Started 15:35Z. Worktree `../mendel-bench-bonsai2-27b-ptq1-mac-xhigh`, branch `bonsai2-27b-ptq1-mac-xhigh-issue-13`, window 159744, keep budget pi default 20000 (window above 65536), `maxTokens` and reserve 8192. Watcher on the server log. Log `results/mendel-blind-bonsai2-ptq1.log`.
 
 ## Disk clean-up, 2026-09-19 (owner)
 

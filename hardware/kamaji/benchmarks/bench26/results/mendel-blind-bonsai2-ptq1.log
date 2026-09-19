@@ -1,5 +1,0 @@
-Preparing worktree (new branch 'bonsai2-27b-ptq1-mac-xhigh-issue-13')
-HEAD is now at 2652ed6 chore: stop node SIGSEGV/SIGILL crashes in parallel tap runs
-bonsai2-27b-ptq1-mac-xhigh: worktree ready at /Users/irae/code/mendel-benchmark/../mendel-bench-bonsai2-27b-ptq1-mac-xhigh, starting pi
-worker: contextWindow 159744 pinned on provider llama
-worker: compaction {"enabled": true, "reserveTokens": 8192}
