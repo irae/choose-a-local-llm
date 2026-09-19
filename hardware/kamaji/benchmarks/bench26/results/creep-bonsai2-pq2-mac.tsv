@@ -1,0 +1,7 @@
+llama-server, endpoint=completion thinking=n/a (no template) contexts=1 pause=60s
+start: wired 26673 MB, free 70 MB, swap used 0 MB
+context	depth_tokens	decode_toks	wired_mb	free_mb	swap_delta_mb	compress_pages	decompress_pages	step_seconds
+A	4114	17.05	26259	68	0	260249	240538	44
+A	24602	12.26	26239	62	0	348193	281722	241
+A	65578	7.91	26050	68	0	864805	836860	627
+STOP: below 8 tok/s at depth 65578
