@@ -86,4 +86,11 @@ Owner approved the deletion. No partial download existed. Removed from the Huggi
 
 ## Handing-over
 
-The run has not started.
+Paused by the owner on 2026-09-19, after `bonsai2-smoke-xhigh-mac` and before `bonsai2-mendel-blind-xhigh-mac` (`simulator(mendel-blind) bonsai-27b-ptq1 ptq1/xhigh`). The owner needs the Mac for other work. That block has no result, no worktree, no branch and no run file. It starts again from scratch when the owner says so.
+
+- **Closed:** `machine-setup`, both ladder blocks, both sweep blocks, `bonsai2-calibrate-think-mac`, `bonsai2-budget-xhigh-mac`, `bonsai2-forced-rerun-mac`, `bonsai2-smoke-xhigh-mac` (pass).
+- **Next, in order:** `bonsai2-mendel-blind-xhigh-mac`, `bonsai2-mlx-probe-mac` (MLX venv is installed, the pack is not downloaded; stop and ask if free disk is under 20 GB), `sweep-bonsai2-mlx-mac`, `retry-sweep`.
+- **Serve for the blind row:** PTQ1_0, `-c 262144`, f16 KV, no drafter, no reasoning flag, window 159744, reserve 8192, level xhigh, pi id `bonsai2-27b-ptq1-mac`. Run `gh auth status` and `git stash clear` in `~/code/mendel-benchmark` first.
+- **Machine state left behind:** no server, no watcher, no corpus server. Wired limit 25000. pi entry `bonsai2-27b-ptq1-mac` in `~/.pi/agent/models.json`, backup `~/.pi/agent/models.json.bak-run26`. Wakeup loop stopped.
+- **Disk:** 4 repos and 4 Bonsai files removed by the owner. The older bartowski revision `125a02a` is still on disk; the owner has not chosen.
+- **Evidence archive:** not run yet (`tools/archive-evidence.sh`).
