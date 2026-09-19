@@ -109,7 +109,9 @@ closes. None of it is site content.
 These rules bind every `reports/<model>.md` page:
 
 - **Highlights are the good things about the model, most important
-  first** (owner, 2026-09-19). Grade each bullet by how much it matters
+  first** (owner, 2026-09-19). The same rule binds the Highlights of a
+  setup's `comparison.md`, where each bullet is one model's good news;
+  a moved bullet goes to its Findings section. Grade each bullet by how much it matters
   to a reader who picks a model. A limit, a defect or a caveat is not a
   highlight; it goes to the findings.
 - **Three bullets is the norm; five is the maximum.** After the third,

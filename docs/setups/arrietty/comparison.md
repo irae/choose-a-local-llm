@@ -6,18 +6,12 @@ llama-server (CUDA) · measured 2026-09-13 to 2026-09-16
 
 - **Pick: Qwen3.8-27B ISTA IQ3_S-mtp, no drafter, q8_0 KV.** Guided
   85 and blind 91, both 8 of 8. Window 61440. 29.4 → 21.1 tok/s.
-- **Long window: Qwen3.6-35B-A3B, MTP n-max 2.** 97K at 61.2 → 45.4
+- **Longest window: Ternary Bonsai-2-27B.** 240K on PTQ1_0 and 208K
+  on PQ2_0 at q8_0 KV, the fastest 27B build here at 46 tok/s at 4K.
+  EvalPlus 0.982 / 0.945 on PQ2_0 at f16. Blind 82 on PTQ1_0 at f16.
+- **Fastest: Qwen3.6-35B-A3B, MTP n-max 2.** 97K at 61.2 → 45.4
   tok/s. Guided 48.5, 6 of 8.
-- **Gemma-4-12B: zero commits** on both builds, at thinking off and on.
-  NVFP4 serves 261K at 49.6 → 33.1 tok/s.
-- **VRAM for the desktop:** about 1.2 GB at idle. The ISTA n-max 2
-  server crashed three times at about 440 MiB free.
-- **EvalPlus at the default level of each model.** unsloth Qwen3.8
-  0.957 / 0.921 and ISTA 0.945 / 0.909 at xhigh; Qwen3.6 0.945 / 0.902
-  and Gemma-26B NVFP4Q8 0.909 / 0.878 at thinking on. Gemma-12B at thinking
-  off: k-quant 0.951 / 0.909, NVFP4 0.927 / 0.896; at thinking on
-  0.793 / 0.780 and 0.659 / 0.640. Every
-  thinking-on row left empties; their cause is unproven.
+- **Gemma-4-12B NVFP4 serves 261K** at 49.6 → 33.1 tok/s.
 
 ## Models evaluated
 
@@ -76,6 +70,18 @@ hours.
 - Empty: a problem that ran to the budget with no answer. It counts as
   failed. The empties column carries the cause word
   ([what the words mean](../../benchmarks/evalplus.md#limits-on-local-hardware)).
+
+## Findings
+
+- **Gemma-4-12B: zero commits** on both builds, at thinking off and on.
+- **VRAM for the desktop:** about 1.2 GB at idle. The ISTA n-max 2
+  server crashed three times at about 440 MiB free.
+- **EvalPlus at the default level of each model.** unsloth Qwen3.8
+  0.957 / 0.921 and ISTA 0.945 / 0.909 at xhigh; Qwen3.6 0.945 / 0.902
+  and Gemma-26B NVFP4Q8 0.909 / 0.878 at thinking on. Gemma-12B at thinking
+  off: k-quant 0.951 / 0.909, NVFP4 0.927 / 0.896; at thinking on
+  0.793 / 0.780 and 0.659 / 0.640. Every
+  thinking-on row left empties; their cause is unproven.
 
 ## Per-model reports
 

@@ -16,14 +16,8 @@ llama-server + mlx_lm.server + PrismML fork · wired limit 25000
 - **Qwen3.6-35B-A3B, llama-server.** f16 KV, no drafter: 49.8 tok/s at
   4K, 38.3 at 40K. q8_0 KV with the drafter: 82K at 13.0 tok/s. Guided
   83 at thinking on, 62.5 at off.
-- **Gemma-4-12B, llama-server, f16 KV.** 245K at 8.86 tok/s; two slots
-  of 82K in 13.8 GB. EvalPlus 0.976 / 0.939 / 100% at thinking off.
-- **Ternary Bonsai-27B.** 8 GB of weights. Prism fork: two 48K slots at
-  9.8 tok/s in 10.0 GB; at f16 KV no speed floor to 131K. No complete
-  agent row.
-- **MLX 4-bit against GGUF on EvalPlus:** Gemma-4-26B-A4B 0.171 base
-  lower on MLX, Gemma-4-12B 0.067 lower, Qwen3.8-27B level
-  ([quantization](../../methodology/quantization.md)).
+- **Ternary Bonsai-2-27B, prism fork, PTQ1_0, f16 KV.** 160K window,
+  17.9 → 9.1 tok/s. EvalPlus 0.988 / 0.939 / 100% at effort xhigh.
 
 ## Models evaluated
 
@@ -78,6 +72,17 @@ hours.
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:models-evaluated-partial:end -->
+
+## Findings
+
+- **Gemma-4-12B, llama-server, f16 KV.** 245K at 8.86 tok/s; two slots
+  of 82K in 13.8 GB. EvalPlus 0.976 / 0.939 / 100% at thinking off.
+- **Ternary Bonsai-27B.** 8 GB of weights. Prism fork: two 48K slots at
+  9.8 tok/s in 10.0 GB; at f16 KV no speed floor to 131K. No complete
+  agent row.
+- **MLX 4-bit against GGUF on EvalPlus:** Gemma-4-26B-A4B 0.171 base
+  lower on MLX, Gemma-4-12B 0.067 lower, Qwen3.8-27B level
+  ([quantization](../../methodology/quantization.md)).
 
 ## Per-model reports
 
