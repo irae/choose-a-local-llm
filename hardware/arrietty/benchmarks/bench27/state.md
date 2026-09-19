@@ -175,7 +175,24 @@ Server `-c 32768`, `--reasoning-budget 30000 --reasoning-budget-message "Thinkin
 
 `orca-ptq1-f16-evalplus-budget-xhigh` done: base 0.976, plus 0.945, 0/164 empty (counted from the raw samples), 10/164 forced (counted from `finish.jsonl`). Forced-failed: HumanEval/32, /99, /132. Watcher stopped.
 
+`orca-ptq1-f16-evalplus-forced-rerun` done: forced-pass 7, forced-fail-loop 3 (HumanEval/32, /99, /132), forced-fail-late 0, forced-fail-wrong 0; natural re-run score 0.963/0.945. Watcher stopped, server stopped. `retry-sweep`: nothing waited on a human.
+
 ## Handing-over
 
-Prep done, no block of the run started (the card is held by run 24).
-Next: `machine-setup`, when the coordinator says the card is free.
+**What ran.** `machine-setup`, `orca-ptq1-f16-ladder`, `sweep-orca-ptq1-f16`, `orca-ptq1-f16-mendel-blind-xhigh`, `orca-ptq1-f16-evalplus-calibrate`, `orca-ptq1-f16-evalplus-budget-xhigh`, `orca-ptq1-f16-evalplus-forced-rerun`, `retry-sweep` (empty). One config: PTQ1_0 f16 plus the LoRA at scale 1.0.
+
+| measure | run 27, adapter | run 24, no adapter |
+|---|--:|--:|
+| window (`orca_c`) | 139264 | 139264 |
+| decode tok/s at 4096 / 24576 / 65536 / 138240 | 40.76 / 36.18 / 29.15 / 22.03 | 42.1 / 37.3 / 30.1 / 22.4 |
+| blind agent row | 75, medium (trap B missed), 2 chore commits | 82, CRITICAL (trap A), 17 chore commits |
+| peak context, tool calls | 126798 of 135168, 269 | 127141, - |
+| EvalPlus base / plus | 0.976 / 0.945 | 0.970 / 0.939 |
+
+**Gates.** The adapter log line gate (no `llama_adapter_lora_init_impl` line): the coordinator accepted `GET /lora-adapters` as the load proof. A foreign run 24 client on port 8081: the owner stopped it. The classifier denied `git stash clear` in `~/code/mendel-benchmark`; the stash was empty, so nothing was needed. The EvalPlus gate of 0.800 did not apply to the agent row, which ran first.
+
+**Deviations.** `LD_LIBRARY_PATH` must list the fork directory before run 17's CUDA lib directory; the reverse order loads the stock ggml. The agent row was scored on Claude Fable 5.1 as the owner rule says, but `PLAN.md` still names Opus. The scorer did not publish the row to `~/code/mendel-benchmark`; the coordinator publishes. Server sampling: `min_p` 0.05 applied, no sampling parameter passed.
+
+**Machine state left behind.** No `llama-server`, no Mendel daemon, no watcher, port 8081 and port 8089 free. VRAM about 776 MiB (start 618 MiB; the desktop). `~/.pi/agent/models.json` has one new entry, `bonsai2-27b-ptq1-f16-orca`, backup `~/.pi/agent/models.json.bak-run27`. The Mendel worktree `~/code/mendel-bench-bonsai2-27b-ptq1-f16-orca-xhigh` and its branch stay until the coordinator closes the row. `/home` has 13G free.
+
+**Evidence.** `tools/archive-evidence.sh hardware/arrietty/benchmarks/bench27/results run27`.

@@ -47,3 +47,22 @@ Config: PTQ1_0 f16 plus LoRA scale 1.0, `-c` 32768, `--reasoning-budget 30000 --
 | **run 27, PTQ1_0 f16, LoRA scale 1.0** | **0.976** | **0.945** | 0/164 | 10/164 | 30000 | 2048 | 32048 |
 
 Forced problems: HumanEval/32, /64, /76, /92, /99, /132, /137, /146, /157, /160. Three of them failed the tests: HumanEval/32, /99, /132 (see the forced re-run). The 0.800 gate for the agent row did not apply, because that row ran first. Files: `results/orca-ptq1-f16-budget-xhigh/`, `results/server-orca-ptq1-f16-budget-xhigh.log`.
+
+## `orca-ptq1-f16-evalplus-forced-rerun`
+
+The natural re-run of the forced-failed problems (HumanEval/32, /99, /132), without the two reasoning flags, at `EVALPLUS_MAX_NEW_TOKENS=30000`, `-c` 32768, LoRA scale 1.0. Wall about 43 min (06:44 to 07:27).
+
+| task | cell | forced tokens | natural finish | natural tokens |
+|---|---|--:|---|--:|
+| HumanEval/32 | forced-fail-loop | 31682 | length | 30000 |
+| HumanEval/64 | forced-pass | 30652 | | |
+| HumanEval/76 | forced-pass | 30186 | | |
+| HumanEval/92 | forced-pass | 30114 | | |
+| HumanEval/99 | forced-fail-loop | 30224 | length | 30000 |
+| HumanEval/132 | forced-fail-loop | 30198 | length | 30000 |
+| HumanEval/137 | forced-pass | 30239 | | |
+| HumanEval/146 | forced-pass | 30274 | | |
+| HumanEval/157 | forced-pass | 30267 | | |
+| HumanEval/160 | forced-pass | 30656 | | |
+
+forced-pass 7, forced-fail-late 0, forced-fail-loop 3, forced-fail-wrong 0. Corrected think budget: unchanged, no late answer. All three natural re-runs ran to the 30000 limit with no answer. The reasoning tail of HumanEval/99 is a digit flood, that of HumanEval/132 is an ever-growing list index, and that of HumanEval/32 is a long reasoning loop of 92603 characters. The failures are loops, not a small budget. Natural re-run score: base 0.963, plus 0.945. Run 24's unablated row of the same file, in its own forced re-run, had two loop failures. This run has three.
