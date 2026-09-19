@@ -49,6 +49,7 @@ happen, and the handing-over section at the end.
 | `bonsai2_pq2_f16_think_budget` | 30000 (capped) | `bonsai2-pq2-f16-evalplus-calibrate` |
 | `bonsai2_pq2_f16_answer_budget` | 2048 | `bonsai2-pq2-f16-evalplus-calibrate` |
 | `bonsai2_pq2_f16_max_tokens` | 32048 | `bonsai2-pq2-f16-evalplus-calibrate` |
+| `bonsai2_pq2_f16_evalplus` | base 0.982, plus 0.945, 0 empty, 6 forced, two parts around an owner stop | `bonsai2-pq2-f16-evalplus-budget-xhigh` |
 
 ## EvalPlus group order
 
@@ -57,6 +58,12 @@ The four blind scores, sorted best first: `ptq1-f16` 82, `pq2-f16` 72, `ptq1` (q
 Group order: **`ptq1-f16`, then `pq2-f16`, then `ptq1`.** Order inside each group is fixed: calibrate, budget-xhigh, forced-rerun.
 
 `pq2-f16-evalplus-calibrate` was started first (started while `ptq1-f16`'s blind score was still computing, to keep the card busy) and stopped after 1 row once the 82 score landed and beat 72 — `calibrate.py` resumes the file that exists, so that row is not lost; the group resumes it when its turn comes.
+
+## Pause and stray client (2026-09-18 to 2026-09-19)
+
+The owner stopped run 24 at about 22:33 -03 (01:33 UTC), inside `bonsai2-pq2-f16-evalplus-budget-xhigh`, at 64/164 problems. The wrapper `run-humaneval.sh` (pid 222241) died, but its EvalPlus client (pid 222249) lived on and sent requests to run 27's server on port 8081 until the owner killed it.
+
+Check before the resume: every output file of the block (`finish.jsonl`, `codegen.log`, both sample files) has its last write at 22:29:01 -03, before the stop. Samples written after the stop: **0**. All 64 samples come from the run 24 server. Nothing was deleted. The block resumes from problem 64.
 
 Planning estimate, not a result: about 34 MiB of KV per 1024 tokens at
 q8_0, from the `qwen35` architecture. With weights of about 6.7 GiB,
