@@ -47,3 +47,17 @@ Fork `prism-b10685-7dffb15`. Tool `e38c467`. Pause 60 s. Two creeps joined at 65
 | 196618 | 8.18 | 26861 | 130 | 355239 | 334796 |
 
 The 196618 row has swap growth and stopped the creep. Clean depth 163858. No pick.
+
+## bonsai2-budget-xhigh-mac
+
+PTQ1_0, f16 KV, `-c 32768`, xhigh, fork `prism-b10685-7dffb15`, wired limit 25000. Think budget 16056, answer budget 2048, `max_tokens` 18104, margin 1.5. Server sampling: temperature 1.0, top_k 20, top_p 0.95, min_p 0.05; EvalPlus sends temperature 0.
+
+| metric | value |
+|---|--:|
+| HumanEval base | 0.988 |
+| HumanEval plus | 0.939 |
+| empty | 0/164 |
+| forced | 7/164 |
+| wall | 482.9 min (337 run + 145.9 calibration) |
+
+Forced: HumanEval/32, /39, /80, /99, /129, /137, /145. Parts: 07:14Z to 12:51Z, no crash.
