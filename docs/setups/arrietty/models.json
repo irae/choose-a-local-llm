@@ -599,18 +599,18 @@
           "sub": "240k on PTQ1_0"
         },
         "decodeShallow": {
-          "value": "46.0 tok/s",
-          "label": "decode at 4K, PQ2_0, q8_0 KV"
+          "value": "46.3 tok/s",
+          "label": "decode at 4K, PQ2_0, f16 KV"
         },
         "evalplus": {
-          "value": "0.982 / 0.939",
-          "label": "EvalPlus base / plus, PQ2_0, effort xhigh",
-          "sub": "100% completion"
+          "value": "0.982 / 0.945",
+          "label": "EvalPlus base / plus, effort xhigh",
+          "sub": "100% completion, three arms"
         },
         "mendelBlind": {
-          "value": "59.5",
-          "label": "Mendel blind, PQ2_0, effort xhigh",
-          "sub": "peak 92.2% of a 208896 window"
+          "value": "82",
+          "label": "Mendel blind, PTQ1_0 f16, effort xhigh",
+          "sub": "best of four arms"
         }
       },
       "compareWith": "bonsai-27b"

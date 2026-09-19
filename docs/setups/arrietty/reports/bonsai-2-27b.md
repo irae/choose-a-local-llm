@@ -5,14 +5,15 @@ Backends: prism-llama · [GGUF on Hugging Face](https://huggingface.co/prism-ml/
 <!-- gen:model-kpis:start -->
 <div class="kpis">
   <div class="kpi"><b>208k</b><span>usable context, PQ2_0, q8_0 KV</span><small>240k on PTQ1_0</small></div>
-  <div class="kpi"><b>46.0 tok/s</b><span>decode at 4K, PQ2_0, q8_0 KV</span></div>
-  <div class="kpi"><b>0.982 / 0.939</b><span>EvalPlus base / plus, PQ2_0, effort xhigh</span><small>100% completion</small></div>
-  <div class="kpi"><b>59.5</b><span>Mendel blind, PQ2_0, effort xhigh</span><small>peak 92.2% of a 208896 window</small></div>
+  <div class="kpi"><b>46.3 tok/s</b><span>decode at 4K, PQ2_0, f16 KV</span></div>
+  <div class="kpi"><b>0.982 / 0.945</b><span>EvalPlus base / plus, effort xhigh</span><small>100% completion, three arms</small></div>
+  <div class="kpi"><b>82</b><span>Mendel blind, PTQ1_0 f16, effort xhigh</span><small>best of four arms</small></div>
 </div>
 <!-- gen:model-kpis:end -->
 
-Published 2026-09-17 and measured the same day: both packings laddered
-and swept, EvalPlus and the blind agent row on PQ2_0.
+Published 2026-09-17, measured to 2026-09-19: both packings by both KV
+types, all four arms laddered, swept, scored on EvalPlus and given a
+blind agent row, plus one arm served with a runtime LoRA adapter.
 
 ## Highlights
 
@@ -20,10 +21,12 @@ and swept, EvalPlus and the blind agent row on PQ2_0.
   and 5.54 GiB for PTQ1_0, against 12 GiB and more for every other 27B
   build here. The KV cache becomes the large allocation, and the card
   serves 208K and 240K tokens where the others serve 64K.
-- **The window is used, not offered.** The blind agent row peaked at
-  192679 tokens of a 208896 window, 92.2%, with zero compactions. It is
-  the first row on this machine where the task itself went past 64K.
-- **The fastest 27B build here**: 46.0 tok/s at 4K and 28.2 at 65K,
+- **The window is used, not offered.** Every blind agent row peaked
+  above 92% of its window, and the deepest reached 225161 tokens, the
+  deepest this project has measured. The two q8_0 rows needed no
+  compaction. These are the first rows on this machine where the task
+  itself went past 64K.
+- **The fastest 27B build here**: 46.3 tok/s at 4K and 32.2 at 65K,
   against 29.43 and 21.13 for the 3-bit Qwen build.
 - **The best quality gate here**: 0.982 / 0.945 with no empty answer
   on PQ2_0 at f16 KV, effort xhigh, under a 30000-token thinking
