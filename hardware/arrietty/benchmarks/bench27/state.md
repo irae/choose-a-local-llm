@@ -137,6 +137,8 @@ Probe at `-c 8192`: the model loaded, `GET /lora-adapters` returned the adapter 
 
 **Foreign client on port 8081.** Process 222249, `run_codegen_wrapper.py` from the `choose-a-local-llm-run24` worktree, model `bonsai2-27b-pq2-f16`, up 1 h 9 min, sent requests to my probe server. Run 24 is meant to be stopped. I did not touch that process. I stopped my own server. No probe answer was checked.
 
+Coordinator answers (2026-09-18): the log line gate is closed. `GET /lora-adapters` (id 0, scale 1.0) is the load proof, and a coherent probe answer is also required. The owner killed pid 222249; no `run_codegen_wrapper` process is left. Go given to resume.
+
 ## Handing-over
 
 Prep done, no block of the run started (the card is held by run 24).
