@@ -18,15 +18,10 @@ Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; Eval
 - **The NVFP4 build is the run's headline row.** A 7 GB file leaves
   room for the trained 262,144 window at f16 KV on 16 GB, and the
   card runs NVFP4 natively.
-- **The k-quant build is the control.** The same file the reference
-  setup serves, read on this card at the same depths, so the NVFP4
-  row has a pair.
 - **Thinking off is the level for this model on this card.** Every
   answer delivered on both builds, 0.951 / 0.909 on the k-quant in 26
   minutes and 0.927 / 0.896 on NVFP4 in 51. Thinking on loses a third
   of the answers on NVFP4 and a fifth on the k-quant.
-- **The agent task fails on every build and level**, with zero commits
-  each time.
 
 ## All configs — this model
 
@@ -99,6 +94,12 @@ llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- **The k-quant build is the control.** The same file the reference
+  setup serves, read on this card at the same depths, so the NVFP4
+  row has a pair.
+- **The agent task fails on every build and level**, with zero commits
+  each time.
 
 - **NVFP4 fits the trained window and reads fast.** 49.6 tok/s at 4K
   and 33.1 at 261K, 2 to 5 percent over the k-quant, at 12.3 GB.

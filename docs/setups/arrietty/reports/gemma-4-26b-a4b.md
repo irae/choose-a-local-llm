@@ -17,9 +17,6 @@ Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; Eval
 - **A 15 GB file on a 16 GB card.** Part of the experts stay in host
   RAM; the row records how many layers, found by a ladder at
   `-c 98304`.
-- **Attention stays at Q8 in this build**, the shape NVIDIA's own
-  NVFP4 checkpoints use; the experts are NVFP4. NVFP4 is on this card's
-  list because the card runs it natively.
 - **EvalPlus 0.909 / 0.878 at thinking on, 14 of 164 empty**, at a
   12500 budget in 215 minutes. The Mac's k-quant of the same model
   reads 0.896 / 0.872 with 16 empty at a 30000 budget.
@@ -51,6 +48,10 @@ llama-server -m "$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- **Attention stays at Q8 in this build**, the shape NVIDIA's own
+  NVFP4 checkpoints use; the experts are NVFP4. NVFP4 is on this card's
+  list because the card runs it natively.
 
 - **97K at 59 → 46 tok/s** with 7 expert layers in host RAM, the
   fastest deep cell on this card. The file has no MTP layers.

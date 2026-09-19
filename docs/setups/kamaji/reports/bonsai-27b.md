@@ -21,9 +21,6 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
   the two builds sit within one problem of each other.
 - **The flattest speed curve of any model here** (MLX): −23% from 4K to
   49K, never hits the speed floor; the limit is memory (~58-60K).
-- **The only multi-agent setup that leaves the machine free**: 2×48K
-  fork slots, 10.0 GB shallow and 10.9 GB at the floor — but window is
-  not usable depth: the fork's speed floor is ~30K used tokens.
 - **The fork's floor was the cache type, not the weights.** At q4_0 KV
   the scored config crosses the 8 tok/s floor at 33K used tokens. At
   f16 KV with no drafter the same fork holds 15.0 tok/s at 4K and 9.67
@@ -118,6 +115,10 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- **The only multi-agent setup that leaves the machine free**: 2×48K
+  fork slots, 10.0 GB shallow and 10.9 GB at the floor — but window is
+  not usable depth: the fork's speed floor is ~30K used tokens.
 
 **Window is not usable depth** on the fork at a quantized cache. It
 allocates huge windows in little memory (the full 262K trained window

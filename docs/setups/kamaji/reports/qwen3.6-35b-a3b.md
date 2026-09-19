@@ -20,26 +20,11 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL, embedded MTP); Ev
   re-run.** Thinking on 0.957 / 0.939 / 99%; thinking off 0.951 / 0.915
   / 100% with no empty completion, in 15 minutes. Only Qwen3.8 scores
   higher, and Qwen3.8 is four times slower.
-- **The KV type is a window-against-speed trade on this model.** At
-  wired limit 25000 the q8_0 arm serves `-c 98304` and, on real text
-  with its drafter, reads 43.7 tok/s at 4K and 13.0 at 82K, above the
-  floor across its whole window; the f16 arm without its drafter
-  serves `-c 65536`, clean to 66K at 33.6 tok/s with no ceiling found,
-  and with the drafter loads only 40960. On the agent task the q8_0
-  arm scores 63 blind and 83 guided at thinking high, 50.5 blind and
-  62.5 guided at thinking off, all on the 81920 window its creep
-  supports; the f16 arm scores 50 blind at thinking on with two
-  compactions on its 65536 window; the q8_0 config on a 49152 window
-  that compacted twelve times scored 46.5 guided.
 - **The drafter earns its place on this model.** With it, the q8_0
   arm decodes above the creep's own readings at every depth, at 54 to
   85 percent draft acceptance on real code text. The f16 arm's 69.1
   and 52.6 came from a creep whose text let the drafter accept every
   draft, so they are ceilings until read on real text.
-- **The window decides the score, not only the model.** The same
-  config, the same prompt and the same level scored 16 points apart on
-  two windows. A harness window comes from the config's own creep, and
-  a row's config note names it.
 
 ## All configs — this model
 
@@ -129,6 +114,22 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- **The KV type is a window-against-speed trade on this model.** At
+  wired limit 25000 the q8_0 arm serves `-c 98304` and, on real text
+  with its drafter, reads 43.7 tok/s at 4K and 13.0 at 82K, above the
+  floor across its whole window; the f16 arm without its drafter
+  serves `-c 65536`, clean to 66K at 33.6 tok/s with no ceiling found,
+  and with the drafter loads only 40960. On the agent task the q8_0
+  arm scores 63 blind and 83 guided at thinking high, 50.5 blind and
+  62.5 guided at thinking off, all on the 81920 window its creep
+  supports; the f16 arm scores 50 blind at thinking on with two
+  compactions on its 65536 window; the q8_0 config on a 49152 window
+  that compacted twelve times scored 46.5 guided.
+- **The window decides the score, not only the model.** The same
+  config, the same prompt and the same level scored 16 points apart on
+  two windows. A harness window comes from the config's own creep, and
+  a row's config note names it.
 
 **The first quality score was broken, and the correction moved it
 further than any other model's.** An early pass capped output at 3072

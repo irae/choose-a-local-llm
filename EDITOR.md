@@ -37,8 +37,8 @@ Every report page uses this order. Do not reorder it.
 4. **Details line.** One or two lines of prose: benchmark dates, builds,
    whatever the numbers need. Never longer; it is metadata, not a
    summary.
-5. **Highlights.** 2 to 4 bullet points. Short lines. No paragraph
-   blobs.
+5. **Highlights.** Short bullets, no paragraph blobs. See "Highlights"
+   below for what earns a bullet.
 6. **All configs — this model.** The generated per-model table.
 7. **Configs.** One block per config with its startup command. Label
    configs descriptively. Do not crown a "best option": the pick, when
@@ -108,8 +108,14 @@ closes. None of it is site content.
 
 These rules bind every `reports/<model>.md` page:
 
-- **Highlights hold 2 to 4 bullets. Never more.** Merge or cut; the
-  detail lives in the tables and in History and reasoning.
+- **Highlights are the good things about the model, most important
+  first** (owner, 2026-09-19). Grade each bullet by how much it matters
+  to a reader who picks a model. A limit, a defect or a caveat is not a
+  highlight; it goes to the findings.
+- **Three bullets is the norm; five is the maximum.** After the third,
+  the bias is to stop. A fourth or a fifth bullet must be as important
+  as the first three, not only true. Merge or cut; the detail lives in
+  the tables and in History and reasoning.
 - **Every report page opens with the stat boxes** (the `kpis` row,
   directly under the title line) **and carries an "All configs — this
   model" table** (the first table section). `npm run docs:tables`

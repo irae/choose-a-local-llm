@@ -39,11 +39,6 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
   score: on the ISTA build low reads 0.976 / 0.933 and xhigh 0.945 /
   0.921. The project's best base, 0.988 on the AtomicChat build, came
   at effort medium, a level this model is no longer run at.
-- Weak point: the slowest model on this hardware. On real text at the
-  server's sampling the 4-bit GGUF with its drafter reads 11.8 tok/s
-  shallow and 8.6 at 65.5K, and the 3-bit without one 14 shallow and
-  8.3 at 147K; prompt processing is poor (~123 tok/s). MLX holds 14 to
-  17 tok/s across its window and OOMs between 28K and 30K.
 
 ## All configs — this model
 
@@ -178,6 +173,12 @@ mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- Weak point: the slowest model on this hardware. On real text at the
+  server's sampling the 4-bit GGUF with its drafter reads 11.8 tok/s
+  shallow and 8.6 at 65.5K, and the 3-bit without one 14 shallow and
+  8.3 at 147K; prompt processing is poor (~123 tok/s). MLX holds 14 to
+  17 tok/s across its window and OOMs between 28K and 30K.
 
 **Effort xhigh beats low on this task, and spends less doing it.** On
 the ISTA build without its drafter, at the same 147,456-token window

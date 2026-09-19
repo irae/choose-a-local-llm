@@ -25,13 +25,6 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
   at 197K, the largest context this machine loads for it. Two slots hold
   101K each: 66.6 tok/s at 4K, 33.6 at 82K on one slot with the other
   idle, no speed or memory stop before the slot window.
-- **Thinking costs answers on the single-turn test.** Thinking on reads
-  0.896 / 0.872 / 90% with 16 of 164 empty; the MLX build 0.793 / 0.768 /
-  81% with 31 empty. Every empty is proven as the budget. The two
-  builds do not share a score.
-- Weak point: wired memory sits at 25.6 GB on the deep config, above the
-  24000 limit, flat but with no room for anything beside it. MLX is the
-  small option: 51 tok/s at 4K, 12.8 at 70K, in 20 GB.
 
 ## All configs — this model
 
@@ -94,6 +87,14 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- **Thinking costs answers on the single-turn test.** Thinking on reads
+  0.896 / 0.872 / 90% with 16 of 164 empty; the MLX build 0.793 / 0.768 /
+  81% with 31 empty. Every empty is proven as the budget. The two
+  builds do not share a score.
+- Weak point: wired memory sits at 25.6 GB on the deep config, above the
+  24000 limit, flat but with no room for anything beside it. MLX is the
+  small option: 51 tok/s at 4K, 12.8 at 70K, in 20 GB.
 
 **Back in the running as a secondary model.** The model was parked on
 2026-08-30 after the quality gate: 28% empty completions on the MLX

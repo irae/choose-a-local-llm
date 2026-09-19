@@ -18,10 +18,9 @@ EvalPlus and the blind agent row run on PTQ1_0.
   164K at 9.07 tok/s. PQ2_0 falls under the 8 tok/s floor between 41K
   and 66K. On the card the order is the other way round: PQ2_0 decodes
   faster there.
-- **Memory ends the window, not speed.** The next PTQ1_0 step, 197K at
-  8.18 tok/s, grew swap by 130 MB.
-- **About 2.4 times slower than the card at 4K**: 17.9 tok/s against
-  42.1 for the same file at the same cache type.
+- **0.988 / 0.939 on EvalPlus with no empty answer** at effort xhigh,
+  under a 16056-token thinking budget. The card scores the same file
+  0.970 / 0.939.
 
 ## All configs — this model
 
@@ -46,6 +45,13 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
   --jinja --port 8081
 ```
 <!-- gen:model-configs:end -->
+
+## Model details and findings
+
+- **Memory ends the window, not speed.** The next PTQ1_0 step, 197K at
+  8.18 tok/s, grew swap by 130 MB.
+- **About 2.4 times slower than the card at 4K**: 17.9 tok/s against
+  42.1 for the same file at the same cache type.
 
 ## Quality — EvalPlus HumanEval+
 

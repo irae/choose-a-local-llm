@@ -15,14 +15,12 @@ Speed, context, drafter arms and both agent tasks measured 2026-09-13 to 2026-09
 
 ## Highlights
 
+- **The best agent rows on this card: 91 blind and 85 guided**, both
+  8 of 8, on the ISTA IQ3_S-mtp build at q8_0 KV, effort xhigh,
+  29.4 → 21.1 tok/s.
 - **The 3-bit build is the one that leaves room for a KV cache.** The
   dense 27B model at 4 bits or at NVFP4 is 16 GB and up, the card's
   whole memory; the UD-IQ3_S file is 12 GB.
-- **The KV type is measured here, f16 against q8_0.** On this card
-  the type decides the window, and the reference setup's pick does
-  not carry over.
-- **Effort xhigh, the model's published default.** Medium is never
-  run on this model.
 - **EvalPlus at xhigh: unsloth 0.957 / 0.921 with 3 empty, ISTA
   0.945 / 0.909 with 7 empty.** The unsloth build leads the single-turn
   test and the ISTA build the agent task; both builds are two
@@ -99,6 +97,12 @@ llama-server -m "$(hf download OBLITERATUS/Qwen3.8-27B-OBLITERATED Qwen3.8-27B-O
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- **The KV type is measured here, f16 against q8_0.** On this card
+  the type decides the window, and the reference setup's pick does
+  not carry over.
+- **Effort xhigh, the model's published default.** Medium is never
+  run on this model.
 
 - **The ISTA build is the pick on this card**: 85 guided and 91 blind,
   both 8 of 8, at a 61440 window. The unsloth build reads at the same

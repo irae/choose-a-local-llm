@@ -17,11 +17,7 @@ Speed, context, drafter arms and the guided agent task measured 2026-09-13 to 20
 - **A 23 GB file on a 16 GB card.** Part of the experts stay in host
   RAM; the row records how many layers, found by a ladder at
   `-c 98304`.
-- **The mainstream build, not a niche one.** The same unsloth
-  UD-Q4_K_XL file the reference setup serves; a community NVFP4 repack
-  was tried first and failed to load, and the owner's word is a popular
-  stable release over a niche build. The MTP drafter is measured on
-  real text, from no drafter up, before the row is served.
+- **97K at 61.2 → 45.4 tok/s** with the MTP drafter at n-max 2.
 - **EvalPlus 0.945 / 0.902 at thinking on, 6 of 164 empty**, in 192
   minutes on the drafter arm. The Mac reads 0.957 / 0.939 with 2 empty
   on the same file.
@@ -54,6 +50,12 @@ llama-server -m "$(hf download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- **The mainstream build, not a niche one.** The same unsloth
+  UD-Q4_K_XL file the reference setup serves; a community NVFP4 repack
+  was tried first and failed to load, and the owner's word is a popular
+  stable release over a niche build. The MTP drafter is measured on
+  real text, from no drafter up, before the row is served.
 
 - **97K at 61 → 45 tok/s** with the drafter at n-max 2 and 21 expert
   layers in host RAM. Every drafter arm reads faster than no drafter;

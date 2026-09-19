@@ -25,15 +25,9 @@ and swept, EvalPlus and the blind agent row on PQ2_0.
   the first row on this machine where the task itself went past 64K.
 - **The fastest 27B build here**: 46.0 tok/s at 4K and 28.2 at 65K,
   against 29.43 and 21.13 for the 3-bit Qwen build.
-- **The best quality gate here**: 0.982 / 0.939 with no empty answer,
-  under a 25209-token thinking budget at effort xhigh.
-- **The agent score does not follow.** 59.5 blind, against 91 for the
-  3-bit Qwen build. The row completed with 16 commits, no repetition
-  loop and no nudge, so the loss is judgment, not a harness failure.
-- **Only the publisher's fork serves these files.** Stock llama.cpp
-  rejects both packings and makes garbage from a plain 2-bit file,
-  because it has no Hadamard activation runtime. The fork release is
-  part of each row's identity.
+- **The best quality gate here**: 0.982 / 0.945 with no empty answer
+  on PQ2_0 at f16 KV, effort xhigh, under a 30000-token thinking
+  budget.
 
 ## All configs — this model
 
@@ -118,6 +112,16 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
   --jinja --port 8081
 ```
 <!-- gen:model-configs:end -->
+
+## Model details and findings
+
+- **The agent score does not follow.** 59.5 blind, against 91 for the
+  3-bit Qwen build. The row completed with 16 commits, no repetition
+  loop and no nudge, so the loss is judgment, not a harness failure.
+- **Only the publisher's fork serves these files.** Stock llama.cpp
+  rejects both packings and makes garbage from a plain 2-bit file,
+  because it has no Hadamard activation runtime. The fork release is
+  part of each row's identity.
 
 ## Quality — EvalPlus HumanEval+
 
