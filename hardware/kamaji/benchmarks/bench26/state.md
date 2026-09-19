@@ -58,6 +58,10 @@ no empty, 7 forced. Blind agent row: 59.5, peak context 192679 of a
 - 6 converged, 4 cut at 30000 (`length`): HumanEval/32, /39, /99, /145. Four `length` stops in ten: the thinking does not converge on those problems. No converged row has an empty answer.
 - Budgets (`THINKING_BUDGET_MARGIN` 1.5): `bonsai2_ptq1_think_budget` 16056, `bonsai2_ptq1_answer_budget` 2048, `bonsai2_ptq1_max_tokens` 18104. Longest converged reasoning 10704 tokens, longest answer 330.
 
+## Disk clean-up, 2026-09-19 (owner)
+
+Owner approved the deletion. No partial download existed. Removed from the Hugging Face cache: `mlx-community/gemma-4-26b-a4b-it-4bit`, `mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx-community/Qwen3.8-27B-4bit`, `AtomicChat/Qwen3.8-27B-GGUF`, and four files of `prism-ml/Ternary-Bonsai-27B-gguf` (`Q2_0`, `PQ2_0`, `dspark-bf16`, `dspark-Q4_1`). Free space on the data volume went from 13 GB to 96 GB. The older bartowski Q4_K_M revision waits for the owner: `refs/main` points to `125a02a`, not to `f0eec4a`.
+
 ## Handing-over
 
 The run has not started.

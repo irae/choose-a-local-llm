@@ -1,0 +1,19 @@
+run-watch: log=/Users/irae/code/choose-a-local-llm-run26/hardware/kamaji/benchmarks/bench26/results/server-bonsai2-budget-xhigh-mac.log output=/Users/irae/code/choose-a-local-llm-run26/hardware/kamaji/benchmarks/bench26/results/bonsai2-budget-xhigh-mac/finish.jsonl url=http://127.0.0.1:8081 silence=600s probe_timeout=300s poll=10s mem_log=/Users/irae/.local/share/choose-a-local-llm/run26-budget-mem.log mem_interval=20s
+silence 600s on /Users/irae/code/choose-a-local-llm-run26/hardware/kamaji/benchmarks/bench26/results/bonsai2-budget-xhigh-mac/finish.jsonl: probing one real completion
+  probe 1 of 2 did not return within 300s. A probe queued behind a live turn fails the same way; waiting 600s more
+silence 600s on /Users/irae/code/choose-a-local-llm-run26/hardware/kamaji/benchmarks/bench26/results/bonsai2-budget-xhigh-mac/finish.jsonl: probing one real completion
+  probe 1 of 2 did not return within 300s. A probe queued behind a live turn fails the same way; waiting 600s more
+silence 600s on /Users/irae/code/choose-a-local-llm-run26/hardware/kamaji/benchmarks/bench26/results/bonsai2-budget-xhigh-mac/finish.jsonl: probing one real completion
+  probe 1 of 2 did not return within 300s. A probe queued behind a live turn fails the same way; waiting 600s more
+silence 600s on /Users/irae/code/choose-a-local-llm-run26/hardware/kamaji/benchmarks/bench26/results/bonsai2-budget-xhigh-mac/finish.jsonl: probing one real completion
+  probe 1 of 2 did not return within 300s. A probe queued behind a live turn fails the same way; waiting 600s more
+silence 600s on /Users/irae/code/choose-a-local-llm-run26/hardware/kamaji/benchmarks/bench26/results/bonsai2-budget-xhigh-mac/finish.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on /Users/irae/code/choose-a-local-llm-run26/hardware/kamaji/benchmarks/bench26/results/bonsai2-budget-xhigh-mac/finish.jsonl: probing one real completion
+  probe 1 of 2 did not return within 300s. A probe queued behind a live turn fails the same way; waiting 600s more
+silence 600s on /Users/irae/code/choose-a-local-llm-run26/hardware/kamaji/benchmarks/bench26/results/bonsai2-budget-xhigh-mac/finish.jsonl: probing one real completion
+  probe 1 of 2 did not return within 300s. A probe queued behind a live turn fails the same way; waiting 600s more
+silence 600s on /Users/irae/code/choose-a-local-llm-run26/hardware/kamaji/benchmarks/bench26/results/bonsai2-budget-xhigh-mac/finish.jsonl: probing one real completion
+  probe 1 of 2 did not return within 300s. A probe queued behind a live turn fails the same way; waiting 600s more
+silence 600s on /Users/irae/code/choose-a-local-llm-run26/hardware/kamaji/benchmarks/bench26/results/bonsai2-budget-xhigh-mac/finish.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
