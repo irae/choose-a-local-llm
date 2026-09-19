@@ -14,10 +14,10 @@ happen, and the handing-over section at the end.
 | `prism_fork_commit` | `7dffb158d`, release `prism-b10685-7dffb15`, build 10685, macOS arm64 Metal | the fork |
 | `budget_flags_present` | yes, both | the server check |
 | `bonsai2_27b_pq2_mac_c` | 262144 | `bonsai2-pq2-ladder-mac` |
-| `bonsai2_27b_ptq1_mac_c` | pending | `bonsai2-ptq1-ladder-mac` |
+| `bonsai2_27b_ptq1_mac_c` | 262144 | `bonsai2-ptq1-ladder-mac` |
 | `bonsai2_pq2_mac_clean` | 40982 | `sweep-bonsai2-pq2-mac` |
-| `bonsai2_ptq1_mac_clean` | pending | `sweep-bonsai2-ptq1-mac` |
-| `served_pack` | pending | the coordinator, at the second sweep's close |
+| `bonsai2_ptq1_mac_clean` | 163858 | `sweep-bonsai2-ptq1-mac` |
+| `served_pack` | PTQ1_0, `bonsai2-27b-ptq1-mac` | no name arrived from the coordinator at the second sweep's close; the deeper clean depth (163858 against 40982) decides, by the runbook |
 
 The card's rows to read against, from `bench24`: PQ2_0 at q8_0 serves
 `-c 212992` and reads 46.0 tok/s at 4K and 14.5 at 212K; at f16 it
@@ -45,6 +45,12 @@ no empty, 7 forced. Blind agent row: 59.5, peak context 192679 of a
 - Creep tool `e38c467`, pause 60 s, `STALL_S` 2400. Files: `results/creep-bonsai2-pq2-mac.tsv`, `results/creep-bonsai2-pq2-mac-cross.tsv`.
 - The floor crosses between 40982 (9.50) and 65578 (7.91). The 49198 row (8.66) has swap growth of 162 MB and stopped the second creep, so it is not a clean row. `bonsai2_pq2_mac_clean` is 40982.
 - Compression pages ran high on every row (260K at 4K), free memory 62 to 80 MB. Swap did not grow until 49K.
+
+## bonsai2-ptq1-ladder-mac and sweep-bonsai2-ptq1-mac
+
+- Ladder: `-c 262144` loaded at the first try, f16 KV. It served real requests to 163858 deep. Server log `results/server-ptq1-c262144.log`.
+- Three creeps of the same server, same tool `e38c467`, pause 60 s, `STALL_S` 2400. Files: `results/creep-bonsai2-ptq1-mac.tsv` (4K to 65K, no ceiling found), `results/creep-bonsai2-ptq1-mac-deep.tsv` (65K to 197K).
+- Swap started at 146 MB. The 196618 row (8.18 tok/s) has swap growth of 130 MB and stopped the creep, so it is not clean. `bonsai2_ptq1_mac_clean` is 163858 (9.07). The floor crossing lies past 164K and was not measured clean.
 
 ## Handing-over
 
