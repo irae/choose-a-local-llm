@@ -3,3 +3,5 @@ HEAD is now at 2652ed6c chore: stop node SIGSEGV/SIGILL crashes in parallel tap 
 bonsai2-27b-ptq1-f16-orca-xhigh: worktree ready at /home/irae/code/mendel-benchmark/../mendel-bench-bonsai2-27b-ptq1-f16-orca-xhigh, starting pi
 worker: contextWindow 135168 pinned on provider llama
 worker: compaction {"enabled": true, "reserveTokens": 8192}
+bonsai2-27b-ptq1-f16-orca-xhigh: loop verdict ok, worst ratio 0.23 on thinking
+bonsai2-27b-ptq1-f16-orca-xhigh: done
