@@ -36,7 +36,8 @@ included; a run a harness or serving defect voided is not.
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" top /> | **135k** | <TokCell shallow="42.1" deep="22.4" cap="mem" top-shallow top-deep /> | **15.0 GB** | <ScoreCell value="0.970/0.939" sub="100% completion" top /> | <ScoreCell value="82" pill="mendel-blind" top /> | <span title="EvalPlus 3h16 · Mendel 1h28"><b>4h44</b></span> |
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" top /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow top-deep /> | **15.5 GB** | <ScoreCell value="pending" /> | <ScoreCell value="73.5" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 2h03">2h03†</span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" adapter="refusal-ablation LoRA 1.0" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" top /> | **135k** | <TokCell shallow="40.8" deep="22.0" cap="mem" top-deep /> | **15.0 GB** | <ScoreCell value="pending" /> | <ScoreCell value="75" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 1h22">1h22†</span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" top /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow /> | **15.5 GB** | <ScoreCell value="pending" /> | <ScoreCell value="73.5" pill="mendel-blind" /> | <span title="EvalPlus — · Mendel 2h03">2h03†</span> |
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+
@@ -58,6 +59,7 @@ Blind test:
 | config | prompt | window | score | completed | minutes | tokens | peak ctx | compactions | tool calls | commits | loop |
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" /> | blind-v1.1 | 128k | **82** | 8/8/done | 88.4 | 15,676k | 127k | 1 | 258 | 17 |  |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" adapter="refusal-ablation LoRA 1.0" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" /> | blind-v1.1 | 128k | **75** | 8/8/done | 82.0 | 17,259k | 127k | 1 | 269 | 15 |  |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" /> | blind-v1.1 | 256k | **73.5** | 8/8/done | 123.1 | 25,992k | 225k | 0 | 254 | 17 |  |
 
 The window cell is the harness context window of that run. Rows before the KV pick of 2026-09-04 carry the type their runbook served, or `q8_0` where no record names one.

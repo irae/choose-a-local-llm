@@ -121,6 +121,7 @@ const MENDEL_SLUGS = {
   'bonsai2-27b-pq2-f16 (prism-ml PQ2_0, xhigh, arrietty)': 'bonsai-2-27b',
   'bonsai2-27b-ptq1 (prism-ml PTQ1_0, xhigh, arrietty)': 'bonsai-2-27b',
   'bonsai2-27b-ptq1-f16 (prism-ml PTQ1_0, xhigh, arrietty)': 'bonsai-2-27b',
+  'bonsai2-27b-ptq1-f16-orca (prism-ml PTQ1_0, refusal-ablation LoRA 1.0, xhigh, arrietty)': 'bonsai-2-27b',
   'qwen3.8-27b-ista (ISTA-DASLab IQ3_S-mtp, xhigh, arrietty)': 'qwen3.8-27b',
   'qwen3.8-27b-iq3s (unsloth UD-IQ3_S, xhigh, kamaji)': 'qwen3.8-27b',
 }
@@ -176,6 +177,7 @@ function specTag(spec, { hide = '', label = '', repo = '', top = false, hardware
     `repo="${card}"`,
     spec.drafter ? `drafter="${spec.drafter}"` : '',
     spec.offload ? `offload="${spec.offload}"` : '',
+    spec.adapter ? `adapter="${spec.adapter}"` : '',
     `kv="${spec.kv}"`,
     spec.effort && !hideEffort ? `effort="${spec.effort}"` : '',
     hardware ? `hardware="${hardware}"` : '',
@@ -213,7 +215,7 @@ function mendelCellParts(r) {
 // the higher capped score. A row with no matching run keeps the state
 // word written in models.json.
 function mendelKey(spec, slots) {
-  return [...['base', 'quant', 'publisher', 'server', 'drafter', 'kv', 'effort'].map((k) => spec[k] || ''), slots].join('|')
+  return [...['base', 'quant', 'publisher', 'server', 'drafter', 'kv', 'effort', 'adapter'].map((k) => spec[k] || ''), slots].join('|')
 }
 
 function rowSlots(row) {
@@ -284,6 +286,7 @@ const MENDEL_SPECS = {
   'gemma-4-12b-q4kxl (unsloth UD-Q4_K_XL, high, arrietty)': { base: 'Gemma-4-12B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/gemma-4-12b-it-GGUF', drafter: '', binary: true },
   'qwen3.6-35b-a3b-q4kxl (unsloth UD-Q4_K_XL, n-max2, high, arrietty)': { base: 'Qwen3.6-35B-A3B', quant: 'UD-Q4_K_XL', publisher: 'unsloth', repo: 'unsloth/Qwen3.6-35B-A3B-MTP-GGUF', drafter: 'mtp/2', binary: true },
   'bonsai2-27b-ptq1-f16 (prism-ml PTQ1_0, xhigh, arrietty)': { base: 'Ternary-Bonsai-2-27B', quant: 'PTQ1_0', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-2-27B-gguf', drafter: '', server: 'prism-llama', kv: 'f16' },
+  'bonsai2-27b-ptq1-f16-orca (prism-ml PTQ1_0, refusal-ablation LoRA 1.0, xhigh, arrietty)': { base: 'Ternary-Bonsai-2-27B', quant: 'PTQ1_0', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-2-27B-gguf', drafter: '', server: 'prism-llama', kv: 'f16', adapter: 'refusal-ablation LoRA 1.0' },
   'bonsai2-27b-ptq1 (prism-ml PTQ1_0, xhigh, arrietty)': { base: 'Ternary-Bonsai-2-27B', quant: 'PTQ1_0', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-2-27B-gguf', drafter: '', server: 'prism-llama', kv: 'q8_0' },
   'bonsai2-27b-pq2-f16 (prism-ml PQ2_0, xhigh, arrietty)': { base: 'Ternary-Bonsai-2-27B', quant: 'PQ2_0', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-2-27B-gguf', drafter: '', server: 'prism-llama', kv: 'f16' },
   'bonsai2-27b-pq2 (prism-ml PQ2_0, xhigh, arrietty)': { base: 'Ternary-Bonsai-2-27B', quant: 'PQ2_0', publisher: 'prism-ml', repo: 'prism-ml/Ternary-Bonsai-2-27B-gguf', drafter: '', server: 'prism-llama', kv: 'q8_0' },
@@ -304,6 +307,7 @@ function mendelSpec(r) {
     publisher: m.publisher,
     drafter: m.drafter,
     repo: m.repo,
+    adapter: m.adapter,
     kv: m.kv || (r.kv_type === 'unquantized' || !r.kv_type ? 'f16' : r.kv_type),
     effort: level === 'default' ? m.effort : m.binary ? (level === 'off' ? 'off' : 'on') : level,
   }

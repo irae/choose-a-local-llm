@@ -438,6 +438,38 @@
         "maxTokens": 8192
       },
       "evalplusWall": 195.5
+    },
+    {
+      "config": "Ternary-Bonsai-2-27B, GGUF, PTQ1_0 (prism-ml), f16 KV, refusal-ablation LoRA at scale 1.0, no drafter, effort xhigh",
+      "maxCtx": "135k",
+      "gatedBy": "mem",
+      "tokShallow": "40.8",
+      "tokDeep": "22.0",
+      "memory": "15.0 GB",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "id": "bonsai2-ptq1-f16-orca-xhigh",
+      "spec": {
+        "base": "Ternary-Bonsai-2-27B",
+        "quant": "PTQ1_0",
+        "server": "prism-llama",
+        "publisher": "prism-ml",
+        "repo": "prism-ml/Ternary-Bonsai-2-27B-gguf",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "xhigh",
+        "adapter": "refusal-ablation LoRA 1.0"
+      },
+      "hidden": false,
+      "added": "2026-09-19",
+      "command": "llama-server -m \"$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf)\" \\\n  --lora \"$(hf download Continuum-AI-Corp/OrcaBonsai-27B-Uncensored gguf/bonsai-abliterate-lora.gguf)\" \\\n  --alias bonsai2-27b-ptq1-f16-orca --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 139264 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `bonsai2-27b-ptq1-f16-orca`. The dense packing at f16 with a rank-1 LoRA adapter that ablates the refusal direction, applied by the server at scale 1.0 and not merged into the weights (`Continuum-AI-Corp/OrcaBonsai-27B-Uncensored`, `bonsai-abliterate-lora.gguf`, 9,682,464 bytes, sha256 `f1669534…67f42`). The adapter costs no window, `-c 139264` as without it, and about 3 percent of decode: 40.8 tok/s at 4K and 22.0 at 138240, against 42.1 and 22.4. Blind agent row 75, against 82 for the same file without the adapter. It hit no critical defect where the unablated row carried trap A; it lost its points on trap B (the legacy package declared out of scope), on no `pnpm install` in the whole session, and on 13 fix-typed commits. One run per cell, so the difference is indicated, not established. Scored on the best tier. Served by the PrismML llama.cpp fork, release `prism-b10685-7dffb15`. No smoke, and the row ran before any EvalPlus score of this config, so the 0.800 gate did not apply (owner, 2026-09-18).",
+      "pi": {
+        "provider": "llama",
+        "id": "bonsai2-27b-ptq1-f16-orca",
+        "contextWindow": 135168,
+        "maxTokens": 8192
+      }
     }
   ],
   "models": {
@@ -791,7 +823,7 @@
       "arm": "PTQ1_0, f16 KV, refusal-ablation LoRA at scale 1.0",
       "c": 139264,
       "cAt": 138240,
-      "served": false,
+      "served": true,
       "points": {
         "4096": 40.8,
         "24576": 36.2,

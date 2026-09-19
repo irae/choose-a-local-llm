@@ -8,6 +8,7 @@ const props = defineProps({
   repo: { type: String, default: '' },
   drafter: { type: String, default: '' },
   offload: { type: String, default: '' },
+  adapter: { type: String, default: '' },
   kv: { type: String, default: '' },
   effort: { type: String, default: '' },
   hardware: { type: String, default: '' },
@@ -46,7 +47,7 @@ const { site } = useData()
 const pageHref = props.page ? withBase(props.page + (site.value.cleanUrls ? '' : '.html')) : ''
 const title = show('quant') ? `${props.base} ${props.quant}` : props.base
 const hasServing = show('server') || show('publisher') || show('hardware')
-const hasPills = show('drafter') || show('offload') || show('kv') || show('effort')
+const hasPills = show('drafter') || show('offload') || show('adapter') || show('kv') || show('effort')
 </script>
 
 <template>
@@ -59,6 +60,7 @@ const hasPills = show('drafter') || show('offload') || show('kv') || show('effor
       <span v-if="hasServing && hasPills" class="ms-serving">–</span>
       <span v-if="show('drafter')" class="ms-pill ms-drafter">{{ drafter }}</span>
       <span v-if="show('offload')" class="ms-pill ms-offload">{{ offload }}</span>
+      <span v-if="show('adapter')" class="ms-pill">{{ adapter }}</span>
       <span v-if="show('kv')" class="ms-pill ms-kv">{{ kv }}</span>
       <span v-if="show('effort')" class="ms-pill ms-effort" :class="'ms-effort-' + effort">{{ effort }}</span>
     </span>

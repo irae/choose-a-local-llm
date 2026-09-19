@@ -48,7 +48,8 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-pq2" top /> | **119k** | <TokCell shallow="46.3" deep="25.1" cap="mem" top-shallow top-deep /> | **15.1 GB** | <ScoreCell value="pending" /> | <ScoreCell value="77" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 1h15">1h15†</span> |
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow top-deep /> | **15.5 GB** | <ScoreCell value="pending" /> | <ScoreCell value="73.5" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 2h03">2h03†</span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" adapter="refusal-ablation LoRA 1.0" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **135k** | <TokCell shallow="40.8" deep="22.0" cap="mem" top-deep /> | **15.0 GB** | <ScoreCell value="pending" /> | <ScoreCell value="75" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 1h22">1h22†</span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow /> | 15.5 GB | <ScoreCell value="pending" /> | <ScoreCell value="73.5" pill="mendel-blind" /> | <span title="EvalPlus — · Mendel 2h03">2h03†</span> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -88,6 +89,19 @@ pi id `bonsai2-27b-pq2-f16`, the same file as the q8_0 row at the other cache ty
 llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PQ2_0.gguf)" \
   --alias bonsai2-27b-pq2-f16 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 122880 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
+```
+
+<ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" adapter="refusal-ablation LoRA 1.0" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" />
+
+pi id `bonsai2-27b-ptq1-f16-orca`. The dense packing at f16 with a rank-1 LoRA adapter that ablates the refusal direction, applied by the server at scale 1.0 and not merged into the weights (`Continuum-AI-Corp/OrcaBonsai-27B-Uncensored`, `bonsai-abliterate-lora.gguf`, 9,682,464 bytes, sha256 `f1669534…67f42`). The adapter costs no window, `-c 139264` as without it, and about 3 percent of decode: 40.8 tok/s at 4K and 22.0 at 138240, against 42.1 and 22.4. Blind agent row 75, against 82 for the same file without the adapter. It hit no critical defect where the unablated row carried trap A; it lost its points on trap B (the legacy package declared out of scope), on no `pnpm install` in the whole session, and on 13 fix-typed commits. One run per cell, so the difference is indicated, not established. Scored on the best tier. Served by the PrismML llama.cpp fork, release `prism-b10685-7dffb15`. No smoke, and the row ran before any EvalPlus score of this config, so the 0.800 gate did not apply (owner, 2026-09-18).
+
+```bash
+llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf)" \
+  --lora "$(hf download Continuum-AI-Corp/OrcaBonsai-27B-Uncensored gguf/bonsai-abliterate-lora.gguf)" \
+  --alias bonsai2-27b-ptq1-f16-orca --no-mmproj --parallel 1 \
+  -ngl 999 --fit off -fa on -c 139264 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
 ```
@@ -133,6 +147,7 @@ Blind test:
 |---|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" /> | blind-v1.1 | 128k | **82** | 8/8/done | 88.4 | 15,676k | 127k | 1 | 258 | 17 |  |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-pq2" /> | blind-v1.1 | 112k | **77** | 8/8/done | 74.7 | 14,833k | 110k | 1 | 230 | 13 |  |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" adapter="refusal-ablation LoRA 1.0" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" /> | blind-v1.1 | 128k | **75** | 8/8/done | 82.0 | 17,259k | 127k | 1 | 269 | 15 |  |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" /> | blind-v1.1 | 256k | **73.5** | 8/8/done | 123.1 | 25,992k | 225k | 0 | 254 | 17 |  |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-pq2" /> | blind-v1.1 | 208k | **60.5** | 8/8/done | 92.4 | 19,572k | 193k | 0 | 245 | 16 |  |
 

@@ -113,7 +113,7 @@ Cross-cutting reads that touch every table:
 | Key | Joins | Where it is read |
 | --- | --- | --- |
 | row `spec.base`, `spec.quant`, `spec.publisher`, `spec.server` | a row to a binary page; an EvalPlus run to a binary page; a Mendel run to a binary page | `binaryKey`, `buildKey`, `binaryMatch`, `renderEvalplusTable` (`same`) |
-| row `spec` (the four fields plus `drafter`, `kv`, `effort`) and the slot count of `command` | a row to its Mendel run: the Coding cell, the window and speed cells of the Mendel tables | `mendelKey`, `deriveMendel`, `siteRowFor`; `mendelDrafter` replaces `drafter` for the match |
+| row `spec` (the four fields plus `drafter`, `kv`, `effort`, `adapter`) and the slot count of `command` | a row to its Mendel run: the Coding cell, the window and speed cells of the Mendel tables | `mendelKey`, `deriveMendel`, `siteRowFor`; `mendelDrafter` replaces `drafter` for the match |
 | row `config` prefix | a row to `models.<slug>.rowMatch` | `modelRows`, `retiredRows` |
 | row `id` | a row to `evalplusRuns[].row` | `renderEvalplusTable` (`rowOf`, `specOf`) |
 | `evalplusRuns[].slug` | a run to a report page and a model page, and to the link `benchmarks/<slug>.md` | `renderEvalplusTable` |
