@@ -1,0 +1,5 @@
+run-watch: log=hardware/arrietty/benchmarks/bench24/results/server-bonsai2-ptq1-evalplus-forced-rerun.log output=hardware/arrietty/benchmarks/bench24/results/bonsai2-ptq1-evalplus-forced-rerun/codegen.log url=http://127.0.0.1:8081 silence=600s probe_timeout=300s poll=10s mem_log=/home/irae/.local/share/choose-a-local-llm/run24-mem.log mem_interval=20s
+silence 600s on hardware/arrietty/benchmarks/bench24/results/bonsai2-ptq1-evalplus-forced-rerun/codegen.log: probing one real completion
+  probe answered: server alive, the run is thinking
+silence 600s on hardware/arrietty/benchmarks/bench24/results/bonsai2-ptq1-evalplus-forced-rerun/codegen.log: probing one real completion
+  probe answered: server alive, the run is thinking
