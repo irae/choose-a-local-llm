@@ -66,6 +66,13 @@ no empty, 7 forced. Blind agent row: 59.5, peak context 192679 of a
 - Swap did not grow in the run. The watcher raised one silence probe that queued behind a live turn, as it says it can.
 - The card scored 0.982/0.939 at a 25209 budget with 7 forced.
 
+## bonsai2-forced-rerun-mac
+
+- Same PTQ1_0 config as the budget run, without the two reasoning flags, `EVALPLUS_MAX_NEW_TOKENS=30000`. The 4 forced-failed problems re-ran: HumanEval/32, /39, /99, /145. Server log `results/server-bonsai2-forced-rerun-mac.log`.
+- One part, no crash: 13:06Z to 15:07Z, 121 min. Pause for Docker before the start, machine idle.
+- Result: all 4 hit `length` at 30000 tokens, all reasoning (about 1800 s each). Cells: forced-pass 3 (HumanEval/80, /129, /137), forced-fail-loop 4, forced-fail-late 0, forced-fail-wrong 0. Corrected think budget: unchanged, no late answer.
+- With the natural re-run the score is 0.976 base and 0.939 plus on the 4 problems merged into the run (base 0.988 before), because the 4 loops are empty answers. The budgeted run score stays 0.988/0.939.
+
 ## Disk clean-up, 2026-09-19 (owner)
 
 Owner approved the deletion. No partial download existed. Removed from the Hugging Face cache: `mlx-community/gemma-4-26b-a4b-it-4bit`, `mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx-community/Qwen3.8-27B-4bit`, `AtomicChat/Qwen3.8-27B-GGUF`, and four files of `prism-ml/Ternary-Bonsai-27B-gguf` (`Q2_0`, `PQ2_0`, `dspark-bf16`, `dspark-Q4_1`). Free space on the data volume went from 13 GB to 96 GB. Free space read by `df -h` after the clean-up: 96Gi free, 90% used. The MLX pack download stays at the start of `bonsai2-mlx-probe-mac`; under 20 GB free at that point is stop and ask. The older bartowski Q4_K_M revision waits for the owner: `refs/main` points to `125a02a`, not to `f0eec4a`.
