@@ -50,6 +50,7 @@ happen, and the handing-over section at the end.
 | `bonsai2_pq2_f16_answer_budget` | 2048 | `bonsai2-pq2-f16-evalplus-calibrate` |
 | `bonsai2_pq2_f16_max_tokens` | 32048 | `bonsai2-pq2-f16-evalplus-calibrate` |
 | `bonsai2_pq2_f16_evalplus` | base 0.982, plus 0.945, 0 empty, 6 forced, two parts around an owner stop | `bonsai2-pq2-f16-evalplus-budget-xhigh` |
+| `bonsai2_pq2_f16_forced_rerun` | 3 forced-pass, 3 forced-fail-loop, budget unchanged | `bonsai2-pq2-f16-evalplus-forced-rerun` |
 
 ## EvalPlus group order
 
