@@ -26,3 +26,24 @@ Fork `prism-b10685-7dffb15`. Tool `e38c467`. Pause 60 s. Two creeps: the first t
 | 65578 | 7.91 | 26050 | 0 | 864805 | 836860 |
 
 Floor 8 tok/s crosses between 40982 and 65578. Clean depth 40982. The 49198 row has swap growth. No pick.
+
+## bonsai2-27b-ptq1-mac, PTQ1_0, f16 KV, `-c 262144`, wired limit 25000
+
+Fork `prism-b10685-7dffb15`. Tool `e38c467`. Pause 60 s. Two creeps joined at 65578.
+
+| depth | tok/s | wired MB | swap delta MB | compress pages | decompress pages |
+|--:|--:|--:|--:|--:|--:|
+| 4114 | 17.86 | 26011 | 0 | 16621 | 5729 |
+| 24602 | 16.05 | 25981 | 0 | 77050 | 35803 |
+| 32818 | 15.28 | 25952 | 0 | 330532 | 267649 |
+| 40982 | 14.71 | 25924 | 0 | 162046 | 121770 |
+| 49198 | 14.12 | 25887 | 0 | 130462 | 106150 |
+| 57362 | 13.48 | 25842 | 0 | 183907 | 158374 |
+| 65578 | 13.05 | 25551 | -8 | 154539 | 78101 |
+| 65578 (control) | 13.02 | 25529 | 0 | 350455 | 621510 |
+| 98338 | 11.37 | 25921 | -8 | 165357 | 146507 |
+| 131098 | 10.07 | 25908 | -8 | 177723 | 142885 |
+| 163858 | 9.07 | 25484 | -49 | 798556 | 747908 |
+| 196618 | 8.18 | 26861 | 130 | 355239 | 334796 |
+
+The 196618 row has swap growth and stopped the creep. Clean depth 163858. No pick.
