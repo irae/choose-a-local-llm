@@ -56,6 +56,8 @@ answer that question for the card, not for this machine.
 - `bonsai2-forced-rerun-mac`
 - `bonsai2-smoke-xhigh-mac`
 - `bonsai2-mendel-blind-xhigh-mac`
+- `bonsai2-mlx-probe-mac`
+- `sweep-bonsai2-mlx-mac`
 - `retry-sweep`
 
 The four speed blocks run first, because every speed block runs before
@@ -273,6 +275,74 @@ close, take the file with the deeper clean depth, write that reason in
   the session log and the worktree diff, never from the model's own
   claims.
 
+## The MLX blocks (owner, 2026-09-19)
+
+Speed only, to compare the MLX pack with the two GGUF packs on this
+machine. No EvalPlus, no smoke, no agent row on it.
+
+| item | value |
+|---|---|
+| repo | `prism-ml/Ternary-Bonsai-2-27B-mlx-2bit` |
+| revision | `3f926b415992eaa2ae9dd7b573706494d6bbf787` |
+| `model.safetensors` | 8595477990 bytes |
+| server | stock `mlx_lm.server`, no fork |
+| packages | the pins of the pack's `runtime/requirements.txt`: `mlx==0.32.0`, `mlx-lm==0.31.3` |
+| cache | f16, the only choice: the pack has one weight format |
+| alias | `bonsai2-27b-mlx` |
+
+Install the two pins in a new venv, not in the EvalPlus venv. Record
+`pip freeze` of that venv in `state.md`.
+
+**The publisher's warning.** The pack stores rotated weights and
+declares `model_type: prism_hadamard_qwen35`. The publisher says a
+stock MLX loader skips the activation transform and gives wrong output
+with no error, and its demo refuses to serve this pack. The owner chose
+the stock server anyway. The probe below decides whether the speed
+cells mean anything.
+
+Server command, always with a bounded prompt cache (a pooled cache
+gave a false OOM on the earlier generation of this model):
+
+```bash
+<venv>/bin/python -m mlx_lm.server --model <pack dir> \
+  --prompt-cache-size 2 --port 8081 > results/server-mlx.log 2>&1
+```
+
+### `bonsai2-mlx-probe-mac`
+
+1. Download the pack at the revision above. Check the byte count.
+2. Start the server. Read `docs/methodology/memory-ceiling.md` for the
+   MLX memory reading.
+3. Send three prompts at temperature 0, `max_tokens` 256: "What is
+   17*23? Answer with the number only.", "Write a Python function that
+   reverses a string.", and "Name the capital of France."
+4. Record each answer verbatim in `results.md`.
+
+**Gate.** All three answers coherent and correct: go on to the sweep.
+Any answer garbage, empty, a loop or wrong: stop this block and the
+next one, stop the server, write a stop-and-ask in `state.md` with the
+answers and message the coordinator. Do not sweep a model that gives
+wrong output, because its speed is not the model's speed. A load error
+on `prism_hadamard_qwen35` is the same stop.
+
+### `sweep-bonsai2-mlx-mac`
+
+Read `docs/methodology/context-creep.md`, "How a sweep runs", and the
+`mlx` backend. Run `creep.py mlx` with `SERVER_LOG` set, pause 60 s,
+the same depths as the GGUF sweeps: 4096, 24576, 65536, 98304, then
+every 32768. `mlx_lm.server` has no `-c`, so run until the first of:
+decode under 8 tok/s, swap growth, a server death, or 262144.
+
+The ceiling is the deepest clean depth. Write `bonsai2_mlx_mac_clean`
+and the window `bonsai2_mlx_mac_window` in `state.md`: the clean depth
+minus 5 percent, rounded down to a multiple of 4096 (owner,
+2026-09-19). No agent row uses the window; it is recorded for the
+comparison.
+
+Done: one table in `results.md` with tok/s, wired MB, swap delta and
+compression pages per step, beside the two GGUF sweeps at the same
+depths. Stop the server. Commit, push, message the coordinator.
+
 ## `retry-sweep`
 
 The blocks that waited on a human, oldest first.
@@ -281,8 +351,10 @@ The blocks that waited on a human, oldest first.
 
 - Any q8_0 or other quantized KV arm. f16 is the cache of this machine.
 - A second serving config per file beyond its ladder and its sweep.
-- A drafter, the F16 file, the `-dev` repository, the mmproj, the MLX
-  build, LM Studio.
+- A drafter, the F16 file, the `-dev` repository, the mmproj, LM
+  Studio.
+- EvalPlus, a smoke or an agent row on the MLX pack. It is measured
+  for speed only (owner, 2026-09-19).
 - A guided agent row (owner, 2026-09-18). Every agent row of this
   project on this model is blind.
 - Any measurement taken with a stock llama.cpp binary.
