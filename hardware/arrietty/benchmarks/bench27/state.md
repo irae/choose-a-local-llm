@@ -157,6 +157,18 @@ Started at the time in `results/mendel-blind-start.txt`. Server: `-c 139264`, f1
 
 `orca-ptq1-f16-mendel-blind-xhigh` done: 75/100, worst defect medium (trap B missed), end_reason complete, 269 tool calls, peak context 126798/135168, 1 compaction, loop ok, wall 1:22. Scored by Claude Fable 5.1 (Agent call with `model: "fable"`); sum checked to 75. Watcher stopped; no stray Mendel Daemon. Then the calibration started on the same server flags at `-c 32768`.
 
+## `orca-ptq1-f16-evalplus-calibrate`
+
+Calibration `orca-ptq1-f16-xhigh-think`, alias `bonsai2-27b-ptq1-f16-orca`, `-c 32768`, no budget flag, ten problems. `resolved_reasoning_effort` is `xhigh` on every row (source `requested`). `thinking-budget.py derive`: 7 converged, 3 cut (HumanEval/32, /76, /99, each at 30000 tokens, `finish_reason` length, empty answer), longest converged reasoning 27618 tokens, longest answer 500.
+
+| name | value |
+|---|--:|
+| `orca_think_budget` | 30000 (the tool's cap) |
+| `orca_answer_budget` | 2048 |
+| `orca_max_tokens` | 32048 |
+
+No converged row has an empty answer. HumanEval/76 ended in a digit flood. Files: `hardware/arrietty/calibrations/calibration-orca-ptq1-f16-xhigh-think.json`, `results/calibrate-orca-ptq1-f16.out.log`, `results/server-orca-ptq1-f16-calibrate.log`.
+
 ## Handing-over
 
 Prep done, no block of the run started (the card is held by run 24).
