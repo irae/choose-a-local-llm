@@ -54,6 +54,7 @@ happen, and the handing-over section at the end.
 | `bonsai2_ptq1_think_budget` | 30000 (capped) | `bonsai2-ptq1-evalplus-calibrate` |
 | `bonsai2_ptq1_answer_budget` | 2048 | `bonsai2-ptq1-evalplus-calibrate` |
 | `bonsai2_ptq1_max_tokens` | 32048 | `bonsai2-ptq1-evalplus-calibrate` |
+| `bonsai2_ptq1_evalplus` | base 0.982, plus 0.945, 0 empty, 9 forced | `bonsai2-ptq1-evalplus-budget-xhigh` |
 
 ## EvalPlus group order
 
