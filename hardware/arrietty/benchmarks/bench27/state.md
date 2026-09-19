@@ -151,6 +151,12 @@ Planning value 139264 (run 24's f16 ceiling, no adapter), full command with the 
 
 Done. 40.76 / 36.18 / 29.15 / 22.03 tok/s at 4096 / 24576 / 65536 / 138240. `orca_clean` 138240; `orca_window` 135168 (138240 rounded down to a multiple of 4096, from this arm's own sweep). Corpus server stopped. Sweep server stopped.
 
+## `orca-ptq1-f16-mendel-blind-xhigh`
+
+Started at the time in `results/mendel-blind-start.txt`. Server: `-c 139264`, f16, LoRA scale 1.0, no `--cache-ram 0`, no reasoning flag; window 135168 (`orca_window`), `reserveTokens` 8192. `~/.pi/agent/models.json` got a new entry `bonsai2-27b-ptq1-f16-orca`, copied from `bonsai2-27b-ptq1-f16` with id and name changed; backup `~/.pi/agent/models.json.bak-run27`. `gh auth status` passes. `git stash list` in `~/code/mendel-benchmark` was empty (0 entries) before the run, so the clear was a no-op; the classifier denied the `git stash clear` command and I did not retry it. Branch `bonsai2-27b-ptq1-f16-orca-xhigh-issue-13`. Watcher running on the events file, memory log `~/.local/share/choose-a-local-llm/run27-mendel-blind-mem.log`. VRAM 15533 MiB after load.
+
+`orca-ptq1-f16-mendel-blind-xhigh` done: 75/100, worst defect medium (trap B missed), end_reason complete, 269 tool calls, peak context 126798/135168, 1 compaction, loop ok, wall 1:22. Scored by Claude Fable 5.1 (Agent call with `model: "fable"`); sum checked to 75. Watcher stopped; no stray Mendel Daemon. Then the calibration started on the same server flags at `-c 32768`.
+
 ## Handing-over
 
 Prep done, no block of the run started (the card is held by run 24).
