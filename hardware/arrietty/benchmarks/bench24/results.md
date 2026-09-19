@@ -479,3 +479,28 @@ Natural re-run (no reasoning-budget flags), same config, `EVALPLUS_MAX_NEW_TOKEN
 Summary: forced-pass=4, forced-fail-late=0, forced-fail-loop=2, forced-fail-wrong=0. `corrected_think_budget`: unchanged, no late answer — both forced-failed problems still hit the 30000-token generous cap unconverged, genuine non-convergence.
 
 Files: `results/bonsai2-ptq1-f16-evalplus-forced-rerun/`, `results/server-bonsai2-ptq1-f16-evalplus-forced-rerun.log`, `results/watcher-bonsai2-ptq1-f16-evalplus-forced-rerun.log`, `results/run-bonsai2-ptq1-f16-evalplus-forced-rerun.out.log`.
+
+## `bonsai2-pq2-f16-evalplus-calibrate`
+
+`Ternary-Bonsai-2-27B-PQ2_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, f16 KV, `-c 32768`, no reasoning-budget flag. Calibration name `bonsai2-pq2-f16-xhigh-think`, alias `bonsai2-27b-pq2-f16`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`. All 10 rows resolve `xhigh`. The first row was written in an earlier, stopped pass (started while the ptq1-f16 blind score was pending, stopped when that score won the group order); `calibrate.py` resumed the same file for the rest.
+
+| task_id | finish_reason | reasoning_len (chars) |
+|---|---|--:|
+| HumanEval/0 | stop | 2740 |
+| HumanEval/10 | stop | 65248 |
+| HumanEval/26 | stop | 2110 |
+| HumanEval/32 | length | 92581 |
+| HumanEval/38 | stop | 5025 |
+| HumanEval/39 | length | 35182 |
+| HumanEval/76 | stop | 29463 |
+| HumanEval/99 | length | 33428 |
+| HumanEval/124 | length | 98972 |
+| HumanEval/145 | stop | 73989 |
+
+6 converged, 4 cut, no converged row with an empty answer.
+
+`thinking-budget.py derive`: converged 6, cut 4, max_reasoning_tokens 22933, max_answer_tokens 365, think_budget 30000 (capped, 22933 × 1.5 = 34399.5 exceeds the cap), answer_budget 2048 (floor), max_tokens 32048.
+
+`bonsai2_pq2_f16_think_budget` = 30000, `bonsai2_pq2_f16_answer_budget` = 2048, `bonsai2_pq2_f16_max_tokens` = 32048.
+
+Files: `hardware/arrietty/calibrations/calibration-bonsai2-pq2-f16-xhigh-think.json`, `results/server-bonsai2-pq2-f16-evalplus-calibrate.log`.
