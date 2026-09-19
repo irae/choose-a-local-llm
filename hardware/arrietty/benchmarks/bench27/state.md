@@ -127,6 +127,16 @@ probe should look for `loaded 258 tensors from lora file`, not 129.
 129 is the pair count the README quotes; 258 is what the log line
 itself will print.
 
+## `machine-setup` (2026-09-18, in progress)
+
+Card at start: 618 MiB of 16311 MiB, no llama-server. `MemAvailable` 19505 MB, `df -h ~` 13G free (95% used). `gh auth status` passes. Adapter sha256 and size match the table. The fork prints `--lora` and `--lora-scaled`.
+
+Env for the fork: `LD_LIBRARY_PATH` must list the fork's own directory first, then run 17's CUDA lib directory. With run 17's directory first, the server loads the stock ggml and fails with `invalid ggml type 143`.
+
+Probe at `-c 8192`: the model loaded, `GET /lora-adapters` returned the adapter at id 0, scale 1.0, and VRAM read 7059 MiB. **The server log has no `llama_adapter_lora_init_impl` line at all** (log verbosity 3, 14 lines). Runbook step 4 calls a silent load stop and ask. Counter-evidence: the endpoint lists the adapter.
+
+**Foreign client on port 8081.** Process 222249, `run_codegen_wrapper.py` from the `choose-a-local-llm-run24` worktree, model `bonsai2-27b-pq2-f16`, up 1 h 9 min, sent requests to my probe server. Run 24 is meant to be stopped. I did not touch that process. I stopped my own server. No probe answer was checked.
+
 ## Handing-over
 
 Prep done, no block of the run started (the card is held by run 24).
