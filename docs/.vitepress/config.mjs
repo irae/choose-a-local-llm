@@ -78,6 +78,7 @@ export default defineConfig({
               { text: 'Qwen3.8-27B', link: '/setups/kamaji/reports/qwen3.8-27b' },
               { text: 'Qwen3.6-35B-A3B', link: '/setups/kamaji/reports/qwen3.6-35b-a3b' },
               { text: 'Gemma-4-26B-A4B', link: '/setups/kamaji/reports/gemma-4-26b-a4b' },
+              { text: 'Ternary Bonsai-2-27B', link: '/setups/kamaji/reports/bonsai-2-27b' },
               { text: 'Ternary Bonsai-27B', link: '/setups/kamaji/reports/bonsai-27b' },
               { text: 'Gemma-4-12B-it', link: '/setups/kamaji/reports/gemma-4-12b-it' },
             ],

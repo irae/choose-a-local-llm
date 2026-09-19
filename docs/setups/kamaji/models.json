@@ -192,7 +192,7 @@
       "evalplus": "0.976/0.933/99%",
       "mendel": "pending",
       "id": "qwen38-gguf-ista-nodrafter-low",
-      "evalplusWall": 147.0,
+      "evalplusWall": 147,
       "spec": {
         "base": "Qwen3.8-27B",
         "quant": "IQ3_S-mtp",
@@ -459,7 +459,7 @@
       "evalplus": "0.896/0.872/90%",
       "mendel": "pending",
       "id": "gemma26-gguf",
-      "evalplusWall": 347.0,
+      "evalplusWall": 347,
       "spec": {
         "base": "Gemma-4-26B-A4B",
         "quant": "UD-Q4_K_XL",
@@ -489,7 +489,7 @@
       "evalplus": "0.896/0.872/90%",
       "mendel": "pending",
       "id": "gemma26-gguf-2x",
-      "evalplusWall": 347.0,
+      "evalplusWall": 347,
       "spec": {
         "base": "Gemma-4-26B-A4B",
         "quant": "UD-Q4_K_XL",
@@ -837,6 +837,31 @@
         "contextWindow": 131072,
         "maxTokens": 8192
       }
+    },
+    {
+      "config": "Ternary-Bonsai-2-27B, GGUF, PTQ1_0 (prism-ml), f16 KV, no drafter, effort xhigh",
+      "maxCtx": "164k",
+      "gatedBy": "mem",
+      "tokShallow": "17.9",
+      "tokDeep": "9.1",
+      "memory": "25.5 GB",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "id": "bonsai2-ptq1-mac-xhigh",
+      "spec": {
+        "base": "Ternary-Bonsai-2-27B",
+        "quant": "PTQ1_0",
+        "server": "prism-llama",
+        "publisher": "prism-ml",
+        "repo": "prism-ml/Ternary-Bonsai-2-27B-gguf",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "xhigh"
+      },
+      "hidden": false,
+      "added": "2026-09-19",
+      "command": "llama-server -m \"$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf)\" \\\n  --alias bonsai2-27b-ptq1-mac --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 167936 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `bonsai2-27b-ptq1-mac`, the dense packing at f16, the served pack on this machine. `-c 262144`, the trained context, loads; the deepest clean depth is 163858 at 9.07 tok/s, and the next step, 196618 at 8.18, grew swap by 130 MB, so memory ends the window before the 8 tok/s floor does. The slot packing, PQ2_0, is the faster file on the card and the slower one here: 17.05 tok/s at 4K and under the floor between 41K and 66K, where PTQ1_0 reads 17.86 and 13.05. Read with the context-creep tool at wired limit 25000. Served by the PrismML llama.cpp fork, release `prism-b10685-7dffb15`, Metal build; the stock binary does not serve this file. f16 KV only on this machine. EvalPlus and the blind agent row are running."
     }
   ],
   "models": {
@@ -1120,6 +1145,26 @@
           "sub": "a record; medium is no longer run"
         }
       }
+    },
+    "bonsai-2-27b": {
+      "rowMatch": "Ternary-Bonsai-2-",
+      "kpis": [
+        "window",
+        "decodeShallow"
+      ],
+      "stats": {
+        "window": {
+          "value": "164k",
+          "label": "deepest clean depth, PTQ1_0, f16 KV",
+          "sub": "41k on PQ2_0"
+        },
+        "decodeShallow": {
+          "value": "17.9 tok/s",
+          "label": "decode at 4K, PTQ1_0, f16 KV",
+          "sub": "17.05 on PQ2_0"
+        }
+      },
+      "compareWith": "bonsai-27b"
     }
   },
   "evalplusRuns": [
@@ -1418,7 +1463,7 @@
         "4096": 53.3,
         "16384": 49.6,
         "33792": 42.2,
-        "37888": 42.0
+        "37888": 42
       },
       "run": "bench4",
       "method": "creep",
@@ -1669,7 +1714,7 @@
         "4096": 24.5,
         "8192": 24.2,
         "16384": 22.9,
-        "24576": 22.0,
+        "24576": 22,
         "32768": 20.5,
         "40960": 18.6,
         "43008": 18.66,
@@ -1727,6 +1772,45 @@
       "run": "bench13",
       "method": "creep",
       "wired": 24000
+    },
+    {
+      "model": "bonsai-2-27b",
+      "arm": "PTQ1_0, f16 KV, no drafter",
+      "c": 262144,
+      "cAt": 163858,
+      "served": true,
+      "points": {
+        "4114": 17.86,
+        "24602": 16.05,
+        "32818": 15.28,
+        "40982": 14.71,
+        "49198": 14.12,
+        "57362": 13.48,
+        "65578": 13.05,
+        "98338": 11.37,
+        "131098": 10.07,
+        "163858": 9.07
+      },
+      "run": "bench26",
+      "method": "creep",
+      "wired": 25000
+    },
+    {
+      "model": "bonsai-2-27b",
+      "arm": "PQ2_0, f16 KV, no drafter",
+      "c": 262144,
+      "cAt": 65578,
+      "served": false,
+      "points": {
+        "4114": 17.05,
+        "24602": 12.26,
+        "32818": 11.2,
+        "40982": 9.5,
+        "65578": 7.91
+      },
+      "run": "bench26",
+      "method": "creep",
+      "wired": 25000
     }
   ]
 }

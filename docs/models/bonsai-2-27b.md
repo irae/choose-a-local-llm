@@ -7,11 +7,12 @@ re-quantization of it, and the two are compared at the end of this page.
 <!-- gen:model-all:start -->
 | Model / Config | Ctx | tok/s | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" hide="server" top /> | 135k | <TokCell shallow="42.1" deep="22.4" cap="mem" top-deep /> | <ScoreCell value="0.970/0.939" sub="100% completion" /> | <ScoreCell value="82" pill="mendel-blind" top /> | <span title="EvalPlus 3h16 · Mendel 1h28"><b>4h44</b></span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" hide="server" top /> | 135k | <TokCell shallow="42.1" deep="22.4" cap="mem" top-shallow top-deep /> | <ScoreCell value="0.970/0.939" sub="100% completion" /> | <ScoreCell value="82" pill="mendel-blind" top /> | <span title="EvalPlus 3h16 · Mendel 1h28"><b>4h44</b></span> |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" adapter="refusal-ablation LoRA 1.0" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" hide="server" top /> | 135k | <TokCell shallow="40.8" deep="22.0" cap="mem" top-deep /> | <ScoreCell value="0.976/0.945" sub="100% completion" top /> | <ScoreCell value="75" pill="mendel-blind" top /> | <span title="EvalPlus 4h34 · Mendel 1h22">5h56</span> |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" hide="server" top /> | **208k** | <TokCell shallow="46.0" deep="14.5" cap="mem" top-shallow /> | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="60.5" pill="mendel-blind" /> | <span title="EvalPlus 2h56 · Mendel 1h32"><b>4h29</b></span> |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" hide="server" /> | 119k | <TokCell shallow="46.3" deep="25.1" cap="mem" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="77" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 1h15">1h15†</span> |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" hide="server" /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" /> | <ScoreCell value="pending" /> | <ScoreCell value="73.5" pill="mendel-blind" /> | <span title="EvalPlus — · Mendel 2h03">2h03†</span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="m1-max-32gb" page="/binaries/bonsai2-prism-ptq1" hide="server" /> | 164k | <TokCell shallow="17.9" deep="9.1" cap="mem" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
 <!-- gen:model-all:end -->
 
 ## Files
@@ -19,22 +20,26 @@ re-quantization of it, and the two are compared at the end of this page.
 Every file of this model, on every machine that served it, with every run and a log.
 
 <!-- gen:model-binaries:start -->
-- [Ternary-Bonsai-2-27B PQ2_0 (prism-ml, prism fork)](../binaries/bonsai2-prism-pq2.md) — rtx-5060ti-16gb
-- [Ternary-Bonsai-2-27B PTQ1_0 (prism-ml, prism fork)](../binaries/bonsai2-prism-ptq1.md) — rtx-5060ti-16gb
+- [Ternary-Bonsai-2-27B PQ2_0 (prism-ml, prism fork)](../binaries/bonsai2-prism-pq2.md) — rtx-5060ti-16gb, m1-max-32gb
+- [Ternary-Bonsai-2-27B PTQ1_0 (prism-ml, prism fork)](../binaries/bonsai2-prism-ptq1.md) — rtx-5060ti-16gb, m1-max-32gb
 <!-- gen:model-binaries:end -->
 
 ## Speed and context
 
 <!-- gen:model-curve:start -->
-| arm | 4K | 24K | 64K | 128K | 208K | 240K |
-|---|--:|--:|--:|--:|--:|--:|
-| rtx-5060ti-16gb, PQ2_0, f16 KV, no drafter, -c 120K | <CurveCell value="46.3" /> | <CurveCell value="40.5" /> | <CurveCell value="32.2" /> | <CurveCell value="25.1" depth="119.0K" /> |  |  |
-| rtx-5060ti-16gb, PQ2_0, q8_0 KV, no drafter, -c 208K | <CurveCell value="46.0" served /> | <CurveCell value="38.2" served /> | <CurveCell value="28.2" served /> |  | <CurveCell value="14.5" served /> |  |
-| rtx-5060ti-16gb, PTQ1_0, f16 KV, no drafter, -c 136K | <CurveCell value="42.1" served /> | <CurveCell value="37.3" served /> | <CurveCell value="30.1" served /> | <CurveCell value="22.4" depth="135.0K" served /> |  |  |
-| rtx-5060ti-16gb, PTQ1_0, q8_0 KV, no drafter, -c 240K | <CurveCell value="41.7" served /> | <CurveCell value="34.9" served /> | <CurveCell value="26.5" served /> |  |  | <CurveCell value="12.8" served /> |
-| rtx-5060ti-16gb, PTQ1_0, f16 KV, refusal-ablation LoRA at scale 1.0, -c 136K | <CurveCell value="40.8" served /> | <CurveCell value="36.2" served /> | <CurveCell value="29.2" served /> | <CurveCell value="22.0" depth="135.0K" served /> |  |  |
+| arm | 4K | 24K | 32K | 40K | 48K | 64K | 96K | 128K | 160K | 208K | 240K |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| rtx-5060ti-16gb, PQ2_0, f16 KV, no drafter, -c 120K | <CurveCell value="46.3" /> | <CurveCell value="40.5" /> |  |  |  | <CurveCell value="32.2" /> |  | <CurveCell value="25.1" depth="119.0K" /> |  |  |  |
+| rtx-5060ti-16gb, PQ2_0, q8_0 KV, no drafter, -c 208K | <CurveCell value="46.0" served /> | <CurveCell value="38.2" served /> |  |  |  | <CurveCell value="28.2" served /> |  |  |  | <CurveCell value="14.5" served /> |  |
+| rtx-5060ti-16gb, PTQ1_0, f16 KV, no drafter, -c 136K | <CurveCell value="42.1" served /> | <CurveCell value="37.3" served /> |  |  |  | <CurveCell value="30.1" served /> |  | <CurveCell value="22.4" depth="135.0K" served /> |  |  |  |
+| rtx-5060ti-16gb, PTQ1_0, q8_0 KV, no drafter, -c 240K | <CurveCell value="41.7" served /> | <CurveCell value="34.9" served /> |  |  |  | <CurveCell value="26.5" served /> |  |  |  |  | <CurveCell value="12.8" served /> |
+| rtx-5060ti-16gb, PTQ1_0, f16 KV, refusal-ablation LoRA at scale 1.0, -c 136K | <CurveCell value="40.8" served /> | <CurveCell value="36.2" served /> |  |  |  | <CurveCell value="29.2" served /> |  | <CurveCell value="22.0" depth="135.0K" served /> |  |  |  |
+| m1-max-32gb, PTQ1_0, f16 KV, no drafter, -c 256K, wired 25000 † | <CurveCell value="17.86" served /> | <CurveCell value="16.05" served /> | <CurveCell value="15.28" served /> | <CurveCell value="14.71" served /> | <CurveCell value="14.12" served /> | <CurveCell value="13.05" served /> | <CurveCell value="11.37" served /> | <CurveCell value="10.07" depth="128.0K" served /> | <CurveCell value="9.07" served /> |  |  |
+| m1-max-32gb, PQ2_0, f16 KV, no drafter, -c 256K, wired 25000 † | <CurveCell value="17.05" /> | <CurveCell value="12.26" /> | <CurveCell value="11.2" /> | <CurveCell value="9.5" /> |  | <CurveCell value="7.91" /> |  |  |  |  |  |
 
 The served arm of each config is in bold. A pill under a reading is the depth it was read at, where the arms of that column did not share one.
+
+† read with the context-creep tool of an earlier version of this project, not with `llama-benchy` on real text. The two methods do not give the same number. A reading stays until a re-run replaces it.
 <!-- gen:model-curve:end -->
 
 ## Quality — EvalPlus HumanEval+
@@ -115,6 +120,7 @@ Every config of both models, ranked together. The other model is [Ternary Bonsai
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" hide="server" /> | 119k | <TokCell shallow="46.3" deep="25.1" cap="mem" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="77" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 1h15">1h15†</span> |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" hide="server" /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow /> | <ScoreCell value="pending" /> | <ScoreCell value="73.5" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 2h03">2h03†</span> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" hide="server" /> | 131k | <TokCell shallow="15.0" deep="9.7" cap="mem" stale /> | <ScoreCell value="pending" /> | <ScoreCell value="12.5" note="13%" pill="mendel-guided" /> | <span title="EvalPlus — · Mendel 3h15">3h15†</span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="m1-max-32gb" page="/binaries/bonsai2-prism-ptq1" hide="server" /> | 164k | <TokCell shallow="17.9" deep="9.1" cap="mem" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-compare:end -->
