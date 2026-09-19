@@ -14,7 +14,7 @@ happen, and the handing-over section at the end.
 | `orca_c` | pending | `orca-ptq1-f16-ladder`, planning value 139264 |
 | `orca_clean` | pending | `sweep-orca-ptq1-f16` |
 | `orca_window` | pending | the agent row |
-| `vram_start_mb` | pending | `nvidia-smi`, session start |
+| `vram_start_mb` | 618 | `nvidia-smi`, session start |
 
 The unablated arm of the same file and cache, from run 24, to read
 against: `-c 139264`, window 135168, 42.1 / 37.3 / 30.1 / 22.4 tok/s at
@@ -138,6 +138,8 @@ Probe at `-c 8192`: the model loaded, `GET /lora-adapters` returned the adapter 
 **Foreign client on port 8081.** Process 222249, `run_codegen_wrapper.py` from the `choose-a-local-llm-run24` worktree, model `bonsai2-27b-pq2-f16`, up 1 h 9 min, sent requests to my probe server. Run 24 is meant to be stopped. I did not touch that process. I stopped my own server. No probe answer was checked.
 
 Coordinator answers (2026-09-18): the log line gate is closed. `GET /lora-adapters` (id 0, scale 1.0) is the load proof, and a coherent probe answer is also required. The owner killed pid 222249; no `run_codegen_wrapper` process is left. Go given to resume.
+
+Probe at `-c 8192` after the go: `GET /lora-adapters` returned id 0, scale 1.0; VRAM 7055 MiB of 16311 MiB after load. One chat completion at xhigh gave a correct Fibonacci function and two sentences, 1884 characters of reasoning, 562 completion tokens. Answer is coherent. `EVALPLUS_PYTHON` is `/home/irae/.local/share/pipx/venvs/evalplus/bin/python`. Corpus server runs on 127.0.0.1:8089 and stops after the sweep. `vram_start_mb`: 618. `machine-setup` done.
 
 ## Handing-over
 

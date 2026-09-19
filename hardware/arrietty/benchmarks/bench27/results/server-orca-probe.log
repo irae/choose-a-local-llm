@@ -1,22 +1,24 @@
-0.00.039.403 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
-0.00.039.672 W srv  llama_server: -----------------
-0.00.039.673 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
-0.00.039.673 W srv  llama_server: this can be a security risk (cross-origin attacks)
-0.00.039.673 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
-0.00.039.674 W srv  llama_server: -----------------
-0.00.040.964 I srv    load_model: loading model '/home/irae/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-2-27B-gguf/snapshots/6ed5e12bf84b7a63069882c91dd9e9218647d17b/Ternary-Bonsai-2-27B-PTQ1_0.gguf'
-0.04.036.294 I cmn          init: llama threadpool init, n_threads = 6
-0.04.293.766 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 8192, kv_unified = 'false'
-0.04.297.459 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
-0.04.297.497 I srv  llama_server: model loaded
-0.04.297.501 I srv  llama_server: listening on http://127.0.0.1:8081
-0.04.580.141 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
-0.04.580.182 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
-0.08.284.719 I slot print_timing: id  0 | task 0 | n_gen =    127, tg =  41.99 t/s, tg_3s =  42.33 t/s
-0.11.307.861 I slot print_timing: id  0 | task 0 | n_gen =    255, tg =  42.17 t/s, tg_3s =  42.34 t/s
-0.14.318.044 I slot print_timing: id  0 | task 0 | n_gen =    382, tg =  42.18 t/s, tg_3s =  42.19 t/s
-0.17.327.619 I slot print_timing: id  0 | task 0 | n_gen =    509, tg =  42.18 t/s, tg_3s =  42.20 t/s
-0.20.351.284 I slot print_timing: id  0 | task 0 | n_gen =    636, tg =  42.15 t/s, tg_3s =  42.00 t/s
-0.23.352.512 I slot print_timing: id  0 | task 0 | n_gen =    762, tg =  42.12 t/s, tg_3s =  41.98 t/s
-0.26.375.970 I slot print_timing: id  0 | task 0 | n_gen =    889, tg =  42.10 t/s, tg_3s =  42.00 t/s
-0.28.898.270 I srv    operator(): operator(): cleaning up before exit...
+0.00.046.914 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.047.196 W srv  llama_server: -----------------
+0.00.047.196 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.047.196 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.047.197 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.047.197 W srv  llama_server: -----------------
+0.00.048.497 I srv    load_model: loading model '/home/irae/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-2-27B-gguf/snapshots/6ed5e12bf84b7a63069882c91dd9e9218647d17b/Ternary-Bonsai-2-27B-PTQ1_0.gguf'
+0.01.308.317 I cmn          init: llama threadpool init, n_threads = 6
+0.01.545.125 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 8192, kv_unified = 'false'
+0.01.548.785 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.01.548.816 I srv  llama_server: model loaded
+0.01.548.820 I srv  llama_server: listening on http://127.0.0.1:8081
+0.05.000.103 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.05.000.150 I slot launch_slot_: id  0 | task 1 | processing task, is_child = 0
+0.08.393.183 I slot print_timing: id  0 | task 1 | n_gen =    128, tg =  42.25 t/s, tg_3s =  42.59 t/s
+0.11.405.538 I slot print_timing: id  0 | task 1 | n_gen =    255, tg =  42.21 t/s, tg_3s =  42.16 t/s
+0.14.416.469 I slot print_timing: id  0 | task 1 | n_gen =    383, tg =  42.31 t/s, tg_3s =  42.51 t/s
+0.17.435.816 I slot print_timing: id  0 | task 1 | n_gen =    511, tg =  42.33 t/s, tg_3s =  42.39 t/s
+0.18.642.666 I slot print_timing: id  0 | task 1 | prompt eval time =     387.33 ms /    70 tokens (    5.53 ms per token,   180.72 tokens per second)
+0.18.642.668 I slot print_timing: id  0 | task 1 |        eval time =   13255.16 ms /   562 tokens (   23.63 ms per token,    42.32 tokens per second)
+0.18.642.669 I slot print_timing: id  0 | task 1 |       total time =   13642.50 ms /   632 tokens
+0.18.642.672 I slot print_timing: id  0 | task 1 |    graphs reused =        559
+0.18.642.698 I slot      release: id  0 | task 1 | stop processing: n_tokens = 631, truncated = 0
+0.29.665.834 I srv    operator(): operator(): cleaning up before exit...
