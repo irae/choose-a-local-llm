@@ -169,6 +169,12 @@ Calibration `orca-ptq1-f16-xhigh-think`, alias `bonsai2-27b-ptq1-f16-orca`, `-c 
 
 No converged row has an empty answer. HumanEval/76 ended in a digit flood. Files: `hardware/arrietty/calibrations/calibration-orca-ptq1-f16-xhigh-think.json`, `results/calibrate-orca-ptq1-f16.out.log`, `results/server-orca-ptq1-f16-calibrate.log`.
 
+## `orca-ptq1-f16-evalplus-budget-xhigh`
+
+Server `-c 32768`, `--reasoning-budget 30000 --reasoning-budget-message "Thinking budget reached. Give the final answer now."`, LoRA scale 1.0 (`GET /lora-adapters` id 0), f16, no `--cache-ram 0`. VRAM 8773 MiB after load, 8779 MiB under a real request. The server applies `min_p` 0.05 (no sampling parameter passed; EvalPlus sends temperature 0). Run: full 164, `EVALPLUS_MAX_NEW_TOKENS=32048`, directory `results/orca-ptq1-f16-budget-xhigh`. Watcher on `finish.jsonl`, memory log `~/.local/share/choose-a-local-llm/run27-evalplus-budget-mem.log`. Start time in `results/evalplus-budget-start.txt`.
+
+`orca-ptq1-f16-evalplus-budget-xhigh` done: base 0.976, plus 0.945, 0/164 empty (counted from the raw samples), 10/164 forced (counted from `finish.jsonl`). Forced-failed: HumanEval/32, /99, /132. Watcher stopped.
+
 ## Handing-over
 
 Prep done, no block of the run started (the card is held by run 24).

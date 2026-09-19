@@ -36,3 +36,14 @@ simulator(mendel) blind, prompt v1.1, base tag `benchmark-blind-base`, level xhi
 | **run 27, PTQ1_0 f16, LoRA scale 1.0** | **75** | medium (trap B missed) | 269 | 126798 of 135168 (93.8%) | 1 | 2 | 1 h 22 min |
 
 Scored by Claude Fable 5.1 in a subagent, from the evidence pack, the session log and the worktree diff. Per-criterion points: 22 + 16 + 0 + 5 + 7 + 8 + 9 + 4 + 2.5 + 1.5 = 75, checked. Trap A not hit, trap C not hit, loop flag ok, 0 nudges, end reason complete, 8/8 libraries. Full breakdown: `results/score-orca-blind.md`. The 82 of run 24 had a CRITICAL trap A. This row hit no critical defect but scored 7 points lower on criteria 2 (trap B missed), 3 (no `pnpm install`, 0/8) and 5 (commit craft). Sampling applied by the server was not passed; the worker's `meta.json` holds the value.
+
+## `orca-ptq1-f16-evalplus-budget-xhigh`
+
+Config: PTQ1_0 f16 plus LoRA scale 1.0, `-c` 32768, `--reasoning-budget 30000 --reasoning-budget-message "Thinking budget reached. Give the final answer now."`, level xhigh, `EVALPLUS_MAX_NEW_TOKENS` 32048, temperature 0 from EvalPlus. The server applied `min_p` 0.05 (no sampling parameter passed). Full 164, watcher running. Wall: 02:08 to about 06:43 on 2026-09-19, about 4 h 34 min.
+
+| row | base | plus | empty (from samples) | forced (from `finish.jsonl`) | think budget | answer budget | max_tokens |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| run 24, PTQ1_0 f16, no adapter | 0.970 | 0.939 | - | - | - | - | - |
+| **run 27, PTQ1_0 f16, LoRA scale 1.0** | **0.976** | **0.945** | 0/164 | 10/164 | 30000 | 2048 | 32048 |
+
+Forced problems: HumanEval/32, /64, /76, /92, /99, /132, /137, /146, /157, /160. Three of them failed the tests: HumanEval/32, /99, /132 (see the forced re-run). The 0.800 gate for the agent row did not apply, because that row ran first. Files: `results/orca-ptq1-f16-budget-xhigh/`, `results/server-orca-ptq1-f16-budget-xhigh.log`.
