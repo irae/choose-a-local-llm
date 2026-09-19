@@ -40,15 +40,15 @@ and swept, EvalPlus and the blind agent row on PQ2_0.
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **135k** | <TokCell shallow="42.1" deep="22.4" cap="mem" top-shallow top-deep /> | **15.0 GB** | <ScoreCell value="0.970/0.939" sub="100% completion" /> | <ScoreCell value="82" pill="mendel-blind" top /> | <span title="EvalPlus 3h16 · Mendel 1h28"><b>4h44</b></span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **135k** | <TokCell shallow="42.1" deep="22.4" cap="mem" top-deep /> | **15.0 GB** | <ScoreCell value="0.970/0.939" sub="100% completion" /> | <ScoreCell value="82" pill="mendel-blind" top /> | <span title="EvalPlus 3h16 · Mendel 1h28">4h44</span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-pq2" top /> | 119k | <TokCell shallow="46.3" deep="25.1" cap="mem" top-shallow top-deep /> | **15.1 GB** | <ScoreCell value="0.982/0.945" sub="100% completion" top /> | <ScoreCell value="77" pill="mendel-blind" top /> | <span title="EvalPlus 3h03 · Mendel 1h15"><b>4h17</b></span> |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" adapter="refusal-ablation LoRA 1.0" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **135k** | <TokCell shallow="40.8" deep="22.0" cap="mem" top-deep /> | **15.0 GB** | <ScoreCell value="0.976/0.945" sub="100% completion" top /> | <ScoreCell value="75" pill="mendel-blind" top /> | <span title="EvalPlus 4h34 · Mendel 1h22">5h56</span> |
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-pq2" /> | **208k** | <TokCell shallow="46.0" deep="14.5" cap="mem" top-shallow /> | **15.4 GB** | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="60.5" pill="mendel-blind" /> | <span title="EvalPlus 2h56 · Mendel 1h32"><b>4h29</b></span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-pq2" /> | **208k** | <TokCell shallow="46.0" deep="14.5" cap="mem" top-shallow /> | 15.4 GB | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="60.5" pill="mendel-blind" /> | <span title="EvalPlus 2h56 · Mendel 1h32"><b>4h29</b></span> |
 
 Rows below 100 percent completeness. Completeness counts three measurements: tok/s, EvalPlus and Mendel.
 
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-pq2" top /> | **119k** | <TokCell shallow="46.3" deep="25.1" cap="mem" top-shallow top-deep /> | **15.1 GB** | <ScoreCell value="pending" /> | <ScoreCell value="77" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 1h15">1h15†</span> |
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **240k** | <TokCell shallow="41.7" deep="12.8" cap="mem" top-shallow top-deep /> | **15.5 GB** | <ScoreCell value="pending" /> | <ScoreCell value="73.5" pill="mendel-blind" top /> | <span title="EvalPlus — · Mendel 2h03">2h03†</span> |
 <!-- gen:model-table:end -->
 
@@ -65,6 +65,18 @@ pi id `bonsai2-27b-ptq1-f16`, the dense packing at f16. **The best blind agent r
 llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf)" \
   --alias bonsai2-27b-ptq1-f16 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 139264 \
+  --cache-type-k f16 --cache-type-v f16 \
+  --jinja --port 8081
+```
+
+<ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-pq2" />
+
+pi id `bonsai2-27b-pq2-f16`, the same file as the q8_0 row at the other cache type. It trades window for speed and, on one run each, for quality: `-c 122880` against 212992, 46.3 tok/s at 4K and 25.1 at 121856 against 46.0 and 14.5, and a blind agent row of 77 against 60.5. The f16 row paid one compaction at a 118784 window where the q8_0 row had none at 208896, and still scored higher; both rows carry a medium worst defect. Both peaked near 92 percent of their window, so the task grows to fill what it is given. That is one run per arm, so the direction is indicated and not established. Served by the PrismML llama.cpp fork, release `prism-b10685-7dffb15`, commit `7dffb158d`; the stock binary makes garbage from this file. The server applies `min_p 0.05` where the model card publishes `0.0`. EvalPlus at this cache type is scheduled and not yet run. Every agent row of this model was re-scored on the best tier on 2026-09-18, after the first scoring ran on a smaller model; the scores here are the re-scored ones. EvalPlus at effort xhigh under a server thinking budget of 30000, the derive cap (answer budget 2048, `max_tokens` 32048): 0.982/0.945 with no empty answer, in 182.7 minutes over two parts around an owner stop. Six problems hit the budget and were forced to answer. It ties the q8_0 arm on base and leads it by 0.6 on plus.
+
+```bash
+llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PQ2_0.gguf)" \
+  --alias bonsai2-27b-pq2-f16 --no-mmproj --parallel 1 \
+  -ngl 999 --fit off -fa on -c 122880 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
 ```
@@ -94,18 +106,6 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
   --jinja --port 8081
 ```
 
-<ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-pq2" />
-
-pi id `bonsai2-27b-pq2-f16`, the same file as the q8_0 row at the other cache type. It trades window for speed and, on one run each, for quality: `-c 122880` against 212992, 46.3 tok/s at 4K and 25.1 at 121856 against 46.0 and 14.5, and a blind agent row of 77 against 60.5. The f16 row paid one compaction at a 118784 window where the q8_0 row had none at 208896, and still scored higher; both rows carry a medium worst defect. Both peaked near 92 percent of their window, so the task grows to fill what it is given. That is one run per arm, so the direction is indicated and not established. Served by the PrismML llama.cpp fork, release `prism-b10685-7dffb15`, commit `7dffb158d`; the stock binary makes garbage from this file. The server applies `min_p 0.05` where the model card publishes `0.0`. EvalPlus at this cache type is scheduled and not yet run. Every agent row of this model was re-scored on the best tier on 2026-09-18, after the first scoring ran on a smaller model; the scores here are the re-scored ones.
-
-```bash
-llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PQ2_0.gguf)" \
-  --alias bonsai2-27b-pq2-f16 --no-mmproj --parallel 1 \
-  -ngl 999 --fit off -fa on -c 122880 \
-  --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081
-```
-
 <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" />
 
 pi id `bonsai2-27b-ptq1`, revision `6ed5e12`, 5.54 GiB of weights. The smaller packing and the larger window: `-c 245760` at q8_0, 94% of the trained 262144, where f16 aborts on a live CUDA out-of-memory at 147456 and tops out at 139264. The sweep found no speed ceiling: 41.7 tok/s at 4K, 34.9 at 24K, 26.5 at 65K and 12.8 at 244736, VRAM flat at 15837 MiB. No EvalPlus row and no agent row yet, so nothing is known about what the smaller packing costs in quality. The stock llama.cpp binary does not serve this file: it rejects `PQ2_0` and `PTQ1_0` as unknown types and makes garbage from a `Q2_0` file, because it has no Hadamard activation runtime. Every number here is measured with fork `PrismML-Eng/llama.cpp` release `prism-b10685-7dffb15` (commit `7dffb158d`), one release behind `latest`, whose Linux CUDA asset was still building on 2026-09-17. A different fork release is a different serving stack. The model card publishes `min_p 0.0` in `general.sampling.*`; the server applies `min_p 0.05`, and the agent row samples, so the measured value is the one that counts. Vision is a separate `mmproj` file and this machine never fetched it; every command carries `--no-mmproj`.
@@ -124,6 +124,7 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
 <!-- gen:model-evalplus:start -->
 | config | budget | Scores | empties | tok/s | wall |
 |---|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-pq2" />](../benchmarks/bonsai-2-27b.md) | 32048 | <ScoreCell value="0.982/0.945" sub="100% completion" top /> | none | <TokCell shallow="46.3" deep="25.1" /> | 3h03 |
 | [<ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-pq2" />](../benchmarks/bonsai-2-27b.md) | 27257 | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | none | <TokCell shallow="46.0" deep="14.5" /> | 2h56 |
 | [<ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" adapter="refusal-ablation LoRA 1.0" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" />](../benchmarks/bonsai-2-27b.md) | 32048 | <ScoreCell value="0.976/0.945" sub="100% completion" top /> | none | <TokCell shallow="40.8" deep="22.0" /> | 4h34 |
 | [<ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" />](../benchmarks/bonsai-2-27b.md) | 32048 | <ScoreCell value="0.970/0.939" sub="100% completion" /> | none | <TokCell shallow="42.1" deep="22.4" /> | 3h16 |
