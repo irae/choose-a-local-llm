@@ -52,6 +52,12 @@ no empty, 7 forced. Blind agent row: 59.5, peak context 192679 of a
 - Three creeps of the same server, same tool `e38c467`, pause 60 s, `STALL_S` 2400. Files: `results/creep-bonsai2-ptq1-mac.tsv` (4K to 65K, no ceiling found), `results/creep-bonsai2-ptq1-mac-deep.tsv` (65K to 197K).
 - Swap started at 146 MB. The 196618 row (8.18 tok/s) has swap growth of 130 MB and stopped the creep, so it is not clean. `bonsai2_ptq1_mac_clean` is 163858 (9.07). The floor crossing lies past 164K and was not measured clean.
 
+## bonsai2-calibrate-think-mac
+
+- PTQ1_0 at `-c 32768`, f16 KV, no budget flag, xhigh (resolved xhigh in every row). File `hardware/kamaji/calibrations/calibration-bonsai2-ptq1-mac-xhigh-think.json`. Server log `results/server-ptq1-calibrate.log`, log `results/calibrate-ptq1.log`. Wall 145.9 min.
+- 6 converged, 4 cut at 30000 (`length`): HumanEval/32, /39, /99, /145. Four `length` stops in ten: the thinking does not converge on those problems. No converged row has an empty answer.
+- Budgets (`THINKING_BUDGET_MARGIN` 1.5): `bonsai2_ptq1_think_budget` 16056, `bonsai2_ptq1_answer_budget` 2048, `bonsai2_ptq1_max_tokens` 18104. Longest converged reasoning 10704 tokens, longest answer 330.
+
 ## Handing-over
 
 The run has not started.
