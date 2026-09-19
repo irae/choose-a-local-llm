@@ -293,7 +293,7 @@
       "tokShallow": "41.7",
       "tokDeep": "12.8",
       "memory": "15.5 GB",
-      "evalplus": "pending",
+      "evalplus": "0.982/0.945/100%",
       "mendel": "pending",
       "id": "bonsai2-ptq1-xhigh",
       "spec": {
@@ -308,13 +308,14 @@
       },
       "hidden": false,
       "command": "llama-server -m \"$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf)\" \\\n  --alias bonsai2-27b-ptq1 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 245760 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `bonsai2-27b-ptq1`, revision `6ed5e12`, 5.54 GiB of weights. The smaller packing and the larger window: `-c 245760` at q8_0, 94% of the trained 262144, where f16 aborts on a live CUDA out-of-memory at 147456 and tops out at 139264. The sweep found no speed ceiling: 41.7 tok/s at 4K, 34.9 at 24K, 26.5 at 65K and 12.8 at 244736, VRAM flat at 15837 MiB. No EvalPlus row and no agent row yet, so nothing is known about what the smaller packing costs in quality. The stock llama.cpp binary does not serve this file: it rejects `PQ2_0` and `PTQ1_0` as unknown types and makes garbage from a `Q2_0` file, because it has no Hadamard activation runtime. Every number here is measured with fork `PrismML-Eng/llama.cpp` release `prism-b10685-7dffb15` (commit `7dffb158d`), one release behind `latest`, whose Linux CUDA asset was still building on 2026-09-17. A different fork release is a different serving stack. The model card publishes `min_p 0.0` in `general.sampling.*`; the server applies `min_p 0.05`, and the agent row samples, so the measured value is the one that counts. Vision is a separate `mmproj` file and this machine never fetched it; every command carries `--no-mmproj`.",
+      "note": "pi id `bonsai2-27b-ptq1`, revision `6ed5e12`, 5.54 GiB of weights. The smaller packing and the larger window: `-c 245760` at q8_0, 94% of the trained 262144, where f16 aborts on a live CUDA out-of-memory at 147456 and tops out at 139264. The sweep found no speed ceiling: 41.7 tok/s at 4K, 34.9 at 24K, 26.5 at 65K and 12.8 at 244736, VRAM flat at 15837 MiB. No EvalPlus row and no agent row yet, so nothing is known about what the smaller packing costs in quality. The stock llama.cpp binary does not serve this file: it rejects `PQ2_0` and `PTQ1_0` as unknown types and makes garbage from a `Q2_0` file, because it has no Hadamard activation runtime. Every number here is measured with fork `PrismML-Eng/llama.cpp` release `prism-b10685-7dffb15` (commit `7dffb158d`), one release behind `latest`, whose Linux CUDA asset was still building on 2026-09-17. A different fork release is a different serving stack. The model card publishes `min_p 0.0` in `general.sampling.*`; the server applies `min_p 0.05`, and the agent row samples, so the measured value is the one that counts. Vision is a separate `mmproj` file and this machine never fetched it; every command carries `--no-mmproj`. EvalPlus at effort xhigh under a server thinking budget of 30000, the derive cap (answer budget 2048, `max_tokens` 32048): 0.982/0.945 with no empty answer in 244.9 minutes, the first score of this file at q8_0. Nine problems hit the budget and were forced to answer.",
       "pi": {
         "provider": "llama",
         "id": "bonsai2-27b-ptq1",
         "contextWindow": 245760,
         "maxTokens": 8192
-      }
+      },
+      "evalplusWall": 244.9
     },
     {
       "config": "Qwen3.8-27B, GGUF, Q3_K_M (OBLITERATUS, abliterated), q8_0 KV, no drafter, effort medium",
@@ -743,6 +744,18 @@
       "model": "Ternary-Bonsai-2-27B (GGUF PQ2_0, prism-ml, f16 KV, prism fork)",
       "mode": "effort xhigh, think budget 30000",
       "row": "bonsai2-pq2-f16-xhigh",
+      "budget": 32048,
+      "base": "0.982",
+      "plus": "0.945",
+      "empty": "0/164"
+    },
+    {
+      "wall": 244.9,
+      "emptyCause": "none",
+      "slug": "bonsai-2-27b",
+      "model": "Ternary-Bonsai-2-27B (GGUF PTQ1_0, prism-ml, q8_0 KV, prism fork)",
+      "mode": "effort xhigh, think budget 30000",
+      "row": "bonsai2-ptq1-xhigh",
       "budget": 32048,
       "base": "0.982",
       "plus": "0.945",
