@@ -504,3 +504,29 @@ Files: `results/bonsai2-ptq1-f16-evalplus-forced-rerun/`, `results/server-bonsai
 `bonsai2_pq2_f16_think_budget` = 30000, `bonsai2_pq2_f16_answer_budget` = 2048, `bonsai2_pq2_f16_max_tokens` = 32048.
 
 Files: `hardware/arrietty/calibrations/calibration-bonsai2-pq2-f16-xhigh-think.json`, `results/server-bonsai2-pq2-f16-evalplus-calibrate.log`.
+
+## `bonsai2-pq2-f16-evalplus-budget-xhigh`
+
+`Ternary-Bonsai-2-27B-PQ2_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, f16 KV, `-c 32768`, `--reasoning-budget 30000 --reasoning-budget-message "Thinking budget reached. Give the final answer now."`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`, `EVALPLUS_MAX_NEW_TOKENS=32048`. Full 164-problem HumanEval run in two parts, in UTC:
+
+| part | from | to | problems |
+|---|---|---|--:|
+| 1 | 2026-09-19T00:30:39Z | 2026-09-19T01:29:01Z (owner stop at about 01:33Z) | 1-64 |
+| pause | 2026-09-19T01:33Z | 2026-09-19T10:30Z | none |
+| 2 | 2026-09-19T10:30Z | 2026-09-19T12:34:01Z (2:04:21 on the resumed problems) | 65-164 |
+
+The pause was an owner stop. A stray EvalPlus client of part 1 (pid 222249) sent requests to another run's server after the stop. No sample was written after the stop, so no sample was deleted (see "Pause and stray client" in `state.md`). Every sample comes from the run 24 server.
+
+| metric | value |
+|---|--:|
+| HumanEval base pass@1 | 0.982 |
+| HumanEval plus pass@1 | 0.945 |
+| completion rate | 100% |
+| empty (from samples) | 0/164 |
+| forced (budget fired) | 6/164 |
+
+Forced task ids: `HumanEval/32`, `39`, `64`, `99`, `124`, `137`. Whether each passed is checked in `bonsai2-pq2-f16-evalplus-forced-rerun`, not assumed from "not empty".
+
+**This row is the first EvalPlus score for `PQ2_0` at f16.** Base pass@1 0.982 is above 0.800.
+
+Files: `results/bonsai2-pq2-f16-evalplus-budget-xhigh/`, `results/server-bonsai2-pq2-f16-evalplus-budget-xhigh.log` (part 1), `results/server-bonsai2-pq2-f16-evalplus-budget-xhigh-resume.log` (part 2), both watcher logs, both `run-...out.log` files.
