@@ -1,0 +1,16 @@
+{
+  "message": "Thinking budget reached. Give the final answer now.",
+  "forced": [
+    "HumanEval/124",
+    "HumanEval/137",
+    "HumanEval/32",
+    "HumanEval/39",
+    "HumanEval/64",
+    "HumanEval/99"
+  ],
+  "forced_failed": [
+    "HumanEval/32",
+    "HumanEval/39",
+    "HumanEval/99"
+  ]
+}
