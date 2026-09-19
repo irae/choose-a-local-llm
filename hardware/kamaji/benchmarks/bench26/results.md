@@ -61,3 +61,19 @@ PTQ1_0, f16 KV, `-c 32768`, xhigh, fork `prism-b10685-7dffb15`, wired limit 2500
 | wall | 482.9 min (337 run + 145.9 calibration) |
 
 Forced: HumanEval/32, /39, /80, /99, /129, /137, /145. Parts: 07:14Z to 12:51Z, no crash.
+
+## bonsai2-forced-rerun-mac
+
+Natural re-run at 30000 of the 7 forced answers' failures (4 problems), PTQ1_0, f16 KV, `-c 32768`, xhigh, no reasoning flag. Wall 121 min, one part, 13:06Z to 15:07Z.
+
+| task_id | cell | forced tokens | natural finish | natural tokens |
+|---|---|--:|---|--:|
+| HumanEval/32 | forced-fail-loop | 17107 | length | 30000 |
+| HumanEval/39 | forced-fail-loop | 16381 | length | 30000 |
+| HumanEval/80 | forced-pass | 16272 | | |
+| HumanEval/99 | forced-fail-loop | 16268 | length | 30000 |
+| HumanEval/129 | forced-pass | 16788 | | |
+| HumanEval/137 | forced-pass | 16389 | | |
+| HumanEval/145 | forced-fail-loop | 16268 | length | 30000 |
+
+Summary: forced-pass 3, forced-fail-late 0, forced-fail-loop 4, forced-fail-wrong 0. Corrected think budget: unchanged, no late answer.
