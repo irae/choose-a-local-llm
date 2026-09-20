@@ -42,7 +42,7 @@ a harness or serving defect voided is not.
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" hardware="m1-max-32gb" page="/binaries/qwen38-unsloth-ud-iq3s" top /> | **147k** | <TokCell shallow="13.60" deep="7.97" cap="speed" top-shallow top-deep /> | **25.5 GB** | <ScoreCell value="0.945/0.927†" sub="100% completion" top /> | <ScoreCell value="90.5" pill="mendel-blind" top /> | <span title="EvalPlus 13h36 · Mendel 3h05"><b>16h41</b></span> |
-| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-unsloth-ud-iq3s" top /> | **65k** | <TokCell shallow="29.36" deep="20.92" cap="mem" top-shallow top-deep /> | **14.2 GB** | <ScoreCell value="0.957/0.921†" sub="98% completion" top /> | <ScoreCell value="79" note="88%" pill="mendel-guided" top /> | <span title="EvalPlus 4h50 · Mendel 4h46"><b>9h36</b></span> |
+| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-unsloth-ud-iq3s" top /> | **65k** | <TokCell shallow="29.36" deep="20.92" cap="mem" top-shallow top-deep /> | **14.2 GB** | <ScoreCell value="0.963/0.921" sub="100% completion" top /> | <ScoreCell value="79" note="88%" pill="mendel-guided" top /> | <span title="EvalPlus 3h08 · Mendel 4h46"><b>7h54</b></span> |
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+
@@ -50,6 +50,7 @@ a harness or serving defect voided is not.
 <!-- gen:binary-evalplus:start -->
 | config | think | budget | Scores | empties | forced | tok/s | wall |
 |---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-unsloth-ud-iq3s" />](../setups/arrietty/benchmarks/qwen3.8-27b.md) | 8192 | 16384 | <ScoreCell value="0.963/0.921" sub="100% completion" top /> | none | 8/164 | <TokCell shallow="29.36" deep="20.92" /> | 3h08 |
 | [<ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-unsloth-ud-iq3s" />](../setups/arrietty/benchmarks/qwen3.8-27b.md) | —† | 19000 | <ScoreCell value="0.957/0.921" sub="98% completion" /> | † unproven | — | <TokCell shallow="29.36" deep="20.92" /> | 4h50 |
 | [<ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" hardware="m1-max-32gb" page="/binaries/qwen38-unsloth-ud-iq3s" />](../setups/kamaji/benchmarks/qwen3.8-27b.md) | —† | 20000 | <ScoreCell value="0.945/0.927" sub="95% completion" /> | 8 budget | — | <TokCell shallow="13.60" deep="7.97" /> | 13h36 |
 

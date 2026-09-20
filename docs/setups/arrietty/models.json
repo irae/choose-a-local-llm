@@ -142,10 +142,10 @@
       "tokShallow": "29.36",
       "tokDeep": "20.92",
       "memory": "14.2 GB",
-      "evalplus": "0.957/0.921/98%",
+      "evalplus": "0.963/0.921/100%",
       "mendel": "pending",
       "id": "qwen38-iq3s-xhigh",
-      "evalplusWall": 289.6,
+      "evalplusWall": 188.0,
       "spec": {
         "base": "Qwen3.8-27B",
         "quant": "UD-IQ3_S",
@@ -158,16 +158,13 @@
       },
       "hidden": false,
       "command": "llama-server -m \"$(hf download unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-IQ3_S.gguf)\" \\\n  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 65536 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 GB. The KV type was measured on this card: q8_0 serves `-c 65536`, and f16 serves only `-c 53248` (24.3 tok/s at its deep cell), because a larger f16 window loads but runs out of memory on the first real request. q8_0 is the served type. The MTP drafter was read after the agent row, at the same `-c`: n-max 1 reads 37.2 → 26.3 tok/s and n-max 2 47.1 → 30.8, both faster than no drafter at every depth; n-max 3 needs `-c 57344`. The guided task ran with no drafter: 79, 7 of 8 libraries, stopped when the output-budget nudges ran out. EvalPlus at effort xhigh, scored 2026-09-16 with no drafter at `-c 32768`, budget 19000: 0.957/0.921, 3 empty answers of 164 whose cause is unproven because the run saved no finish log, in 289.6 minutes of active time. Two of ten calibration problems never converged, so the budget sits just above the longest successful answer. No earlier score exists for this build at this level on any machine.",
+      "note": "pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 GB. The KV type was measured on this card: q8_0 serves `-c 65536`, and f16 serves only `-c 53248` (24.3 tok/s at its deep cell), because a larger f16 window loads but runs out of memory on the first real request. q8_0 is the served type. The MTP drafter was read after the agent row, at the same `-c`: n-max 1 reads 37.2 → 26.3 tok/s and n-max 2 47.1 → 30.8, both faster than no drafter at every depth; n-max 3 needs `-c 57344`. The guided task ran with no drafter: 79, 7 of 8 libraries, stopped when the output-budget nudges ran out. EvalPlus at effort xhigh, scored 2026-09-16 with no drafter at `-c 32768`, budget 19000: 0.957/0.921, 3 empty answers of 164 whose cause is unproven because the run saved no finish log, in 289.6 minutes of active time. Two of ten calibration problems never converged, so the budget sits just above the longest successful answer. The published score is the fast-mode run of 2026-09-20: thinking closed at 8192 tokens, output budget 16384, no drafter at `-c 32768`, all 164 problems generated. It reads 0.963/0.921 with no empty answer and 8 forced answers of 164, in 188 minutes of active time. The earlier budget-19000 run of 2026-09-16 stays on the report page. No earlier score exists for this build at this level on any machine.",
       "pi": {
         "provider": "llama",
         "id": "qwen3.8-27b-iq3s",
         "contextWindow": 61440,
         "maxTokens": 8192
-      },
-      "stale": [
-        "evalplus"
-      ]
+      }
     },
     {
       "config": "Qwen3.8-27B, GGUF, IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, no drafter, effort xhigh",
@@ -871,6 +868,20 @@
       "emptyCause": "none",
       "forced": "11/164",
       "wall": 175.0
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF UD-IQ3_S, unsloth, q8_0 KV)",
+      "mode": "effort xhigh",
+      "row": "qwen38-iq3s-xhigh",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.963",
+      "plus": "0.921",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "8/164",
+      "wall": 188.0
     }
   ],
   "mendelWalls": {
