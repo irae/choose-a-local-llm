@@ -107,3 +107,6 @@ One section per block, in the order the runbook lists, as it happens.
 ## `fast-qwen38-oblit-q3km-medium`
 
 - Dropped on the owner's word, relayed by the coordinator on 2026-09-20: the abliterated Qwen3.8 model is retired. The block never starts. The coordinator deletes its two cache files. Order left: `fast-gemma12-nvfp4-on`, `fast-gemma12-q4kxl-on`, `retry-sweep` (with `fast-qwen36-q4kxl-on` when the coordinator says so).
+- Part 1: 2026-09-20T18:39:54Z to about 20:55Z (last request 20:53:16Z), no crash. Own wall about 135 min (requests 133.3 min). The 119 kept problems cost 76.2 min in the source. Wall about 211 min.
+- Result: base 0.976, plus 0.951. Empty 0/164, forced 44/164.
+- Finding: HumanEval/145 ended on `length` at 16384 after a forced answer. It holds code, so it is not empty.

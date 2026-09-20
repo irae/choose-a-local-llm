@@ -94,3 +94,16 @@ Gemma-4-26B-A4B NVFP4 (Q8 file), f16 KV, `--n-cpu-moe 7`, no drafter, thinking o
 - Empty ids: none.
 - `budget` (ended on `length` at 16384): none.
 - The score comes from a manual `evalplus.evaluate` run; see `state.md`.
+
+## `fast-gemma12-nvfp4-on`
+
+Gemma-4-12B NVFP4, f16 KV, no drafter, thinking on, run 19's binary, `-c 32768`, fast mode (thinking 8192, `max_tokens` 16384). Splice source: `bench21/results/gemma12-nvfp4-budget-on`, 119 kept, 45 generated.
+
+| | base | plus | completion | empty | forced | wall |
+|---|--:|--:|--|--|--|--:|
+| fast mode (run 28) | 0.976 | 0.951 | 164/164 | 0/164 | 44/164 | 211 min = 135 own (18:39Z–20:55Z, 2026-09-20; requests 133.3) + 76 for the kept problems in the source |
+| before fast mode | 0.659 | 0.640 | 111/164 (68%) | see models.json | see models.json | 203.9 min |
+
+- Forced ids: the 44 ids in `thinking-budget.py count` output: HumanEval/4, /18, /32, /39, /41, /47, /64, /65, /75, /76, /81, /83, /84, /91, /93, /94, /95, /99, /100, /102, /103, /105, /109, /110, /113, /115, /116, /118, /119, /124, /125, /129, /130, /132, /134, /140, /141, /145, /147, /154, /156, /158, /160, /163.
+- Empty ids: none.
+- `budget` (ended on `length` at 16384): HumanEval/145, after a forced answer. It holds code, so it is not empty.
