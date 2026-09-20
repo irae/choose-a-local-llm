@@ -73,3 +73,11 @@ One section per block, in the order the runbook lists, as it happens.
 - Part 1: 2026-09-20T14:23:08Z to about 15:33Z (last request 15:29:21Z, evaluate after), no crash. Own wall about 70 min (requests 66.1 min). The 146 kept problems cost 82.3 min in the source. Wall about 152 min.
 - Result: base 0.976, plus 0.945. Empty 0/164, forced 18/164.
 - Finding: HumanEval/64 ended on `length` at 16384 after a forced answer here too, the third ternary row where it does so.
+
+## `fast-gemma26-nvfp4-on`
+
+- Serve: run 19's binary, row command with `-c 32768`, f16 KV, `--n-cpu-moe 7`, no drafter (the row has none), `$FAST_FLAGS`.
+- `nvidia-smi` at load: 14016 MiB; after the probe 14064 MiB (desktop included).
+- Probe (`enable_thinking` true, HumanEval/0): stop, 820 completion tokens, reasoning present, `content` 542 characters, no error. It converged early, so no budget message shows.
+- No splice source: all 164 generated.
+- Part 1 start 2026-09-20T15:50:33Z
