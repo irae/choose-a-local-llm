@@ -95,3 +95,11 @@ One section per block, in the order the runbook lists, as it happens.
 - The command I ran by hand (from the repo root, run 28 worktree, with the run 28 environment sourced), output to `evaluate.log`:
   `evalplus.evaluate --dataset humaneval --samples "$PWD/hardware/arrietty/benchmarks/bench28/results/fast-gemma26-nvfp4-on/humaneval/gemma-4-26b-a4b-nvfp4_openai_temp_0.0.jsonl" 2>&1 | tee "$PWD/hardware/arrietty/benchmarks/bench28/results/fast-gemma26-nvfp4-on/evaluate.log"`
 - Suggested fix: `find "$DIR/humaneval" -name "*.jsonl" ! -name "*.raw.jsonl" | head -1`.
+
+## `fast-gemma12-nvfp4-on`
+
+- Serve: run 19's binary, row command with `-c 32768`, f16 KV, no drafter, `$FAST_FLAGS`. The file is `gemma-4-12b-it-nvfp4.gguf` (the row command's name).
+- `nvidia-smi` at load: 8768 MiB; after the probe 8774 MiB (desktop included).
+- Probe (`enable_thinking` true, HumanEval/1): stop, 2467 completion tokens, reasoning present, `content` 1418 characters, no error. It converged early, so no budget message shows.
+- Splice from `bench21/results/gemma12-nvfp4-budget-on`: kept 119, to generate 45 (planning count 45).
+- Part 1 start 2026-09-20T18:39:54Z
