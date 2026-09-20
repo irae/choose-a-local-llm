@@ -422,17 +422,14 @@
       },
       "hidden": false,
       "command": "llama-server -m \"$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PQ2_0.gguf)\" \\\n  --alias bonsai2-27b-pq2-f16 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 122880 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `bonsai2-27b-pq2-f16`, the same file as the q8_0 row at the other cache type. It trades window for speed and, on one run each, for quality: `-c 122880` against 212992, 46.3 tok/s at 4K and 25.1 at 121856 against 46.0 and 14.5, and a blind agent row of 77 against 60.5. The f16 row paid one compaction at a 118784 window where the q8_0 row had none at 208896, and still scored higher; both rows carry a medium worst defect. Both peaked near 92 percent of their window, so the task grows to fill what it is given. That is one run per arm, so the direction is indicated and not established. Served by the PrismML llama.cpp fork, release `prism-b10685-7dffb15`, commit `7dffb158d`; the stock binary makes garbage from this file. The server applies `min_p 0.05` where the model card publishes `0.0`. EvalPlus at this cache type is scheduled and not yet run. Every agent row of this model was re-scored on the best tier on 2026-09-18, after the first scoring ran on a smaller model; the scores here are the re-scored ones. EvalPlus at effort xhigh under a server thinking budget of 30000, the derive cap (answer budget 2048, `max_tokens` 32048): 0.982/0.945 with no empty answer, in 182.7 minutes over two parts around an owner stop. Six problems hit the budget and were forced to answer. It ties the q8_0 arm on base and leads it by 0.6 on plus. The three forced answers that failed their tests fail again without the budget, at the 30000-token cap, as loops, so the budget lost no answer.",
+      "note": "pi id `bonsai2-27b-pq2-f16`, the same file as the q8_0 row at the other cache type. It trades window for speed and, on one run each, for quality: `-c 122880` against 212992, 46.3 tok/s at 4K and 25.1 at 121856 against 46.0 and 14.5, and a blind agent row of 77 against 60.5. The f16 row paid one compaction at a 118784 window where the q8_0 row had none at 208896, and still scored higher; both rows carry a medium worst defect. Both peaked near 92 percent of their window, so the task grows to fill what it is given. That is one run per arm, so the direction is indicated and not established. Served by the PrismML llama.cpp fork, release `prism-b10685-7dffb15`, commit `7dffb158d`; the stock binary makes garbage from this file. The server applies `min_p 0.05` where the model card publishes `0.0`. EvalPlus at this cache type is scheduled and not yet run. Every agent row of this model was re-scored on the best tier on 2026-09-18, after the first scoring ran on a smaller model; the scores here are the re-scored ones. EvalPlus at effort xhigh under a server thinking budget of 30000, the derive cap (answer budget 2048, `max_tokens` 32048): 0.982/0.945 with no empty answer, in 182.7 minutes over two parts around an owner stop. Six problems hit the budget and were forced to answer. It ties the q8_0 arm on base and leads it by 0.6 on plus. The three forced answers that failed their tests fail again without the budget, at the 30000-token cap, as loops, so the budget lost no answer. The published score is the fast-mode run of 2026-09-20: thinking closed at 8192 tokens, output budget 16384, 152 answers kept from the run 24 score and 12 regenerated. It reads 0.982/0.945, the same pair as the longer budget, with no empty answer and 12 forced answers of 164, in 121 minutes of active time, 44 of them its own. One problem, HumanEval/64, also ran its answer to the 16384 cap; it holds code, so it counts as complete.",
       "pi": {
         "provider": "llama",
         "id": "bonsai2-27b-pq2-f16",
         "contextWindow": 118784,
         "maxTokens": 8192
       },
-      "evalplusWall": 182.7,
-      "stale": [
-        "evalplus"
-      ]
+      "evalplusWall": 121.0
     },
     {
       "config": "Ternary-Bonsai-2-27B, GGUF, PTQ1_0 (prism-ml), f16 KV, no drafter, effort xhigh",
@@ -893,6 +890,20 @@
       "emptyCause": "none",
       "forced": "12/164",
       "wall": 125.0
+    },
+    {
+      "slug": "bonsai-2-27b",
+      "model": "Ternary-Bonsai-2-27B (GGUF PQ2_0, prism-ml, f16 KV, prism fork)",
+      "mode": "effort xhigh",
+      "row": "bonsai2-pq2-f16-xhigh",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.982",
+      "plus": "0.945",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "12/164",
+      "wall": 121.0
     }
   ],
   "mendelWalls": {
