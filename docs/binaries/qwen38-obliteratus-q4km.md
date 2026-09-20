@@ -28,9 +28,9 @@ a run a harness or serving defect voided is not.
 ## Configurations
 
 <!-- gen:binary-rows:start -->
-| Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
-|---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" offload="ngl 45/64" kv="q8_0" effort="medium" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-obliteratus-q4km" top /> | **64k** | <TokCell shallow="5.13" deep="2.31" cap="speed" top-shallow top-deep /> | **13.1 GB** | <ScoreCell value="not run" /> | <ScoreCell value="not run" /> | — |
+No configuration row.
+
+Retired entry (RTX 5060 Ti 16 GB): Qwen3.8-27B, GGUF, Q4_K_M (OBLITERATUS, abliterated), q8_0 KV, 19 layers in host RAM, effort medium — the row never reached the 8 tok/s floor; the owner retired the model and deleted both files ([details](../setups/arrietty/qwen38-obliterated-retired.md)).
 <!-- gen:binary-rows:end -->
 
 ## Quality — EvalPlus HumanEval+
