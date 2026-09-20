@@ -84,3 +84,7 @@ One section per block, in the order the runbook lists, as it happens.
 - Part 1: 2026-09-20T15:50:33Z to about 18:25Z, no crash. Wall about 154 min (requests sum to 153.6 min). No splice.
 - Deviation: the `evaluate` step of `run-humaneval.sh` failed (`No completion or solution found in sample`). Its `find "$DIR" -name "*.jsonl" ! -name "*.raw.jsonl" | head -1` picked `finish.jsonl` instead of the samples file; the earlier blocks got the right file by find order. I ran `evalplus.evaluate` by hand on the samples file, and the score below is from that run, saved in `evaluate.log`. Tool bug for the coordinator: the `find` must be limited to `humaneval/`.
 - Result: base 0.988, plus 0.951. Empty 0/164, forced 19/164, none on `length`.
+
+## `fast-qwen36-q4kxl-on`
+
+- Skipped for now (blocked on disk). `unsloth/Qwen3.6-35B-A3B-MTP-GGUF` `Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf` is not in the `hf` cache (only the 20 MB tokenizer repo is). The file is about 22 GB; `df -h ~` shows 13 GB free (95% used). Sizes in the cache: OBLITERATUS 29 GB (row needs one file), Gemma-26B 15 GB and Ternary-Bonsai 13 GB and Qwen3.8 IQ3_S 12 GB (their blocks are done), ISTA 12 GB (not in this run). I delete nothing without the coordinator's word. The block moves to `retry-sweep`.
