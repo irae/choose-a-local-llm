@@ -43,16 +43,18 @@ the block names at the point it is needed.
    `git stash`. The reasons and the stop-and-sync steps are
    `AGENTS.md`, standing rules.
 2. **Run `tools/preflight.sh` first.** It reads the machine and prints
-   one line per check: `ok`, `fix`, or `ask`. It changes nothing, it
+   one line per check: `ok`, `warn`, `fix`, or `ask`. It changes nothing, it
    needs no sudo, and it takes its values from the machine file,
    `~/.config/choose-a-local-llm/machine.md`
    (`tools/README-mac-services.md` says how to write one). `--help`
-   lists the checks. Exit 0 means every line is `ok`.
+   lists the checks. Exit 0 means every line
+   is `ok` or `warn`; a `warn` line is reported, never acted on.
    **All `ok` starts the run at once**: no app to quit, no
    `mac-services.sh turn-off`, no reboot, and no question to the
    owner. A ready machine is a silent machine.
 3. **Act only on the lines that say `fix` or `ask`**, in the order
-   below. Every "why" is in [memory ceiling](./memory-ceiling.md). A
+   below. A `warn` line is never acted on: it goes to `state.md` and
+   to the coordinator, and the run goes on. Every "why" is in [memory ceiling](./memory-ceiling.md). A
    step whose line already said `ok` is done; do not repeat it.
    1. `fix gpu-free`: quit what the line names. `lms unload` is not
       enough for LM Studio; quit the app
@@ -82,15 +84,14 @@ the block names at the point it is needed.
       A model that meets a dead token reads the issue by other means
       or loops on the forbidden login until its budget ends; the loop
       is a harness fault and a wasted night.
-   7. `ask claude-auth`: the Claude login does not outlive the run.
-      Only the owner can log in, and only before the run starts. The
-      line says how many hours the login has left; the check compares
-      it against `PREFLIGHT_CLAUDE_AUTH_HOURS`, 24 by default, and a
-      longer run raises that value. A login that dies mid-run stops
-      the session where it stands: no wakeup fires, no block starts,
-      and the GPU sits idle until the owner sees it. The line reads
-      the refresh token, the credential that carries the login for
-      weeks, not the access token the harness refreshes by itself.
+   7. `warn claude-auth`: the Claude login has under 48 hours left,
+      or the check could not read it. **It blocks nothing and it asks
+      nothing.** Write the line to `state.md` and put it in the next
+      block message to the coordinator, who tells the owner. The owner
+      logs in inside those 48 hours. Never stop a
+      block, never wait, never ask. The line reads the refresh token,
+      the credential that carries the login for weeks, not the access
+      token the harness refreshes by itself.
    6. Read the balloon verdict on the `memory` line. "No balloon"
       needs no action. "Balloon needed" means: load the model under
       test and drive its context up SLOWLY towards the configured

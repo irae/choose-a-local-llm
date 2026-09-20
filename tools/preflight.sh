@@ -7,6 +7,7 @@
 # check:
 #
 #   ok    the machine is ready for this check
+#   warn  the run goes on; the owner acts later
 #   fix   a step is needed; the line says the exact command
 #   ask   the script cannot decide; a human must look
 #
@@ -27,8 +28,6 @@
 #                            skipped (default: the machine file's row)
 #   PREFLIGHT_PROBE_PORT     loopback port for the network probe
 #                            (default 8081, the run port)
-#   PREFLIGHT_CLAUDE_AUTH_HOURS  hours of Claude login the run needs
-#                            (default 24)
 #   PREFLIGHT_CLAUDE_CREDENTIALS  credentials file path (default
 #                            $CLAUDE_CONFIG_DIR/.credentials.json, else
 #                            ~/.claude/.credentials.json)
@@ -69,7 +68,7 @@ report() {
 
     printf '%-4s %-14s %s\n' "$status" "$name" "$text"
 
-    if [ "$status" != "ok" ]; then
+    if [ "$status" != "ok" ] && [ "$status" != "warn" ]; then
         exit_code=1
     fi
 }
@@ -79,8 +78,8 @@ usage() {
     cat <<'EOF'
 usage: preflight.sh [--help]
 
-Reads the machine and prints one line per check: ok, fix or ask.
-Changes nothing. Exit 0 when every line is ok, 1 otherwise.
+Reads the machine and prints one line per check: ok, warn, fix or ask.
+Changes nothing. Exit 0 when every line is ok or warn, 1 otherwise.
 
 Checks:
   gpu-free       no llama-server, no mlx_lm, no LM Studio app, no Docker
@@ -92,8 +91,8 @@ Checks:
   reboot         the checklist's three reboot conditions
   gh-auth        gh auth status passes; a Mendel run reads the issue
                  through gh and loops on a dead token
-  claude-auth    the Claude login survives the run: logged in, and the
-                 refresh token outlives PREFLIGHT_CLAUDE_AUTH_HOURS
+  claude-auth    warns when the Claude login has under 48 h left; it
+                 never blocks a run
 
 The values come from ~/.config/choose-a-local-llm/machine.md. The
 header of this file lists the environment variables that override them.
@@ -454,7 +453,6 @@ check_gh_auth() {
 }
 
 check_claude_auth() {
-    local need_hours="${PREFLIGHT_CLAUDE_AUTH_HOURS:-24}"
     local config_dir="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
     local cred_file="${PREFLIGHT_CLAUDE_CREDENTIALS:-$config_dir/.credentials.json}"
     local json=""
@@ -465,39 +463,25 @@ check_claude_auth() {
         json=$(security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null || true)
     fi
 
-    if [ -z "$json" ]; then
-        if command -v claude >/dev/null 2>&1 && claude auth status 2>/dev/null | grep -q '"loggedIn": true'; then
-            report ask claude-auth "logged in, but no readable credentials: the expiry cannot be checked. The owner confirms the login outlives the run."
-        else
-            report ask claude-auth "no readable Claude credentials and no live login. The owner runs: claude auth login. A run whose login dies stops with the GPU idle."
-        fi
-        return
-    fi
-
     local verdict
-    verdict=$(printf '%s' "$json" | NEED_HOURS="$need_hours" python3 -c '
-import json, os, sys, time
+    verdict=$(printf '%s' "$json" | python3 -c '
+import json, sys, time
 
 try:
     auth = json.load(sys.stdin)["claudeAiOauth"]
+    left = (auth["refreshTokenExpiresAt"] / 1000 - time.time()) / 3600
 except Exception:
-    print("ask|credentials are unreadable; the owner runs: claude auth login")
+    print("warn|the Claude login cannot be read. Tell the owner; the run goes on.")
     sys.exit(0)
 
-need = float(os.environ["NEED_HOURS"])
-left = (auth.get("refreshTokenExpiresAt", 0) / 1000 - time.time()) / 3600
-
-if left <= 0:
-    print("ask|the Claude login has expired. The owner runs: claude auth login")
-elif left < need:
-    print("ask|the Claude login has %.1f h left and the run needs %.0f h. The owner runs: claude auth login before the run starts" % (left, need))
+if left < 48:
+    print("warn|the Claude login has %.0f h left, under 48. Tell the owner, who logs in later; the run goes on." % max(left, 0))
 else:
-    print("ok|the Claude login has %.0f h left, over the %.0f h this run needs" % (left, need))
+    print("ok|the Claude login has %.0f h left" % left)
 ' 2>/dev/null)
 
     if [ -z "$verdict" ]; then
-        report ask claude-auth "the credentials could not be read. The owner confirms the login outlives the run."
-        return
+        verdict="warn|the Claude login cannot be read. Tell the owner; the run goes on."
     fi
 
     report "${verdict%%|*}" claude-auth "${verdict#*|}"
