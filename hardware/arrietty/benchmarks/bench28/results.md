@@ -53,3 +53,16 @@ Ternary-Bonsai-2-27B PTQ1_0, q8_0 KV, no drafter, effort xhigh, fork `prism-b106
 - Forced ids: HumanEval/10, /32, /36, /39, /59, /64, /76, /91, /94, /99, /102, /116, /129, /134, /137, /145.
 - Empty ids: none.
 - `budget` (ended on `length` at 16384): HumanEval/64, after a forced answer. It holds code, so it is not empty.
+
+## `fast-bonsai2-pq2-xhigh`
+
+Ternary-Bonsai-2-27B PQ2_0, q8_0 KV, no drafter, effort xhigh, fork `prism-b10685-7dffb15`, `-c 32768`, fast mode (thinking 8192, `max_tokens` 16384). Splice source: `bench24/results/bonsai2-pq2-budget-xhigh`, 152 kept, 12 generated.
+
+| | base | plus | completion | empty | forced | wall |
+|---|--:|--:|--|--|--|--:|
+| fast mode (run 28) | 0.988 | 0.945 | 164/164 | 0/164 | 12/164 | 119 min = 42 own (13:36Z–14:18Z, 2026-09-20; requests 40.3) + 77 for the kept problems in the source |
+| before fast mode (run 24) | 0.982 | 0.939 | 164/164 | see models.json | see run 24 | 176.1 min |
+
+- Forced ids: HumanEval/10, /32, /47, /64, /76, /80, /91, /99, /116, /129, /137, /145.
+- Empty ids: none.
+- `budget` (ended on `length` at 16384): HumanEval/64, after a forced answer. It holds code, so it is not empty.
