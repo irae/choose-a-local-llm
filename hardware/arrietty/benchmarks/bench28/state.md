@@ -81,3 +81,6 @@ One section per block, in the order the runbook lists, as it happens.
 - Probe (`enable_thinking` true, HumanEval/0): stop, 820 completion tokens, reasoning present, `content` 542 characters, no error. It converged early, so no budget message shows.
 - No splice source: all 164 generated.
 - Part 1 start 2026-09-20T15:50:33Z
+- Part 1: 2026-09-20T15:50:33Z to about 18:25Z, no crash. Wall about 154 min (requests sum to 153.6 min). No splice.
+- Deviation: the `evaluate` step of `run-humaneval.sh` failed (`No completion or solution found in sample`). Its `find "$DIR" -name "*.jsonl" ! -name "*.raw.jsonl" | head -1` picked `finish.jsonl` instead of the samples file; the earlier blocks got the right file by find order. I ran `evalplus.evaluate` by hand on the samples file, and the score below is from that run, saved in `evaluate.log`. Tool bug for the coordinator: the `find` must be limited to `humaneval/`.
+- Result: base 0.988, plus 0.951. Empty 0/164, forced 19/164, none on `length`.
