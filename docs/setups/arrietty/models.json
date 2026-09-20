@@ -356,9 +356,11 @@
         "contextWindow": 61440,
         "maxTokens": 8192
       },
-      "stale": [
-        "evalplus"
-      ]
+      "retired": {
+        "date": "2026-09-20",
+        "reason": "the build cannot do the agent task and scored lowest on the card; the owner retired the model and deleted both files",
+        "details": "../qwen38-obliterated-retired.md"
+      }
     },
     {
       "config": "Qwen3.8-27B, GGUF, Q4_K_M (OBLITERATUS, abliterated), q8_0 KV, 19 layers in host RAM, effort medium",
@@ -389,6 +391,11 @@
         "id": "qwen3.8-27b-oblit-q4km",
         "contextWindow": 61440,
         "maxTokens": 8192
+      },
+      "retired": {
+        "date": "2026-09-20",
+        "reason": "the row never reached the 8 tok/s floor; the owner retired the model and deleted both files",
+        "details": "../qwen38-obliterated-retired.md"
       }
     },
     {
@@ -740,20 +747,6 @@
       "forced": "7/164"
     },
     {
-      "wall": 89,
-      "emptyCause": "model",
-      "slug": "qwen3.8-27b",
-      "model": "Qwen3.8-27B (GGUF Q3_K_M, OBLITERATUS, q8_0 KV)",
-      "mode": "effort medium",
-      "row": "qwen38-oblit-q3km-medium",
-      "budget": 6034,
-      "base": "0.854",
-      "plus": "0.787",
-      "empty": "3/164",
-      "think": 3986,
-      "forced": "5/164"
-    },
-    {
       "wall": 182.7,
       "emptyCause": "none",
       "slug": "bonsai-2-27b",
@@ -1034,35 +1027,6 @@
         "138240": 22
       },
       "run": "bench27",
-      "method": "benchy"
-    },
-    {
-      "model": "qwen3.8-27b",
-      "arm": "Q3_K_M (OBLITERATUS), q8_0 KV, no drafter",
-      "c": 65536,
-      "cAt": 64512,
-      "served": true,
-      "points": {
-        "4096": 22.67,
-        "24576": 20.65,
-        "64512": 16.74
-      },
-      "run": "bench23",
-      "method": "benchy"
-    },
-    {
-      "model": "qwen3.8-27b",
-      "arm": "Q4_K_M (OBLITERATUS), q8_0 KV, `-ngl 45`",
-      "c": 65536,
-      "cAt": 64512,
-      "served": true,
-      "points": {
-        "4096": 5.13,
-        "24576": 3.49,
-        "49152": 2.67,
-        "64512": 2.31
-      },
-      "run": "bench25",
       "method": "benchy"
     },
     {

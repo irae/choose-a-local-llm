@@ -33,13 +33,9 @@ Speed, context, drafter arms and both agent tasks measured 2026-09-13 to 2026-09
 |---|--:|--:|--:|--:|--:|--:|
 | <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" page="/binaries/qwen38-ista-iq3s-mtp" top /> | **65k** | <TokCell shallow="29.43" deep="21.13" cap="mem" top-shallow top-deep /> | **14.8 GB** | <ScoreCell value="0.976/0.933" sub="100% completion" top /> | <ScoreCell value="91" pill="mendel-blind" top /> | <span title="EvalPlus 2h55 · Mendel 1h15"><b>4h10</b></span> |
 | <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" page="/binaries/qwen38-unsloth-ud-iq3s" top /> | **65k** | <TokCell shallow="29.36" deep="20.92" cap="mem" top-shallow top-deep /> | **14.2 GB** | <ScoreCell value="0.963/0.921" sub="100% completion" top /> | <ScoreCell value="79" note="88%" pill="mendel-guided" top /> | <span title="EvalPlus 3h08 · Mendel 4h46"><b>7h54</b></span> |
-| <ModelSpec base="Qwen3.8-27B" quant="Q3_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" kv="q8_0" effort="medium" page="/binaries/qwen38-obliteratus-q3km" /> | **65k** | <TokCell shallow="22.67" deep="16.74" cap="mem" /> | 15.3 GB | <ScoreCell value="0.854/0.787†" sub="100% completion" /> | <ScoreCell value="0" note="0%" pill="failed-smoke" /> | <span title="EvalPlus 1h29 · Mendel —">1h29†</span> |
 
-Rows below 100 percent completeness. Completeness counts three measurements: tok/s, EvalPlus and Mendel.
-
-| Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
-|---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" offload="ngl 45/64" kv="q8_0" effort="medium" page="/binaries/qwen38-obliteratus-q4km" top /> | **64k** | <TokCell shallow="5.13" deep="2.31" cap="speed" top-shallow top-deep /> | **13.1 GB** | <ScoreCell value="not run" /> | <ScoreCell value="not run" /> | — |
+Retired entries: Qwen3.8-27B, GGUF, Q3_K_M (OBLITERATUS, abliterated), q8_0 KV, no drafter, effort medium — the build cannot do the agent task and scored lowest on the card; the owner retired the model and deleted both files ([details](../qwen38-obliterated-retired.md)).
+Retired entries: Qwen3.8-27B, GGUF, Q4_K_M (OBLITERATUS, abliterated), q8_0 KV, 19 layers in host RAM, effort medium — the row never reached the 8 tok/s floor; the owner retired the model and deleted both files ([details](../qwen38-obliterated-retired.md)).
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -67,30 +63,6 @@ pi id `qwen3.8-27b-iq3s`. The 3-bit build that leaves room for a KV cache on 16 
 llama-server -m "$(hf download unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-IQ3_S.gguf)" \
   --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 65536 \
-  --cache-type-k q8_0 --cache-type-v q8_0 \
-  --jinja --port 8081
-```
-
-<ModelSpec base="Qwen3.8-27B" quant="Q3_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" kv="q8_0" effort="medium" page="/binaries/qwen38-obliteratus-q3km" />
-
-pi id `qwen3.8-27b-oblit-q3km`, revision `a58c3b5`, 12.57 GiB of weights. An abliterated repack of the dense 27B model. **This build cannot do the agent task**: its smoke ended with zero tool calls in 9 seconds, because the file's own chat template carries no `tools` and no `tool_call` handling, so `--jinja` has nothing to parse and the model writes its calls as literal text. A thinking block was present in the session log, so the level reached the server; the fault is the file, not the harness or the window. A tools-capable template supplied to the server would be a different serving config and a different row. The larger quant still keeps the window: q8_0 serves `-c 65536`, the same as the two 3-bit builds of this model here, where f16 stops at 32768. Speed 22.67 tok/s at 4K, 20.65 at 24K and 16.74 at 64512, about 23 percent under the 3-bit builds at both ends, with no depth under the 8 tok/s floor. EvalPlus at **effort medium, an owner overrule of 2026-09-17** (`AGENTS.md` bans medium for this model everywhere else), scored 2026-09-18 under a server thinking budget of 3986 (answer budget 2048, `max_tokens` 6034): 0.854/0.787 with 3 empty answers of 164 whose cause is the model, in 89 minutes. Five problems hit the budget and were forced to answer; one passed. The four that failed fail again without the budget at the 30000-token cap, as wrong answers and not as loops, so the budget lost nothing. Medium reasons far shorter than xhigh on this model, which is why the budget is 3986 against 25209 on a ternary build at xhigh. Build and level moved together in this run, so neither alone explains the quality against the 3-bit builds at xhigh. An xhigh row is pending.
-
-```bash
-llama-server -m "$(hf download OBLITERATUS/Qwen3.8-27B-OBLITERATED Qwen3.8-27B-OBLITERATED-Q3_K_M.gguf)" \
-  --alias qwen3.8-27b-oblit-q3km --no-mmproj --parallel 1 \
-  -ngl 999 --fit off -fa on -c 65536 \
-  --cache-type-k q8_0 --cache-type-v q8_0 \
-  --jinja --port 8081
-```
-
-<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" offload="ngl 45/64" kv="q8_0" effort="medium" page="/binaries/qwen38-obliteratus-q4km" />
-
-pi id `qwen3.8-27b-oblit-q4km`, revision `a58c3b5`, 15.66 GiB of weights, larger than the card. The one row on this machine that keeps part of a model in host RAM by design: `-ngl 45` of 64 layers on the card, 19 in host RAM, at a fixed `-c 65536` under a VRAM cap of 13811 MiB that leaves 2.5 GB for the system (owner, 2026-09-18; the card has no reserve rule otherwise). The ladder: 43 loads at 12945 MiB, 47 and 51 go over the cap at load, 45 loads at 13397 MiB and holds 13426 MiB under a real 64K request. **The row does not reach the usability floor**: 5.13 tok/s at 4K, 3.49 at 24K, 2.67 at 49K and 2.31 at 64512, where 8 tok/s is the floor. Against the same model's Q3_K_M inside the card, that is about 4.4 times slower at both ends. Memory was never the limit: VRAM held flat at 13422 MiB against the cap through the whole sweep, so the cost is the transfer of 19 layers per token, not capacity. The run ended at the sweep on its speed gate (coordinator, 2026-09-18), so no EvalPlus row and no agent row exist for this build and none is planned here. Halving the window to 32768 frees 1088 MiB of cache, about four more layers at the ladder's own 226 MiB per layer, which still does not reach the floor.
-
-```bash
-llama-server -m "$(hf download OBLITERATUS/Qwen3.8-27B-OBLITERATED Qwen3.8-27B-OBLITERATED-Q4_K_M.gguf)" \
-  --alias qwen3.8-27b-oblit-q4km --no-mmproj --parallel 1 \
-  -ngl 45 --fit off -fa on -c 65536 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
   --jinja --port 8081
 ```
@@ -145,7 +117,6 @@ llama-server -m "$(hf download OBLITERATUS/Qwen3.8-27B-OBLITERATED Qwen3.8-27B-O
 | [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" page="/binaries/qwen38-ista-iq3s-mtp" />](../benchmarks/qwen3.8-27b.md) | 30000† | 32048 | <ScoreCell value="0.976/0.933" sub="100% completion" /> | none | 6/164 | <TokCell shallow="29.43" deep="21.13" /> | 4h33 |
 | [<ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" page="/binaries/qwen38-unsloth-ud-iq3s" />](../benchmarks/qwen3.8-27b.md) | —† | 19000 | <ScoreCell value="0.957/0.921" sub="98% completion" /> | † unproven | — | <TokCell shallow="29.36" deep="20.92" /> | 4h50 |
 | [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" page="/binaries/qwen38-ista-iq3s-mtp" />](../benchmarks/qwen3.8-27b.md) | —† | 20500 | <ScoreCell value="0.945/0.909" sub="96% completion" /> | † unproven | — | <TokCell shallow="29.43" deep="21.13" /> | 3h38 |
-| [<ModelSpec base="Qwen3.8-27B" quant="Q3_K_M" server="llama-server" publisher="OBLITERATUS" repo="OBLITERATUS/Qwen3.8-27B-OBLITERATED" kv="q8_0" effort="medium" page="/binaries/qwen38-obliteratus-q3km" />](../benchmarks/qwen3.8-27b.md) | 3986† | 6034 | <ScoreCell value="0.854/0.787" sub="98% completion" /> | model | 5/164 | <TokCell shallow="22.67" deep="16.74" /> | 1h29 |
 
 † not fast mode: a thinking budget other than 8192, or none. Kept for the record; only fast-mode rows compare across models.
 <!-- gen:model-evalplus:end -->
