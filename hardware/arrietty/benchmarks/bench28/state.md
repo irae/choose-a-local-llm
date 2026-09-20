@@ -88,3 +88,10 @@ One section per block, in the order the runbook lists, as it happens.
 ## `fast-qwen36-q4kxl-on`
 
 - Skipped for now (blocked on disk). `unsloth/Qwen3.6-35B-A3B-MTP-GGUF` `Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf` is not in the `hf` cache (only the 20 MB tokenizer repo is). The file is about 22 GB; `df -h ~` shows 13 GB free (95% used). Sizes in the cache: OBLITERATUS 29 GB (row needs one file), Gemma-26B 15 GB and Ternary-Bonsai 13 GB and Qwen3.8 IQ3_S 12 GB (their blocks are done), ISTA 12 GB (not in this run). I delete nothing without the coordinator's word. The block moves to `retry-sweep`.
+
+## Tool bug: `run-humaneval.sh` picks `finish.jsonl` as the samples file
+
+- Line: `SAMPLES=$(find "$DIR" -name "*.jsonl" ! -name "*.raw.jsonl" | head -1)`. `$DIR` holds `finish.jsonl` beside `humaneval/`, so `head -1` can return `finish.jsonl`, and `evalplus.evaluate` stops with `AssertionError: No completion or solution found in sample!`. It hit `fast-gemma26-nvfp4-on` (order of `find` varies); the other blocks of this run got the right file.
+- The command I ran by hand (from the repo root, run 28 worktree, with the run 28 environment sourced), output to `evaluate.log`:
+  `evalplus.evaluate --dataset humaneval --samples "$PWD/hardware/arrietty/benchmarks/bench28/results/fast-gemma26-nvfp4-on/humaneval/gemma-4-26b-a4b-nvfp4_openai_temp_0.0.jsonl" 2>&1 | tee "$PWD/hardware/arrietty/benchmarks/bench28/results/fast-gemma26-nvfp4-on/evaluate.log"`
+- Suggested fix: `find "$DIR/humaneval" -name "*.jsonl" ! -name "*.raw.jsonl" | head -1`.
