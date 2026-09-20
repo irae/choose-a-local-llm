@@ -82,6 +82,15 @@ the block names at the point it is needed.
       A model that meets a dead token reads the issue by other means
       or loops on the forbidden login until its budget ends; the loop
       is a harness fault and a wasted night.
+   7. `ask claude-auth`: the Claude login does not outlive the run.
+      Only the owner can log in, and only before the run starts. The
+      line says how many hours the login has left; the check compares
+      it against `PREFLIGHT_CLAUDE_AUTH_HOURS`, 24 by default, and a
+      longer run raises that value. A login that dies mid-run stops
+      the session where it stands: no wakeup fires, no block starts,
+      and the GPU sits idle until the owner sees it. The line reads
+      the refresh token, the credential that carries the login for
+      weeks, not the access token the harness refreshes by itself.
    6. Read the balloon verdict on the `memory` line. "No balloon"
       needs no action. "Balloon needed" means: load the model under
       test and drive its context up SLOWLY towards the configured
