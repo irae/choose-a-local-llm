@@ -72,9 +72,10 @@ its page above.
 8. **Gate.** Same as before, now with the depth curve. Most of the cut
    happens here: a model under the floor at the depth the owner works
    at is out.
-9. **EvalPlus**, the quality gate: calibrate the budget, then the full
-   run. Planning says which thinking modes and reasoning levels,
-   from the vendor's documentation and the owner.
+9. **EvalPlus**, the quality gate, in fast mode: a thinking budget of
+   8192 and an output budget of 16384 on every model, no calibration.
+   Planning says which thinking modes and reasoning levels, from the
+   vendor's documentation and the owner.
 10. **Output probe and the harness entry.** Three single calls give
     the first `maxTokens`; the creep gave the window. Only now does a
     model get a pi entry ([Mendel](./methodology/mendel.md) holds

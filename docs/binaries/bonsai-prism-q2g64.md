@@ -35,8 +35,8 @@ run a harness or serving defect voided is not.
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" top /> | 33k | <TokCell shallow="14.7" deep="7.8" cap="speed" top-deep /> | **9.6 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 9h55 · Mendel 5h00"><b>14h55</b></span> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" top /> | **2x48k** | <TokCell shallow="14.9" deep="7.8" cap="speed" stale top-shallow top-deep /> | **10.9 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 9h55 · Mendel —">9h55†</span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" top /> | 33k | <TokCell shallow="14.7" deep="7.8" cap="speed" top-deep /> | **9.6 GB** | <ScoreCell value="0.927/0.890†" sub="98% completion" top /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 9h55 · Mendel 5h00"><b>14h55</b></span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" top /> | **2x48k** | <TokCell shallow="14.9" deep="7.8" cap="speed" stale top-shallow top-deep /> | **10.9 GB** | <ScoreCell value="0.927/0.890†" sub="98% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 9h55 · Mendel —">9h55†</span> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" /> | **131k** | <TokCell shallow="15.0" deep="9.7" cap="mem" stale top-shallow top-deep /> | 18.6 GB | <ScoreCell value="pending" /> | <ScoreCell value="12.5" note="13%" pill="mendel-guided" top /> | <span title="EvalPlus — · Mendel 3h15">3h15†</span> |
 
 † from an earlier serving config or method; re-run pending.
@@ -45,9 +45,11 @@ run a harness or serving defect voided is not.
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" />](../setups/kamaji/benchmarks/bonsai-27b.md) | 10240 | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | 4 budget | <TokCell shallow="14.7" deep="7.8" /> | 9h55 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" />](../setups/kamaji/benchmarks/bonsai-27b.md) | —† | 10240 | <ScoreCell value="0.927/0.890" sub="98% completion" /> | 4 budget | — | <TokCell shallow="14.7" deep="7.8" /> | 9h55 |
+
+† not fast mode: a thinking budget other than 8192, or none. Kept for the record; only fast-mode rows compare across models.
 <!-- gen:binary-evalplus:end -->
 
 Every empty on the scored q4_0-KV-plus-bias config is proven as the

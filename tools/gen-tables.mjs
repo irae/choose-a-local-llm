@@ -889,10 +889,18 @@ function renderModelConfigs(data, model) {
   return blocks.join('\n\n')
 }
 
-function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHardware = true, match = null } = {}) {
+// Fast mode (docs/methodology/evalplus.md): a thinking budget of 8192 on
+// the server, or a row with no thinking at all. Only fast runs compare
+// across models; the site-wide tables show them alone and the model, report
+// and binary pages show every run with the others marked.
+function fastRun(r) {
+  return r.think === 8192 || r.mode === 'thinking off'
+}
+
+function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHardware = true, match = null, fast = 'all' } = {}) {
   const header = [
-    '| config | budget | Scores | empties | tok/s | wall |',
-    '|---|--:|--:|--:|--:|--:|',
+    '| config | think | budget | Scores | empties | forced | tok/s | wall |',
+    '|---|--:|--:|--:|--:|--:|--:|--:|',
   ]
   const same = (a, b) => ['base', 'quant', 'publisher', 'server'].every((k) => a?.[k] === b?.[k])
   const rowOf = (r) => (r.row ? r.data.rows.find((x) => x.id === r.row) : r.data.rows.find((x) => same(x.spec, r.spec)))
@@ -909,8 +917,9 @@ function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHard
     .flatMap((data) => (data.evalplusRuns || []).map((r) => ({ ...r, data })))
     .filter((r) => !onlySlug || r.slug === onlySlug)
     .filter((r) => !match || match(r.spec || r.data.rows.find((x) => x.id === r.row)?.spec))
-    .sort((a, b) => parseFloat(b.base) - parseFloat(a.base) || parseFloat(b.plus) - parseFloat(a.plus))
-  if (!runs.length) return 'No EvalPlus run yet.'
+    .filter((r) => fast !== 'only' || fastRun(r))
+    .sort((a, b) => (fastRun(b) - fastRun(a)) || parseFloat(b.base) - parseFloat(a.base) || parseFloat(b.plus) - parseFloat(a.plus))
+  if (!runs.length) return fast === 'only' ? 'No fast-mode run yet.' : 'No EvalPlus run yet.'
   const link = linkOf || ((r) => `../setups/${r.data.setup}/benchmarks/${r.slug}.md`)
   const specOf = (r) => {
     const hardware = showHardware ? r.data.hardwareSlug : ''
@@ -919,12 +928,16 @@ function renderEvalplusTable(datas, { slug: onlySlug, linkOf, hardware: showHard
     if (!row) throw new Error(`EvalPlus run "${r.model}" names no row and no spec`)
     return specTag(row.spec, { label: row.id, repo: repoOf(row), hardware, setup: r.data.setup })
   }
-  const top = topSet(runs, (r) => parseFloat(r.base))
+  const top = topSet(runs.filter(fastRun), (r) => parseFloat(r.base))
   const body = runs.map((r) => {
     if (!r.budget) throw new Error(`EvalPlus run "${r.model}" has no budget`)
-    return `| [${specOf(r)}](${link(r)}) | ${r.budget} | ${scoreTag(`${r.base}/${r.plus}`, completion(r.empty) === '—' ? '' : `${completion(r.empty)} completion`, top.has(r))} | ${r.emptyCause ?? '† unproven'} | ${rowOf(r) ? `<TokCell shallow="${rowOf(r).tokShallow}" deep="${rowOf(r).tokDeep}" />` : '—'} | ${hm(r.wall)} |`
+    const think = r.think ? String(r.think) : (r.mode === 'thinking off' ? 'none' : '—')
+    return `| [${specOf(r)}](${link(r)}) | ${think}${fastRun(r) ? '' : '†'} | ${r.budget} | ${scoreTag(`${r.base}/${r.plus}`, completion(r.empty) === '—' ? '' : `${completion(r.empty)} completion`, top.has(r))} | ${r.emptyCause ?? '† unproven'} | ${r.forced ?? '—'} | ${rowOf(r) ? `<TokCell shallow="${rowOf(r).tokShallow}" deep="${rowOf(r).tokDeep}" />` : '—'} | ${hm(r.wall)} |`
   })
-  return [...header, ...body].join('\n')
+  const legend = runs.some((r) => !fastRun(r))
+    ? ['', '† not fast mode: a thinking budget other than 8192, or none. Kept for the record; only fast-mode rows compare across models.']
+    : []
+  return [...header, ...body, ...legend].join('\n')
 }
 
 // The sibling table: a model page that names a `compareWith` model shows
@@ -1165,7 +1178,7 @@ for (const dataFile of dataFiles) {
     const original = readFileSync(target, 'utf8')
     let updated = marks ? applyBlock(original, marks[0], marks[1], table, target) : applyTable(original, table)
     if (partial) updated = applyBlock(updated, partial[0], partial[1], partial[2], target)
-    updated = applyBlock(updated, SETUP_EVALPLUS_START, SETUP_EVALPLUS_END, renderEvalplusTable([data], { linkOf: (r) => `./benchmarks/${r.slug}.md`, hardware: false }), target)
+    updated = applyBlock(updated, SETUP_EVALPLUS_START, SETUP_EVALPLUS_END, renderEvalplusTable([data], { linkOf: (r) => `./benchmarks/${r.slug}.md`, hardware: false, fast: 'only' }), target)
     if (updated === original) continue
     if (CHECK) {
       console.error(`STALE: ${target} does not match ${dataFile}. Run \`npm run docs:tables\`.`)
@@ -1291,7 +1304,7 @@ for (const slug of new Set(BINARIES.map((b) => b.model))) {
 
 mendelSiteRows = setupsAll.flatMap((data) => data.rows)
 writeBinaryPages(setupsAll)
-writeBlock('docs/benchmarks/evalplus.md', EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(setupsAll))
+writeBlock('docs/benchmarks/evalplus.md', EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(setupsAll, { fast: 'only' }))
 writeBlock('docs/benchmarks/decode-speed.md', DECODE_START, DECODE_END, renderDecodeSummary(setupsAll))
 writeBlock('docs/benchmarks/mendel.md', MENDEL_LOCAL_START, MENDEL_LOCAL_END, mendelTable(currentPromptVersion(blindRunsAll), { global: true }))
 writeBlock('docs/benchmarks/mendel.md', MENDEL_CLOUD_START, MENDEL_CLOUD_END, renderMendelCloud(cloudBlind))

@@ -371,10 +371,20 @@ it.
   `MENDEL_SPECS` in `tools/gen-tables.mjs`. A missing or invalid field
   fails the build.
 - **Every EvalPlus table has a `config` column rendered by
-  `ModelSpec` and a `budget` column**; the budget never sits inside
-  the config text. The generated table on the EvalPlus page reads
-  each run's spec from `evalplusRuns[].row` (a row id) or an explicit
-  `spec`, and its `budget` field.
+  `ModelSpec`, a `think` column, a `budget` column and a `forced`
+  column**; no budget sits inside the config text. The generated
+  table reads each run's spec from `evalplusRuns[].row` (a row id) or
+  an explicit `spec`, its `think` (the thinking budget; absent for a
+  natural run), `budget` (the output budget) and `forced` (`N/164`)
+  fields. **Fast mode is the comparable row** (owner, 2026-09-19;
+  `docs/methodology/evalplus.md`): `think` 8192, or a thinking-off
+  run. The comparison page's Code quality table and the HumanEval+
+  page show fast-mode runs only; the report, model and binary pages
+  show every run, fast first, the others with a † on `think` and one
+  legend line. A row whose `evalplus` cell is not from a fast-mode run
+  lists `evalplus` in `stale` until its fast run lands; a thinking-off
+  row and an MLX row do not (MLX cannot run fast mode; the row's note
+  says so). The `mode` field of a run holds the level word only.
 - **The EvalPlus cell is two lines**: `base/plus` over the completion
   percentage. **The Coding cell is two lines**: the score, with a
   partial's libraries-done percentage muted before it (`38% / 37.5`),
@@ -468,17 +478,18 @@ it.
   thinking mode. Runtimes at standard quants share it. Aggressive
   quants (calibrated q4 KV and similar) gate separately and show
   "pending" until they pass. Scores never propagate across thinking
-  modes. It names the calibrated output budget and its 30000-token
-  cap, and that a problem at the cap counts as failed. The cause of an
-  empty count is one of three words: `budget` (the answer was still
-  coming when the output budget ran out), `model` (the model ended with
-  no answer and budget was left) and `† unproven` (the run recorded no
-  finish reason). `emptyCause` in `models.json` carries it as `none`,
-  `N budget`, `N model` or `† unproven`, and the HumanEval+ page
-  explains the three words under its limits table.
+  modes. It names fast mode (thinking budget 8192, output budget
+  16384) and that a † score is from an earlier budget. The cause of an
+  empty count is one of four words: `forced` (the thinking budget
+  fired and the answer was still no code), `budget` (the answer was
+  still coming when the output budget ran out), `model` (the model
+  ended with no answer and budget was left) and `† unproven` (the run
+  recorded no finish reason). `emptyCause` in `models.json` carries it
+  as `none`, `N forced`, `N budget`, `N model` or `† unproven`, and
+  the HumanEval+ page explains the words under its limits table.
 - **Stale cells carry the † marker (superseded, re-run pending)**: a
   value measured under an earlier serving config or method (a retired
-  wired limit, a fast sweep, a pre-calibration config) that the current
+  wired limit, a fast sweep, a pre-fast-mode budget) that the current
   method has not re-measured yet. It is derived data. Each row's
   `stale` array in `models.json` lists the affected field names, and
   the generator renders the marker and its legend on every table that

@@ -39,9 +39,9 @@ Retired entry (M1 Max 32 GB): Gemma-4-12B, LM Studio entry google/gemma-4-12b �
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/gemma12-lmstudio-mlx-4bit" />](../setups/kamaji/benchmarks/gemma-4-12b-it.md) | 30000 | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | none | <TokCell shallow="34.19" deep="23.23" /> | 1h33 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/gemma12-lmstudio-mlx-4bit" />](../setups/kamaji/benchmarks/gemma-4-12b-it.md) | none | 30000 | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | none | — | <TokCell shallow="34.19" deep="23.23" /> | 1h33 |
 <!-- gen:binary-evalplus:end -->
 
 The thinking-off row (`gemma-4-12b-it-mlx`) has no empty answer. The

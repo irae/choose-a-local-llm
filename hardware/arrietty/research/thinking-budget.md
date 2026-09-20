@@ -1,6 +1,10 @@
 # A thinking budget for EvalPlus: the discussion and the test
 
-Status: scheduled, filed 2026-09-16. Origin: the owner's question of
+Status: decided 2026-09-19. The rule is fast mode, `docs/methodology/evalplus.md`:
+`--reasoning-budget 8192`, `max_tokens` 16384, no calibration, the
+proof run optional. The data that decided it (twelve budgeted runs on
+nine configs, the fixed-budget simulation from their finish logs) is
+summarised at the end of this file. Filed 2026-09-16. Origin: the owner's question of
 2026-09-16 about the empty EvalPlus answers and the cause word
 `budget`. Needs hardware: yes, bench runs 21 (Linux) and 22 (Mac) take
 it. The method text is `docs/methodology/evalplus.md`, "Unproven yet".
@@ -100,3 +104,30 @@ what a gate needs.
 A research run with a best-tier agent is not planned: the decision is
 empirical and the bench runs produce the data; the judgement at
 close-out is the coordinator's.
+
+## What decided it (2026-09-19)
+
+Twelve budgeted runs on nine configs, both machines (runs 21 to 27),
+every count re-derived from the finish logs and samples:
+
+- No forced answer was late in any run. 131 forced answers; 39 failed
+  a test and were re-run without the flag: 30 loop to the 30000 cap, 9
+  converge and fail again, 0 pass with more thinking.
+- Every budgeted run scored at or above its natural pair, with 0
+  empties. 111 of 131 forced answers pass base.
+- The calibrated budget was set by the loop-prone problems: in 10 of 12
+  calibrations the longest converged problem was HumanEval/32, 145 or
+  76 at 17000 to 27859 tokens, so the formula gave the 30000 cap in 7
+  of 12 cases. The calibration measured the tail's luck, not the model.
+- A fixed-budget simulation from the finish logs: at 8192, 762 of 2885
+  minutes saved across the twelve runs (26 percent), with 0 to 6
+  natural passes per run at risk of being forced; the one real 8192 run
+  (the ISTA config, run 21) lost none of its 4 and scored the same as
+  the 30000 cap, in 175 minutes against 273. At 16384, 352 minutes
+  saved and at most 1 at risk per run.
+- The loops are the same problems on every model: HumanEval/99, 32,
+  145, then 137, 39, 64. HumanEval/39 set no budget anywhere.
+- No Mendel row ran under a budget; the agent side is untested.
+
+The owner chose 8192 for the small hardware, with 24576 and 32768 (or
+no flag) as the closer-to-natural option that never becomes a row.

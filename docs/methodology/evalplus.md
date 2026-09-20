@@ -18,30 +18,84 @@ the run loop apply ([common rules](./common-rules.md),
 - Timing of runs is a secondary signal; never chase precision. pass@1
   is what matters.
 
-## Calibrate the output budget FIRST — it affects scores
+## Fast mode: one thinking budget for every model
 
-`max_tokens` is a separate axis and it DOES affect scores. An
-undersized budget lets reasoning exhaust the cap and empty completions
-score as failures (up to 38% of scores lost before this was found).
+The rule (owner, 2026-09-19). Every scored run serves with a thinking
+budget of 8192 tokens and an output budget of 16384 tokens:
 
-1. Run `benchmarks/calibrate.py` (10 fixed problems, cap 30000). The
-   sample includes HumanEval/39, the problem that ends empty most often
-   across our runs (owner, 2026-09-15). The calibration saves every
-   answer. Pass the file to the full run as `EVALPLUS_CALIBRATION`: an
-   answer that ended on its own within the run's budget goes into the
-   samples, and the run does not generate that problem again. Its
-   calibration `wall_s` counts in the run's wall.
-2. Budget = observed max completion × 1.5, floor 8192.
-3. For models whose thinking sometimes never converges
-   (`finish_reason: length` at any budget), the budget is a
-   waste-limiter instead: set it just above the longest SUCCESSFUL
-   completion. Expect and record a real empty rate; do not chase zero
-   empties with ever-larger budgets.
-4. Never reuse a thinking-on budget for a thinking-off pass, or across
-   models.
+```
+llama-server ... --reasoning-budget 8192 \
+  --reasoning-budget-message "Thinking budget reached. Give the final answer now."
+EVALPLUS_MAX_NEW_TOKENS=16384
+```
 
-What the cap does to a score, run by run:
-[limits on local hardware](../benchmarks/evalplus.md#limits-on-local-hardware).
+The server closes the thinking at 8192 tokens, injects the message,
+and the model answers with what it has. `max_tokens` counts the
+thinking, the message and the answer together, so the answer keeps
+8192 tokens of room; no converged answer has needed more than 1300.
+Nothing is calibrated: the same two numbers apply to every model,
+level and machine, and the score is what a model gets done inside the
+same thinking. A row with no thinking (thinking off) serves without
+the flag at the same `max_tokens`.
+
+The run records two counts beside the score. `empty` comes from the
+samples file (a problem with no code). `forced` comes from the finish
+log: the problems whose reasoning tail carries the message. A forced
+answer is an answer; it counts as passed or failed by its tests like
+any other. The cause word of an empty is `forced` when the budget
+fired and the answer was still no code, `model` when the model
+stopped by itself with no code, `budget` when the output budget ran
+out (`finish_reason: length`, which fast mode makes rare), and
+`† unproven` when the run recorded no finish reason.
+`benchmarks/thinking-budget.py count` prints both counts.
+
+Why these numbers: twelve budgeted runs on nine configs showed that no
+forced answer ever passed with more thinking (the failures loop or
+are wrong at any budget), that a forced answer passes 85 percent of
+the time, and that 8192 costs at most a few problems per run against
+the 30000 cap while it halves the wall on the slow rows. The record is
+`hardware/arrietty/research/thinking-budget.md`.
+
+A run that wants to sit closer to the model's natural convergence is
+not a scored row. Serve it with `--reasoning-budget 24576` and
+`max_tokens` 32768, or with no flag and `max_tokens` up to the
+server's `-c`; the site shows it as a note, never in a table.
+
+MLX rows: `mlx_lm` accepts a thinking budget and does not enforce it.
+An MLX row cannot run fast mode, and the site says so on the row.
+
+## Reuse of an earlier run: the splice
+
+Temperature 0 on a fixed serving config is deterministic, and the
+thinking of a run at a larger budget begins with the same 8192 tokens
+fast mode allows. So a run of the same config at a thinking budget of
+8192 or more already holds the fast-mode answer of every problem whose
+reasoning stayed inside 8192 and was not forced. `benchmarks/thinking-budget.py
+splice <run-dir> <fast-dir> --message MSG` copies those samples and
+finish lines into the fast run's directory and lists the rest; the
+fast run then generates only the listed problems under the fast flags.
+The spliced row records its source run in its note. A run with no
+finish log cannot be spliced and runs in full.
+
+## The optional proof run
+
+A forced answer that fails a test has one of three causes, and one
+natural re-run of those problems separates them, without the flag at
+`max_tokens` 30000: `benchmarks/thinking-budget.py prepare` before and
+`report` after.
+
+- `forced-pass`: the budget fired and the answer passed.
+- `forced-fail-late`: the answer passed without the flag at N reasoning
+  tokens. The budget was too small for that problem.
+- `forced-fail-loop`: the answer hit 30000 without the flag.
+  Non-convergence. No budget helps.
+- `forced-fail-wrong`: the answer failed both ways. The model's own
+  limit.
+
+The proof run is optional and never changes the fast score. It is
+worth its hours when a model forces many answers or when the late
+cell is suspected; across the twelve runs of the test the late cell
+stayed at zero.
 
 ## Which serving config to score
 
@@ -53,120 +107,42 @@ normally the drafter on, at the `n-max` its shallow sweep picked
 drafter"). An agent run picks differently, on depth; the two tests do
 not have to serve the same config, and each row says which it used.
 
-A non-converging calibration is this gate's early warning. It costs ten
-problems to see, and a full run costs hours, so read it before starting
-one: two `length` stops in a calibration have preceded a run that spent
-its budget and returned empties.
-
 ## Steps
 
-1. Calibrate (above). Calibration files live under the setup, at
-   `hardware/<hardware-id>/calibrations/`, because a calibration is a
-   measurement of one machine. `calibrate.py` takes the directory from
-   `CALIBRATION_DIR`. **Pass the thinking mode or reasoning level
-   explicitly on every call**, in the extra-body argument, for the
-   calibration and for the full run alike. It is not optional: a call
-   with no extra body gets the chat template's own default, which can be
-   a different level from the one the file is named for. Every row
-   records `requested_extra_body` and `resolved_reasoning_effort`; check
-   that the resolved value matches the file name before you read the
-   budget.
-2. Start the config's server on port 8081, warm up, start the run
-   watcher (`benchmarks/run-watch.sh`, [checklist](./checklist.md)
-   step 6: the memory record and the crash signal, exit 42 on a dead
-   server).
+1. Start the config's server on port 8081 with the fast-mode flags,
+   warm up, start the run watcher (`benchmarks/run-watch.sh`,
+   [checklist](./checklist.md) step 6: the memory record and the crash
+   signal, exit 42 on a dead server). Verify with one real request
+   that the reasoning field is present and that the level in
+   `resolved_reasoning_effort` is the one the row names. **Pass the
+   thinking mode or reasoning level explicitly on every call**, in the
+   extra-body argument: a call with no extra body gets the chat
+   template's own default, which can be a different level from the one
+   the row is named for.
+2. Splice an earlier run of the same config when one exists (above).
 3. Run the scoring script (`RESULTS_BASE` chooses the run dir; the
    extra body carries `chat_template_kwargs` for thinking toggles):
    ```bash
-   RESULTS_BASE=hardware/kamaji/benchmarks/benchN/results \
-     EVALPLUS_MAX_NEW_TOKENS=BUDGET \
+   RESULTS_BASE=hardware/<hardware-id>/benchmarks/benchN/results \
+     EVALPLUS_MAX_NEW_TOKENS=16384 \
      benchmarks/run-humaneval.sh RUN_NAME MODEL_ID_AS_SERVED [extra-body-json]
    ```
 4. The script resumes from an existing jsonl automatically (skips
    existing task_ids). Strip genuinely-empty lines first if they must
    regenerate.
 5. Monitor per the checklist (output growth, not process liveness).
-6. Evaluate runs automatically at the end. Record pass@1 base/plus AND
-   the empty count, honestly, on every surface.
+6. Evaluate runs automatically at the end. Record pass@1 base/plus,
+   the empty count and the forced count, on every surface, from the
+   files: `benchmarks/thinking-budget.py count`. A log line is not a
+   count; runners have reported `0/164` from one while the samples held
+   53 empties.
 7. Keep `finish.jsonl` beside the samples: `run-humaneval.sh` writes one
    line per answered request, with the UTC time, the task id, the finish
-   reason (`length` means the budget cut it), the completion and
-   reasoning token counts, the reasoning and answer lengths, the last 200
-   characters of the reasoning, the request wall and a hash of the
-   prompt. It is the proof of why each empty is empty, and the token
-   count per problem gives the score at any smaller budget without a
-   re-run. Write the
-   cause beside the score, in one of three words: `budget` when the
-   answer was still coming as the output budget ran out
-   (`finish_reason: length`), `model` when the model ended with no
-   answer and budget was left (`finish_reason: stop`), and `† unproven`
-   when the run recorded no finish reason. A model whose thinking never
-   converges also ends at the budget, so `budget` at a large budget does
-   not prove that more budget is enough.
-
-## Unproven yet: a thinking budget instead of a larger output budget
-
-Status: a run decision under test (owner, 2026-09-16), not a rule.
-The discussion and its evidence are in
-`hardware/arrietty/research/thinking-budget.md`. This section says
-what the test is, so a runbook can point here.
-
-The problem it addresses. The cause word `budget` records only the
-finish reason. A model whose thinking never converges ends on `length`
-at every budget, so every empty on every row reads `budget`, and the
-word cannot separate a slow answer from a loop. Rows at the 30000 cap
-still carry empties. A larger output budget costs hours and does not
-remove them.
-
-The test. A serving stack that takes a thinking budget closes the
-thinking at N tokens, injects a fixed message, and the model answers
-with what it has (`llama-server --reasoning-budget N
---reasoning-budget-message MSG`; the same request field exists in
-other servers, and some accept it without enforcing it). The scored
-run then has no empty from thinking: every problem gets an answer, and
-the finish log's reasoning tail carries the message on every problem
-where the budget fired. That count is the non-convergence count at
-budget N, measured by the same rule on every row.
-
-The two budgets come from the calibration, with
-`benchmarks/thinking-budget.py derive`: the thinking budget from the
-longest converged reasoning, the answer budget from the longest
-converged answer, each times the margin (1.5) with a floor (2048), and
-`max_tokens` is their sum. The calibration runs without the flag, so
-it measures the model's natural convergence.
-
-The proof. A forced answer can pass. A forced answer that fails has
-three possible causes, and one natural re-run of those problems
-separates them, at a generous budget and without the flag,
-`benchmarks/thinking-budget.py prepare` before and `report` after:
-
-- `forced-pass`: the budget fired and the answer passed. The budget was
-  enough for that problem.
-- `forced-fail-late`: the answer passed without the flag at N reasoning
-  tokens. The budget was too small; the corrected budget is the largest
-  such N times the margin. One pass gives N exactly, because temperature
-  0 is deterministic on a fixed serving config. No bisect.
-- `forced-fail-loop`: the answer hit the generous budget without the
-  flag. Non-convergence. No budget helps.
-- `forced-fail-wrong`: the answer failed both ways. The model's own
-  limit.
-
-What the test has to show before it becomes the method: the score
-under the budget against the natural score of the same config, the
-wall against the natural wall, and how many forced problems fall in
-each cell. The trade-off rule, for example "the smallest budget that
-keeps a fixed share of the natural score", is a project decision and
-waits for the owner. The curve of score against budget is a property
-of the build and its serving stack, not of the machine: the same build
-has scored different empty counts on two machines with different KV
-types. The wall is per machine. A stack that does not enforce the
-budget keeps the output budget rule above and its `budget` word.
-
-What this does not cover. An agent turn is short and there are hundreds
-of them, so a thinking budget bites differently there; the agent proxy
-(`mendel.md`) proves that side. A loop across turns, the same tool call
-again and again, is not thinking and no thinking budget sees it; that
-is the harness's job (`hardware/kamaji/research/unscheduled/pi-tool-loop-guard.md`).
+   reason, the completion and reasoning token counts, the reasoning and
+   answer lengths, the last 200 characters of the reasoning (where the
+   budget message lands), the request wall and a hash of the prompt. It
+   is the proof of every forced and every empty answer, and it is what a
+   later splice reads.
 
 ## Crashes and wall time
 
@@ -211,13 +187,13 @@ something changed. The fourth is the problem with the most empty
 completions on our configs, so the smoke also sees the completion
 failure mode, not only the wrong-answer one.
 
-The budget is the current config's, on both sides, and the candidate is
-never calibrated. A candidate that needs a bigger budget to pass is a
+The budget is fast mode's on both sides (`max_tokens` 16384, the
+server with `--reasoning-budget 8192`), and the candidate is never
+calibrated. A candidate that needs a bigger budget to pass is a
 candidate that costs more.
 
 ```bash
-SMOKE_CALIBRATION=hardware/<hardware-id>/calibrations/calibration-CURRENT_CONFIG.json \
-  benchmarks/evalplus-smoke.py LABEL MODEL_ID_AS_SERVED [extra-body-json]
+benchmarks/evalplus-smoke.py LABEL MODEL_ID_AS_SERVED [extra-body-json]
 ```
 
 Run it once per side, one at a time, and compare the two `SMOKE` lines.

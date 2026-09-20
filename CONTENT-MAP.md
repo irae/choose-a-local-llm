@@ -18,7 +18,7 @@ holds the wiring only. The two must not disagree.
 | `docs/setups/<setup>/models.json`, top level | `setup` (the id, also the folder name), `hardwareSlug`, `hardwareName`, the machine facts | every block that names a machine; `hardwareSlug` becomes the `hardware` attribute of a config cell |
 | `docs/setups/<setup>/models.json`, `rows[]` | one row per served configuration: `id`, `config`, `spec`, `command`, `note`, `maxCtx`, `gatedBy`, `tokShallow`, `tokDeep`, `memory`, `evalplus`, `evalplusWall`, `simulatorWall`, `mendel` (a state word only), `mendelDrafter`, `stale[]`, `added`, `hidden`, `abandoned`, `retired`, `pi` | every configuration table (`renderTable`), the Configs blocks, the decode summary, the tok/s and window cells of the EvalPlus and Mendel tables, `tools/gen-pi-models.mjs` |
 | `docs/setups/<setup>/models.json`, `models.<slug>` | `rowMatch`, `kpis`, `stats`, `extraRows`, `compareWith`, `mendelUntrusted` | the report page of that slug, `docs/models/<slug>.md`, the decode summary |
-| `docs/setups/<setup>/models.json`, `evalplusRuns[]` | one entry per scored EvalPlus run: `slug`, `model`, `row` or `spec`, `budget`, `base`, `plus`, `empty`, `emptyCause`, `wall`, `mode` | every EvalPlus table (`renderEvalplusTable`) |
+| `docs/setups/<setup>/models.json`, `evalplusRuns[]` | one entry per scored EvalPlus run: `slug`, `model`, `row` or `spec`, `mode` (the level word), `think` (the thinking budget; absent for a natural run), `budget` (the output budget), `base`, `plus`, `empty`, `emptyCause`, `forced`, `wall` | every EvalPlus table (`renderEvalplusTable`); `fastRun` (think 8192 or thinking off) decides which tables show a run |
 | `docs/setups/<setup>/models.json`, `curves[]` | one entry per measured decode arm: `model`, `arm`, `method`, `points`, `served`, `run`, `c`, `cAt`, `wired` | the decode curve of `docs/models/<slug>.md` only |
 | `docs/setups/<setup>/models.json`, `mendelWalls` | active minutes per Mendel branch | the Wall cell of every configuration table and of every Mendel table |
 | `docs/binaries.json` | one entry per model file: `id`, `model`, `title`, `spec` (four fields), `repo`, `file`, `revision`, `setups`, `quantAliases` | the `page` link of every config cell on every table, the three blocks of `docs/binaries/<id>.md`, the Files list of `docs/models/<slug>.md` |
@@ -58,7 +58,7 @@ which filter; `†` marks a filter the page does not state.
 | --- | --- | --- | --- |
 | `gen:models-evaluated` | `docs/setups/<setup>/comparison.md` | `table` (through `applyTable`; the value is `comparisonTable`, from `renderTable`) | `rows` of that setup, not hidden, not retired, not abandoned, complete; when fewer than two are complete, every visible row |
 | `gen:models-evaluated-partial` | `docs/setups/<setup>/comparison.md` | `partial[2]` (the value is `partialTable`, from `renderTable`) | the visible rows the first table left out, at 40 percent completeness or more, or `added` less than 48 hours before the head commit |
-| `gen:setup-evalplus` | `docs/setups/<setup>/comparison.md` | `renderEvalplusTable` | `evalplusRuns` of that setup |
+| `gen:setup-evalplus` | `docs/setups/<setup>/comparison.md` | `renderEvalplusTable` | `evalplusRuns` of that setup, fast-mode runs only |
 | `gen:model-kpis` | `docs/setups/<setup>/reports/<slug>.md` | `renderKpis` | `models.<slug>.kpis` and `stats` |
 | `gen:model-table` | `docs/setups/<setup>/reports/<slug>.md` | `renderModelTable` | `rows` whose `config` starts with `models.<slug>.rowMatch`, plus `extraRows`; complete first, then the rest; retired rows as one line each |
 | `gen:model-configs` | `docs/setups/<setup>/reports/<slug>.md` | `renderModelConfigs` | the same rows: `spec`, `note`, `command` |
@@ -76,7 +76,7 @@ which filter; `†` marks a filter the page does not state.
 | `gen:binary-rows` | `docs/binaries/<id>.md` | `parts` (from `renderTable`, then one line per retired row) | `rows` of every setup whose four spec fields match the entry (or one of its `quantAliases`); hidden and abandoned included, retired as a bare line |
 | `gen:binary-evalplus` | `docs/binaries/<id>.md` | `evalplus` (from `renderEvalplusTable`) | `evalplusRuns` of every setup whose row or spec matches the four fields |
 | `gen:binary-mendel` | `docs/binaries/<id>.md` | `mendel` (from `renderModelMendel`) | the CSVs: local valid runs of every setup, every prompt version, runs on retired builds included, spec matched on the four fields |
-| `gen:evalplus-table` | `docs/benchmarks/evalplus.md` | `renderEvalplusTable` | `evalplusRuns` of every setup |
+| `gen:evalplus-table` | `docs/benchmarks/evalplus.md` | `renderEvalplusTable` | `evalplusRuns` of every setup, fast-mode runs only |
 | `gen:decode-summary` | `docs/benchmarks/decode-speed.md` | `renderDecodeSummary` | per setup, per model, per backend (the second part of `config`): the best complete row, or the best row |
 | `gen:mendel-local` | `docs/benchmarks/mendel.md` | `mendelTable` | `results.json`: local valid runs of every setup, current prompt version, runs on a retired build excluded |
 | `gen:mendel-guided` | `docs/benchmarks/mendel.md` | `mendelTable` | `results-guided.json`, the same filter |
@@ -264,11 +264,13 @@ setup", holds the content steps. The wiring:
 
 1. `docs/setups/<setup>/models.json`, `evalplusRuns[]`: one entry with
    `slug`, `row` (the row id; `spec` only for a run with no row),
-   `budget`, `base`, `plus`, `empty`, `emptyCause`, `wall`.
+   `mode`, `think` (8192 in fast mode), `budget` (16384 in fast mode),
+   `base`, `plus`, `empty`, `emptyCause`, `forced`, `wall`.
 2. The row's `evalplus` cell (`base/plus/completion%`) and
-   `evalplusWall`; remove `evalplus` from `stale` when it was there.
-   Every row that shares the score under the shared-score rule gets
-   the same cell.
+   `evalplusWall` when the run is fast mode; remove `evalplus` from
+   `stale`. A run that is not fast mode changes no row cell: it shows
+   on the report, model and binary pages only. Every row that shares
+   the score under the shared-score rule gets the same cell.
 3. Generate and check. Open: the report page (Quality table and the
    HumanEval+ column), `docs/models/<slug>.md`, the setup's
    `comparison.md` (the Code quality table and the row's cell),

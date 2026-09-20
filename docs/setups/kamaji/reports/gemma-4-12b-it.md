@@ -184,10 +184,10 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:model-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | none | <TokCell shallow="25.0" deep="9.2" /> | 0h43 |
-| [<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/binaries/gemma12-lmstudio-mlx-4bit" />](../benchmarks/gemma-4-12b-it.md) | 30000 | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | none | <TokCell shallow="34.19" deep="23.23" /> | 1h33 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-12b-it.md) | none | 8192 | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | none | — | <TokCell shallow="25.0" deep="9.2" /> | 0h43 |
+| [<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/binaries/gemma12-lmstudio-mlx-4bit" />](../benchmarks/gemma-4-12b-it.md) | none | 30000 | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | none | — | <TokCell shallow="34.19" deep="23.23" /> | 1h33 |
 <!-- gen:model-evalplus:end -->
 
 ## Agentic quality — Mendel

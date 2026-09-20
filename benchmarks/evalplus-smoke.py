@@ -29,16 +29,13 @@ only the wrong-answer one. Picked from the per-problem raw results and
 the twelve configs with a complete scored run.
 
 THE BUDGET RULE. Both sides of a comparison use the SAME `max_tokens`,
-taken from the calibration file of the config we run TODAY. Never
-calibrate the candidate. A candidate that needs a bigger budget to pass
-is a candidate that costs more, and the smoke must show that.
-`SMOKE_CALIBRATION` points at that file and the budget follows the
-method page: observed max completion x 1.5, floor 8192. When the
-current config never converges (`finish_reason: length` in its
-calibration), that rule does not apply: the budget is a waste-limiter
-and the method page says to set it by hand. The tool refuses to guess
-one. Pass it in `SMOKE_MAX_TOKENS` and use the same value on both
-sides.
+the fast-mode value 16384 (`docs/methodology/evalplus.md`: the server
+carries `--reasoning-budget 8192` and its message on both sides; a
+server without the flag runs with the same max_tokens and no thinking
+budget). `SMOKE_MAX_TOKENS` overrides it, for a comparison that is not
+in fast mode; use the same value on both sides. Never calibrate the
+candidate. A candidate that needs a bigger budget to pass is a
+candidate that costs more, and the smoke must show that.
 
 THE READING RULE. Run the tool twice: once against the config we run
 today, once against the candidate, same budget, same server port, one
@@ -62,17 +59,14 @@ Two more rules that stop a wrong reading:
 USAGE. Run from the repo root, with the EvalPlus venv's python (the
 tool imports evalplus and openai, and calls `evalplus.evaluate`):
 
-    SMOKE_CALIBRATION=hardware/<hardware-id>/calibrations/calibration-<current-config>.json \\
-      benchmarks/evalplus-smoke.py <label> <model-id-as-served> [extra-body-json]
+    benchmarks/evalplus-smoke.py <label> <model-id-as-served> [extra-body-json]
 
 The third argument is the same extra body `run-humaneval.sh` takes; it
 carries `chat_template_kwargs` for a thinking toggle.
 
 ENVIRONMENT
 
-    SMOKE_CALIBRATION  calibration file of the config we run today.
-                       Required, unless SMOKE_MAX_TOKENS is set.
-    SMOKE_MAX_TOKENS   budget override, for the waste-limiter case.
+    SMOKE_MAX_TOKENS   max_tokens override, default 16384 (fast mode).
                        Use the same value on both sides.
     SMOKE_BASE         server base URL, default http://127.0.0.1:8081
     SMOKE_OUT          directory for the samples and evaluator files.
@@ -113,8 +107,7 @@ INSTRUCTION_PREFIX = (
     "following problem in a markdown code block:"
 )
 SYSTEM_MSG = "You are a helpful assistant good at coding."
-BUDGET_FLOOR = 8192
-BUDGET_FACTOR = 1.5
+FAST_MAX_TOKENS = 16384
 
 
 def parse_args():
@@ -126,8 +119,7 @@ def parse_args():
             "or worse against a second run at the same budget."
         ),
         epilog=(
-            "environment: SMOKE_CALIBRATION (required unless "
-            "SMOKE_MAX_TOKENS is set), SMOKE_MAX_TOKENS, SMOKE_BASE "
+            "environment: SMOKE_MAX_TOKENS (default 16384), SMOKE_BASE "
             "(default http://127.0.0.1:8081), SMOKE_OUT, "
             "SMOKE_TIMEOUT_S (default 7200)"
         ),
@@ -147,35 +139,8 @@ def resolve_budget():
     if override:
         print(f"event\tbudget\tsource=SMOKE_MAX_TOKENS\tmax_tokens={int(override)}")
         return int(override)
-    path = os.environ.get("SMOKE_CALIBRATION")
-    if not path:
-        sys.exit(
-            "SMOKE_CALIBRATION is not set. Point it at the calibration file of "
-            "the config you run today, or set SMOKE_MAX_TOKENS to the budget "
-            "that config already uses. The budget is never calibrated for the "
-            "candidate."
-        )
-    if not os.path.exists(path):
-        sys.exit(f"SMOKE_CALIBRATION file not found: {path}")
-    with open(path) as f:
-        rows = json.load(f)
-    observed = max(int(r["completion_tokens"]) for r in rows)
-    truncated = [r["task_id"] for r in rows if r.get("finish_reason") == "length"]
-    if truncated:
-        sys.exit(
-            "the calibration has finish_reason=length on "
-            + ",".join(truncated)
-            + ". This config never converges, so its budget is a waste-limiter "
-            "and the x1.5 rule does not apply. Set SMOKE_MAX_TOKENS by hand to "
-            "the budget the scored run used, and use the same value on both "
-            "sides."
-        )
-    budget = max(BUDGET_FLOOR, int(observed * BUDGET_FACTOR))
-    print(
-        f"event\tbudget\tsource={path}\tobserved_max={observed}\t"
-        f"max_tokens={budget}"
-    )
-    return budget
+    print(f"event\tbudget\tsource=fast-mode\tmax_tokens={FAST_MAX_TOKENS}")
+    return FAST_MAX_TOKENS
 
 
 def generate(client, sanitize, problems, model_id, budget, extra_body):

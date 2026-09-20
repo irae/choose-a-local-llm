@@ -37,9 +37,11 @@ defect voided is not.
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" />](../setups/kamaji/benchmarks/bonsai-27b.md) | 10240 | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | 2 budget | <TokCell shallow="24.5" deep="17.3" /> | 19h24 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" />](../setups/kamaji/benchmarks/bonsai-27b.md) | —† | 10240 | <ScoreCell value="0.933/0.902" sub="99% completion" /> | 2 budget | — | <TokCell shallow="24.5" deep="17.3" /> | 19h24 |
+
+† not fast mode: a thinking budget other than 8192, or none. Kept for the record; only fast-mode rows compare across models.
 <!-- gen:binary-evalplus:end -->
 
 Every empty on this file is the output budget. The 2026-09-16 re-run

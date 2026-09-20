@@ -3,8 +3,6 @@
 Only the parts that run without a server: the budget rule, and the
 padding that `evalplus.evaluate` needs. The generation and the evaluator
 call a live server and a venv binary, so they stay out.
-
-The calibration files are the committed ones under benchmarks/.
 """
 import contextlib
 import importlib.util
@@ -23,10 +21,6 @@ SCRIPT = os.path.join(BENCH, "evalplus-smoke.py")
 _spec = importlib.util.spec_from_file_location("evalplus_smoke", SCRIPT)
 smoke = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(smoke)
-
-CONVERGED_LOW = os.path.join(BENCH, "calibration-gemma12-gguf-off.json")
-CONVERGED_HIGH = os.path.join(BENCH, "calibration-qwen36-think.json")
-NEVER_CONVERGES = os.path.join(BENCH, "calibration-gemma12-lmstudio-thinking-on.json")
 
 
 @contextlib.contextmanager
@@ -49,25 +43,11 @@ def environment(**pairs):
 
 def budget(**pairs):
     pairs.setdefault("SMOKE_MAX_TOKENS", None)
-    pairs.setdefault("SMOKE_CALIBRATION", None)
     with environment(**pairs):
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
             value = smoke.resolve_budget()
         return value, out.getvalue()
-
-
-def budget_refusal(**pairs):
-    pairs.setdefault("SMOKE_MAX_TOKENS", None)
-    pairs.setdefault("SMOKE_CALIBRATION", None)
-    with environment(**pairs):
-        out = io.StringIO()
-        try:
-            with contextlib.redirect_stdout(out):
-                smoke.resolve_budget()
-        except SystemExit as stop:
-            return str(stop.code)
-    raise AssertionError("resolve_budget did not refuse")
 
 
 class TheSubsetIsFixed(unittest.TestCase):
@@ -76,57 +56,21 @@ class TheSubsetIsFixed(unittest.TestCase):
                          ["HumanEval/53", "HumanEval/45",
                           "HumanEval/34", "HumanEval/129"])
 
-    def test_the_budget_rule_constants(self):
-        self.assertEqual(smoke.BUDGET_FLOOR, 8192)
-        self.assertEqual(smoke.BUDGET_FACTOR, 1.5)
+    def test_the_fast_mode_max_tokens(self):
+        self.assertEqual(smoke.FAST_MAX_TOKENS, 16384)
 
 
 class Budget(unittest.TestCase):
-    def test_a_converged_calibration_gives_observed_max_times_1_5(self):
-        value, log = budget(SMOKE_CALIBRATION=CONVERGED_HIGH)
-        with open(CONVERGED_HIGH) as f:
-            rows = json.load(f)
-        observed = max(int(r["completion_tokens"]) for r in rows)
-        self.assertEqual(value, int(observed * 1.5))
-        self.assertIn("observed_max=%d" % observed, log)
-        self.assertIn("max_tokens=%d" % value, log)
-
-    def test_a_small_calibration_takes_the_floor(self):
-        value, log = budget(SMOKE_CALIBRATION=CONVERGED_LOW)
-        self.assertEqual(value, 8192)
-        self.assertIn("max_tokens=8192", log)
+    def test_no_override_gives_fast_mode_and_says_so(self):
+        value, log = budget()
+        self.assertEqual(value, 16384)
+        self.assertIn("source=fast-mode", log)
+        self.assertIn("max_tokens=16384", log)
 
     def test_the_override_wins_and_says_where_it_came_from(self):
-        value, log = budget(SMOKE_MAX_TOKENS="12345",
-                            SMOKE_CALIBRATION=CONVERGED_HIGH)
+        value, log = budget(SMOKE_MAX_TOKENS="12345")
         self.assertEqual(value, 12345)
         self.assertIn("source=SMOKE_MAX_TOKENS", log)
-
-    def test_the_override_reads_a_calibration_that_never_converges(self):
-        value, _ = budget(SMOKE_MAX_TOKENS="30000",
-                          SMOKE_CALIBRATION=NEVER_CONVERGES)
-        self.assertEqual(value, 30000)
-
-
-class BudgetRefusals(unittest.TestCase):
-    def test_no_calibration_and_no_override_refuses(self):
-        message = budget_refusal()
-        self.assertIn("SMOKE_CALIBRATION is not set", message)
-
-    def test_a_missing_calibration_file_refuses(self):
-        message = budget_refusal(SMOKE_CALIBRATION="/nonexistent/calibration.json")
-        self.assertIn("not found", message)
-
-    def test_a_calibration_that_never_converges_refuses(self):
-        message = budget_refusal(SMOKE_CALIBRATION=NEVER_CONVERGES)
-        self.assertIn("finish_reason=length", message)
-        self.assertIn("SMOKE_MAX_TOKENS", message)
-        with open(NEVER_CONVERGES) as f:
-            rows = json.load(f)
-        truncated = [r["task_id"] for r in rows if r.get("finish_reason") == "length"]
-        self.assertTrue(truncated)
-        for task_id in truncated:
-            self.assertIn(task_id, message)
 
 
 class Padding(unittest.TestCase):

@@ -71,5 +71,7 @@
 ## EvalPlus budget
 
 - Scores before the calibrated budget used EvalPlus's default output
-  cap and were too low. Every current score uses a budget calibrated
-  per model. Old numbers: [historical](./historical.md).
+  cap and were too low. Since 2026-09-19 every scored run is fast mode
+  (thinking budget 8192, output 16384); scores from the calibrated
+  budgets in between carry a † until their fast-mode run lands. Old
+  numbers: [historical](./historical.md).

@@ -26,7 +26,7 @@ Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; Eval
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" top /> | **97k** | <TokCell shallow="58.77" deep="45.59" cap="mem" top-shallow top-deep /> | **15.2 GB** | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 3h35 · Mendel 0h23"><b>3h58</b></span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" top /> | **97k** | <TokCell shallow="58.77" deep="45.59" cap="mem" top-shallow top-deep /> | **15.2 GB** | <ScoreCell value="0.909/0.878†" sub="91% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 3h35 · Mendel 0h23"><b>3h58</b></span> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -70,9 +70,11 @@ llama-server -m "$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:model-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" />](../benchmarks/gemma-4-26b-a4b.md) | 12500 | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | † unproven | <TokCell shallow="58.77" deep="45.59" /> | 3h35 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" />](../benchmarks/gemma-4-26b-a4b.md) | —† | 12500 | <ScoreCell value="0.909/0.878" sub="91% completion" /> | † unproven | — | <TokCell shallow="58.77" deep="45.59" /> | 3h35 |
+
+† not fast mode: a thinking budget other than 8192, or none. Kept for the record; only fast-mode rows compare across models.
 <!-- gen:model-evalplus:end -->
 
 Every run of this model on this machine, best base score first. The empties column carries the cause word ([what the words mean](../../../benchmarks/evalplus.md#limits-on-local-hardware)).

@@ -27,7 +27,7 @@ Speed, context, drafter arms and the guided agent task measured 2026-09-13 to 20
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" offload="n-cpu-moe 21" kv="q8_0" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **97k** | <TokCell shallow="61.16" deep="45.42" cap="mem" top-shallow top-deep /> | **14.7 GB** | <ScoreCell value="0.945/0.902" sub="96% completion" top /> | <ScoreCell value="48.5" note="75%" pill="mendel-guided" top /> | <span title="EvalPlus 3h12 · Mendel 0h27"><b>3h39</b></span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" offload="n-cpu-moe 21" kv="q8_0" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **97k** | <TokCell shallow="61.16" deep="45.42" cap="mem" top-shallow top-deep /> | **14.7 GB** | <ScoreCell value="0.945/0.902†" sub="96% completion" top /> | <ScoreCell value="48.5" note="75%" pill="mendel-guided" top /> | <span title="EvalPlus 3h12 · Mendel 0h27"><b>3h39</b></span> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -79,9 +79,11 @@ llama-server -m "$(hf download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:model-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" offload="n-cpu-moe 21" kv="q8_0" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" />](../benchmarks/qwen3.6-35b-a3b.md) | 24154 | <ScoreCell value="0.945/0.902" sub="96% completion" top /> | † unproven | <TokCell shallow="61.16" deep="45.42" /> | 3h12 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" offload="n-cpu-moe 21" kv="q8_0" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" />](../benchmarks/qwen3.6-35b-a3b.md) | —† | 24154 | <ScoreCell value="0.945/0.902" sub="96% completion" /> | † unproven | — | <TokCell shallow="61.16" deep="45.42" /> | 3h12 |
+
+† not fast mode: a thinking budget other than 8192, or none. Kept for the record; only fast-mode rows compare across models.
 <!-- gen:model-evalplus:end -->
 
 Every run of this model on this machine, best base score first. The empties column carries the cause word ([what the words mean](../../../benchmarks/evalplus.md#limits-on-local-hardware)).

@@ -27,7 +27,7 @@ EvalPlus and the blind agent row run on PTQ1_0.
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **160k** | <TokCell shallow="17.9" deep="9.1" cap="mem" top-shallow top-deep /> | **25.5 GB** | <ScoreCell value="0.988/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h37 · Mendel —">5h37†</span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **160k** | <TokCell shallow="17.9" deep="9.1" cap="mem" top-shallow top-deep /> | **25.5 GB** | <ScoreCell value="0.988/0.939†" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h37 · Mendel —">5h37†</span> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -56,9 +56,11 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:model-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" />](../benchmarks/bonsai-2-27b.md) | 18104 | <ScoreCell value="0.988/0.939" sub="100% completion" top /> | none | <TokCell shallow="17.9" deep="9.1" /> | 5h37 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" />](../benchmarks/bonsai-2-27b.md) | 16056† | 18104 | <ScoreCell value="0.988/0.939" sub="100% completion" /> | none | 7/164 | <TokCell shallow="17.9" deep="9.1" /> | 5h37 |
+
+† not fast mode: a thinking budget other than 8192, or none. Kept for the record; only fast-mode rows compare across models.
 <!-- gen:model-evalplus:end -->
 
 ## Agentic quality — Mendel
