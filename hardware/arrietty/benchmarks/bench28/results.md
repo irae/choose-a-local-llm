@@ -80,3 +80,17 @@ Ternary-Bonsai-2-27B PTQ1_0 with the OrcaBonsai abliterate LoRA (scale 1.0, clon
 - Empty ids: none.
 - `budget` (ended on `length` at 16384): HumanEval/64, after a forced answer. It holds code, so it is not empty.
 - The row command's adapter download by `hf` fails; the adapter file is the clone at `/home/irae/code/OrcaBonsai-27B-Uncensored`.
+
+## `fast-gemma26-nvfp4-on`
+
+Gemma-4-26B-A4B NVFP4 (Q8 file), f16 KV, `--n-cpu-moe 7`, no drafter, thinking on, run 19's binary, `-c 32768`, fast mode (thinking 8192, `max_tokens` 16384). Splice source: none, all 164 generated.
+
+| | base | plus | completion | empty | forced | wall |
+|---|--:|--:|--|--|--|--:|
+| fast mode (run 28) | 0.988 | 0.951 | 164/164 | 0/164 | 19/164 | 154 min (one part, 15:50Z–18:25Z, 2026-09-20; requests 153.6) |
+| before fast mode | 0.909 | 0.878 | 149/164 (91%) | see models.json | see models.json | 215.3 min |
+
+- Forced ids: HumanEval/32, /37, /51, /86, /99, /103, /108, /109, /113, /116, /117, /124, /127, /129, /130, /132, /143, /145, /147.
+- Empty ids: none.
+- `budget` (ended on `length` at 16384): none.
+- The score comes from a manual `evalplus.evaluate` run; see `state.md`.
