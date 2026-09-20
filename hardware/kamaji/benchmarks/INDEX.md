@@ -7,6 +7,14 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench29, planned 2026-09-19 ([state](bench29/state.md), [results](bench29/results.md))
+
+- Runbook: [bench29/AGENT.md](bench29/AGENT.md). Every scored thinking
+  row of this machine that serves on llama.cpp in EvalPlus fast mode
+  (`docs/methodology/evalplus.md`, "Fast mode"): three rows spliced
+  from their budgeted runs, four scored in full, the fork's row among
+  them in place of run 22's unrun budget blocks. Starts after run 26.
+
 ## bench22, planned 2026-09-16 ([state](bench22/state.md), [results](bench22/results.md))
 
 - Runbook: [bench22/AGENT.md](bench22/AGENT.md). The thinking budget

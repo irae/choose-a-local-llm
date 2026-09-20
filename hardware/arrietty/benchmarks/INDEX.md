@@ -6,6 +6,14 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 `results/`). Run numbers are shared with the Mac
 (`hardware/kamaji/benchmarks/INDEX.md`).
 
+## bench28, planned 2026-09-19 ([state](bench28/state.md), [results](bench28/results.md))
+
+- Runbook: [bench28/AGENT.md](bench28/AGENT.md). Every scored thinking
+  row of this machine in EvalPlus fast mode (`docs/methodology/evalplus.md`,
+  "Fast mode": thinking budget 8192, output 16384, no calibration):
+  six rows spliced from their earlier budgeted runs, four scored in
+  full. Starts when the card is free.
+
 ## bench27, 2026-09-18 to 2026-09-19 ([report](bench27/report.md), [state](bench27/state.md), [results](bench27/results.md))
 
 - Runbook: [bench27/AGENT.md](bench27/AGENT.md). The best arm of run 24
