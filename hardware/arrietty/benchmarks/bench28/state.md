@@ -28,3 +28,14 @@ One section per block, in the order the runbook lists, as it happens.
 - Part 1 start 2026-09-20T06:01:01Z
 - Part 1: 2026-09-20T06:01:01Z to 06:45Z, no crash. Own wall about 44 min (requests sum to 40.4 min). The 152 kept problems cost 81.1 min in the source. Wall about 125 min.
 - Result: base 0.976, plus 0.945. Empty 0/164, forced 12/164 (all 12 regenerated problems), none on `length`.
+
+## `fast-bonsai2-pq2-f16-xhigh`
+
+- Serve: fork, row command with `-c 32768`, f16 KV, `$FAST_FLAGS` (helper `~/.local/share/choose-a-local-llm/run28-serve-fork.sh`).
+- `nvidia-smi` at load: 9947 MiB; after the probe 9951 MiB (desktop included).
+- Probe (xhigh, HumanEval/10): stop, 6357 completion tokens, reasoning present, `content` 621 characters, no error in the log. It converged before 8192, so no budget message shows.
+- Splice from `bench24/results/bonsai2-pq2-f16-evalplus-budget-xhigh`: kept 152, to generate 12.
+- Part 1 start 2026-09-20T06:48:40Z
+- Part 1: 2026-09-20T06:48:40Z to about 07:33Z, no crash. Own wall about 44 min (requests 39.6 min). The 152 kept problems cost 77.3 min in the source. Wall about 121 min.
+- Result: base 0.982, plus 0.945. Empty 0/164, forced 12/164.
+- Finding: HumanEval/64 was forced (a `yY` loop in the thinking) and its answer then ran to `length` at 16384 tokens. It holds code (9104 characters), so it is not empty. It is a `budget` end after a forced answer.
