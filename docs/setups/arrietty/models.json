@@ -43,10 +43,10 @@
       "tokShallow": "49.55",
       "tokDeep": "33.11",
       "memory": "12.3 GB",
-      "evalplus": "0.659/0.640/68%",
+      "evalplus": "0.976/0.951/100%",
       "mendel": "pending",
       "id": "gemma12-nvfp4-on",
-      "evalplusWall": 203.9,
+      "evalplusWall": 211.0,
       "spec": {
         "base": "Gemma-4-12B",
         "quant": "NVFP4",
@@ -59,16 +59,13 @@
       },
       "hidden": false,
       "command": "llama-server -m \"$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12b-it-nvfp4.gguf)\" \\\n  --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-12b-nvfp4`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: after a broken `xtend` edit, the thinking repeated the planned fix 520 times and never made the tool call, with zero commits. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 8192: 0.659/0.640, 53 empty answers of 164 whose cause is unproven because the run saved no finish log, in 203.9 minutes of active time in two parts. The calibration ended 5 of 10 answers at the 30000 cap, so the runner first set 1700 as a waste limiter; the owner restored the 8192 floor after 32 answers, and those 32 stayed. Thinking on scores far below thinking off on this build, 0.659 against 0.927, and 53 of the 56 failures are empty answers: the thinking did not end inside 8192 tokens on a third of the problems, as the calibration predicted with five of ten answers at the 30000 cap. This is the first EvalPlus score for this build at thinking on. Under a server thinking budget of 7350 tokens (answer budget 2048, `max_tokens` 9398, from a calibration with reasoning lengths and the margin 1.5; the thinking-budget test, 2026-09-16), the same file and level scored 0.976/0.951 with no empty answer in 194.8 minutes: 45 problems hit the budget and were forced to answer, and 42 of those 45 passed the base tests. That is above the thinking-off row of this build, 0.927/0.896. The natural re-run of the six forced failures changed nothing: all six hit the 30000 cap without the budget too, so the budget cost no answer and stands. The owner's word on how a budgeted score is shown is pending.",
+      "note": "pi id `gemma-4-12b-nvfp4`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: after a broken `xtend` edit, the thinking repeated the planned fix 520 times and never made the tool call, with zero commits. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 8192: 0.659/0.640, 53 empty answers of 164 whose cause is unproven because the run saved no finish log, in 203.9 minutes of active time in two parts. The calibration ended 5 of 10 answers at the 30000 cap, so the runner first set 1700 as a waste limiter; the owner restored the 8192 floor after 32 answers, and those 32 stayed. Thinking on scores far below thinking off on this build, 0.659 against 0.927, and 53 of the 56 failures are empty answers: the thinking did not end inside 8192 tokens on a third of the problems, as the calibration predicted with five of ten answers at the 30000 cap. This is the first EvalPlus score for this build at thinking on. Under a server thinking budget of 7350 tokens (answer budget 2048, `max_tokens` 9398, from a calibration with reasoning lengths and the margin 1.5; the thinking-budget test, 2026-09-16), the same file and level scored 0.976/0.951 with no empty answer in 194.8 minutes: 45 problems hit the budget and were forced to answer, and 42 of those 45 passed the base tests. That is above the thinking-off row of this build, 0.927/0.896. The natural re-run of the six forced failures changed nothing: all six hit the 30000 cap without the budget too, so the budget cost no answer and stands. The owner's word on how a budgeted score is shown is pending. The published score is the fast-mode run of 2026-09-20: thinking closed at 8192 tokens, output budget 16384, 119 answers kept from the run 21 score and 45 regenerated. It reads 0.976/0.951 with no empty answer and 44 forced answers of 164, in 211 minutes of active time, 135 of them its own. The earlier run left 53 answers empty and scored 0.659/0.640 on the same file; closing the thinking recovered every one of them. The run 21 budget of 7350 read the same 0.976/0.951 with 45 forced answers, so the wider fast-mode budget changed no score on this file. One problem, HumanEval/145, also ran its answer to the 16384 cap; it holds code, so it counts as complete.",
       "pi": {
         "provider": "llama",
         "id": "gemma-4-12b-nvfp4",
         "contextWindow": 258048,
         "maxTokens": 8192
-      },
-      "stale": [
-        "evalplus"
-      ]
+      }
     },
     {
       "config": "Gemma-4-12B, GGUF, UD-Q4_K_XL, f16 KV, no drafter, thinking off",
@@ -941,6 +938,20 @@
       "emptyCause": "none",
       "forced": "19/164",
       "wall": 154.0
+    },
+    {
+      "slug": "gemma-4-12b-it",
+      "model": "Gemma-4-12B (GGUF NVFP4, FreedomAISVR, f16 KV)",
+      "mode": "thinking on",
+      "row": "gemma12-nvfp4-on",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.976",
+      "plus": "0.951",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "44/164",
+      "wall": 211.0
     }
   ],
   "mendelWalls": {
