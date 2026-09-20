@@ -1,0 +1,15 @@
+Greedy decoding ON (--greedy): setting bs=1, n_samples=1, temperature=0
+Initializing a decoder model: bonsai2-27b-ptq1 ...
+Sanitized code outputs will be saved to /home/irae/code/choose-a-local-llm-bench28/hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-ptq1-xhigh/humaneval/bonsai2-27b-ptq1_openai_temp_0.0.jsonl
+Raw outputs will be saved to /home/irae/code/choose-a-local-llm-bench28/hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-ptq1-xhigh/humaneval/bonsai2-27b-ptq1_openai_temp_0.0.raw.jsonl
+Codegen: HumanEval/0 @ bonsai2-27b-ptq1 (resuming from 1)
+Codegen: HumanEval/1 @ bonsai2-27b-ptq1 (resuming from 1)
+Codegen: HumanEval/2 @ bonsai2-27b-ptq1 (resuming from 1)
+Codegen: HumanEval/3 @ bonsai2-27b-ptq1 (resuming from 1)
+Codegen: HumanEval/4 @ bonsai2-27b-ptq1 (resuming from 1)
+Codegen: HumanEval/5 @ bonsai2-27b-ptq1 (resuming from 1)
+Codegen: HumanEval/6 @ bonsai2-27b-ptq1 (resuming from 1)
+Codegen: HumanEval/7 @ bonsai2-27b-ptq1 (resuming from 1)
+Codegen: HumanEval/8 @ bonsai2-27b-ptq1 (resuming from 1)
+Codegen: HumanEval/9 @ bonsai2-27b-ptq1 (resuming from 1)
+Codegen: HumanEval/10 @ bonsai2-27b-ptq1

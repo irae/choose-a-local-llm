@@ -39,3 +39,11 @@ One section per block, in the order the runbook lists, as it happens.
 - Part 1: 2026-09-20T06:48:40Z to about 07:33Z, no crash. Own wall about 44 min (requests 39.6 min). The 152 kept problems cost 77.3 min in the source. Wall about 121 min.
 - Result: base 0.982, plus 0.945. Empty 0/164, forced 12/164.
 - Finding: HumanEval/64 was forced (a `yY` loop in the thinking) and its answer then ran to `length` at 16384 tokens. It holds code (9104 characters), so it is not empty. It is a `budget` end after a forced answer.
+
+## `fast-bonsai2-ptq1-xhigh`
+
+- Serve: fork, row command with `-c 32768`, q8_0 KV, `$FAST_FLAGS`.
+- `nvidia-smi` at load: 7927 MiB; after the probe 7933 MiB (desktop included).
+- Probe (xhigh, HumanEval/10): stop, 1636 completion tokens, reasoning present, `content` 600 characters, no error. It converged early, so no budget message shows.
+- Splice from `bench24/results/bonsai2-ptq1-evalplus-budget-xhigh`: kept 148, to generate 16.
+- Part 1 start 2026-09-20T07:34:46Z
