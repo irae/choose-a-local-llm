@@ -51,3 +51,14 @@ One section per block, in the order the runbook lists, as it happens.
 - Result: base 0.982, plus 0.945. Empty 0/164, forced 16/164.
 - Finding: HumanEval/64 again ended on `length` at 16384 after a forced answer (same problem as in `fast-bonsai2-pq2-f16-xhigh`).
 - Deviation: the block ended at about 08:38Z and I closed it at 13:32Z. The wakeups did not fire between 08:00Z and 13:30Z (the session login interrupted them). The card sat idle about 5 hours.
+
+## `fast-bonsai2-pq2-xhigh`
+
+- Serve: fork, row command with `-c 32768`, q8_0 KV, `$FAST_FLAGS`.
+- `nvidia-smi` at load: 9060 MiB; after the probe 9064 MiB (desktop included).
+- Probe (xhigh, HumanEval/10): stop, 8366 completion tokens, reasoning present, `content` 626 characters, reasoning tail ends with the budget message, no error.
+- Splice from `bench24/results/bonsai2-pq2-budget-xhigh`: kept 152, to generate 12.
+- Part 1 start 2026-09-20T13:36:08Z
+- Part 1: 2026-09-20T13:36:08Z to about 14:18Z, no crash. Own wall about 42 min (requests 40.3 min). The 152 kept problems cost 76.7 min in the source. Wall about 119 min.
+- Result: base 0.988, plus 0.945. Empty 0/164, forced 12/164.
+- Finding: HumanEval/64 ended on `length` at 16384 after a forced answer here too. It now does so on all three PQ2/PTQ1 rows that generated it.
