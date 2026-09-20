@@ -62,3 +62,14 @@ One section per block, in the order the runbook lists, as it happens.
 - Part 1: 2026-09-20T13:36:08Z to about 14:18Z, no crash. Own wall about 42 min (requests 40.3 min). The 152 kept problems cost 76.7 min in the source. Wall about 119 min.
 - Result: base 0.988, plus 0.945. Empty 0/164, forced 12/164.
 - Finding: HumanEval/64 ended on `length` at 16384 after a forced answer here too. It now does so on all three PQ2/PTQ1 rows that generated it.
+
+## `fast-bonsai2-ptq1-f16-orca-xhigh`
+
+- Serve: fork, PTQ1_0 with the adapter, f16 KV, `-c 32768`, `$FAST_FLAGS`, LoRA scale 1.0. Deviation: the row command's `hf download Continuum-AI-Corp/OrcaBonsai-27B-Uncensored ...` fails (repository not found). The adapter is the git clone `/home/irae/code/OrcaBonsai-27B-Uncensored/gguf/bonsai-abliterate-lora.gguf` at commit `947a80c`, the file run 27 served. A first start with an empty adapter path failed at once and I removed its result directory.
+- `nvidia-smi` at load: 8824 MiB; after the probe 8830 MiB (desktop included).
+- Probe (xhigh, HumanEval/32): stop, 8786 completion tokens, reasoning present, `content` 1655 characters, reasoning tail ends with the budget message, no error.
+- Splice from `bench27/results/orca-ptq1-f16-budget-xhigh`: kept 146, to generate 18.
+- Part 1 start 2026-09-20T14:23:08Z
+- Part 1: 2026-09-20T14:23:08Z to about 15:33Z (last request 15:29:21Z, evaluate after), no crash. Own wall about 70 min (requests 66.1 min). The 146 kept problems cost 82.3 min in the source. Wall about 152 min.
+- Result: base 0.976, plus 0.945. Empty 0/164, forced 18/164.
+- Finding: HumanEval/64 ended on `length` at 16384 after a forced answer here too, the third ternary row where it does so.

@@ -66,3 +66,17 @@ Ternary-Bonsai-2-27B PQ2_0, q8_0 KV, no drafter, effort xhigh, fork `prism-b1068
 - Forced ids: HumanEval/10, /32, /47, /64, /76, /80, /91, /99, /116, /129, /137, /145.
 - Empty ids: none.
 - `budget` (ended on `length` at 16384): HumanEval/64, after a forced answer. It holds code, so it is not empty.
+
+## `fast-bonsai2-ptq1-f16-orca-xhigh`
+
+Ternary-Bonsai-2-27B PTQ1_0 with the OrcaBonsai abliterate LoRA (scale 1.0, clone `947a80c`), f16 KV, no drafter, effort xhigh, fork `prism-b10685-7dffb15`, `-c 32768`, fast mode (thinking 8192, `max_tokens` 16384). Splice source: `bench27/results/orca-ptq1-f16-budget-xhigh`, 146 kept, 18 generated.
+
+| | base | plus | completion | empty | forced | wall |
+|---|--:|--:|--|--|--|--:|
+| fast mode (run 28) | 0.976 | 0.945 | 164/164 | 0/164 | 18/164 | 152 min = 70 own (14:23Z–15:33Z, 2026-09-20; requests 66.1) + 82 for the kept problems in the source |
+| before fast mode (run 27) | 0.976 | 0.945 | 164/164 | see models.json | see run 27 | 274 min |
+
+- Forced ids: HumanEval/32, /39, /47, /64, /76, /91, /92, /99, /102, /116, /129, /132, /137, /145, /146, /157, /158, /160.
+- Empty ids: none.
+- `budget` (ended on `length` at 16384): HumanEval/64, after a forced answer. It holds code, so it is not empty.
+- The row command's adapter download by `hf` fails; the adapter file is the clone at `/home/irae/code/OrcaBonsai-27B-Uncensored`.
