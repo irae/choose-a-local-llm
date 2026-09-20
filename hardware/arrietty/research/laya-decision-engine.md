@@ -98,8 +98,31 @@ verdict.
   0.5 against the base rate. Solutions over the context are counted
   and left out.
 
-The two new tests run on all three checkpoints, as shipped and with
+- `laya-portuguese`. Portuguese is a first-class target (owner,
+  2026-09-20), so `laya-multilingual` is the checkpoint that matters
+  and the other two are the comparison. Public Portuguese sets only:
+  the MASSIVE `pt-PT` intent split in full (the authors publish 0.470
+  and 0.450), and whatever labelled Portuguese sets for spam, topic
+  and sentiment the run finds with an open licence; each set found is
+  named with its source, licence and size before it is used. XNLI has
+  no Portuguese split. Table: accuracy, Brier and ECE per set and per
+  checkpoint, as shipped and with a fitted temperature.
+
+The two project tests run on all three checkpoints, as shipped and with
 temperatures fitted on a held-out half.
+
+## The harness is generic; a user's tests are not in the repo
+
+Owner decision, 2026-09-20. The repo holds one generic runner: it
+takes a questions file (`choice`, `score` and `noul` questions with
+their options), a data folder, an optional labels file and a
+checkpoint, and writes per-case answers and the summary table (count,
+accuracy, Brier, ECE, latency). The public tests above are questions
+files committed in the run kit. A user's own questions, data paths,
+labels and results live under `~/.config/choose-a-local-llm/` and are
+never committed, copied into a run kit, or named in a report. The
+runner prints only the summary table to the terminal; per-case output
+goes to a file beside the user's data.
 
 ## Decided by the owner, 2026-09-20
 
