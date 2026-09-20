@@ -18,3 +18,13 @@ One section per block, in the order the runbook lists, as it happens.
 - Part 1 start 2026-09-20T02:48:08Z
 - Part 1: 2026-09-20T02:48:08Z to about 05:56Z (finish, evaluate included). No crash, no restart. Wall about 188 min; the request walls in `finish.jsonl` sum to 177.1 min.
 - Result: base 0.963, plus 0.921. Empty 0/164, forced 8/164, no answer on `length`.
+
+## `fast-bonsai2-ptq1-f16-xhigh`
+
+- Serve: fork `prism-b10685-7dffb15` (`LD_LIBRARY_PATH` with run 17's `lib`), row command with `-c 32768`, f16 KV, `$FAST_FLAGS`.
+- `nvidia-smi` at load: 8803 MiB; after the probe 8809 MiB (desktop included).
+- Probe (xhigh, HumanEval/10): `finish_reason` stop, 8369 completion tokens, reasoning present, `content` 620 characters, reasoning tail ends with the budget message, no error in the log.
+- Splice from `bench24/results/bonsai2-ptq1-f16-evalplus-budget-xhigh`: kept 152, to generate 12 (HumanEval/10 32 39 47 76 80 95 99 116 132 137 145).
+- Part 1 start 2026-09-20T06:01:01Z
+- Part 1: 2026-09-20T06:01:01Z to 06:45Z, no crash. Own wall about 44 min (requests sum to 40.4 min). The 152 kept problems cost 81.1 min in the source. Wall about 125 min.
+- Result: base 0.976, plus 0.945. Empty 0/164, forced 12/164 (all 12 regenerated problems), none on `length`.

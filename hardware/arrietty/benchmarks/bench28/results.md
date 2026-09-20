@@ -14,3 +14,16 @@ Qwen3.8-27B UD-IQ3_S, q8_0 KV, no drafter, effort xhigh, `-c 32768`, fast mode (
 - Forced ids: HumanEval/10, /32, /39, /99, /116, /129, /137, /145.
 - Empty ids: none.
 - `budget` (ended on `length` at 16384): none.
+
+## `fast-bonsai2-ptq1-f16-xhigh`
+
+Ternary-Bonsai-2-27B PTQ1_0, f16 KV, no drafter, effort xhigh, fork `prism-b10685-7dffb15`, `-c 32768`, fast mode (thinking 8192, `max_tokens` 16384). Splice source: `bench24/results/bonsai2-ptq1-f16-evalplus-budget-xhigh`, 152 kept, 12 generated.
+
+| | base | plus | completion | empty | forced | wall |
+|---|--:|--:|--|--|--|--:|
+| fast mode (run 28) | 0.976 | 0.945 | 164/164 | 0/164 | 12/164 | 125 min = 44 own (06:01Z–06:45Z, 2026-09-20; requests 40.4) + 81 for the kept problems in the source |
+| before fast mode (run 24) | 0.970 | 0.939 | 164/164 | see models.json | see run 24 | 195.5 min |
+
+- Forced ids: HumanEval/10, /32, /39, /47, /76, /80, /95, /99, /116, /132, /137, /145.
+- Empty ids: none.
+- `budget` (ended on `length` at 16384): none.
