@@ -47,3 +47,7 @@ One section per block, in the order the runbook lists, as it happens.
 - Probe (xhigh, HumanEval/10): stop, 1636 completion tokens, reasoning present, `content` 600 characters, no error. It converged early, so no budget message shows.
 - Splice from `bench24/results/bonsai2-ptq1-evalplus-budget-xhigh`: kept 148, to generate 16.
 - Part 1 start 2026-09-20T07:34:46Z
+- Part 1: 2026-09-20T07:34:46Z to about 08:38Z (last request 08:32:53Z, evaluate after), no crash. Own wall about 64 min (requests 58.1 min). The 148 kept problems cost 75.8 min in the source. Wall about 140 min.
+- Result: base 0.982, plus 0.945. Empty 0/164, forced 16/164.
+- Finding: HumanEval/64 again ended on `length` at 16384 after a forced answer (same problem as in `fast-bonsai2-pq2-f16-xhigh`).
+- Deviation: the block ended at about 08:38Z and I closed it at 13:32Z. The wakeups did not fire between 08:00Z and 13:30Z (the session login interrupted them). The card sat idle about 5 hours.
