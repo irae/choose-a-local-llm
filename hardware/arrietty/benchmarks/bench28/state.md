@@ -103,3 +103,7 @@ One section per block, in the order the runbook lists, as it happens.
 - Probe (`enable_thinking` true, HumanEval/1): stop, 2467 completion tokens, reasoning present, `content` 1418 characters, no error. It converged early, so no budget message shows.
 - Splice from `bench21/results/gemma12-nvfp4-budget-on`: kept 119, to generate 45 (planning count 45).
 - Part 1 start 2026-09-20T18:39:54Z
+
+## `fast-qwen38-oblit-q3km-medium`
+
+- Dropped on the owner's word, relayed by the coordinator on 2026-09-20: the abliterated Qwen3.8 model is retired. The block never starts. The coordinator deletes its two cache files. Order left: `fast-gemma12-nvfp4-on`, `fast-gemma12-q4kxl-on`, `retry-sweep` (with `fast-qwen36-q4kxl-on` when the coordinator says so).
