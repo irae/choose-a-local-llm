@@ -121,3 +121,17 @@ Gemma-4-12B UD-Q4_K_XL, f16 KV, no drafter, thinking on, run 19's binary, `-c 32
 - Empty ids: none.
 - `budget` (ended on `length` at 16384): none.
 - The score comes from a manual `evalplus.evaluate` run; see `state.md`.
+
+## `fast-qwen36-q4kxl-on`
+
+Qwen3.6-35B-A3B UD-Q4_K_XL (MTP build), q8_0 KV, MTP drafter (`--spec-type draft-mtp --spec-draft-n-max 2`), `--n-cpu-moe 21`, thinking on, run 19's binary, `-c 32768`, fast mode (thinking 8192, `max_tokens` 16384). Splice source: none, all 164 generated.
+
+| | base | plus | completion | empty | forced | wall |
+|---|--:|--:|--|--|--|--:|
+| fast mode (run 28) | 0.976 | 0.933 | 164/164 | 0/164 | 12/164 | 144 min (one part, 01:01Z to 03:25Z, 2026-09-21; requests 141.7) |
+| before fast mode | 0.945 | 0.902 | 96% (models.json) | see models.json | see models.json | 192 min |
+
+- Forced ids: HumanEval/23, /32, /49, /55, /62, /67, /77, /84, /130, /139, /157, /160.
+- Empty ids: none.
+- `budget` (ended on `length` at 16384): none.
+- The file was downloaded again for this block (22853663008 bytes, sha256 `55983c5a...fe9f1`, the run 17 record).
