@@ -80,4 +80,6 @@ Summary: forced-pass 3, forced-fail-late 0, forced-fail-loop 4, forced-fail-wron
 
 ## bonsai2-mlx-probe-mac
 
-Stock `mlx_lm.server` 0.31.3 (`mlx` 0.32.0), pack `prism-ml/Ternary-Bonsai-2-27B-mlx-2bit` at `3f926b4`. The pack does not load: `ValueError: Model type prism_hadamard_qwen35 not supported.` No prompt was answered. Gate: stop. The sweep block did not run. Owner decision open.
+Pack `prism-ml/Ternary-Bonsai-2-27B-mlx-2bit` at `3f926b4`. The stock `mlx_lm.server` 0.31.3 does not load it (`Model type prism_hadamard_qwen35 not supported`), and the pack's own runtime refuses it (`Unsupported packed model schema`). `mlx-vlm` 0.7.1 built from `main` (commit `1ab87fc`) loads it. Probe answers at temperature 0, `max_tokens` 256, coherent and correct: `391`; a correct `reverse_string` function; "The capital of France is **Paris**." Gate: pass.
+
+**This row is served by `mlx_vlm.server` from `mlx-vlm` main, not by the stock `mlx_lm.server`.** Every MLX cell below belongs to that route.

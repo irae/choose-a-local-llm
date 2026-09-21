@@ -93,16 +93,21 @@ no empty, 7 forced. Blind agent row: 59.5, peak context 192679 of a
 
 The coordinator relayed the owner's word: work the problem until the pack loads under MLX and answers the three prompts; record every route with versions and exact errors; never patch a file inside the pack or an installed package; a route that works but is not the stock server is a result, labelled as such.
 
-Research done (read-only, no code run):
+Routes tried, in order. Venvs are under `~/.local/share/choose-a-local-llm/mlx-bonsai2/`; freezes in `results/`.
 
-- Route 1, stock `mlx_lm.server` 0.31.3: tried, error `ValueError: Model type prism_hadamard_qwen35 not supported.` (above).
-- Route 2, the pack's own runtime (`pack/runtime/artifact.py` `load_model`, `runtime.py` `Packed`): the pack's `requirements.txt` pins `mlx==0.32.0`, `mlx-lm==0.31.3`, `mlx-vlm==0.6.3`, `transformers==5.5.0`, `pillow`, `numpy>=2`, `tokenizers>=0.21`, `jinja2>=3.1`. Read of the code: `artifact.load_model` accepts `schema_version == 1` only, and the pack's `config.json` says `schema_version: 2` (and it also holds a vision tower that `artifact.py` does not load). It will likely refuse the pack. Not run yet.
-- Route 3, the publisher's demo (`PrismML-Eng/Bonsai-demo`): `setup.sh` makes a venv, builds the fork `PrismML-Eng/mlx` branch `prism` (validated commit `88c9c20`) from source, and pins `mlx-lm==0.31.2`, Python 3.11. Serve with `scripts/start_mlx_server.sh` on port 8081. Not run yet.
-- Route 4, `mlx-vlm`: its `main` merged support for `prism_hadamard_qwen35` on 2026-09-17 (pull request 2293). It is newer than release 0.7.1, so it needs a build from `main`. Not run yet.
-- Route 5, third-party servers with a loader for this type: `ddalcu/mlx-serve` pull 457, `raullenchai/Rapid-MLX` pulls 3552 and 3555. Not run yet.
-- Route 6, LM Studio's MLX engine: not looked at yet.
+| route | versions | result |
+|---|---|---|
+| 1. stock `mlx_lm.server` | `mlx-lm` 0.31.3, `mlx` 0.32.0 (`venv`, `results/mlx-venv-freeze.txt`) | `ValueError: Model type prism_hadamard_qwen35 not supported.` from `mlx_lm/utils.py`, `load_model` |
+| 2. the pack's own runtime, `artifact.load_model` | the pack's `requirements.txt` pins: `mlx` 0.32.0, `mlx-lm` 0.31.3, `mlx-vlm` 0.6.3, `transformers` 5.5.0, Python 3.14.7 (`venv-pack`, `results/mlx-venv-pack-freeze.txt`) | `ValueError: Unsupported packed model schema`. The loader accepts `schema_version` 1 only; the pack's `config.json` says 2. |
+| 3. `mlx-vlm` built from `main` | `mlx-vlm` 0.7.1 at commit `1ab87fc7f3569a6daa123f4c353018dd781189dc`, `mlx` 0.32.2, `transformers` 5.17.0 (`venv-vlm`, `results/mlx-venv-vlm-freeze.txt`) | **Loads and answers all three prompts.** Its model registry has `prism_hadamard_qwen35` (pull request 2293, merged 2026-09-17). |
 
-Blocked: the session's permission classifier denied `pip install -r pack/runtime/requirements.txt` into a new venv (the file came from the downloaded pack). No route that installs or runs code from outside the machine's existing tools can start until the owner allows it.
+Not needed after route 3 worked, not tried: the publisher's demo build of the `PrismML-Eng/mlx` fork with `mlx-lm` 0.31.2, the third-party servers `mlx-serve` and `Rapid-MLX`, and LM Studio's MLX engine.
+
+No file inside the pack or inside an installed package was edited.
+
+Probe answers (temperature 0, `max_tokens` 256), in `results/mlx-probe-vlm.log` (`python -m mlx_vlm.generate`) and `results/mlx-probe-vlm-server.log` (through the server): `391`; a correct `reverse_string` function using `s[::-1]`, cut by the 256 limit in the server run; "The capital of France is **Paris**." All three are coherent and correct. The gate passes.
+
+**The row is served by `mlx_vlm.server` from `mlx-vlm` main, not by the stock `mlx_lm.server`.** Command: `venv-vlm/bin/python -m mlx_vlm.server --host 127.0.0.1 --port 8081 --model <pack dir>`. Differences from the runbook's server: no `--prompt-cache-size` flag exists, and `/v1/cache/stats` reports the cache disabled, so the server may re-read the whole prompt at every step. The creep tool has no backend for this server; the sweep uses its `lmstudio` backend (streamed `/v1/chat/completions`, tool `e38c467`, pause 60 s, `STALL_S` 2400) with `MODEL` set to the pack path. Server log `results/server-mlx-vlm.log`. The pack carries the vision tower; the server was not given an image.
 
 ## Disk clean-up, 2026-09-19 (owner)
 

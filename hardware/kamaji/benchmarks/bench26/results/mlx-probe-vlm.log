@@ -1,0 +1,45 @@
+=== PROMPT: What is 17*23? Answer with the number only.
+391
+=== PROMPT: Write a Python function that reverses a string.
+```python
+def reverse_string(s: str) -> str:
+    """
+    Reverse a string.
+    
+    Args:
+        s: The input string to reverse.
+        
+    Returns:
+        The reversed string.
+    """
+    return s[::-1]
+```
+
+### How It Works
+
+The slice notation `s[::-1]` is the most Pythonic way to reverse a string:
+
+| Slice Part | Meaning |
+|------------|---------|
+| `start`    | *(omitted)* → defaults to the end of the string |
+| `stop`     | *(omitted)* → defaults to the beginning of the string |
+| `step`     | `-1` → move backwards one character at a time |
+
+### Example Usage
+
+```python
+print(reverse_string("hello"))   # "olleh"
+print(reverse_string("Python"))  # "nohtyP"
+print(reverse_string(""))        # ""
+print(reverse_string("a"))       # "a"
+```
+
+### Alternative Approaches
+
+If you want to see other ways to reverse a string:
+
+```python
+# Using join and reversed()
+def reverse_string_v2(s: str) -> str:
+=== PROMPT: Name the capital of France.
+The capital of France is **Paris**.
