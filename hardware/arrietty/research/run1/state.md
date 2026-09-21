@@ -208,3 +208,17 @@ log in the repository or under
 `~/.local/share/choose-a-local-llm/evidence/`. The runbook says: with
 fewer than three found, write that and close the test. The table of
 what was searched and what is in those two places is in `results.md`.
+
+### `laya-pass-gate` — closed
+
+54 cells, nine fast-mode HumanEval+ rows, three checkpoints, as shipped
+and fitted, no failure. The table is in `results.md`.
+
+The pairs are all bench 28; it holds the only fast-mode EvalPlus rows
+in the repository. Task prompts come from `evalplus/humanevalplus`,
+matched by `task_id`, with no task missing in any row.
+
+The table carries a "share called pass" column beside the pass rate,
+because the two together say whether a row decides anything or answers
+one constant. A runner writes no verdict, and that column lets the
+coordinator read the row without one.

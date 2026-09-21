@@ -1,0 +1,39 @@
+{
+  "checkpoint": "multilingual",
+  "device": "cuda",
+  "dtype": "torch.bfloat16",
+  "max_len": 1024,
+  "cases": 156,
+  "reported_cases": 156,
+  "questions_per_case": 1,
+  "per_case_questions": false,
+  "over_context": 8,
+  "skipped_over_context": 8,
+  "batch": 8,
+  "cold_load_s": 12.894,
+  "calls": 20,
+  "p50_ms": 87.04416546970606,
+  "p95_ms": 106.94201976875776,
+  "questions_per_s": 95.70194017991955,
+  "peak_gpu_mb_nvidia_smi": 3027,
+  "peak_gpu_mb_torch": 1714.7,
+  "peak_rss_mb": 4475.8,
+  "input_tokens": 72019,
+  "fitted_temperature": null,
+  "overall": {
+    "cases": 156,
+    "labelled": 156,
+    "accuracy": 0.9487179487179487,
+    "brier": 0.10072371268889564,
+    "ece": 0.0330883342896048
+  },
+  "per_question": {
+    "passes": {
+      "cases": 156,
+      "labelled": 156,
+      "accuracy": 0.9487179487179487,
+      "brier": 0.10072371268889564,
+      "ece": 0.0330883342896048
+    }
+  }
+}

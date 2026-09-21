@@ -206,3 +206,104 @@ What is in the two places, and why none of it is a session log:
 For a later run: the gate needs turn-level text. Nothing in the two
 places carries it today, so the test can only run after a Mendel run
 archives its `<slug>-events.jsonl` or its session log.
+
+## `laya-pass-gate`
+
+One `noul` question, "This solution passes the hidden tests.", over the
+task prompt and the model's solution. The label is the plus-tests
+result of the same task. Both rows of a pair report the second half of
+the kept cases, the half the fitted run reports.
+
+The pairs found, all fast mode, all under `hardware/*/benchmarks/`:
+
+| model row | sample file | cases | pass rate |
+| --- | --- | --- | --- |
+| `fast-bonsai2-pq2-f16-xhigh` | `hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-pq2-f16-xhigh/humaneval/bonsai2-27b-pq2-f16_openai_temp_0.0.jsonl` | 164 | 0.9451 |
+| `fast-bonsai2-pq2-xhigh` | `hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-pq2-xhigh/humaneval/bonsai2-27b-pq2_openai_temp_0.0.jsonl` | 164 | 0.9451 |
+| `fast-bonsai2-ptq1-f16-orca-xhigh` | `hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-ptq1-f16-orca-xhigh/humaneval/bonsai2-27b-ptq1-f16-orca_openai_temp_0.0.jsonl` | 164 | 0.9512 |
+| `fast-bonsai2-ptq1-f16-xhigh` | `hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-ptq1-f16-xhigh/humaneval/bonsai2-27b-ptq1-f16_openai_temp_0.0.jsonl` | 164 | 0.9451 |
+| `fast-bonsai2-ptq1-xhigh` | `hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-ptq1-xhigh/humaneval/bonsai2-27b-ptq1_openai_temp_0.0.jsonl` | 164 | 0.9512 |
+| `fast-gemma12-nvfp4-on` | `hardware/arrietty/benchmarks/bench28/results/fast-gemma12-nvfp4-on/humaneval/gemma-4-12b-nvfp4_openai_temp_0.0.jsonl` | 164 | 0.9512 |
+| `fast-gemma12-q4kxl-on` | `hardware/arrietty/benchmarks/bench28/results/fast-gemma12-q4kxl-on/humaneval/gemma-4-12b-q4kxl_openai_temp_0.0.jsonl` | 164 | 0.9634 |
+| `fast-gemma26-nvfp4-on` | `hardware/arrietty/benchmarks/bench28/results/fast-gemma26-nvfp4-on/humaneval/gemma-4-26b-a4b-nvfp4_openai_temp_0.0.jsonl` | 164 | 0.9512 |
+| `fast-qwen38-iq3s-xhigh` | `hardware/arrietty/benchmarks/bench28/results/fast-qwen38-iq3s-xhigh/humaneval/qwen3.8-27b-iq3s_openai_temp_0.0.jsonl` | 164 | 0.9268 |
+
+| model row | checkpoint | cases kept | left out | pass rate | fitted | gate accuracy at 0.5 | share called pass | Brier | ECE | temperature |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `fast-bonsai2-pq2-f16-xhigh` | `english` | 135 | 29 | 0.8971 | no | 0.8382 | 0.8824 | 0.1345 | 0.1530 | 1.983 |
+| `fast-bonsai2-pq2-f16-xhigh` | `english` | 135 | 29 | 0.8971 | yes | 0.8382 | 0.8824 | 0.1142 | 0.0673 | 0.893 |
+| `fast-bonsai2-pq2-f16-xhigh` | `multilingual` | 156 | 8 | 0.8974 | no | 0.8974 | 1.0000 | 0.0994 | 0.0815 | 1.000 |
+| `fast-bonsai2-pq2-f16-xhigh` | `multilingual` | 156 | 8 | 0.8974 | yes | 0.8974 | 1.0000 | 0.1026 | 0.1026 | 0.050 |
+| `fast-bonsai2-pq2-f16-xhigh` | `typed-decisions` | 162 | 2 | 0.9012 | no | 0.8272 | 0.8765 | 0.1947 | 0.2322 | 1.983 |
+| `fast-bonsai2-pq2-f16-xhigh` | `typed-decisions` | 162 | 2 | 0.9012 | yes | 0.8272 | 0.8765 | 0.1446 | 0.1120 | 0.275 |
+| `fast-bonsai2-pq2-xhigh` | `english` | 134 | 30 | 0.9104 | no | 0.7463 | 0.8060 | 0.1585 | 0.0844 | 1.983 |
+| `fast-bonsai2-pq2-xhigh` | `english` | 134 | 30 | 0.9104 | yes | 0.7463 | 0.8060 | 0.1610 | 0.0975 | 0.988 |
+| `fast-bonsai2-pq2-xhigh` | `multilingual` | 154 | 10 | 0.9091 | no | 0.8831 | 0.9740 | 0.0975 | 0.0797 | 1.000 |
+| `fast-bonsai2-pq2-xhigh` | `multilingual` | 154 | 10 | 0.9091 | yes | 0.8831 | 0.9740 | 0.0988 | 0.0820 | 0.871 |
+| `fast-bonsai2-pq2-xhigh` | `typed-decisions` | 163 | 1 | 0.9146 | no | 0.7683 | 0.8049 | 0.1947 | 0.1817 | 1.983 |
+| `fast-bonsai2-pq2-xhigh` | `typed-decisions` | 163 | 1 | 0.9146 | yes | 0.7683 | 0.8049 | 0.1506 | 0.0813 | 0.353 |
+| `fast-bonsai2-ptq1-f16-orca-xhigh` | `english` | 137 | 27 | 0.9130 | no | 0.8261 | 0.8261 | 0.1366 | 0.1165 | 1.983 |
+| `fast-bonsai2-ptq1-f16-orca-xhigh` | `english` | 137 | 27 | 0.9130 | yes | 0.8261 | 0.8261 | 0.1237 | 0.0803 | 0.829 |
+| `fast-bonsai2-ptq1-f16-orca-xhigh` | `multilingual` | 156 | 8 | 0.9103 | no | 0.9103 | 1.0000 | 0.0932 | 0.0992 | 1.000 |
+| `fast-bonsai2-ptq1-f16-orca-xhigh` | `multilingual` | 156 | 8 | 0.9103 | yes | 0.9103 | 1.0000 | 0.0919 | 0.0963 | 0.454 |
+| `fast-bonsai2-ptq1-f16-orca-xhigh` | `typed-decisions` | 163 | 1 | 0.9146 | no | 0.8293 | 0.8659 | 0.1862 | 0.2296 | 1.983 |
+| `fast-bonsai2-ptq1-f16-orca-xhigh` | `typed-decisions` | 163 | 1 | 0.9146 | yes | 0.8293 | 0.8659 | 0.1320 | 0.0984 | 0.255 |
+| `fast-bonsai2-ptq1-f16-xhigh` | `english` | 134 | 30 | 0.9104 | no | 0.7910 | 0.8209 | 0.1383 | 0.1116 | 1.983 |
+| `fast-bonsai2-ptq1-f16-xhigh` | `english` | 134 | 30 | 0.9104 | yes | 0.7910 | 0.8209 | 0.1303 | 0.0910 | 0.871 |
+| `fast-bonsai2-ptq1-f16-xhigh` | `multilingual` | 154 | 10 | 0.8961 | no | 0.8961 | 1.0000 | 0.1012 | 0.0989 | 1.000 |
+| `fast-bonsai2-ptq1-f16-xhigh` | `multilingual` | 154 | 10 | 0.8961 | yes | 0.8961 | 1.0000 | 0.1039 | 0.1039 | 0.050 |
+| `fast-bonsai2-ptq1-f16-xhigh` | `typed-decisions` | 162 | 2 | 0.9012 | no | 0.8025 | 0.8519 | 0.1918 | 0.2404 | 1.983 |
+| `fast-bonsai2-ptq1-f16-xhigh` | `typed-decisions` | 162 | 2 | 0.9012 | yes | 0.8025 | 0.8519 | 0.1356 | 0.1105 | 0.353 |
+| `fast-bonsai2-ptq1-xhigh` | `english` | 134 | 30 | 0.9104 | no | 0.7463 | 0.8060 | 0.1558 | 0.1267 | 1.983 |
+| `fast-bonsai2-ptq1-xhigh` | `english` | 134 | 30 | 0.9104 | yes | 0.7463 | 0.8060 | 0.1596 | 0.1218 | 0.916 |
+| `fast-bonsai2-ptq1-xhigh` | `multilingual` | 157 | 7 | 0.9114 | no | 0.9114 | 1.0000 | 0.0905 | 0.0893 | 1.000 |
+| `fast-bonsai2-ptq1-xhigh` | `multilingual` | 157 | 7 | 0.9114 | yes | 0.9114 | 1.0000 | 0.0909 | 0.0947 | 0.678 |
+| `fast-bonsai2-ptq1-xhigh` | `typed-decisions` | 161 | 3 | 0.9136 | no | 0.8148 | 0.8519 | 0.1916 | 0.2214 | 1.983 |
+| `fast-bonsai2-ptq1-xhigh` | `typed-decisions` | 161 | 3 | 0.9136 | yes | 0.8148 | 0.8519 | 0.1420 | 0.0663 | 0.454 |
+| `fast-gemma12-nvfp4-on` | `english` | 102 | 62 | 0.9412 | no | 0.9412 | 0.9216 | 0.1127 | 0.2329 | 1.983 |
+| `fast-gemma12-nvfp4-on` | `english` | 102 | 62 | 0.9412 | yes | 0.9412 | 0.9216 | 0.0648 | 0.1270 | 0.808 |
+| `fast-gemma12-nvfp4-on` | `multilingual` | 153 | 11 | 0.9221 | no | 0.9221 | 1.0000 | 0.0792 | 0.0859 | 1.000 |
+| `fast-gemma12-nvfp4-on` | `multilingual` | 153 | 11 | 0.9221 | yes | 0.9221 | 1.0000 | 0.0779 | 0.0779 | 0.050 |
+| `fast-gemma12-nvfp4-on` | `typed-decisions` | 161 | 3 | 0.9136 | no | 0.8272 | 0.8889 | 0.1851 | 0.2502 | 1.983 |
+| `fast-gemma12-nvfp4-on` | `typed-decisions` | 161 | 3 | 0.9136 | yes | 0.8272 | 0.8889 | 0.1213 | 0.1075 | 0.194 |
+| `fast-gemma12-q4kxl-on` | `english` | 95 | 69 | 0.9583 | no | 0.8333 | 0.8750 | 0.1252 | 0.1336 | 1.983 |
+| `fast-gemma12-q4kxl-on` | `english` | 95 | 69 | 0.9583 | yes | 0.8333 | 0.8750 | 0.1213 | 0.1236 | 0.695 |
+| `fast-gemma12-q4kxl-on` | `multilingual` | 155 | 9 | 0.9615 | no | 0.9487 | 0.9872 | 0.0422 | 0.0301 | 1.000 |
+| `fast-gemma12-q4kxl-on` | `multilingual` | 155 | 9 | 0.9615 | yes | 0.9487 | 0.9872 | 0.0419 | 0.0330 | 0.850 |
+| `fast-gemma12-q4kxl-on` | `typed-decisions` | 160 | 4 | 0.9500 | no | 0.8500 | 0.8750 | 0.1765 | 0.2783 | 1.983 |
+| `fast-gemma12-q4kxl-on` | `typed-decisions` | 160 | 4 | 0.9500 | yes | 0.8500 | 0.8750 | 0.1014 | 0.0742 | 0.231 |
+| `fast-gemma26-nvfp4-on` | `english` | 95 | 69 | 0.9583 | no | 0.9375 | 0.9375 | 0.1046 | 0.2059 | 1.983 |
+| `fast-gemma26-nvfp4-on` | `english` | 95 | 69 | 0.9583 | yes | 0.9375 | 0.9375 | 0.0667 | 0.1245 | 0.769 |
+| `fast-gemma26-nvfp4-on` | `multilingual` | 149 | 15 | 0.9200 | no | 0.9200 | 1.0000 | 0.0782 | 0.0743 | 1.000 |
+| `fast-gemma26-nvfp4-on` | `multilingual` | 149 | 15 | 0.9200 | yes | 0.9200 | 1.0000 | 0.0792 | 0.0741 | 0.769 |
+| `fast-gemma26-nvfp4-on` | `typed-decisions` | 158 | 6 | 0.9367 | no | 0.8734 | 0.9114 | 0.1743 | 0.2686 | 1.983 |
+| `fast-gemma26-nvfp4-on` | `typed-decisions` | 158 | 6 | 0.9367 | yes | 0.8734 | 0.9114 | 0.0992 | 0.0967 | 0.312 |
+| `fast-qwen38-iq3s-xhigh` | `english` | 131 | 33 | 0.8788 | no | 0.7727 | 0.8333 | 0.1615 | 0.1030 | 1.983 |
+| `fast-qwen38-iq3s-xhigh` | `english` | 131 | 33 | 0.8788 | yes | 0.7727 | 0.8333 | 0.1554 | 0.1160 | 1.177 |
+| `fast-qwen38-iq3s-xhigh` | `multilingual` | 159 | 5 | 0.8875 | no | 0.8875 | 1.0000 | 0.1081 | 0.0901 | 1.000 |
+| `fast-qwen38-iq3s-xhigh` | `multilingual` | 159 | 5 | 0.8875 | yes | 0.8875 | 1.0000 | 0.1090 | 0.0962 | 0.916 |
+| `fast-qwen38-iq3s-xhigh` | `typed-decisions` | 163 | 1 | 0.8902 | no | 0.7927 | 0.8537 | 0.2012 | 0.2196 | 1.983 |
+| `fast-qwen38-iq3s-xhigh` | `typed-decisions` | 163 | 1 | 0.8902 | yes | 0.7927 | 0.8537 | 0.1636 | 0.1155 | 0.320 |
+
+Conditions. `laya` 0.3.4, checkpoint revision `1c5edc17`, CUDA,
+bfloat16, `--batch 8`, `--skip-over-context`. Every pair is bench 28,
+the only fast-mode EvalPlus rows in the repository; all nine are
+HumanEval+, 164 tasks each. The task prompts come from
+`evalplus/humanevalplus`, matched by `task_id`; no task was missing.
+A case whose state does not fit the checkpoint context is counted in
+"left out" and takes no part in any number of its row. That is why
+`laya` keeps about 134 of 164 cases at 512 tokens, while the two
+1,024-token checkpoints keep 149 to 163.
+
+"Share called pass" is the share of kept cases the gate answers with
+P(true) at or over 0.5. The pass rate beside it is the share that
+really passes, so the two columns together say whether a row's accuracy
+comes from a decision or from one constant answer.
+
+Two notes on the fit. The fitted scalar runs into the ends of the
+search range on some rows: 0.050, the bottom, on two
+`laya-multilingual` rows, and 20.000 is not reached here. A value at a
+bound is the value at the bound, not a converged fit. And the labels
+are heavily one-sided: the pass rates run from 0.879 to 0.963, so the
+second half of a row holds about 8 to 20 failing solutions. Every
+number in this table rests on that many negatives.
