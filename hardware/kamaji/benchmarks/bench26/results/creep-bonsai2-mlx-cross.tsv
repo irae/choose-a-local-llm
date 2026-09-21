@@ -1,0 +1,7 @@
+llama-server, endpoint=completion thinking=n/a (no template) contexts=1 pause=60s
+start: wired 2761 MB, free 4999 MB, swap used 1439 MB
+context	depth_tokens	decode_toks	wired_mb	free_mb	swap_delta_mb	compress_pages	decompress_pages	step_seconds
+A	24602	12.00	15108	11991	0	48312	15015	213
+A	32818	10.45	15683	11416	-8	29482	27104	300
+A	40982	8.12	15960	11731	1268	2235507	2014560	410
+STOP: swap grew 1268 MB by depth 40982; the machine is timing the swap file, not the model.

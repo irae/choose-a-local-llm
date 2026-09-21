@@ -77,3 +77,35 @@ Natural re-run at 30000 of the 7 forced answers' failures (4 problems), PTQ1_0, 
 | HumanEval/145 | forced-fail-loop | 16268 | length | 30000 |
 
 Summary: forced-pass 3, forced-fail-late 0, forced-fail-loop 4, forced-fail-wrong 0. Corrected think budget: unchanged, no late answer.
+
+## bonsai2-mlx-probe-mac
+
+Pack `prism-ml/Ternary-Bonsai-2-27B-mlx-2bit` at `3f926b4`. The stock `mlx_lm.server` 0.31.3 does not load it (`Model type prism_hadamard_qwen35 not supported`), the pack's `artifact.py` refuses it (`Unsupported packed model schema`), and Apple's newest `mlx-lm` release has no module for the type. A third-party `mlx-vlm` `main` build loaded it and the owner withdrew that route as not trusted; its numbers are deleted.
+
+**Gate: pass, by the publisher's own route, not by a stock server.** `PrismML-Eng/Bonsai-demo` `scripts/mlx_generate_bonsai2.py` (commit `23da136`) with the pack's `runtime/` loader (hashes match the demo manifest), `mlx` 0.32.0, `mlx-vlm` 0.6.3, `transformers` 5.5.0. Temperature 0, 256 tokens: `391`; a correct `reverse_string` function; "The capital of France is **Paris**." Log `results/mlx-probe-official.log`. The publisher ships no MLX server for this pack.
+
+## sweep-bonsai2-mlx-mac
+
+Pack `prism-ml/Ternary-Bonsai-2-27B-mlx-2bit` at `3f926b4`, f16, `mlx` 0.32.0, `mlx-vlm` 0.6.3, wired limit 25000. **Served by `tools/sweeps/bonsai2-mlx-server.py`, which wraps the publisher's own loader; it is not a stock server.** No prompt cache. Creep tool `e38c467`, pause 60 s. Two creeps.
+
+| depth | tok/s | wired MB | swap delta MB | compress pages | decompress pages |
+|--:|--:|--:|--:|--:|--:|
+| 4114 | 21.47 | 13363 | 0 | 0 | 4731 |
+| 24602 | 12.13 | 14425 | 0 | 96688 | 95182 |
+| 24602 (second creep) | 12.00 | 15108 | 0 | 48312 | 15015 |
+| 32818 | 10.45 | 15683 | -8 | 29482 | 27104 |
+| 40982 | 8.12 | 15960 | 1268 | 2235507 | 2014560 |
+| 65578 | 6.18 | 19618 | 962 | 1608756 | 1050562 |
+
+The two rows with swap growth are not clean. Clean depth 32818. Window 28672.
+
+Beside the two GGUF sweeps of this run, at the same depths (tok/s):
+
+| depth | MLX (this tool) | PQ2_0 | PTQ1_0 |
+|--:|--:|--:|--:|
+| 4K | 21.47 | 17.05 | 17.86 |
+| 24K | 12.13 | 12.26 | 16.05 |
+| 33K | 10.45 | 11.20 | 15.28 |
+| 41K | 8.12 (swap) | 9.50 | 14.71 |
+| 66K | 6.18 (swap) | 7.91 | 13.05 |
+| clean depth | 32818 | 40982 | 163858 |
