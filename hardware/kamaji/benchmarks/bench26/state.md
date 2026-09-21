@@ -16,9 +16,9 @@ happen, and the handing-over section at the end.
 | `bonsai2_27b_pq2_mac_c` | 262144 | `bonsai2-pq2-ladder-mac` |
 | `bonsai2_27b_ptq1_mac_c` | 262144 | `bonsai2-ptq1-ladder-mac` |
 | `bonsai2_pq2_mac_clean` | 40982 | `sweep-bonsai2-pq2-mac` |
-| `bonsai2_ptq1_mac_clean` | 163858 |
+| `bonsai2_ptq1_mac_clean` | 163858 | `sweep-bonsai2-ptq1-mac` |
 | `bonsai2_mlx_mac_clean` | 32818 | `sweep-bonsai2-mlx-mac` |
-| `bonsai2_mlx_mac_window` | 28672 | clean depth minus 5 percent (31177), rounded down to a multiple of 4096 | `sweep-bonsai2-ptq1-mac` |
+| `bonsai2_mlx_mac_window` | 28672 | `sweep-bonsai2-mlx-mac`: clean depth minus 5 percent (31177), rounded down to a multiple of 4096 |
 | `served_pack` | PTQ1_0, `bonsai2-27b-ptq1-mac` | no name arrived from the coordinator at the second sweep's close; the deeper clean depth (163858 against 40982) decides, by the runbook |
 
 The card's rows to read against, from `bench24`: PQ2_0 at q8_0 serves
@@ -143,7 +143,7 @@ Owner approved the deletion. No partial download existed. Removed from the Huggi
 
 ## Handing-over
 
-**Status, 2026-09-20: the run waits for an owner decision.** `bonsai2-mlx-probe-mac` stopped at its gate: the stock `mlx_lm.server` 0.31.3 cannot load the pack at revision `3f926b415992eaa2ae9dd7b573706494d6bbf787` (`model.safetensors` 8595477990 bytes), error `Model type prism_hadamard_qwen35 not supported`. The owner chooses between dropping the MLX blocks and a loader route the owner names. The coordinator holds the run. Nothing runs on the Mac for this run.
+**Status, 2026-09-22: the run is complete.** Every block in the runbook ran or is closed with a recorded reason. `bonsai2-mendel-blind-xhigh-mac` was cancelled by the owner and does not come back. The MLX blocks ran on the publisher's own loader (`bonsai2-mlx-probe-mac` pass, `sweep-bonsai2-mlx-mac` clean depth 32818, window 28672), served by `tools/sweeps/bonsai2-mlx-server.py`, which is not a stock server. `retry-sweep` has nothing to retry. Machine state left behind: no server, no watcher. Venvs and the pack in `~/.local/share/choose-a-local-llm/mlx-bonsai2/` (`venv` stock `mlx-lm`, `venv-mlxlm-latest`, `venv-official`, `Bonsai-demo`, `pack`); the pi entry `bonsai2-27b-ptq1-mac` in `~/.pi/agent/models.json` with a backup. Free disk about 110 GB. The coordinator owns the merge and the report.
 
 Paused by the owner on 2026-09-19 and resumed 2026-09-20 (see `bonsai2-mlx-probe-mac`). Pause note: after `bonsai2-smoke-xhigh-mac` and before `bonsai2-mendel-blind-xhigh-mac` (`simulator(mendel-blind) bonsai-27b-ptq1 ptq1/xhigh`). The owner needs the Mac for other work. That block has no result, no worktree, no branch and no run file. It starts again from scratch when the owner says so.
 
