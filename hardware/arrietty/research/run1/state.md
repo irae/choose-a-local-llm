@@ -253,3 +253,59 @@ directory in the runner, the `pt-PT` config name that is `pt` in
 `mteb/amazon_massive_intent`, the two Hugging Face copies of
 B2W-Reviews01 that are loader scripts, and the CSV column that
 `datasets` cannot type.
+
+## Handing over
+
+Research run 1 ran on 2026-09-21, 00:29 to 04:20, on `arrietty`, the
+RTX 5060 Ti 16 GB machine, in the worktree
+`/home/irae/code/choose-a-local-llm-research1` on branch
+`laya-research`. Nothing was pushed and nothing was merged, as the
+runbook says.
+
+**What ran.** `harness`, `laya-cost` on CUDA and on the CPU,
+`laya-portuguese`, `laya-loop-gate` and `laya-pass-gate` are closed and
+their tables are in `results.md`. `laya-claims` did not run: the
+permission classifier refuses the authors' script. `laya-loop-gate`
+closed with no measurement, because no session log survives for any of
+the thirteen loop occurrences. Every other test measured what the
+runbook asked of it.
+
+**Versions and sources.** `laya` 0.3.4. Checkpoints: the bundle repo
+`convaiinnovations/laya` at revision
+`1c5edc17a7acd8701df6fc341c0d179f1c62c982`, which carries all three
+(`english` at the root, `multilingual` and `typed-decisions` in
+subfolders). The standalone repos, not used by the run but read for
+their revisions, are `laya-multilingual` `052592a1` and
+`laya-typed-decisions` `f9ab0b22`. Authors' repository
+`https://github.com/NandhaKishorM/laya` at commit
+`42626c348753fbb17572a813127df2278a1ec527`. torch 2.14.0+cu130,
+transformers 5.17.0, datasets 5.0.1, Python 3.12.14, driver 610.57.04.
+Datasets: `mteb/amazon_massive_intent` `940fd47a` config `pt`;
+`Davlan/sib200` config `por_Latn`; `dbarbedillo/SMS_Spam_Multilingual_Collection_Dataset`;
+`americanas-tech/b2w-reviews01` at commit `4639429e`;
+`evalplus/humanevalplus`; `LocalLLaMA/typed-decisions` `ea930645`,
+downloaded but not used, because it belongs to the blocked test.
+
+**Machine state left behind.** No compute job on the card; it sits at
+its 954 MB desktop baseline. No server was ever started, because this
+model category serves nothing. The run watcher is stopped. Swap is
+10,520 MB, under the 11,364 MB it started at. The virtual environment
+`scratchpad/laya-venv` and the clone `scratchpad/laya-repo` stay in the
+worktree, both ignored by git, so the blocked test can run without
+building them again. The checkpoints and the datasets are in the
+Hugging Face cache.
+
+**Evidence archived.**
+`~/.local/share/choose-a-local-llm/evidence/research1`, 334 files,
+77 MB: every per-case answer file, every summary, the questions files,
+the two fixed states and the build scripts.
+`tools/archive-evidence.sh` copied nothing, because it matches Mendel
+file names (`*-session.jsonl`, `*-events.jsonl`, `server-*.log` and so
+on) and this run's evidence is per-case answer files under
+`*/answers/`. The copy was made by hand with the same layout and the
+same `ARCHIVED` stamp. Changing the tool is the owner's call, not a
+runner's.
+
+**What the coordinator reads.** `results.md` holds one section per
+test, each with its table and its conditions. No verdict, no pick and
+no recommendation is written anywhere in this run.
