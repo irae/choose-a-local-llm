@@ -413,6 +413,18 @@ Benchmark work:
   2026-09-13): not a log, not a generated file a serving command
   points at, not a scratch directory. A bias file kept there was lost
   once and blocked a run twice.
+- **An agent solves the problem; it does not hand it back** (owner
+  rule, 2026-09-21). A gate stops a wrong measurement, not an
+  investigation. Before a stop-and-ask, research the failure and try
+  the routes that exist: the publisher's own runtime, the package's
+  own extension points, other versions, how other projects serve the
+  same file. Use the web. Record every route with its versions and its
+  exact error. Ask the owner only when every route is tried and
+  recorded, or when the next step needs money, sudo, a reboot or a
+  rule change. A route outside the runbook is a result, not a
+  violation: record it as its own serving config, and never patch a
+  file inside a pack or an installed package to make it load without
+  saying so.
 - **Stay quiet while the owner is away** (owner rule, 2026-09-21).
   One to three lines per event, and no more: what happened, the
   numbers, what is blocked. No summary, no conclusion, no analysis and
