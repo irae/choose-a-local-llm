@@ -54,7 +54,9 @@ forced answer ever passed with more thinking (the failures loop or
 are wrong at any budget), that a forced answer passes 85 percent of
 the time, and that 8192 costs at most a few problems per run against
 the 30000 cap while it halves the wall on the slow rows. The record is
-`hardware/arrietty/research/thinking-budget.md`.
+`hardware/arrietty/research/thinking-budget.md`. The reasoning, the
+before-and-after scores and the limits are on
+[the thinking budget page](./reasoning-budget.md).
 
 A run that wants to sit closer to the model's natural convergence is
 not a scored row. Serve it with `--reasoning-budget 24576` and

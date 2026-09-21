@@ -13,6 +13,7 @@ split by task — read the page for the task you are about to do:
 | Probe a memory ceiling | [Memory ceiling](./methodology/memory-ceiling.md) |
 | Set or re-find the macOS wired limit | [Wired limit](./methodology/wired-limit.md) |
 | Run an EvalPlus scoring pass | [EvalPlus](./methodology/evalplus.md) |
+| Read a score of a thinking model, or set a thinking budget | [The thinking budget](./methodology/reasoning-budget.md) |
 | Run the Mendel agentic benchmark | [Mendel](./methodology/mendel.md) |
 | Report progress of a run, in chat or in a file | [Status lines](./methodology/status-lines.md) |
 | Touch a server, or debug a stall/crash | [Server lore](./methodology/server-lore.md) |

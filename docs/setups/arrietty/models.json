@@ -105,10 +105,10 @@
       "tokShallow": "47.39",
       "tokDeep": "32.18",
       "memory": "12.7 GB",
-      "evalplus": "0.793/0.780/79%",
+      "evalplus": "0.988/0.963/100%",
       "mendel": "pending",
       "id": "gemma12-q4kxl-on",
-      "evalplusWall": 259,
+      "evalplusWall": 198.0,
       "spec": {
         "base": "Gemma-4-12B",
         "quant": "UD-Q4_K_XL",
@@ -121,16 +121,13 @@
       },
       "hidden": false,
       "command": "llama-server -m \"$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf)\" \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-12b-q4kxl`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: right after it found the first dependency, the thinking repeated one line 818 times and filled the output budget, with zero commits. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 8192: 0.793/0.780, 34 empty answers of 164 whose cause is unproven because the run saved no finish log, in 259.0 minutes of active time. Every answered problem passed the base tests: the whole loss is thinking that did not end inside the budget, as the calibration predicted with four of ten answers at the 30000 cap. The NVFP4 build at the same level lost 53 answers, so this k-quant converges more often on this card. Thinking off is pending.",
+      "note": "pi id `gemma-4-12b-q4kxl`, thinking on. The same server and speed as the thinking-off row. The guided task ended model-failed: right after it found the first dependency, the thinking repeated one line 818 times and filled the output budget, with zero commits. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 8192: 0.793/0.780, 34 empty answers of 164 whose cause is unproven because the run saved no finish log, in 259.0 minutes of active time. Every answered problem passed the base tests: the whole loss is thinking that did not end inside the budget, as the calibration predicted with four of ten answers at the 30000 cap. The NVFP4 build at the same level lost 53 answers, so this k-quant converges more often on this card. Thinking off is pending. The published score is the fast-mode run of 2026-09-20: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.988/0.963 with no empty answer and 34 forced answers of 164, in 198 minutes of active time. The earlier run left 35 answers empty and scored 0.793/0.780 on the same file; closing the thinking recovered every one of them. The coordinator recomputed this score from the per-problem results because the block ran the evaluator by hand.",
       "pi": {
         "provider": "llama",
         "id": "gemma-4-12b-q4kxl",
         "contextWindow": 258048,
         "maxTokens": 8192
-      },
-      "stale": [
-        "evalplus"
-      ]
+      }
     },
     {
       "config": "Qwen3.8-27B, GGUF, UD-IQ3_S, no drafter, effort xhigh",
@@ -952,6 +949,20 @@
       "emptyCause": "none",
       "forced": "44/164",
       "wall": 211.0
+    },
+    {
+      "slug": "gemma-4-12b-it",
+      "model": "Gemma-4-12B (GGUF UD-Q4_K_XL, unsloth, f16 KV)",
+      "mode": "thinking on",
+      "row": "gemma12-q4kxl-on",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.988",
+      "plus": "0.963",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "34/164",
+      "wall": 198.0
     }
   ],
   "mendelWalls": {

@@ -61,7 +61,11 @@ fi
   --base_url http://127.0.0.1:8081/v1 \
   --greedy \
   --root "$DIR" 2>&1 | tee "$DIR/codegen.log"
-SAMPLES=$(find "$DIR" -name "*.jsonl" ! -name "*.raw.jsonl" | head -1)
+SAMPLES=$(find "$DIR/humaneval" -maxdepth 1 -name "*.jsonl" ! -name "*.raw.jsonl" | sort | head -1)
+if [ -z "$SAMPLES" ]; then
+  echo "no samples file under $DIR/humaneval" >&2
+  exit 1
+fi
 evalplus.evaluate --dataset humaneval --samples "$SAMPLES" 2>&1 | tee "$DIR/evaluate.log"
 echo "=== done: $NAME ==="
 grep -iE "pass@|humaneval" "$DIR/evaluate.log" | tail -5

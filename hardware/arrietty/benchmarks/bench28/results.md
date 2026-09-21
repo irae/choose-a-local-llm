@@ -88,7 +88,7 @@ Gemma-4-26B-A4B NVFP4 (Q8 file), f16 KV, `--n-cpu-moe 7`, no drafter, thinking o
 | | base | plus | completion | empty | forced | wall |
 |---|--:|--:|--|--|--|--:|
 | fast mode (run 28) | 0.988 | 0.951 | 164/164 | 0/164 | 19/164 | 154 min (one part, 15:50Z–18:25Z, 2026-09-20; requests 153.6) |
-| before fast mode | 0.909 | 0.878 | 149/164 (91%) | see models.json | see models.json | 215.3 min |
+| before fast mode | 0.909 | 0.878 | 150/164 (91%) | see models.json | see models.json | 215.3 min |
 
 - Forced ids: HumanEval/32, /37, /51, /86, /99, /103, /108, /109, /113, /116, /117, /124, /127, /129, /130, /132, /143, /145, /147.
 - Empty ids: none.
@@ -115,7 +115,7 @@ Gemma-4-12B UD-Q4_K_XL, f16 KV, no drafter, thinking on, run 19's binary, `-c 32
 | | base | plus | completion | empty | forced | wall |
 |---|--:|--:|--|--|--|--:|
 | fast mode (run 28) | 0.988 | 0.963 | 164/164 | 0/164 | 34/164 | 198 min (one part, 21:06Z 2026-09-20 to 00:25Z 2026-09-21; requests 197.3) |
-| before fast mode | 0.793 | 0.780 | 129/164 (79%) | see models.json | see models.json | 259 min |
+| before fast mode | 0.793 | 0.780 | 130/164 (79%) | see models.json | see models.json | 259 min |
 
 - Forced ids: HumanEval/1, /32, /38, /41, /47, /65, /76, /81, /83, /91, /93, /94, /95, /103, /109, /110, /113, /115, /116, /118, /120, /122, /125, /127, /128, /129, /130, /132, /134, /140, /145, /147, /153, /163.
 - Empty ids: none.
