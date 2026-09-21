@@ -17,8 +17,12 @@ and the methodology pages the runbook points to.
   `hardware/<hardware-id>/research/run<N>/`: its `index.md` lists the
   items the run takes, with a checkbox each, and that list is the
   order; items carry mnemonics and are never numbered, the same rule
-  the blocks of a bench run follow. The runbook and
-  the kit appear when the run starts. `<hardware-id>` is the machine's
+  the blocks of a bench run follow. When the owner
+  plans one run, the coordinator writes the whole kit at once, runbook
+  included, and the run is ready to start (owner, 2026-09-20). Only
+  when several runs are planned together do the runbooks wait: each
+  run then has its items and its list, and its kit is written when
+  that run comes up. `<hardware-id>` is the machine's
   setup id under `docs/setups/`.
 - `hardware/<hardware-id>/benchmarks/unscheduled/` and
   `hardware/<hardware-id>/research/unscheduled/`: work that needs the
