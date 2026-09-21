@@ -1,0 +1,10 @@
+# Per-case answers and the built case files stay out of git: they are
+# large, and every one of them is rebuilt by the build script beside it
+# or copied to the evidence archive at the end of the run.
+*/answers/
+laya-cost/data-*.jsonl
+laya-portuguese/massive-pt.jsonl
+laya-portuguese/sib200-topic.jsonl
+laya-portuguese/sms-spam.jsonl
+laya-portuguese/b2w-sentiment.jsonl
+laya-pass-gate/fast-*.jsonl
