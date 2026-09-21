@@ -89,6 +89,21 @@ no empty, 7 forced. Blind agent row: 59.5, peak context 192679 of a
 - **Stop-and-ask (hard gate).** The runbook says a load error on `prism_hadamard_qwen35` stops this block and `sweep-bonsai2-mlx-mac`. Both stop. No sweep ran, and the server is stopped. Candidate answers for the owner: (a) drop the MLX blocks and close the run; (b) the owner names a stock-loader route for this model type. The publisher's own runtime in the pack (`runtime/runtime.py`) is not the stock server, so it is outside the runbook and I did not use it.
 - Machine state: no server, wired 1.9 GB. Free disk 111 GB after the pack (8.6 GB).
 
+## bonsai2-mlx-probe-mac, loader investigation (owner override, relayed by the coordinator 2026-09-22)
+
+The coordinator relayed the owner's word: work the problem until the pack loads under MLX and answers the three prompts; record every route with versions and exact errors; never patch a file inside the pack or an installed package; a route that works but is not the stock server is a result, labelled as such.
+
+Research done (read-only, no code run):
+
+- Route 1, stock `mlx_lm.server` 0.31.3: tried, error `ValueError: Model type prism_hadamard_qwen35 not supported.` (above).
+- Route 2, the pack's own runtime (`pack/runtime/artifact.py` `load_model`, `runtime.py` `Packed`): the pack's `requirements.txt` pins `mlx==0.32.0`, `mlx-lm==0.31.3`, `mlx-vlm==0.6.3`, `transformers==5.5.0`, `pillow`, `numpy>=2`, `tokenizers>=0.21`, `jinja2>=3.1`. Read of the code: `artifact.load_model` accepts `schema_version == 1` only, and the pack's `config.json` says `schema_version: 2` (and it also holds a vision tower that `artifact.py` does not load). It will likely refuse the pack. Not run yet.
+- Route 3, the publisher's demo (`PrismML-Eng/Bonsai-demo`): `setup.sh` makes a venv, builds the fork `PrismML-Eng/mlx` branch `prism` (validated commit `88c9c20`) from source, and pins `mlx-lm==0.31.2`, Python 3.11. Serve with `scripts/start_mlx_server.sh` on port 8081. Not run yet.
+- Route 4, `mlx-vlm`: its `main` merged support for `prism_hadamard_qwen35` on 2026-09-17 (pull request 2293). It is newer than release 0.7.1, so it needs a build from `main`. Not run yet.
+- Route 5, third-party servers with a loader for this type: `ddalcu/mlx-serve` pull 457, `raullenchai/Rapid-MLX` pulls 3552 and 3555. Not run yet.
+- Route 6, LM Studio's MLX engine: not looked at yet.
+
+Blocked: the session's permission classifier denied `pip install -r pack/runtime/requirements.txt` into a new venv (the file came from the downloaded pack). No route that installs or runs code from outside the machine's existing tools can start until the owner allows it.
+
 ## Disk clean-up, 2026-09-19 (owner)
 
 Owner approved the deletion. No partial download existed. Removed from the Hugging Face cache: `mlx-community/gemma-4-26b-a4b-it-4bit`, `mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx-community/Qwen3.8-27B-4bit`, `AtomicChat/Qwen3.8-27B-GGUF`, and four files of `prism-ml/Ternary-Bonsai-27B-gguf` (`Q2_0`, `PQ2_0`, `dspark-bf16`, `dspark-Q4_1`). Free space on the data volume went from 13 GB to 96 GB. Free space read by `df -h` after the clean-up: 96Gi free, 90% used. The MLX pack download stays at the start of `bonsai2-mlx-probe-mac`; under 20 GB free at that point is stop and ask. The older bartowski Q4_K_M revision waits for the owner: `refs/main` points to `125a02a`, not to `f0eec4a`.
