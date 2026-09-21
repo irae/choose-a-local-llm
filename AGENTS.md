@@ -413,6 +413,13 @@ Benchmark work:
   2026-09-13): not a log, not a generated file a serving command
   points at, not a scratch directory. A bias file kept there was lost
   once and blocked a run twice.
+- **Stay quiet while the owner is away** (owner rule, 2026-09-21).
+  One to three lines per event, and no more: what happened, the
+  numbers, what is blocked. No summary, no conclusion, no analysis and
+  no table unless the owner asks for one. This binds the coordinator
+  and every runner, in messages and in reports to the owner. The record
+  goes in `state.md`, `results.md` and `report.md`, where the owner
+  reads it when the owner wants it.
 - **Never version the owner's machine.** This repo is public work about
   a method. A list of the owner's login items, a BTM dump, a process
   list, or any other inventory of their apps is personal data and does
