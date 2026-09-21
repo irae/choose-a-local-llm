@@ -1,10 +1,16 @@
 # Generated from research/scripts/laya_benchmark_colab.ipynb of NandhaKishorM/laya
 # at commit 42626c348753fbb17572a813127df2278a1ec527.
 # Changed: the pip cell and the Colab download cell are dropped, and the
-# `%%writefile` magic of the engine cell becomes a real file write.
+# `%%writefile` magic of the engine cell becomes a real file write. The
+# dropped pip cell also imported laya, transformers and datasets, which
+# later cells use, so those three imports stay.
 import os
 os.environ.setdefault('USE_TF', '0')
 os.environ.setdefault('TOKENIZERS_PARALLELISM', 'false')
+
+import laya
+import transformers
+import datasets
 
 print('--- cell 0 ---', flush=True)
 import subprocess, sys, os, json, time

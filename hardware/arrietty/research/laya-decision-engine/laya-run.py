@@ -24,24 +24,65 @@ CHECKPOINTS = {
 }
 
 
+GPU_FIELDS = ["memory.used", "memory.total", "utilization.gpu", "utilization.memory",
+              "power.draw", "temperature.gpu", "clocks.current.graphics"]
+
+
 class GpuSampler(threading.Thread):
+    """One reading of the card per second, kept whole, not only its peak."""
+
     def __init__(self, interval=1.0):
         super().__init__(daemon=True)
         self.interval = interval
-        self.peak_mb = 0
+        self.samples = []
+        self.phase = "load"
         self.stop_flag = threading.Event()
 
     def run(self):
         while not self.stop_flag.is_set():
             try:
                 out = subprocess.run(
-                    ["nvidia-smi", "--query-gpu=memory.used", "--format=csv,noheader,nounits"],
+                    ["nvidia-smi", "--query-gpu=" + ",".join(GPU_FIELDS),
+                     "--format=csv,noheader,nounits"],
                     capture_output=True, text=True, timeout=10)
-                v = int(out.stdout.strip().splitlines()[0])
-                self.peak_mb = max(self.peak_mb, v)
+                v = [x.strip() for x in out.stdout.strip().splitlines()[0].split(",")]
+                self.samples.append({"t": round(time.time(), 3), "phase": self.phase,
+                                     "mem_used_mb": int(float(v[0])),
+                                     "mem_total_mb": int(float(v[1])),
+                                     "util_gpu_pct": int(float(v[2])),
+                                     "util_mem_pct": int(float(v[3])),
+                                     "power_w": float(v[4]),
+                                     "temp_c": int(float(v[5])),
+                                     "clock_mhz": int(float(v[6]))})
             except Exception:
                 pass
             self.stop_flag.wait(self.interval)
+
+    @property
+    def peak_mb(self):
+        return max([s["mem_used_mb"] for s in self.samples], default=0)
+
+    def stats(self, phase=None):
+        rows = [s for s in self.samples if phase is None or s["phase"] == phase]
+        if not rows:
+            return {}
+        out = {"samples": len(rows)}
+        for key in ("mem_used_mb", "util_gpu_pct", "util_mem_pct", "power_w",
+                    "temp_c", "clock_mhz"):
+            v = sorted(float(s[key]) for s in rows)
+            out[key] = {"min": v[0], "p50": v[len(v) // 2],
+                        "p95": v[min(len(v) - 1, int(0.95 * len(v)))],
+                        "max": v[-1], "mean": round(sum(v) / len(v), 2)}
+        return out
+
+    def write_csv(self, path):
+        os.makedirs(os.path.dirname(os.path.abspath(path)) or ".", exist_ok=True)
+        cols = ["t", "phase", "mem_used_mb", "mem_total_mb", "util_gpu_pct",
+                "util_mem_pct", "power_w", "temp_c", "clock_mhz"]
+        with open(path, "w") as f:
+            f.write(",".join(cols) + "\n")
+            for s in self.samples:
+                f.write(",".join(str(s[c]) for c in cols) + "\n")
 
     def stop(self):
         self.stop_flag.set()
@@ -217,6 +258,8 @@ def main():
                     help="leave out a case whose state does not fit the checkpoint context")
     ap.add_argument("--warmup", type=int, default=3)
     ap.add_argument("--json-summary", default="")
+    ap.add_argument("--gpu-log", default="",
+                    help="write every GPU reading of this run to this CSV")
     args = ap.parse_args()
 
     questions = load_questions(args.questions)
@@ -239,6 +282,7 @@ def main():
 
     if args.device == "cuda":
         torch.cuda.reset_peak_memory_stats()
+    sampler.phase = "prepare"
 
     case_qids = [list(q.keys()) for q in case_questions]
     prepared_all = [prepare_items(agent, case_questions[i], case_qids[i], c["state"])
@@ -252,10 +296,12 @@ def main():
         prepared_all = [prepared_all[i] for i in keep]
     prepared = [it for it, _ in prepared_all]
 
+    sampler.phase = "warmup"
     for _ in range(min(args.warmup, len(prepared))):
         forward_logits(agent, prepared[0])
     if args.device == "cuda":
         torch.cuda.synchronize()
+    sampler.phase = "measure"
 
     rows, latencies, tokens_total = [], [], 0
     for start in range(0, len(cases), args.batch):
@@ -287,7 +333,21 @@ def main():
                 r += 1
 
     gpu_peak = sampler.stop()
-    torch_peak = torch.cuda.max_memory_allocated() / (1024 ** 2) if args.device == "cuda" else 0.0
+    gpu_stats = {"whole_run": sampler.stats(),
+                 "measure_only": sampler.stats("measure"),
+                 "load_only": sampler.stats("load")}
+    if args.gpu_log:
+        sampler.write_csv(args.gpu_log)
+    if args.device == "cuda":
+        torch_peak = torch.cuda.max_memory_allocated() / (1024 ** 2)
+        torch_mem = {
+            "peak_allocated_mb": round(torch_peak, 1),
+            "peak_reserved_mb": round(torch.cuda.max_memory_reserved() / (1024 ** 2), 1),
+            "allocated_at_end_mb": round(torch.cuda.memory_allocated() / (1024 ** 2), 1),
+            "reserved_at_end_mb": round(torch.cuda.memory_reserved() / (1024 ** 2), 1),
+        }
+    else:
+        torch_peak, torch_mem = 0.0, {}
 
     half = len(cases) // 2
     if args.fit_temperature:
@@ -341,6 +401,8 @@ def main():
         "questions_per_s": float(len(rows) / (lat.sum() / 1000.0)) if lat.sum() else 0.0,
         "peak_gpu_mb_nvidia_smi": gpu_peak,
         "peak_gpu_mb_torch": round(torch_peak, 1),
+        "torch_memory": torch_mem,
+        "gpu": gpu_stats,
         "peak_rss_mb": round(peak_rss_mb(), 1),
         "input_tokens": tokens_total,
         "fitted_temperature": t_fit,
