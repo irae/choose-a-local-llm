@@ -88,17 +88,22 @@ def build_agent(checkpoint, device):
 
 
 def prepare_items(agent, questions, qids, state):
-    from laya.common import QTYPES, build_sequence, render_options
+    """Items for one state, and whether the state was cut to fit the context."""
+    from laya.common import QTYPES, build_sequence, render_options, serialize_state
     max_len = agent.cfg.get("max_len", 512)
     head_max_len = agent.cfg.get("head_max_len", 192)
-    items = []
+    items, over = [], False
+    state_len = len(agent.tok(serialize_state(state), add_special_tokens=False)["input_ids"])
     for qid in qids:
         q = agent._to_internal(questions[qid])
         seq, markers = build_sequence(agent.tok, state, q, max_len, head_max_len)
         if len(markers) != len(render_options(q)):
             raise ValueError("question %r options exceed head_max_len=%d" % (qid, head_max_len))
+        empty, _ = build_sequence(agent.tok, "", q, max_len, head_max_len)
+        if state_len > max_len - (len(empty) - 1):
+            over = True
         items.append({"ids": seq, "markers": markers, "qtype": QTYPES[q["t"]]})
-    return items
+    return items, over
 
 
 @torch.no_grad()
@@ -208,13 +213,17 @@ def main():
     ap.add_argument("--fit-temperature", action="store_true",
                     help="fit one scalar on the first half, report on the second half")
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--skip-over-context", action="store_true",
+                    help="leave out a case whose state does not fit the checkpoint context")
     ap.add_argument("--warmup", type=int, default=3)
     ap.add_argument("--json-summary", default="")
     args = ap.parse_args()
 
     questions = load_questions(args.questions)
-    qids = list(questions.keys())
     cases = load_cases(args.data)
+    # A case may carry its own questions, for a set whose options change per case.
+    case_questions = [c.get("questions") or questions for c in cases]
+    qids = list(questions.keys())
     if args.limit:
         cases = cases[:args.limit]
 
@@ -231,7 +240,17 @@ def main():
     if args.device == "cuda":
         torch.cuda.reset_peak_memory_stats()
 
-    prepared = [prepare_items(agent, questions, qids, c["state"]) for c in cases]
+    case_qids = [list(q.keys()) for q in case_questions]
+    prepared_all = [prepare_items(agent, case_questions[i], case_qids[i], c["state"])
+                    for i, c in enumerate(cases)]
+    over_context = [i for i, (_, over) in enumerate(prepared_all) if over]
+    if args.skip_over_context and over_context:
+        keep = [i for i in range(len(cases)) if i not in set(over_context)]
+        cases = [cases[i] for i in keep]
+        case_questions = [case_questions[i] for i in keep]
+        case_qids = [case_qids[i] for i in keep]
+        prepared_all = [prepared_all[i] for i in keep]
+    prepared = [it for it, _ in prepared_all]
 
     for _ in range(min(args.warmup, len(prepared))):
         forward_logits(agent, prepared[0])
@@ -250,19 +269,20 @@ def main():
         tokens_total += ntok
         r = 0
         for i in group:
-            labels = case_labels(cases[i], qids)
-            for qid in qids:
-                k = len(prepared[i][r % len(qids)]["markers"])
-                qt = prepared[i][r % len(qids)]["qtype"]
+            labels = case_labels(cases[i], case_qids[i])
+            for j, qid in enumerate(case_qids[i]):
+                k = len(prepared[i][j]["markers"])
+                qt = prepared[i][j]["qtype"]
                 rows.append({
                     "case": i,
                     "question": qid,
-                    "type": questions[qid]["type"],
+                    "type": case_questions[i][qid]["type"],
                     "logits": [float(v) for v in logits[r, :k]],
                     "shipped_t": shipped_temperature(agent, qt, k),
-                    "options": option_keys(questions, qid),
+                    "options": option_keys(case_questions[i], qid),
                     "label": labels.get(qid),
-                    "label_index": label_index(questions, qid, labels[qid]) if qid in labels else None,
+                    "label_index": (label_index(case_questions[i], qid, labels[qid])
+                                    if qid in labels else None),
                 })
                 r += 1
 
@@ -271,10 +291,13 @@ def main():
 
     half = len(cases) // 2
     if args.fit_temperature:
-        fit_rows = [r for r in rows if r["case"] < half]
         report_rows = [r for r in rows if r["case"] >= half]
-        t_fit = fit_temperature([{**r, "logits": np.asarray(r["logits"])} for r in fit_rows])
-        scale = {r["question"]: (t_fit if t_fit else 1.0) for r in rows}
+        # One scalar per question id, so a mixed file does not average two scales.
+        t_fit = {}
+        for qid in sorted(set(r["question"] for r in rows)):
+            fit_rows = [r for r in rows if r["case"] < half and r["question"] == qid]
+            t_fit[qid] = fit_temperature(fit_rows) or 1.0
+        scale = t_fit
     else:
         report_rows = rows
         t_fit = None
@@ -307,6 +330,9 @@ def main():
         "cases": len(cases),
         "reported_cases": len(set(r["case"] for r in report_rows)),
         "questions_per_case": len(qids),
+        "per_case_questions": any(c.get("questions") for c in cases),
+        "over_context": len(over_context),
+        "skipped_over_context": len(over_context) if args.skip_over_context else 0,
         "batch": args.batch,
         "cold_load_s": round(load_s, 3),
         "calls": len(latencies),
@@ -322,6 +348,7 @@ def main():
         "per_question": per_q,
     }
     if args.json_summary:
+        os.makedirs(os.path.dirname(os.path.abspath(args.json_summary)) or ".", exist_ok=True)
         with open(args.json_summary, "w") as f:
             json.dump(summary, f, indent=2)
 

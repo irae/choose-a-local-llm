@@ -71,3 +71,143 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
 Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 906398.79 examples/s]
 Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 784526.64 examples/s]
   massive_scenario.en                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1552187.71 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 895788.88 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 749628.13 examples/s]
+  massive_scenario.de                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1750832.62 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 849660.11 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 749825.89 examples/s]
+  massive_scenario.fr                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1626581.89 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 879555.78 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 711711.88 examples/s]
+  massive_scenario.es                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1565877.12 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 881856.49 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 602318.29 examples/s]
+  massive_scenario.pt                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 794061.24 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 710033.02 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 686224.05 examples/s]
+  massive_scenario.ru                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1704005.37 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 884733.68 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 766129.38 examples/s]
+  massive_scenario.tr                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1511998.00 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 886935.44 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 714395.11 examples/s]
+  massive_scenario.ar                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 820587.51 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 773620.70 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 642433.51 examples/s]
+  massive_scenario.hi                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 714206.52 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 760184.05 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 602105.64 examples/s]
+  massive_scenario.ta                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1509870.76 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 867384.75 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 721345.07 examples/s]
+  massive_scenario.zh-CN              300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1560866.72 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 872541.98 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 665341.76 examples/s]
+  massive_scenario.ja                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1503524.79 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 824881.64 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 636677.37 examples/s]
+  massive_scenario.ko                 300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1749057.12 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 890226.96 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 752273.49 examples/s]
+  massive_scenario.sw                 300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  74%|███████▍  | 292000/392702 [00:00<00:00, 2903093.51 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 2839093.71 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1690136.17 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 1113294.63 examples/s]
+  xnli.en                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  70%|██████▉   | 273000/392702 [00:00<00:00, 2715468.05 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 2575358.24 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1470295.48 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 621618.77 examples/s]
+  xnli.de                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  62%|██████▏   | 242000/392702 [00:00<00:00, 2401093.76 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 2209014.06 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 741032.66 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 834303.96 examples/s]
+  xnli.fr                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  57%|█████▋    | 224000/392702 [00:00<00:00, 2227426.63 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 1646762.46 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 803943.03 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 429468.58 examples/s]
+  xnli.es                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  51%|█████▏    | 202000/392702 [00:00<00:00, 1995565.84 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 1957761.30 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1638221.18 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 1381274.56 examples/s]
+  xnli.ru                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  65%|██████▍   | 255000/392702 [00:00<00:00, 2536155.55 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 2498352.85 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1507313.90 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 873082.84 examples/s]
+  xnli.tr                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  63%|██████▎   | 248000/392702 [00:00<00:00, 2459002.09 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 2213395.54 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1941376.85 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 1354580.67 examples/s]
+  xnli.ar                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  48%|████▊     | 188000/392702 [00:00<00:00, 1859335.13 examples/s]Generating train split: 100%|█████████▉| 392000/392702 [00:00<00:00, 1930075.13 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 1915976.76 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1810880.99 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 1174386.25 examples/s]
+  xnli.hi                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  73%|███████▎  | 288000/392702 [00:00<00:00, 2817247.24 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 2754072.42 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1911705.15 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 1304335.83 examples/s]
+  xnli.ur                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  52%|█████▏    | 205000/392702 [00:00<00:00, 2034398.26 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 1814451.14 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1922725.14 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 1306456.96 examples/s]
+  xnli.vi                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  35%|███▍      | 136000/392702 [00:00<00:00, 1135581.59 examples/s]Generating train split:  81%|████████  | 319000/392702 [00:00<00:00, 1455697.85 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 1387595.19 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1708550.54 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 1189500.79 examples/s]
+  xnli.th                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  40%|████      | 159000/392702 [00:00<00:00, 1579427.56 examples/s]Generating train split:  96%|█████████▌| 377000/392702 [00:00<00:00, 1486340.52 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 1394073.32 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 535688.76 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 398755.95 examples/s]
+  xnli.el                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  52%|█████▏    | 206000/392702 [00:00<00:00, 2046316.92 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 2117983.86 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1271924.40 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 940460.78 examples/s]
+  xnli.bg                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  75%|███████▍  | 293000/392702 [00:00<00:00, 2908499.19 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 2898466.52 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1852875.68 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 1213973.84 examples/s]
+  xnli.zh                             300 cases /   300 questions   
+Generating train split:   0%|          | 0/392702 [00:00<?, ? examples/s]Generating train split:  83%|████████▎ | 324000/392702 [00:00<00:00, 3230229.92 examples/s]Generating train split: 100%|██████████| 392702/392702 [00:00<00:00, 3230941.91 examples/s]
+Generating test split:   0%|          | 0/5010 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5010/5010 [00:00<00:00, 1649926.43 examples/s]
+Generating validation split:   0%|          | 0/2490 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2490/2490 [00:00<00:00, 943775.25 examples/s]
+  xnli.sw                             300 cases /   300 questions   
+--- cell 7 ---
+Repo card metadata block was not found. Setting CardData to empty.
+Generating train split:   0%|          | 0/8544 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 8544/8544 [00:00<00:00, 2361680.07 examples/s]
+Generating validation split:   0%|          | 0/1101 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 1101/1101 [00:00<00:00, 792641.38 examples/s]
+Generating test split:   0%|          | 0/2210 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 2210/2210 [00:00<00:00, 1312204.39 examples/s]
+  en.sst5                             600 cases /   600 questions   zero-shot, ordinal
+Generating train split:   0%|          | 0/16000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 16000/16000 [00:00<00:00, 2639690.99 examples/s]
+Generating validation split:   0%|          | 0/2000 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 2000/2000 [00:00<00:00, 1253715.14 examples/s]
+Generating test split:   0%|          | 0/2000 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 2000/2000 [00:00<00:00, 1256155.74 examples/s]
+  en.emotion                          600 cases /   600 questions   zero-shot
+Generating train split:   0%|          | 0/546 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 546/546 [00:00<00:00, 369131.20 examples/s]
+Generating test split:   0%|          | 0/116 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 116/116 [00:00<00:00, 88429.53 examples/s]
+  en.prompt_injections                116 cases /   116 questions   zero-shot
+  FAIL banking77: Dataset scripts are no longer supported, but found banking77.py
+Generating train split:   0%|          | 0/120000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 120000/120000 [00:00<00:00, 2009672.63 examples/s]
+Generating test split:   0%|          | 0/7600 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 7600/7600 [00:00<00:00, 1625201.92 examples/s]
+  en.ag_news                          600 cases /   600 questions   in-task (trained on)
+Generating train split:   0%|          | 0/9427 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 9427/9427 [00:00<00:00, 712144.80 examples/s]
+Generating validation split:   0%|          | 0/3270 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 3270/3270 [00:00<00:00, 699050.67 examples/s]
+  en.boolq                            600 cases /   600 questions   in-task (trained on)
+
+suites built: 49 | total questions: 17416
+--- cell 8 ---
+Traceback (most recent call last):
+  File "/home/irae/code/choose-a-local-llm-research1/hardware/arrietty/research/run1/results/laya-claims/notebook-as-script.py", line 279, in <module>
+    "torch": torch.__version__, "transformers": transformers.__version__,
+                                                ^^^^^^^^^^^^
+NameError: name 'transformers' is not defined

@@ -1,0 +1,74 @@
+[
+  {
+    "row": "fast-bonsai2-pq2-f16-xhigh",
+    "sample": "hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-pq2-f16-xhigh/humaneval/bonsai2-27b-pq2-f16_openai_temp_0.0.jsonl",
+    "eval_results": "hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-pq2-f16-xhigh/humaneval/bonsai2-27b-pq2-f16_openai_temp_0.0_eval_results.json",
+    "cases": 164,
+    "missing": 0,
+    "pass_rate": 0.9451
+  },
+  {
+    "row": "fast-bonsai2-pq2-xhigh",
+    "sample": "hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-pq2-xhigh/humaneval/bonsai2-27b-pq2_openai_temp_0.0.jsonl",
+    "eval_results": "hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-pq2-xhigh/humaneval/bonsai2-27b-pq2_openai_temp_0.0_eval_results.json",
+    "cases": 164,
+    "missing": 0,
+    "pass_rate": 0.9451
+  },
+  {
+    "row": "fast-bonsai2-ptq1-f16-orca-xhigh",
+    "sample": "hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-ptq1-f16-orca-xhigh/humaneval/bonsai2-27b-ptq1-f16-orca_openai_temp_0.0.jsonl",
+    "eval_results": "hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-ptq1-f16-orca-xhigh/humaneval/bonsai2-27b-ptq1-f16-orca_openai_temp_0.0_eval_results.json",
+    "cases": 164,
+    "missing": 0,
+    "pass_rate": 0.9512
+  },
+  {
+    "row": "fast-bonsai2-ptq1-f16-xhigh",
+    "sample": "hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-ptq1-f16-xhigh/humaneval/bonsai2-27b-ptq1-f16_openai_temp_0.0.jsonl",
+    "eval_results": "hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-ptq1-f16-xhigh/humaneval/bonsai2-27b-ptq1-f16_openai_temp_0.0_eval_results.json",
+    "cases": 164,
+    "missing": 0,
+    "pass_rate": 0.9451
+  },
+  {
+    "row": "fast-bonsai2-ptq1-xhigh",
+    "sample": "hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-ptq1-xhigh/humaneval/bonsai2-27b-ptq1_openai_temp_0.0.jsonl",
+    "eval_results": "hardware/arrietty/benchmarks/bench28/results/fast-bonsai2-ptq1-xhigh/humaneval/bonsai2-27b-ptq1_openai_temp_0.0_eval_results.json",
+    "cases": 164,
+    "missing": 0,
+    "pass_rate": 0.9512
+  },
+  {
+    "row": "fast-gemma12-nvfp4-on",
+    "sample": "hardware/arrietty/benchmarks/bench28/results/fast-gemma12-nvfp4-on/humaneval/gemma-4-12b-nvfp4_openai_temp_0.0.jsonl",
+    "eval_results": "hardware/arrietty/benchmarks/bench28/results/fast-gemma12-nvfp4-on/humaneval/gemma-4-12b-nvfp4_openai_temp_0.0_eval_results.json",
+    "cases": 164,
+    "missing": 0,
+    "pass_rate": 0.9512
+  },
+  {
+    "row": "fast-gemma12-q4kxl-on",
+    "sample": "hardware/arrietty/benchmarks/bench28/results/fast-gemma12-q4kxl-on/humaneval/gemma-4-12b-q4kxl_openai_temp_0.0.jsonl",
+    "eval_results": "hardware/arrietty/benchmarks/bench28/results/fast-gemma12-q4kxl-on/humaneval/gemma-4-12b-q4kxl_openai_temp_0.0_eval_results.json",
+    "cases": 164,
+    "missing": 0,
+    "pass_rate": 0.9634
+  },
+  {
+    "row": "fast-gemma26-nvfp4-on",
+    "sample": "hardware/arrietty/benchmarks/bench28/results/fast-gemma26-nvfp4-on/humaneval/gemma-4-26b-a4b-nvfp4_openai_temp_0.0.jsonl",
+    "eval_results": "hardware/arrietty/benchmarks/bench28/results/fast-gemma26-nvfp4-on/humaneval/gemma-4-26b-a4b-nvfp4_openai_temp_0.0_eval_results.json",
+    "cases": 164,
+    "missing": 0,
+    "pass_rate": 0.9512
+  },
+  {
+    "row": "fast-qwen38-iq3s-xhigh",
+    "sample": "hardware/arrietty/benchmarks/bench28/results/fast-qwen38-iq3s-xhigh/humaneval/qwen3.8-27b-iq3s_openai_temp_0.0.jsonl",
+    "eval_results": "hardware/arrietty/benchmarks/bench28/results/fast-qwen38-iq3s-xhigh/humaneval/qwen3.8-27b-iq3s_openai_temp_0.0_eval_results.json",
+    "cases": 164,
+    "missing": 0,
+    "pass_rate": 0.9268
+  }
+]
