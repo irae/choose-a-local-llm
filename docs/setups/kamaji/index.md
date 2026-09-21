@@ -47,6 +47,7 @@
 | Qwen3.8-27B | `bartowski/Qwen3.8-27B-GGUF:Q4_K_M`; `mlx-community/Qwen3.8-27B-4bit` | [report](./reports/qwen3.8-27b.md), [benchmarks](./benchmarks/qwen3.8-27b.md) |
 | Qwen3.6-35B-A3B (MoE) | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`; `mlx-community/Qwen3.6-35B-A3B-4bit` | [report](./reports/qwen3.6-35b-a3b.md), [benchmarks](./benchmarks/qwen3.6-35b-a3b.md) |
 | Gemma-4-26B-A4B (MoE) | `unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL` + MTP draft; `mlx-community/gemma-4-26b-a4b-it-4bit` | [report](./reports/gemma-4-26b-a4b.md), [benchmarks](./benchmarks/gemma-4-26b-a4b.md) |
+| Ternary Bonsai-2-27B | `prism-ml/Ternary-Bonsai-2-27B-gguf:PTQ1_0` + `PQ2_0` (prism fork only) | [report](./reports/bonsai-2-27b.md), [benchmarks](./benchmarks/bonsai-2-27b.md) |
 | Ternary Bonsai-27B | `prism-ml/Ternary-Bonsai-27B-mlx-2bit`; GGUF `Q2_g64` + `PQ2_0` + converted dflash drafter (prism fork only) | [report](./reports/bonsai-27b.md), [benchmarks](./benchmarks/bonsai-27b.md) |
 | Gemma-4-12B-it | `unsloth/gemma-4-12b-it-GGUF:Q4_K_XL`; `lmstudio-community/gemma-4-12B-it-MLX-4bit` (LM Studio engine only) | [report](./reports/gemma-4-12b-it.md), [benchmarks](./benchmarks/gemma-4-12b-it.md) |
 
@@ -70,5 +71,7 @@
 ## EvalPlus budget
 
 - Scores before the calibrated budget used EvalPlus's default output
-  cap and were too low. Every current score uses a budget calibrated
-  per model. Old numbers: [historical](./historical.md).
+  cap and were too low. Since 2026-09-19 every scored run is fast mode
+  (thinking budget 8192, output 16384); scores from the calibrated
+  budgets in between carry a † until their fast-mode run lands. Old
+  numbers: [historical](./historical.md).

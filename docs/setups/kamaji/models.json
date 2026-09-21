@@ -27,7 +27,7 @@
       },
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --reasoning-effort medium --port 8081",
-      "note": "Set the harness compaction threshold at ~26K. No Mendel run is planned: the agent task needs about 46K of context and this server holds 26K, so every attempt on this build was partial or invalid, and medium is no longer run on this model.",
+      "note": "Set the harness compaction threshold at ~26K. No Mendel run is planned: the agent task needs about 46K of context and this server holds 26K, so every attempt on this build was partial or invalid, and medium is no longer run on this model. Fast mode (a thinking budget of 8192 on the server) is not available on this stack: the MLX server accepts the budget and does not enforce it, so this score is not comparable with the fast-mode rows.",
       "pi": {
         "provider": "mlx",
         "id": "mlx-community/Qwen3.8-27B-4bit",
@@ -60,7 +60,7 @@
       },
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --chat-template-args '{\"reasoning_effort\":\"low\"}' --prompt-cache-size 2 --port 8081",
-      "note": "Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth."
+      "note": "Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth. Fast mode (a thinking budget of 8192 on the server) is not available on this stack: the MLX server accepts the budget and does not enforce it, so this score is not comparable with the fast-mode rows."
     },
     {
       "config": "Qwen3.8-27B, GGUF Q4_K_M (bartowski), no drafter, f16 KV, effort medium",
@@ -91,7 +91,10 @@
         "id": "qwen3.8-27b",
         "contextWindow": 65536,
         "maxTokens": 8192
-      }
+      },
+      "stale": [
+        "evalplus"
+      ]
     },
     {
       "config": "Qwen3.8-27B, GGUF Q4_K_M (bartowski), no drafter, f16 KV, effort xhigh",
@@ -116,7 +119,10 @@
       },
       "hidden": false,
       "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 73728 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "Curve shared with the effort-medium row: same server, same weights, no drafter since 2026-09-13; the harness sets the level per request. The Mendel row and the EvalPlus run below ran with the drafter at n-max 3, which changes speed and not output. Mendel blind at effort xhigh, the model's own default, measured 2026-09-11: 93/100, complete 8/8, on the 65536 window, no critical defect, one medium, peak context 61572, sampling temperature 1.0 and top_p 0.95 from the server default. The highest Mendel score of any local row. EvalPlus at effort xhigh, scored 2026-09-12 at budget 30000 on the same build served at `-c 32768`: 0.957/0.939, six empty, every one a completion that hit the 30000-token cap, in 8h30 of active wall time; its own score, above the ISTA build's 0.945/0.921 at the same level. Under a server thinking budget of 30000 tokens (the derive cap; the calibration's longest converged reasoning ran 22947 tokens; answer budget 2048, `max_tokens` 32048; the thinking-budget test, 2026-09-17), the same file, drafter and level scored 0.982/0.951 with no empty answer in 447.8 minutes: 3 problems hit the budget and were forced to answer, and all 3 passed the base tests. The natural run at 30000 left 6 empty in 510.3 minutes. The one forced answer that failed the plus tests hits the 30000 cap without the budget too, so the budget cost no answer and stands. The owner's word on how a budgeted score is shown is pending."
+      "note": "Curve shared with the effort-medium row: same server, same weights, no drafter since 2026-09-13; the harness sets the level per request. The Mendel row and the EvalPlus run below ran with the drafter at n-max 3, which changes speed and not output. Mendel blind at effort xhigh, the model's own default, measured 2026-09-11: 93/100, complete 8/8, on the 65536 window, no critical defect, one medium, peak context 61572, sampling temperature 1.0 and top_p 0.95 from the server default. The highest Mendel score of any local row. EvalPlus at effort xhigh, scored 2026-09-12 at budget 30000 on the same build served at `-c 32768`: 0.957/0.939, six empty, every one a completion that hit the 30000-token cap, in 8h30 of active wall time; its own score, above the ISTA build's 0.945/0.921 at the same level. Under a server thinking budget of 30000 tokens (the derive cap; the calibration's longest converged reasoning ran 22947 tokens; answer budget 2048, `max_tokens` 32048; the thinking-budget test, 2026-09-17), the same file, drafter and level scored 0.982/0.951 with no empty answer in 447.8 minutes: 3 problems hit the budget and were forced to answer, and all 3 passed the base tests. The natural run at 30000 left 6 empty in 510.3 minutes. The one forced answer that failed the plus tests hits the 30000 cap without the budget too, so the budget cost no answer and stands. The owner's word on how a budgeted score is shown is pending.",
+      "stale": [
+        "evalplus"
+      ]
     },
     {
       "config": "Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium",
@@ -140,7 +146,8 @@
       },
       "stale": [
         "tokShallow",
-        "tokDeep"
+        "tokDeep",
+        "evalplus"
       ],
       "hidden": false,
       "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 131072 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -180,7 +187,10 @@
         "id": "qwen3.8-27b-ista",
         "contextWindow": 147456,
         "maxTokens": 8192
-      }
+      },
+      "stale": [
+        "evalplus"
+      ]
     },
     {
       "config": "Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low",
@@ -192,7 +202,7 @@
       "evalplus": "0.976/0.933/99%",
       "mendel": "pending",
       "id": "qwen38-gguf-ista-nodrafter-low",
-      "evalplusWall": 147.0,
+      "evalplusWall": 147,
       "spec": {
         "base": "Qwen3.8-27B",
         "quant": "IQ3_S-mtp",
@@ -204,7 +214,10 @@
       },
       "hidden": false,
       "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 163840 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at effort low, scored 2026-09-10 at budget 8192 on the same build served at `-c 32768`: 0.976/0.933, one empty, in 2h23; level with the medium row on base and one problem lower on plus. The calibration converged on all 10 problems with a 3634-token maximum."
+      "note": "Curve shared with the effort-xhigh row: same server, same weights; the harness sets the level per request. Mendel blind at effort low: 66/100, partial, 7 of 8 libraries, two traps hit, 163 minutes, peak context 130,154 of the same window. The run ended on the harness's 25-minute turn cap during a full test suite, not on the rubric. Low scored lower than xhigh and spent more context and more wall time doing it. EvalPlus at effort low, scored 2026-09-10 at budget 8192 on the same build served at `-c 32768`: 0.976/0.933, one empty, in 2h23; level with the medium row on base and one problem lower on plus. The calibration converged on all 10 problems with a 3634-token maximum.",
+      "stale": [
+        "evalplus"
+      ]
     },
     {
       "config": "Qwen3.8-27B, GGUF UD-IQ3_S (unsloth), no drafter, f16 KV, effort xhigh",
@@ -235,7 +248,10 @@
         "id": "qwen3.8-27b-iq3s",
         "contextWindow": 147456,
         "maxTokens": 8192
-      }
+      },
+      "stale": [
+        "evalplus"
+      ]
     },
     {
       "config": "Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), no drafter, f16 KV, effort medium",
@@ -266,7 +282,10 @@
         "id": "qwen3.8-27b",
         "contextWindow": 98304,
         "maxTokens": 8192
-      }
+      },
+      "stale": [
+        "evalplus"
+      ]
     },
     {
       "config": "Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on",
@@ -290,7 +309,7 @@
       },
       "hidden": false,
       "command": "mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \\\n  --prompt-cache-size 2 --port 8081",
-      "note": "Measured 2026-09-06 at wired limit 25000: last stable depth 40982 at 37.4 tok/s, then the generation thread died on a Metal OOM at the next step while the models endpoint kept answering. Wired memory grows with the session and peaked at 24.6 GB. At wired 24000 the same server stopped at 37K in 18.7 GB.",
+      "note": "Measured 2026-09-06 at wired limit 25000: last stable depth 40982 at 37.4 tok/s, then the generation thread died on a Metal OOM at the next step while the models endpoint kept answering. Wired memory grows with the session and peaked at 24.6 GB. At wired 24000 the same server stopped at 37K in 18.7 GB. Fast mode (a thinking budget of 8192 on the server) is not available on this stack: the MLX server accepts the budget and does not enforce it, so this score is not comparable with the fast-mode rows.",
       "pi": {
         "provider": "mlx",
         "id": "mlx-community/Qwen3.6-35B-A3B-4bit",
@@ -326,7 +345,10 @@
         "id": "qwen3.6-35b-a3b",
         "contextWindow": 81920,
         "maxTokens": 8192
-      }
+      },
+      "stale": [
+        "evalplus"
+      ]
     },
     {
       "config": "Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking off",
@@ -365,7 +387,8 @@
       "evalplusWall": 301.5,
       "stale": [
         "tokShallow",
-        "tokDeep"
+        "tokDeep",
+        "evalplus"
       ],
       "spec": {
         "base": "Qwen3.6-35B-A3B",
@@ -408,7 +431,8 @@
       },
       "stale": [
         "tokShallow",
-        "tokDeep"
+        "tokDeep",
+        "evalplus"
       ],
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 40960 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -440,7 +464,7 @@
         "page": "../gemma-4-26b-a4b-mlx-retired.md",
         "reason": "This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task."
       },
-      "note": "Retired 2026-09-12 (owner). The agent smoke at thinking high on a 65536 window ended with zero commits on a tool call the server truncated mid-generation, with no OOM and no server death; the GGUF UD-Q4_K_XL build of the same model completes the agent task, so this quant is not a candidate and is not run again. Real-text speed read 2026-09-12 with llama-benchy: 49.3 tok/s at 4K and 23.4 at 64K; the earlier creep read the same server alternating between 13 and 24 tok/s from 60K up, with 12.83 the last stable step at 70K. EvalPlus at thinking on re-scored 2026-09-16 after a re-run of its 46 empty problems at the same 30000 budget: 0.793/0.768, 31 empty answers of 164, every one proven as the output budget and none a model stop; 15 answers completed on today's build. The re-run adds 410 minutes to the wall.",
+      "note": "Retired 2026-09-12 (owner). The agent smoke at thinking high on a 65536 window ended with zero commits on a tool call the server truncated mid-generation, with no OOM and no server death; the GGUF UD-Q4_K_XL build of the same model completes the agent task, so this quant is not a candidate and is not run again. Real-text speed read 2026-09-12 with llama-benchy: 49.3 tok/s at 4K and 23.4 at 64K; the earlier creep read the same server alternating between 13 and 24 tok/s from 60K up, with 12.83 the last stable step at 70K. EvalPlus at thinking on re-scored 2026-09-16 after a re-run of its 46 empty problems at the same 30000 budget: 0.793/0.768, 31 empty answers of 164, every one proven as the output budget and none a model stop; 15 answers completed on today's build. The re-run adds 410 minutes to the wall. Fast mode (a thinking budget of 8192 on the server) is not available on this stack: the MLX server accepts the budget and does not enforce it, so this score is not comparable with the fast-mode rows.",
       "command": "mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \\\n  --prompt-cache-size 2 --port 8081",
       "pi": {
         "provider": "mlx",
@@ -459,7 +483,7 @@
       "evalplus": "0.896/0.872/90%",
       "mendel": "pending",
       "id": "gemma26-gguf",
-      "evalplusWall": 347.0,
+      "evalplusWall": 347,
       "spec": {
         "base": "Gemma-4-26B-A4B",
         "quant": "UD-Q4_K_XL",
@@ -477,7 +501,10 @@
         "id": "gemma-4-26b-a4b",
         "contextWindow": 212992,
         "maxTokens": 8192
-      }
+      },
+      "stale": [
+        "evalplus"
+      ]
     },
     {
       "config": "Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots",
@@ -489,7 +516,7 @@
       "evalplus": "0.896/0.872/90%",
       "mendel": "pending",
       "id": "gemma26-gguf-2x",
-      "evalplusWall": 347.0,
+      "evalplusWall": 347,
       "spec": {
         "base": "Gemma-4-26B-A4B",
         "quant": "UD-Q4_K_XL",
@@ -501,7 +528,8 @@
       },
       "stale": [
         "tokShallow",
-        "tokDeep"
+        "tokDeep",
+        "evalplus"
       ],
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 202752 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -709,7 +737,7 @@
       },
       "hidden": false,
       "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
-      "note": "Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak. A real-text read of this server on 2026-09-13 ran with llama-benchy twice and both times the generation thread died on a Metal OOM at the deep cell, at 56320 and then at 52224, with the prompt fill stalled near 47K; the process stayed alive and silent. The ceiling on this machine sits near 47K, not the 58K the 2026-08-29 creep reached, so the harness window is 40960 by the MLX rule and the speed cells keep the creep's numbers with the dagger: no benchy cell survived, because llama-benchy writes its result once at the end of a run.",
+      "note": "Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak. A real-text read of this server on 2026-09-13 ran with llama-benchy twice and both times the generation thread died on a Metal OOM at the deep cell, at 56320 and then at 52224, with the prompt fill stalled near 47K; the process stayed alive and silent. The ceiling on this machine sits near 47K, not the 58K the 2026-08-29 creep reached, so the harness window is 40960 by the MLX rule and the speed cells keep the creep's numbers with the dagger: no benchy cell survived, because llama-benchy writes its result once at the end of a run. Fast mode (a thinking budget of 8192 on the server) is not available on this stack: the MLX server accepts the budget and does not enforce it, so this score is not comparable with the fast-mode rows.",
       "pi": {
         "provider": "mlx",
         "id": "prism-ml/Ternary-Bonsai-27B-mlx-2bit",
@@ -774,7 +802,10 @@
         "id": "bonsai-prism",
         "contextWindow": 65536,
         "maxTokens": 8192
-      }
+      },
+      "stale": [
+        "evalplus"
+      ]
     },
     {
       "config": "Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on",
@@ -789,7 +820,8 @@
       "evalplusWall": 594.8,
       "stale": [
         "tokShallow",
-        "tokDeep"
+        "tokDeep",
+        "evalplus"
       ],
       "spec": {
         "base": "Ternary-Bonsai-27B",
@@ -837,6 +869,35 @@
         "contextWindow": 131072,
         "maxTokens": 8192
       }
+    },
+    {
+      "config": "Ternary-Bonsai-2-27B, GGUF, PTQ1_0 (prism-ml), f16 KV, no drafter, effort xhigh",
+      "maxCtx": "160k",
+      "gatedBy": "mem",
+      "tokShallow": "17.9",
+      "tokDeep": "9.1",
+      "memory": "25.5 GB",
+      "evalplus": "0.988/0.939/100%",
+      "mendel": "pending",
+      "id": "bonsai2-ptq1-mac-xhigh",
+      "spec": {
+        "base": "Ternary-Bonsai-2-27B",
+        "quant": "PTQ1_0",
+        "server": "prism-llama",
+        "publisher": "prism-ml",
+        "repo": "prism-ml/Ternary-Bonsai-2-27B-gguf",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "xhigh"
+      },
+      "hidden": false,
+      "added": "2026-09-19",
+      "command": "llama-server -m \"$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf)\" \\\n  --alias bonsai2-27b-ptq1-mac --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `bonsai2-27b-ptq1-mac`, the dense packing at f16, the served pack on this machine. `-c 262144`, the trained context, loads and serves, with a harness window of 159744; the deepest clean depth is 163858 at 9.07 tok/s, and the next step, 196618 at 8.18, grew swap by 130 MB, so memory ends the window before the 8 tok/s floor does. The slot packing, PQ2_0, is the faster file on the card and the slower one here: 17.05 tok/s at 4K and under the floor between 41K and 66K, where PTQ1_0 reads 17.86 and 13.05. Read with the context-creep tool at wired limit 25000. Served by the PrismML llama.cpp fork, release `prism-b10685-7dffb15`, Metal build; the stock binary does not serve this file. f16 KV only on this machine. EvalPlus at effort xhigh under a server thinking budget of 16056 (the calibration longest converged reasoning, 10704, times 1.5; answer budget 2048, `max_tokens` 18104): 0.988/0.939 with no empty answer in 337 minutes. Seven problems hit the budget and were forced to answer. The card scored the same file at 0.970/0.939 under a budget of 30000. The four forced answers that failed their tests fail again without the budget, at the 30000-token cap, as loops, so the budget lost no answer. The blind agent row is pending.",
+      "evalplusWall": 337,
+      "stale": [
+        "evalplus"
+      ]
     }
   ],
   "models": {
@@ -1120,6 +1181,26 @@
           "sub": "a record; medium is no longer run"
         }
       }
+    },
+    "bonsai-2-27b": {
+      "rowMatch": "Ternary-Bonsai-2-",
+      "kpis": [
+        "window",
+        "decodeShallow"
+      ],
+      "stats": {
+        "window": {
+          "value": "160k",
+          "label": "usable context, PTQ1_0, f16 KV",
+          "sub": "41k on PQ2_0"
+        },
+        "decodeShallow": {
+          "value": "17.9 tok/s",
+          "label": "decode at 4K, PTQ1_0, f16 KV",
+          "sub": "17.05 on PQ2_0"
+        }
+      },
+      "compareWith": "bonsai-27b"
     }
   },
   "evalplusRuns": [
@@ -1341,6 +1422,57 @@
       "base": "0.957",
       "plus": "0.939",
       "empty": "6/164"
+    },
+    {
+      "wall": 337,
+      "emptyCause": "none",
+      "slug": "bonsai-2-27b",
+      "model": "Ternary-Bonsai-2-27B (GGUF PTQ1_0, prism-ml, f16 KV, prism fork)",
+      "mode": "effort xhigh",
+      "row": "bonsai2-ptq1-mac-xhigh",
+      "budget": 18104,
+      "base": "0.988",
+      "plus": "0.939",
+      "empty": "0/164",
+      "think": 16056,
+      "forced": "7/164"
+    },
+    {
+      "slug": "gemma-4-26b-a4b",
+      "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, unsloth, f16 KV)",
+      "mode": "thinking on",
+      "row": "gemma26-gguf",
+      "think": 19491,
+      "budget": 21539,
+      "base": "0.988",
+      "plus": "0.957",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "16/164",
+      "wall": 165.8
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF Q4_K_M, bartowski, f16 KV)",
+      "mode": "effort xhigh",
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "Q4_K_M",
+        "server": "llama-server",
+        "publisher": "bartowski",
+        "repo": "bartowski/Qwen3.8-27B-GGUF",
+        "drafter": "mtp/3",
+        "kv": "f16",
+        "effort": "xhigh"
+      },
+      "think": 30000,
+      "budget": 32048,
+      "base": "0.982",
+      "plus": "0.951",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "3/164",
+      "wall": 448.6
     }
   ],
   "mendelWalls": {
@@ -1418,7 +1550,7 @@
         "4096": 53.3,
         "16384": 49.6,
         "33792": 42.2,
-        "37888": 42.0
+        "37888": 42
       },
       "run": "bench4",
       "method": "creep",
@@ -1669,7 +1801,7 @@
         "4096": 24.5,
         "8192": 24.2,
         "16384": 22.9,
-        "24576": 22.0,
+        "24576": 22,
         "32768": 20.5,
         "40960": 18.6,
         "43008": 18.66,
@@ -1727,6 +1859,37 @@
       "run": "bench13",
       "method": "creep",
       "wired": 24000
+    },
+    {
+      "model": "bonsai-2-27b",
+      "arm": "PTQ1_0, f16 KV, no drafter",
+      "c": 262144,
+      "cAt": 163858,
+      "served": true,
+      "points": {
+        "4114": 17.86,
+        "24602": 16.05,
+        "65578": 13.05,
+        "163858": 9.07
+      },
+      "run": "bench26",
+      "method": "creep",
+      "wired": 25000
+    },
+    {
+      "model": "bonsai-2-27b",
+      "arm": "PQ2_0, f16 KV, no drafter",
+      "c": 262144,
+      "cAt": 65578,
+      "served": false,
+      "points": {
+        "4114": 17.05,
+        "24602": 12.26,
+        "65578": 7.91
+      },
+      "run": "bench26",
+      "method": "creep",
+      "wired": 25000
     }
   ]
 }

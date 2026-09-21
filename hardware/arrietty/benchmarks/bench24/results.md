@@ -504,3 +504,109 @@ Files: `results/bonsai2-ptq1-f16-evalplus-forced-rerun/`, `results/server-bonsai
 `bonsai2_pq2_f16_think_budget` = 30000, `bonsai2_pq2_f16_answer_budget` = 2048, `bonsai2_pq2_f16_max_tokens` = 32048.
 
 Files: `hardware/arrietty/calibrations/calibration-bonsai2-pq2-f16-xhigh-think.json`, `results/server-bonsai2-pq2-f16-evalplus-calibrate.log`.
+
+## `bonsai2-pq2-f16-evalplus-budget-xhigh`
+
+`Ternary-Bonsai-2-27B-PQ2_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, f16 KV, `-c 32768`, `--reasoning-budget 30000 --reasoning-budget-message "Thinking budget reached. Give the final answer now."`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`, `EVALPLUS_MAX_NEW_TOKENS=32048`. Full 164-problem HumanEval run in two parts, in UTC:
+
+| part | from | to | problems |
+|---|---|---|--:|
+| 1 | 2026-09-19T00:30:39Z | 2026-09-19T01:29:01Z (owner stop at about 01:33Z) | 1-64 |
+| pause | 2026-09-19T01:33Z | 2026-09-19T10:30Z | none |
+| 2 | 2026-09-19T10:30Z | 2026-09-19T12:34:01Z (2:04:21 on the resumed problems) | 65-164 |
+
+The pause was an owner stop. A stray EvalPlus client of part 1 (pid 222249) sent requests to another run's server after the stop. No sample was written after the stop, so no sample was deleted (see "Pause and stray client" in `state.md`). Every sample comes from the run 24 server.
+
+| metric | value |
+|---|--:|
+| HumanEval base pass@1 | 0.982 |
+| HumanEval plus pass@1 | 0.945 |
+| completion rate | 100% |
+| empty (from samples) | 0/164 |
+| forced (budget fired) | 6/164 |
+
+Forced task ids: `HumanEval/32`, `39`, `64`, `99`, `124`, `137`. Whether each passed is checked in `bonsai2-pq2-f16-evalplus-forced-rerun`, not assumed from "not empty".
+
+**This row is the first EvalPlus score for `PQ2_0` at f16.** Base pass@1 0.982 is above 0.800.
+
+Files: `results/bonsai2-pq2-f16-evalplus-budget-xhigh/`, `results/server-bonsai2-pq2-f16-evalplus-budget-xhigh.log` (part 1), `results/server-bonsai2-pq2-f16-evalplus-budget-xhigh-resume.log` (part 2), both watcher logs, both `run-...out.log` files.
+
+## `bonsai2-pq2-f16-evalplus-forced-rerun`
+
+Natural re-run (no reasoning-budget flags), same config, `EVALPLUS_MAX_NEW_TOKENS=30000`. Prepared from `bonsai2-pq2-f16-evalplus-budget-xhigh`: 6 forced, 3 forced-failed (`HumanEval/32`, `39`, `99`), regenerated only those 3. Wall 0:35:02.
+
+| task_id | cell | forced_tokens | natural_finish | natural_tokens | natural_reasoning_tokens |
+|---|---|--:|---|--:|--:|
+| HumanEval/32 | forced-fail-loop | 32048 | length | 30000 | 30000 |
+| HumanEval/39 | forced-fail-loop | 30308 | length | 30000 | 30000 |
+| HumanEval/64 | forced-pass | 32048 | | | |
+| HumanEval/99 | forced-fail-loop | 30212 | length | 30000 | 30000 |
+| HumanEval/124 | forced-pass | 30255 | | | |
+| HumanEval/137 | forced-pass | 30239 | | | |
+
+Summary: forced-pass=3, forced-fail-late=0, forced-fail-loop=3, forced-fail-wrong=0. `corrected_think_budget`: unchanged, no late answer. All three forced-failed problems hit the 30000-token cap without an answer, so they are non-convergence, not a small budget.
+
+Files: `results/bonsai2-pq2-f16-evalplus-forced-rerun/`, `results/server-bonsai2-pq2-f16-evalplus-forced-rerun.log`, `results/watcher-bonsai2-pq2-f16-evalplus-forced-rerun.log`, `results/run-bonsai2-pq2-f16-evalplus-forced-rerun.out.log`.
+
+## `bonsai2-ptq1-evalplus-calibrate`
+
+`Ternary-Bonsai-2-27B-PTQ1_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, q8_0 KV (`bonsai2-ptq1-kvpick`), `-c 32768`, no reasoning-budget flag. Calibration name `bonsai2-ptq1-xhigh-think`, alias `bonsai2-27b-ptq1`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`. All 10 rows resolve `xhigh`. The first 5 rows come from an earlier pass that the coordinator stopped (same server config, same file name); `calibrate.py` resumed the file for the other 5. The earlier report said 1 saved row; the file held 5.
+
+| task_id | finish_reason | reasoning_len (chars) |
+|---|---|--:|
+| HumanEval/0 | stop | 2332 |
+| HumanEval/10 | stop | 35446 |
+| HumanEval/26 | stop | 2094 |
+| HumanEval/32 | stop | 80253 |
+| HumanEval/38 | stop | 5853 |
+| HumanEval/39 | length | 70173 |
+| HumanEval/76 | length | 74912 |
+| HumanEval/99 | length | 32650 |
+| HumanEval/124 | stop | 8651 |
+| HumanEval/145 | length | 102013 |
+
+6 converged, 4 cut, no converged row with an empty answer.
+
+`thinking-budget.py derive`: converged 6, cut 4, max_reasoning_tokens 24083, max_answer_tokens 1273, think_budget 30000 (capped, 24083 x 1.5 = 36124.5 is above the cap), answer_budget 2048 (floor), max_tokens 32048.
+
+`bonsai2_ptq1_think_budget` = 30000, `bonsai2_ptq1_answer_budget` = 2048, `bonsai2_ptq1_max_tokens` = 32048.
+
+Files: `hardware/arrietty/calibrations/calibration-bonsai2-ptq1-xhigh-think.json`, `results/server-bonsai2-ptq1-calibrate-think.log` (first 5 rows), `results/server-bonsai2-ptq1-evalplus-calibrate.log` (rest).
+
+## `bonsai2-ptq1-evalplus-budget-xhigh`
+
+`Ternary-Bonsai-2-27B-PTQ1_0.gguf` rev `6ed5e12`, fork `prism-b10685-7dffb15`, q8_0 KV, `-c 32768`, `--reasoning-budget 30000 --reasoning-budget-message "Thinking budget reached. Give the final answer now."`, extra body `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}`, `EVALPLUS_MAX_NEW_TOKENS=32048`. Full 164-problem HumanEval run, `2026-09-19T14:07:48Z` to `2026-09-19T18:12:43Z`, wall 4:04:55.
+
+| metric | value |
+|---|--:|
+| HumanEval base pass@1 | 0.982 |
+| HumanEval plus pass@1 | 0.945 |
+| completion rate | 100% |
+| empty (from samples) | 0/164 |
+| forced (budget fired) | 9/164 |
+
+Forced task ids: `HumanEval/39`, `64`, `76`, `94`, `99`, `102`, `134`, `137`, `145`. Whether each passed is checked in `bonsai2-ptq1-evalplus-forced-rerun`, not assumed from "not empty".
+
+**This row is the first EvalPlus score for `PTQ1_0` at q8_0.** The f16 row of the same file scored 0.970/0.939. Base pass@1 0.982 is above 0.800.
+
+Files: `results/bonsai2-ptq1-evalplus-budget-xhigh/`, `results/server-bonsai2-ptq1-evalplus-budget-xhigh.log`, `results/watcher-bonsai2-ptq1-evalplus-budget-xhigh.log`, `results/run-bonsai2-ptq1-evalplus-budget-xhigh.out.log`.
+
+## `bonsai2-ptq1-evalplus-forced-rerun`
+
+Natural re-run (no reasoning-budget flags), same config, `EVALPLUS_MAX_NEW_TOKENS=30000`. Prepared from `bonsai2-ptq1-evalplus-budget-xhigh`: 9 forced, 2 forced-failed (`HumanEval/99`, `145`), regenerated only those 2. Wall 0:26:24.
+
+| task_id | cell | forced_tokens | natural_finish | natural_tokens | natural_reasoning_tokens |
+|---|---|--:|---|--:|--:|
+| HumanEval/39 | forced-pass | 30466 | | | |
+| HumanEval/64 | forced-pass | 32048 | | | |
+| HumanEval/76 | forced-pass | 30159 | | | |
+| HumanEval/94 | forced-pass | 30921 | | | |
+| HumanEval/99 | forced-fail-loop | 30212 | length | 30000 | 30000 |
+| HumanEval/102 | forced-pass | 30122 | | | |
+| HumanEval/134 | forced-pass | 30130 | | | |
+| HumanEval/137 | forced-pass | 30360 | | | |
+| HumanEval/145 | forced-fail-loop | 30108 | length | 30000 | 30000 |
+
+Summary: forced-pass=7, forced-fail-late=0, forced-fail-loop=2, forced-fail-wrong=0. `corrected_think_budget`: unchanged, no late answer. Both forced-failed problems hit the 30000-token cap without an answer: non-convergence, not a small budget.
+
+Files: `results/bonsai2-ptq1-evalplus-forced-rerun/`, `results/server-bonsai2-ptq1-evalplus-forced-rerun.log`, `results/watcher-bonsai2-ptq1-evalplus-forced-rerun.log`, `results/run-bonsai2-ptq1-evalplus-forced-rerun.out.log`.

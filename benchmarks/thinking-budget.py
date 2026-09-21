@@ -1,26 +1,32 @@
 #!/usr/bin/env python3
-"""thinking-budget.py — the thinking budget of an EvalPlus run, and its proof.
+"""thinking-budget.py — the forced answers of an EvalPlus run under a thinking budget.
 
 A server that takes a thinking budget (`llama-server --reasoning-budget N
 --reasoning-budget-message MSG`) closes the thinking at N tokens and the
-model answers with what it has. This tool covers the three steps around
-such a run:
+model answers with what it has. Fast mode is N = 8192 with max_tokens 16384
+(`docs/methodology/evalplus.md`). This tool covers the steps around such a
+run:
 
-  derive   <calibration.json>
-      The two budgets from a calibration file: the thinking budget from the
-      longest converged reasoning, the answer budget from the longest
-      converged answer, each times the margin with a floor, and their sum
-      as max_tokens.
+  count    <run-dir> --message MSG
+      The forced count from the finish log and the empty count from the
+      samples, the two numbers a run reports beside its score.
+
+  splice   <run-dir> <fast-dir> --message MSG [--think 8192]
+      Reuse an earlier run of the same config at a thinking budget of
+      --think or more: copy its samples and finish lines for every problem
+      whose reasoning stayed inside --think and was not forced, so
+      `run-humaneval.sh` in <fast-dir> generates only the rest under the
+      fast flags. Temperature 0 makes the kept answers the same text the
+      fast run would produce.
 
   prepare  <run-dir> <rerun-dir> --message MSG
-      After the budgeted run: list the problems where the budget message
+      The optional proof run: list the problems where the budget message
       fired and the answer failed, copy the run's samples into <rerun-dir>
       without those problems, so `run-humaneval.sh` regenerates only them,
       at a generous budget and without the flag.
 
   report   <run-dir> <rerun-dir> --message MSG
-      After the natural re-run: one line per forced problem with its cell,
-      and the corrected thinking budget.
+      After the proof run: one line per forced problem with its cell.
 
       forced-pass       the budget fired and the answer still passed
       forced-fail-late  the answer failed under the budget and passed
@@ -32,23 +38,13 @@ such a run:
 Reasoning tokens come from usage.completion_tokens_details when the server
 reports them, else from completion_tokens split by the character ratio of
 reasoning to answer.
-
-Environment: THINKING_BUDGET_MARGIN (default 1.5), THINKING_BUDGET_FLOOR
-(default 2048, applies to both budgets), THINKING_BUDGET_CAP (default 30000,
-the thinking budget alone).
 """
 import argparse
 import glob
 import json
-import math
 import os
 import shutil
 import sys
-
-MARGIN = float(os.environ.get("THINKING_BUDGET_MARGIN", "1.5"))
-FLOOR = int(os.environ.get("THINKING_BUDGET_FLOOR", "2048"))
-CAP = int(os.environ.get("THINKING_BUDGET_CAP", "30000"))
-
 
 def reasoning_tokens(row):
     if row.get("reasoning_tokens"):
@@ -63,26 +59,6 @@ def reasoning_tokens(row):
 
 def answer_tokens(row):
     return (row.get("completion_tokens") or 0) - reasoning_tokens(row)
-
-
-def budget(value):
-    return min(CAP, max(FLOOR, int(math.ceil(value * MARGIN))))
-
-
-def derive(args):
-    rows = json.load(open(args.calibration))
-    converged = [r for r in rows if r.get("finish_reason") == "stop" and not r.get("content_empty")]
-    cut = [r for r in rows if r.get("finish_reason") == "length"]
-    if not converged:
-        sys.exit("no converged answer in the calibration; nothing to derive")
-    if not any(r.get("reasoning_len") for r in converged):
-        sys.exit("the calibration records no reasoning length; re-run calibrate.py on the current tool")
-    max_think = max(reasoning_tokens(r) for r in converged)
-    max_answer = max(answer_tokens(r) for r in converged)
-    think = budget(max_think)
-    answer = max(FLOOR, int(math.ceil(max_answer * MARGIN)))
-    print("converged\tcut\tmax_reasoning_tokens\tmax_answer_tokens\tthink_budget\tanswer_budget\tmax_tokens")
-    print(f"{len(converged)}\t{len(cut)}\t{max_think}\t{max_answer}\t{think}\t{answer}\t{think + answer}")
 
 
 def load_finish(run_dir):
@@ -112,6 +88,54 @@ def forced_failed(run_dir, message):
     passed = load_eval(run_dir)
     forced = {t for t, r in finish.items() if message in (r.get("reasoning_tail") or "")}
     return finish, passed, forced, sorted(t for t in forced if not passed.get(t, False))
+
+
+def samples_path(run_dir):
+    files = [p for p in glob.glob(os.path.join(run_dir, "humaneval", "*.jsonl")) if not p.endswith(".raw.jsonl")]
+    if not files:
+        sys.exit(f"no samples under {run_dir}/humaneval")
+    return files[0]
+
+
+def count(args):
+    finish = load_finish(args.run_dir)
+    forced = sorted((t for t, r in finish.items() if args.message in (r.get("reasoning_tail") or "")), key=lambda x: int(x.split("/")[1]))
+    empty = []
+    with open(samples_path(args.run_dir)) as f:
+        for line in f:
+            if line.strip():
+                row = json.loads(line)
+                if not (row.get("solution") or row.get("completion") or "").strip():
+                    empty.append(row["task_id"])
+    print(f"answers\t{len(finish)}\tforced\t{len(forced)}\tempty\t{len(empty)}")
+    print("forced_ids\t" + " ".join(forced))
+    print("empty_ids\t" + " ".join(empty))
+
+
+def splice(args):
+    finish = load_finish(args.run_dir)
+    keep = {t for t, r in finish.items()
+            if args.message not in (r.get("reasoning_tail") or "")
+            and r.get("finish_reason") == "stop"
+            and reasoning_tokens(r) <= args.think}
+    src = os.path.join(args.run_dir, "humaneval")
+    dst = os.path.join(args.fast_dir, "humaneval")
+    os.makedirs(dst, exist_ok=True)
+    for path in glob.glob(os.path.join(src, "*.jsonl")):
+        with open(path) as f, open(os.path.join(dst, os.path.basename(path)), "w") as out:
+            for line in f:
+                if line.strip() and json.loads(line)["task_id"] in keep:
+                    out.write(line)
+    with open(os.path.join(args.fast_dir, "finish.jsonl"), "w") as out:
+        for t in keep:
+            out.write(json.dumps({**finish[t], "source": args.run_dir}) + "\n")
+    regenerate = sorted((t for t in finish if t not in keep), key=lambda x: int(x.split("/")[1]))
+    json.dump({"message": args.message, "think": args.think, "source": args.run_dir,
+               "kept": sorted(keep), "regenerate": regenerate},
+              open(os.path.join(args.fast_dir, "splice.json"), "w"), indent=2)
+    print(f"kept\t{len(keep)}\tregenerate\t{len(regenerate)}")
+    for t in regenerate:
+        print(t)
 
 
 def prepare(args):
@@ -167,17 +191,24 @@ def report(args):
             cells["forced-fail-wrong"] += 1
     print("summary\t" + "\t".join(f"{k}={v}" for k, v in cells.items()))
     if late:
-        print(f"corrected_think_budget\t{budget(max(late))}\tfrom the longest late answer, {max(late)} reasoning tokens")
+        print(f"late_answers\t{len(late)}\tlongest {max(late)} reasoning tokens")
     else:
-        print("corrected_think_budget\tunchanged\tno late answer")
+        print("late_answers\t0\tno late answer")
 
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
-    d = sub.add_parser("derive")
-    d.add_argument("calibration")
-    d.set_defaults(fn=derive)
+    c = sub.add_parser("count")
+    c.add_argument("run_dir")
+    c.add_argument("--message", required=True)
+    c.set_defaults(fn=count)
+    sp = sub.add_parser("splice")
+    sp.add_argument("run_dir")
+    sp.add_argument("fast_dir")
+    sp.add_argument("--message", required=True)
+    sp.add_argument("--think", type=int, default=8192)
+    sp.set_defaults(fn=splice)
     for name, fn in (("prepare", prepare), ("report", report)):
         s = sub.add_parser(name)
         s.add_argument("run_dir")

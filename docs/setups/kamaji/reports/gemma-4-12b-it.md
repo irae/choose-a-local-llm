@@ -18,18 +18,13 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth Q4_K_XL); both depth curves r
 - **The usable agent configuration is llama-server, f16 KV, no MTP
   drafter, thinking off.** It decodes 24.64 tok/s at 4K and 8.86 at
   245K, so it reaches the model's own 262,144 window and stays above the
-  8 tok/s floor. Wired memory holds flat at 13.9 GB. On the Mendel
-  guided run it replaced 3 of 8 libraries and scored 37.5 capped, ending
-  on the model budget after three nudges.
+  8 tok/s floor. Wired memory holds flat at 13.9 GB.
 - **The GGUF quant scores 0.976 / 0.939 / 100% with thinking off, all 164
   answers delivered.** That is 0.067 above the LM Studio MLX entry's
   0.909 / 0.872 / 100%, so the two quants do not share a score here.
   LM Studio is retired on this machine: it kept the fastest curve,
   34.19 tok/s at 4K down to 23.23 at 131K, and it never finished an
   agent task. [The full record](../lmstudio-retired.md).
-- **The KV type sets the depth on this model, not the weights.** With
-  q8_0 KV the same server drops under the 8 tok/s floor by 16K. With f16
-  KV it is 3.2x faster at 16K and stays usable eight times deeper.
 - **Two slots at f16 KV hold 82K each, and no `-c` moves that.** With
   no drafter, both slots swept in turn, the clean per-slot depth is
   81958 tokens at 15.7 tok/s in 13.8 GB wired. Every larger allocation
@@ -126,6 +121,10 @@ llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
 
 ## Model details and findings
 
+- **The KV type sets the depth on this model, not the weights.** With
+  q8_0 KV the same server drops under the 8 tok/s floor by 16K. With f16
+  KV it is 3.2x faster at 16K and stays usable eight times deeper.
+
 **The runtime decides what this model can do.** mlx-lm cannot serve it:
 it lacks the `gemma4_unified` model type. LM Studio's engine supports
 that type and gives the flattest decode curve on this machine.
@@ -185,10 +184,10 @@ on [the benchmarks page](../benchmarks/gemma-4-12b-it.md#the-retired-entry).
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:model-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-12b-it.md) | 8192 | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | none | <TokCell shallow="25.0" deep="9.2" /> | 0h43 |
-| [<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/binaries/gemma12-lmstudio-mlx-4bit" />](../benchmarks/gemma-4-12b-it.md) | 30000 | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | none | <TokCell shallow="34.19" deep="23.23" /> | 1h33 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-12b-it.md) | none | 8192 | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | none | — | <TokCell shallow="25.0" deep="9.2" /> | 0h43 |
+| [<ModelSpec base="Gemma-4-12B" quant="4-bit" server="lms" publisher="lmstudio-community" repo="lmstudio-community/gemma-4-12B-it-MLX-4bit" kv="f16" effort="off" page="/binaries/gemma12-lmstudio-mlx-4bit" />](../benchmarks/gemma-4-12b-it.md) | none | 30000 | <ScoreCell value="0.909/0.872" sub="100% completion" top /> | none | — | <TokCell shallow="34.19" deep="23.23" /> | 1h33 |
 <!-- gen:model-evalplus:end -->
 
 ## Agentic quality — Mendel

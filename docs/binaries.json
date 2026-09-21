@@ -295,7 +295,8 @@
     "file": "Ternary-Bonsai-2-27B-PQ2_0.gguf",
     "revision": "6ed5e12",
     "setups": [
-      "arrietty"
+      "arrietty",
+      "kamaji"
     ]
   },
   {
@@ -312,7 +313,8 @@
     "file": "Ternary-Bonsai-2-27B-PTQ1_0.gguf",
     "revision": "6ed5e12",
     "setups": [
-      "arrietty"
+      "arrietty",
+      "kamaji"
     ]
   },
   {

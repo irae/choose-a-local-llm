@@ -11,10 +11,10 @@ happen, and the handing-over section at the end.
 | `adapter_sha256` | `f1669534803d340a496015f5c45125f3437b4d13ec764f40e34488ce83967f42` | coordinator, verified 2026-09-18 |
 | `adapter_size` | 9682464 | coordinator, verified 2026-09-18 |
 | `llama_server_prism` | `prism-b10685-7dffb15`, commit `7dffb158d` | run 24, already installed |
-| `orca_c` | pending | `orca-ptq1-f16-ladder`, planning value 139264 |
-| `orca_clean` | pending | `sweep-orca-ptq1-f16` |
-| `orca_window` | pending | the agent row |
-| `vram_start_mb` | pending | `nvidia-smi`, session start |
+| `orca_c` | 139264 | `orca-ptq1-f16-ladder`, planning value 139264 |
+| `orca_clean` | 138240 | `sweep-orca-ptq1-f16` |
+| `orca_window` | 135168 | the agent row |
+| `vram_start_mb` | 618 | `nvidia-smi`, session start |
 
 The unablated arm of the same file and cache, from run 24, to read
 against: `-c 139264`, window 135168, 42.1 / 37.3 / 30.1 / 22.4 tok/s at
@@ -127,7 +127,72 @@ probe should look for `loaded 258 tensors from lora file`, not 129.
 129 is the pair count the README quotes; 258 is what the log line
 itself will print.
 
+## `machine-setup` (2026-09-18, in progress)
+
+Card at start: 618 MiB of 16311 MiB, no llama-server. `MemAvailable` 19505 MB, `df -h ~` 13G free (95% used). `gh auth status` passes. Adapter sha256 and size match the table. The fork prints `--lora` and `--lora-scaled`.
+
+Env for the fork: `LD_LIBRARY_PATH` must list the fork's own directory first, then run 17's CUDA lib directory. With run 17's directory first, the server loads the stock ggml and fails with `invalid ggml type 143`.
+
+Probe at `-c 8192`: the model loaded, `GET /lora-adapters` returned the adapter at id 0, scale 1.0, and VRAM read 7059 MiB. **The server log has no `llama_adapter_lora_init_impl` line at all** (log verbosity 3, 14 lines). Runbook step 4 calls a silent load stop and ask. Counter-evidence: the endpoint lists the adapter.
+
+**Foreign client on port 8081.** Process 222249, `run_codegen_wrapper.py` from the `choose-a-local-llm-run24` worktree, model `bonsai2-27b-pq2-f16`, up 1 h 9 min, sent requests to my probe server. Run 24 is meant to be stopped. I did not touch that process. I stopped my own server. No probe answer was checked.
+
+Coordinator answers (2026-09-18): the log line gate is closed. `GET /lora-adapters` (id 0, scale 1.0) is the load proof, and a coherent probe answer is also required. The owner killed pid 222249; no `run_codegen_wrapper` process is left. Go given to resume.
+
+Probe at `-c 8192` after the go: `GET /lora-adapters` returned id 0, scale 1.0; VRAM 7055 MiB of 16311 MiB after load. One chat completion at xhigh gave a correct Fibonacci function and two sentences, 1884 characters of reasoning, 562 completion tokens. Answer is coherent. `EVALPLUS_PYTHON` is `/home/irae/.local/share/pipx/venvs/evalplus/bin/python`. Corpus server runs on 127.0.0.1:8089 and stops after the sweep. `vram_start_mb`: 618. `machine-setup` done.
+
+## `orca-ptq1-f16-ladder`
+
+Planning value 139264 (run 24's f16 ceiling, no adapter), full command with the adapter, `--fit off`. Load: passes, VRAM 15375 MiB of 16311 MiB, no CUDA error, all layers on the GPU. Real request: 138053 prompt tokens, 16 completion tokens, served in 6 min 38 s (no cache), VRAM 15385 MiB under it. Zero `CUDA error`, `out of memory` or `cudaMalloc` lines in `results/server-orca-ladder-139264.log`.
+
+`orca_c` = **139264**. The adapter costs no window: the ceiling equals run 24's unablated ceiling. No bisect load, because the planning value already passes and run 24 measured the next step up as a fail for this file.
+
+## `sweep-orca-ptq1-f16`
+
+Done. 40.76 / 36.18 / 29.15 / 22.03 tok/s at 4096 / 24576 / 65536 / 138240. `orca_clean` 138240; `orca_window` 135168 (138240 rounded down to a multiple of 4096, from this arm's own sweep). Corpus server stopped. Sweep server stopped.
+
+## `orca-ptq1-f16-mendel-blind-xhigh`
+
+Started at the time in `results/mendel-blind-start.txt`. Server: `-c 139264`, f16, LoRA scale 1.0, no `--cache-ram 0`, no reasoning flag; window 135168 (`orca_window`), `reserveTokens` 8192. `~/.pi/agent/models.json` got a new entry `bonsai2-27b-ptq1-f16-orca`, copied from `bonsai2-27b-ptq1-f16` with id and name changed; backup `~/.pi/agent/models.json.bak-run27`. `gh auth status` passes. `git stash list` in `~/code/mendel-benchmark` was empty (0 entries) before the run, so the clear was a no-op; the classifier denied the `git stash clear` command and I did not retry it. Branch `bonsai2-27b-ptq1-f16-orca-xhigh-issue-13`. Watcher running on the events file, memory log `~/.local/share/choose-a-local-llm/run27-mendel-blind-mem.log`. VRAM 15533 MiB after load.
+
+`orca-ptq1-f16-mendel-blind-xhigh` done: 75/100, worst defect medium (trap B missed), end_reason complete, 269 tool calls, peak context 126798/135168, 1 compaction, loop ok, wall 1:22. Scored by Claude Fable 5.1 (Agent call with `model: "fable"`); sum checked to 75. Watcher stopped; no stray Mendel Daemon. Then the calibration started on the same server flags at `-c 32768`.
+
+## `orca-ptq1-f16-evalplus-calibrate`
+
+Calibration `orca-ptq1-f16-xhigh-think`, alias `bonsai2-27b-ptq1-f16-orca`, `-c 32768`, no budget flag, ten problems. `resolved_reasoning_effort` is `xhigh` on every row (source `requested`). `thinking-budget.py derive`: 7 converged, 3 cut (HumanEval/32, /76, /99, each at 30000 tokens, `finish_reason` length, empty answer), longest converged reasoning 27618 tokens, longest answer 500.
+
+| name | value |
+|---|--:|
+| `orca_think_budget` | 30000 (the tool's cap) |
+| `orca_answer_budget` | 2048 |
+| `orca_max_tokens` | 32048 |
+
+No converged row has an empty answer. HumanEval/76 ended in a digit flood. Files: `hardware/arrietty/calibrations/calibration-orca-ptq1-f16-xhigh-think.json`, `results/calibrate-orca-ptq1-f16.out.log`, `results/server-orca-ptq1-f16-calibrate.log`.
+
+## `orca-ptq1-f16-evalplus-budget-xhigh`
+
+Server `-c 32768`, `--reasoning-budget 30000 --reasoning-budget-message "Thinking budget reached. Give the final answer now."`, LoRA scale 1.0 (`GET /lora-adapters` id 0), f16, no `--cache-ram 0`. VRAM 8773 MiB after load, 8779 MiB under a real request. The server applies `min_p` 0.05 (no sampling parameter passed; EvalPlus sends temperature 0). Run: full 164, `EVALPLUS_MAX_NEW_TOKENS=32048`, directory `results/orca-ptq1-f16-budget-xhigh`. Watcher on `finish.jsonl`, memory log `~/.local/share/choose-a-local-llm/run27-evalplus-budget-mem.log`. Start time in `results/evalplus-budget-start.txt`.
+
+`orca-ptq1-f16-evalplus-budget-xhigh` done: base 0.976, plus 0.945, 0/164 empty (counted from the raw samples), 10/164 forced (counted from `finish.jsonl`). Forced-failed: HumanEval/32, /99, /132. Watcher stopped.
+
+`orca-ptq1-f16-evalplus-forced-rerun` done: forced-pass 7, forced-fail-loop 3 (HumanEval/32, /99, /132), forced-fail-late 0, forced-fail-wrong 0; natural re-run score 0.963/0.945. Watcher stopped, server stopped. `retry-sweep`: nothing waited on a human.
+
 ## Handing-over
 
-Prep done, no block of the run started (the card is held by run 24).
-Next: `machine-setup`, when the coordinator says the card is free.
+**What ran.** `machine-setup`, `orca-ptq1-f16-ladder`, `sweep-orca-ptq1-f16`, `orca-ptq1-f16-mendel-blind-xhigh`, `orca-ptq1-f16-evalplus-calibrate`, `orca-ptq1-f16-evalplus-budget-xhigh`, `orca-ptq1-f16-evalplus-forced-rerun`, `retry-sweep` (empty). One config: PTQ1_0 f16 plus the LoRA at scale 1.0.
+
+| measure | run 27, adapter | run 24, no adapter |
+|---|--:|--:|
+| window (`orca_c`) | 139264 | 139264 |
+| decode tok/s at 4096 / 24576 / 65536 / 138240 | 40.76 / 36.18 / 29.15 / 22.03 | 42.1 / 37.3 / 30.1 / 22.4 |
+| blind agent row | 75, medium (trap B missed), 2 chore commits | 82, CRITICAL (trap A), 17 chore commits |
+| peak context, tool calls | 126798 of 135168, 269 | 127141, - |
+| EvalPlus base / plus | 0.976 / 0.945 | 0.970 / 0.939 |
+
+**Gates.** The adapter log line gate (no `llama_adapter_lora_init_impl` line): the coordinator accepted `GET /lora-adapters` as the load proof. A foreign run 24 client on port 8081: the owner stopped it. The classifier denied `git stash clear` in `~/code/mendel-benchmark`; the stash was empty, so nothing was needed. The EvalPlus gate of 0.800 did not apply to the agent row, which ran first.
+
+**Deviations.** `LD_LIBRARY_PATH` must list the fork directory before run 17's CUDA lib directory; the reverse order loads the stock ggml. The agent row was scored on Claude Fable 5.1 as the owner rule says, but `PLAN.md` still names Opus. The scorer did not publish the row to `~/code/mendel-benchmark`; the coordinator publishes. Server sampling: `min_p` 0.05 applied, no sampling parameter passed.
+
+**Machine state left behind.** No `llama-server`, no Mendel daemon, no watcher, port 8081 and port 8089 free. VRAM about 776 MiB (start 618 MiB; the desktop). `~/.pi/agent/models.json` has one new entry, `bonsai2-27b-ptq1-f16-orca`, backup `~/.pi/agent/models.json.bak-run27`. The Mendel worktree `~/code/mendel-bench-bonsai2-27b-ptq1-f16-orca-xhigh` and its branch stay until the coordinator closes the row. `/home` has 13G free.
+
+**Evidence.** `tools/archive-evidence.sh hardware/arrietty/benchmarks/bench27/results run27`.

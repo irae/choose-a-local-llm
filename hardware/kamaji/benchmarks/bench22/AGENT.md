@@ -41,20 +41,140 @@ run measures; it decides nothing.
 
 ## The order
 
-**This list is the order.**
+**This list is the order.** The run changed to fast mode on 2026-09-19
+(owner): the closed blocks stay as they ran; every block from
+`bonsai-fork-fast-think` on follows "Fast mode" below.
 
-- `machine-setup`
-- `gemma26-gguf-calibrate-think`
-- `gemma26-gguf-budget-think`
-- `gemma26-gguf-forced-rerun`
-- `qwen38-bartowski-calibrate-xhigh`
-- `qwen38-bartowski-budget-xhigh`
-- `qwen38-bartowski-forced-rerun`
-- `bonsai-fork-calibrate-think`
-- `bonsai-fork-budget-think`
-- `bonsai-fork-forced-rerun`
+- `machine-setup` (closed)
+- `gemma26-gguf-calibrate-think` (closed)
+- `gemma26-gguf-budget-think` (closed)
+- `gemma26-gguf-forced-rerun` (closed)
+- `qwen38-bartowski-calibrate-xhigh` (closed)
+- `qwen38-bartowski-budget-xhigh` (closed)
+- `qwen38-bartowski-forced-rerun` (closed)
+- `bonsai-fork-calibrate-think` (closed)
+- `bonsai-fork-fast-think`
+- `fast-qwen38-gguf-xhigh`
+- `fast-gemma26-gguf`
+- `fast-bonsai2-ptq1-mac-xhigh`
+- `fast-qwen38-gguf-unsloth-iq3s-xhigh`
+- `fast-qwen38-gguf-ista-nodrafter-xhigh`
+- `fast-qwen36-gguf-think`
 - `bonsai-fork-budget-mendel-guided`
 - `retry-sweep`
+
+The blocks `bonsai-fork-budget-think` and `bonsai-fork-forced-rerun`
+of the first list are gone: fast mode has no derived budget and no
+forced re-run.
+
+## Fast mode, from 2026-09-19 (owner)
+
+Read `docs/methodology/evalplus.md`, "Fast mode", "Reuse of an earlier
+run: the splice" and "Steps", once, before the first fast block. The
+rule: the server closes the thinking at 8192 tokens and the model
+answers, `max_tokens` 16384, no calibration, no forced re-run. This
+replaces the derived budgets of the Essentials below for every block
+that is not closed. `THINKING_BUDGET_MARGIN` and
+`thinking-budget.py derive` are no longer used.
+
+```bash
+export BUDGET_MSG="Thinking budget reached. Give the final answer now."
+export FAST_FLAGS="--reasoning-budget 8192 --reasoning-budget-message $BUDGET_MSG"
+export EVALPLUS_MAX_NEW_TOKENS=16384
+```
+
+Every serve command of a fast block carries `$FAST_FLAGS` (quote
+`"$BUDGET_MSG"` when you expand it by hand) and every
+`run-humaneval.sh` call runs with `EVALPLUS_MAX_NEW_TOKENS=16384`.
+Count from the files, never from a log line:
+`python3 benchmarks/thinking-budget.py count <run-dir> --message
+"$BUDGET_MSG"` prints the forced count from `finish.jsonl` and the
+empty count from the samples. `RUNWATCH_SILENCE=2700` on every
+scoring run. No download is approved: every file below is on the Mac;
+a missing file is stop and ask.
+
+### The fast table
+
+One block per row. The serve command is the row's `command` in
+`docs/setups/kamaji/models.json` (the `id` column) with three changes:
+`-c 32768`, `$FAST_FLAGS` appended, and the fork binary on the ternary
+rows (the Bonsai 2 row on the fork release run 26 recorded in
+`hardware/kamaji/benchmarks/bench26/state.md`; the Bonsai 27B row on
+`~/prism-llama/llama-server` with `LLAMA_ATTN_ROT_DISABLE=1`, the
+`bonsai-fork-calibrate-think` command of this run's `state.md`). The
+alias, the drafter and the KV type stay as the row writes them; a
+drafter never changes an answer at temperature 0. The extra body is
+mandatory on every call.
+
+| block | row `id` | server | extra body | splice source (`finish.jsonl` present) | to generate |
+|---|---|---|---|---|--:|
+| `bonsai-fork-fast-think` | `bonsai-fork-single` | `~/prism-llama` fork | none (thinking on is the default) | none | 164 |
+| `fast-qwen38-gguf-xhigh` | `qwen38-gguf-xhigh` | llama-server | `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}` | `bench22/results/qwen38-bartowski-budget-xhigh` (alias `qwen3.8-27b`) | 11 |
+| `fast-gemma26-gguf` | `gemma26-gguf` | llama-server | `{"chat_template_kwargs":{"enable_thinking":true}}` | `bench22/results/gemma26-gguf-budget-think` | 19 |
+| `fast-bonsai2-ptq1-mac-xhigh` | `bonsai2-ptq1-mac-xhigh` | fork (run 26's) | `{"chat_template_kwargs":{"reasoning_effort":"xhigh"}}` | `bench26/results/bonsai2-budget-xhigh-mac` | 10 |
+| `fast-qwen38-gguf-unsloth-iq3s-xhigh` | `qwen38-gguf-unsloth-iq3s-xhigh` | llama-server | same | none | 164 |
+| `fast-qwen38-gguf-ista-nodrafter-xhigh` | `qwen38-gguf-ista-nodrafter-xhigh` | llama-server | same | none | 164 |
+| `fast-qwen36-gguf-think` | `qwen36-gguf-think` | llama-server | `{"chat_template_kwargs":{"enable_thinking":true}}` | none | 164 |
+
+The "to generate" column is the planning count from the source's
+finish log; the splice prints the real one. Every splice source is
+under `hardware/kamaji/benchmarks/`. A splice source must have been
+served under the same alias as the block serves (the samples file is
+named for it); a mismatch is stop and ask.
+
+Rows that share a score under the shared-score rule take the block's
+result: `qwen36-gguf-f16` and `qwen36-gguf-f16-nodrafter` from
+`fast-qwen36-gguf-think`, `gemma26-gguf-2x` from `fast-gemma26-gguf`,
+`bonsai-fork-2x` from `bonsai-fork-fast-think`. The coordinator writes
+them; the runner scores the one row.
+
+Not scored: every MLX and LM Studio row (`mlx_lm` does not enforce a
+thinking budget), every thinking-off row (no thinking), and every
+effort-medium and effort-low row of the dense 27B (owner, 2026-09-19:
+they keep their earlier score with the marker).
+
+### The fast block, one shape for every row
+
+1. Serve the row's command as the table says, with `$FAST_FLAGS`. Wait
+   for the load, record the memory in `state.md`.
+2. Verify with one real chat completion at the row's level (the extra
+   body): the response carries a reasoning field, `content` is not
+   empty, and the server log shows no error. On a problem that thinks
+   past 8192 tokens the reasoning tail must end with the budget
+   message; a short probe that converges early does not show it, and
+   that is fine. Record the probe in `state.md`.
+3. Splice when the table names a source:
+   ```bash
+   python3 benchmarks/thinking-budget.py splice \
+     hardware/kamaji/benchmarks/<source> \
+     hardware/kamaji/benchmarks/bench22/results/<block> \
+     --message "$BUDGET_MSG"
+   ```
+   Write the kept and to-generate counts in `state.md`.
+4. Start the watcher, `RUNWATCH_SILENCE=2700`.
+5. Score:
+   ```bash
+   RESULTS_BASE=hardware/kamaji/benchmarks/bench22/results \
+     EVALPLUS_MAX_NEW_TOKENS=16384 \
+     benchmarks/run-humaneval.sh <block> <alias> '<extra body>'
+   ```
+   The script skips every problem the splice seeded. Wall parts in
+   `state.md` as they happen, UTC. A spliced block's wall is its own
+   generation time plus the source's time for the kept problems: the
+   source's `finish.jsonl` `wall_s` of every kept task id, summed;
+   write both parts.
+6. Count: `thinking-budget.py count` on the block directory. Then the
+   block's table in `results.md`: base, plus, completion, empty
+   (`N/164`), forced (`N/164`), the forced task ids, the empty task
+   ids with their cause word, the wall with its parts, the splice
+   source and the kept count. Beside it, the row's score before fast
+   mode, from `docs/setups/kamaji/models.json`.
+7. Stop the watcher and the server, wait for the memory to return,
+   commit, push, message the coordinator, start the next block.
+
+A forced answer is an answer. Nothing is re-run: no proof run, no
+natural re-run. An answer that ends on `length` at 16384 is `budget`;
+write its task id, it is a finding.
 
 ## Essentials
 
@@ -176,7 +296,7 @@ Read `docs/methodology/evalplus.md`, whole, with "Unproven yet".
 Done: versions, the probe results and the message in `state.md`,
 committed.
 
-## The calibrate blocks
+## The calibrate blocks (closed blocks; the shape they ran in before fast mode)
 
 Each block writes a new calibration file, because the old files carry
 no reasoning length and `calibrate.py` resumes a file that exists. The
@@ -204,7 +324,7 @@ name in the table is new.
 
 Done: the three values in `state.md`, committed.
 
-## The budget blocks
+## The budget blocks (closed blocks; the shape they ran in before fast mode)
 
 1. **Serve** the config's command from the table with the thinking
    budget appended, `-c 32768`:
@@ -234,7 +354,7 @@ Done: the three values in `state.md`, committed.
    same config without the budget; else stop it and wait for wired
    memory to recover.
 
-## The forced re-run blocks
+## The forced re-run blocks (closed blocks; the shape they ran in before fast mode)
 
 The natural re-run of the problems where the budget fired and the
 answer failed, without the flag, at a generous budget.
@@ -275,7 +395,7 @@ answer failed, without the flag, at a generous budget.
    with its parts. Commit, push, message the coordinator. Stop the
    watcher and the server, wait for wired memory to recover.
 
-## The table
+## The table (closed blocks; the shape they ran in before fast mode)
 
 | config | serve command (the source bench holds the exact files and flags) | alias | extra body | calibration | blocks |
 |---|---|---|---|---|---|
@@ -302,12 +422,11 @@ config with and without the budget. Fixed: the fork build, the Q2_g64
 file, the bias file, q4_0 KV, prompt guided v3, level high. Derived:
 the window from the row's `pi` block in `docs/setups/kamaji/models.json`
 (planning value 65536); the harness output budget 8192 as the worker
-pins it; the think budget is `bonsai-fork-think_think_budget` from
-`state.md`.
+pins it; the think budget is 8192, fast mode (owner, 2026-09-19).
 
 1. `gh auth status`, `git stash clear` in `~/code/mendel-benchmark`.
 2. Serve the fork with the row's serving `-c` from its report page
-   (not 32768) and the two reasoning flags appended.
+   (not 32768) and `$FAST_FLAGS` appended.
 3. `cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<window> ./run-worker.sh bonsai-prism pi guided high`,
    with the watcher at `RUNWATCH_SILENCE=2700`. Score per `PLAN.md`
    in a subagent on the best available model.

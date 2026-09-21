@@ -21,9 +21,6 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
   the two builds sit within one problem of each other.
 - **The flattest speed curve of any model here** (MLX): −23% from 4K to
   49K, never hits the speed floor; the limit is memory (~58-60K).
-- **The only multi-agent setup that leaves the machine free**: 2×48K
-  fork slots, 10.0 GB shallow and 10.9 GB at the floor — but window is
-  not usable depth: the fork's speed floor is ~30K used tokens.
 - **The fork's floor was the cache type, not the weights.** At q4_0 KV
   the scored config crosses the 8 tok/s floor at 33K used tokens. At
   f16 KV with no drafter the same fork holds 15.0 tok/s at 4K and 9.67
@@ -39,7 +36,7 @@ Benchmarked 2026-08-25 on mlx-lm 0.31.3; quality and fork figures updated 2026-0
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
 | <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" page="/binaries/bonsai-mlx-2bit" top /> | **40k** | <TokCell shallow="24.5" deep="17.3" cap="mem" stale top-shallow top-deep /> | **22.5 GB** | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | <ScoreCell value="37.5†" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 19h24 · Mendel 5h00">24h24</span> |
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" page="/binaries/bonsai-prism-q2g64" top /> | **33k** | <TokCell shallow="14.7" deep="7.8" cap="speed" top-shallow top-deep /> | **9.6 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 9h55 · Mendel 5h00"><b>14h55</b></span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" page="/binaries/bonsai-prism-q2g64" top /> | **33k** | <TokCell shallow="14.7" deep="7.8" cap="speed" top-shallow top-deep /> | **9.6 GB** | <ScoreCell value="0.927/0.890†" sub="98% completion" top /> | <ScoreCell value="31.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 9h55 · Mendel 5h00"><b>14h55</b></span> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="off" page="/binaries/bonsai-mlx-2bit" /> | **40k** | <TokCell shallow="24.5" deep="17.3" cap="mem" stale top-shallow top-deep /> | **22.5 GB** | <ScoreCell value="0.927/0.902" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 0h46 · Mendel 3h07"><b>3h53</b></span> |
 
 † from an earlier serving config or method; re-run pending.
@@ -48,7 +45,7 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" page="/binaries/bonsai-prism-q2g64" top /> | **2x48k** | <TokCell shallow="14.9" deep="7.8" cap="speed" stale top-shallow top-deep /> | **10.9 GB** | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 9h55 · Mendel —">9h55†</span> |
+| <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" page="/binaries/bonsai-prism-q2g64" top /> | **2x48k** | <TokCell shallow="14.9" deep="7.8" cap="speed" stale top-shallow top-deep /> | **10.9 GB** | <ScoreCell value="0.927/0.890†" sub="98% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 9h55 · Mendel —">9h55†</span> |
 | <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" page="/binaries/bonsai-prism-q2g64" top /> | **131k** | <TokCell shallow="15.0" deep="9.7" cap="mem" stale top-shallow top-deep /> | **18.6 GB** | <ScoreCell value="pending" /> | <ScoreCell value="12.5" note="13%" pill="mendel-guided" top /> | <span title="EvalPlus — · Mendel 3h15">3h15†</span> |
 
 † from an earlier serving config or method; re-run pending.
@@ -61,7 +58,7 @@ Each table row above is one config; start it with its block below.
 <!-- gen:model-configs:start -->
 <ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" page="/binaries/bonsai-mlx-2bit" />
 
-Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak. A real-text read of this server on 2026-09-13 ran with llama-benchy twice and both times the generation thread died on a Metal OOM at the deep cell, at 56320 and then at 52224, with the prompt fill stalled near 47K; the process stayed alive and silent. The ceiling on this machine sits near 47K, not the 58K the 2026-08-29 creep reached, so the harness window is 40960 by the MLX rule and the speed cells keep the creep's numbers with the dagger: no benchy cell survived, because llama-benchy writes its result once at the end of a run.
+Keep `--prompt-cache-size 2`: the default cache pool behaves like a memory leak. A real-text read of this server on 2026-09-13 ran with llama-benchy twice and both times the generation thread died on a Metal OOM at the deep cell, at 56320 and then at 52224, with the prompt fill stalled near 47K; the process stayed alive and silent. The ceiling on this machine sits near 47K, not the 58K the 2026-08-29 creep reached, so the harness window is 40960 by the MLX rule and the speed cells keep the creep's numbers with the dagger: no benchy cell survived, because llama-benchy writes its result once at the end of a run. Fast mode (a thinking budget of 8192 on the server) is not available on this stack: the MLX server accepts the budget and does not enforce it, so this score is not comparable with the fast-mode rows.
 
 ```bash
 mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \
@@ -118,6 +115,10 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- **The only multi-agent setup that leaves the machine free**: 2×48K
+  fork slots, 10.0 GB shallow and 10.9 GB at the floor — but window is
+  not usable depth: the fork's speed floor is ~30K used tokens.
 
 **Window is not usable depth** on the fork at a quantized cache. It
 allocates huge windows in little memory (the full 262K trained window
@@ -202,10 +203,12 @@ matches the PQ2_0 variant.
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:model-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" page="/binaries/bonsai-mlx-2bit" />](../benchmarks/bonsai-27b.md) | 10240 | <ScoreCell value="0.933/0.902" sub="99% completion" top /> | 2 budget | <TokCell shallow="24.5" deep="17.3" /> | 19h24 |
-| [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" page="/binaries/bonsai-prism-q2g64" />](../benchmarks/bonsai-27b.md) | 10240 | <ScoreCell value="0.927/0.890" sub="98% completion" top /> | 4 budget | <TokCell shallow="14.7" deep="7.8" /> | 9h55 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" page="/binaries/bonsai-mlx-2bit" />](../benchmarks/bonsai-27b.md) | —† | 10240 | <ScoreCell value="0.933/0.902" sub="99% completion" /> | 2 budget | — | <TokCell shallow="24.5" deep="17.3" /> | 19h24 |
+| [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" page="/binaries/bonsai-prism-q2g64" />](../benchmarks/bonsai-27b.md) | —† | 10240 | <ScoreCell value="0.927/0.890" sub="98% completion" /> | 4 budget | — | <TokCell shallow="14.7" deep="7.8" /> | 9h55 |
+
+† not fast mode: a thinking budget other than 8192, or none. Kept for the record; only fast-mode rows compare across models.
 <!-- gen:model-evalplus:end -->
 
 ## Agentic quality — Mendel

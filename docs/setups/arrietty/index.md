@@ -54,6 +54,6 @@
 - 2026-09-15 to 2026-09-16: EvalPlus on every row at its default
   level, and both Gemma-12B builds at both levels.
 - Pending: the thinking-budget test on the two configs named in
-  [the method](../../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget);
+  [the method](../../methodology/reasoning-budget.md);
   the blind agent task on the rows that scored above zero guided.
 - Raw records: `hardware/arrietty/benchmarks/` in the repository.

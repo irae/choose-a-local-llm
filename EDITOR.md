@@ -37,8 +37,8 @@ Every report page uses this order. Do not reorder it.
 4. **Details line.** One or two lines of prose: benchmark dates, builds,
    whatever the numbers need. Never longer; it is metadata, not a
    summary.
-5. **Highlights.** 2 to 4 bullet points. Short lines. No paragraph
-   blobs.
+5. **Highlights.** Short bullets, no paragraph blobs. See "Highlights"
+   below for what earns a bullet.
 6. **All configs — this model.** The generated per-model table.
 7. **Configs.** One block per config with its startup command. Label
    configs descriptively. Do not crown a "best option": the pick, when
@@ -108,8 +108,16 @@ closes. None of it is site content.
 
 These rules bind every `reports/<model>.md` page:
 
-- **Highlights hold 2 to 4 bullets. Never more.** Merge or cut; the
-  detail lives in the tables and in History and reasoning.
+- **Highlights are the good things about the model, most important
+  first** (owner, 2026-09-19). The same rule binds the Highlights of a
+  setup's `comparison.md`, where each bullet is one model's good news;
+  a moved bullet goes to its Findings section. Grade each bullet by how much it matters
+  to a reader who picks a model. A limit, a defect or a caveat is not a
+  highlight; it goes to the findings.
+- **Three bullets is the norm; five is the maximum.** After the third,
+  the bias is to stop. A fourth or a fifth bullet must be as important
+  as the first three, not only true. Merge or cut; the detail lives in
+  the tables and in History and reasoning.
 - **Every report page opens with the stat boxes** (the `kpis` row,
   directly under the title line) **and carries an "All configs — this
   model" table** (the first table section). `npm run docs:tables`
@@ -363,10 +371,20 @@ it.
   `MENDEL_SPECS` in `tools/gen-tables.mjs`. A missing or invalid field
   fails the build.
 - **Every EvalPlus table has a `config` column rendered by
-  `ModelSpec` and a `budget` column**; the budget never sits inside
-  the config text. The generated table on the EvalPlus page reads
-  each run's spec from `evalplusRuns[].row` (a row id) or an explicit
-  `spec`, and its `budget` field.
+  `ModelSpec`, a `think` column, a `budget` column and a `forced`
+  column**; no budget sits inside the config text. The generated
+  table reads each run's spec from `evalplusRuns[].row` (a row id) or
+  an explicit `spec`, its `think` (the thinking budget; absent for a
+  natural run), `budget` (the output budget) and `forced` (`N/164`)
+  fields. **Fast mode is the comparable row** (owner, 2026-09-19;
+  `docs/methodology/evalplus.md`): `think` 8192, or a thinking-off
+  run. The comparison page's Code quality table and the HumanEval+
+  page show fast-mode runs only; the report, model and binary pages
+  show every run, fast first, the others with a † on `think` and one
+  legend line. A row whose `evalplus` cell is not from a fast-mode run
+  lists `evalplus` in `stale` until its fast run lands; a thinking-off
+  row and an MLX row do not (MLX cannot run fast mode; the row's note
+  says so). The `mode` field of a run holds the level word only.
 - **The EvalPlus cell is two lines**: `base/plus` over the completion
   percentage. **The Coding cell is two lines**: the score, with a
   partial's libraries-done percentage muted before it (`38% / 37.5`),
@@ -460,17 +478,18 @@ it.
   thinking mode. Runtimes at standard quants share it. Aggressive
   quants (calibrated q4 KV and similar) gate separately and show
   "pending" until they pass. Scores never propagate across thinking
-  modes. It names the calibrated output budget and its 30000-token
-  cap, and that a problem at the cap counts as failed. The cause of an
-  empty count is one of three words: `budget` (the answer was still
-  coming when the output budget ran out), `model` (the model ended with
-  no answer and budget was left) and `† unproven` (the run recorded no
-  finish reason). `emptyCause` in `models.json` carries it as `none`,
-  `N budget`, `N model` or `† unproven`, and the HumanEval+ page
-  explains the three words under its limits table.
+  modes. It names fast mode (thinking budget 8192, output budget
+  16384) and that a † score is from an earlier budget. The cause of an
+  empty count is one of four words: `forced` (the thinking budget
+  fired and the answer was still no code), `budget` (the answer was
+  still coming when the output budget ran out), `model` (the model
+  ended with no answer and budget was left) and `† unproven` (the run
+  recorded no finish reason). `emptyCause` in `models.json` carries it
+  as `none`, `N forced`, `N budget`, `N model` or `† unproven`, and
+  the HumanEval+ page explains the words under its limits table.
 - **Stale cells carry the † marker (superseded, re-run pending)**: a
   value measured under an earlier serving config or method (a retired
-  wired limit, a fast sweep, a pre-calibration config) that the current
+  wired limit, a fast sweep, a pre-fast-mode budget) that the current
   method has not re-measured yet. It is derived data. Each row's
   `stale` array in `models.json` lists the affected field names, and
   the generator renders the marker and its legend on every table that

@@ -17,9 +17,6 @@ Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; Eval
 - **A 15 GB file on a 16 GB card.** Part of the experts stay in host
   RAM; the row records how many layers, found by a ladder at
   `-c 98304`.
-- **Attention stays at Q8 in this build**, the shape NVIDIA's own
-  NVFP4 checkpoints use; the experts are NVFP4. NVFP4 is on this card's
-  list because the card runs it natively.
 - **EvalPlus 0.909 / 0.878 at thinking on, 14 of 164 empty**, at a
   12500 budget in 215 minutes. The Mac's k-quant of the same model
   reads 0.896 / 0.872 with 16 empty at a 30000 budget.
@@ -29,7 +26,7 @@ Speed, context and the guided agent task measured 2026-09-13 to 2026-09-15; Eval
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" top /> | **97k** | <TokCell shallow="58.77" deep="45.59" cap="mem" top-shallow top-deep /> | **15.2 GB** | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 3h35 · Mendel 0h23"><b>3h58</b></span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" top /> | **97k** | <TokCell shallow="58.77" deep="45.59" cap="mem" top-shallow top-deep /> | **15.2 GB** | <ScoreCell value="0.988/0.951" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 2h34 · Mendel 0h23"><b>2h57</b></span> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -39,7 +36,7 @@ Each table row above is one config; start it with its block below.
 <!-- gen:model-configs:start -->
 <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" />
 
-pi id `gemma-4-26b-a4b-nvfp4`. A community NVFP4 repack that keeps attention at Q8. The file is larger than the card, so a measured count of expert layers stays in host RAM: 7 is the lowest `--n-cpu-moe` that loads at `-c 98304` and serves a real request at the deep cell (6 runs out of memory at load). The file has no MTP layers, so no drafter arm exists. The guided task scored 37.5, 3 of 8 libraries, and ended on a loop in its text. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 12500: 0.909/0.878, 14 empty answers of 164 whose cause is unproven because the run saved no finish log, in 215.3 minutes of active time. Two of ten calibration problems never converged, so the budget sits just above the longest successful answer, and the full run left 14 answers empty. The Mac's nearest row is a different build, the unsloth k-quant at thinking on: 0.884/0.860 with eighteen empty answers at a 30000 budget.
+pi id `gemma-4-26b-a4b-nvfp4`. A community NVFP4 repack that keeps attention at Q8. The file is larger than the card, so a measured count of expert layers stays in host RAM: 7 is the lowest `--n-cpu-moe` that loads at `-c 98304` and serves a real request at the deep cell (6 runs out of memory at load). The file has no MTP layers, so no drafter arm exists. The guided task scored 37.5, 3 of 8 libraries, and ended on a loop in its text. EvalPlus at thinking on, scored 2026-09-16 at `-c 32768`, budget 12500: 0.909/0.878, 14 empty answers of 164 whose cause is unproven because the run saved no finish log, in 215.3 minutes of active time. Two of ten calibration problems never converged, so the budget sits just above the longest successful answer, and the full run left 14 answers empty. The Mac's nearest row is a different build, the unsloth k-quant at thinking on: 0.884/0.860 with eighteen empty answers at a 30000 budget. The published score is the fast-mode run of 2026-09-20: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.988/0.951 with no empty answer and 19 forced answers of 164, in 154 minutes of active time. The earlier run left 15 answers empty and scored 0.909/0.878 on the same file; closing the thinking recovered every one of them. The coordinator recomputed this score from the per-problem results because the block ran the evaluator by hand.
 
 ```bash
 llama-server -m "$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-NVFP4Q8.gguf)" \
@@ -51,6 +48,10 @@ llama-server -m "$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- **Attention stays at Q8 in this build**, the shape NVIDIA's own
+  NVFP4 checkpoints use; the experts are NVFP4. NVFP4 is on this card's
+  list because the card runs it natively.
 
 - **97K at 59 → 46 tok/s** with 7 expert layers in host RAM, the
   fastest deep cell on this card. The file has no MTP layers.
@@ -69,9 +70,12 @@ llama-server -m "$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:model-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" />](../benchmarks/gemma-4-26b-a4b.md) | 12500 | <ScoreCell value="0.909/0.878" sub="91% completion" top /> | † unproven | <TokCell shallow="58.77" deep="45.59" /> | 3h35 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" />](../benchmarks/gemma-4-26b-a4b.md) | 8192 | 16384 | <ScoreCell value="0.988/0.951" sub="100% completion" top /> | none | 19/164 | <TokCell shallow="58.77" deep="45.59" /> | 2h34 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" page="/binaries/gemma26-catlilface-nvfp4q8" />](../benchmarks/gemma-4-26b-a4b.md) | —† | 12500 | <ScoreCell value="0.909/0.878" sub="91% completion" /> | † unproven | — | <TokCell shallow="58.77" deep="45.59" /> | 3h35 |
+
+† not fast mode: a thinking budget other than 8192, or none. Kept for the record; only fast-mode rows compare across models.
 <!-- gen:model-evalplus:end -->
 
 Every run of this model on this machine, best base score first. The empties column carries the cause word ([what the words mean](../../../benchmarks/evalplus.md#limits-on-local-hardware)).

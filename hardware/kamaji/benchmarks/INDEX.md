@@ -7,14 +7,21 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
-## bench22, planned 2026-09-16 ([state](bench22/state.md), [results](bench22/results.md))
+## bench22, 2026-09-16, paused 2026-09-17 ([state](bench22/state.md), [results](bench22/results.md))
 
 - Runbook: [bench22/AGENT.md](bench22/AGENT.md). The thinking budget
-  under test (`docs/methodology/evalplus.md`, "Unproven yet"): the MoE
-  26B GGUF, the dense 27B 4-bit and the ternary fork scored again under
-  a server thinking budget, the natural re-run of the forced failures,
-  and one guided agent row of the fork under the budget. Starts after
-  run 20; reads run 21's margin when the coordinator relays one.
+  under test: the MoE 26B GGUF and the dense 27B 4-bit scored under a
+  calibrated server thinking budget with the natural re-run of the
+  forced failures, and the ternary fork calibrated. Paused on the
+  owner's word.
+- **Every budgeted run has 0 empties and a higher score than its
+  natural run**, and no forced answer was late: the forced failures
+  loop at the 30000 cap without the flag too. With run 21's data this
+  decided fast mode (`docs/methodology/evalplus.md`, 2026-09-19).
+- Resumes in fast mode: the fork's row and every other llama.cpp
+  thinking row of this machine at a thinking budget of 8192, three of
+  them spliced from their budgeted runs, then the fork's guided agent
+  row under the budget.
 
 ## bench20, 2026-09-15 to 2026-09-16 ([report](bench20/report.md), [state](bench20/state.md), [results](bench20/results.md))
 

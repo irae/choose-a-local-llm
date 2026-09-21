@@ -59,8 +59,8 @@ Site and process docs:
     `iogpu.wired_limit_mb`: the ladder, the stop condition, and how to
     pick the value. Needs the owner present.
   - `docs/methodology/evalplus.md`. Before EvalPlus or any scoring
-    benchmark. The budget-calibration rule lives here; skipping it
-    once cost 38% of a score.
+    benchmark. The fast-mode budget rule lives here (thinking budget
+    8192, `max_tokens` 16384, no calibration).
   - `docs/methodology/mendel.md`. Before a Mendel run. The real
     instructions live in the Mendel repo; this page says where, and
     gives the house rules (one at a time, daemon cleanup).
@@ -114,7 +114,8 @@ Benchmark work:
   run starts.
 - `benchmarks/` (root). The shared tools every run uses:
   `run-humaneval.sh`, `run_codegen_wrapper.py` (patched EvalPlus
-  client), `calibrate.py`, `run-watch.sh` (the one watcher of a
+  client), `calibrate.py` (the ten-problem natural run, no longer part
+  of a scored row), `run-watch.sh` (the one watcher of a
   scoring run: writes the memory log, tails the server log for the
   death signatures, probes one real completion after the output file
   goes silent, exits 42 with the reason on stdout when the server is
@@ -135,11 +136,11 @@ Benchmark work:
   context; `docs/methodology/mendel.md`), `loop-check.py` (repetition-loop detector for
   a pi session log: distinct-shape ratio in a sliding window,
   threshold 0.10; catches identical lines, counters, and short
-  cycles), `thinking-budget.py` (the thinking budget of an EvalPlus
-  run: `derive` the two budgets from a calibration, `prepare` the
-  natural re-run of the problems where the budget fired and the
-  answer failed, `report` the cell of each forced problem and the
-  corrected budget; `docs/methodology/evalplus.md`, "Unproven yet").
+  cycles), `thinking-budget.py` (the forced answers of an EvalPlus
+  run under the fast-mode thinking budget: `count` the forced and
+  empty answers from the files, `splice` an earlier run of the same
+  config into a fast run, `prepare` and `report` the optional proof
+  run of the forced failures; `docs/methodology/evalplus.md`).
 - `tests/`. The tests for the shared tools in `benchmarks/`. One
   command, `tests/run.sh`, and `tests/fixtures/README.md` says where
   every fixture came from.

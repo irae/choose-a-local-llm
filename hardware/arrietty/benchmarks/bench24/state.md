@@ -49,6 +49,13 @@ happen, and the handing-over section at the end.
 | `bonsai2_pq2_f16_think_budget` | 30000 (capped) | `bonsai2-pq2-f16-evalplus-calibrate` |
 | `bonsai2_pq2_f16_answer_budget` | 2048 | `bonsai2-pq2-f16-evalplus-calibrate` |
 | `bonsai2_pq2_f16_max_tokens` | 32048 | `bonsai2-pq2-f16-evalplus-calibrate` |
+| `bonsai2_pq2_f16_evalplus` | base 0.982, plus 0.945, 0 empty, 6 forced, two parts around an owner stop | `bonsai2-pq2-f16-evalplus-budget-xhigh` |
+| `bonsai2_pq2_f16_forced_rerun` | 3 forced-pass, 3 forced-fail-loop, budget unchanged | `bonsai2-pq2-f16-evalplus-forced-rerun` |
+| `bonsai2_ptq1_think_budget` | 30000 (capped) | `bonsai2-ptq1-evalplus-calibrate` |
+| `bonsai2_ptq1_answer_budget` | 2048 | `bonsai2-ptq1-evalplus-calibrate` |
+| `bonsai2_ptq1_max_tokens` | 32048 | `bonsai2-ptq1-evalplus-calibrate` |
+| `bonsai2_ptq1_evalplus` | base 0.982, plus 0.945, 0 empty, 9 forced | `bonsai2-ptq1-evalplus-budget-xhigh` |
+| `bonsai2_ptq1_forced_rerun` | 7 forced-pass, 2 forced-fail-loop, budget unchanged | `bonsai2-ptq1-evalplus-forced-rerun` |
 
 ## EvalPlus group order
 
@@ -57,6 +64,12 @@ The four blind scores, sorted best first: `ptq1-f16` 82, `pq2-f16` 72, `ptq1` (q
 Group order: **`ptq1-f16`, then `pq2-f16`, then `ptq1`.** Order inside each group is fixed: calibrate, budget-xhigh, forced-rerun.
 
 `pq2-f16-evalplus-calibrate` was started first (started while `ptq1-f16`'s blind score was still computing, to keep the card busy) and stopped after 1 row once the 82 score landed and beat 72 — `calibrate.py` resumes the file that exists, so that row is not lost; the group resumes it when its turn comes.
+
+## Pause and stray client (2026-09-18 to 2026-09-19)
+
+The owner stopped run 24 at about 22:33 -03 (01:33 UTC), inside `bonsai2-pq2-f16-evalplus-budget-xhigh`, at 64/164 problems. The wrapper `run-humaneval.sh` (pid 222241) died, but its EvalPlus client (pid 222249) lived on and sent requests to run 27's server on port 8081 until the owner killed it.
+
+Check before the resume: every output file of the block (`finish.jsonl`, `codegen.log`, both sample files) has its last write at 22:29:01 -03, before the stop. Samples written after the stop: **0**. All 64 samples come from the run 24 server. Nothing was deleted. The block resumes from problem 64.
 
 Planning estimate, not a result: about 34 MiB of KV per 1024 tokens at
 q8_0, from the `qwen35` architecture. With weights of about 6.7 GiB,
@@ -136,3 +149,27 @@ GGUF sampling defaults (`general.sampling.*`) were not printed at this server's 
 - `bonsai2-pq2-mendel-blind-xhigh-f16`: end_reason complete, 230 tool calls, peak ctx 110354/118784, loop ok, 1 compaction, wall 1:14:44. Scored by a judgment subagent: **72/100, worst defect MEDIUM** (the chalk port keeps forced `enableColor`, against the blind prompt's Node-defaults requirement). The CRITICAL exit-hook regression from the sibling q8_0 row does not repeat here. **Correction caught and fixed**: the scoring subagent's own headline claimed 78/100, but its ten-criterion breakdown summed to 72; the verified sum, 72, is what's recorded — the subagent's unsupported round-up was not used.
 
 No `Mendel Daemon` process was left running. Registered `bonsai2-27b-pq2-f16` in `~/.pi/agent/models.json`, alongside the earlier `bonsai2-27b-pq2` entry (same backup file). GPU idle at 622-626 MiB baseline after every block of this arm; no server left running.
+
+**Second wave and end of run (2026-09-19).** The owner added ten blocks after the first close, then reordered them, and stopped the run once at about 22:33 -03 on 2026-09-18 for another run's use of the card. The run resumed on 2026-09-19 and finished the list. `retry-sweep` is empty: no block waited on a human, and every recoverable failure was retried inside its own block.
+
+What ran, in order:
+- `bonsai2-ptq1-f16-kvpick` (c 139264) and `sweep-bonsai2-ptq1-f16` (clean to 138240, 22.4 tok/s).
+- `bonsai2-ptq1-mendel-blind-xhigh` 57.5/100 (CRITICAL, trap C) and `bonsai2-ptq1-f16-mendel-blind-xhigh` 82/100 (CRITICAL, trap A). Both ran before any EvalPlus score, so the 0.800 gate did not apply, and neither had a smoke (owner, 2026-09-18).
+- Three EvalPlus groups, ordered by the arms' blind scores (`ptq1-f16` 82, `pq2-f16` 72, `ptq1` 57.5): calibrate, budget, forced re-run each.
+
+| group | base | plus | empty | forced | forced-pass | forced-fail-loop |
+|---|--:|--:|--:|--:|--:|--:|
+| `ptq1-f16` | 0.970 | 0.939 | 0/164 | 6 | 4 | 2 |
+| `pq2-f16` | 0.982 | 0.945 | 0/164 | 6 | 3 | 3 |
+| `ptq1` (q8_0) | 0.982 | 0.945 | 0/164 | 9 | 7 | 2 |
+
+Every forced-failed problem in all three groups is a `forced-fail-loop`: it reaches the 30000-token cap with no answer. No budget was too small (`corrected_think_budget` unchanged in all three). Each calibration hit the 30000 thinking cap (`think_budget` 30000, `answer_budget` 2048, `max_tokens` 32048).
+
+What the run changed or corrected:
+- The `pq2-f16` calibration was started early to keep the card busy, stopped after 1 row when the `ptq1-f16` blind score won the group order, and resumed later from its file.
+- The `ptq1` q8_0 calibration was stopped after 5 saved rows (I first reported 1) by a new owner order and resumed from its file. No row was lost.
+- The `pq2-f16` budget run was stopped by the owner at 64/164. A stray EvalPlus client (pid 222249) of that run sent requests to another run's server after the stop. It wrote 0 samples after the stop (last write 22:29:01 -03, before the stop at about 22:33), so nothing was deleted.
+- Each scoring subagent's own arithmetic was checked. The `pq2-f16` blind headline (78) did not match its breakdown (72), and the checked number was used.
+- Scoring model: none of my scoring subagent calls named a model. The coordinator re-scored all four blind rows on the best tier. This branch's `results.md` still shows the first scores (60, 72, 57.5, 82). The re-scored numbers are in master, not here.
+
+Machine state left behind: no `llama-server`, ports 8081 and 8089 free, no Mendel Daemon, VRAM 857 MiB (the desktop baseline is 618 to 889 MiB, above the 626 MiB of the session start). `~/.pi/agent/models.json` carries four new entries (`bonsai2-27b-pq2`, `bonsai2-27b-pq2-f16`, `bonsai2-27b-ptq1`, `bonsai2-27b-ptq1-f16`) and the backup `models.json.bak-run24`. Four Mendel worktrees stay in `~/code`, unscored by rule until the coordinator closes the rows. The three calibration files and all results are committed on `run24`.

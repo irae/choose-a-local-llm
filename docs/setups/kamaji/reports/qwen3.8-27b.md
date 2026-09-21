@@ -39,24 +39,19 @@ Benchmarked 2026-08-25 (llama build 10621, mlx-lm 0.31.3); the three GGUF builds
   score: on the ISTA build low reads 0.976 / 0.933 and xhigh 0.945 /
   0.921. The project's best base, 0.988 on the AtomicChat build, came
   at effort medium, a level this model is no longer run at.
-- Weak point: the slowest model on this hardware. On real text at the
-  server's sampling the 4-bit GGUF with its drafter reads 11.8 tok/s
-  shallow and 8.6 at 65.5K, and the 3-bit without one 14 shallow and
-  8.3 at 147K; prompt processing is poor (~123 tok/s). MLX holds 14 to
-  17 tok/s across its window and OOMs between 28K and 30K.
 
 ## All configs — this model
 
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-bartowski-q4km" top /> | 72k | <TokCell shallow="12.4" deep="9.7" cap="mem" top-deep /> | 25.0 GB | <ScoreCell value="0.957/0.939" sub="96% completion" /> | <ScoreCell value="93" pill="mendel-blind" top /> | <span title="EvalPlus 8h30 · Mendel 3h33">12h04</span> |
-| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="medium" page="/binaries/qwen38-bartowski-q4km" top /> | 72k | <TokCell shallow="12.4" deep="9.7" cap="mem" top-deep /> | 25.0 GB | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="87" pill="mendel-blind" top /> | <span title="EvalPlus 3h32 · Mendel 2h09"><b>5h42</b></span> |
-| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-unsloth-ud-iq3s" top /> | **147k** | <TokCell shallow="13.60" deep="7.97" cap="speed" /> | 25.5 GB | <ScoreCell value="0.945/0.927" sub="100% completion" /> | <ScoreCell value="90.5" pill="mendel-blind" top /> | <span title="EvalPlus 13h36 · Mendel 3h05">16h41</span> |
-| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-ista-iq3s-mtp" top /> | **147k** | <TokCell shallow="14.1" deep="8.1" cap="speed" /> | **24.4 GB** | <ScoreCell value="0.945/0.921" sub="97% completion" /> | <ScoreCell value="80.5" pill="mendel-blind" top /> | <span title="EvalPlus 9h43 · Mendel 1h49">11h33</span> |
-| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" page="/binaries/qwen38-ista-iq3s-mtp" top /> | **128k** | <TokCell shallow="15.1" deep="9.7" cap="mem" stale top-shallow top-deep /> | **24.2 GB** | <ScoreCell value="0.976/0.945" sub="99% completion" top /> | <ScoreCell value="76.5" pill="mendel-blind" /> | <span title="EvalPlus 3h12 · Mendel 2h15"><b>5h27</b></span> |
-| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" page="/binaries/qwen38-ista-iq3s-mtp" /> | **147k** | <TokCell shallow="14.1" deep="8.1" cap="speed" /> | **24.4 GB** | <ScoreCell value="0.976/0.933" sub="99% completion" top /> | <ScoreCell value="66" note="88%" pill="mendel-blind" /> | <span title="EvalPlus 2h27 · Mendel 2h43"><b>5h10</b></span> |
-| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" kv="f16" effort="medium" page="/binaries/qwen38-atomicchat-ad-iq3s" /> | 104k | <TokCell shallow="14.3" deep="9.6" cap="mem" top-deep /> | **24.1 GB** | <ScoreCell value="0.988/0.927" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" /> | <span title="EvalPlus 3h11 · Mendel 1h00"><b>4h10</b></span> |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-bartowski-q4km" top /> | 72k | <TokCell shallow="12.4" deep="9.7" cap="mem" top-deep /> | 25.0 GB | <ScoreCell value="0.957/0.939†" sub="96% completion" /> | <ScoreCell value="93" pill="mendel-blind" top /> | <span title="EvalPlus 8h30 · Mendel 3h33">12h04</span> |
+| <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="medium" page="/binaries/qwen38-bartowski-q4km" top /> | 72k | <TokCell shallow="12.4" deep="9.7" cap="mem" top-deep /> | 25.0 GB | <ScoreCell value="0.982/0.939†" sub="100% completion" top /> | <ScoreCell value="87" pill="mendel-blind" top /> | <span title="EvalPlus 3h32 · Mendel 2h09"><b>5h42</b></span> |
+| <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-unsloth-ud-iq3s" top /> | **147k** | <TokCell shallow="13.60" deep="7.97" cap="speed" /> | 25.5 GB | <ScoreCell value="0.945/0.927†" sub="100% completion" /> | <ScoreCell value="90.5" pill="mendel-blind" top /> | <span title="EvalPlus 13h36 · Mendel 3h05">16h41</span> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-ista-iq3s-mtp" top /> | **147k** | <TokCell shallow="14.1" deep="8.1" cap="speed" /> | **24.4 GB** | <ScoreCell value="0.945/0.921†" sub="97% completion" /> | <ScoreCell value="80.5" pill="mendel-blind" top /> | <span title="EvalPlus 9h43 · Mendel 1h49">11h33</span> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" page="/binaries/qwen38-ista-iq3s-mtp" top /> | **128k** | <TokCell shallow="15.1" deep="9.7" cap="mem" stale top-shallow top-deep /> | **24.2 GB** | <ScoreCell value="0.976/0.945†" sub="99% completion" top /> | <ScoreCell value="76.5" pill="mendel-blind" /> | <span title="EvalPlus 3h12 · Mendel 2h15"><b>5h27</b></span> |
+| <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" page="/binaries/qwen38-ista-iq3s-mtp" /> | **147k** | <TokCell shallow="14.1" deep="8.1" cap="speed" /> | **24.4 GB** | <ScoreCell value="0.976/0.933†" sub="99% completion" top /> | <ScoreCell value="66" note="88%" pill="mendel-blind" /> | <span title="EvalPlus 2h27 · Mendel 2h43"><b>5h10</b></span> |
+| <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" kv="f16" effort="medium" page="/binaries/qwen38-atomicchat-ad-iq3s" /> | 104k | <TokCell shallow="14.3" deep="9.6" cap="mem" top-deep /> | **24.1 GB** | <ScoreCell value="0.988/0.927†" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" /> | <span title="EvalPlus 3h11 · Mendel 1h00"><b>4h10</b></span> |
 | <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" page="/binaries/qwen38-mlx-4bit" /> | 25k | <TokCell shallow="17.3" deep="14.8" cap="mem" top-shallow top-deep /> | **22.0 GB** | <ScoreCell value="0.976/0.927" sub="100% completion" top /> | <ScoreCell value="12.5†" note="13%" pill="mendel-blind" /> | <span title="EvalPlus 2h09 · Mendel 1h25"><b>3h34</b></span> |
 
 † from an earlier serving config or method; re-run pending.
@@ -160,7 +155,7 @@ llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \
 
 <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" page="/binaries/qwen38-mlx-4bit" />
 
-Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth.
+Curve shared with the effort-medium row: same server, same weights. The reasoning effort changes the output, not the decode speed at a depth. Fast mode (a thinking budget of 8192 on the server) is not available on this stack: the MLX server accepts the budget and does not enforce it, so this score is not comparable with the fast-mode rows.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
@@ -169,7 +164,7 @@ mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
 
 <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" page="/binaries/qwen38-mlx-4bit" />
 
-Set the harness compaction threshold at ~26K. No Mendel run is planned: the agent task needs about 46K of context and this server holds 26K, so every attempt on this build was partial or invalid, and medium is no longer run on this model.
+Set the harness compaction threshold at ~26K. No Mendel run is planned: the agent task needs about 46K of context and this server holds 26K, so every attempt on this build was partial or invalid, and medium is no longer run on this model. Fast mode (a thinking budget of 8192 on the server) is not available on this stack: the MLX server accepts the budget and does not enforce it, so this score is not comparable with the fast-mode rows.
 
 ```bash
 mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
@@ -178,6 +173,12 @@ mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- Weak point: the slowest model on this hardware. On real text at the
+  server's sampling the 4-bit GGUF with its drafter reads 11.8 tok/s
+  shallow and 8.6 at 65.5K, and the 3-bit without one 14 shallow and
+  8.3 at 147K; prompt processing is poor (~123 tok/s). MLX holds 14 to
+  17 tok/s across its window and OOMs between 28K and 30K.
 
 **Effort xhigh beats low on this task, and spends less doing it.** On
 the ISTA build without its drafter, at the same 147,456-token window
@@ -262,15 +263,18 @@ re-testing on future llama.cpp releases.
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:model-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" page="/binaries/qwen38-atomicchat-ad-iq3s" />](../benchmarks/qwen3.8-27b.md) | 8886 | <ScoreCell value="0.988/0.927" sub="100% completion" top /> | none | <TokCell shallow="14.3" deep="9.6" /> | 3h11 |
-| [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" page="/binaries/qwen38-mlx-4bit" />](../benchmarks/qwen3.8-27b.md) | 8192 | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | none | <TokCell shallow="17.3" deep="14.8" /> | 3h32 |
-| [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" page="/binaries/qwen38-ista-iq3s-mtp" />](../benchmarks/qwen3.8-27b.md) | 8192 | <ScoreCell value="0.976/0.945" sub="99% completion" top /> | 1 budget | <TokCell shallow="15.1" deep="9.7" /> | 3h12 |
-| [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" page="/binaries/qwen38-ista-iq3s-mtp" />](../benchmarks/qwen3.8-27b.md) | 8192 | <ScoreCell value="0.976/0.933" sub="99% completion" top /> | 1 budget | <TokCell shallow="14.1" deep="8.1" /> | 2h27 |
-| [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" page="/binaries/qwen38-bartowski-q4km" />](../benchmarks/qwen3.8-27b.md) | 30000 | <ScoreCell value="0.957/0.939" sub="96% completion" /> | 6 budget | <TokCell shallow="12.4" deep="9.7" /> | 8h30 |
-| [<ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-unsloth-ud-iq3s" />](../benchmarks/qwen3.8-27b.md) | 20000 | <ScoreCell value="0.945/0.927" sub="95% completion" /> | 8 budget | <TokCell shallow="13.60" deep="7.97" /> | 13h36 |
-| [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-ista-iq3s-mtp" />](../benchmarks/qwen3.8-27b.md) | 30000 | <ScoreCell value="0.945/0.921" sub="97% completion" /> | 5 budget | <TokCell shallow="14.1" deep="8.1" /> | 9h43 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="medium" page="/binaries/qwen38-atomicchat-ad-iq3s" />](../benchmarks/qwen3.8-27b.md) | —† | 8886 | <ScoreCell value="0.988/0.927" sub="100% completion" /> | none | — | <TokCell shallow="14.3" deep="9.6" /> | 3h11 |
+| [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" page="/binaries/qwen38-bartowski-q4km" />](../benchmarks/qwen3.8-27b.md) | 30000† | 32048 | <ScoreCell value="0.982/0.951" sub="100% completion" /> | none | 3/164 | <TokCell shallow="12.4" deep="9.7" /> | 7h29 |
+| [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" page="/binaries/qwen38-mlx-4bit" />](../benchmarks/qwen3.8-27b.md) | —† | 8192 | <ScoreCell value="0.982/0.939" sub="100% completion" /> | none | — | <TokCell shallow="17.3" deep="14.8" /> | 3h32 |
+| [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" drafter="mtp/3" kv="f16" effort="medium" page="/binaries/qwen38-ista-iq3s-mtp" />](../benchmarks/qwen3.8-27b.md) | —† | 8192 | <ScoreCell value="0.976/0.945" sub="99% completion" /> | 1 budget | — | <TokCell shallow="15.1" deep="9.7" /> | 3h12 |
+| [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="low" page="/binaries/qwen38-ista-iq3s-mtp" />](../benchmarks/qwen3.8-27b.md) | —† | 8192 | <ScoreCell value="0.976/0.933" sub="99% completion" /> | 1 budget | — | <TokCell shallow="14.1" deep="8.1" /> | 2h27 |
+| [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" drafter="mtp/3" kv="f16" effort="xhigh" page="/binaries/qwen38-bartowski-q4km" />](../benchmarks/qwen3.8-27b.md) | —† | 30000 | <ScoreCell value="0.957/0.939" sub="96% completion" /> | 6 budget | — | <TokCell shallow="12.4" deep="9.7" /> | 8h30 |
+| [<ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-unsloth-ud-iq3s" />](../benchmarks/qwen3.8-27b.md) | —† | 20000 | <ScoreCell value="0.945/0.927" sub="95% completion" /> | 8 budget | — | <TokCell shallow="13.60" deep="7.97" /> | 13h36 |
+| [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-ista-iq3s-mtp" />](../benchmarks/qwen3.8-27b.md) | —† | 30000 | <ScoreCell value="0.945/0.921" sub="97% completion" /> | 5 budget | — | <TokCell shallow="14.1" deep="8.1" /> | 9h43 |
+
+† not fast mode: a thinking budget other than 8192, or none. Kept for the record; only fast-mode rows compare across models.
 <!-- gen:model-evalplus:end -->
 
 The 4-bit GGUF carries the MLX score under the shared-score rule and

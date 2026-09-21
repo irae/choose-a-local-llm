@@ -189,11 +189,11 @@ A verdict is `mem`, `speed` or `window`.
 ### evalplus
 
 ```
-evalplus qwen-3.8-27b q3kxl/f16: 42/164 problems, 0 empty. still running.
-evalplus qwen-3.8-27b q3kxl/f16: 126/164 problems, 2 empty, ~2h19min left.
-evalplus qwen-3.8-27b q3kxl/f16: 164/164 problems, 2 empty. scoring.
-evalplus qwen-3.8-27b q3kxl/f16 close: 0.976/0.927/100%, 2/164 empty, budget 8k.
-evalplus gemma-26b-a4b f16 close: 0.939/0.884/98.8%, 2/164 empty, budget 8k.
+evalplus qwen-3.8-27b q3kxl/f16: 42/164 problems, 0 empty, 1 forced. still running.
+evalplus qwen-3.8-27b q3kxl/f16: 126/164 problems, 2 empty, 4 forced, ~2h19min left.
+evalplus qwen-3.8-27b q3kxl/f16: 164/164 problems, 2 empty, 5 forced. scoring.
+evalplus qwen-3.8-27b q3kxl/f16 close: 0.976/0.927/100%, 2/164 empty, 5/164 forced, fast.
+evalplus gemma-26b-a4b f16 close: 0.939/0.884/98.8%, 2/164 empty, 3/164 forced, fast.
 ```
 
 Say "ETA too early" instead of a guess when only one completion has
@@ -326,7 +326,7 @@ not memory.
 
 ### evalplus qwen-3.8-27b q3kxl/f16 — running
 
-`unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL` rev `4ca7207`, MTP n-max 3, one slot, f16 KV, ctx 49k, wired 25000. Budget 8k from `calibration-qwen38-gguf-medium.json`. Started 22:40, last problem 23:55.
+`unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL` rev `4ca7207`, MTP n-max 3, one slot, f16 KV, ctx 49k, wired 25000. Fast mode, think 8192, budget 16384. Started 22:40, last problem 23:55.
 
 | metric | value |
 |---|--:|
@@ -346,7 +346,7 @@ mistake for a result. At close:
 
 ### evalplus qwen-3.8-27b q3kxl/f16
 
-`unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL` rev `4ca7207`, MTP n-max 3, one slot, f16 KV, ctx 49k, wired 25000. Budget 8k from `calibration-qwen38-gguf-medium.json` (max completion 1049 → max(1049×1.5, 8192)).
+`unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL` rev `4ca7207`, MTP n-max 3, one slot, f16 KV, ctx 49k, wired 25000. Fast mode, think 8192, budget 16384.
 
 | metric | value |
 |---|--:|
@@ -354,8 +354,9 @@ mistake for a result. At close:
 | HumanEval plus | 0.927 |
 | completion rate | 100% |
 | empty | 2/164 |
+| forced | 5/164 |
 
-Empty: `HumanEval/129`, `HumanEval/132`. Both hit the budget at 8192 tokens, so the cause is length, not refusal.
+Empty: `HumanEval/129`, `HumanEval/132`, both `model` (stopped with no code). Forced: `HumanEval/32`, `39`, `99`, `137`, `145`; three of the five pass. Counts from `thinking-budget.py count`, not from a log line.
 Files: `results/evalplus-qwen38-unsloth-q3kxl-f16/`, `results/server-qwen38-unsloth-q3kxl-f16.log`.
 Deviation: none.
 

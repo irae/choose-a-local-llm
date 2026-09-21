@@ -25,20 +25,13 @@ Benchmarked 2026-08-25 (llama build 10621, unsloth UD-Q4_K_XL + MTP draft, wired
   at 197K, the largest context this machine loads for it. Two slots hold
   101K each: 66.6 tok/s at 4K, 33.6 at 82K on one slot with the other
   idle, no speed or memory stop before the slot window.
-- **Thinking costs answers on the single-turn test.** Thinking on reads
-  0.896 / 0.872 / 90% with 16 of 164 empty; the MLX build 0.793 / 0.768 /
-  81% with 31 empty. Every empty is proven as the budget. The two
-  builds do not share a score.
-- Weak point: wired memory sits at 25.6 GB on the deep config, above the
-  24000 limit, flat but with no room for anything beside it. MLX is the
-  small option: 51 tok/s at 4K, 12.8 at 70K, in 20 GB.
 
 ## All configs — this model
 
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/binaries/gemma26-unsloth-ud-q4kxl" top /> | **197k** | <TokCell shallow="60.1" deep="19.1" cap="mem" top-shallow top-deep /> | **25.6 GB** | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="47.5" pill="mendel-blind" top /> | <span title="EvalPlus 5h47 · Mendel 1h21"><b>7h08</b></span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/binaries/gemma26-unsloth-ud-q4kxl" top /> | **197k** | <TokCell shallow="60.1" deep="19.1" cap="mem" top-shallow top-deep /> | **25.6 GB** | <ScoreCell value="0.896/0.872†" sub="90% completion" top /> | <ScoreCell value="47.5" pill="mendel-blind" top /> | <span title="EvalPlus 5h47 · Mendel 1h21"><b>7h08</b></span> |
 | <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" page="/binaries/gemma26-mlx-4bit" /> 💀 | ***66k*** | ****49.3*** → ***23.4***, mem* | ***20.0 GB*** | <ScoreCell value="0.793/0.768" sub="81% completion" top /> | <ScoreCell value="0" note="0%" pill="failed-smoke" /> | <span title="EvalPlus 9h06 · Mendel —">9h06†</span> |
 
 💀 This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task. [Why it is not a candidate](../gemma-4-26b-a4b-mlx-retired.md).
@@ -47,7 +40,7 @@ Rows below 100 percent completeness. Completeness counts three measurements: tok
 
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/binaries/gemma26-unsloth-ud-q4kxl" top /> | **2x82k** | <TokCell shallow="66.6" deep="33.6" cap="mem" stale top-shallow top-deep /> | **25.3 GB** | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h47 · Mendel —">5h47†</span> |
+| <ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/binaries/gemma26-unsloth-ud-q4kxl" top /> | **2x82k** | <TokCell shallow="66.6" deep="33.6" cap="mem" stale top-shallow top-deep /> | **25.3 GB** | <ScoreCell value="0.896/0.872†" sub="90% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h47 · Mendel —">5h47†</span> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:model-table:end -->
@@ -72,7 +65,7 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
 
 <ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" page="/binaries/gemma26-mlx-4bit" />
 
-Retired 2026-09-12 (owner). The agent smoke at thinking high on a 65536 window ended with zero commits on a tool call the server truncated mid-generation, with no OOM and no server death; the GGUF UD-Q4_K_XL build of the same model completes the agent task, so this quant is not a candidate and is not run again. Real-text speed read 2026-09-12 with llama-benchy: 49.3 tok/s at 4K and 23.4 at 64K; the earlier creep read the same server alternating between 13 and 24 tok/s from 60K up, with 12.83 the last stable step at 70K. EvalPlus at thinking on re-scored 2026-09-16 after a re-run of its 46 empty problems at the same 30000 budget: 0.793/0.768, 31 empty answers of 164, every one proven as the output budget and none a model stop; 15 answers completed on today's build. The re-run adds 410 minutes to the wall.
+Retired 2026-09-12 (owner). The agent smoke at thinking high on a 65536 window ended with zero commits on a tool call the server truncated mid-generation, with no OOM and no server death; the GGUF UD-Q4_K_XL build of the same model completes the agent task, so this quant is not a candidate and is not run again. Real-text speed read 2026-09-12 with llama-benchy: 49.3 tok/s at 4K and 23.4 at 64K; the earlier creep read the same server alternating between 13 and 24 tok/s from 60K up, with 12.83 the last stable step at 70K. EvalPlus at thinking on re-scored 2026-09-16 after a re-run of its 46 empty problems at the same 30000 budget: 0.793/0.768, 31 empty answers of 164, every one proven as the output budget and none a model stop; 15 answers completed on today's build. The re-run adds 410 minutes to the wall. Fast mode (a thinking budget of 8192 on the server) is not available on this stack: the MLX server accepts the budget and does not enforce it, so this score is not comparable with the fast-mode rows.
 
 ```bash
 mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \
@@ -94,6 +87,14 @@ llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \
 <!-- gen:model-configs:end -->
 
 ## Model details and findings
+
+- **Thinking costs answers on the single-turn test.** Thinking on reads
+  0.896 / 0.872 / 90% with 16 of 164 empty; the MLX build 0.793 / 0.768 /
+  81% with 31 empty. Every empty is proven as the budget. The two
+  builds do not share a score.
+- Weak point: wired memory sits at 25.6 GB on the deep config, above the
+  24000 limit, flat but with no room for anything beside it. MLX is the
+  small option: 51 tok/s at 4K, 12.8 at 70K, in 20 GB.
 
 **Back in the running as a secondary model.** The model was parked on
 2026-08-30 after the quality gate: 28% empty completions on the MLX
@@ -174,11 +175,14 @@ one.
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:model-evalplus:start -->
-| config | budget | Scores | empties | tok/s | wall |
-|---|--:|--:|--:|--:|--:|
-| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" page="/binaries/gemma26-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-26b-a4b.md) | 8192 | <ScoreCell value="0.976/0.945" sub="100% completion" top /> | none | <TokCell shallow="60.1" deep="19.1" /> | 0h20 |
-| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/binaries/gemma26-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-26b-a4b.md) | 30000 | <ScoreCell value="0.896/0.872" sub="90% completion" top /> | 16 budget | <TokCell shallow="60.1" deep="19.1" /> | 5h47 |
-| [<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" page="/binaries/gemma26-mlx-4bit" />](../benchmarks/gemma-4-26b-a4b.md) | 30000 | <ScoreCell value="0.793/0.768" sub="81% completion" /> | 31 budget | <TokCell shallow="49.3" deep="23.4" /> | 9h06 |
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="off" page="/binaries/gemma26-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-26b-a4b.md) | none | 8192 | <ScoreCell value="0.976/0.945" sub="100% completion" top /> | none | — | <TokCell shallow="60.1" deep="19.1" /> | 0h20 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/binaries/gemma26-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-26b-a4b.md) | 19491† | 21539 | <ScoreCell value="0.988/0.957" sub="100% completion" /> | none | 16/164 | <TokCell shallow="60.1" deep="19.1" /> | 2h46 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" page="/binaries/gemma26-unsloth-ud-q4kxl" />](../benchmarks/gemma-4-26b-a4b.md) | —† | 30000 | <ScoreCell value="0.896/0.872" sub="90% completion" /> | 16 budget | — | <TokCell shallow="60.1" deep="19.1" /> | 5h47 |
+| [<ModelSpec base="Gemma-4-26B-A4B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/gemma-4-26b-a4b-it-4bit" kv="f16" effort="on" page="/binaries/gemma26-mlx-4bit" />](../benchmarks/gemma-4-26b-a4b.md) | —† | 30000 | <ScoreCell value="0.793/0.768" sub="81% completion" /> | 31 budget | — | <TokCell shallow="49.3" deep="23.4" /> | 9h06 |
+
+† not fast mode: a thinking budget other than 8192, or none. Kept for the record; only fast-mode rows compare across models.
 <!-- gen:model-evalplus:end -->
 
 The two GGUF rows share the thinking-on score; the MLX row keeps its own.

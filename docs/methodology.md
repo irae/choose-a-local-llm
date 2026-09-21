@@ -13,6 +13,7 @@ split by task — read the page for the task you are about to do:
 | Probe a memory ceiling | [Memory ceiling](./methodology/memory-ceiling.md) |
 | Set or re-find the macOS wired limit | [Wired limit](./methodology/wired-limit.md) |
 | Run an EvalPlus scoring pass | [EvalPlus](./methodology/evalplus.md) |
+| Read a score of a thinking model, or set a thinking budget | [The thinking budget](./methodology/reasoning-budget.md) |
 | Run the Mendel agentic benchmark | [Mendel](./methodology/mendel.md) |
 | Report progress of a run, in chat or in a file | [Status lines](./methodology/status-lines.md) |
 | Touch a server, or debug a stall/crash | [Server lore](./methodology/server-lore.md) |
@@ -72,9 +73,10 @@ its page above.
 8. **Gate.** Same as before, now with the depth curve. Most of the cut
    happens here: a model under the floor at the depth the owner works
    at is out.
-9. **EvalPlus**, the quality gate: calibrate the budget, then the full
-   run. Planning says which thinking modes and reasoning levels,
-   from the vendor's documentation and the owner.
+9. **EvalPlus**, the quality gate, in fast mode: a thinking budget of
+   8192 and an output budget of 16384 on every model, no calibration.
+   Planning says which thinking modes and reasoning levels, from the
+   vendor's documentation and the owner.
 10. **Output probe and the harness entry.** Three single calls give
     the first `maxTokens`; the creep gave the window. Only now does a
     model get a pi entry ([Mendel](./methodology/mendel.md) holds
