@@ -121,3 +121,15 @@ One section per block, in the order the runbook lists, as it happens.
 - Part 1: 2026-09-20T21:06:17Z to about 00:25Z (last request 2026-09-21T00:23:39Z), no crash. Wall about 198 min (requests sum to 197.3 min). No splice.
 - Deviation: the `find` bug of `run-humaneval.sh` (see "Tool bug" above) hit again. Score from `evalplus.evaluate --dataset humaneval --samples "$PWD/hardware/arrietty/benchmarks/bench28/results/fast-gemma12-q4kxl-on/humaneval/gemma-4-12b-q4kxl_openai_temp_0.0.jsonl"`, saved in `evaluate.log`.
 - Result: base 0.988, plus 0.963. Empty 0/164, forced 34/164, none on `length`.
+
+## `retry-sweep`
+
+- Only `fast-qwen36-q4kxl-on` is left. It waits on the owner's word for the 22.9 GB download (the file is not on disk; `df -h ~` now shows 41 GB free after the coordinator deleted the retired abliterated files). Nothing else waited on a human.
+
+## Handing over
+
+- What ran: `machine-setup` and ten blocks in fast mode, all with the fast flags and `-c 32768`: `fast-qwen38-iq3s-xhigh` (0.963/0.921), `fast-bonsai2-ptq1-f16-xhigh` (0.976/0.945), `fast-bonsai2-pq2-f16-xhigh` (0.982/0.945), `fast-bonsai2-ptq1-xhigh` (0.982/0.945), `fast-bonsai2-pq2-xhigh` (0.988/0.945), `fast-bonsai2-ptq1-f16-orca-xhigh` (0.976/0.945), `fast-gemma26-nvfp4-on` (0.988/0.951), `fast-gemma12-nvfp4-on` (0.976/0.951), `fast-gemma12-q4kxl-on` (0.988/0.963). Empty was 0/164 on every row. Details are in `results.md`.
+- Not run: `fast-qwen36-q4kxl-on` (file deleted on 2026-09-17, waits for the owner) and `fast-qwen38-oblit-q3km-medium` (dropped, the model is retired).
+- What went wrong and why: (1) `run-humaneval.sh` picks `finish.jsonl` as the samples file when `find` lists it first; it hit two blocks (`fast-gemma26-nvfp4-on`, `fast-gemma12-q4kxl-on`) and I ran `evalplus.evaluate` by hand. (2) The row command of the Orca row downloads its adapter with `hf`, which fails; the adapter is the clone at `/home/irae/code/OrcaBonsai-27B-Uncensored` (commit `947a80c`). (3) HumanEval/64 ended on `length` after a forced answer on the three ternary PQ2 and PTQ1 rows that generated it, and HumanEval/145 did on `fast-gemma12-nvfp4-on`; all hold code. (4) The card sat idle about 5 hours after `fast-bonsai2-ptq1-xhigh` because the wakeups did not fire.
+- Machine state: no `llama-server`, no watcher, VRAM 826 MiB, port 8081 free. Disk 41 GB free. Helper scripts `run28-env.sh`, `run28-serve-fork.sh`, `run28-serve-stock.sh` and `run28-block.sh` are in `~/.local/share/choose-a-local-llm/`.
+- Evidence archived with `tools/archive-evidence.sh`.
