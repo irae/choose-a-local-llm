@@ -262,13 +262,17 @@ RTX 5060 Ti 16 GB machine, in the worktree
 `laya-research`. Nothing was pushed and nothing was merged, as the
 runbook says.
 
-**What ran.** `harness`, `laya-cost` on CUDA and on the CPU,
-`laya-portuguese`, `laya-loop-gate` and `laya-pass-gate` are closed and
-their tables are in `results.md`. `laya-claims` did not run: the
-permission classifier refuses the authors' script. `laya-loop-gate`
-closed with no measurement, because no session log survives for any of
-the thirteen loop occurrences. Every other test measured what the
-runbook asked of it.
+**What ran.** Every test of the runbook is closed and its table is in
+`results.md`: `harness`, `laya-cost` on CUDA and on the CPU,
+`laya-claims`, `laya-portuguese`, `laya-loop-gate` and
+`laya-pass-gate`. `laya-loop-gate` closed with no measurement, because
+no session log survives for any of the thirteen loop occurrences. Every
+other test measured what the runbook asked of it. `results.md` also
+holds a GPU and VRAM section: the card, read once a second while each
+test ran.
+
+`laya-claims` ran at 06:14, after the owner allowed the permission it
+waited on. `retry-sweep` is therefore empty.
 
 **Versions and sources.** `laya` 0.3.4. Checkpoints: the bundle repo
 `convaiinnovations/laya` at revision
@@ -283,8 +287,11 @@ transformers 5.17.0, datasets 5.0.1, Python 3.12.14, driver 610.57.04.
 Datasets: `mteb/amazon_massive_intent` `940fd47a` config `pt`;
 `Davlan/sib200` config `por_Latn`; `dbarbedillo/SMS_Spam_Multilingual_Collection_Dataset`;
 `americanas-tech/b2w-reviews01` at commit `4639429e`;
-`evalplus/humanevalplus`; `LocalLLaMA/typed-decisions` `ea930645`,
-downloaded but not used, because it belongs to the blocked test.
+`evalplus/humanevalplus`; `LocalLLaMA/typed-decisions` `ea930645`, the
+authors' 400 cases and 2,000 questions, used by `laya-claims`. The
+notebook takes the standalone checkpoint repositories rather than the
+bundle, so `laya-claims` reads `convaiinnovations/laya` `1c5edc17` and
+`convaiinnovations/laya-multilingual` `052592a1`.
 
 **Machine state left behind.** No compute job on the card; it sits at
 its 954 MB desktop baseline. No server was ever started, because this
