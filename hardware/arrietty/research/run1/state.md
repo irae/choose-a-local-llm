@@ -222,3 +222,8 @@ The table carries a "share called pass" column beside the pass rate,
 because the two together say whether a row decides anything or answers
 one constant. A runner writes no verdict, and that column lets the
 coordinator read the row without one.
+
+### `laya-cost` — CPU cells started 01:38
+
+The last item of the run that needs no human. The machine is quiet: no
+compute job on the card, and nothing else of this run runs beside it.
