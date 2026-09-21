@@ -80,13 +80,22 @@ no empty, 7 forced. Blind agent row: 59.5, peak context 192679 of a
 - pi entry `bonsai2-27b-ptq1-mac` added to `~/.pi/agent/models.json`; original saved as `~/.pi/agent/models.json.bak-run26`.
 - Smoke line: `SMOKE-MENDEL model=bonsai2-27b-ptq1-mac level=xhigh task=xtend window=159744 calls=10 distinct=10 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=5106 commits=1 clean=yes end=stop wall_s=139 verdict=pass`. The session log holds 7 thinking blocks. Log `results/mendel-smoke-bonsai2-ptq1.log`.
 
+## bonsai2-mlx-probe-mac
+
+- Resumed 2026-09-20 on the coordinator's word. `git merge origin/master` into `run26` was clean (merge commit `2b6ba3d`). Preflight all ok, free disk 120 GB.
+- Pack `prism-ml/Ternary-Bonsai-2-27B-mlx-2bit` at revision `3f926b415992eaa2ae9dd7b573706494d6bbf787`, in `~/.local/share/choose-a-local-llm/mlx-bonsai2/pack`. `model.safetensors` is 8595477990 bytes, equal to the runbook; sha256 `30de5925082c168b7866b2e91b52e44abbafc99017e3ca352b77b5b55a269ed`.
+- Venv `~/.local/share/choose-a-local-llm/mlx-bonsai2/venv`: `mlx==0.32.0`, `mlx-lm==0.31.3`, `mlx-metal==0.32.0`, `numpy==2.5.3`. Full `pip freeze` in `results/mlx-venv-freeze.txt`.
+- Server command as the runbook says (`--prompt-cache-size 2`, port 8081). The log `results/server-mlx.log` ends with `ValueError: Model type prism_hadamard_qwen35 not supported.` from `mlx_lm/utils.py`, `load_model`. The HTTP server starts and lists other cached models, but the pack does not load. No prompt could be sent.
+- **Stop-and-ask (hard gate).** The runbook says a load error on `prism_hadamard_qwen35` stops this block and `sweep-bonsai2-mlx-mac`. Both stop. No sweep ran, and the server is stopped. Candidate answers for the owner: (a) drop the MLX blocks and close the run; (b) the owner names a stock-loader route for this model type. The publisher's own runtime in the pack (`runtime/runtime.py`) is not the stock server, so it is outside the runbook and I did not use it.
+- Machine state: no server, wired 1.9 GB. Free disk 111 GB after the pack (8.6 GB).
+
 ## Disk clean-up, 2026-09-19 (owner)
 
 Owner approved the deletion. No partial download existed. Removed from the Hugging Face cache: `mlx-community/gemma-4-26b-a4b-it-4bit`, `mlx-community/Qwen3.6-35B-A3B-4bit`, `mlx-community/Qwen3.8-27B-4bit`, `AtomicChat/Qwen3.8-27B-GGUF`, and four files of `prism-ml/Ternary-Bonsai-27B-gguf` (`Q2_0`, `PQ2_0`, `dspark-bf16`, `dspark-Q4_1`). Free space on the data volume went from 13 GB to 96 GB. Free space read by `df -h` after the clean-up: 96Gi free, 90% used. The MLX pack download stays at the start of `bonsai2-mlx-probe-mac`; under 20 GB free at that point is stop and ask. The older bartowski Q4_K_M revision waits for the owner: `refs/main` points to `125a02a`, not to `f0eec4a`.
 
 ## Handing-over
 
-Paused by the owner on 2026-09-19, after `bonsai2-smoke-xhigh-mac` and before `bonsai2-mendel-blind-xhigh-mac` (`simulator(mendel-blind) bonsai-27b-ptq1 ptq1/xhigh`). The owner needs the Mac for other work. That block has no result, no worktree, no branch and no run file. It starts again from scratch when the owner says so.
+Paused by the owner on 2026-09-19 and resumed 2026-09-20 (see `bonsai2-mlx-probe-mac`). Pause note: after `bonsai2-smoke-xhigh-mac` and before `bonsai2-mendel-blind-xhigh-mac` (`simulator(mendel-blind) bonsai-27b-ptq1 ptq1/xhigh`). The owner needs the Mac for other work. That block has no result, no worktree, no branch and no run file. It starts again from scratch when the owner says so.
 
 - **Closed:** `machine-setup`, both ladder blocks, both sweep blocks, `bonsai2-calibrate-think-mac`, `bonsai2-budget-xhigh-mac`, `bonsai2-forced-rerun-mac`, `bonsai2-smoke-xhigh-mac` (pass).
 - **Next, in order:** `bonsai2-mendel-blind-xhigh-mac`, `bonsai2-mlx-probe-mac` (MLX venv is installed, the pack is not downloaded; stop and ask if free disk is under 20 GB), `sweep-bonsai2-mlx-mac`, `retry-sweep`.

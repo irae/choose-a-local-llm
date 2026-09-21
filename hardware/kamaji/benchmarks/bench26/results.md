@@ -77,3 +77,7 @@ Natural re-run at 30000 of the 7 forced answers' failures (4 problems), PTQ1_0, 
 | HumanEval/145 | forced-fail-loop | 16268 | length | 30000 |
 
 Summary: forced-pass 3, forced-fail-late 0, forced-fail-loop 4, forced-fail-wrong 0. Corrected think budget: unchanged, no late answer.
+
+## bonsai2-mlx-probe-mac
+
+Stock `mlx_lm.server` 0.31.3 (`mlx` 0.32.0), pack `prism-ml/Ternary-Bonsai-2-27B-mlx-2bit` at `3f926b4`. The pack does not load: `ValueError: Model type prism_hadamard_qwen35 not supported.` No prompt was answered. Gate: stop. The sweep block did not run. Owner decision open.
