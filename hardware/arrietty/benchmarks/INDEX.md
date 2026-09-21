@@ -6,13 +6,36 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 `results/`). Run numbers are shared with the Mac
 (`hardware/kamaji/benchmarks/INDEX.md`).
 
-## bench28, planned 2026-09-19 ([state](bench28/state.md), [results](bench28/results.md))
+## bench28, 2026-09-20 to 2026-09-21 ([report](bench28/report.md), [state](bench28/state.md), [results](bench28/results.md))
 
 - Runbook: [bench28/AGENT.md](bench28/AGENT.md). Every scored thinking
-  row of this machine in EvalPlus fast mode (`docs/methodology/evalplus.md`,
-  "Fast mode": thinking budget 8192, output 16384, no calibration):
-  six rows spliced from their earlier budgeted runs, four scored in
-  full. Starts when the card is free.
+  row of this machine in EvalPlus fast mode
+  (`docs/methodology/evalplus.md`, "Fast mode": thinking budget 8192,
+  output 16384, no calibration): six rows spliced from their earlier
+  budgeted runs, four scored in full, one cancelled when the owner
+  retired its model.
+- **A score without a thinking budget measures the output budget, not
+  the model.** The four rows that had none carried 3 to 53 empty
+  answers. Every empty answer came back, and the scores moved by 1 to
+  32 points of base pass@1: Gemma-4-12B NVFP4 from 0.659 to 0.976, its
+  UD-Q4_K_XL build from 0.793 to 0.988, Gemma-4-26B-A4B NVFP4 from
+  0.909 to 0.988, Qwen3.6-35B-A3B from 0.945 to 0.976.
+- **A model that converges loses nothing to the budget.** The five
+  ternary arms moved one to two problems, from 0.970-0.982 to
+  0.976-0.988 base. No row on this machine went down.
+- **The wall fell on nine rows of ten**, by 32 to 45 percent on the
+  spliced ternary rows. It rose only on Gemma-4-12B NVFP4, 204 to 211
+  minutes, where 44 forced answers each pay 8192 thinking tokens first.
+- **The exact budget is not critical.** Gemma-4-12B NVFP4 reads
+  0.976/0.951 at a calibrated 7350 and at 8192. Qwen3.8 ISTA reads
+  0.976/0.933 at 8192 and at 30000, in 175 against 273 minutes.
+- **The forced count belongs beside every score.** 0.988 with 34 forced
+  answers and 0.988 with 12 are both true, and they are not the same
+  result.
+- The run also retired the abliterated Qwen3.8 build (owner), fixed the
+  samples-file search of `benchmarks/run-humaneval.sh`, and corrected
+  the LoRA row's adapter download, which named a Hugging Face path that
+  does not exist.
 
 ## bench27, 2026-09-18 to 2026-09-19 ([report](bench27/report.md), [state](bench27/state.md), [results](bench27/results.md))
 
