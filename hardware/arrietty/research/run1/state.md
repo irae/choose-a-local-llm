@@ -227,3 +227,29 @@ coordinator read the row without one.
 
 The last item of the run that needs no human. The machine is quiet: no
 compute job on the card, and nothing else of this run runs beside it.
+
+### `laya-cost` — closed, CPU cells done 04:17
+
+All 24 CPU cells and the nine cold loads ran with no failure. The table
+is in `results.md`. Cold load on the CPU is 12.0 to 12.2 s, about one
+second under the CUDA figure, because the CPU load moves no weights to
+the card.
+
+The machine stayed quiet for the whole two and a half hours: no compute
+job on the card, and no other cell of this run beside them. Swap fell
+from 11,364 MB to 10,520 MB, so the run never grew it.
+
+### `retry-sweep`
+
+One item, and it needs a human.
+
+| what | condition | my candidate answer |
+| --- | --- | --- |
+| `laya-claims` | The permission classifier refuses to run the authors' benchmark script with `[Code from External]`. Two forms were tried. Only a human can allow it. | Add a Bash permission rule for `hardware/arrietty/research/run1/results/laya-claims/notebook-as-script.py` and for the repository's `research/scripts/bench_apps.py`, then run both on CUDA. The script is generated from their notebook at commit `42626c34` with the three changes the runbook allows, and its header names them. |
+
+Nothing else in this run waited on a human. Every other failure was
+mine to fix and was fixed inside its own test: the missing summary
+directory in the runner, the `pt-PT` config name that is `pt` in
+`mteb/amazon_massive_intent`, the two Hugging Face copies of
+B2W-Reviews01 that are loader scripts, and the CSV column that
+`datasets` cannot type.

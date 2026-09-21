@@ -1,0 +1,69 @@
+{
+  "checkpoint": "typed-decisions",
+  "device": "cpu",
+  "dtype": "torch.float32",
+  "max_len": 1024,
+  "cases": 64,
+  "reported_cases": 64,
+  "questions_per_case": 10,
+  "per_case_questions": false,
+  "over_context": 0,
+  "skipped_over_context": 0,
+  "batch": 1,
+  "cold_load_s": 12.548,
+  "calls": 64,
+  "p50_ms": 5269.807510077953,
+  "p95_ms": 5312.96982189524,
+  "questions_per_s": 1.8939602001633231,
+  "peak_gpu_mb_nvidia_smi": 954,
+  "peak_gpu_mb_torch": 0.0,
+  "peak_rss_mb": 3226.2,
+  "input_tokens": 195264,
+  "fitted_temperature": null,
+  "overall": {
+    "cases": 640,
+    "labelled": 0
+  },
+  "per_question": {
+    "n00": {
+      "cases": 64,
+      "labelled": 0
+    },
+    "topic": {
+      "cases": 64,
+      "labelled": 0
+    },
+    "urgency": {
+      "cases": 64,
+      "labelled": 0
+    },
+    "n01": {
+      "cases": 64,
+      "labelled": 0
+    },
+    "channel": {
+      "cases": 64,
+      "labelled": 0
+    },
+    "risk": {
+      "cases": 64,
+      "labelled": 0
+    },
+    "n02": {
+      "cases": 64,
+      "labelled": 0
+    },
+    "language_register": {
+      "cases": 64,
+      "labelled": 0
+    },
+    "effort": {
+      "cases": 64,
+      "labelled": 0
+    },
+    "n03": {
+      "cases": 64,
+      "labelled": 0
+    }
+  }
+}

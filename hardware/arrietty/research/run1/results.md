@@ -307,3 +307,57 @@ bound is the value at the bound, not a converged fit. And the labels
 are heavily one-sided: the pass rates run from 0.879 to 0.963, so the
 second half of a row holds about 8 to 20 failing solutions. Every
 number in this table rests on that many negatives.
+
+## `laya-cost`, CPU
+
+The GPU is hidden with `CUDA_VISIBLE_DEVICES=""`. Cold load, a new
+process each time, the files in the page cache, three repeats:
+
+| checkpoint | cold load s, three repeats | mean s |
+| --- | --- | --- |
+| `english` | 12.12, 12.15, 12.29 | 12.19 |
+| `multilingual` | 11.48, 12.29, 12.35 | 12.04 |
+| `typed-decisions` | 12.00, 12.06, 12.47 | 12.18 |
+
+Latency, 20 warmup calls before every cell. The measured call count is
+in its own column: a cell that would run over about five minutes at 200
+calls takes fewer, which the authors' own CPU figures do not need
+because they publish one question count only.
+
+| checkpoint | state | q/call | calls | p50 ms | p95 ms | questions/s | peak RSS MB | authors' T4 CPU p50 ms |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `english` | en | 1 | 200 | 374.8 | 381.7 | 2.7 | 3223 | 193-464 |
+| `english` | en | 5 | 200 | 2194.9 | 2215.7 | 2.3 | 3228 | — |
+| `english` | en | 10 | 64 | 4358.6 | 4383.6 | 2.3 | 3223 | 193-464 |
+| `english` | en | 50 | 20 | 22966.8 | 23025.9 | 2.2 | 3308 | 193-464 |
+| `english` | pt | 1 | 200 | 453.9 | 461.3 | 2.2 | 3227 | 193-464 |
+| `english` | pt | 5 | 200 | 2549.2 | 2581.1 | 2.0 | 3223 | — |
+| `english` | pt | 10 | 64 | 5322.2 | 5365.9 | 1.9 | 3224 | 193-464 |
+| `english` | pt | 50 | 20 | 27396.0 | 27566.6 | 1.8 | 3463 | 193-464 |
+| `multilingual` | en | 1 | 200 | 125.7 | 129.0 | 7.9 | 4472 | 193-464 |
+| `multilingual` | en | 5 | 200 | 721.5 | 729.2 | 6.9 | 4473 | — |
+| `multilingual` | en | 10 | 64 | 1593.8 | 1606.9 | 6.3 | 4469 | 193-464 |
+| `multilingual` | en | 50 | 20 | 8210.8 | 8238.4 | 6.1 | 4471 | 193-464 |
+| `multilingual` | pt | 1 | 200 | 119.3 | 137.2 | 8.2 | 4472 | 193-464 |
+| `multilingual` | pt | 5 | 200 | 652.2 | 660.3 | 7.7 | 4472 | — |
+| `multilingual` | pt | 10 | 64 | 1462.6 | 1473.1 | 6.8 | 4472 | 193-464 |
+| `multilingual` | pt | 50 | 20 | 7632.3 | 7651.9 | 6.5 | 4472 | 193-464 |
+| `typed-decisions` | en | 1 | 200 | 373.9 | 381.8 | 2.7 | 3222 | — |
+| `typed-decisions` | en | 5 | 200 | 2183.2 | 2200.8 | 2.3 | 3223 | — |
+| `typed-decisions` | en | 10 | 64 | 4457.6 | 4527.7 | 2.2 | 3222 | — |
+| `typed-decisions` | en | 50 | 20 | 23153.0 | 23216.0 | 2.2 | 3280 | — |
+| `typed-decisions` | pt | 1 | 200 | 448.2 | 456.7 | 2.2 | 3223 | — |
+| `typed-decisions` | pt | 5 | 200 | 2553.4 | 2573.2 | 2.0 | 3222 | — |
+| `typed-decisions` | pt | 10 | 64 | 5269.8 | 5313.0 | 1.9 | 3226 | — |
+| `typed-decisions` | pt | 50 | 20 | 27554.0 | 27826.6 | 1.8 | 3462 | — |
+
+Conditions. The same two fixed states, the same question files and the
+same package as the CUDA cells; float32, the package's default on the
+CPU. The machine ran nothing else: no job on the card, and no other
+cell of this run beside it. Swap was 11,364 MB used at the start of the
+run and 10,520 MB at the end of these cells, so it fell and never grew.
+The authors publish one CPU range, 193 to 464 ms, without saying which
+question count or which checkpoint it belongs to, so it sits beside
+every row of the two checkpoints they name and is not a cell-by-cell
+comparison.
+
