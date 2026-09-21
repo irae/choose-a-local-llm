@@ -133,3 +133,13 @@ One section per block, in the order the runbook lists, as it happens.
 - What went wrong and why: (1) `run-humaneval.sh` picks `finish.jsonl` as the samples file when `find` lists it first; it hit two blocks (`fast-gemma26-nvfp4-on`, `fast-gemma12-q4kxl-on`) and I ran `evalplus.evaluate` by hand. (2) The row command of the Orca row downloads its adapter with `hf`, which fails; the adapter is the clone at `/home/irae/code/OrcaBonsai-27B-Uncensored` (commit `947a80c`). (3) HumanEval/64 ended on `length` after a forced answer on the three ternary PQ2 and PTQ1 rows that generated it, and HumanEval/145 did on `fast-gemma12-nvfp4-on`; all hold code. (4) The card sat idle about 5 hours after `fast-bonsai2-ptq1-xhigh` because the wakeups did not fire.
 - Machine state: no `llama-server`, no watcher, VRAM 826 MiB, port 8081 free. Disk 41 GB free. Helper scripts `run28-env.sh`, `run28-serve-fork.sh`, `run28-serve-stock.sh` and `run28-block.sh` are in `~/.local/share/choose-a-local-llm/`.
 - Evidence: `tools/archive-evidence.sh` found nothing to archive (it copies pi session logs; EvalPlus results, `finish.jsonl` and `evaluate.log` are committed under `results/`).
+
+## `fast-qwen36-q4kxl-on` (started after the disk was freed)
+
+- Download: `hf download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf`, 22853663008 bytes, sha256 `55983c5a75a1ab969824077b3bb3de4146e82a9234072b48ad4e8f92ad3fe9f1`, the run 17 record. Disk after: 20 GB free. The coordinator asked to keep the file.
+- Serve: run 19's binary, row command with `-c 32768`, q8_0 KV, `--spec-type draft-mtp --spec-draft-n-max 2`, `--n-cpu-moe 21`, `$FAST_FLAGS`.
+- `nvidia-smi` at load: 13702 MiB; after the probe 13748 MiB (desktop included).
+- Probe (`enable_thinking` true, HumanEval/0): stop, 2780 completion tokens, reasoning present, `content` 1268 characters, no error. It converged early, so no budget message shows.
+- No splice source: all 164 generated.
+- Part 1 start 2026-09-21T01:01:20Z
+- Pause order from the coordinator: at this block's close, push, report, write the handing-over section and stop. Start nothing after it.
