@@ -118,3 +118,6 @@ One section per block, in the order the runbook lists, as it happens.
 - Probe (`enable_thinking` true, HumanEval/0): stop, 1155 completion tokens, reasoning present, `content` 829 characters, no error. It converged early, so no budget message shows.
 - No splice source: all 164 generated.
 - Part 1 start 2026-09-20T21:06:17Z
+- Part 1: 2026-09-20T21:06:17Z to about 00:25Z (last request 2026-09-21T00:23:39Z), no crash. Wall about 198 min (requests sum to 197.3 min). No splice.
+- Deviation: the `find` bug of `run-humaneval.sh` (see "Tool bug" above) hit again. Score from `evalplus.evaluate --dataset humaneval --samples "$PWD/hardware/arrietty/benchmarks/bench28/results/fast-gemma12-q4kxl-on/humaneval/gemma-4-12b-q4kxl_openai_temp_0.0.jsonl"`, saved in `evaluate.log`.
+- Result: base 0.988, plus 0.963. Empty 0/164, forced 34/164, none on `length`.

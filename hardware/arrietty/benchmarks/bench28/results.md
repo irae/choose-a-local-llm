@@ -107,3 +107,17 @@ Gemma-4-12B NVFP4, f16 KV, no drafter, thinking on, run 19's binary, `-c 32768`,
 - Forced ids: the 44 ids in `thinking-budget.py count` output: HumanEval/4, /18, /32, /39, /41, /47, /64, /65, /75, /76, /81, /83, /84, /91, /93, /94, /95, /99, /100, /102, /103, /105, /109, /110, /113, /115, /116, /118, /119, /124, /125, /129, /130, /132, /134, /140, /141, /145, /147, /154, /156, /158, /160, /163.
 - Empty ids: none.
 - `budget` (ended on `length` at 16384): HumanEval/145, after a forced answer. It holds code, so it is not empty.
+
+## `fast-gemma12-q4kxl-on`
+
+Gemma-4-12B UD-Q4_K_XL, f16 KV, no drafter, thinking on, run 19's binary, `-c 32768`, fast mode (thinking 8192, `max_tokens` 16384). Splice source: none, all 164 generated.
+
+| | base | plus | completion | empty | forced | wall |
+|---|--:|--:|--|--|--|--:|
+| fast mode (run 28) | 0.988 | 0.963 | 164/164 | 0/164 | 34/164 | 198 min (one part, 21:06Z 2026-09-20 to 00:25Z 2026-09-21; requests 197.3) |
+| before fast mode | 0.793 | 0.780 | 129/164 (79%) | see models.json | see models.json | 259 min |
+
+- Forced ids: HumanEval/1, /32, /38, /41, /47, /65, /76, /81, /83, /91, /93, /94, /95, /103, /109, /110, /113, /115, /116, /118, /120, /122, /125, /127, /128, /129, /130, /132, /134, /140, /145, /147, /153, /163.
+- Empty ids: none.
+- `budget` (ended on `length` at 16384): none.
+- The score comes from a manual `evalplus.evaluate` run; see `state.md`.
