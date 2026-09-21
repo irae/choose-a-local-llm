@@ -7,6 +7,37 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench26, 2026-09-19 to 2026-09-21 ([report](bench26/report.md), [state](bench26/state.md), [results](bench26/results.md))
+
+- Runbook: [bench26/AGENT.md](bench26/AGENT.md). The ternary 27B of the
+  second generation on this machine: both GGUF packings swept to their
+  clean depth, one EvalPlus score at effort xhigh, a smoke, and the MLX
+  pack of the same model. The blind agent row was cancelled by the
+  owner and its evidence removed.
+- **The dense packing wins here at every depth, and the card says the
+  opposite.** PTQ1_0 reads 17.86 tok/s at 4K and is still at 9.07 at
+  163858, its clean depth; PQ2_0 reads 17.05 at 4K and crosses the
+  8 tok/s floor between 41K and 66K, clean depth 40982. On the RTX card
+  PQ2_0 is the faster of the two. Which packing wins is a property of
+  the machine.
+- **EvalPlus 0.988 / 0.939** on PTQ1_0 at a thinking budget of 16056,
+  no empty answer, 7 forced. The card scores the same file 0.970 /
+  0.939.
+- **No stock MLX server runs this pack.** `mlx_lm.server` refuses the
+  model type, the pack's own `artifact.py` refuses its schema version,
+  Apple's newest `mlx-lm` has no module, and LM Studio 0.4.24+1 stops
+  on a missing video processor config. The publisher ships a one-shot
+  demo script and no server, so the run wrote
+  `tools/sweeps/bonsai2-mlx-server.py` around the publisher's own
+  loader. Every row measured through it is served by it.
+- **MLX is the fastest at 4K and the first to run out of memory**:
+  21.47 tok/s at 4K against 17.05 and 17.86, then behind both by 24K,
+  with a clean depth of 32818 and a window of 28672. It keeps no prompt
+  cache, so each sweep step pays the full prefill.
+- A third-party MLX route also worked and was withdrawn by the owner;
+  its environment, logs and numbers were deleted and none of it is a
+  result.
+
 ## bench22, 2026-09-16, paused 2026-09-17 ([state](bench22/state.md), [results](bench22/results.md))
 
 - Runbook: [bench22/AGENT.md](bench22/AGENT.md). The thinking budget

@@ -146,7 +146,12 @@ Benchmark work:
   every fixture came from.
 - `tools/sweeps/`. Depth-sweep helpers that are not the creep tool
   itself: `bench11-cbinsearch*.sh`, `lmstudio_concurrency_probe.py`,
-  `prism-probe.sh`. The depth-sweep tool proper (`creep.py` and one
+  `prism-probe.sh`, `bonsai2-mlx-server.py`. The last one is a server,
+  not a probe: no stock MLX server runs the ternary 2-bit pack, so it
+  wraps the publisher's own loader to give the creep tool something to
+  measure. **A row measured through it is served by it**, not by a
+  stock server; the row's `spec.adapter` and its note must say so.
+  The depth-sweep tool proper (`creep.py` and one
   backend module per server) now lives outside this repo, in
   `local-llm-eval-tools`; see `docs/methodology/context-creep.md`,
   "Install", for the clone and the run command.

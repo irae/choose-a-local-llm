@@ -28,6 +28,7 @@ EvalPlus and the blind agent row run on PTQ1_0.
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" top /> | **160k** | <TokCell shallow="17.9" deep="9.1" cap="mem" top-shallow top-deep /> | **25.5 GB** | <ScoreCell value="0.988/0.939†" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h37 · Mendel —">5h37†</span> |
+| <ModelSpec base="Ternary-Bonsai-2-27B" quant="MLX 2-bit" server="mlx" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-mlx-2bit" adapter="bonsai2-mlx-server.py" kv="f16" effort="on" top /> | **28k** | <TokCell shallow="21.47" deep="10.45" cap="mem" top-shallow top-deep /> | **15.7 GB** | <ScoreCell value="not run" /> | <ScoreCell value="not run" /> | — |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -43,6 +44,16 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
   -ngl 999 -fa on -c 262144 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
+```
+
+<ModelSpec base="Ternary-Bonsai-2-27B" quant="MLX 2-bit" server="mlx" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-mlx-2bit" adapter="bonsai2-mlx-server.py" kv="f16" effort="on" />
+
+The MLX pack of the ternary 27B, revision `3f926b4`, measured 2026-09-21. **No stock server runs this pack.** `mlx_lm.server` refuses the model type `prism_hadamard_qwen35`; the pack's own `artifact.py` refuses its schema version; Apple's newest `mlx-lm` has no module for it; LM Studio 0.4.24+1 stops with "Unrecognized video processor", because the pack carries no `video_preprocessor_config.json`. The publisher ships a one-shot demo script and no server. The row is therefore served by `tools/sweeps/bonsai2-mlx-server.py`, a thin server in this repository around the publisher's own loader and `mlx_vlm.stream_generate`, with `mlx` 0.32.0 and `mlx-vlm` 0.6.3, the publisher's pins. It keeps no prompt cache, so every step of a depth sweep pays the full prefill. Speed with the context-creep tool at wired limit 25000: 21.47 tok/s at 4K, 12.13 at 24K and 10.45 at 32818, the deepest clean depth; 40982 reads 8.12 and 65578 reads 6.18, and both grew swap, so they are not clean. The window is 28672. The same file's GGUF packings go deeper on this machine: PQ2_0 is clean to 40982 and PTQ1_0 to 163858, where it still reads 9.07 tok/s. MLX is the fastest of the three at 4K and the first to run out of memory. No EvalPlus and no agent row: this run measured speed only.
+
+```bash
+BONSAI2_PACK=<pack dir> \
+  BONSAI2_MANIFEST=<pack dir>/bonsai2-runtime.sha256 \
+  <venv>/bin/python tools/sweeps/bonsai2-mlx-server.py
 ```
 <!-- gen:model-configs:end -->
 

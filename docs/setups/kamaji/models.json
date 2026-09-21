@@ -898,6 +898,32 @@
       "stale": [
         "evalplus"
       ]
+    },
+    {
+      "config": "Ternary-Bonsai-2-27B, MLX, 2-bit pack (prism-ml), f16, no drafter, thinking on",
+      "maxCtx": "28k",
+      "gatedBy": "mem",
+      "tokShallow": "21.47",
+      "tokDeep": "10.45",
+      "memory": "15.7 GB",
+      "evalplus": "not run",
+      "mendel": "not run",
+      "id": "bonsai2-mlx-mac",
+      "spec": {
+        "base": "Ternary-Bonsai-2-27B",
+        "quant": "MLX 2-bit",
+        "server": "mlx",
+        "publisher": "prism-ml",
+        "repo": "prism-ml/Ternary-Bonsai-2-27B-mlx-2bit",
+        "drafter": "",
+        "kv": "f16",
+        "adapter": "bonsai2-mlx-server.py",
+        "effort": "on"
+      },
+      "hidden": false,
+      "added": "2026-09-21",
+      "command": "BONSAI2_PACK=<pack dir> \\\n  BONSAI2_MANIFEST=<pack dir>/bonsai2-runtime.sha256 \\\n  <venv>/bin/python tools/sweeps/bonsai2-mlx-server.py",
+      "note": "The MLX pack of the ternary 27B, revision `3f926b4`, measured 2026-09-21. **No stock server runs this pack.** `mlx_lm.server` refuses the model type `prism_hadamard_qwen35`; the pack's own `artifact.py` refuses its schema version; Apple's newest `mlx-lm` has no module for it; LM Studio 0.4.24+1 stops with \"Unrecognized video processor\", because the pack carries no `video_preprocessor_config.json`. The publisher ships a one-shot demo script and no server. The row is therefore served by `tools/sweeps/bonsai2-mlx-server.py`, a thin server in this repository around the publisher's own loader and `mlx_vlm.stream_generate`, with `mlx` 0.32.0 and `mlx-vlm` 0.6.3, the publisher's pins. It keeps no prompt cache, so every step of a depth sweep pays the full prefill. Speed with the context-creep tool at wired limit 25000: 21.47 tok/s at 4K, 12.13 at 24K and 10.45 at 32818, the deepest clean depth; 40982 reads 8.12 and 65578 reads 6.18, and both grew swap, so they are not clean. The window is 28672. The same file's GGUF packings go deeper on this machine: PQ2_0 is clean to 40982 and PTQ1_0 to 163858, where it still reads 9.07 tok/s. MLX is the fastest of the three at 4K and the first to run out of memory. No EvalPlus and no agent row: this run measured speed only."
     }
   ],
   "models": {
@@ -1890,6 +1916,20 @@
       "run": "bench26",
       "method": "creep",
       "wired": 25000
+    },
+    {
+      "model": "bonsai-2-27b",
+      "arm": "MLX 2-bit, f16, no drafter, bonsai2-mlx-server.py",
+      "c": 28672,
+      "cAt": 32818,
+      "served": true,
+      "points": {
+        "4114": 21.47,
+        "24602": 12.13,
+        "32818": 10.45
+      },
+      "run": "bench26",
+      "method": "creep"
     }
   ]
 }
