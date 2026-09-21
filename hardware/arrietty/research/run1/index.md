@@ -16,10 +16,10 @@ benchmark run.
   (`../laya-decision-engine.md`). The tests and their order are in the
   item.
 
-Closed 2026-09-21. Four tests measured and wrote numbers: `harness`,
-`laya-cost` on CUDA and on the CPU, `laya-portuguese` and
+Closed 2026-09-21. Every test wrote its table: `harness`, `laya-cost`
+on CUDA and on the CPU, `laya-claims`, `laya-portuguese` and
 `laya-pass-gate`. `laya-loop-gate` wrote its table and no measurement,
 because no session log survives for any of the thirteen loop
-occurrences. `laya-claims` did not run: a permission refusal that only
-the owner can lift, and `retry-sweep` carries it. `state.md` holds the
-handing-over section.
+occurrences. `results.md` also holds a GPU and VRAM section, the card
+read once a second while each test ran. `retry-sweep` is empty.
+`state.md` holds the handing-over section.
