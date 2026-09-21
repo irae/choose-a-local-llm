@@ -10,8 +10,16 @@ category the project has not run before, with tests that are all new.
 One job on the GPU at a time; the run never shares the machine with a
 benchmark run.
 
-- [ ] `laya-decision-engine` — cost on CUDA and CPU, the authors'
+- [x] `laya-decision-engine` — cost on CUDA and CPU, the authors'
   benchmarks against their published numbers, then the loop gate and
   the pass gate on the project's own labels
   (`../laya-decision-engine.md`). The tests and their order are in the
   item.
+
+Closed 2026-09-21. Four tests measured and wrote numbers: `harness`,
+`laya-cost` on CUDA and on the CPU, `laya-portuguese` and
+`laya-pass-gate`. `laya-loop-gate` wrote its table and no measurement,
+because no session log survives for any of the thirteen loop
+occurrences. `laya-claims` did not run: a permission refusal that only
+the owner can lift, and `retry-sweep` carries it. `state.md` holds the
+handing-over section.
