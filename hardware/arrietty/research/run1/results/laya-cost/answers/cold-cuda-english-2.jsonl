@@ -1,0 +1,1 @@
+{"case": 0, "question": "n00", "type": "noul", "shipped_t": 1.983399510383606, "options": ["false", "true"], "label": null, "label_index": null, "temperature": 1.983399510383606, "probs": [0.8614619023361844, 0.13853809766381558], "pred_index": 0, "prediction": "false", "logits": [3.609375, -0.0152587890625]}

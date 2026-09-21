@@ -1,0 +1,318 @@
+{
+  "n00": {
+    "type": "noul",
+    "instructions": "The customer asks for money back."
+  },
+  "topic": {
+    "type": "choice",
+    "instructions": "Which topic fits the text?",
+    "criteria": {
+      "billing": "money, invoices or refunds",
+      "delivery": "shipping or a late parcel",
+      "technical": "an app or a device that does not work",
+      "other": "none of the above"
+    }
+  },
+  "urgency": {
+    "type": "score",
+    "instructions": "Rate the urgency of the text.",
+    "criteria": [
+      "not urgent",
+      "soon",
+      "today",
+      "now"
+    ]
+  },
+  "n01": {
+    "type": "noul",
+    "instructions": "The message names an order number."
+  },
+  "channel": {
+    "type": "choice",
+    "instructions": "Which channel fits the text?",
+    "criteria": {
+      "email": "written as an email",
+      "chat": "short chat turns",
+      "phone": "a call transcript"
+    }
+  },
+  "risk": {
+    "type": "score",
+    "instructions": "Rate the risk of the text.",
+    "criteria": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "severe"
+    ]
+  },
+  "n02": {
+    "type": "noul",
+    "instructions": "The writer is angry."
+  },
+  "language_register": {
+    "type": "choice",
+    "instructions": "Which language register fits the text?",
+    "criteria": {
+      "formal": "polite and distant",
+      "neutral": "plain",
+      "informal": "familiar"
+    }
+  },
+  "effort": {
+    "type": "score",
+    "instructions": "Rate the effort of the text.",
+    "criteria": [
+      "minutes",
+      "an hour",
+      "a day",
+      "a week"
+    ]
+  },
+  "n03": {
+    "type": "noul",
+    "instructions": "The message repeats an earlier request."
+  },
+  "customer_type": {
+    "type": "choice",
+    "instructions": "Which customer type fits the text?",
+    "criteria": {
+      "consumer": "a private person",
+      "business": "a company",
+      "partner": "a reseller"
+    }
+  },
+  "clarity": {
+    "type": "score",
+    "instructions": "Rate the clarity of the text.",
+    "criteria": [
+      "unclear",
+      "partly clear",
+      "clear"
+    ]
+  },
+  "n04": {
+    "type": "noul",
+    "instructions": "The problem is already solved."
+  },
+  "next_action": {
+    "type": "choice",
+    "instructions": "Which next action fits the text?",
+    "criteria": {
+      "refund": "give the money back",
+      "replace": "send a new item",
+      "explain": "answer with information",
+      "escalate": "give it to a human"
+    }
+  },
+  "churn_risk": {
+    "type": "score",
+    "instructions": "Rate the churn risk of the text.",
+    "criteria": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "severe"
+    ]
+  },
+  "n05": {
+    "type": "noul",
+    "instructions": "The message names a date."
+  },
+  "product_area": {
+    "type": "choice",
+    "instructions": "Which product area fits the text?",
+    "criteria": {
+      "account": "login and profile",
+      "payments": "cards and invoices",
+      "shipping": "parcels",
+      "hardware": "the device"
+    }
+  },
+  "satisfaction": {
+    "type": "score",
+    "instructions": "Rate the satisfaction of the text.",
+    "criteria": [
+      "very low",
+      "low",
+      "medium",
+      "high",
+      "very high"
+    ]
+  },
+  "n06": {
+    "type": "noul",
+    "instructions": "The customer threatens to leave."
+  },
+  "intent": {
+    "type": "choice",
+    "instructions": "Which intent fits the text?",
+    "criteria": {
+      "complain": "report a problem",
+      "ask": "request information",
+      "buy": "start a purchase",
+      "cancel": "end the service"
+    }
+  },
+  "complexity": {
+    "type": "score",
+    "instructions": "Rate the complexity of the text.",
+    "criteria": [
+      "trivial",
+      "simple",
+      "normal",
+      "hard",
+      "very hard"
+    ]
+  },
+  "n07": {
+    "type": "noul",
+    "instructions": "The message needs a human agent."
+  },
+  "sentiment": {
+    "type": "choice",
+    "instructions": "Which sentiment fits the text?",
+    "criteria": {
+      "negative": "unhappy",
+      "neutral": "flat",
+      "positive": "happy"
+    }
+  },
+  "evidence": {
+    "type": "score",
+    "instructions": "Rate the evidence of the text.",
+    "criteria": [
+      "none",
+      "weak",
+      "partial",
+      "strong"
+    ]
+  },
+  "n08": {
+    "type": "noul",
+    "instructions": "The text contains personal data."
+  },
+  "priority_class": {
+    "type": "choice",
+    "instructions": "Which priority class fits the text?",
+    "criteria": {
+      "low": "can wait",
+      "normal": "the usual queue",
+      "high": "today",
+      "critical": "now"
+    }
+  },
+  "politeness": {
+    "type": "score",
+    "instructions": "Rate the politeness of the text.",
+    "criteria": [
+      "rude",
+      "plain",
+      "polite"
+    ]
+  },
+  "n09": {
+    "type": "noul",
+    "instructions": "The message is written by a robot."
+  },
+  "outcome": {
+    "type": "choice",
+    "instructions": "Which outcome fits the text?",
+    "criteria": {
+      "resolved": "the case is closed",
+      "pending": "waiting for the customer",
+      "open": "still with the team"
+    }
+  },
+  "completeness": {
+    "type": "score",
+    "instructions": "Rate the completeness of the text.",
+    "criteria": [
+      "empty",
+      "partial",
+      "complete"
+    ]
+  },
+  "n10": {
+    "type": "noul",
+    "instructions": "The customer accepts the offer."
+  },
+  "n11": {
+    "type": "noul",
+    "instructions": "The request breaks the published policy."
+  },
+  "n12": {
+    "type": "noul",
+    "instructions": "The message names a competitor."
+  },
+  "n13": {
+    "type": "noul",
+    "instructions": "The writer is a new customer."
+  },
+  "n14": {
+    "type": "noul",
+    "instructions": "The message asks a question."
+  },
+  "n15": {
+    "type": "noul",
+    "instructions": "The text names a price."
+  },
+  "n16": {
+    "type": "noul",
+    "instructions": "The customer reports a fault in a device."
+  },
+  "n17": {
+    "type": "noul",
+    "instructions": "The message is off topic."
+  },
+  "n18": {
+    "type": "noul",
+    "instructions": "The writer gives a phone number."
+  },
+  "n19": {
+    "type": "noul",
+    "instructions": "The message needs a reply today."
+  },
+  "n20": {
+    "type": "noul",
+    "instructions": "The text names a city."
+  },
+  "n21": {
+    "type": "noul",
+    "instructions": "The customer wants to change the plan."
+  },
+  "n22": {
+    "type": "noul",
+    "instructions": "The message reports a delivery problem."
+  },
+  "n23": {
+    "type": "noul",
+    "instructions": "The writer mentions a contract."
+  },
+  "n24": {
+    "type": "noul",
+    "instructions": "The message contains a threat."
+  },
+  "n25": {
+    "type": "noul",
+    "instructions": "The customer praises the service."
+  },
+  "n26": {
+    "type": "noul",
+    "instructions": "The text names a payment method."
+  },
+  "n27": {
+    "type": "noul",
+    "instructions": "The message asks for a manager."
+  },
+  "n28": {
+    "type": "noul",
+    "instructions": "The writer reports a login problem."
+  },
+  "n29": {
+    "type": "noul",
+    "instructions": "The message names a file or an attachment."
+  }
+}

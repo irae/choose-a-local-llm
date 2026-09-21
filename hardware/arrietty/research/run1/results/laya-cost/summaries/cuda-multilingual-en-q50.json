@@ -1,0 +1,226 @@
+{
+  "checkpoint": "multilingual",
+  "device": "cuda",
+  "dtype": "torch.bfloat16",
+  "max_len": 1024,
+  "cases": 200,
+  "reported_cases": 200,
+  "questions_per_case": 50,
+  "batch": 1,
+  "cold_load_s": 13.017,
+  "calls": 200,
+  "p50_ms": 201.13012852380052,
+  "p95_ms": 201.51007414679043,
+  "questions_per_s": 247.9990822970002,
+  "peak_gpu_mb_nvidia_smi": 3279,
+  "peak_gpu_mb_torch": 1856.5,
+  "peak_rss_mb": 4477.7,
+  "input_tokens": 2533800,
+  "fitted_temperature": null,
+  "overall": {
+    "cases": 10000,
+    "labelled": 0
+  },
+  "per_question": {
+    "n00": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "topic": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "urgency": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n01": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "channel": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "risk": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n02": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "language_register": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "effort": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n03": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "customer_type": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "clarity": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n04": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "next_action": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "churn_risk": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n05": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "product_area": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "satisfaction": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n06": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "intent": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "complexity": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n07": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "sentiment": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "evidence": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n08": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "priority_class": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "politeness": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n09": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "outcome": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "completeness": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n10": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n11": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n12": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n13": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n14": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n15": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n16": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n17": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n18": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n19": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n20": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n21": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n22": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n23": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n24": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n25": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n26": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n27": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n28": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n29": {
+      "cases": 200,
+      "labelled": 0
+    }
+  }
+}
