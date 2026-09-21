@@ -89,3 +89,120 @@ questions per call for `laya` and `laya-multilingual` only. The authors
 do not say which state they used, so the comparison is of the same
 question counts, not of the same text.
 
+
+## `laya-portuguese`
+
+`laya-multilingual` is the checkpoint under test; the other two are
+comparison rows. Every row reports the second half of its cases, so the
+shipped row and the fitted row cover the same cases. The fitted row
+uses one scalar per question, fitted by NLL on the first half.
+
+| set | question | checkpoint | cases | options | fitted | accuracy | majority class | Brier | ECE | temperature |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| MASSIVE pt intent | `intent` | `english` | 1487 | 20 | no | 0.5575 | 0.0599 | 0.8589 | 0.4234 | 0.101 |
+| MASSIVE pt intent | `intent` | `english` | 1487 | 20 | yes | 0.5575 | 0.0599 | 0.5934 | 0.0773 | 2.435 |
+| MASSIVE pt intent | `intent` | `multilingual` | 1487 | 20 | no | 0.5568 | 0.0599 | 0.7142 | 0.2877 | 1.000 |
+| MASSIVE pt intent | `intent` | `multilingual` | 1487 | 20 | yes | 0.5568 | 0.0599 | 0.6078 | 0.0821 | 2.692 |
+| MASSIVE pt intent | `intent` | `typed-decisions` | 1487 | 20 | no | 0.5407 | 0.0599 | 0.8610 | 0.4211 | 0.101 |
+| MASSIVE pt intent | `intent` | `typed-decisions` | 1487 | 20 | yes | 0.5407 | 0.0599 | 0.5818 | 0.0639 | 1.092 |
+| SIB-200 topic | `topic` | `english` | 502 | 7 | no | 0.6454 | 0.2450 | 0.5648 | 0.2081 | 1.000 |
+| SIB-200 topic | `topic` | `english` | 502 | 7 | yes | 0.6454 | 0.2450 | 0.5068 | 0.0631 | 2.148 |
+| SIB-200 topic | `topic` | `multilingual` | 502 | 7 | no | 0.7550 | 0.2450 | 0.3885 | 0.1560 | 1.000 |
+| SIB-200 topic | `topic` | `multilingual` | 502 | 7 | yes | 0.7550 | 0.2450 | 0.3520 | 0.0463 | 1.848 |
+| SIB-200 topic | `topic` | `typed-decisions` | 502 | 7 | no | 0.6673 | 0.2450 | 0.4947 | 0.1080 | 1.000 |
+| SIB-200 topic | `topic` | `typed-decisions` | 502 | 7 | yes | 0.6673 | 0.2450 | 0.4906 | 0.0729 | 1.207 |
+| SMS spam | `is_spam` | `english` | 1000 | 2 | no | 0.6440 | 0.6190 | 0.5318 | 0.2273 | 1.983 |
+| SMS spam | `is_spam` | `english` | 1000 | 2 | yes | 0.6440 | 0.6190 | 0.4120 | 0.0316 | 15.180 |
+| SMS spam | `is_spam` | `multilingual` | 1000 | 2 | no | 0.5990 | 0.6190 | 0.7235 | 0.3596 | 1.000 |
+| SMS spam | `is_spam` | `multilingual` | 1000 | 2 | yes | 0.5990 | 0.6190 | 0.4022 | 0.1179 | 15.960 |
+| SMS spam | `is_spam` | `typed-decisions` | 1000 | 2 | no | 0.8630 | 0.6190 | 0.2552 | 0.1446 | 1.983 |
+| SMS spam | `is_spam` | `typed-decisions` | 1000 | 2 | yes | 0.8630 | 0.6190 | 0.2112 | 0.0329 | 0.829 |
+| B2W reviews | `sentiment` | `english` | 1000 | 3 | no | 0.6190 | 0.3410 | 0.5786 | 0.2322 | 1.760 |
+| B2W reviews | `sentiment` | `english` | 1000 | 3 | yes | 0.6190 | 0.3410 | 0.4858 | 0.0725 | 4.020 |
+| B2W reviews | `stars` | `english` | 1000 | 5 | no | 0.2760 | 0.3410 | 0.9353 | 0.3517 | 1.251 |
+| B2W reviews | `stars` | `english` | 1000 | 5 | yes | 0.2760 | 0.3410 | 0.7633 | 0.1203 | 5.855 |
+| B2W reviews | `sentiment` | `multilingual` | 1000 | 3 | no | 0.6800 | 0.3410 | 0.5336 | 0.2224 | 1.000 |
+| B2W reviews | `sentiment` | `multilingual` | 1000 | 3 | yes | 0.6800 | 0.3410 | 0.4406 | 0.0294 | 2.902 |
+| B2W reviews | `stars` | `multilingual` | 1000 | 5 | no | 0.2610 | 0.3410 | 1.1371 | 0.3987 | 1.000 |
+| B2W reviews | `stars` | `multilingual` | 1000 | 5 | yes | 0.2610 | 0.3410 | 0.8166 | 0.0098 | 20.000 |
+| B2W reviews | `sentiment` | `typed-decisions` | 1000 | 3 | no | 0.6480 | 0.3410 | 0.4654 | 0.0702 | 1.760 |
+| B2W reviews | `sentiment` | `typed-decisions` | 1000 | 3 | yes | 0.6480 | 0.3410 | 0.4605 | 0.0520 | 2.095 |
+| B2W reviews | `stars` | `typed-decisions` | 1000 | 5 | no | 0.3780 | 0.3410 | 0.7159 | 0.0979 | 1.251 |
+| B2W reviews | `stars` | `typed-decisions` | 1000 | 5 | yes | 0.3780 | 0.3410 | 0.7072 | 0.0435 | 1.672 |
+
+Conditions. `laya` 0.3.4, checkpoint revision `1c5edc17`, CUDA,
+bfloat16, `--batch 16`. Accuracy is argmax against the label; the
+majority class column is the largest label share of the same cases;
+Brier is the multiclass sum, 0 to 2; ECE has 15 bins over the
+probability of the predicted option. `as shipped` is the checkpoint's
+own temperature: `laya` and `laya-typed-decisions` carry fitted values
+(and 0.101 for a `choice` with 11 or more options), `laya-multilingual`
+carries 1.0 for every question type, so its shipped row is the raw
+model.
+
+The sets, all public:
+
+| set | source | licence | cases used | how they were taken | labels |
+| --- | --- | --- | --- | --- | --- |
+| MASSIVE pt intent | `mteb/amazon_massive_intent`, config `pt`, revision `940fd47a` | as the MASSIVE corpus ships it (CC BY 4.0) | 2,974, the whole test split | every case, no sampling | 59 intents, 20 options per case |
+| SIB-200 topic | `Davlan/sib200`, config `por_Latn`, revision from the hub on 2026-09-21 | CC BY-SA 4.0 | 1,004, every row of the three splits | all rows, shuffled with seed 0 | 7 topics |
+| SMS spam | `dbarbedillo/SMS_Spam_Multilingual_Collection_Dataset`, column `text_pt` | GPL | 2,000 of 5,572 | seed 0, stratified by label | ham, spam |
+| B2W reviews | `americanas-tech/b2w-reviews01` at commit `4639429e`, the source the Hugging Face card points at | CC BY 4.0 | 2,000 of 129,098 | seed 0, stratified by polarity | 3 polarities and 5 star levels |
+
+Two things about the data, so no row is read as more than it is. The
+Portuguese of the SMS spam set is a machine translation of the English
+SMS Spam Collection, not text a Portuguese speaker wrote. The B2W
+`stars` question is the same review as its `sentiment` question, asked
+as a 5-level `score`; the two rows are not independent.
+
+The config name for Portuguese in `mteb/amazon_massive_intent` is `pt`,
+not `pt-PT`. MASSIVE's own locale for it is `pt-PT`.
+
+The fitted temperature for `stars` on `laya-multilingual` is 20.000,
+the top of the search range, so the fit wanted a flatter distribution
+than the search allowed. Its ECE of 0.0098 is the value at the bound,
+not a converged fit.
+
+## `laya-loop-gate`
+
+The test needs the session log of a loop occurrence. It searched the
+repository and `~/.local/share/choose-a-local-llm/evidence/`, which is
+the whole search area the runbook names.
+
+| # | occurrence (`loop-signatures.md`) | session log found | where it was searched |
+| --- | --- | --- | --- |
+| 1 | `.taprc` tool call, 85 repeats | no | repo, evidence archive |
+| 2 | `gh auth login` prompt, 8 repeats | no | repo, evidence archive |
+| 3 | eslint-plugin thinking loop | no | repo, evidence archive |
+| 4 | `enableColor` catchphrase | no | repo, evidence archive |
+| 5 | same catchphrase, guided v3.0 | no | repo, evidence archive |
+| 6 | `DSML` syntax leak in thinking | no | repo, evidence archive |
+| 7 | newline flood, three floods | no | repo, evidence archive |
+| 8 | "Wait, I will do glob first" text cycle | no | repo, evidence archive |
+| 9 | `ls -F_r` / `ls -R_r`, 100 repeats | no | repo, evidence archive |
+| 10 | `ls -F_r`, 72 repeats | no | repo, evidence archive |
+| 11 | `bash {"command": 4}`, 37 repeats | no | repo, evidence archive |
+| 12 | path typo `ls`, many repeats | no | repo, evidence archive |
+| 13 | not a loop, kept as a caveat | no | repo, evidence archive |
+
+Zero of thirteen found, so the test closes with no gate measurement.
+
+What is in the two places, and why none of it is a session log:
+
+- The evidence archive starts at `run17` and holds 242 server and
+  `benchy` logs and four JSON files. It has no session or events log of
+  any kind. The occurrences are older than `run17`, which
+  `loop-signatures.md` says itself.
+- `benchmarks/mendel/results.json` and `results-guided.json` hold the
+  scoring records of 47 runs: model, serving, scores, defects,
+  telemetry. The `.taprc` and `enableColor` strings are in the defect
+  texts, not in a transcript. There are no turns in these files.
+- `tests/fixtures/` holds nine real but trimmed excerpts, 2 to 120
+  lines each, copied on 2026-09-05. They are the test data of
+  `loop-check.py`, not the sessions.
+- `hardware/kamaji/research/run4/results/corpus-mendel-js.txt` is a
+  JavaScript source corpus, not turns.
+
+For a later run: the gate needs turn-level text. Nothing in the two
+places carries it today, so the test can only run after a Mendel run
+archives its `<slug>-events.jsonl` or its session log.

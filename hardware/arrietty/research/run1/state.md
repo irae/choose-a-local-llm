@@ -172,3 +172,39 @@ permission.
 
 The run goes on with `laya-portuguese`, which uses this repo's own
 runner and no external code.
+
+### `laya-portuguese` — closed
+
+The table is in `results.md`. 24 cells, three checkpoints, four sets,
+as shipped and fitted, no failure.
+
+The three found sets, written here before they were used, with the
+licence and the label list: SIB-200 `por_Latn` (CC BY-SA 4.0, 1,004
+rows, 7 topics), the multilingual SMS spam collection (GPL, `text_pt`
+column, 5,572 rows, ham and spam), and B2W-Reviews01 (CC BY 4.0,
+129,098 rows, 5 star levels). Sampling is seed 0 and stratified by
+label, at most 2,000 per set.
+
+Two deviations of the runner, both needed by this test and both
+generic:
+
+- **A case may carry its own questions.** MASSIVE gives every case its
+  own 20 options, so one questions file cannot serve the set. A case
+  with a `questions` key now overrides the file. Nothing else changes:
+  a data file without that key behaves as before.
+- **One fitted scalar per question, not one per file.** The B2W set
+  asks two questions of one review, a 3-option `choice` and a 5-level
+  `score`. One scalar over both would average two different scales.
+
+The runner also gained `--skip-over-context` for `laya-pass-gate`, and
+it now creates the directory of `--json-summary`. The missing directory
+is what made the first MASSIVE cell fail; nothing else was wrong with
+it, and the cell ran clean after the fix.
+
+### `laya-loop-gate` — closed with no measurement
+
+Zero of the thirteen occurrences in `loop-signatures.md` has a session
+log in the repository or under
+`~/.local/share/choose-a-local-llm/evidence/`. The runbook says: with
+fewer than three found, write that and close the test. The table of
+what was searched and what is in those two places is in `results.md`.
