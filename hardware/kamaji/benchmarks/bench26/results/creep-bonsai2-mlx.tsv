@@ -1,4 +1,0 @@
-LM Studio, chat endpoint, contexts=1 pause=60s
-start: wired 9288 MB, free 2283 MB, swap used 165 MB
-context	depth_tokens	decode_toks	wired_mb	free_mb	swap_delta_mb	compress_pages	decompress_pages	step_seconds
-A	4114	20.85	13062	9962	0	159901	35414	35
