@@ -16,7 +16,9 @@ happen, and the handing-over section at the end.
 | `bonsai2_27b_pq2_mac_c` | 262144 | `bonsai2-pq2-ladder-mac` |
 | `bonsai2_27b_ptq1_mac_c` | 262144 | `bonsai2-ptq1-ladder-mac` |
 | `bonsai2_pq2_mac_clean` | 40982 | `sweep-bonsai2-pq2-mac` |
-| `bonsai2_ptq1_mac_clean` | 163858 | `sweep-bonsai2-ptq1-mac` |
+| `bonsai2_ptq1_mac_clean` | 163858 |
+| `bonsai2_mlx_mac_clean` | 32818 | `sweep-bonsai2-mlx-mac` |
+| `bonsai2_mlx_mac_window` | 28672 | clean depth minus 5 percent (31177), rounded down to a multiple of 4096 | `sweep-bonsai2-ptq1-mac` |
 | `served_pack` | PTQ1_0, `bonsai2-27b-ptq1-mac` | no name arrived from the coordinator at the second sweep's close; the deeper clean depth (163858 against 40982) decides, by the runbook |
 
 The card's rows to read against, from `bench24`: PQ2_0 at q8_0 serves
@@ -105,11 +107,20 @@ No file inside the pack or inside an installed package was edited.
 
 **The MLX probe has no passing route.** `bonsai2-mlx-probe-mac` is stopped and `sweep-bonsai2-mlx-mac` did not run. The owner decides the next route. Untried routes: the publisher's own demo build (`PrismML-Eng/mlx` fork, branch `prism`, `mlx-lm` 0.31.2) and LM Studio's MLX engine. The pack stays on disk in `~/.local/share/choose-a-local-llm/mlx-bonsai2/pack`. Nothing runs on the Mac.
 
+### sweep-bonsai2-mlx-mac
+
+- Served by `tools/sweeps/bonsai2-mlx-server.py` (new tool, written for this run), not by a stock server: the publisher's pack loader (hash-checked against the demo manifest `scripts/bonsai2-runtime.sha256`) and `mlx_vlm.stream_generate` from `mlx-vlm` 0.6.3, in `venv-official` (`results/mlx-venv-official-freeze.txt`). No prompt cache, so every step reads its whole prompt again. The three probe prompts through the tool's server gave the same answers as the demo script (`results/mlx-probe-official-server.log`). Server log `results/server-mlx-official.log`.
+- Creep tool `e38c467`, `llama` backend on `/completion` with the server's own timings, pause 60 s, `STALL_S` 3600. Files `results/creep-bonsai2-mlx.tsv` (4K to 66K) and `results/creep-bonsai2-mlx-cross.tsv` (25K to 41K).
+- Swap started at 485 MB and grew to 1439 MB by the end of the first creep; the second creep started at 1439 MB. Both stopped on swap growth, at 65578 (+962 MB) and at 40982 (+1268 MB). Neither row is clean.
+- `bonsai2_mlx_mac_clean` 32818 (10.45 tok/s); the floor of 8 tok/s crosses at 41K, where the row (8.12) has swap growth. `bonsai2_mlx_mac_window` 28672. No agent row uses the window.
+- A first attempt through the creep tool's `lmstudio` backend read 8.74 tok/s at 4K. The backend counts streamed text chunks, and this server sends fewer chunks than tokens, so the figure undercounts. Discarded; its file was deleted.
+
 ### Trusted routes, tried on 2026-09-22 (owner's standing order)
 
 | route | source | versions | result |
 |---|---|---|---|
 | A. Apple `mlx-lm`, newest release | PyPI, Apple | `mlx-lm` 0.31.3, `mlx` 0.32.2 (`venv-mlxlm-latest`) | The release has no `prism_hadamard_qwen35` module (models list has `qwen3_5` and `qwen3_5_moe` only). Not run further. |
+| C. LM Studio 0.4.24+1, MLX engine 1.11.0 | LM Studio | `lms ls` lists the pack as `prism_hadamard_qwen35`; `lms load` fails at 56 percent with `ValueError: Unrecognized video processor ... Should have a video_processor_type key in its video_preprocessor_config.json of config.json, or one of the following model_type keys ...`. The pack has no `video_preprocessor_config.json`. Adding one would edit the pack, so not tried. My link in LM Studio's store and the service my load started were removed. |
 | B. The publisher's official route: `PrismML-Eng/Bonsai-demo` `scripts/mlx_generate_bonsai2.py` with the pack's `runtime/` loader | PrismML | demo commit `23da1365df0364ef9e98d1cd18db6b0c06295751`; pack `runtime/*.py` hashes equal the demo's `scripts/bonsai2-runtime.sha256`; `mlx` 0.32.0, `mlx-lm` 0.31.3, `mlx-vlm` 0.6.3, `transformers` 5.5.0, Python 3.14.7 (`venv-official`, `results/mlx-venv-official-freeze.txt`) | **Works.** Temperature 0, `-n` 256: `391`; a correct `reverse_string` function (cut at 256 tokens); "The capital of France is **Paris**." Log `results/mlx-probe-official.log`. Decode 21 to 27 tok/s at short depth; peak memory 9.3 GB. |
 
 Route B pins `mlx-vlm` 0.6.3 (PyPI) because the publisher's own `requirements.txt` and demo `setup.sh` name it. That is the publisher's choice; it is the only third-party package in the route. The publisher's `start_mlx_server.sh` says "No MLX server for Bonsai 2 yet" and refuses to start one; the official MLX path is one-shot generation. Stock `mlx_lm.server` and `mlx_vlm.server` return wrong output on this pack, by the publisher's note. So the sweep needs a server the publisher does not ship.
