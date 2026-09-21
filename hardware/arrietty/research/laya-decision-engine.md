@@ -1,6 +1,6 @@
 # Laya: a typed decision engine beside the local LLM
 
-Status: draft 2026-09-20, scheduled as the only item of research run 1.
+Status: planned 2026-09-20, scheduled as the only item of research run 1.
 Starts only after benchmark run 28 closes (owner, 2026-09-20). Needs
 hardware: yes, the RTX machine, about half a day; GPU memory under
 2 GB, so the limit is the rule of one job on the GPU, not the fit.

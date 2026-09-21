@@ -1,7 +1,7 @@
 # Research run 1, task list
 
-Draft, 2026-09-20. Not ready to start: it waits for benchmark run 28
-to close. Items are one file each in `../`, named by mnemonic and never
+Ready to start when the owner says benchmark run 28 is closed,
+2026-09-20. The runbook is `AGENT.md`. Items are one file each in `../`, named by mnemonic and never
 numbered. **This list is the order.** The executor checks the items
 off here as it goes and writes results in `results.md`.
 
