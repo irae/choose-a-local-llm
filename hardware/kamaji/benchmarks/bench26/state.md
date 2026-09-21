@@ -95,6 +95,8 @@ Owner approved the deletion. No partial download existed. Removed from the Huggi
 
 ## Handing-over
 
+**Status, 2026-09-20: the run waits for an owner decision.** `bonsai2-mlx-probe-mac` stopped at its gate: the stock `mlx_lm.server` 0.31.3 cannot load the pack at revision `3f926b415992eaa2ae9dd7b573706494d6bbf787` (`model.safetensors` 8595477990 bytes), error `Model type prism_hadamard_qwen35 not supported`. The owner chooses between dropping the MLX blocks and a loader route the owner names. The coordinator holds the run. Nothing runs on the Mac for this run.
+
 Paused by the owner on 2026-09-19 and resumed 2026-09-20 (see `bonsai2-mlx-probe-mac`). Pause note: after `bonsai2-smoke-xhigh-mac` and before `bonsai2-mendel-blind-xhigh-mac` (`simulator(mendel-blind) bonsai-27b-ptq1 ptq1/xhigh`). The owner needs the Mac for other work. That block has no result, no worktree, no branch and no run file. It starts again from scratch when the owner says so.
 
 - **Closed:** `machine-setup`, both ladder blocks, both sweep blocks, `bonsai2-calibrate-think-mac`, `bonsai2-budget-xhigh-mac`, `bonsai2-forced-rerun-mac`, `bonsai2-smoke-xhigh-mac` (pass).
