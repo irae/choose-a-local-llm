@@ -127,3 +127,15 @@ to the calibrate command above, verify, start the watcher
 (`RUNWATCH_SILENCE` generous, single-slot server), then the full 164 run
 at `EVALPLUS_MAX_NEW_TOKENS=9536`. No block is mid-run; nothing to
 resume mid-block.
+
+## Resume (owner, 2026-09-21)
+
+Coordinator message and owner go-ahead. Merged `origin/master` (`d203bc0`) into `run22`. Coordinator session is now `local-llm coordinator sept-20`. The runbook "Fast mode" replaces the old Pause note. Preflight all `ok`, wired limit 25000, start numbers wired 2198 MB, free 17949 MB, swap used 1486 MB.
+
+### `bonsai-fork-fast-think` — running
+
+Served: fork binary, Q2_g64 file, bias file, `-c 32768`, q4_0/q4_0 KV, no drafter, alias `bonsai-prism`, `--reasoning-budget 8192 --reasoning-budget-message "$BUDGET_MSG"`. Wired after load: about 2201 MB plus model, read at 140830 pages at load start. Probe: reasoning field present, content 697 characters, `finish_reason: stop`, no server error. The probe converged early, so no budget message shows in it. No splice source. Watcher at `RUNWATCH_SILENCE=2700`. Codegen started 16:10 UTC, `EVALPLUS_MAX_NEW_TOKENS=16384`, 164 to generate.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-fast-think/`.
+Deviation: none.

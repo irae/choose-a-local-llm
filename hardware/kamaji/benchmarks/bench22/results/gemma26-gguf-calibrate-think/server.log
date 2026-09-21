@@ -601,3 +601,4 @@
 25.44.735.204 I slot print_timing: id  0 | task 24656 |    graphs reused =      34284
 25.44.735.206 I slot print_timing: id  0 | task 24656 | draft acceptance = 0.98854 (19922 accepted / 20153 generated), mean len =  2.98
 25.44.735.237 I slot      release: id  0 | task 24656 | stop processing: n_tokens = 30178, truncated = 0
+26.12.097.470 I srv    operator(): operator(): cleaning up before exit...
