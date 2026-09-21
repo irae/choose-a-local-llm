@@ -80,4 +80,6 @@ Summary: forced-pass 3, forced-fail-late 0, forced-fail-loop 4, forced-fail-wron
 
 ## bonsai2-mlx-probe-mac
 
-Pack `prism-ml/Ternary-Bonsai-2-27B-mlx-2bit` at `3f926b4`. The stock `mlx_lm.server` 0.31.3 does not load it (`Model type prism_hadamard_qwen35 not supported`), and the pack's own runtime refuses it (`Unsupported packed model schema`). A third-party `mlx-vlm` build loaded it, and the owner withdrew that route as not trusted; its numbers are deleted. Gate: no passing route. The sweep block did not run. Owner decision open.
+Pack `prism-ml/Ternary-Bonsai-2-27B-mlx-2bit` at `3f926b4`. The stock `mlx_lm.server` 0.31.3 does not load it (`Model type prism_hadamard_qwen35 not supported`), the pack's `artifact.py` refuses it (`Unsupported packed model schema`), and Apple's newest `mlx-lm` release has no module for the type. A third-party `mlx-vlm` `main` build loaded it and the owner withdrew that route as not trusted; its numbers are deleted.
+
+**Gate: pass, by the publisher's own route, not by a stock server.** `PrismML-Eng/Bonsai-demo` `scripts/mlx_generate_bonsai2.py` (commit `23da136`) with the pack's `runtime/` loader (hashes match the demo manifest), `mlx` 0.32.0, `mlx-vlm` 0.6.3, `transformers` 5.5.0. Temperature 0, 256 tokens: `391`; a correct `reverse_string` function; "The capital of France is **Paris**." Log `results/mlx-probe-official.log`. The publisher ships no MLX server for this pack.

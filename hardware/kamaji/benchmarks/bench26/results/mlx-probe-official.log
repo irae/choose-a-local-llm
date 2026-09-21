@@ -1,0 +1,69 @@
+=== PROMPT: What is 17*23? Answer with the number only.
+[2mloaded pack in 2s[0m
+
+[2m2.1s[0m
+[2mPrompt: 27 tokens @ 13.56 t/s[0m
+[2mGeneration: 4 tokens @ 27.12 t/s[0m
+[2mPeak memory: 9.31 GB[0m
+[36mWhat is 17*23? Answer with the number only.[0m
+
+391
+=== PROMPT: Write a Python function that reverses a string.
+[2mloaded pack in 1s[0m
+
+[2m12.6s[0m
+[2mPrompt: 22 tokens @ 57.72 t/s[0m
+[2mGeneration: 256 tokens @ 21.15 t/s[0m
+[2mPeak memory: 9.27 GB[0m
+[36mWrite a Python function that reverses a string.[0m
+
+```python
+def reverse_string(s: str) -> str:
+    """
+    Reverse a string.
+    
+    Args:
+        s: The input string to reverse.
+        
+    Returns:
+        The reversed string.
+    """
+    return s[::-1]
+```
+
+### How It Works
+
+The slice notation `s[::-1]` is the most Pythonic way to reverse a string:
+
+| Slice Part | Meaning |
+|------------|---------|
+| `start`    | *(omitted)* → defaults to the end of the string |
+| `stop`     | *(omitted)* → defaults to the beginning of the string |
+| `step`     | `-1` → move backwards one character at a time |
+
+### Example Usage
+
+```python
+print(reverse_string("hello"))   # "olleh"
+print(reverse_string("Python"))  # "nohtyP"
+print(reverse_string(""))        # ""
+print(reverse_string("a"))       # "a"
+```
+
+### Alternative Approaches
+
+If you want to see other ways to reverse a string:
+
+```python
+# Using join and reversed()
+def reverse_string_v2(s: str) -> str:
+=== PROMPT: Name the capital of France.
+[2mloaded pack in 1s[0m
+
+[2m0.9s[0m
+[2mPrompt: 18 tokens @ 36.69 t/s[0m
+[2mGeneration: 9 tokens @ 22.48 t/s[0m
+[2mPeak memory: 9.24 GB[0m
+[36mName the capital of France.[0m
+
+The capital of France is **Paris**.

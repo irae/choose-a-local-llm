@@ -105,6 +105,15 @@ No file inside the pack or inside an installed package was edited.
 
 **The MLX probe has no passing route.** `bonsai2-mlx-probe-mac` is stopped and `sweep-bonsai2-mlx-mac` did not run. The owner decides the next route. Untried routes: the publisher's own demo build (`PrismML-Eng/mlx` fork, branch `prism`, `mlx-lm` 0.31.2) and LM Studio's MLX engine. The pack stays on disk in `~/.local/share/choose-a-local-llm/mlx-bonsai2/pack`. Nothing runs on the Mac.
 
+### Trusted routes, tried on 2026-09-22 (owner's standing order)
+
+| route | source | versions | result |
+|---|---|---|---|
+| A. Apple `mlx-lm`, newest release | PyPI, Apple | `mlx-lm` 0.31.3, `mlx` 0.32.2 (`venv-mlxlm-latest`) | The release has no `prism_hadamard_qwen35` module (models list has `qwen3_5` and `qwen3_5_moe` only). Not run further. |
+| B. The publisher's official route: `PrismML-Eng/Bonsai-demo` `scripts/mlx_generate_bonsai2.py` with the pack's `runtime/` loader | PrismML | demo commit `23da1365df0364ef9e98d1cd18db6b0c06295751`; pack `runtime/*.py` hashes equal the demo's `scripts/bonsai2-runtime.sha256`; `mlx` 0.32.0, `mlx-lm` 0.31.3, `mlx-vlm` 0.6.3, `transformers` 5.5.0, Python 3.14.7 (`venv-official`, `results/mlx-venv-official-freeze.txt`) | **Works.** Temperature 0, `-n` 256: `391`; a correct `reverse_string` function (cut at 256 tokens); "The capital of France is **Paris**." Log `results/mlx-probe-official.log`. Decode 21 to 27 tok/s at short depth; peak memory 9.3 GB. |
+
+Route B pins `mlx-vlm` 0.6.3 (PyPI) because the publisher's own `requirements.txt` and demo `setup.sh` name it. That is the publisher's choice; it is the only third-party package in the route. The publisher's `start_mlx_server.sh` says "No MLX server for Bonsai 2 yet" and refuses to start one; the official MLX path is one-shot generation. Stock `mlx_lm.server` and `mlx_vlm.server` return wrong output on this pack, by the publisher's note. So the sweep needs a server the publisher does not ship.
+
 ## Runner mistakes, logged at the owner's request
 
 - **2026-09-19, blind row.** The smoke ended at 15:18Z and I started the blind row at 15:35Z, because a wakeup fell between them. The GPU sat idle for 17 minutes. A block close must start the next block in the same turn.
