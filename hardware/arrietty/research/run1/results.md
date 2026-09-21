@@ -361,3 +361,82 @@ question count or which checkpoint it belongs to, so it sits beside
 every row of the two checkpoints they name and is not a cell-by-cell
 comparison.
 
+
+## `laya-claims`
+
+The authors' own benchmark, run from their notebook as a script:
+`results/laya-claims/notebook-as-script.py`, generated from
+`research/scripts/laya_benchmark_colab.ipynb` of
+`https://github.com/NandhaKishorM/laya` at commit
+`42626c348753fbb17572a813127df2278a1ec527`. Three changes, all named in
+the file header: the `pip` cell is dropped and its three imports kept,
+the Colab download cell is dropped, and the `%%writefile` magic becomes
+a file write. Nothing else was touched; the notebook already asks for
+`cuda` and downloads its own checkpoints. It covers the two checkpoints
+the authors benchmark, `laya` and `laya-multilingual`. Their full
+output is `results/laya-claims/laya_benchmark_results.json` and the run
+log is `notebook-run.log`.
+
+| set | checkpoint | our score | published | difference | our ECE | our ms per question | questions |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| typed-decisions, 2,000 decisions | `laya` | 0.3615 | 0.361 | +0.0005 | 0.1748 | 9.93 | 2000 |
+| typed-decisions, 2,000 decisions | `laya-multilingual` | 0.3525 | 0.342 | +0.0105 | 0.3149 | 4.74 | 2000 |
+| MASSIVE intent, English | `laya` | 0.7833 | 0.783 | +0.0003 | — | 6.20 | 300 |
+| MASSIVE intent, English | `laya-multilingual` | 0.6567 | 0.657 | -0.0003 | — | 3.07 | 300 |
+| MASSIVE intent, not English | `laya` | 0.3059 | 0.306 | -0.0001 | — | 6.72 | 3900 |
+| MASSIVE intent, not English | `laya-multilingual` | 0.4536 | 0.451 | +0.0026 | — | 3.12 | 3900 |
+| MASSIVE scenario, English | `laya` | 0.6033 | not published | — | — | 3.43 | 300 |
+| MASSIVE scenario, English | `laya-multilingual` | 0.5600 | not published | — | — | 1.50 | 300 |
+| MASSIVE scenario, not English | `laya` | 0.2785 | not published | — | — | 3.96 | 3900 |
+| MASSIVE scenario, not English | `laya-multilingual` | 0.4379 | not published | — | — | 1.53 | 3900 |
+| XNLI, English | `laya` | 0.8600 | 0.860 | +0.0000 | — | 3.33 | 300 |
+| XNLI, English | `laya-multilingual` | 0.8433 | 0.843 | +0.0003 | — | 1.43 | 300 |
+| XNLI, not English | `laya` | 0.5217 | 0.521 | +0.0007 | — | 5.12 | 4200 |
+| XNLI, not English | `laya-multilingual` | 0.7312 | 0.731 | +0.0002 | — | 1.60 | 4200 |
+| English suites, macro | `laya` | 0.6840 | 0.684 | +0.0000 | 0.1970 | 3.68 | 2516 |
+| English suites, macro | `laya-multilingual` | 0.6202 | 0.619 | +0.0012 | 0.2854 | 1.68 | 2516 |
+| MASSIVE intent, Portuguese | `laya` | 0.4567 | 0.470 | -0.0133 | 0.3444 | 6.43 | 300 |
+| MASSIVE intent, Portuguese | `laya-multilingual` | 0.5000 | 0.450 | +0.0500 | 0.3328 | 3.10 | 300 |
+| AG News | `laya` | 0.9500 | 0.953 | -0.0030 | 0.0381 | 3.58 | 600 |
+| AG News | `laya-multilingual` | 0.9367 | not published | — | 0.0381 | 1.62 | 600 |
+| DAIR Emotion | `laya` | 0.5733 | 0.600 | -0.0267 | 0.3233 | 1.90 | 600 |
+| DAIR Emotion | `laya-multilingual` | 0.5150 | not published | — | 0.3512 | 0.80 | 600 |
+| SST-5 | `laya` | 0.3683 | 0.372 | -0.0037 | 0.3038 | 2.58 | 600 |
+| SST-5 | `laya-multilingual` | 0.2833 | not published | — | 0.5250 | 1.15 | 600 |
+
+| calibration | checkpoint | our ECE | published | difference |
+| --- | --- | --- | --- | --- |
+| as shipped | `laya` | 0.4653 | 0.466 | -0.0007 |
+| as shipped | `laya-multilingual` | 0.3131 | 0.314 | -0.0009 |
+| after the authors' fit | `laya` | 0.0833 | 0.081 | +0.0023 |
+| after the authors' fit | `laya-multilingual` | 0.1085 | 0.106 | +0.0025 |
+
+| checkpoint | questions per call | our p50 ms | authors' T4 p50 ms | our ms per question |
+| --- | --- | --- | --- | --- |
+| `laya` | 1 | 12.8 | 39.5 | 12.80 |
+| `laya` | 5 | 33.8 | not published | 6.76 |
+| `laya` | 10 | 62.4 | 158.6 | 6.24 |
+| `laya` | 50 | 348.5 | 771.3 | 6.97 |
+| `laya-multilingual` | 1 | 9.3 | 32.8 | 9.26 |
+| `laya-multilingual` | 5 | 15.1 | not published | 3.02 |
+| `laya-multilingual` | 10 | 26.2 | 72.3 | 2.62 |
+| `laya-multilingual` | 50 | 155.0 | 337.4 | 3.10 |
+
+Conditions. RTX 5060 Ti 16 GB, driver 610.57.04, bfloat16, `laya` 0.3.4,
+checkpoints `convaiinnovations/laya` `1c5edc17` and
+`convaiinnovations/laya-multilingual` `052592a1` (the notebook takes the
+standalone repositories, not the bundle), torch 2.14.0+cu130,
+transformers 5.17.0, datasets 5.0.1. Seed 13, 300 cases per language,
+20 options per MASSIVE question, as the notebook sets them. The whole
+run took 294 seconds. "Published" is `BENCHMARKS.md` of the same commit
+for the calibration, latency and English rows, and the `Router`
+docstring of `laya/router.py` for the English and not-English splits.
+"Our ms per question" is measured on this card, so it is not comparable
+with a published figure measured on a T4; the latency table below the
+scores holds that comparison on its own.
+
+The authors' typed-decisions set is public, as
+`LocalLLaMA/typed-decisions`: 400 cases and 2,000 questions. Their
+0.766 headline belongs to the `laya-typed-decisions` checkpoint, which
+their notebook does not load, so this table carries only the two base
+checkpoints and their published 0.361 and 0.342.
