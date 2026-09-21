@@ -440,3 +440,107 @@ The authors' typed-decisions set is public, as
 0.766 headline belongs to the `laya-typed-decisions` checkpoint, which
 their notebook does not load, so this table carries only the two base
 checkpoints and their published 0.361 and 0.342.
+
+## GPU and VRAM during every test
+
+Two instruments, both reading the card once a second while a test runs,
+not after it:
+
+- The runner samples the card itself and tags every reading with the
+  phase it belongs to: `load`, `prepare`, `warmup`, `measure`. The
+  tables below read the `measure` phase only, so no model-load spike
+  counts as test load. `--gpu-log` writes the readings to
+  `results/gpu/<test>.csv`, and every summary JSON carries the same
+  figures under `gpu` and `torch_memory`.
+- `hardware/arrietty/research/laya-decision-engine/gpu-sample.sh` does
+  the same from outside for a test this run may not edit, which is the
+  authors' script.
+
+The VRAM column is the whole card, so it holds the desktop's own
+954 MB. "Max over idle" takes that away and is the test's own use.
+The card is an RTX 5060 Ti 16 GB, 16,311 MB usable, 180 W cap.
+
+### The authors' benchmark, `laya-claims`
+
+| test | samples | seconds | VRAM MB min | p50 | p95 | max | max over idle | GPU util % p50 | p95 | max | mem util % p50 | max | power W p50 | max | clock MHz p50 | max | temp C max |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `laya-claims` | 287 | 294 | 954 | 4387 | 5585 | 5585 | 4631 | 97 | 100 | 100 | 75 | 90 | 143.3 | 168.0 | 2745 | 2805 | 63 |
+
+One run, both checkpoints, every suite, 294 seconds end to end.
+
+### `laya-cost`, CUDA
+
+| test | samples | seconds | VRAM MB min | p50 | p95 | max | max over idle | GPU util % p50 | p95 | max | mem util % p50 | max | power W p50 | max | clock MHz p50 | max | temp C max |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `cost-cuda-english-en-q10` | 15 | 14 | 3779 | 3779 | 3779 | 3779 | 2825 | 98 | 99 | 99 | 55 | 55 | 169.9 | 171.2 | 2730 | 2745 | 61 |
+| `cost-cuda-english-en-q1` | 3 | 2 | 3667 | 3667 | 3667 | 3667 | 2713 | 93 | 93 | 93 | 61 | 61 | 130.2 | 131.1 | 2752 | 2752 | 55 |
+| `cost-cuda-english-en-q50` | 87 | 88 | 4203 | 4203 | 4203 | 4203 | 3249 | 100 | 100 | 100 | 80 | 81 | 166.1 | 166.6 | 2745 | 2752 | 61 |
+| `cost-cuda-english-en-q5` | 8 | 7 | 3719 | 3719 | 3719 | 3719 | 2765 | 97 | 98 | 98 | 48 | 48 | 169.1 | 170.1 | 2737 | 2752 | 62 |
+| `cost-cuda-english-pt-q10` | 18 | 17 | 3771 | 3771 | 3771 | 3771 | 2817 | 98 | 99 | 99 | 57 | 57 | 168.9 | 169.7 | 2737 | 2745 | 61 |
+| `cost-cuda-english-pt-q1` | 3 | 2 | 3681 | 3681 | 3681 | 3681 | 2727 | 94 | 94 | 94 | 59 | 59 | 134.9 | 135.1 | 2745 | 2752 | 54 |
+| `cost-cuda-english-pt-q50` | 102 | 103 | 4299 | 4299 | 4299 | 4299 | 3345 | 100 | 100 | 100 | 81 | 82 | 166.3 | 167.0 | 2745 | 2760 | 61 |
+| `cost-cuda-english-pt-q5` | 9 | 8 | 3723 | 3723 | 3723 | 3723 | 2769 | 98 | 98 | 98 | 51 | 51 | 170.9 | 171.4 | 2745 | 2752 | 60 |
+| `cost-cuda-multilingual-en-q10` | 6 | 5 | 2757 | 2757 | 2757 | 2757 | 1803 | 96 | 96 | 96 | 56 | 56 | 171.2 | 171.8 | 2745 | 2745 | 59 |
+| `cost-cuda-multilingual-en-q1` | 2 | 1 | 2675 | 2675 | 2675 | 2675 | 1721 | 65 | 65 | 65 | 32 | 32 | 92.8 | 92.8 | 2760 | 2760 | 49 |
+| `cost-cuda-multilingual-en-q50` | 39 | 39 | 3279 | 3279 | 3279 | 3279 | 2325 | 100 | 100 | 100 | 83 | 83 | 156.3 | 157.2 | 2752 | 2752 | 60 |
+| `cost-cuda-multilingual-en-q5` | 3 | 2 | 2709 | 2709 | 2709 | 2709 | 1755 | 94 | 94 | 94 | 48 | 48 | 159.7 | 159.9 | 2745 | 2745 | 57 |
+| `cost-cuda-multilingual-pt-q10` | 6 | 5 | 2721 | 2721 | 2721 | 2721 | 1767 | 96 | 96 | 96 | 57 | 57 | 172.1 | 172.5 | 2745 | 2752 | 59 |
+| `cost-cuda-multilingual-pt-q1` | 2 | 1 | 2675 | 2675 | 2675 | 2675 | 1721 | 62 | 62 | 62 | 30 | 30 | 89.4 | 89.4 | 2760 | 2760 | 49 |
+| `cost-cuda-multilingual-pt-q50` | 36 | 36 | 3231 | 3231 | 3231 | 3231 | 2277 | 97 | 100 | 100 | 80 | 83 | 155.8 | 157.2 | 2752 | 2752 | 60 |
+| `cost-cuda-multilingual-pt-q5` | 3 | 2 | 2689 | 2689 | 2689 | 2689 | 1735 | 93 | 94 | 94 | 48 | 48 | 158.5 | 159.1 | 2745 | 2745 | 57 |
+| `cost-cuda-typed-decisions-en-q10` | 15 | 14 | 3779 | 3779 | 3779 | 3779 | 2825 | 99 | 99 | 99 | 55 | 55 | 169.7 | 170.9 | 2730 | 2745 | 61 |
+| `cost-cuda-typed-decisions-en-q1` | 2 | 1 | 3667 | 3667 | 3667 | 3667 | 2713 | 93 | 93 | 93 | 62 | 62 | 132.0 | 132.0 | 2752 | 2752 | 54 |
+| `cost-cuda-typed-decisions-en-q50` | 87 | 88 | 4203 | 4203 | 4203 | 4203 | 3249 | 100 | 100 | 100 | 80 | 81 | 166.3 | 166.8 | 2737 | 2752 | 61 |
+| `cost-cuda-typed-decisions-en-q5` | 8 | 7 | 3719 | 3719 | 3719 | 3719 | 2765 | 97 | 98 | 98 | 48 | 48 | 168.6 | 169.2 | 2745 | 2745 | 60 |
+| `cost-cuda-typed-decisions-pt-q10` | 18 | 17 | 3771 | 3771 | 3771 | 3771 | 2817 | 98 | 99 | 99 | 57 | 57 | 169.3 | 170.1 | 2730 | 2745 | 61 |
+| `cost-cuda-typed-decisions-pt-q1` | 3 | 2 | 3681 | 3681 | 3681 | 3681 | 2727 | 94 | 94 | 94 | 59 | 59 | 135.2 | 135.5 | 2745 | 2767 | 54 |
+| `cost-cuda-typed-decisions-pt-q50` | 102 | 103 | 4299 | 4299 | 4299 | 4299 | 3345 | 100 | 100 | 100 | 81 | 82 | 166.3 | 167.0 | 2745 | 2752 | 61 |
+| `cost-cuda-typed-decisions-pt-q5` | 9 | 8 | 3723 | 3723 | 3723 | 3723 | 2769 | 97 | 98 | 98 | 50 | 51 | 170.4 | 171.2 | 2745 | 2745 | 60 |
+
+### `laya-portuguese`
+
+| test | samples | seconds | VRAM MB min | p50 | p95 | max | max over idle | GPU util % p50 | p95 | max | mem util % p50 | max | power W p50 | max | clock MHz p50 | max | temp C max |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `portuguese-b2w-sentiment-english` | 25 | 25 | 4087 | 4691 | 4691 | 4691 | 3737 | 98 | 100 | 100 | 65 | 72 | 161.8 | 164.0 | 2745 | 2752 | 61 |
+| `portuguese-b2w-sentiment-multilingual` | 9 | 8 | 2981 | 3567 | 3567 | 3567 | 2613 | 97 | 100 | 100 | 69 | 73 | 160.0 | 164.7 | 2752 | 2760 | 60 |
+| `portuguese-b2w-sentiment-typed-decisions` | 25 | 25 | 4087 | 4691 | 4691 | 4691 | 3737 | 98 | 100 | 100 | 65 | 79 | 162.1 | 164.1 | 2745 | 2752 | 61 |
+| `portuguese-massive-pt-english` | 19 | 18 | 3845 | 3959 | 4009 | 4009 | 3055 | 98 | 100 | 100 | 58 | 60 | 163.9 | 167.6 | 2745 | 2745 | 59 |
+| `portuguese-massive-pt-multilingual` | 7 | 6 | 2853 | 2853 | 2909 | 2909 | 1955 | 97 | 97 | 97 | 60 | 61 | 169.5 | 172.2 | 2752 | 2752 | 59 |
+| `portuguese-massive-pt-typed-decisions` | 21 | 20 | 3841 | 3927 | 3981 | 3981 | 3027 | 98 | 100 | 100 | 58 | 61 | 166.6 | 167.8 | 2737 | 2752 | 61 |
+| `portuguese-sib200-topic-english` | 3 | 2 | 3743 | 3823 | 3823 | 3823 | 2869 | 97 | 98 | 98 | 53 | 55 | 170.3 | 170.6 | 2745 | 2745 | 58 |
+| `portuguese-sib200-topic-multilingual` | 2 | 1 | 2741 | 2741 | 2741 | 2741 | 1787 | 94 | 94 | 94 | 53 | 53 | 165.2 | 165.2 | 2745 | 2745 | 56 |
+| `portuguese-sib200-topic-typed-decisions` | 4 | 3 | 3743 | 3823 | 3823 | 3823 | 2869 | 97 | 97 | 97 | 54 | 54 | 170.1 | 170.2 | 2745 | 2745 | 59 |
+| `portuguese-sms-spam-english` | 6 | 5 | 3829 | 3869 | 3869 | 3869 | 2915 | 97 | 97 | 97 | 54 | 54 | 172.0 | 172.6 | 2737 | 2745 | 61 |
+| `portuguese-sms-spam-multilingual` | 3 | 2 | 2721 | 2807 | 2809 | 2809 | 1855 | 94 | 94 | 94 | 54 | 55 | 164.6 | 167.5 | 2745 | 2745 | 58 |
+| `portuguese-sms-spam-typed-decisions` | 6 | 5 | 3829 | 3869 | 3869 | 3869 | 2915 | 97 | 97 | 97 | 54 | 54 | 171.0 | 173.6 | 2737 | 2752 | 60 |
+
+### `laya-pass-gate`, the nine rows of each checkpoint together
+
+| test | samples | seconds | VRAM MB min | p50 | p95 | max | max over idle | GPU util % p50 | p95 | max | mem util % p50 | max | power W p50 | max | clock MHz p50 | max | temp C max |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `passgate-all-rows-english` | 14 | 408 | 3799 | 3847 | 3899 | 3899 | 2945 | 98 | 100 | 100 | 57 | 59 | 147.2 | 163.7 | 2745 | 2782 | 59 |
+| `passgate-all-rows-multilingual` | 18 | 408 | 2947 | 3107 | 3279 | 3279 | 2325 | 98 | 99 | 99 | 61 | 64 | 153.7 | 157.0 | 2752 | 2760 | 58 |
+| `passgate-all-rows-typed-decisions` | 33 | 409 | 3799 | 4095 | 4249 | 4341 | 3387 | 98 | 100 | 100 | 59 | 62 | 157.9 | 161.5 | 2752 | 2790 | 60 |
+
+The nine rows of one checkpoint are read together here, so the seconds
+column of these three rows is the span from the first reading to the
+last, not the time on the card. Every row has its own file under
+`results/gpu/`.
+
+Reading the tables. VRAM does not move inside a measured window: min,
+p50 and max are the same figure in nearly every cell, because the
+working set is fixed once the weights and the first batch are placed.
+What moves with the work is the question count: `laya` on the English
+state holds 2,713 MB of its own at one question per call and 3,249 MB
+at fifty, and `laya-multilingual` holds 1,721 MB and 2,325 MB for the
+same pair. GPU utilisation is 93 to 100 percent in every cell that
+lasts more than a second or two; the one low reading, 65 percent for
+`laya-multilingual` at one question per call, is a call too short to
+fill the card between samples. Power sits at 130 to 172 W of the 180 W
+cap, the clock holds 2,730 to 2,790 MHz with no thermal drop, and the
+peak temperature over the whole run is 63 °C.
+
+A run of the CPU cells shows nothing on the card: the GPU is hidden
+with `CUDA_VISIBLE_DEVICES=""`, so those cells hold no VRAM at all and
+the card stays at its 954 MB desktop baseline for their whole two and a
+half hours.

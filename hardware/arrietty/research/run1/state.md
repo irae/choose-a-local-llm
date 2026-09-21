@@ -309,3 +309,40 @@ runner's.
 **What the coordinator reads.** `results.md` holds one section per
 test, each with its table and its conditions. No verdict, no pick and
 no recommendation is written anywhere in this run.
+
+### `laya-claims` — closed, and every GPU figure recorded
+
+The permission was given at 06:14 and the test ran. The table is in
+`results.md`: our score beside the authors' published one for every set
+they publish, their calibration pair, and their latency pair.
+
+The first attempt of the script stopped at cell 8 on
+`NameError: transformers`. The dropped `pip` cell also imported `laya`,
+`transformers` and `datasets`, which later cells use. The three imports
+are back at the top of the script and the file header names them, which
+keeps the change inside "paths and device". The whole run then took 294
+seconds.
+
+The reproduction is close. Eleven of the twelve published rows land
+within 0.013 of the authors' figure, and eight of them within 0.003.
+The largest gap is DAIR Emotion at -0.0267. Portuguese MASSIVE intent
+is -0.0133 for `laya` and +0.05 for `laya-multilingual`, on 300 cases,
+which is one case in twenty.
+
+**GPU and VRAM, at the owner's request.** Every test of this run now
+carries a per-second record of the card while it runs, not a single
+peak:
+
+- The runner keeps every reading and tags it `load`, `prepare`,
+  `warmup` or `measure`, writes them to `--gpu-log`, and puts min, p50,
+  p95, max and mean per field into the summary JSON under `gpu`, with
+  torch's own allocated and reserved memory under `torch_memory`.
+- `gpu-sample.sh` does the same from outside for code this run may not
+  edit.
+- `gpu-table.py` turns either file into a table row.
+
+The CUDA cells of `laya-cost`, `laya-portuguese` and `laya-pass-gate`
+were run again to collect the series, 51 cells, no failure. The
+`laya-portuguese` and `laya-pass-gate` re-runs cover the shipped
+temperature only: a fitted run does the same forward passes and would
+add nothing to a GPU record. The scores did not change.
