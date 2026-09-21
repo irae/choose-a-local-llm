@@ -60,6 +60,7 @@ export default defineConfig({
           { text: 'Memory ceiling', link: '/methodology/memory-ceiling' },
           { text: 'Wired limit', link: '/methodology/wired-limit' },
           { text: 'EvalPlus', link: '/methodology/evalplus' },
+          { text: 'Thinking budget', link: '/methodology/reasoning-budget' },
           { text: 'Mendel', link: '/methodology/mendel' },
           { text: 'Server lore', link: '/methodology/server-lore' },
           { text: 'Status lines', link: '/methodology/status-lines' },

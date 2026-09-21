@@ -51,7 +51,8 @@ A forced answer passes most of the time, and the ones that fail loop
 or are wrong at any budget: across twelve runs at larger budgets, no
 forced answer ever passed with more thinking. The budget is what these
 machines can wait for: at 8 to 15 tok/s, 30000 tokens is 35 to 60
-minutes on one problem.
+minutes on one problem. Why this budget, and what it did to every
+score: [the thinking budget](../methodology/reasoning-budget.md).
 
 Read the score with its counts:
 

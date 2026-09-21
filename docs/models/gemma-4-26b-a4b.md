@@ -98,4 +98,4 @@ The window cell is the harness context window of that run.
   thinking on with a 19491-token thinking budget scored 0.988 / 0.957,
   no empty answer, in 166 minutes, against 0.896 / 0.872 with 16
   empties in 347 minutes without it. 15 of the 16 forced answers
-  passed ([method](../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)).
+  passed ([method](../methodology/reasoning-budget.md)).

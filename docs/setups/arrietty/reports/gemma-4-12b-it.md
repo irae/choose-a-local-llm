@@ -120,7 +120,7 @@ llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_
   unproven because the run saved no finish log. The 12B fails to
   converge more often than the 26B, on both machines. This config is
   the first case of the thinking-budget test
-  ([method](../../../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)).
+  ([method](../../../methodology/reasoning-budget.md)).
   Under a 7350-token thinking budget from its calibration the same
   config scored 0.976/0.951 with no empty answer in 195 minutes: 45
   problems were forced to answer and 42 of them passed, above the

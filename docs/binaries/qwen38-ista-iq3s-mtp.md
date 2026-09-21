@@ -178,4 +178,4 @@ window. The full curves are on the archive pages of
   `hardware/arrietty/benchmarks/bench21/`.
 - Pending — M1 Max: the re-run of the five xhigh empties is not
   scheduled
-  ([method](../methodology/evalplus.md#unproven-yet-a-thinking-budget-instead-of-a-larger-output-budget)).
+  ([method](../methodology/reasoning-budget.md)).
