@@ -102,3 +102,30 @@ not apply here.
 
 Environment: `scratchpad/laya-venv`, `uv venv --python 3.12`, Python
 3.12.14. `scratchpad/` is now in `.gitignore`.
+
+### `laya-cost` — CUDA cells closed, CPU cells moved to the end of the run
+
+The CUDA cells are in `results.md`. All 24 cells and the nine cold
+loads ran with no failure, 01:01, and the card went back to its 954 MB
+desktop baseline.
+
+**The CPU cells run last, after every GPU test.** Measured reason: one
+CPU call with 50 questions takes 23.4 s on this machine, so the CPU
+half of `laya-cost` needs about two hours. A latency number needs a
+quiet machine, so nothing else may run beside it; holding every GPU
+test behind it would leave the card idle for two hours with runnable
+work queued. The order in `index.md` does not change: `laya-cost` is
+one item, and its CPU half is the last thing the run does.
+
+Call counts for the CPU cells, set from the measured cost so that no
+cell runs over about five minutes: 200 calls at 1 and 5 questions,
+64 calls at 10 questions, 20 calls at 50 questions. The GPU cells all
+keep the full 200. A p95 over 20 calls is weak, and the table says the
+count for every row.
+
+The authors' typed-decisions dataset is not public: both
+`convaiinnovations/typed-decisions` and
+`convaiinnovations/laya-typed-decisions` answer 401. Their part B (2,000
+decisions, the 0.766 headline) therefore cannot run here, and it
+becomes a "not public" row in `laya-claims`. The twelve other datasets
+their scripts name all answer.
