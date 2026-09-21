@@ -129,3 +129,46 @@ The authors' typed-decisions dataset is not public: both
 decisions, the 0.766 headline) therefore cannot run here, and it
 becomes a "not public" row in `laya-claims`. The twelve other datasets
 their scripts name all answer.
+
+### `laya-claims` — blocked on a permission, goes to `retry-sweep`
+
+The test is "run the authors' notebook code, unchanged except for paths
+and device". I built that script:
+`results/laya-claims/notebook-as-script.py`, generated from
+`research/scripts/laya_benchmark_colab.ipynb` of
+`https://github.com/NandhaKishorM/laya` at commit
+`42626c348753fbb17572a813127df2278a1ec527`. The only changes are the
+three the header of the file names: the `pip install` cell and the
+Colab download cell are dropped, and the `%%writefile` magic becomes a
+real file write. The notebook already runs on `cuda` and already
+downloads the checkpoints itself, so neither path nor device needed a
+change.
+
+The first attempt ran and reached cell 6 before I stopped it, because
+a pipe hid its progress. Every later attempt is refused by the
+permission classifier with `[Code from External]`. Two forms were
+tried, both refused. Only a human can allow it.
+
+What the first attempt already showed, and what is therefore not in
+doubt: the card is seen (RTX 5060 Ti, 16311 MiB, capability 12.0);
+`laya` is 421.29M parameters (394.78M encoder, 26.51M head), 28
+layers, hidden 1024, vocabulary 50368, `max_len` 512;
+`laya-multilingual` is 321.91M (306.94M encoder, 14.97M head), 22
+layers, hidden 768, vocabulary 256000, `max_len` 1024. `laya` ships
+fitted temperatures, `laya-multilingual` ships 1.0 for all three
+question types, which is the authors' own words in the notebook: it
+ships uncalibrated.
+
+Correction to the earlier note in this file: the authors'
+typed-decisions set IS public. It is `LocalLLaMA/typed-decisions`, not
+`convaiinnovations/typed-decisions`, and the first attempt loaded it:
+400 cases, 2,000 questions, four workflows, with soft teacher labels.
+So their part B can run once the permission is given.
+
+The notebook also covers only `laya` and `laya-multilingual`; their
+`research/scripts/bench_apps.py` is the script that covers all three
+checkpoints and the six application themes. It needs the same
+permission.
+
+The run goes on with `laya-portuguese`, which uses this repo's own
+runner and no external code.

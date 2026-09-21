@@ -1,0 +1,73 @@
+--- cell 0 ---
+NVIDIA GeForce RTX 5060 Ti, 16311 MiB, 12.0
+torch 2.14.0+cu130 | cuda True | device NVIDIA GeForce RTX 5060 Ti
+--- cell 2 ---
+Fetching 38 files:   0%|          | 0/38 [00:00<?, ?it/s]Fetching 38 files: 100%|██████████| 38/38 [00:00<00:00, 6615.07it/s]
+laya -> /home/irae/.cache/huggingface/hub/models--convaiinnovations--laya/snapshots/1c5edc17a7acd8701df6fc341c0d179f1c62c982
+    {"repo": "convaiinnovations/laya", "params_total_m": 421.29, "params_encoder_m": 394.78, "params_head_m": 26.51, "hidden_size": 1024, "num_layers": 28, "vocab_size": 50368, "max_len": 512, "head_max_len": 192, "temperature": [1.6369030475616455, 1.2514300346374512, 1.983399510383606], "training": {"updates": 7313, "epochs_completed": 1, "hours": 1.96, "world_size": 1, "fine_tuned_from_checkpoint": true}, "download_s": 0.1, "tokenizer_config_patched": []}
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files: 100%|██████████| 7/7 [00:00<00:00, 4018.08it/s]
+laya-multilingual -> /home/irae/.cache/huggingface/hub/models--convaiinnovations--laya-multilingual/snapshots/052592a15d198d9ad47da779604259b10b47b7aa
+    {"repo": "convaiinnovations/laya-multilingual", "params_total_m": 321.91, "params_encoder_m": 306.94, "params_head_m": 14.97, "hidden_size": 768, "num_layers": 22, "vocab_size": 256000, "max_len": 1024, "head_max_len": 256, "temperature": [1.0, 1.0, 1.0], "training": {"updates": 15987, "epochs_completed": 4, "hours": 4.97, "world_size": 1, "fine_tuned_from_checkpoint": false}, "download_s": 0.1, "tokenizer_config_patched": []}
+--- cell 3: writing bench_engine.py
+--- cell 4 ---
+--- cell 5 ---
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  typed_decisions                     400 cases /  2000 questions   4 workflows, soft teacher labels
+--- cell 6 ---
+  massive_intent.en                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1234962.70 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 689430.17 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 574790.70 examples/s]
+  massive_intent.de                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1375718.33 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 820594.70 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 749891.83 examples/s]
+  massive_intent.fr                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1512755.80 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 856074.40 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 727996.25 examples/s]
+  massive_intent.es                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1536776.97 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 842942.30 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 716255.36 examples/s]
+  massive_intent.pt                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 804082.85 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 700227.92 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 649133.68 examples/s]
+  massive_intent.ru                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1470963.91 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 791388.15 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 705762.29 examples/s]
+  massive_intent.tr                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 832225.55 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 787889.09 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 656783.49 examples/s]
+  massive_intent.ar                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 751423.18 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 695969.43 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 628697.19 examples/s]
+  massive_intent.hi                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 648614.16 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 616145.23 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 590554.75 examples/s]
+  massive_intent.ta                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1440212.82 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 826466.58 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 704188.62 examples/s]
+  massive_intent.zh-CN                300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1425756.27 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 851574.28 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 664667.55 examples/s]
+  massive_intent.ja                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1423528.85 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 803262.29 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 615580.42 examples/s]
+  massive_intent.ko                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1350254.89 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 687909.34 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 733949.05 examples/s]
+  massive_intent.sw                   300 cases /   300 questions   
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 11514 examples [00:00, 1650485.86 examples/s]
+Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2974 examples [00:00, 906398.79 examples/s]
+Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 2033 examples [00:00, 784526.64 examples/s]
+  massive_scenario.en                 300 cases /   300 questions   
