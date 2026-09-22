@@ -38,7 +38,7 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
   its environment, logs and numbers were deleted and none of it is a
   result.
 
-## bench22, 2026-09-16, paused 2026-09-17 ([state](bench22/state.md), [results](bench22/results.md))
+## bench22, 2026-09-16 to 2026-09-22 ([report](bench22/report.md), [state](bench22/state.md), [results](bench22/results.md))
 
 - Runbook: [bench22/AGENT.md](bench22/AGENT.md). The thinking budget
   under test: the MoE 26B GGUF and the dense 27B 4-bit scored under a
@@ -53,6 +53,25 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
   thinking row of this machine at a thinking budget of 8192, three of
   them spliced from their budgeted runs, then the fork's guided agent
   row under the budget.
+
+- **Fast mode repeats the card's pattern on this machine.** A row that
+  already had a calibrated budget did not move: the Qwen3.8 Q4_K_M, the
+  Gemma MoE and the ternary PTQ1_0 read exactly the same pair as
+  before. A row with no budget, or one too small, went up and lost
+  every empty answer: both 3-bit Qwen3.8 builds gained 3.1 points of
+  base, and the Qwen3.6 MoE gained one problem.
+- **The wall fell on every row that ran again in full**, 27 to 52
+  percent: 816 to 389 minutes on the unsloth 3-bit build, 583 to 332 on
+  the ISTA build.
+- **The first agent row ever run under a thinking budget never reached
+  it.** Zero of 369 session lines carry the budget message at thinking
+  high. A budget is therefore free on the agent side and does nothing
+  there at 8192. The score moved 31.5 to 44.5 between two
+  serving-identical runs, so that difference is run-to-run variance on
+  one sample per cell and not an effect of the budget.
+- The Mendel worker names its branch after the model id, so a second
+  run of the same model and level collides with the first. The run used
+  a temporary pi id rather than touch the published branch.
 
 ## bench20, 2026-09-15 to 2026-09-16 ([report](bench20/report.md), [state](bench20/state.md), [results](bench20/results.md))
 

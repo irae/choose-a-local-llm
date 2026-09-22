@@ -496,10 +496,10 @@
       "tokShallow": "66.6",
       "tokDeep": "33.6",
       "memory": "25.3 GB",
-      "evalplus": "0.896/0.872/90%",
+      "evalplus": "0.988/0.957/100%",
       "mendel": "pending",
       "id": "gemma26-gguf-2x",
-      "evalplusWall": 347,
+      "evalplusWall": 117.1,
       "spec": {
         "base": "Gemma-4-26B-A4B",
         "quant": "UD-Q4_K_XL",
@@ -511,8 +511,7 @@
       },
       "stale": [
         "tokShallow",
-        "tokDeep",
-        "evalplus"
+        "tokDeep"
       ],
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 202752 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
