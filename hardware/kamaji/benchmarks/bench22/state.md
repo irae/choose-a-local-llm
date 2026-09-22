@@ -181,3 +181,13 @@ Deviation: the empty-`-m` false start above; no data lost, caught before any req
 
 Close: HumanEval base 0.988, plus 0.939 (matches the bench26 budget-16056 row exactly), 0/164 empty, 10/10 regenerated problems forced. New-generation wall 1:12:08 (04:47–05:59 UTC), plus 217.2 min of spliced-source time for the 154 kept problems. Server and watcher stopped, wired recovered quickly.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-bonsai2-ptq1-mac-xhigh/`.
+
+### `fast-qwen38-gguf-unsloth-iq3s-xhigh` — running
+
+Served: `llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 -ngl 999 -fa on -c 32768 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081 --reasoning-budget 8192 --reasoning-budget-message "$BUDGET_MSG"`, effort xhigh. Same benign `get_repo_commit` metadata line as earlier blocks; file already cached, no download. Probe: `finish_reason: stop`, content 108 characters, reasoning 172 characters.
+
+No splice source. Watcher at `RUNWATCH_SILENCE=2700`. Codegen started 06:10 UTC, `EVALPLUS_MAX_NEW_TOKENS=16384`, 164 to generate.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-unsloth-iq3s-xhigh/`.
+Deviation: none.
