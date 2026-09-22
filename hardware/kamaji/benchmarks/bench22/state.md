@@ -220,3 +220,16 @@ Deviation: none.
 
 Close: HumanEval base 0.976, plus 0.939 (plus unchanged from the unbudgeted 0.957/0.939, base up one problem). 0/164 empty, 17/164 forced. Wall 2:27:26 (18:39–21:07 UTC). Server and watcher stopped, wired recovered. This is the last row of the fast table; `bonsai-fork-budget-mendel-guided` is next.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen36-gguf-think/`.
+
+## `bonsai-fork-budget-mendel-guided` — stop and ask
+
+`gh auth status` passed, `git stash clear` ran clean. Served the fork at `-c 65536` (the scored 31.5 row's own serving `-c`) with `$FAST_FLAGS`; probe passed (`finish_reason: stop`, content 794 characters, reasoning 2967 characters), wired ~11534 MB, under the 25000 limit.
+
+`./run-worker.sh bonsai-prism pi guided high` aborts: `branch bonsai-prism-high-guided-v3-issue-13 exists`. That branch is not a stray: it is the already-scored 31.5 row's own branch (`docs/setups/kamaji/reports/bonsai-27b.md`, guided-v3.0, 31.5/100). `run-worker.sh`'s branch suffix for a guided pi run is fixed in code (`-guided-v3-issue-13`) with no override flag, so a second attempt of the same model/level/bench collides by name. `PLAN.md` says a fresh attempt of the same config needs a new worktree with a suffix, and separately that a branch is never deleted before its row is scored — but this branch's row is already scored and published, so the two rules do not obviously resolve the collision the same way.
+
+No worker run started; no GPU time or evidence lost. Server and watcher stopped after the probe.
+
+Candidate answer for the coordinator: move the old branch aside with a timestamp (for example `bonsai-prism-high-guided-v3-issue-13-old-31p5-nobudget`) on both the mendel-benchmark repo and its origin, keeping it as the record of the no-budget row, then re-run `run-worker.sh` so it creates a fresh branch under the same fixed suffix for the budgeted row. This is the coordinator's or the owner's call, not the runner's, since it touches another repo's branch history outside this run's own worktree.
+
+Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-budget-mendel-guided/`.
+Deviation: stop-and-ask, no data lost.
