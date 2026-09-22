@@ -194,3 +194,13 @@ Deviation: none.
 
 Close: HumanEval base 0.976, plus 0.945, up from the unbudgeted 0.945/0.927 in `models.json`. 0/164 empty, 17/164 forced. Wall 6:28:36 (06:11–12:39 UTC). Server and watcher stopped, wired recovered quickly.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-unsloth-iq3s-xhigh/`.
+
+### `fast-qwen38-gguf-ista-nodrafter-xhigh` — running
+
+Served: `llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp --alias qwen3.8-27b-ista --no-mmproj --parallel 1 -ngl 999 -fa on -c 32768 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081 --reasoning-budget 8192 --reasoning-budget-message "$BUDGET_MSG"`, effort xhigh, no drafter (row config says so). Same benign `get_repo_commit` metadata line; file already cached. Probe: `finish_reason: stop`, content 143 characters, reasoning 159 characters.
+
+No splice source. Watcher at `RUNWATCH_SILENCE=2700`. Codegen started 12:51 UTC, `EVALPLUS_MAX_NEW_TOKENS=16384`, 164 to generate.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-ista-nodrafter-xhigh/`.
+Deviation: none.
