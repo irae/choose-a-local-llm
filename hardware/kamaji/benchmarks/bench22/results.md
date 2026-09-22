@@ -124,3 +124,15 @@ Fast mode, effort xhigh. No splice source; all 164 generated.
 
 Forced task ids: `HumanEval/10, 32, 36, 39, 47, 76, 91, 99, 116, 129, 132, 134, 137, 138, 145, 146, 160`. None came back empty. Wall 22 Sep 06:11–12:39 UTC.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-unsloth-iq3s-xhigh/`.
+
+## `fast-qwen38-gguf-ista-nodrafter-xhigh`
+
+Fast mode, effort xhigh, no drafter. No splice source; all 164 generated.
+
+| old/new | Config | base | plus | empty | forced | wall |
+|---|---|--:|--:|--:|--:|--:|
+| old (no budget, `docs/setups/kamaji/models.json`) | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, xhigh | 0.945 | 0.921 | — | — | — |
+| new (fast, budget 8192) | Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, xhigh | **0.976** | **0.945** | 0/164 | 13/164 | 331.7 min |
+
+Forced task ids: `HumanEval/2, 32, 36, 39, 47, 75, 76, 99, 108, 116, 132, 134, 145`. None came back empty. Wall 22 Sep 12:52–18:23 UTC.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-ista-nodrafter-xhigh/`.
