@@ -155,3 +155,16 @@ Deviation: none.
 
 Close: HumanEval base 0.982, plus 0.951 (matches the old budget-30000 row exactly), 0/164 empty, 9/164 forced of the 11 regenerated (`HumanEval/75`, `127` converged inside 8192). New-generation wall 1:35:41 (02:02–03:38 UTC), plus 208.7 min of spliced-source time for the 153 kept problems. Server and watcher stopped; wired took about 3 minutes to drop from ~3.3 GB to the ~2.2 GB baseline after stop, longer than earlier blocks but no stray process was found while it held.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-xhigh/`.
+
+### `fast-gemma26-gguf` — running
+
+Served: `llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL --alias gemma-4-26b-a4b --no-mmproj --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 -ngl 999 -fa on -c 32768 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081 --reasoning-budget 8192 --reasoning-budget-message "$BUDGET_MSG"`, thinking on. Same benign `get_repo_commit` metadata line as the qwen38 block; server loaded and answered clean. The `Gemma4Assistant requires ctx_other` line during memory fitting is the server's own logged note that it is normal. Probe: `finish_reason: stop`, content 1569 characters, reasoning 1756 characters.
+
+Splice from `bench22/results/gemma26-gguf-budget-think`: kept 145, regenerate 19, matching the table's planning count. Watcher at `RUNWATCH_SILENCE=2700`. Codegen started 03:54 UTC, `EVALPLUS_MAX_NEW_TOKENS=16384`.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-gemma26-gguf/`.
+Deviation: none.
+
+Close: HumanEval base 0.988, plus 0.957 (matches the old budget-19491 row exactly), 0/164 empty, 19/19 regenerated problems forced. New-generation wall 0:38:25 (03:56–04:34 UTC), plus 78.6 min of spliced-source time for the 145 kept problems. Server and watcher stopped, wired recovered quickly this time (~112681 pages).
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-gemma26-gguf/`.

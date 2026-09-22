@@ -88,3 +88,15 @@ Fast mode, effort xhigh. Spliced from `bench22/results/qwen38-bartowski-budget-x
 
 Score unchanged from the budget-30000 row. Forced task ids: `HumanEval/2, 32, 39, 76, 99, 116, 129, 132, 137`. `HumanEval/75` and `127` converged inside 8192 on the regenerate pass and are not forced. None came back empty. Wall: 95.7 min of new generation (02:02–03:38 UTC) plus 208.7 min of spliced-source time for the 153 kept problems.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-xhigh/`.
+
+## `fast-gemma26-gguf`
+
+Fast mode, thinking on. Spliced from `bench22/results/gemma26-gguf-budget-think`: kept 145, regenerated 19, matching the table's planning count.
+
+| old/new | Config | base | plus | empty | forced | wall |
+|---|---|--:|--:|--:|--:|--:|
+| old (budget 19491) | Gemma-4-26B-A4B, GGUF, MTP f16, thinking on | 0.988 | 0.957 | 0/164 | 16/164 | 165.8 min |
+| new (fast, budget 8192, spliced) | Gemma-4-26B-A4B, GGUF, MTP f16, thinking on | 0.988 | 0.957 | 0/164 | 19/164 | 117.1 min |
+
+Score unchanged from the budget-19491 row. All 19 regenerated problems hit the budget message; none came back empty. Wall: 38.4 min of new generation (03:56–04:34 UTC) plus 78.6 min of spliced-source time for the 145 kept problems.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-gemma26-gguf/`.
