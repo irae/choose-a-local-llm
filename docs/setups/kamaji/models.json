@@ -315,10 +315,10 @@
       "tokShallow": "43.7",
       "tokDeep": "13.0",
       "memory": "25.6 GB",
-      "evalplus": "0.957/0.939/99%",
+      "evalplus": "0.976/0.939/100%",
       "mendel": "pending",
       "id": "qwen36-gguf-think",
-      "evalplusWall": 301.5,
+      "evalplusWall": 147.4,
       "spec": {
         "base": "Qwen3.6-35B-A3B",
         "quant": "UD-Q4_K_XL",
@@ -330,16 +330,13 @@
       },
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.6-35b-a3b`. Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000 with a real completion as the ceiling test: `-c 98304` serves; every `-c` from 100864 up loads and then OOMs on the first real request. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 43.7 tok/s at 4K, 19.2 at 49K, 13.0 at 82K, draft acceptance 54 to 85 percent, wired 25.6 GB flat, zero swap growth. This is the arm with the window: the f16 KV rows below load only `-c 40960`. Mendel at thinking off, guided: 62.5/100 on the 81920 window, complete, against 46.5 for the same config on a 49152 window with twelve compactions.",
+      "note": "pi id `qwen3.6-35b-a3b`. Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000 with a real completion as the ceiling test: `-c 98304` serves; every `-c` from 100864 up loads and then OOMs on the first real request. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 43.7 tok/s at 4K, 19.2 at 49K, 13.0 at 82K, draft acceptance 54 to 85 percent, wired 25.6 GB flat, zero swap growth. This is the arm with the window: the f16 KV rows below load only `-c 40960`. Mendel at thinking off, guided: 62.5/100 on the 81920 window, complete, against 46.5 for the same config on a 49152 window with twelve compactions. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.939 with no empty answer and 17 forced answers of 164, in 147.4 minutes. The earlier unbudgeted run read 0.957/0.939. The two f16 rows share this score under the shared-score rule.",
       "pi": {
         "provider": "llama",
         "id": "qwen3.6-35b-a3b",
         "contextWindow": 81920,
         "maxTokens": 8192
-      },
-      "stale": [
-        "evalplus"
-      ]
+      }
     },
     {
       "config": "Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking off",
@@ -372,14 +369,13 @@
       "tokShallow": "50.5",
       "tokDeep": "33.6",
       "memory": "25.0 GB",
-      "evalplus": "0.957/0.939/99%",
+      "evalplus": "0.976/0.939/100%",
       "mendel": "pending",
       "id": "qwen36-gguf-f16-nodrafter",
-      "evalplusWall": 301.5,
+      "evalplusWall": 147.4,
       "stale": [
         "tokShallow",
-        "tokDeep",
-        "evalplus"
+        "tokDeep"
       ],
       "spec": {
         "base": "Qwen3.6-35B-A3B",
@@ -407,10 +403,10 @@
       "tokShallow": "69.1",
       "tokDeep": "52.6",
       "memory": "25.1 GB",
-      "evalplus": "0.957/0.939/99%",
+      "evalplus": "0.976/0.939/100%",
       "mendel": "pending",
       "id": "qwen36-gguf-f16",
-      "evalplusWall": 301.5,
+      "evalplusWall": 147.4,
       "spec": {
         "base": "Qwen3.6-35B-A3B",
         "quant": "UD-Q4_K_XL",
@@ -422,8 +418,7 @@
       },
       "stale": [
         "tokShallow",
-        "tokDeep",
-        "evalplus"
+        "tokDeep"
       ],
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 40960 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
@@ -1564,6 +1559,20 @@
       "emptyCause": "none",
       "forced": "13/164",
       "wall": 332.0
+    },
+    {
+      "slug": "qwen3.6-35b-a3b",
+      "model": "Qwen3.6-35B-A3B",
+      "mode": "thinking on",
+      "row": "qwen36-gguf-think",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.976",
+      "plus": "0.939",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "17/164",
+      "wall": 147.4
     }
   ],
   "mendelWalls": {

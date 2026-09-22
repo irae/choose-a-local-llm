@@ -42,17 +42,17 @@ rows included; a run a harness or serving defect voided is not.
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **82k** | <TokCell shallow="43.7" deep="13.0" cap="speed" /> | **25.6 GB** | <ScoreCell value="0.957/0.939†" sub="99% completion" top /> | <ScoreCell value="83" pill="mendel-guided" top /> | <span title="EvalPlus 5h02 · Mendel 1h32">6h33</span> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **82k** | <TokCell shallow="43.7" deep="13.0" cap="speed" /> | **25.6 GB** | <ScoreCell value="0.951/0.915" sub="100% completion" /> | <ScoreCell value="62.5" pill="mendel-guided" top /> | <span title="EvalPlus 0h15 · Mendel 1h29"><b>1h44</b></span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **82k** | <TokCell shallow="43.7" deep="13.0" cap="speed" /> | **25.6 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="83" pill="mendel-guided" top /> | <span title="EvalPlus 2h27 · Mendel 1h32">3h59</span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **82k** | <TokCell shallow="43.7" deep="13.0" cap="speed" /> | **25.6 GB** | <ScoreCell value="0.951/0.915" sub="100% completion" top /> | <ScoreCell value="62.5" pill="mendel-guided" top /> | <span title="EvalPlus 0h15 · Mendel 1h29"><b>1h44</b></span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | 66k | <TokCell shallow="50.5" deep="33.6" cap="mem" stale /> | **25.0 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="50" pill="mendel-blind" /> | <span title="EvalPlus 2h27 · Mendel 0h33"><b>3h00</b></span> |
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" offload="n-cpu-moe 21" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | **97k** | <TokCell shallow="61.16" deep="45.42" cap="mem" top-shallow top-deep /> | **14.7 GB** | <ScoreCell value="0.976/0.933" sub="100% completion" top /> | <ScoreCell value="48.5" note="75%" pill="mendel-guided" /> | <span title="EvalPlus 2h24 · Mendel 0h27"><b>2h51</b></span> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" top /> | 66k | <TokCell shallow="50.5" deep="33.6" cap="mem" stale /> | **25.0 GB** | <ScoreCell value="0.957/0.939†" sub="99% completion" top /> | <ScoreCell value="50" pill="mendel-blind" /> | <span title="EvalPlus 5h02 · Mendel 0h33">5h35</span> |
-| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" /> | 41k | <TokCell shallow="69.1" deep="52.6" cap="mem" stale top-shallow top-deep /> | **25.1 GB** | <ScoreCell value="0.957/0.939†" sub="99% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 5h02 · Mendel —">5h02†</span> |
+| <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" /> | 41k | <TokCell shallow="69.1" deep="52.6" cap="mem" stale top-shallow top-deep /> | **25.1 GB** | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 2h27 · Mendel —">2h27†</span> |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
-Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.6-35b-a3b`). Every preset of this page: [`qwen3.6-35b-a3b`](#preset-qwen3-6-35b-a3b), [`qwen3.6-35b-a3b-q4kxl`](#preset-qwen3-6-35b-a3b-q4kxl), [`qwen3.6-35b-a3b-f16`](#preset-qwen3-6-35b-a3b-f16).
+Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.6-35b-a3b`). Every preset of this page: [`qwen3.6-35b-a3b`](#preset-qwen3-6-35b-a3b), [`qwen3.6-35b-a3b-f16`](#preset-qwen3-6-35b-a3b-f16), [`qwen3.6-35b-a3b-q4kxl`](#preset-qwen3-6-35b-a3b-q4kxl).
 
 ```ini
 [qwen3.6-35b-a3b]
@@ -77,6 +77,7 @@ reasoning-budget-message = Thinking budget reached. Give the final answer now.
 <!-- gen:binary-evalplus:start -->
 | config | think | budget | Scores | empties | forced | tok/s | wall |
 |---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" />](../setups/kamaji/benchmarks/qwen3.6-35b-a3b.md) | 8192 | 16384 | <ScoreCell value="0.976/0.939" sub="100% completion" top /> | none | 17/164 | <TokCell shallow="43.7" deep="13.0" /> | 2h27 |
 | [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" offload="n-cpu-moe 21" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/qwen36-unsloth-ud-q4kxl" />](../setups/arrietty/benchmarks/qwen3.6-35b-a3b.md) | 8192 | 16384 | <ScoreCell value="0.976/0.933" sub="100% completion" top /> | none | 12/164 | <TokCell shallow="61.16" deep="45.42" /> | 2h24 |
 | [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="off" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" />](../setups/kamaji/benchmarks/qwen3.6-35b-a3b.md) | none | 8192 | <ScoreCell value="0.951/0.915" sub="100% completion" top /> | none | — | <TokCell shallow="43.7" deep="13.0" /> | 0h15 |
 | [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" />](../setups/kamaji/benchmarks/qwen3.6-35b-a3b.md) | —† | 26624 | <ScoreCell value="0.957/0.939" sub="99% completion" /> | 2 budget | — | <TokCell shallow="43.7" deep="13.0" /> | 5h02 |
@@ -176,6 +177,25 @@ reasoning-budget = 8192
 reasoning-budget-message = Thinking budget reached. Give the final answer now.
 ```
 
+### `qwen3.6-35b-a3b-f16` {#preset-qwen3-6-35b-a3b-f16}
+
+M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
+
+```ini
+[qwen3.6-35b-a3b-f16]
+hf = unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 65536
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+
 ### `qwen3.6-35b-a3b-q4kxl` {#preset-qwen3-6-35b-a3b-q4kxl}
 
 RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models.ini` (llama-server).
@@ -195,25 +215,6 @@ flash-attn = on
 ctx-size = 98304
 cache-type-k = q8_0
 cache-type-v = q8_0
-jinja = true
-reasoning-budget = 8192
-reasoning-budget-message = Thinking budget reached. Give the final answer now.
-```
-
-### `qwen3.6-35b-a3b-f16` {#preset-qwen3-6-35b-a3b-f16}
-
-M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
-
-```ini
-[qwen3.6-35b-a3b-f16]
-hf = unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL
-no-mmproj = true
-parallel = 1
-n-gpu-layers = 999
-flash-attn = on
-ctx-size = 65536
-cache-type-k = f16
-cache-type-v = f16
 jinja = true
 reasoning-budget = 8192
 reasoning-budget-message = Thinking budget reached. Give the final answer now.
