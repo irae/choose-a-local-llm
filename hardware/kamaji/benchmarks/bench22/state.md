@@ -142,3 +142,13 @@ Deviation: none.
 
 Close: HumanEval base 0.951, plus 0.915, 0/164 empty, 4/164 forced (`HumanEval/47`, `84`, `97`, `129`; none empty). Wall 9:11:23 (16:12 21 Sep – 01:23 22 Sep UTC). Server and watcher stopped, wired recovered.
 Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-fast-think/`.
+
+### `fast-qwen38-gguf-xhigh` — running
+
+Served: `llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M --alias qwen3.8-27b --no-mmproj --parallel 1 -ngl 999 -fa on -c 32768 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081 --reasoning-budget 8192 --reasoning-budget-message "$BUDGET_MSG"`, effort xhigh, no drafter (row spec carries none). One benign load-time line, `get_repo_commit: error: HTTPLIB failed: SSL connection failed` (a metadata check, not the model file; the file was already on disk and the server loaded and answered clean). Probe: `finish_reason: stop`, content 119 characters, reasoning 169 characters, no other server error.
+
+Splice from `bench22/results/qwen38-bartowski-budget-xhigh`: kept 153, regenerate 11 (`HumanEval/2, 32, 39, 75, 76, 99, 116, 127, 129, 132, 137`), matching the table's planning count. Watcher at `RUNWATCH_SILENCE=2700`. Codegen started 01:52 UTC, `EVALPLUS_MAX_NEW_TOKENS=16384`.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-xhigh/`.
+Deviation: none.
