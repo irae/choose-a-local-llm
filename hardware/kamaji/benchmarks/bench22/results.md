@@ -76,3 +76,15 @@ Fast mode: `--reasoning-budget 8192`, `EVALPLUS_MAX_NEW_TOKENS=16384`, no calibr
 
 Forced task ids: `HumanEval/47`, `84`, `97`, `129`. None came back empty. Wall 21 Sep 16:12 – 22 Sep 01:23 UTC.
 Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-fast-think/`.
+
+## `fast-qwen38-gguf-xhigh`
+
+Fast mode, effort xhigh. Spliced from `bench22/results/qwen38-bartowski-budget-xhigh` (alias `qwen3.8-27b`): kept 153, regenerated 11, matching the table's planning count.
+
+| old/new | Config | base | plus | empty | forced | wall |
+|---|---|--:|--:|--:|--:|--:|
+| old (budget 30000) | Qwen3.8-27B, GGUF Q4_K_M, f16 KV, xhigh | 0.982 | 0.951 | 0/164 | 3/164 | 447.8 min |
+| new (fast, budget 8192, spliced) | Qwen3.8-27B, GGUF Q4_K_M, f16 KV, xhigh | 0.982 | 0.951 | 0/164 | 9/164 | 304.4 min |
+
+Score unchanged from the budget-30000 row. Forced task ids: `HumanEval/2, 32, 39, 76, 99, 116, 129, 132, 137`. `HumanEval/75` and `127` converged inside 8192 on the regenerate pass and are not forced. None came back empty. Wall: 95.7 min of new generation (02:02–03:38 UTC) plus 208.7 min of spliced-source time for the 153 kept problems.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-xhigh/`.
