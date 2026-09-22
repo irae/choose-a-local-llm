@@ -245,3 +245,11 @@ The comparison row: `bonsai-prism` guided v3.0, thinking high, q4_0 KV + bias, n
 still running.
 Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-budget-mendel-guided/`.
 Deviation: the branch-collision stop-and-ask above; resolved by the coordinator's temporary pi id, no rename of the scored branch.
+
+Close: worker ended `complete`, 0 nudges, exit 0. Loop verdict `ok`, ratio 0.37. Peak context 61505/65536, 181 tool calls. Scored in a subagent on the best available model, per `PLAN.md`: score_total 44.5/100 (raw 44.5, cap 62.5 from 5/8 libraries, cap does not bind), worst defect critical (a broken `chalk` shim, a `glob` replacement that always returns empty). Above the no-budget row's 31.5/100 (raw 36, 1/8 libraries). 0 of 369 session lines carry the budget message: the budget never fired on this row. Wall 1:30:09 (21:24–22:54 UTC).
+
+Temporary pi entry `bonsai-prism-tb8192` removed from `~/.pi/agent/models.json`; file now matches the pre-block backup exactly (`diff` clean). `pkill -f "Mendel Daemon"` run. Server and watcher stopped, wired recovered.
+
+Full report and scoring rubric breakdown in the subagent's hand-back; the summary table is in `results.md`.
+Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-budget-mendel-guided/`.
+Deviation: the branch-collision stop-and-ask, resolved by the coordinator's temporary-pi-id fix; no other deviation.
