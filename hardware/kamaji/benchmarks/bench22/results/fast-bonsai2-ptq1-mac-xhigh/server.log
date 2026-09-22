@@ -1,0 +1,27 @@
+0.00.055.638 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.055.824 W srv  llama_server: -----------------
+0.00.055.825 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.055.825 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.055.826 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.055.826 W srv  llama_server: -----------------
+0.00.057.740 I srv    load_model: loading model '/Users/irae/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-2-27B-gguf/snapshots/6ed5e12bf84b7a63069882c91dd9e9218647d17b/Ternary-Bonsai-2-27B-PTQ1_0.gguf'
+0.03.202.429 I cmn          init: llama threadpool init, n_threads = 8
+0.03.829.178 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 32768, kv_unified = 'false'
+0.03.838.427 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.03.838.494 I srv  llama_server: model loaded
+0.03.838.500 I srv  llama_server: listening on http://127.0.0.1:8081
+0.10.526.296 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.10.526.709 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.17.020.194 I slot print_timing: id  0 | task 0 | prompt eval time =    1300.11 ms /    66 tokens (   19.70 ms per token,    50.76 tokens per second)
+0.17.020.199 I slot print_timing: id  0 | task 0 |        eval time =    5193.19 ms /    96 tokens (   54.67 ms per token,    18.29 tokens per second)
+0.17.020.200 I slot print_timing: id  0 | task 0 |       total time =    6493.30 ms /   162 tokens
+0.17.020.201 I slot print_timing: id  0 | task 0 |    graphs reused =         95
+0.17.020.241 I slot      release: id  0 | task 0 | stop processing: n_tokens = 161, truncated = 0
+0.30.669.399 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.114 (> 0.100 thold), f_keep = 0.248
+0.30.711.672 I slot launch_slot_: id  0 | task 99 | processing task, is_child = 0
+0.39.709.041 I slot print_timing: id  0 | task 99 | n_gen =    100, tg =  18.25 t/s, tg_3s =  18.43 t/s
+0.42.723.090 I slot print_timing: id  0 | task 99 | n_gen =    155, tg =  18.25 t/s, tg_3s =  18.25 t/s
+0.45.745.283 I slot print_timing: id  0 | task 99 | n_gen =    210, tg =  18.24 t/s, tg_3s =  18.20 t/s
+0.48.768.447 I slot print_timing: id  0 | task 99 | n_gen =    265, tg =  18.23 t/s, tg_3s =  18.19 t/s
+0.51.785.529 I slot print_timing: id  0 | task 99 | n_gen =    320, tg =  18.23 t/s, tg_3s =  18.23 t/s
+0.54.813.873 I slot print_timing: id  0 | task 99 | n_gen =    375, tg =  18.22 t/s, tg_3s =  18.16 t/s

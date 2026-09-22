@@ -168,3 +168,13 @@ Deviation: none.
 
 Close: HumanEval base 0.988, plus 0.957 (matches the old budget-19491 row exactly), 0/164 empty, 19/19 regenerated problems forced. New-generation wall 0:38:25 (03:56–04:34 UTC), plus 78.6 min of spliced-source time for the 145 kept problems. Server and watcher stopped, wired recovered quickly this time (~112681 pages).
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-gemma26-gguf/`.
+
+### `fast-bonsai2-ptq1-mac-xhigh` — running
+
+Served: `~/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-b10685-7dffb15/llama-prism-b10685-7dffb15/llama-server` (fork, Metal build, from bench26), `-m` the cached `Ternary-Bonsai-2-27B-PTQ1_0.gguf` (resolved by hand from `~/.cache/huggingface/hub`, since `hf` is not on this session's PATH; `hf download` printed nothing and the first attempt started the server with an empty `-m`, in router mode — killed at once, no data written, restarted with the direct cache path), `--alias bonsai2-27b-ptq1-mac --no-mmproj --parallel 1 -ngl 999 -fa on -c 32768 --cache-type-k f16 --cache-type-v f16 --jinja --port 8081 --reasoning-budget 8192 --reasoning-budget-message "$BUDGET_MSG"`, effort xhigh. Both flags confirmed present on this fork build. Probe: `finish_reason: stop`, content 175 characters, reasoning 161 characters, no server error.
+
+Splice from `bench26/results/bonsai2-budget-xhigh-mac`: kept 154, regenerate 10, matching the table's planning count. Watcher at `RUNWATCH_SILENCE=2700`. Codegen started 04:38 UTC, `EVALPLUS_MAX_NEW_TOKENS=16384`.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-bonsai2-ptq1-mac-xhigh/`.
+Deviation: the empty-`-m` false start above; no data lost, caught before any request was sent.
