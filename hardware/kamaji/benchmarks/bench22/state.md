@@ -152,3 +152,6 @@ Splice from `bench22/results/qwen38-bartowski-budget-xhigh`: kept 153, regenerat
 still running.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-xhigh/`.
 Deviation: none.
+
+Close: HumanEval base 0.982, plus 0.951 (matches the old budget-30000 row exactly), 0/164 empty, 9/164 forced of the 11 regenerated (`HumanEval/75`, `127` converged inside 8192). New-generation wall 1:35:41 (02:02–03:38 UTC), plus 208.7 min of spliced-source time for the 153 kept problems. Server and watcher stopped; wired took about 3 minutes to drop from ~3.3 GB to the ~2.2 GB baseline after stop, longer than earlier blocks but no stray process was found while it held.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-xhigh/`.
