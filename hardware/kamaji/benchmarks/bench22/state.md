@@ -233,3 +233,15 @@ Candidate answer for the coordinator: move the old branch aside with a timestamp
 
 Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-budget-mendel-guided/`.
 Deviation: stop-and-ask, no data lost.
+
+### `bonsai-fork-budget-mendel-guided` — resumed and running
+
+Coordinator's fix for the branch collision: a temporary pi entry `bonsai-prism-tb8192`, a copy of `bonsai-prism` in every field, added to `~/.pi/agent/models.json` under the `llama` provider (backup at `~/.pi/agent/models.json.bak-run22`). Server keeps the alias `bonsai-prism` (same server, same alias, per the coordinator); only the pi id differs, so `run-worker.sh`'s branch name comes out as `bonsai-prism-tb8192-high-guided-v3-issue-13`, distinct from the scored 31.5 branch `bonsai-prism-high-guided-v3-issue-13`, which was not touched.
+
+Re-served the fork at `-c 65536` with `$FAST_FLAGS`; probe passed (`finish_reason: stop`, content 919 characters, reasoning 2938 characters). Watcher started at `RUNWATCH_SILENCE=2700`. Worker started: `MENDEL_CONTEXT_WINDOW=65536 ./run-worker.sh bonsai-prism-tb8192 pi guided high`. New worktree `../mendel-bench-guided-bonsai-prism-tb8192-high`, new branch `bonsai-prism-tb8192-high-guided-v3-issue-13`, clean start, `contextWindow` 65536 pinned, compaction reserve 8192.
+
+The comparison row: `bonsai-prism` guided v3.0, thinking high, q4_0 KV + bias, no budget, scored 31.5/100 (`docs/setups/kamaji/reports/bonsai-27b.md`). This row is the same file, the same fork release and the same serving command, with the fast-mode flags added: `--reasoning-budget 8192`, `max_tokens` as the agent harness sets it (no `EVALPLUS_MAX_NEW_TOKENS`, that variable does not apply to a Mendel row).
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-budget-mendel-guided/`.
+Deviation: the branch-collision stop-and-ask above; resolved by the coordinator's temporary pi id, no rename of the scored branch.
