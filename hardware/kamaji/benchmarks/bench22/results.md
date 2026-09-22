@@ -148,3 +148,19 @@ Fast mode, thinking on. No splice source; all 164 generated. Last row of the fas
 
 Plus unchanged, base up one problem. Forced task ids: `HumanEval/4, 14, 23, 31, 32, 33, 39, 55, 62, 76, 81, 113, 130, 137, 139, 142, 160`. None came back empty. Wall 22 Sep 18:39–21:07 UTC.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen36-gguf-think/`.
+
+## `bonsai-fork-budget-mendel-guided`
+
+`simulator(mendel-guided)`, prompt guided-v3.0, level high, fork (Q2_g64, q4_0 KV + bias). Fixed model id `bonsai-prism-tb8192`, a temporary pi entry copied from `bonsai-prism` for this row only, so the run-worker branch would not collide with the scored no-budget row's own branch. Same file, same fork release, same serving command as `bonsai-prism`; the only difference is the fast-mode flags, `--reasoning-budget 8192 --reasoning-budget-message "$BUDGET_MSG"`. No `EVALPLUS_MAX_NEW_TOKENS`; that variable does not apply to a Mendel row.
+
+| old/new | test | model | harness | score | worst defect |
+|---|---|---|---|--:|---|
+| old | guided | `bonsai-prism`, no budget, high | pi, window 65536 | 31.5/100 (raw 36) | critical |
+| new | guided | `bonsai-prism-tb8192`, budget 8192, high | pi, window 65536 | **44.5/100** (raw 44.5) | critical |
+
+Libraries done: 5 of 8 (uuid, xtend, urlsafe-base64, tmp, shasum). Not done: glob, chalk (both broken), rimraf (left declared in `legacy-packages/mendel-requirify/package.json`). Completion cap 62.5, does not bind. End reason `complete`, 0 tooling nudges, 0 model nudges, exit 0, 1 compaction, 181 tool calls, peak context 61505/65536. Wall 1:30:09 (21:24–22:54 UTC). Loop verdict `ok`, worst ratio 0.37 on tool call (`loop-check.py`). 0 of 369 session lines carry the budget message: the run never hit the 8192-token thinking cap on any turn.
+
+Two critical defects: a `chalk` shim built on `util.styleText` that returns an empty style set, so every `chalk.*` call throws; a hand-written `glob` replacement that always returns an empty list and silently drops every ignore/exclude rule. The model did more of the task than the no-budget run (5 of 8 libraries against 1 of 8, 181 tool calls against 343) but the added completion carried new critical bugs the no-budget run never reached.
+
+The site has no field yet for an agent row served under a thinking budget; the coordinator holds the publish decision.
+Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-budget-mendel-guided/`.

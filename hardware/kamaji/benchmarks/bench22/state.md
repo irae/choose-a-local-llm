@@ -220,3 +220,36 @@ Deviation: none.
 
 Close: HumanEval base 0.976, plus 0.939 (plus unchanged from the unbudgeted 0.957/0.939, base up one problem). 0/164 empty, 17/164 forced. Wall 2:27:26 (18:39–21:07 UTC). Server and watcher stopped, wired recovered. This is the last row of the fast table; `bonsai-fork-budget-mendel-guided` is next.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen36-gguf-think/`.
+
+## `bonsai-fork-budget-mendel-guided` — stop and ask
+
+`gh auth status` passed, `git stash clear` ran clean. Served the fork at `-c 65536` (the scored 31.5 row's own serving `-c`) with `$FAST_FLAGS`; probe passed (`finish_reason: stop`, content 794 characters, reasoning 2967 characters), wired ~11534 MB, under the 25000 limit.
+
+`./run-worker.sh bonsai-prism pi guided high` aborts: `branch bonsai-prism-high-guided-v3-issue-13 exists`. That branch is not a stray: it is the already-scored 31.5 row's own branch (`docs/setups/kamaji/reports/bonsai-27b.md`, guided-v3.0, 31.5/100). `run-worker.sh`'s branch suffix for a guided pi run is fixed in code (`-guided-v3-issue-13`) with no override flag, so a second attempt of the same model/level/bench collides by name. `PLAN.md` says a fresh attempt of the same config needs a new worktree with a suffix, and separately that a branch is never deleted before its row is scored — but this branch's row is already scored and published, so the two rules do not obviously resolve the collision the same way.
+
+No worker run started; no GPU time or evidence lost. Server and watcher stopped after the probe.
+
+Candidate answer for the coordinator: move the old branch aside with a timestamp (for example `bonsai-prism-high-guided-v3-issue-13-old-31p5-nobudget`) on both the mendel-benchmark repo and its origin, keeping it as the record of the no-budget row, then re-run `run-worker.sh` so it creates a fresh branch under the same fixed suffix for the budgeted row. This is the coordinator's or the owner's call, not the runner's, since it touches another repo's branch history outside this run's own worktree.
+
+Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-budget-mendel-guided/`.
+Deviation: stop-and-ask, no data lost.
+
+### `bonsai-fork-budget-mendel-guided` — resumed and running
+
+Coordinator's fix for the branch collision: a temporary pi entry `bonsai-prism-tb8192`, a copy of `bonsai-prism` in every field, added to `~/.pi/agent/models.json` under the `llama` provider (backup at `~/.pi/agent/models.json.bak-run22`). Server keeps the alias `bonsai-prism` (same server, same alias, per the coordinator); only the pi id differs, so `run-worker.sh`'s branch name comes out as `bonsai-prism-tb8192-high-guided-v3-issue-13`, distinct from the scored 31.5 branch `bonsai-prism-high-guided-v3-issue-13`, which was not touched.
+
+Re-served the fork at `-c 65536` with `$FAST_FLAGS`; probe passed (`finish_reason: stop`, content 919 characters, reasoning 2938 characters). Watcher started at `RUNWATCH_SILENCE=2700`. Worker started: `MENDEL_CONTEXT_WINDOW=65536 ./run-worker.sh bonsai-prism-tb8192 pi guided high`. New worktree `../mendel-bench-guided-bonsai-prism-tb8192-high`, new branch `bonsai-prism-tb8192-high-guided-v3-issue-13`, clean start, `contextWindow` 65536 pinned, compaction reserve 8192.
+
+The comparison row: `bonsai-prism` guided v3.0, thinking high, q4_0 KV + bias, no budget, scored 31.5/100 (`docs/setups/kamaji/reports/bonsai-27b.md`). This row is the same file, the same fork release and the same serving command, with the fast-mode flags added: `--reasoning-budget 8192`, `max_tokens` as the agent harness sets it (no `EVALPLUS_MAX_NEW_TOKENS`, that variable does not apply to a Mendel row).
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-budget-mendel-guided/`.
+Deviation: the branch-collision stop-and-ask above; resolved by the coordinator's temporary pi id, no rename of the scored branch.
+
+Close: worker ended `complete`, 0 nudges, exit 0. Loop verdict `ok`, ratio 0.37. Peak context 61505/65536, 181 tool calls. Scored in a subagent on the best available model, per `PLAN.md`: score_total 44.5/100 (raw 44.5, cap 62.5 from 5/8 libraries, cap does not bind), worst defect critical (a broken `chalk` shim, a `glob` replacement that always returns empty). Above the no-budget row's 31.5/100 (raw 36, 1/8 libraries). 0 of 369 session lines carry the budget message: the budget never fired on this row. Wall 1:30:09 (21:24–22:54 UTC).
+
+Temporary pi entry `bonsai-prism-tb8192` removed from `~/.pi/agent/models.json`; file now matches the pre-block backup exactly (`diff` clean). `pkill -f "Mendel Daemon"` run. Server and watcher stopped, wired recovered.
+
+Full report and scoring rubric breakdown in the subagent's hand-back; the summary table is in `results.md`.
+Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-budget-mendel-guided/`.
+Deviation: the branch-collision stop-and-ask, resolved by the coordinator's temporary-pi-id fix; no other deviation.

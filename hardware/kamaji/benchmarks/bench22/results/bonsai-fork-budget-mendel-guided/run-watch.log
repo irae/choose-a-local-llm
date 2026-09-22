@@ -1,0 +1,3 @@
+run-watch: log=hardware/kamaji/benchmarks/bench22/results/bonsai-fork-budget-mendel-guided/server.log output=/Users/irae/.local/share/mendel-benchmark/runs/bonsai-prism-tb8192-high-guided-session.jsonl url=http://127.0.0.1:8081 silence=2700s probe_timeout=300s poll=10s mem_log=/Users/irae/.local/share/choose-a-local-llm/run22-bonsai-mendel-guided-mem.log mem_interval=20s
+silence 2700s on /Users/irae/.local/share/mendel-benchmark/runs/bonsai-prism-tb8192-high-guided-session.jsonl: probing one real completion
+  probe answered: server alive, the run is thinking
