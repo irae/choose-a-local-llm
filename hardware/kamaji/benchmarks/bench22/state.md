@@ -191,3 +191,6 @@ No splice source. Watcher at `RUNWATCH_SILENCE=2700`. Codegen started 06:10 UTC,
 still running.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-unsloth-iq3s-xhigh/`.
 Deviation: none.
+
+Close: HumanEval base 0.976, plus 0.945, up from the unbudgeted 0.945/0.927 in `models.json`. 0/164 empty, 17/164 forced. Wall 6:28:36 (06:11–12:39 UTC). Server and watcher stopped, wired recovered quickly.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-unsloth-iq3s-xhigh/`.

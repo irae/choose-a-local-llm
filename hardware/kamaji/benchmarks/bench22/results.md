@@ -112,3 +112,15 @@ Fast mode, effort xhigh, fork (Metal build, bench26's). Spliced from `bench26/re
 
 Score unchanged from the bench26 row. All 10 regenerated problems hit the budget message; none came back empty. Wall: 72.1 min of new generation (04:47–05:59 UTC) plus 217.2 min of spliced-source time for the 154 kept problems.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-bonsai2-ptq1-mac-xhigh/`.
+
+## `fast-qwen38-gguf-unsloth-iq3s-xhigh`
+
+Fast mode, effort xhigh. No splice source; all 164 generated.
+
+| old/new | Config | base | plus | empty | forced | wall |
+|---|---|--:|--:|--:|--:|--:|
+| old (no budget, `docs/setups/kamaji/models.json`) | Qwen3.8-27B, GGUF UD-IQ3_S, f16 KV, xhigh | 0.945 | 0.927 | — | — | — |
+| new (fast, budget 8192) | Qwen3.8-27B, GGUF UD-IQ3_S, f16 KV, xhigh | **0.976** | **0.945** | 0/164 | 17/164 | 388.6 min |
+
+Forced task ids: `HumanEval/10, 32, 36, 39, 47, 76, 91, 99, 116, 129, 132, 134, 137, 138, 145, 146, 160`. None came back empty. Wall 22 Sep 06:11–12:39 UTC.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-unsloth-iq3s-xhigh/`.
