@@ -1,0 +1,49 @@
+5.31.390.634 E get_repo_commit: error: HTTPLIB failed: SSL connection failed
+5.31.391.647 W get_repo_files: failed to resolve commit for unsloth/gemma-4-26b-a4b-it-GGUF
+5.31.404.728 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+5.31.406.200 W srv  llama_server: -----------------
+5.31.406.204 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+5.31.406.205 W srv  llama_server: this can be a security risk (cross-origin attacks)
+5.31.406.206 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+5.31.406.207 W srv  llama_server: -----------------
+5.31.408.535 I srv    load_model: loading model 'unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL'
+5.32.253.054 E llama_init_from_model: failed to initialize the context: Gemma4Assistant requires ctx_other to be set (this warning is normal during memory fitting)
+5.32.280.736 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model
+5.32.611.037 W load: control-looking token:     50 '<|tool_response>' was not control-type; this is probably a bug in the model. its type will be overridden
+5.32.614.076 W load: control-looking token:    212 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+5.32.617.951 W load: control-looking token:      1 '<eos>' was not control-type; this is probably a bug in the model. its type will be overridden
+5.32.621.643 W load: special_eog_ids contains '<|tool_response>', removing '</s>' token from EOG list
+5.40.447.982 I cmn          init: llama threadpool init, n_threads = 8
+5.41.020.729 I common_speculative_init_result: loading draft model '/Users/irae/.cache/huggingface/hub/models--unsloth--gemma-4-26b-a4b-it-GGUF/snapshots/c099eb48e663fd284577b04978a94ffccb261841/mtp-gemma-4-26B-A4B-it.gguf'
+5.41.366.458 W load: control-looking token:     50 '<|tool_response>' was not control-type; this is probably a bug in the model. its type will be overridden
+5.41.369.491 W load: control-looking token:    212 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+5.41.376.932 W load: special_eog_ids contains '<|tool_response>', removing '</s>' token from EOG list
+5.41.577.708 W llama_kv_cache: layer   3: sharing with layer 29. k = 0x14de0c000, v = 0x151e0c000
+5.41.577.732 W llama_kv_cache: layer   0: sharing with layer 28. k = 0x120b84000, v = 0x121184000
+5.41.577.733 W llama_kv_cache: layer   1: sharing with layer 28. k = 0x120b84000, v = 0x121184000
+5.41.577.740 W llama_kv_cache: layer   2: sharing with layer 28. k = 0x120b84000, v = 0x121184000
+5.41.645.690 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 32768, kv_unified = 'false'
+5.41.715.845 I srv  llama_server: model loaded
+5.41.715.851 I srv  llama_server: listening on http://127.0.0.1:8081
+5.51.395.389 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+5.51.395.425 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+5.54.644.997 I slot print_timing: id  0 | task 0 | n_gen =    224, tg =  74.13 t/s, tg_3s =  74.46 t/s
+5.57.657.420 I slot print_timing: id  0 | task 0 | n_gen =    443, tg =  73.41 t/s, tg_3s =  72.70 t/s
+6.00.666.085 I slot print_timing: id  0 | task 0 | n_gen =    663, tg =  73.32 t/s, tg_3s =  73.12 t/s
+6.03.669.827 I slot print_timing: id  0 | task 0 | n_gen =    879, tg =  72.96 t/s, tg_3s =  71.91 t/s
+6.04.395.071 I slot print_timing: id  0 | task 0 | prompt eval time =     241.14 ms /    30 tokens (    8.04 ms per token,   124.41 tokens per second)
+6.04.395.074 I slot print_timing: id  0 | task 0 |        eval time =   12758.47 ms /   925 tokens (   13.81 ms per token,    72.42 tokens per second)
+6.04.395.075 I slot print_timing: id  0 | task 0 |       total time =   12999.61 ms /   955 tokens
+6.04.395.075 I slot print_timing: id  0 | task 0 |    graphs reused =        337
+6.04.395.078 I slot print_timing: id  0 | task 0 | draft acceptance = 0.86176 (  586 accepted /   680 generated), mean len =  2.72
+6.04.395.097 I slot      release: id  0 | task 0 | stop processing: n_tokens = 956, truncated = 0
+6.20.763.970 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 266514166696
+6.20.805.582 I slot launch_slot_: id  0 | task 344 | processing task, is_child = 0
+6.24.906.480 I slot print_timing: id  0 | task 344 | n_gen =    226, tg =  74.09 t/s, tg_3s =  74.42 t/s
+6.27.917.594 I slot print_timing: id  0 | task 344 | n_gen =    434, tg =  71.59 t/s, tg_3s =  69.08 t/s
+6.30.930.868 I slot print_timing: id  0 | task 344 | n_gen =    643, tg =  70.85 t/s, tg_3s =  69.36 t/s
+6.33.968.757 I slot print_timing: id  0 | task 344 | n_gen =    858, tg =  70.83 t/s, tg_3s =  70.77 t/s
+6.36.979.449 I slot print_timing: id  0 | task 344 | n_gen =   1076, tg =  71.15 t/s, tg_3s =  72.41 t/s
+6.40.006.565 I slot print_timing: id  0 | task 344 | n_gen =   1289, tg =  71.02 t/s, tg_3s =  70.36 t/s
+6.43.044.434 I slot print_timing: id  0 | task 344 | n_gen =   1510, tg =  71.26 t/s, tg_3s =  72.75 t/s
+6.46.057.935 I slot print_timing: id  0 | task 344 | n_gen =   1712, tg =  70.74 t/s, tg_3s =  67.03 t/s
