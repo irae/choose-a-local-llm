@@ -34,6 +34,10 @@ not.
 | <ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" top /> | **25k** | <TokCell shallow="17.3" deep="14.8" cap="mem" top-shallow top-deep /> | **22.0 GB** | <ScoreCell value="0.982/0.939" sub="100% completion" top /> | <ScoreCell value="not run" /> | <span title="EvalPlus 3h32 · Mendel —">3h32†</span> |
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -90,6 +94,12 @@ Measured on the M1 Max 32 GB, the only machine that served this file.
 | MTP-on-MLX probe | before 2026-08-30 | `mlx_vlm.generate`, draft `Qwen3.8-27B-MTP-4bit` rev `b643c01`, depth fixed at 2 | 20.24 tok/s (py), 22.49 tok/s (js), 82.8% and 97.1% acceptance, 17.1 GB peak; CLI only, no server API (`hardware/kamaji/research/run2/`) |
 
 The full curves are on [the benchmarks page](../setups/kamaji/benchmarks/qwen3.8-27b.md).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-presets:end -->
 
 ## Log
 

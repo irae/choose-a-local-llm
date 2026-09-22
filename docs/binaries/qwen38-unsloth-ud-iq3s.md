@@ -45,6 +45,25 @@ a harness or serving defect voided is not.
 | <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-unsloth-ud-iq3s" top /> | **65k** | <TokCell shallow="29.36" deep="20.92" cap="mem" top-shallow top-deep /> | **14.2 GB** | <ScoreCell value="0.963/0.921" sub="100% completion" top /> | <ScoreCell value="79" note="88%" pill="mendel-guided" top /> | <span title="EvalPlus 3h08 · Mendel 4h46"><b>7h54</b></span> |
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.8-27b-iq3s`). Every preset of this page: [`qwen3.8-27b-iq3s`](#preset-qwen3-8-27b-iq3s).
+
+```ini
+[qwen3.8-27b-iq3s]
+hf = unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 188416
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -122,6 +141,29 @@ pending. On the RTX 5060 Ti, the
 drafter climb is a speed-only block; the guided and EvalPlus rows
 both serve the q8_0 arm with no drafter. The full curves are on
 [the report page](../setups/arrietty/reports/qwen3.8-27b.md).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+### `qwen3.8-27b-iq3s` {#preset-qwen3-8-27b-iq3s}
+
+M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
+
+```ini
+[qwen3.8-27b-iq3s]
+hf = unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 188416
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-presets:end -->
 
 ## Log
 

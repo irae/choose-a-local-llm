@@ -41,7 +41,7 @@ they are written, and a change to a number must reach them by hand:
 | `docs/setups/<setup>/index.md`, `historical.md`, the retired pages | the whole page |
 | `docs/models/<slug>.md` | title line, "What the numbers say" and everything after the last marker |
 | `docs/models/index.md` | "Choosing a quant or a provider", "Best per machine" |
-| `docs/binaries/<id>.md` | title, file line, the three bullets, "Speed and context", "Log", the lines under each generated block |
+| `docs/binaries/<id>.md` | title, file line, the three bullets, "Speed and context", "Log", the lines under each generated block; never the preset files under `hardware/` |
 | `docs/benchmarks/decode-speed.md` | the opening, the two curve matrices, "What this test caught", "Fast is a ticket" |
 | `docs/benchmarks/evalplus.md`, `mendel.md` | everything outside the markers, the Legend included |
 | `docs/index.md` | Legend, "Machines", "Method" |
@@ -76,6 +76,9 @@ which filter; `†` marks a filter the page does not state.
 | `gen:binary-rows` | `docs/binaries/<id>.md` | `parts` (from `renderTable`, then one line per retired row) | `rows` of every setup whose four spec fields match the entry (or one of its `quantAliases`); hidden and abandoned included, retired as a bare line |
 | `gen:binary-evalplus` | `docs/binaries/<id>.md` | `evalplus` (from `renderEvalplusTable`) | `evalplusRuns` of every setup whose row or spec matches the four fields |
 | `gen:binary-mendel` | `docs/binaries/<id>.md` | `mendel` (from `renderModelMendel`) | the CSVs: local valid runs of every setup, every prompt version, runs on retired builds included, spec matched on the four fields |
+| `gen:binary-best-preset` | `docs/binaries/<id>.md` (optional: a page without the markers is left alone) | `renderBinaryBestPreset` | the best live row of the page (first of `sortRows`) as an INI section from its `command`, plus a link per preset of the page |
+| `gen:binary-presets` | `docs/binaries/<id>.md` (optional) | `renderBinaryPresets` | one INI section per pi id among the page's live rows, anchored `#preset-<id>` |
+| `hardware/<setup>/models.ini`, `models-prism-llama.ini` | whole file, one per server binary | `writePresetFile` | every visible row with a `pi` block, one section per pi id, keys parsed from `command` (`-m`, alias and port dropped; `hf-repo`/`hf-file` from the download; the fast-mode thinking budget appended) |
 | `gen:evalplus-table` | `docs/benchmarks/evalplus.md` | `renderEvalplusTable` | `evalplusRuns` of every setup, fast-mode runs only |
 | `gen:decode-summary` | `docs/benchmarks/decode-speed.md` | `renderDecodeSummary` | per setup, per model, per backend (the second part of `config`): the best complete row, or the best row |
 | `gen:mendel-local` | `docs/benchmarks/mendel.md` | `mendelTable` | `results.json`: local valid runs of every setup, current prompt version, runs on a retired build excluded |
@@ -89,7 +92,9 @@ Calls the check script cannot resolve and lists by name:
 branch (`marks` is never set, so `applyTable` runs instead);
 `applyBlock(updated, partial[0], partial[1], partial[2], target)` is
 the partial table above; `applyBlock(original, start, end, block, target)`
-is the body of `writeBlock`, whose own calls the table resolves.
+is the body of `writeBlock`, whose own calls the table resolves;
+`applyBlock(content, startMark, endMark, block, target)` is the body of
+`applyOptionalBlock`, the two binary preset blocks above.
 
 Cross-cutting reads that touch every table:
 

@@ -112,7 +112,20 @@ the block names at the point it is needed.
    type ([common rules](./common-rules.md), rule 10). Write the value
    you serve and where it came from in `state.md` before the server
    starts, and in the row's config note.
-5. Start the server for ONE config. Verify it serves, with a request the
+5. Serve ONE config. On a machine with a router service
+   (`tools/llama-router.sh`; Linux today), the server is already up:
+   `tools/llama-router.sh start` starts it when it is down, reuses it
+   when the preset file is unchanged, and restarts it when the file
+   changed. Then name the row's pi id in the request's `model` field
+   and the router loads that preset alone (`--models-max 1`); the run
+   starts no server of its own, and the port is the router's (8080
+   stock, 8082 for the PrismML fork). A row whose flags are not in
+   `hardware/<id>/models.ini` is a new row, not a reason to start a
+   server by hand: add it to `docs/setups/<id>/models.json` and run
+   `npm run docs:tables`. The id must match a section exactly: the
+   router also lists every cached file with default flags, and a wrong
+   id loads one of those in silence. Without a router service, start
+   the server for ONE config. Either way, verify it serves, with a request the
    size of the work this block will send, not a one-token warmup: a
    config can pass a small probe and OOM on the first real request
    ([context creep](./context-creep.md), step 1).

@@ -34,6 +34,10 @@ defect voided is not.
 † from an earlier serving config or method; re-run pending.
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -97,6 +101,12 @@ creep's 58K, so the served window is now 40960 (the MLX 5-percent
 window rule, owner, 2026-09-12) and the speed and memory cells on this
 page carry the 2026-08-29 creep's numbers marked stale. The full
 curves are on [the benchmarks page](../setups/kamaji/benchmarks/bonsai-27b.md).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-presets:end -->
 
 ## Log
 

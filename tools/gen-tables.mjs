@@ -40,6 +40,10 @@ const BINARY_ROWS_START = '<!-- gen:binary-rows:start -->'
 const BINARY_ROWS_END = '<!-- gen:binary-rows:end -->'
 const BINARY_EVALPLUS_START = '<!-- gen:binary-evalplus:start -->'
 const BINARY_EVALPLUS_END = '<!-- gen:binary-evalplus:end -->'
+const BINARY_BEST_PRESET_START = '<!-- gen:binary-best-preset:start -->'
+const BINARY_BEST_PRESET_END = '<!-- gen:binary-best-preset:end -->'
+const BINARY_PRESETS_START = '<!-- gen:binary-presets:start -->'
+const BINARY_PRESETS_END = '<!-- gen:binary-presets:end -->'
 const BINARY_MENDEL_START = '<!-- gen:binary-mendel:start -->'
 const BINARY_MENDEL_END = '<!-- gen:binary-mendel:end -->'
 
@@ -828,6 +832,121 @@ function applyBlock(content, startMark, endMark, block, target) {
   return `${before}\n${block}\n${after}`
 }
 
+// A block whose markers a page does not carry is left alone; one marker
+// without the other is still an error.
+function applyOptionalBlock(content, startMark, endMark, block, target) {
+  const has = content.includes(startMark) || content.includes(endMark)
+  return has ? applyBlock(content, startMark, endMark, block, target) : content
+}
+
+// The server preset of a row: the row's command as an INI section for
+// `llama-server --models-preset`, named by the row's pi id. `-m`, the
+// alias and the port belong to the single-model command and are dropped;
+// the file comes back as `hf-repo` and `hf-file`; the fast-mode thinking
+// budget (docs/methodology/evalplus.md) is appended.
+const PRESET_KEYS = { m: 'model', ngl: 'n-gpu-layers', fa: 'flash-attn', c: 'ctx-size', t: 'threads', b: 'batch-size', ub: 'ubatch-size', n: 'predict' }
+const PRESET_DROP = new Set(['model', 'alias', 'port', 'host'])
+// One preset file per server binary: the stock build and the PrismML fork
+// cannot share a router process.
+const PRESET_FILES = { 'llama-server': 'models.ini', 'prism-llama': 'models-prism-llama.ini' }
+const presetFile = (r) => `hardware/${r.data?.setup || r.setup}/${PRESET_FILES[r.spec.server]}`
+
+function presetOf(r) {
+  if (!r.pi || !PRESET_FILES[r.spec.server]) return null
+  const cmd = r.command.replace(/\\\n/g, ' ')
+  const hf = cmd.match(/hf download (\S+) ([^\s)"]+)/)
+  const loraDir = cmd.match(/D=([^;\s]+);/)
+  const loraTail = cmd.match(/echo "\$D([^"]+)"/)
+  const lora = loraDir && loraTail ? `${loraDir[1]}${loraTail[1]}` : null
+  const flat = cmd.replace(/"\$\([^]*?\)"/g, '_')
+  const tokens = flat.split(/\s+/).slice(1)
+  const lines = [`[${r.pi.id}]`]
+  if (hf) lines.push(`hf-repo = ${hf[1]}`, `hf-file = ${hf[2]}`)
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i]
+    if (!t.startsWith('-')) continue
+    let key = t.replace(/^-+/, '')
+    key = PRESET_KEYS[key] || key
+    const next = tokens[i + 1]
+    const hasValue = next !== undefined && !next.startsWith('-')
+    if (hasValue) i++
+    if (PRESET_DROP.has(key)) continue
+    if (key === 'lora') {
+      if (lora) lines.push(`lora = ${lora.replace(/^~/, process.env.HOME)}`)
+      continue
+    }
+    lines.push(`${key} = ${hasValue ? next : 'true'}`)
+  }
+  lines.push('reasoning-budget = 8192', 'reasoning-budget-message = Thinking budget reached. Give the final answer now.')
+  return lines.join('\n')
+}
+
+function presetAnchor(id) {
+  return `preset-${id.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`
+}
+
+// One preset per pi id: rows that share an id share a server command.
+function presetRows(rows) {
+  const seen = new Map()
+  for (const r of rows) {
+    const p = presetOf(r)
+    if (!p || seen.has(r.pi.id)) continue
+    seen.set(r.pi.id, { row: r, preset: p })
+  }
+  return [...seen.values()]
+}
+
+function renderBinaryBestPreset(live) {
+  const presets = presetRows(live)
+  if (!presets.length) return 'No server preset: this file is not served by a llama.cpp build.'
+  const best = presets[0]
+  const machine = best.row.data.hardwareName || best.row.hardwareSlug
+  const links = presets.map((p) => `[\`${p.row.pi.id}\`](#${presetAnchor(p.row.pi.id)})`).join(', ')
+  return [
+    `Best configuration on this page, as a section of \`${presetFile(best.row)}\` (${machine}, ${best.row.spec.server}, pi id \`${best.row.pi.id}\`). Every preset of this page: ${links}.`,
+    '',
+    '```ini',
+    best.preset,
+    '```',
+  ].join('\n')
+}
+
+function renderBinaryPresets(live) {
+  const presets = presetRows(live)
+  if (!presets.length) return 'No server preset: this file is not served by a llama.cpp build.'
+  return presets.map((p) => {
+    const machine = p.row.data.hardwareName || p.row.hardwareSlug
+    return [`### \`${p.row.pi.id}\` {#${presetAnchor(p.row.pi.id)}}`, '', `${machine}, a section of \`${presetFile(p.row)}\` (${p.row.spec.server}).`, '', '```ini', p.preset, '```'].join('\n')
+  }).join('\n\n')
+}
+
+// The machine's preset file: every visible llama-server row of the setup,
+// one section per pi id, for `llama-server --models-preset`.
+function writePresetFile(data) {
+  const rows = sortRows(data.rows.filter((r) => !r.hidden && !r.retired)).map((r) => ({ ...r, data }))
+  for (const [server, file] of Object.entries(PRESET_FILES)) {
+    const presets = presetRows(rows.filter((r) => r.spec.server === server))
+    const target = `hardware/${data.setup}/${file}`
+    if (!presets.length) continue
+    const block = [
+      `# ${server} presets of ${data.hardwareName || data.setup}. Generated by tools/gen-tables.mjs from`,
+      `# docs/setups/${data.setup}/models.json; never hand-edit. Serve with`,
+      `# tools/llama-router.sh, or: llama-server --models-preset ${target} --models-max 1`,
+      '',
+      ...presets.map((p) => `${p.preset}\n`),
+    ].join('\n')
+    const original = existsSync(target) ? readFileSync(target, 'utf8') : ''
+    if (original === block) continue
+    if (CHECK) {
+      console.error(`STALE: ${target} does not match docs/setups/${data.setup}/models.json. Run \`npm run docs:tables\`.`)
+      drift = true
+    } else {
+      writeFileSync(target, block)
+      console.log(`updated: ${target}`)
+    }
+  }
+}
+
 function applyTable(content, table) {
   return applyBlock(content, START, END, table, 'comparison target')
 }
@@ -1241,6 +1360,8 @@ function writeBinaryPages(datas) {
     let updated = applyBlock(original, BINARY_ROWS_START, BINARY_ROWS_END, parts.join('\n'), target)
     updated = applyBlock(updated, BINARY_EVALPLUS_START, BINARY_EVALPLUS_END, evalplus, target)
     updated = applyBlock(updated, BINARY_MENDEL_START, BINARY_MENDEL_END, mendel, target)
+    updated = applyOptionalBlock(updated, BINARY_BEST_PRESET_START, BINARY_BEST_PRESET_END, renderBinaryBestPreset(live), target)
+    updated = applyOptionalBlock(updated, BINARY_PRESETS_START, BINARY_PRESETS_END, renderBinaryPresets(live), target)
     if (updated === original) continue
     if (CHECK) {
       console.error(`STALE: ${target} does not match docs/binaries.json. Run \`npm run docs:tables\`.`)
@@ -1304,6 +1425,7 @@ for (const slug of new Set(BINARIES.map((b) => b.model))) {
 
 mendelSiteRows = setupsAll.flatMap((data) => data.rows)
 writeBinaryPages(setupsAll)
+for (const data of setupsAll) writePresetFile(data)
 writeBlock('docs/benchmarks/evalplus.md', EVALPLUS_START, EVALPLUS_END, renderEvalplusTable(setupsAll, { fast: 'only' }))
 writeBlock('docs/benchmarks/decode-speed.md', DECODE_START, DECODE_END, renderDecodeSummary(setupsAll))
 writeBlock('docs/benchmarks/mendel.md', MENDEL_LOCAL_START, MENDEL_LOCAL_END, mendelTable(currentPromptVersion(blindRunsAll), { global: true }))

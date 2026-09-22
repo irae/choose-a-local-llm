@@ -31,6 +31,25 @@ rows included; a run a harness or serving defect voided is not.
 | <ModelSpec base="Qwen3.8-27B" quant="AD-IQ3_S" server="llama-server" publisher="AtomicChat" repo="AtomicChat/Qwen3.8-27B-GGUF" kv="f16" effort="medium" hardware="m1-max-32gb" page="/binaries/qwen38-atomicchat-ad-iq3s" top /> | **104k** | <TokCell shallow="14.3" deep="9.6" cap="mem" top-shallow top-deep /> | **24.1 GB** | <ScoreCell value="0.988/0.927†" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 3h11 · Mendel 1h00"><b>4h10</b></span> |
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.8-27b`). Every preset of this page: [`qwen3.8-27b`](#preset-qwen3-8-27b).
+
+```ini
+[qwen3.8-27b]
+hf = AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 106496
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -77,6 +96,29 @@ Measured on the M1 Max 32 GB, the only machine that served this file.
 | real text, llama-benchy | 2026-09-12 | f16 KV, no drafter, `-c 106496` | 14.3 tok/s at 4K, 9.6 tok/s at 98K; the drafter loses at every depth on real text (12.2/8.8 at n-max 1, 8.1/7.4 at n-max 3, 35 to 69 percent acceptance) |
 
 The full curve is on [the benchmarks page](../setups/kamaji/benchmarks/qwen3.8-27b.md).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+### `qwen3.8-27b` {#preset-qwen3-8-27b}
+
+M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
+
+```ini
+[qwen3.8-27b]
+hf = AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 106496
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-presets:end -->
 
 ## Log
 

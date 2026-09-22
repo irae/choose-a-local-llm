@@ -31,6 +31,10 @@ defect voided is not.
 No configuration row.
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-best-preset:end -->
+
 No configuration row. The file never reached a served state.
 
 ## Quality — EvalPlus HumanEval+
@@ -54,6 +58,12 @@ No agent run yet.
 Measured on the RTX 5060 Ti 16 GB, the only machine that served this file.
 
 No speed measurement exists; the file never loaded.
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-presets:end -->
 
 ## Log
 

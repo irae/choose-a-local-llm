@@ -34,6 +34,10 @@ serving defect voided is not.
 Retired entry (M1 Max 32 GB): Gemma-4-12B, LM Studio entry google/gemma-4-12b — thinking-on repetition loop; entry gone from the model store ([details](../setups/kamaji/lmstudio-retired.md)).
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-best-preset:end -->
+
 † from an earlier serving config or method; re-run pending.
 
 ## Quality — EvalPlus HumanEval+
@@ -104,6 +108,12 @@ this machine: 34.19 tok/s at 4,115 used tokens and 23.23 at 131,098, in
 (both 2026-09-04, chat path, wired limit 24000). The full
 account is on [the LM Studio page](../setups/kamaji/lmstudio-retired.md) and
 [the Gemma-12B archive page](../setups/kamaji/benchmarks/gemma-4-12b-it.md#the-retired-entry).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-presets:end -->
 
 ## Log
 

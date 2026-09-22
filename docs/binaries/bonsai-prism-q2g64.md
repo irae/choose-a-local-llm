@@ -42,6 +42,24 @@ run a harness or serving defect voided is not.
 † from an earlier serving config or method; re-run pending.
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+Best configuration on this page, as a section of `hardware/kamaji/models-prism-llama.ini` (M1 Max 32 GB, prism-llama, pi id `bonsai-prism`). Every preset of this page: [`bonsai-prism`](#preset-bonsai-prism), [`bonsai-prism-f16`](#preset-bonsai-prism-f16).
+
+```ini
+[bonsai-prism]
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 65536
+parallel = 1
+cache-type-k = q4_0
+cache-type-v = q4_0
+kv-mean-center = ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -98,6 +116,45 @@ Measured on the M1 Max 32 GB, the only machine that served this file.
 | creep, no drafter | 2026-09-08 | f16 KV, `-c 131072`, wired limit 25000 | 14.95 tok/s at 4K, 9.67 tok/s at 131098, the `-c` boundary itself; wired flat at 18.2-18.6 GB, zero swap growth, no floor found |
 
 The full sweep tables are on [the benchmarks page](../setups/kamaji/benchmarks/bonsai-27b.md).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+### `bonsai-prism` {#preset-bonsai-prism}
+
+M1 Max 32 GB, a section of `hardware/kamaji/models-prism-llama.ini` (prism-llama).
+
+```ini
+[bonsai-prism]
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 65536
+parallel = 1
+cache-type-k = q4_0
+cache-type-v = q4_0
+kv-mean-center = ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+
+### `bonsai-prism-f16` {#preset-bonsai-prism-f16}
+
+M1 Max 32 GB, a section of `hardware/kamaji/models-prism-llama.ini` (prism-llama).
+
+```ini
+[bonsai-prism-f16]
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 131072
+parallel = 1
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-presets:end -->
 
 ## Log
 

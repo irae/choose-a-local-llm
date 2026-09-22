@@ -167,6 +167,14 @@ Benchmark work:
   background login items off before a run and back on after. The
   script ships with no list; the README says how to build one. Read
   the README before you disable anything on the owner's Mac.
+- `tools/llama-router.sh`. The machine's long-running llama-server in
+  router mode: `start` (start, reuse, or restart when
+  `hardware/<id>/models.ini` changed), `status`, `stop`, `install` (a
+  systemd user unit, logs in `journalctl --user -u llama-router`).
+  Listens on `0.0.0.0:8080`; a request names a row's pi id and the
+  router loads that preset, one model at a time. `ROUTER=prism` runs
+  the fork's presets on 8082. Runs use it instead of starting a server
+  (`docs/methodology/checklist.md`, step 5).
 - `tools/archive-evidence.sh`. Copy a run's session logs to a place
   where they survive. Run it before a run's worktree is removed.
   Evidence goes to `~/.local/share/choose-a-local-llm/evidence/`, not

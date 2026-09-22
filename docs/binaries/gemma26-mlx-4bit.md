@@ -27,6 +27,10 @@ harness or serving defect voided is not.
 💀 This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task. [Why it is not a candidate](../setups/kamaji/gemma-4-26b-a4b-mlx-retired.md).
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -68,6 +72,12 @@ Measured on the M1 Max 32 GB, the only machine that served this file.
 | real-text speed, llama-benchy | 2026-09-12 | wired limit 25000 | 49.3 tok/s at 4K, 23.4 at 64K |
 
 The full curve is on [the benchmarks page](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-presets:end -->
 
 ## Log
 

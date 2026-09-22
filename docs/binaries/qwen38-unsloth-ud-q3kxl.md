@@ -25,6 +25,10 @@ is not.
 No configuration row.
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-best-preset:end -->
+
 No configuration row. The build was dropped as a candidate before any
 scoring block ran.
 
@@ -64,6 +68,12 @@ Measured on the M1 Max 32 GB, the only machine that served this file.
 | ladder and creep, drafter dropped | 2026-09-08 | f16 KV, wired 25000, `-c 131072`, `--spec-type draft-mtp` removed | ran the whole depth list clean with no stop; 131098 tokens at 8.58 tok/s, swap delta negative from the second step on |
 
 The full curves are on [the benchmarks page](../setups/kamaji/benchmarks/qwen3.8-27b.md).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-presets:end -->
 
 ## Log
 

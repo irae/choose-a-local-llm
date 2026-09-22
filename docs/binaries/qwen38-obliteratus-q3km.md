@@ -32,6 +32,10 @@ No configuration row.
 Retired entry (RTX 5060 Ti 16 GB): Qwen3.8-27B, GGUF, Q3_K_M (OBLITERATUS, abliterated), q8_0 KV, no drafter, effort medium — the build cannot do the agent task and scored lowest on the card; the owner retired the model and deleted both files ([details](../setups/arrietty/qwen38-obliterated-retired.md)).
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -75,6 +79,12 @@ file.
 
 The full curves stay in the run kit,
 `hardware/arrietty/benchmarks/bench23/results/`.
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-presets:end -->
 
 ## Log
 

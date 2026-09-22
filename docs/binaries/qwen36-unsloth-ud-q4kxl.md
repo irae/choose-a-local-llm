@@ -51,6 +51,27 @@ rows included; a run a harness or serving defect voided is not.
 † from an earlier serving config or method; re-run pending.
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.6-35b-a3b`). Every preset of this page: [`qwen3.6-35b-a3b`](#preset-qwen3-6-35b-a3b), [`qwen3.6-35b-a3b-q4kxl`](#preset-qwen3-6-35b-a3b-q4kxl), [`qwen3.6-35b-a3b-f16`](#preset-qwen3-6-35b-a3b-f16).
+
+```ini
+[qwen3.6-35b-a3b]
+hf = unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL
+no-mmproj = true
+spec-type = draft-mtp
+spec-draft-n-max = 3
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 98304
+cache-type-k = q8_0
+cache-type-v = q8_0
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -130,6 +151,74 @@ page](../setups/arrietty/benchmarks/qwen3.6-35b-a3b.md). The M1 Max's
 q8_0 KV arm at n-max 3 reads 43.7 tok/s at 4K and 13.0 at 82K; the RTX
 5060 Ti's served n-max 2 arm reads 61.16 tok/s at 4K and 45.42 at
 97280.
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+### `qwen3.6-35b-a3b` {#preset-qwen3-6-35b-a3b}
+
+M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
+
+```ini
+[qwen3.6-35b-a3b]
+hf = unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL
+no-mmproj = true
+spec-type = draft-mtp
+spec-draft-n-max = 3
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 98304
+cache-type-k = q8_0
+cache-type-v = q8_0
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+
+### `qwen3.6-35b-a3b-q4kxl` {#preset-qwen3-6-35b-a3b-q4kxl}
+
+RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models.ini` (llama-server).
+
+```ini
+[qwen3.6-35b-a3b-q4kxl]
+hf-repo = unsloth/Qwen3.6-35B-A3B-MTP-GGUF
+hf-file = Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf
+no-mmproj = true
+parallel = 1
+spec-type = draft-mtp
+spec-draft-n-max = 2
+n-gpu-layers = 999
+fit = off
+n-cpu-moe = 21
+flash-attn = on
+ctx-size = 98304
+cache-type-k = q8_0
+cache-type-v = q8_0
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+
+### `qwen3.6-35b-a3b-f16` {#preset-qwen3-6-35b-a3b-f16}
+
+M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
+
+```ini
+[qwen3.6-35b-a3b-f16]
+hf = unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 65536
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-presets:end -->
 
 ## Log
 

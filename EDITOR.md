@@ -230,7 +230,10 @@ Page shape, in this order:
    exist. When more than one machine served the file, the bullets
    compare the machines and give both numbers.
 4. **Configurations**: the generated block between
-   `<!-- gen:binary-rows:... -->` markers.
+   `<!-- gen:binary-rows:... -->` markers, then the generated block
+   between `<!-- gen:binary-best-preset:... -->` markers: the best
+   configuration of the page as an INI section of the machine's
+   preset file, with a link to every preset of the page.
 5. **Quality — EvalPlus HumanEval+**: the generated block between
    `<!-- gen:binary-evalplus:... -->` markers, then one or two lines
    on the cause of the empties.
@@ -242,7 +245,14 @@ Page shape, in this order:
    under the heading. When more than one machine served the file, the
    table has a machine column. Full curves stay on the archive page;
    link it.
-8. **Log**: chronological bullets, oldest first, one per event: the
+8. **Server presets**: the generated block between
+   `<!-- gen:binary-presets:... -->` markers, one INI section per pi
+   id of the page. The section is the row's startup command in the
+   form `llama-server --models-preset` reads; the whole file per
+   machine is `hardware/<id>/models.ini` (`models-prism-llama.ini`
+   for the fork), also generated. Hand-write nothing here, and never
+   edit a preset file: change the row's `command` and regenerate.
+9. **Log**: chronological bullets, oldest first, one per event: the
    date, what happened in one to three sentences, and the pointer to
    the run kit folder (`hardware/<id>/benchmarks/bench<N>/`) or the
    research kit. When more than one machine served the file, each

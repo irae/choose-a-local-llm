@@ -39,6 +39,27 @@ included; a run a harness or serving defect voided is not.
 | <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-pq2" top /> | **208k** | <TokCell shallow="46.0" deep="14.5" cap="mem" top-shallow top-deep /> | **15.4 GB** | <ScoreCell value="0.988/0.945" sub="100% completion" top /> | <ScoreCell value="60.5" pill="mendel-blind" top /> | <span title="EvalPlus 1h59 · Mendel 1h32"><b>3h31</b></span> |
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+Best configuration on this page, as a section of `hardware/arrietty/models-prism-llama.ini` (RTX 5060 Ti 16 GB, prism-llama, pi id `bonsai2-27b-pq2-f16`). Every preset of this page: [`bonsai2-27b-pq2-f16`](#preset-bonsai2-27b-pq2-f16), [`bonsai2-27b-pq2`](#preset-bonsai2-27b-pq2).
+
+```ini
+[bonsai2-27b-pq2-f16]
+hf-repo = prism-ml/Ternary-Bonsai-2-27B-gguf
+hf-file = Ternary-Bonsai-2-27B-PQ2_0.gguf
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+fit = off
+flash-attn = on
+ctx-size = 122880
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -96,6 +117,52 @@ file.
 
 The full curves stay in the run kit,
 `hardware/arrietty/benchmarks/bench24/results/`.
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+### `bonsai2-27b-pq2-f16` {#preset-bonsai2-27b-pq2-f16}
+
+RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models-prism-llama.ini` (prism-llama).
+
+```ini
+[bonsai2-27b-pq2-f16]
+hf-repo = prism-ml/Ternary-Bonsai-2-27B-gguf
+hf-file = Ternary-Bonsai-2-27B-PQ2_0.gguf
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+fit = off
+flash-attn = on
+ctx-size = 122880
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+
+### `bonsai2-27b-pq2` {#preset-bonsai2-27b-pq2}
+
+RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models-prism-llama.ini` (prism-llama).
+
+```ini
+[bonsai2-27b-pq2]
+hf-repo = prism-ml/Ternary-Bonsai-2-27B-gguf
+hf-file = Ternary-Bonsai-2-27B-PQ2_0.gguf
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+fit = off
+flash-attn = on
+ctx-size = 212992
+cache-type-k = q8_0
+cache-type-v = q8_0
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-presets:end -->
 
 ## Log
 

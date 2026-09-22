@@ -41,6 +41,27 @@ defect voided is not.
 † from an earlier serving config or method; re-run pending.
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+Best configuration on this page, as a section of `hardware/arrietty/models.ini` (RTX 5060 Ti 16 GB, llama-server, pi id `qwen3.8-27b-ista`). Every preset of this page: [`qwen3.8-27b-ista`](#preset-qwen3-8-27b-ista), [`qwen3.8-27b`](#preset-qwen3-8-27b).
+
+```ini
+[qwen3.8-27b-ista]
+hf-repo = ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF
+hf-file = Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+fit = off
+flash-attn = on
+ctx-size = 65536
+cache-type-k = q8_0
+cache-type-v = q8_0
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -112,6 +133,52 @@ The card reads about twice the Mac's speed on less than half its
 window. The full curves are on the archive pages of
 [the M1 Max](../setups/kamaji/benchmarks/qwen3.8-27b.md) and
 [the RTX 5060 Ti](../setups/arrietty/benchmarks/qwen3.8-27b.md).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+### `qwen3.8-27b-ista` {#preset-qwen3-8-27b-ista}
+
+RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models.ini` (llama-server).
+
+```ini
+[qwen3.8-27b-ista]
+hf-repo = ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF
+hf-file = Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+fit = off
+flash-attn = on
+ctx-size = 65536
+cache-type-k = q8_0
+cache-type-v = q8_0
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+
+### `qwen3.8-27b` {#preset-qwen3-8-27b}
+
+M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
+
+```ini
+[qwen3.8-27b]
+hf = ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp
+no-mmproj = true
+spec-type = draft-mtp
+spec-draft-n-max = 3
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 131072
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-presets:end -->
 
 ## Log
 

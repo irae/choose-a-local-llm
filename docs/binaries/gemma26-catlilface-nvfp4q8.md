@@ -26,6 +26,28 @@ rows included; a run a harness or serving defect voided is not.
 | <ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/gemma26-catlilface-nvfp4q8" top /> | **97k** | <TokCell shallow="58.77" deep="45.59" cap="mem" top-shallow top-deep /> | **15.2 GB** | <ScoreCell value="0.988/0.951" sub="100% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-guided" top /> | <span title="EvalPlus 2h34 · Mendel 0h23"><b>2h57</b></span> |
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+Best configuration on this page, as a section of `hardware/arrietty/models.ini` (RTX 5060 Ti 16 GB, llama-server, pi id `gemma-4-26b-a4b-nvfp4`). Every preset of this page: [`gemma-4-26b-a4b-nvfp4`](#preset-gemma-4-26b-a4b-nvfp4).
+
+```ini
+[gemma-4-26b-a4b-nvfp4]
+hf-repo = catlilface/Gemma-4-26B-A4B-NVFP4-GGUF
+hf-file = Gemma4-26b-NVFP4Q8.gguf
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+fit = off
+n-cpu-moe = 7
+flash-attn = on
+ctx-size = 98304
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -73,6 +95,32 @@ Measured on the RTX 5060 Ti 16 GB, the only machine that served this file.
 The Mac's k-quant of the same model at f16 KV, n-max 2, reads 60.1
 tok/s at 4K, 28.2 at 98K and 19.1 at its 197K deep cell (2026-09-12). The full curves are on
 [the benchmarks page](../setups/arrietty/benchmarks/gemma-4-26b-a4b.md).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+### `gemma-4-26b-a4b-nvfp4` {#preset-gemma-4-26b-a4b-nvfp4}
+
+RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models.ini` (llama-server).
+
+```ini
+[gemma-4-26b-a4b-nvfp4]
+hf-repo = catlilface/Gemma-4-26B-A4B-NVFP4-GGUF
+hf-file = Gemma4-26b-NVFP4Q8.gguf
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+fit = off
+n-cpu-moe = 7
+flash-attn = on
+ctx-size = 98304
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-presets:end -->
 
 ## Log
 

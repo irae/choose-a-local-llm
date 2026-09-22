@@ -27,6 +27,27 @@ rows included; a run a harness or serving defect voided is not.
 | <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" hardware="rtx-5060ti-16gb" page="/binaries/gemma12-freedomaisvr-nvfp4" /> | **261k** | <TokCell shallow="49.55" deep="33.11" cap="mem" top-shallow top-deep /> | **12.3 GB** | <ScoreCell value="0.927/0.896" sub="100% completion" top /> | <ScoreCell value="0" note="0%" pill="model-failed" /> | <span title="EvalPlus 0h51 · Mendel 0h01"><b>0h52</b></span> |
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+Best configuration on this page, as a section of `hardware/arrietty/models.ini` (RTX 5060 Ti 16 GB, llama-server, pi id `gemma-4-12b-nvfp4`). Every preset of this page: [`gemma-4-12b-nvfp4`](#preset-gemma-4-12b-nvfp4).
+
+```ini
+[gemma-4-12b-nvfp4]
+hf-repo = FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF
+hf-file = gemma-4-12b-it-nvfp4.gguf
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+fit = off
+flash-attn = on
+ctx-size = 262144
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -80,6 +101,31 @@ Measured on the RTX 5060 Ti 16 GB, the only machine that served this file.
 
 The k-quant of the same model read 47.39, 40.26 and 32.18 tok/s at the
 same depths on this card.
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+### `gemma-4-12b-nvfp4` {#preset-gemma-4-12b-nvfp4}
+
+RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models.ini` (llama-server).
+
+```ini
+[gemma-4-12b-nvfp4]
+hf-repo = FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF
+hf-file = gemma-4-12b-it-nvfp4.gguf
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+fit = off
+flash-attn = on
+ctx-size = 262144
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-presets:end -->
 
 ## Log
 

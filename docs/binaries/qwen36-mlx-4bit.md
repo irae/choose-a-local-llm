@@ -27,6 +27,10 @@ rows included; a run a harness or serving defect voided is not.
 | <ModelSpec base="Qwen3.6-35B-A3B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.6-35B-A3B-4bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-mlx-4bit" top /> | **37k** | <TokCell shallow="54.5" deep="39.1" cap="mem" top-shallow top-deep /> | **24.6 GB** | <ScoreCell value="0.957/0.939" sub="99% completion" top /> | <ScoreCell value="37.5" note="38%" pill="mendel-blind" top /> | <span title="EvalPlus 5h02 · Mendel 0h19"><b>5h20</b></span> |
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -68,6 +72,12 @@ Measured on the M1 Max 32 GB, the only machine that served this file.
 | real text, llama-benchy | 2026-09-12 | at the 36864 window | 54.5 tok/s at 4K, 39.1 at 35840, within four percent of the creep |
 
 The full curves are on [the benchmarks page](../setups/kamaji/benchmarks/qwen3.6-35b-a3b.md).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+No server preset: this file is not served by a llama.cpp build.
+<!-- gen:binary-presets:end -->
 
 ## Log
 

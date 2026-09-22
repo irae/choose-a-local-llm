@@ -33,6 +33,27 @@ is not.
 † from an earlier serving config or method; re-run pending.
 <!-- gen:binary-rows:end -->
 
+<!-- gen:binary-best-preset:start -->
+Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `gemma-4-26b-a4b`). Every preset of this page: [`gemma-4-26b-a4b`](#preset-gemma-4-26b-a4b).
+
+```ini
+[gemma-4-26b-a4b]
+hf = unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL
+no-mmproj = true
+spec-type = draft-mtp
+spec-draft-n-max = 2
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 212992
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-best-preset:end -->
+
 ## Quality — EvalPlus HumanEval+
 
 <!-- gen:binary-evalplus:start -->
@@ -99,6 +120,31 @@ Measured on the M1 Max 32 GB, the only machine that served this file.
 
 The full curves are on
 [the benchmarks page](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md).
+
+## Server presets
+
+<!-- gen:binary-presets:start -->
+### `gemma-4-26b-a4b` {#preset-gemma-4-26b-a4b}
+
+M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
+
+```ini
+[gemma-4-26b-a4b]
+hf = unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL
+no-mmproj = true
+spec-type = draft-mtp
+spec-draft-n-max = 2
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 212992
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+<!-- gen:binary-presets:end -->
 
 ## Log
 
