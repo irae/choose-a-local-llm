@@ -217,3 +217,6 @@ No splice source. Watcher at `RUNWATCH_SILENCE=2700`. Codegen started 18:39 UTC,
 still running.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen36-gguf-think/`.
 Deviation: none.
+
+Close: HumanEval base 0.976, plus 0.939 (plus unchanged from the unbudgeted 0.957/0.939, base up one problem). 0/164 empty, 17/164 forced. Wall 2:27:26 (18:39–21:07 UTC). Server and watcher stopped, wired recovered. This is the last row of the fast table; `bonsai-fork-budget-mendel-guided` is next.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen36-gguf-think/`.
