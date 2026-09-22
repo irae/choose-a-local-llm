@@ -207,3 +207,16 @@ Deviation: none.
 
 Close: HumanEval base 0.976, plus 0.945, up from the unbudgeted 0.945/0.921 in `models.json`. 0/164 empty, 13/164 forced. Wall 5:31:42 (12:52–18:23 UTC). Server and watcher stopped, wired recovered quickly.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-ista-nodrafter-xhigh/`.
+
+### `fast-qwen36-gguf-think` — running
+
+Served: `llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL --alias qwen3.6-35b-a3b --no-mmproj --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 -ngl 999 -fa on -c 32768 --cache-type-k q8_0 --cache-type-v q8_0 --jinja --port 8081 --reasoning-budget 8192 --reasoning-budget-message "$BUDGET_MSG"`, thinking on. Same benign `get_repo_commit` metadata line as earlier blocks; file already cached. Probe: `finish_reason: stop`, content 922 characters, reasoning 2663 characters.
+
+No splice source. Watcher at `RUNWATCH_SILENCE=2700`. Codegen started 18:39 UTC, `EVALPLUS_MAX_NEW_TOKENS=16384`, 164 to generate. Last block of the fast table; `qwen36-gguf-f16` and `qwen36-gguf-f16-nodrafter` share this score under the shared-score rule, for the coordinator to write.
+
+still running.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen36-gguf-think/`.
+Deviation: none.
+
+Close: HumanEval base 0.976, plus 0.939 (plus unchanged from the unbudgeted 0.957/0.939, base up one problem). 0/164 empty, 17/164 forced. Wall 2:27:26 (18:39–21:07 UTC). Server and watcher stopped, wired recovered. This is the last row of the fast table; `bonsai-fork-budget-mendel-guided` is next.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen36-gguf-think/`.

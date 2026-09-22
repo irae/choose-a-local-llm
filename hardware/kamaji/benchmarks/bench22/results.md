@@ -136,3 +136,15 @@ Fast mode, effort xhigh, no drafter. No splice source; all 164 generated.
 
 Forced task ids: `HumanEval/2, 32, 36, 39, 47, 75, 76, 99, 108, 116, 132, 134, 145`. None came back empty. Wall 22 Sep 12:52–18:23 UTC.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen38-gguf-ista-nodrafter-xhigh/`.
+
+## `fast-qwen36-gguf-think`
+
+Fast mode, thinking on. No splice source; all 164 generated. Last row of the fast table; `qwen36-gguf-f16` and `qwen36-gguf-f16-nodrafter` share this score under the shared-score rule, for the coordinator to write.
+
+| old/new | Config | base | plus | empty | forced | wall |
+|---|---|--:|--:|--:|--:|--:|
+| old (no budget, `docs/setups/kamaji/models.json`) | Qwen3.6-35B-A3B, GGUF MTP q8_0, thinking on | 0.957 | 0.939 | — | — | — |
+| new (fast, budget 8192) | Qwen3.6-35B-A3B, GGUF MTP q8_0, thinking on | **0.976** | 0.939 | 0/164 | 17/164 | 147.4 min |
+
+Plus unchanged, base up one problem. Forced task ids: `HumanEval/4, 14, 23, 31, 32, 33, 39, 55, 62, 76, 81, 113, 130, 137, 139, 142, 160`. None came back empty. Wall 22 Sep 18:39–21:07 UTC.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-qwen36-gguf-think/`.
