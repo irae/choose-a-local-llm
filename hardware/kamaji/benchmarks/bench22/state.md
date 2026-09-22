@@ -139,3 +139,6 @@ Served: fork binary, Q2_g64 file, bias file, `-c 32768`, q4_0/q4_0 KV, no drafte
 still running.
 Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-fast-think/`.
 Deviation: none.
+
+Close: HumanEval base 0.951, plus 0.915, 0/164 empty, 4/164 forced (`HumanEval/47`, `84`, `97`, `129`; none empty). Wall 9:11:23 (16:12 21 Sep – 01:23 22 Sep UTC). Server and watcher stopped, wired recovered.
+Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-fast-think/`.

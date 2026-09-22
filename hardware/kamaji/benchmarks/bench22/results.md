@@ -64,3 +64,15 @@ Summary: forced-pass 2, forced-fail-late 0, forced-fail-loop 1, forced-fail-wron
 
 `corrected_think_budget`: unchanged. No late answer appeared once the budget was removed, so 30000 stands as the think budget for this config.
 Files: `hardware/kamaji/benchmarks/bench22/results/qwen38-bartowski-forced-rerun/`.
+
+## `bonsai-fork-fast-think`
+
+Fast mode: `--reasoning-budget 8192`, `EVALPLUS_MAX_NEW_TOKENS=16384`, no calibration, no forced re-run. No splice source; all 164 generated.
+
+| old/new | Config | base | plus | empty | forced | wall |
+|---|---|--:|--:|--:|--:|--:|
+| old (`bonsai-fork-single`, budget 10240) | Ternary-Bonsai-27B fork, Q2_g64, q4_0 KV + bias, thinking on | 0.927 | 0.890 | 4/164 | — | 594.8 min |
+| new (fast, budget 8192) | Ternary-Bonsai-27B fork, Q2_g64, q4_0 KV + bias, thinking on | **0.951** | **0.915** | **0/164** | 4/164 | 551.4 min |
+
+Forced task ids: `HumanEval/47`, `84`, `97`, `129`. None came back empty. Wall 21 Sep 16:12 – 22 Sep 01:23 UTC.
+Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-fast-think/`.
