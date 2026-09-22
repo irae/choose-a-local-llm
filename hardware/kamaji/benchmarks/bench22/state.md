@@ -165,3 +165,6 @@ Splice from `bench22/results/gemma26-gguf-budget-think`: kept 145, regenerate 19
 still running.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-gemma26-gguf/`.
 Deviation: none.
+
+Close: HumanEval base 0.988, plus 0.957 (matches the old budget-19491 row exactly), 0/164 empty, 19/19 regenerated problems forced. New-generation wall 0:38:25 (03:56–04:34 UTC), plus 78.6 min of spliced-source time for the 145 kept problems. Server and watcher stopped, wired recovered quickly this time (~112681 pages).
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-gemma26-gguf/`.
