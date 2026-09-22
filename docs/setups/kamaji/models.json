@@ -163,10 +163,10 @@
       "tokShallow": "14.1",
       "tokDeep": "8.1",
       "memory": "24.4 GB",
-      "evalplus": "0.945/0.921/97%",
+      "evalplus": "0.976/0.945/100%",
       "mendel": "pending",
       "id": "qwen38-gguf-ista-nodrafter-xhigh",
-      "evalplusWall": 583.2,
+      "evalplusWall": 332.0,
       "spec": {
         "base": "Qwen3.8-27B",
         "quant": "IQ3_S-mtp",
@@ -178,16 +178,13 @@
       },
       "hidden": false,
       "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 163840 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b-ista`. The same build with the drafter off, measured 2026-09-09 at wired limit 25000. Without the drafter `-c 163840` serves, and the creep runs clean to 147478 tokens at 8.30 tok/s before the speed floor; swap never grew. The drafter is a loss on this build at every depth tried: at depth 256, no drafter reads 14.4 tok/s against 12.4 at n-max 3, and at depth 98338 it reads 9.5 against 7.9, so the no-drafter server is both faster and 33K deeper. Mendel blind at effort xhigh, the model's own default: 80.5/100, complete 8/8, one critical trap, 109 minutes, peak context 117,940 of a 147,456 window, no compaction. Sampling recorded for the first time on this machine: temperature 1.0, top_p 0.95, the values llama-server reads from the model file. EvalPlus at effort xhigh, scored 2026-09-10 at budget 30000 on the same build served at `-c 32768`: 0.945/0.921, five empty, every one a completion that hit the 30000-token cap, in about 9h43 of active wall time; below the medium and low rows on both metrics. More thinking does not help this model on short single-turn problems.",
+      "note": "pi id `qwen3.8-27b-ista`. The same build with the drafter off, measured 2026-09-09 at wired limit 25000. Without the drafter `-c 163840` serves, and the creep runs clean to 147478 tokens at 8.30 tok/s before the speed floor; swap never grew. The drafter is a loss on this build at every depth tried: at depth 256, no drafter reads 14.4 tok/s against 12.4 at n-max 3, and at depth 98338 it reads 9.5 against 7.9, so the no-drafter server is both faster and 33K deeper. Mendel blind at effort xhigh, the model's own default: 80.5/100, complete 8/8, one critical trap, 109 minutes, peak context 117,940 of a 147,456 window, no compaction. Sampling recorded for the first time on this machine: temperature 1.0, top_p 0.95, the values llama-server reads from the model file. EvalPlus at effort xhigh, scored 2026-09-10 at budget 30000 on the same build served at `-c 32768`: 0.945/0.921, five empty, every one a completion that hit the 30000-token cap, in about 9h43 of active wall time; below the medium and low rows on both metrics. More thinking does not help this model on short single-turn problems. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.945 with no empty answer and 13 forced answers of 164, in 332 minutes. The earlier run under a budget of 30000 read 0.945/0.921 and left 5 answers empty.",
       "pi": {
         "provider": "llama",
         "id": "qwen3.8-27b-ista",
         "contextWindow": 147456,
         "maxTokens": 8192
-      },
-      "stale": [
-        "evalplus"
-      ]
+      }
     },
     {
       "config": "Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low",
@@ -1553,6 +1550,20 @@
       "emptyCause": "none",
       "forced": "17/164",
       "wall": 389.0
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
+      "mode": "effort xhigh",
+      "row": "qwen38-gguf-ista-nodrafter-xhigh",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.976",
+      "plus": "0.945",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "13/164",
+      "wall": 332.0
     }
   ],
   "mendelWalls": {
