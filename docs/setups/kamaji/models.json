@@ -883,11 +883,8 @@
       "hidden": false,
       "added": "2026-09-19",
       "command": "llama-server -m \"$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf)\" \\\n  --alias bonsai2-27b-ptq1-mac --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `bonsai2-27b-ptq1-mac`, the dense packing at f16, the served pack on this machine. `-c 262144`, the trained context, loads and serves, with a harness window of 159744; the deepest clean depth is 163858 at 9.07 tok/s, and the next step, 196618 at 8.18, grew swap by 130 MB, so memory ends the window before the 8 tok/s floor does. The slot packing, PQ2_0, is the faster file on the card and the slower one here: 17.05 tok/s at 4K and under the floor between 41K and 66K, where PTQ1_0 reads 17.86 and 13.05. Read with the context-creep tool at wired limit 25000. Served by the PrismML llama.cpp fork, release `prism-b10685-7dffb15`, Metal build; the stock binary does not serve this file. f16 KV only on this machine. EvalPlus at effort xhigh under a server thinking budget of 16056 (the calibration longest converged reasoning, 10704, times 1.5; answer budget 2048, `max_tokens` 18104): 0.988/0.939 with no empty answer in 337 minutes. Seven problems hit the budget and were forced to answer. The card scored the same file at 0.970/0.939 under a budget of 30000. The four forced answers that failed their tests fail again without the budget, at the 30000-token cap, as loops, so the budget lost no answer. The blind agent row is pending.",
-      "evalplusWall": 337,
-      "stale": [
-        "evalplus"
-      ]
+      "note": "pi id `bonsai2-27b-ptq1-mac`, the dense packing at f16, the served pack on this machine. `-c 262144`, the trained context, loads and serves, with a harness window of 159744; the deepest clean depth is 163858 at 9.07 tok/s, and the next step, 196618 at 8.18, grew swap by 130 MB, so memory ends the window before the 8 tok/s floor does. The slot packing, PQ2_0, is the faster file on the card and the slower one here: 17.05 tok/s at 4K and under the floor between 41K and 66K, where PTQ1_0 reads 17.86 and 13.05. Read with the context-creep tool at wired limit 25000. Served by the PrismML llama.cpp fork, release `prism-b10685-7dffb15`, Metal build; the stock binary does not serve this file. f16 KV only on this machine. EvalPlus at effort xhigh under a server thinking budget of 16056 (the calibration longest converged reasoning, 10704, times 1.5; answer budget 2048, `max_tokens` 18104): 0.988/0.939 with no empty answer in 337 minutes. Seven problems hit the budget and were forced to answer. The card scored the same file at 0.970/0.939 under a budget of 30000. The four forced answers that failed their tests fail again without the budget, at the 30000-token cap, as loops, so the budget lost no answer. The blind agent row is pending. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, 154 answers kept from the run 26 budget of 16056 and 10 regenerated. It reads 0.988/0.939, the same pair as that run, with no empty answer and 10 forced answers of 164, in 289 minutes of which 72 are its own.",
+      "evalplusWall": 289.0
     },
     {
       "config": "Ternary-Bonsai-2-27B, MLX, 2-bit pack (prism-ml), f16, no drafter, thinking on",
@@ -1531,6 +1528,20 @@
       "emptyCause": "none",
       "forced": "19/164",
       "wall": 117.1
+    },
+    {
+      "slug": "bonsai-2-27b",
+      "model": "Ternary-Bonsai-2-27B (GGUF PTQ1_0, prism-ml, f16 KV, prism fork)",
+      "mode": "effort xhigh",
+      "row": "bonsai2-ptq1-mac-xhigh",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.988",
+      "plus": "0.939",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "10/164",
+      "wall": 289.0
     }
   ],
   "mendelWalls": {
