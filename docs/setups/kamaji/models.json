@@ -223,11 +223,11 @@
       "tokShallow": "13.60",
       "tokDeep": "7.97",
       "memory": "25.5 GB",
-      "evalplus": "0.945/0.927/100%",
+      "evalplus": "0.976/0.945/100%",
       "mendel": "pending",
       "id": "qwen38-gguf-unsloth-iq3s-xhigh",
       "added": "2026-09-14",
-      "evalplusWall": 815.6,
+      "evalplusWall": 389.0,
       "spec": {
         "base": "Qwen3.8-27B",
         "quant": "UD-IQ3_S",
@@ -239,16 +239,13 @@
       },
       "hidden": false,
       "command": "llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S \\\n  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 188416 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b-iq3s`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build. Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20000 on the same build served at `-c 32768`: 0.945/0.927, eight empty of 164, in 615.6 minutes of active time. Same base score as the ISTA build on this Mac and a higher `plus` score, at a smaller budget. A re-run of the eight empty problems on 2026-09-16 proved every one as the output budget, with the answer still coming at 20000 tokens; none was recovered. That re-run adds 200 minutes to the wall. Mendel blind at effort xhigh: 90.5/100, complete 8/8, with an anomaly — the model merged `master` into its own branch mid-run and imported infrastructure the blind base hides, so the row is not strictly base-comparable. Mendel guided at effort xhigh: 62.5 displayed of 76 raw, a valid partial at the 300-minute wall cap, 5 of 8 libraries. The drafter arms are pending.",
+      "note": "pi id `qwen3.8-27b-iq3s`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build. Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20000 on the same build served at `-c 32768`: 0.945/0.927, eight empty of 164, in 615.6 minutes of active time. Same base score as the ISTA build on this Mac and a higher `plus` score, at a smaller budget. A re-run of the eight empty problems on 2026-09-16 proved every one as the output budget, with the answer still coming at 20000 tokens; none was recovered. That re-run adds 200 minutes to the wall. Mendel blind at effort xhigh: 90.5/100, complete 8/8, with an anomaly — the model merged `master` into its own branch mid-run and imported infrastructure the blind base hides, so the row is not strictly base-comparable. Mendel guided at effort xhigh: 62.5 displayed of 76 raw, a valid partial at the 300-minute wall cap, 5 of 8 libraries. The drafter arms are pending. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.945 with no empty answer and 17 forced answers of 164, in 389 minutes. The earlier run under a budget of 20000 read 0.945/0.927 and left 8 answers empty.",
       "pi": {
         "provider": "llama",
         "id": "qwen3.8-27b-iq3s",
         "contextWindow": 147456,
         "maxTokens": 8192
-      },
-      "stale": [
-        "evalplus"
-      ]
+      }
     },
     {
       "config": "Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), no drafter, f16 KV, effort medium",
@@ -1542,6 +1539,20 @@
       "emptyCause": "none",
       "forced": "10/164",
       "wall": 289.0
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF UD-IQ3_S, unsloth, f16 KV)",
+      "mode": "effort xhigh",
+      "row": "qwen38-gguf-unsloth-iq3s-xhigh",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.976",
+      "plus": "0.945",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "17/164",
+      "wall": 389.0
     }
   ],
   "mendelWalls": {
