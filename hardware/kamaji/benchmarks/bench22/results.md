@@ -100,3 +100,15 @@ Fast mode, thinking on. Spliced from `bench22/results/gemma26-gguf-budget-think`
 
 Score unchanged from the budget-19491 row. All 19 regenerated problems hit the budget message; none came back empty. Wall: 38.4 min of new generation (03:56–04:34 UTC) plus 78.6 min of spliced-source time for the 145 kept problems.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-gemma26-gguf/`.
+
+## `fast-bonsai2-ptq1-mac-xhigh`
+
+Fast mode, effort xhigh, fork (Metal build, bench26's). Spliced from `bench26/results/bonsai2-budget-xhigh-mac`: kept 154, regenerated 10, matching the table's planning count.
+
+| old/new | Config | base | plus | empty | forced | wall |
+|---|---|--:|--:|--:|--:|--:|
+| old (bench26, budget 16056) | Ternary-Bonsai-2-27B, PTQ1_0, f16 KV, xhigh | 0.988 | 0.939 | 0/164 | 7/164 | 482.9 min |
+| new (fast, budget 8192, spliced) | Ternary-Bonsai-2-27B, PTQ1_0, f16 KV, xhigh | 0.988 | 0.939 | 0/164 | 10/164 | 289.3 min |
+
+Score unchanged from the bench26 row. All 10 regenerated problems hit the budget message; none came back empty. Wall: 72.1 min of new generation (04:47–05:59 UTC) plus 217.2 min of spliced-source time for the 154 kept problems.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-bonsai2-ptq1-mac-xhigh/`.

@@ -178,3 +178,6 @@ Splice from `bench26/results/bonsai2-budget-xhigh-mac`: kept 154, regenerate 10,
 still running.
 Files: `hardware/kamaji/benchmarks/bench22/results/fast-bonsai2-ptq1-mac-xhigh/`.
 Deviation: the empty-`-m` false start above; no data lost, caught before any request was sent.
+
+Close: HumanEval base 0.988, plus 0.939 (matches the bench26 budget-16056 row exactly), 0/164 empty, 10/10 regenerated problems forced. New-generation wall 1:12:08 (04:47–05:59 UTC), plus 217.2 min of spliced-source time for the 154 kept problems. Server and watcher stopped, wired recovered quickly.
+Files: `hardware/kamaji/benchmarks/bench22/results/fast-bonsai2-ptq1-mac-xhigh/`.
