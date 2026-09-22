@@ -253,3 +253,29 @@ Temporary pi entry `bonsai-prism-tb8192` removed from `~/.pi/agent/models.json`;
 Full report and scoring rubric breakdown in the subagent's hand-back; the summary table is in `results.md`.
 Files: `hardware/kamaji/benchmarks/bench22/results/bonsai-fork-budget-mendel-guided/`.
 Deviation: the branch-collision stop-and-ask, resolved by the coordinator's temporary-pi-id fix; no other deviation.
+
+## Handing-over — run 22 complete, 2026-09-22
+
+Every block in the runbook's order ran and closed. `retry-sweep` had nothing queued: every stop-and-ask this run hit (the MBPP cache hang, the false `SERVER DEAD` watcher verdict, the branch-name collision) got a same-session fix and no row was deferred to a human.
+
+**What ran, in order, with its result:**
+- `machine-setup`: pass, both probes pass, fork has the reasoning-budget flag.
+- `gemma26-gguf-calibrate-think` → `gemma26-gguf-budget-think` (0.988/0.957, 0/164 empty, 16/164 forced) → `gemma26-gguf-forced-rerun` (unchanged, budget confirmed correct).
+- `qwen38-bartowski-calibrate-xhigh` → `qwen38-bartowski-budget-xhigh` (0.982/0.951, 0/164 empty, 3/164 forced) → `qwen38-bartowski-forced-rerun` (0.976/0.951, plus unchanged).
+- `bonsai-fork-calibrate-think`: budgets 7488/2048/9536. Run paused here on owner request 2026-09-17, resumed 2026-09-21 under fast mode (owner, 2026-09-19): the derived-budget blocks `bonsai-fork-budget-think` and `bonsai-fork-forced-rerun` never ran; fast mode replaced them.
+- `bonsai-fork-fast-think` (0.951/0.915, 0/164 empty, 4/164 forced).
+- `fast-qwen38-gguf-xhigh` (0.982/0.951, matches the old budget-30000 row, spliced 153/11, 9/11 regenerated forced).
+- `fast-gemma26-gguf` (0.988/0.957, matches the old budget-19491 row, spliced 145/19, 19/19 regenerated forced).
+- `fast-bonsai2-ptq1-mac-xhigh` (0.988/0.939, matches the bench26 row, spliced 154/10, 10/10 regenerated forced).
+- `fast-qwen38-gguf-unsloth-iq3s-xhigh` (0.976/0.945, up from 0.945/0.927 unbudgeted, 0/164 empty, 17/164 forced).
+- `fast-qwen38-gguf-ista-nodrafter-xhigh` (0.976/0.945, up from 0.945/0.921 unbudgeted, 0/164 empty, 13/164 forced).
+- `fast-qwen36-gguf-think` (0.976/0.939, plus unchanged from 0.957/0.939 unbudgeted, base up one problem, 0/164 empty, 17/164 forced). Last row of the fast table; `qwen36-gguf-f16`, `qwen36-gguf-f16-nodrafter` and `gemma26-gguf-2x`, `bonsai-fork-2x` share their blocks' scores under the shared-score rule, for the coordinator to write.
+- `bonsai-fork-budget-mendel-guided` (44.5/100, up from the no-budget row's 31.5/100; 5/8 libraries against 1/8; the budget never fired on any turn of this row).
+
+**What a gate dropped, and why:** nothing was dropped. Three deviations were caught and fixed in the same block, all recorded above at their own point in this file: the MBPP dataset cache hang in `gemma26-gguf-budget-think` (fixed by hand-filling the cache file, no tool change); a false `SERVER DEAD` watcher verdict in `qwen38-bartowski-budget-xhigh` from a one-slot server queued behind a long turn (watcher restarted with a longer `RUNWATCH_SILENCE`, server never touched); the `bonsai-fork-budget-mendel-guided` branch-name collision (resolved by the coordinator with a temporary pi id, `bonsai-prism-tb8192`, removed at block close, file matches its backup).
+
+**Machine state left behind:** no server, no watcher, no Mendel Daemon. Wired memory at baseline (~2.2 GB). `~/.pi/agent/models.json` matches its pre-run-22 backup (`~/.pi/agent/models.json.bak-run22`, safe to remove). `tools/archive-evidence.sh` found nothing to archive; every result file is already committed under `hardware/kamaji/benchmarks/bench22/results/`.
+
+**Evidence:** every run and calibration file is committed on `run22`; nothing lives only in `~/.local/share/`.
+
+The coordinator writes `report.md`, adds the findings to `hardware/kamaji/benchmarks/INDEX.md`, decides what reaches the site (including the agent-row publish question already raised: the site has no field yet for a thinking-budget agent row), and merges `run22` into `master`.
