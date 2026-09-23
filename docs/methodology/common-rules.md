@@ -36,8 +36,8 @@ timings, prompt-cache reuse, the KV type decision) live in
    the same `models.json`; `--dry-run` and `--check` show the drift
    first, and it never touches a field it does not own; it writes only
    the rows of the machine it runs on, points the `llama` provider at
-   the router service on port 8080 and the `prism` provider at 8082,
-   and sets no `maxTokens`: pi's default is the value, and a row sets
+   the router service on port 8080, whichever build is up, and sets no
+   `maxTokens`: pi's default is the value, and a row sets
    one only for a measured conflict; owner, 2026-09-22). Every server
    config gets a copy-paste command block in its report whose alias
    equals the harness model id, and one section of the machine's preset

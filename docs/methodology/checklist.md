@@ -118,8 +118,10 @@ the block names at the point it is needed.
    when the preset file is unchanged, and restarts it when the file
    changed. Then name the row's pi id in the request's `model` field
    and the router loads that preset alone (`--models-max 1`); the run
-   starts no server of its own, and the port is the router's (8080
-   stock, 8082 for the PrismML fork). A row whose flags are not in
+   starts no server of its own, and the port is 8080. The PrismML build
+   (`tools/llama-router.sh start prism`, the Bonsai rows) runs on the
+   same port and never beside the official one: stop one, start the
+   other. A row whose flags are not in
    `hardware/<id>/models.ini` is a new row, not a reason to start a
    server by hand: add it to `docs/setups/<id>/models.json` and run
    `npm run docs:tables`. The id must match a section exactly: the

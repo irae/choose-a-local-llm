@@ -250,7 +250,7 @@ Page shape, in this order:
    id of the page. The section is the row's startup command in the
    form `llama-server --models-preset` reads; the whole file per
    machine is `hardware/<id>/models.ini` (`models-prism-llama.ini`
-   for the fork), also generated. Hand-write nothing here, and never
+   for the PrismML build), also generated. Hand-write nothing here, and never
    edit a preset file: change the row's `command` and regenerate.
 9. **Log**: chronological bullets, oldest first, one per event: the
    date, what happened in one to three sentences, and the pointer to

@@ -11,8 +11,9 @@
 // entry, the largest window wins. The tool sets `contextWindow`, removes
 // `maxTokens` (pi's default is the value; owner, 2026-09-22), and points
 // the `llama` provider at the router service (`tools/llama-router.sh`,
-// port 8080); rows served by the PrismML fork go to the `prism` provider
-// on port 8082. A new entry copies its shape (thinking map, compat, cost)
+// port 8080, the official build or the PrismML build, one at a time). A
+// model the running build does not hold gets the server's own "model
+// not found" answer. A new entry copies its shape (thinking map, compat, cost)
 // from an existing entry of the same model family, and is reported when
 // none exists.
 
@@ -28,9 +29,8 @@ const setup = opt('--setup', hostname().split('.')[0].toLowerCase())
 
 const ROUTERS = {
   llama: { name: 'llama-server', api: 'openai-completions', baseUrl: 'http://127.0.0.1:8080/v1', apiKey: 'no-key' },
-  prism: { name: 'llama-server (PrismML fork)', api: 'openai-completions', baseUrl: 'http://127.0.0.1:8082/v1', apiKey: 'no-key' },
 }
-const providerOf = (row) => (row.spec.server === 'prism-llama' ? 'prism' : row.pi.provider)
+const providerOf = (row) => row.pi.provider
 
 const dataFile = `docs/setups/${setup}/models.json`
 if (!existsSync(dataFile)) {
@@ -97,9 +97,10 @@ for (const [key, row] of wanted) {
   }
 }
 
-// Entries of the managed providers that no row of this machine wants:
-// another machine's rows, a renamed id, a hidden row. Only entries this
-// tool or a site row produced go; a hand-made entry stays.
+// The router providers hold exactly the presets of this machine: every
+// other entry there goes (another machine's row, a renamed id, a hidden
+// row). In any other provider only entries this tool or a site row
+// produced go; a hand-made entry (a cloud model) stays.
 const siteIds = new Set()
 for (const file of ['arrietty', 'kamaji'].map((s) => `docs/setups/${s}/models.json`)) {
   if (!existsSync(file)) continue
@@ -110,10 +111,16 @@ for (const [provider, p] of Object.entries(config.providers)) {
   const keep = []
   for (const m of p.models) {
     const wantedHere = wanted.has(`${provider}/${m.id}`)
-    if (wantedHere || !(m.generatedBy || siteIds.has(m.id))) keep.push(m)
-    else changes.push(`remove ${provider}/${m.id} (not a row of ${setup})`)
+    const managed = ROUTERS[provider] || m.generatedBy || siteIds.has(m.id)
+    if (wantedHere || !managed) keep.push(m)
+    else changes.push(`remove ${provider}/${m.id} (not a preset of ${setup})`)
   }
   p.models = keep
+  const empty = !p.models.length && (provider === 'prism' || (!p.baseUrl && !p.headers && !p.compat && !p.modelOverrides))
+  if (empty) {
+    changes.push(`remove provider ${provider}: no entry left`)
+    delete config.providers[provider]
+  }
 }
 
 if (!changes.length) {

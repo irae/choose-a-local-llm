@@ -172,8 +172,10 @@ Benchmark work:
   `hardware/<id>/models.ini` changed), `status`, `stop`, `install` (a
   systemd user unit, logs in `journalctl --user -u llama-router`).
   Listens on `0.0.0.0:8080`; a request names a row's pi id and the
-  router loads that preset, one model at a time. `ROUTER=prism` runs
-  the fork's presets on 8082. Runs use it instead of starting a server
+  router loads that preset, one model at a time. `start prism` runs the
+  PrismML build with `models-prism-llama.ini` on the same port, and only
+  one of the two runs at a time: `start` refuses while the other is up.
+  Runs use it instead of starting a server
   (`docs/methodology/checklist.md`, step 5).
 - `tools/archive-evidence.sh`. Copy a run's session logs to a place
   where they survive. Run it before a run's worktree is removed.
