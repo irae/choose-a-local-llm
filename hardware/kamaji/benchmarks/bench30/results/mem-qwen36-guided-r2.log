@@ -1,0 +1,4 @@
+12:02:28 free_mb=65 d_swapin=0 d_swapout=0 d_compress=0 d_decompress=0
+12:02:48 free_mb=163 d_swapin=8 d_swapout=0 d_compress=40 d_decompress=1858
+12:03:08 free_mb=164 d_swapin=8 d_swapout=0 d_compress=0 d_decompress=580
+12:03:28 free_mb=71 d_swapin=0 d_swapout=0 d_compress=0 d_decompress=298
