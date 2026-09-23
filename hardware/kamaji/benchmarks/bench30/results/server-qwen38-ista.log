@@ -1,0 +1,73 @@
+5.31.246.375 E get_repo_commit: error: HTTPLIB failed: SSL connection failed
+5.31.246.625 W get_repo_files: failed to resolve commit for ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF
+5.31.252.039 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+5.31.252.549 W srv  llama_server: -----------------
+5.31.252.550 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+5.31.252.551 W srv  llama_server: this can be a security risk (cross-origin attacks)
+5.31.252.551 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+5.31.252.551 W srv  llama_server: -----------------
+5.31.254.392 I srv    load_model: loading model 'ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp'
+5.31.876.295 W model has unused tensor blk.64.attn_norm.weight (size = 20480 bytes) -- ignoring
+5.31.876.303 W model has unused tensor blk.64.post_attention_norm.weight (size = 20480 bytes) -- ignoring
+5.31.876.313 W model has unused tensor blk.64.attn_q.weight (size = 51609600 bytes) -- ignoring
+5.31.876.316 W model has unused tensor blk.64.attn_k.weight (size = 4300800 bytes) -- ignoring
+5.31.876.319 W model has unused tensor blk.64.attn_v.weight (size = 4300800 bytes) -- ignoring
+5.31.876.331 W model has unused tensor blk.64.attn_output.weight (size = 25804800 bytes) -- ignoring
+5.31.876.334 W model has unused tensor blk.64.attn_q_norm.weight (size = 1024 bytes) -- ignoring
+5.31.876.337 W model has unused tensor blk.64.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+5.31.876.341 W model has unused tensor blk.64.ffn_gate.weight (size = 73113600 bytes) -- ignoring
+5.31.876.344 W model has unused tensor blk.64.ffn_down.weight (size = 73113600 bytes) -- ignoring
+5.31.876.347 W model has unused tensor blk.64.ffn_up.weight (size = 73113600 bytes) -- ignoring
+5.31.876.352 W model has unused tensor blk.64.nextn.eh_proj.weight (size = 43008000 bytes) -- ignoring
+5.31.876.355 W model has unused tensor blk.64.nextn.enorm.weight (size = 20480 bytes) -- ignoring
+5.31.876.359 W model has unused tensor blk.64.nextn.hnorm.weight (size = 20480 bytes) -- ignoring
+5.31.876.370 W model has unused tensor blk.64.nextn.shared_head_norm.weight (size = 20480 bytes) -- ignoring
+5.38.234.484 I cmn          init: llama threadpool init, n_threads = 8
+5.38.691.717 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 163840, kv_unified = 'false'
+5.38.696.495 W srv          init: chat template supports preserving reasoning, it is enabled by default (may use more tokens, disable via --no-reasoning-preserve)
+5.38.696.501 I srv  llama_server: model loaded
+5.38.696.503 I srv  llama_server: listening on http://127.0.0.1:8080
+5.38.696.503 W srv  llama_server: NOTICE: server default port will be changed to :9931 in a future release
+5.38.696.503 W srv  llama_server:         ref: https://github.com/ggml-org/llama.cpp/pull/26508
+5.46.991.943 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+5.46.992.012 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+5.54.743.354 I slot print_timing: id  0 | task 0 | n_gen =    100, tg =  15.30 t/s, tg_3s =  15.46 t/s
+5.57.746.611 I slot print_timing: id  0 | task 0 | n_gen =    146, tg =  15.31 t/s, tg_3s =  15.32 t/s
+6.00.755.078 I slot print_timing: id  0 | task 0 | n_gen =    192, tg =  15.30 t/s, tg_3s =  15.29 t/s
+6.03.759.593 I slot print_timing: id  0 | task 0 | n_gen =    238, tg =  15.31 t/s, tg_3s =  15.31 t/s
+6.06.766.467 I slot print_timing: id  0 | task 0 | n_gen =    284, tg =  15.30 t/s, tg_3s =  15.30 t/s
+6.09.775.700 I slot print_timing: id  0 | task 0 | n_gen =    330, tg =  15.30 t/s, tg_3s =  15.29 t/s
+6.12.785.876 I slot print_timing: id  0 | task 0 | n_gen =    376, tg =  15.30 t/s, tg_3s =  15.28 t/s
+6.15.804.922 I slot print_timing: id  0 | task 0 | n_gen =    422, tg =  15.29 t/s, tg_3s =  15.24 t/s
+6.18.821.108 I slot print_timing: id  0 | task 0 | n_gen =    468, tg =  15.29 t/s, tg_3s =  15.25 t/s
+6.21.838.548 I slot print_timing: id  0 | task 0 | n_gen =    514, tg =  15.28 t/s, tg_3s =  15.24 t/s
+6.24.857.099 I slot print_timing: id  0 | task 0 | n_gen =    560, tg =  15.28 t/s, tg_3s =  15.24 t/s
+6.27.873.667 I slot print_timing: id  0 | task 0 | n_gen =    606, tg =  15.28 t/s, tg_3s =  15.25 t/s
+6.30.892.258 I slot print_timing: id  0 | task 0 | n_gen =    652, tg =  15.28 t/s, tg_3s =  15.24 t/s
+6.33.913.014 I slot print_timing: id  0 | task 0 | n_gen =    698, tg =  15.27 t/s, tg_3s =  15.23 t/s
+6.36.932.087 I slot print_timing: id  0 | task 0 | n_gen =    744, tg =  15.27 t/s, tg_3s =  15.24 t/s
+6.39.949.345 I slot print_timing: id  0 | task 0 | n_gen =    790, tg =  15.27 t/s, tg_3s =  15.25 t/s
+6.42.968.711 I slot print_timing: id  0 | task 0 | n_gen =    836, tg =  15.27 t/s, tg_3s =  15.23 t/s
+6.45.989.431 I slot print_timing: id  0 | task 0 | n_gen =    882, tg =  15.26 t/s, tg_3s =  15.23 t/s
+6.49.007.439 I slot print_timing: id  0 | task 0 | n_gen =    928, tg =  15.26 t/s, tg_3s =  15.24 t/s
+6.52.033.666 I slot print_timing: id  0 | task 0 | n_gen =    974, tg =  15.26 t/s, tg_3s =  15.20 t/s
+6.55.056.978 I slot print_timing: id  0 | task 0 | n_gen =   1020, tg =  15.26 t/s, tg_3s =  15.22 t/s
+6.58.079.672 I slot print_timing: id  0 | task 0 | n_gen =   1066, tg =  15.26 t/s, tg_3s =  15.22 t/s
+7.01.106.002 I slot print_timing: id  0 | task 0 | n_gen =   1112, tg =  15.25 t/s, tg_3s =  15.20 t/s
+7.04.131.616 I slot print_timing: id  0 | task 0 | n_gen =   1158, tg =  15.25 t/s, tg_3s =  15.20 t/s
+7.07.179.088 I slot print_timing: id  0 | task 0 | n_gen =   1204, tg =  15.25 t/s, tg_3s =  15.09 t/s
+7.10.206.560 I slot print_timing: id  0 | task 0 | n_gen =   1250, tg =  15.24 t/s, tg_3s =  15.19 t/s
+7.13.235.458 I slot print_timing: id  0 | task 0 | n_gen =   1296, tg =  15.24 t/s, tg_3s =  15.19 t/s
+7.16.265.429 I slot print_timing: id  0 | task 0 | n_gen =   1342, tg =  15.24 t/s, tg_3s =  15.18 t/s
+7.19.294.263 I slot print_timing: id  0 | task 0 | n_gen =   1388, tg =  15.24 t/s, tg_3s =  15.19 t/s
+7.22.322.939 I slot print_timing: id  0 | task 0 | n_gen =   1434, tg =  15.24 t/s, tg_3s =  15.19 t/s
+7.25.361.246 I slot print_timing: id  0 | task 0 | n_gen =   1480, tg =  15.23 t/s, tg_3s =  15.14 t/s
+7.28.394.036 I slot print_timing: id  0 | task 0 | n_gen =   1526, tg =  15.23 t/s, tg_3s =  15.17 t/s
+7.29.383.274 I slot print_timing: id  0 | task 0 | prompt eval time =    1282.81 ms /    95 tokens (   13.50 ms per token,    74.06 tokens per second)
+7.29.383.277 I slot print_timing: id  0 | task 0 |        eval time =  101108.44 ms /  1541 tokens (   65.65 ms per token,    15.23 tokens per second)
+7.29.383.278 I slot print_timing: id  0 | task 0 |       total time =  102391.25 ms /  1636 tokens
+7.29.383.288 I slot print_timing: id  0 | task 0 |    graphs reused =       1534
+7.29.383.349 I slot      release: id  0 | task 0 | stop processing: n_tokens = 1635, truncated = 0
+7.40.462.236 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 384426658843
+7.40.523.931 I slot launch_slot_: id  0 | task 1544 | processing task, is_child = 0
+7.52.032.524 I slot print_timing: id  0 | task 1544 | prompt processing, n_tokens =   2048, progress = 0.58, t =  11.51 s / 177.95 tokens per second

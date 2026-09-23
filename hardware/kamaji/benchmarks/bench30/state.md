@@ -259,4 +259,27 @@ recovering (~1.85 GB). Removed the worker worktree
 uncommitted changes) and pruned; branch and evidence under
 `~/.local/share/mendel-benchmark/runs/` stay.
 
-Next: `qwen38-ista-f16-blind-tb8192`.
+## `qwen38-ista-f16-blind-tb8192`, started 2026-09-23 ~09:41
+
+Added temporary pi entry `qwen3.8-27b-ista-f16-tb8192` (copy of
+`qwen3.8-27b-ista-f16`, `contextWindow 147456`). Server: alias
+`qwen3.8-27b-ista-f16`, no drafter, `-c 163840`, f16 KV, port 8080,
+`$FAST_FLAGS`, matching `docs/setups/kamaji/models.json`
+`qwen38-gguf-ista-nodrafter-xhigh`'s command. Probe: `finish_reason:
+stop`, non-empty answer (763 chars) — pass.
+
+Launched `run-worker.sh qwen3.8-27b-ista-f16-tb8192 pi blind xhigh`
+with `MENDEL_CONTEXT_WINDOW=147456 MENDEL_RESERVE_TOKENS=16384` (no
+`MENDEL_KEEP_RECENT_TOKENS`, window above 65536). Worktree
+`../mendel-bench-qwen3.8-27b-ista-f16-tb8192-xhigh`, branch
+`qwen3.8-27b-ista-f16-tb8192-xhigh-issue-13`. `gh auth status` still
+valid. `benchmarks/run-watch.sh` armed on
+`~/.local/share/mendel-benchmark/runs/qwen3.8-27b-ista-f16-tb8192-xhigh-blind-events.jsonl`,
+`RUNWATCH_SILENCE=2700`. This is the 3-bit row: comparison 80.5/100,
+8/8, 109.4 minutes, no budget. Its fast-mode EvalPlus forced the most
+answers of the dense Qwen rows here, so it is the dense row most
+likely to reach the budget on an agent turn — count fires from the
+pi-side events/session files, not the server log (correction above).
+In progress.
+
+Next: `qwen36-q4kxl-q8-mtp3-guided-tb8192`.
