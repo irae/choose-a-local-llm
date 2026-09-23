@@ -72,7 +72,7 @@ The scored config. The bias file is generated, not downloadable. The file behind
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \
-  --alias bonsai-prism \
+  --alias bonsai-27b-q2g64-q4bias \
   -ngl 999 -fa on -c 65536 --parallel 1 \
   --cache-type-k q4_0 --cache-type-v q4_0 \
   --kv-mean-center ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf \
@@ -102,12 +102,12 @@ LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
 
 <ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="f16" effort="on" page="/binaries/bonsai-prism-q2g64" />
 
-pi id `bonsai-prism-f16`. Measured 2026-09-08 at wired limit 25000, fork revision `abbae72`. The fork at f16 KV has no speed floor inside `-c 131072`: 15.0 tok/s at 4K and 9.67 at 131K, the `-c` boundary itself, with wired flat at 18.3 GB and zero swap growth. The q4_0 KV rows floor at 33K, so the cache type was the floor, not the weights. No larger `-c` was tried. EvalPlus is pending: the f16 cache does not carry the calibrated q4 row's score. Mendel guided at thinking high: 12.5/100 capped from 36 raw, one of eight libraries, 376 tool calls and 74 tool errors at a 127K peak context.
+pi id `bonsai-27b-q2g64-f16`. Measured 2026-09-08 at wired limit 25000, fork revision `abbae72`. The fork at f16 KV has no speed floor inside `-c 131072`: 15.0 tok/s at 4K and 9.67 at 131K, the `-c` boundary itself, with wired flat at 18.3 GB and zero swap growth. The q4_0 KV rows floor at 33K, so the cache type was the floor, not the weights. No larger `-c` was tried. EvalPlus is pending: the f16 cache does not carry the calibrated q4 row's score. Mendel guided at thinking high: 12.5/100 capped from 36 raw, one of eight libraries, 376 tool calls and 74 tool errors at a 127K peak context.
 
 ```bash
 LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \
   -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \
-  --alias bonsai-prism-f16 \
+  --alias bonsai-27b-q2g64-f16 \
   -ngl 999 -fa on -c 131072 --parallel 1 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081

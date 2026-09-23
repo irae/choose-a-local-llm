@@ -32,10 +32,10 @@ rows included; a run a harness or serving defect voided is not.
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
-Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.8-27b`). Every preset of this page: [`qwen3.8-27b`](#preset-qwen3-8-27b).
+Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.8-27b-ad-iq3s`). Every preset of this page: [`qwen3.8-27b-ad-iq3s`](#preset-qwen3-8-27b-ad-iq3s).
 
 ```ini
-[qwen3.8-27b]
+[qwen3.8-27b-ad-iq3s]
 hf = AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S
 no-mmproj = true
 parallel = 1
@@ -100,12 +100,12 @@ The full curve is on [the benchmarks page](../setups/kamaji/benchmarks/qwen3.8-2
 ## Server presets
 
 <!-- gen:binary-presets:start -->
-### `qwen3.8-27b` {#preset-qwen3-8-27b}
+### `qwen3.8-27b-ad-iq3s` {#preset-qwen3-8-27b-ad-iq3s}
 
 M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
 
 ```ini
-[qwen3.8-27b]
+[qwen3.8-27b-ad-iq3s]
 hf = AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S
 no-mmproj = true
 parallel = 1

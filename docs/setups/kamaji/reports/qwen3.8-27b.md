@@ -82,11 +82,11 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
 
 <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-unsloth-ud-iq3s" />
 
-pi id `qwen3.8-27b-iq3s`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build. Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20000 on the same build served at `-c 32768`: 0.945/0.927, eight empty of 164, in 615.6 minutes of active time. Same base score as the ISTA build on this Mac and a higher `plus` score, at a smaller budget. A re-run of the eight empty problems on 2026-09-16 proved every one as the output budget, with the answer still coming at 20000 tokens; none was recovered. That re-run adds 200 minutes to the wall. Mendel blind at effort xhigh: 90.5/100, complete 8/8, with an anomaly — the model merged `master` into its own branch mid-run and imported infrastructure the blind base hides, so the row is not strictly base-comparable. Mendel guided at effort xhigh: 62.5 displayed of 76 raw, a valid partial at the 300-minute wall cap, 5 of 8 libraries. The drafter arms are pending. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.945 with no empty answer and 17 forced answers of 164, in 389 minutes. The earlier run under a budget of 20000 read 0.945/0.927 and left 8 answers empty.
+pi id `qwen3.8-27b-iq3s-f16`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build. Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20000 on the same build served at `-c 32768`: 0.945/0.927, eight empty of 164, in 615.6 minutes of active time. Same base score as the ISTA build on this Mac and a higher `plus` score, at a smaller budget. A re-run of the eight empty problems on 2026-09-16 proved every one as the output budget, with the answer still coming at 20000 tokens; none was recovered. That re-run adds 200 minutes to the wall. Mendel blind at effort xhigh: 90.5/100, complete 8/8, with an anomaly — the model merged `master` into its own branch mid-run and imported infrastructure the blind base hides, so the row is not strictly base-comparable. Mendel guided at effort xhigh: 62.5 displayed of 76 raw, a valid partial at the 300-minute wall cap, 5 of 8 libraries. The drafter arms are pending. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.945 with no empty answer and 17 forced answers of 164, in 389 minutes. The earlier run under a budget of 20000 read 0.945/0.927 and left 8 answers empty.
 
 ```bash
 llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S \
-  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \
+  --alias qwen3.8-27b-iq3s-f16 --no-mmproj --parallel 1 \
   -ngl 999 -fa on -c 188416 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
@@ -94,11 +94,11 @@ llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S \
 
 <ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="medium" page="/binaries/qwen38-bartowski-q4km" />
 
-pi id `qwen3.8-27b`. Re-measured 2026-09-08 at wired limit 25000: `-c 73728` serves, `-c 81920` OOMs at load, and decode and draft acceptance stay flat across the whole served range, so the boundary is memory alone. Speeds read with llama-benchy on real code text at the server's own sampling: no drafter 12.4 tok/s at 4K and 9.7 at 65.5K (2026-09-13); the MTP drafter loses at every depth, 11.8 and 8.6 at n-max 3 with 37 to 63 percent acceptance (2026-09-11) and 10.7 and 8.3 at n-max 1, so the served command carries no drafter. The Mendel rows below ran with the drafter at n-max 3 on the same window; the drafter changes speed, not output. Wired 25.0 GB, zero swap growth. The older `-c 49152` was the ceiling at wired 24000. The EvalPlus score is still the MLX effort-medium run, carried by the shared-score rule; this build has no full EvalPlus of its own, so it cannot be read against the two 3-bit builds below, which do. Mendel blind at effort medium: 87/100 at reserve 16384 and window 49152, and 76/100 on the 2026-09-08 re-run at reserve 8192 and window 65536. The two are different configurations, not a repeat: the second failed trap A, which the first passed.
+pi id `qwen3.8-27b-q4km`. Re-measured 2026-09-08 at wired limit 25000: `-c 73728` serves, `-c 81920` OOMs at load, and decode and draft acceptance stay flat across the whole served range, so the boundary is memory alone. Speeds read with llama-benchy on real code text at the server's own sampling: no drafter 12.4 tok/s at 4K and 9.7 at 65.5K (2026-09-13); the MTP drafter loses at every depth, 11.8 and 8.6 at n-max 3 with 37 to 63 percent acceptance (2026-09-11) and 10.7 and 8.3 at n-max 1, so the served command carries no drafter. The Mendel rows below ran with the drafter at n-max 3 on the same window; the drafter changes speed, not output. Wired 25.0 GB, zero swap growth. The older `-c 49152` was the ceiling at wired 24000. The EvalPlus score is still the MLX effort-medium run, carried by the shared-score rule; this build has no full EvalPlus of its own, so it cannot be read against the two 3-bit builds below, which do. Mendel blind at effort medium: 87/100 at reserve 16384 and window 49152, and 76/100 on the 2026-09-08 re-run at reserve 8192 and window 65536. The two are different configurations, not a repeat: the second failed trap A, which the first passed.
 
 ```bash
 llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
-  --alias qwen3.8-27b --no-mmproj --parallel 1 \
+  --alias qwen3.8-27b-q4km --no-mmproj --parallel 1 \
   -ngl 999 -fa on -c 73728 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
@@ -106,11 +106,11 @@ llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \
 
 <ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="f16" effort="xhigh" page="/binaries/qwen38-ista-iq3s-mtp" />
 
-pi id `qwen3.8-27b-ista`. The same build with the drafter off, measured 2026-09-09 at wired limit 25000. Without the drafter `-c 163840` serves, and the creep runs clean to 147478 tokens at 8.30 tok/s before the speed floor; swap never grew. The drafter is a loss on this build at every depth tried: at depth 256, no drafter reads 14.4 tok/s against 12.4 at n-max 3, and at depth 98338 it reads 9.5 against 7.9, so the no-drafter server is both faster and 33K deeper. Mendel blind at effort xhigh, the model's own default: 80.5/100, complete 8/8, one critical trap, 109 minutes, peak context 117,940 of a 147,456 window, no compaction. Sampling recorded for the first time on this machine: temperature 1.0, top_p 0.95, the values llama-server reads from the model file. EvalPlus at effort xhigh, scored 2026-09-10 at budget 30000 on the same build served at `-c 32768`: 0.945/0.921, five empty, every one a completion that hit the 30000-token cap, in about 9h43 of active wall time; below the medium and low rows on both metrics. More thinking does not help this model on short single-turn problems. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.945 with no empty answer and 13 forced answers of 164, in 332 minutes. The earlier run under a budget of 30000 read 0.945/0.921 and left 5 answers empty.
+pi id `qwen3.8-27b-ista-f16`. The same build with the drafter off, measured 2026-09-09 at wired limit 25000. Without the drafter `-c 163840` serves, and the creep runs clean to 147478 tokens at 8.30 tok/s before the speed floor; swap never grew. The drafter is a loss on this build at every depth tried: at depth 256, no drafter reads 14.4 tok/s against 12.4 at n-max 3, and at depth 98338 it reads 9.5 against 7.9, so the no-drafter server is both faster and 33K deeper. Mendel blind at effort xhigh, the model's own default: 80.5/100, complete 8/8, one critical trap, 109 minutes, peak context 117,940 of a 147,456 window, no compaction. Sampling recorded for the first time on this machine: temperature 1.0, top_p 0.95, the values llama-server reads from the model file. EvalPlus at effort xhigh, scored 2026-09-10 at budget 30000 on the same build served at `-c 32768`: 0.945/0.921, five empty, every one a completion that hit the 30000-token cap, in about 9h43 of active wall time; below the medium and low rows on both metrics. More thinking does not help this model on short single-turn problems. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.945 with no empty answer and 13 forced answers of 164, in 332 minutes. The earlier run under a budget of 30000 read 0.945/0.921 and left 5 answers empty.
 
 ```bash
 llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
-  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \
+  --alias qwen3.8-27b-ista-f16 --no-mmproj --parallel 1 \
   -ngl 999 -fa on -c 163840 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
@@ -122,7 +122,7 @@ A 3-bit build of the same model, revision `d562806`, with its drafter on. Measur
 
 ```bash
 llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \
-  --alias qwen3.8-27b --no-mmproj \
+  --alias qwen3.8-27b-ista-f16-mtp3 --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
   -ngl 999 -fa on -c 131072 \
   --cache-type-k f16 --cache-type-v f16 \
@@ -147,7 +147,7 @@ A second 3-bit build of the same model, revision `ca10ebc`. Measured 2026-09-08 
 
 ```bash
 llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \
-  --alias qwen3.8-27b --no-mmproj --parallel 1 \
+  --alias qwen3.8-27b-ad-iq3s --no-mmproj --parallel 1 \
   -ngl 999 -fa on -c 106496 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081

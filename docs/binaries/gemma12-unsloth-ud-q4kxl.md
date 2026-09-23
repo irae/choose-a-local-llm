@@ -52,10 +52,10 @@ harness or serving defect voided is not.
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
-Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `gemma-4-12b`). Every preset of this page: [`gemma-4-12b`](#preset-gemma-4-12b), [`gemma-4-12b-q4kxl`](#preset-gemma-4-12b-q4kxl), [`gemma-4-12b-2x`](#preset-gemma-4-12b-2x).
+Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `gemma-4-12b-q4kxl`). Every preset of this page: [`gemma-4-12b-q4kxl`](#preset-gemma-4-12b-q4kxl), [`gemma-4-12b-q4kxl-2slot`](#preset-gemma-4-12b-q4kxl-2slot).
 
 ```ini
-[gemma-4-12b]
+[gemma-4-12b-q4kxl]
 hf = unsloth/gemma-4-12b-it-GGUF:Q4_K_XL
 no-mmproj = true
 parallel = 1
@@ -144,12 +144,12 @@ The full curves for the M1 Max are on
 ## Server presets
 
 <!-- gen:binary-presets:start -->
-### `gemma-4-12b` {#preset-gemma-4-12b}
+### `gemma-4-12b-q4kxl` {#preset-gemma-4-12b-q4kxl}
 
 M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
 
 ```ini
-[gemma-4-12b]
+[gemma-4-12b-q4kxl]
 hf = unsloth/gemma-4-12b-it-GGUF:Q4_K_XL
 no-mmproj = true
 parallel = 1
@@ -163,33 +163,12 @@ reasoning-budget = 8192
 reasoning-budget-message = Thinking budget reached. Give the final answer now.
 ```
 
-### `gemma-4-12b-q4kxl` {#preset-gemma-4-12b-q4kxl}
-
-RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models.ini` (llama-server).
-
-```ini
-[gemma-4-12b-q4kxl]
-hf-repo = unsloth/gemma-4-12b-it-GGUF
-hf-file = gemma-4-12b-it-UD-Q4_K_XL.gguf
-no-mmproj = true
-parallel = 1
-n-gpu-layers = 999
-fit = off
-flash-attn = on
-ctx-size = 262144
-cache-type-k = f16
-cache-type-v = f16
-jinja = true
-reasoning-budget = 8192
-reasoning-budget-message = Thinking budget reached. Give the final answer now.
-```
-
-### `gemma-4-12b-2x` {#preset-gemma-4-12b-2x}
+### `gemma-4-12b-q4kxl-2slot` {#preset-gemma-4-12b-q4kxl-2slot}
 
 M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
 
 ```ini
-[gemma-4-12b-2x]
+[gemma-4-12b-q4kxl-2slot]
 hf = unsloth/gemma-4-12b-it-GGUF:Q4_K_XL
 no-mmproj = true
 parallel = 2

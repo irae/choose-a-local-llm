@@ -28,10 +28,10 @@ defect voided is not.
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
-Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.8-27b`). Every preset of this page: [`qwen3.8-27b`](#preset-qwen3-8-27b).
+Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.8-27b-q4km`). Every preset of this page: [`qwen3.8-27b-q4km`](#preset-qwen3-8-27b-q4km).
 
 ```ini
-[qwen3.8-27b]
+[qwen3.8-27b-q4km]
 hf = bartowski/Qwen3.8-27B-GGUF:Q4_K_M
 no-mmproj = true
 parallel = 1
@@ -105,12 +105,12 @@ The full curves, including the context ramp measured at the retired
 ## Server presets
 
 <!-- gen:binary-presets:start -->
-### `qwen3.8-27b` {#preset-qwen3-8-27b}
+### `qwen3.8-27b-q4km` {#preset-qwen3-8-27b-q4km}
 
 M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
 
 ```ini
-[qwen3.8-27b]
+[qwen3.8-27b-q4km]
 hf = bartowski/Qwen3.8-27B-GGUF:Q4_K_M
 no-mmproj = true
 parallel = 1

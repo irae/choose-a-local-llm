@@ -43,10 +43,10 @@ run a harness or serving defect voided is not.
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
-Best configuration on this page, as a section of `hardware/kamaji/models-prism-llama.ini` (M1 Max 32 GB, prism-llama, pi id `bonsai-prism`). Every preset of this page: [`bonsai-prism`](#preset-bonsai-prism), [`bonsai-prism-f16`](#preset-bonsai-prism-f16).
+Best configuration on this page, as a section of `hardware/kamaji/models-prism-llama.ini` (M1 Max 32 GB, prism-llama, pi id `bonsai-27b-q2g64-q4bias`). Every preset of this page: [`bonsai-27b-q2g64-q4bias`](#preset-bonsai-27b-q2g64-q4bias), [`bonsai-27b-q2g64-f16`](#preset-bonsai-27b-q2g64-f16).
 
 ```ini
-[bonsai-prism]
+[bonsai-27b-q2g64-q4bias]
 n-gpu-layers = 999
 flash-attn = on
 ctx-size = 65536
@@ -120,12 +120,12 @@ The full sweep tables are on [the benchmarks page](../setups/kamaji/benchmarks/b
 ## Server presets
 
 <!-- gen:binary-presets:start -->
-### `bonsai-prism` {#preset-bonsai-prism}
+### `bonsai-27b-q2g64-q4bias` {#preset-bonsai-27b-q2g64-q4bias}
 
 M1 Max 32 GB, a section of `hardware/kamaji/models-prism-llama.ini` (prism-llama).
 
 ```ini
-[bonsai-prism]
+[bonsai-27b-q2g64-q4bias]
 n-gpu-layers = 999
 flash-attn = on
 ctx-size = 65536
@@ -138,12 +138,12 @@ reasoning-budget = 8192
 reasoning-budget-message = Thinking budget reached. Give the final answer now.
 ```
 
-### `bonsai-prism-f16` {#preset-bonsai-prism-f16}
+### `bonsai-27b-q2g64-f16` {#preset-bonsai-27b-q2g64-f16}
 
 M1 Max 32 GB, a section of `hardware/kamaji/models-prism-llama.ini` (prism-llama).
 
 ```ini
-[bonsai-prism-f16]
+[bonsai-27b-q2g64-f16]
 n-gpu-layers = 999
 flash-attn = on
 ctx-size = 131072

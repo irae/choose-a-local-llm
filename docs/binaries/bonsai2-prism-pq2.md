@@ -40,7 +40,7 @@ included; a run a harness or serving defect voided is not.
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
-Best configuration on this page, as a section of `hardware/arrietty/models-prism-llama.ini` (RTX 5060 Ti 16 GB, prism-llama, pi id `bonsai2-27b-pq2-f16`). Every preset of this page: [`bonsai2-27b-pq2-f16`](#preset-bonsai2-27b-pq2-f16), [`bonsai2-27b-pq2`](#preset-bonsai2-27b-pq2).
+Best configuration on this page, as a section of `hardware/arrietty/models-prism-llama.ini` (RTX 5060 Ti 16 GB, prism-llama, pi id `bonsai2-27b-pq2-f16`). Every preset of this page: [`bonsai2-27b-pq2-f16`](#preset-bonsai2-27b-pq2-f16), [`bonsai2-27b-pq2-q8`](#preset-bonsai2-27b-pq2-q8).
 
 ```ini
 [bonsai2-27b-pq2-f16]
@@ -142,12 +142,12 @@ reasoning-budget = 8192
 reasoning-budget-message = Thinking budget reached. Give the final answer now.
 ```
 
-### `bonsai2-27b-pq2` {#preset-bonsai2-27b-pq2}
+### `bonsai2-27b-pq2-q8` {#preset-bonsai2-27b-pq2-q8}
 
 RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models-prism-llama.ini` (prism-llama).
 
 ```ini
-[bonsai2-27b-pq2]
+[bonsai2-27b-pq2-q8]
 hf-repo = prism-ml/Ternary-Bonsai-2-27B-gguf
 hf-file = Ternary-Bonsai-2-27B-PQ2_0.gguf
 no-mmproj = true

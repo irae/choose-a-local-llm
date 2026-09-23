@@ -52,10 +52,10 @@ rows included; a run a harness or serving defect voided is not.
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
-Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.6-35b-a3b`). Every preset of this page: [`qwen3.6-35b-a3b`](#preset-qwen3-6-35b-a3b), [`qwen3.6-35b-a3b-f16`](#preset-qwen3-6-35b-a3b-f16), [`qwen3.6-35b-a3b-q4kxl`](#preset-qwen3-6-35b-a3b-q4kxl).
+Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.6-35b-a3b-q4kxl-q8-mtp3`). Every preset of this page: [`qwen3.6-35b-a3b-q4kxl-q8-mtp3`](#preset-qwen3-6-35b-a3b-q4kxl-q8-mtp3), [`qwen3.6-35b-a3b-q4kxl-f16`](#preset-qwen3-6-35b-a3b-q4kxl-f16), [`qwen3.6-35b-a3b-q4kxl-q8-mtp2`](#preset-qwen3-6-35b-a3b-q4kxl-q8-mtp2).
 
 ```ini
-[qwen3.6-35b-a3b]
+[qwen3.6-35b-a3b-q4kxl-q8-mtp3]
 hf = unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL
 no-mmproj = true
 spec-type = draft-mtp
@@ -156,12 +156,12 @@ q8_0 KV arm at n-max 3 reads 43.7 tok/s at 4K and 13.0 at 82K; the RTX
 ## Server presets
 
 <!-- gen:binary-presets:start -->
-### `qwen3.6-35b-a3b` {#preset-qwen3-6-35b-a3b}
+### `qwen3.6-35b-a3b-q4kxl-q8-mtp3` {#preset-qwen3-6-35b-a3b-q4kxl-q8-mtp3}
 
 M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
 
 ```ini
-[qwen3.6-35b-a3b]
+[qwen3.6-35b-a3b-q4kxl-q8-mtp3]
 hf = unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL
 no-mmproj = true
 spec-type = draft-mtp
@@ -177,12 +177,12 @@ reasoning-budget = 8192
 reasoning-budget-message = Thinking budget reached. Give the final answer now.
 ```
 
-### `qwen3.6-35b-a3b-f16` {#preset-qwen3-6-35b-a3b-f16}
+### `qwen3.6-35b-a3b-q4kxl-f16` {#preset-qwen3-6-35b-a3b-q4kxl-f16}
 
 M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
 
 ```ini
-[qwen3.6-35b-a3b-f16]
+[qwen3.6-35b-a3b-q4kxl-f16]
 hf = unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL
 no-mmproj = true
 parallel = 1
@@ -196,12 +196,12 @@ reasoning-budget = 8192
 reasoning-budget-message = Thinking budget reached. Give the final answer now.
 ```
 
-### `qwen3.6-35b-a3b-q4kxl` {#preset-qwen3-6-35b-a3b-q4kxl}
+### `qwen3.6-35b-a3b-q4kxl-q8-mtp2` {#preset-qwen3-6-35b-a3b-q4kxl-q8-mtp2}
 
 RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models.ini` (llama-server).
 
 ```ini
-[qwen3.6-35b-a3b-q4kxl]
+[qwen3.6-35b-a3b-q4kxl-q8-mtp2]
 hf-repo = unsloth/Qwen3.6-35B-A3B-MTP-GGUF
 hf-file = Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf
 no-mmproj = true

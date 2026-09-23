@@ -34,10 +34,10 @@ is not.
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
-Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `gemma-4-26b-a4b`). Every preset of this page: [`gemma-4-26b-a4b`](#preset-gemma-4-26b-a4b).
+Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `gemma-4-26b-a4b-q4kxl-mtp2`). Every preset of this page: [`gemma-4-26b-a4b-q4kxl-mtp2`](#preset-gemma-4-26b-a4b-q4kxl-mtp2).
 
 ```ini
-[gemma-4-26b-a4b]
+[gemma-4-26b-a4b-q4kxl-mtp2]
 hf = unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL
 no-mmproj = true
 spec-type = draft-mtp
@@ -124,12 +124,12 @@ The full curves are on
 ## Server presets
 
 <!-- gen:binary-presets:start -->
-### `gemma-4-26b-a4b` {#preset-gemma-4-26b-a4b}
+### `gemma-4-26b-a4b-q4kxl-mtp2` {#preset-gemma-4-26b-a4b-q4kxl-mtp2}
 
 M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
 
 ```ini
-[gemma-4-26b-a4b]
+[gemma-4-26b-a4b-q4kxl-mtp2]
 hf = unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL
 no-mmproj = true
 spec-type = draft-mtp

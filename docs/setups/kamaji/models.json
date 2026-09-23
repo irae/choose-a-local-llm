@@ -84,11 +84,11 @@
         "effort": "medium"
       },
       "hidden": false,
-      "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 73728 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b`. Re-measured 2026-09-08 at wired limit 25000: `-c 73728` serves, `-c 81920` OOMs at load, and decode and draft acceptance stay flat across the whole served range, so the boundary is memory alone. Speeds read with llama-benchy on real code text at the server's own sampling: no drafter 12.4 tok/s at 4K and 9.7 at 65.5K (2026-09-13); the MTP drafter loses at every depth, 11.8 and 8.6 at n-max 3 with 37 to 63 percent acceptance (2026-09-11) and 10.7 and 8.3 at n-max 1, so the served command carries no drafter. The Mendel rows below ran with the drafter at n-max 3 on the same window; the drafter changes speed, not output. Wired 25.0 GB, zero swap growth. The older `-c 49152` was the ceiling at wired 24000. The EvalPlus score is still the MLX effort-medium run, carried by the shared-score rule; this build has no full EvalPlus of its own, so it cannot be read against the two 3-bit builds below, which do. Mendel blind at effort medium: 87/100 at reserve 16384 and window 49152, and 76/100 on the 2026-09-08 re-run at reserve 8192 and window 65536. The two are different configurations, not a repeat: the second failed trap A, which the first passed.",
+      "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b-q4km --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 73728 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.8-27b-q4km`. Re-measured 2026-09-08 at wired limit 25000: `-c 73728` serves, `-c 81920` OOMs at load, and decode and draft acceptance stay flat across the whole served range, so the boundary is memory alone. Speeds read with llama-benchy on real code text at the server's own sampling: no drafter 12.4 tok/s at 4K and 9.7 at 65.5K (2026-09-13); the MTP drafter loses at every depth, 11.8 and 8.6 at n-max 3 with 37 to 63 percent acceptance (2026-09-11) and 10.7 and 8.3 at n-max 1, so the served command carries no drafter. The Mendel rows below ran with the drafter at n-max 3 on the same window; the drafter changes speed, not output. Wired 25.0 GB, zero swap growth. The older `-c 49152` was the ceiling at wired 24000. The EvalPlus score is still the MLX effort-medium run, carried by the shared-score rule; this build has no full EvalPlus of its own, so it cannot be read against the two 3-bit builds below, which do. Mendel blind at effort medium: 87/100 at reserve 16384 and window 49152, and 76/100 on the 2026-09-08 re-run at reserve 8192 and window 65536. The two are different configurations, not a repeat: the second failed trap A, which the first passed.",
       "pi": {
         "provider": "llama",
-        "id": "qwen3.8-27b",
+        "id": "qwen3.8-27b-q4km",
         "contextWindow": 65536,
         "maxTokens": 8192
       },
@@ -147,11 +147,11 @@
         "evalplus"
       ],
       "hidden": false,
-      "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 131072 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista-f16-mtp3 --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 131072 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "A 3-bit build of the same model, revision `d562806`, with its drafter on. Measured 2026-09-08 at wired limit 25000. Clean depth 114718 at 9.7 tok/s; `-c 131072` serves. `n-max 3` is the best drafter setting on this build, confirmed by a sweep: 4 and 6 were both slower. EvalPlus 0.976/0.945, one empty at budget 8192, its own score and not a carried one. Mendel blind at effort medium: 76.5/100, complete 8/8, window 114688. It failed trap A in the same shape as the 4-bit row's own re-run. The drafter costs this build speed at every depth, so the two no-drafter rows below are the served pick; this row stays as the drafter measurement and the medium score.",
       "pi": {
         "provider": "llama",
-        "id": "qwen3.8-27b",
+        "id": "qwen3.8-27b-ista-f16-mtp3",
         "contextWindow": 114688,
         "maxTokens": 8192
       }
@@ -177,11 +177,11 @@
         "effort": "xhigh"
       },
       "hidden": false,
-      "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 163840 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b-ista`. The same build with the drafter off, measured 2026-09-09 at wired limit 25000. Without the drafter `-c 163840` serves, and the creep runs clean to 147478 tokens at 8.30 tok/s before the speed floor; swap never grew. The drafter is a loss on this build at every depth tried: at depth 256, no drafter reads 14.4 tok/s against 12.4 at n-max 3, and at depth 98338 it reads 9.5 against 7.9, so the no-drafter server is both faster and 33K deeper. Mendel blind at effort xhigh, the model's own default: 80.5/100, complete 8/8, one critical trap, 109 minutes, peak context 117,940 of a 147,456 window, no compaction. Sampling recorded for the first time on this machine: temperature 1.0, top_p 0.95, the values llama-server reads from the model file. EvalPlus at effort xhigh, scored 2026-09-10 at budget 30000 on the same build served at `-c 32768`: 0.945/0.921, five empty, every one a completion that hit the 30000-token cap, in about 9h43 of active wall time; below the medium and low rows on both metrics. More thinking does not help this model on short single-turn problems. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.945 with no empty answer and 13 forced answers of 164, in 332 minutes. The earlier run under a budget of 30000 read 0.945/0.921 and left 5 answers empty.",
+      "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista-f16 --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 163840 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.8-27b-ista-f16`. The same build with the drafter off, measured 2026-09-09 at wired limit 25000. Without the drafter `-c 163840` serves, and the creep runs clean to 147478 tokens at 8.30 tok/s before the speed floor; swap never grew. The drafter is a loss on this build at every depth tried: at depth 256, no drafter reads 14.4 tok/s against 12.4 at n-max 3, and at depth 98338 it reads 9.5 against 7.9, so the no-drafter server is both faster and 33K deeper. Mendel blind at effort xhigh, the model's own default: 80.5/100, complete 8/8, one critical trap, 109 minutes, peak context 117,940 of a 147,456 window, no compaction. Sampling recorded for the first time on this machine: temperature 1.0, top_p 0.95, the values llama-server reads from the model file. EvalPlus at effort xhigh, scored 2026-09-10 at budget 30000 on the same build served at `-c 32768`: 0.945/0.921, five empty, every one a completion that hit the 30000-token cap, in about 9h43 of active wall time; below the medium and low rows on both metrics. More thinking does not help this model on short single-turn problems. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.945 with no empty answer and 13 forced answers of 164, in 332 minutes. The earlier run under a budget of 30000 read 0.945/0.921 and left 5 answers empty.",
       "pi": {
         "provider": "llama",
-        "id": "qwen3.8-27b-ista",
+        "id": "qwen3.8-27b-ista-f16",
         "contextWindow": 147456,
         "maxTokens": 8192
       }
@@ -235,11 +235,11 @@
         "effort": "xhigh"
       },
       "hidden": false,
-      "command": "llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S \\\n  --alias qwen3.8-27b-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 188416 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.8-27b-iq3s`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build. Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20000 on the same build served at `-c 32768`: 0.945/0.927, eight empty of 164, in 615.6 minutes of active time. Same base score as the ISTA build on this Mac and a higher `plus` score, at a smaller budget. A re-run of the eight empty problems on 2026-09-16 proved every one as the output budget, with the answer still coming at 20000 tokens; none was recovered. That re-run adds 200 minutes to the wall. Mendel blind at effort xhigh: 90.5/100, complete 8/8, with an anomaly — the model merged `master` into its own branch mid-run and imported infrastructure the blind base hides, so the row is not strictly base-comparable. Mendel guided at effort xhigh: 62.5 displayed of 76 raw, a valid partial at the 300-minute wall cap, 5 of 8 libraries. The drafter arms are pending. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.945 with no empty answer and 17 forced answers of 164, in 389 minutes. The earlier run under a budget of 20000 read 0.945/0.927 and left 8 answers empty.",
+      "command": "llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S \\\n  --alias qwen3.8-27b-iq3s-f16 --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 188416 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.8-27b-iq3s-f16`. The unsloth 3-bit build the Linux setup serves, revision `4ca7207`, the same file by sha256, run on this machine beside the ISTA 3-bit build. Measured 2026-09-14 at wired limit 25000: `-c 188416` is the largest value that serves (196608 hits a Metal OOM at load); the slow creep runs to 147478 at 8.17 tok/s and stops on the floor at 163858, with no swap growth. Real text with llama-benchy, no drafter: 13.60 tok/s at 4K, 8.19 at 138K, 7.97 at 147K, just under the floor. EvalPlus at effort xhigh, scored 2026-09-15 at budget 20000 on the same build served at `-c 32768`: 0.945/0.927, eight empty of 164, in 615.6 minutes of active time. Same base score as the ISTA build on this Mac and a higher `plus` score, at a smaller budget. A re-run of the eight empty problems on 2026-09-16 proved every one as the output budget, with the answer still coming at 20000 tokens; none was recovered. That re-run adds 200 minutes to the wall. Mendel blind at effort xhigh: 90.5/100, complete 8/8, with an anomaly — the model merged `master` into its own branch mid-run and imported infrastructure the blind base hides, so the row is not strictly base-comparable. Mendel guided at effort xhigh: 62.5 displayed of 76 raw, a valid partial at the 300-minute wall cap, 5 of 8 libraries. The drafter arms are pending. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.945 with no empty answer and 17 forced answers of 164, in 389 minutes. The earlier run under a budget of 20000 read 0.945/0.927 and left 8 answers empty.",
       "pi": {
         "provider": "llama",
-        "id": "qwen3.8-27b-iq3s",
+        "id": "qwen3.8-27b-iq3s-f16",
         "contextWindow": 147456,
         "maxTokens": 8192
       }
@@ -266,11 +266,11 @@
         "effort": "medium"
       },
       "hidden": false,
-      "command": "llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \\\n  --alias qwen3.8-27b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 106496 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "command": "llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \\\n  --alias qwen3.8-27b-ad-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 106496 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
       "note": "A second 3-bit build of the same model, revision `ca10ebc`. Measured 2026-09-08 at wired limit 25000. Its sweep reached 98338 and never hit a stop condition, so that depth is where the sweep ended and not a ceiling this machine refused to pass. Speeds read 2026-09-12 with llama-benchy on real code text: no drafter 14.3 tok/s at 4K and 9.6 at 98K; the MTP drafter loses at every depth on real text, 12.2 and 8.8 at n-max 1, 8.1 and 7.4 at n-max 3 with 35 to 69 percent acceptance, so the served command carries no drafter. The Mendel row below ran with the drafter at n-max 3 on the same window; the drafter changes speed, not output. EvalPlus 0.988/0.927, no empty completions, the best base score of any local build here and its own score, not a carried one. Mendel blind at effort medium: 37.5/100 capped from 74 raw, partial at three of eight libraries. It ended on a repetition loop, five identical searches of a directory that held nothing it wanted.",
       "pi": {
         "provider": "llama",
-        "id": "qwen3.8-27b",
+        "id": "qwen3.8-27b-ad-iq3s",
         "contextWindow": 98304,
         "maxTokens": 8192
       },
@@ -329,11 +329,11 @@
         "effort": "on"
       },
       "hidden": false,
-      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.6-35b-a3b`. Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000 with a real completion as the ceiling test: `-c 98304` serves; every `-c` from 100864 up loads and then OOMs on the first real request. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 43.7 tok/s at 4K, 19.2 at 49K, 13.0 at 82K, draft acceptance 54 to 85 percent, wired 25.6 GB flat, zero swap growth. This is the arm with the window: the f16 KV rows below load only `-c 40960`. Mendel at thinking off, guided: 62.5/100 on the 81920 window, complete, against 46.5 for the same config on a 49152 window with twelve compactions. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.939 with no empty answer and 17 forced answers of 164, in 147.4 minutes. The earlier unbudgeted run read 0.957/0.939. The two f16 rows share this score under the shared-score rule.",
+      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b-q4kxl-q8-mtp3 --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.6-35b-a3b-q4kxl-q8-mtp3`. Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000 with a real completion as the ceiling test: `-c 98304` serves; every `-c` from 100864 up loads and then OOMs on the first real request. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 43.7 tok/s at 4K, 19.2 at 49K, 13.0 at 82K, draft acceptance 54 to 85 percent, wired 25.6 GB flat, zero swap growth. This is the arm with the window: the f16 KV rows below load only `-c 40960`. Mendel at thinking off, guided: 62.5/100 on the 81920 window, complete, against 46.5 for the same config on a 49152 window with twelve compactions. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.939 with no empty answer and 17 forced answers of 164, in 147.4 minutes. The earlier unbudgeted run read 0.957/0.939. The two f16 rows share this score under the shared-score rule.",
       "pi": {
         "provider": "llama",
-        "id": "qwen3.6-35b-a3b",
+        "id": "qwen3.6-35b-a3b-q4kxl-q8-mtp3",
         "contextWindow": 81920,
         "maxTokens": 8192
       }
@@ -387,11 +387,11 @@
         "effort": "on"
       },
       "hidden": false,
-      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b-f16 --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 65536 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `qwen3.6-35b-a3b-f16`. The f16 KV arm without its drafter, laddered and creeped 2026-09-11 at wired limit 25000: `-c 65536` serves, the top of the depth list, and the creep ran clean to 65578 at 33.6 tok/s with no ceiling found, so the deepest step is a list end and not a ceiling. Without the drafter this arm holds a window 60 percent larger than the drafter arm's 40960. On real code text at the server's sampling it reads 49.8 at 4K and 38.3 at 40K. Mendel blind at thinking on, measured 2026-09-11: 50/100, complete 8/8, on the 65536 window, two compactions, one critical trap missed, 33 minutes, sampling temperature 1.0 and top_p 0.95 from the server default. With its vision projector loaded the same server serves `-c 65536` and one 1400-pixel page costs 7005 prompt tokens; see the benchmarks page.",
+      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b-q4kxl-f16 --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 65536 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `qwen3.6-35b-a3b-q4kxl-f16`. The f16 KV arm without its drafter, laddered and creeped 2026-09-11 at wired limit 25000: `-c 65536` serves, the top of the depth list, and the creep ran clean to 65578 at 33.6 tok/s with no ceiling found, so the deepest step is a list end and not a ceiling. Without the drafter this arm holds a window 60 percent larger than the drafter arm's 40960. On real code text at the server's sampling it reads 49.8 at 4K and 38.3 at 40K. Mendel blind at thinking on, measured 2026-09-11: 50/100, complete 8/8, on the 65536 window, two compactions, one critical trap missed, 33 minutes, sampling temperature 1.0 and top_p 0.95 from the server default. With its vision projector loaded the same server serves `-c 65536` and one 1400-pixel page costs 7005 prompt tokens; see the benchmarks page.",
       "pi": {
         "provider": "llama",
-        "id": "qwen3.6-35b-a3b-f16",
+        "id": "qwen3.6-35b-a3b-q4kxl-f16",
         "contextWindow": 65536,
         "maxTokens": 8192
       }
@@ -480,11 +480,11 @@
         "effort": "on"
       },
       "hidden": false,
-      "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 212992 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-26b-a4b`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. Speeds read 2026-09-12 with llama-benchy on real code text: n-max 2 reads 60.1 tok/s at 4K, 28.2 at 98K and 19.1 at 197K, the fastest arm at every depth against no drafter (54.2, 28.7, 19.2), n-max 1 (58.2, 27.5, 16.4) and n-max 3 (50.8, 25.7, 22.3 with a wide spread), so the drafter at n-max 2 stays. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete. Under a server thinking budget of 19491 tokens (answer budget 2048, `max_tokens` 21539, derived from a calibration with the margin 1.5; the thinking-budget test, 2026-09-16), the same file, drafter and level scored 0.988/0.957 with no empty answer in 165.8 minutes: 16 problems hit the budget and were forced to answer, and 15 of those 16 passed the base tests. The natural run at 30000 left those 16 empty and took 347 minutes. The re-run of the two forced failures without the budget changed nothing: one is wrong either way, one hits the 30000 cap either way, so the budget cost no answer and stands. The owner's word on how a budgeted score is shown is pending. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, 145 answers kept from the budget-19491 run and 19 regenerated. It reads 0.988/0.957, the same pair as that run, with no empty answer and 19 forced answers of 164, in 117.1 minutes of which 38.4 are its own.",
+      "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-q4kxl-mtp2 --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 212992 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-26b-a4b-q4kxl-mtp2`. Measured 2026-09-05 at f16 KV, the KV pick: 212992 is the largest `-c` that loads; 229376 and 262144 OOM at load. Wired sits above the 24000 limit but stays flat. Speeds read 2026-09-12 with llama-benchy on real code text: n-max 2 reads 60.1 tok/s at 4K, 28.2 at 98K and 19.1 at 197K, the fastest arm at every depth against no drafter (54.2, 28.7, 19.2), n-max 1 (58.2, 27.5, 16.4) and n-max 3 (50.8, 25.7, 22.3 with a wide spread), so the drafter at n-max 2 stays. EvalPlus scored on this config 2026-09-06: 0.884/0.860/89% thinking on (18/164 empty, budget 30000), 0.976/0.945/100% thinking off (budget 8192). Mendel blind at thinking high: 47.5/100, complete. Under a server thinking budget of 19491 tokens (answer budget 2048, `max_tokens` 21539, derived from a calibration with the margin 1.5; the thinking-budget test, 2026-09-16), the same file, drafter and level scored 0.988/0.957 with no empty answer in 165.8 minutes: 16 problems hit the budget and were forced to answer, and 15 of those 16 passed the base tests. The natural run at 30000 left those 16 empty and took 347 minutes. The re-run of the two forced failures without the budget changed nothing: one is wrong either way, one hits the 30000 cap either way, so the budget cost no answer and stands. The owner's word on how a budgeted score is shown is pending. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, 145 answers kept from the budget-19491 run and 19 regenerated. It reads 0.988/0.957, the same pair as that run, with no empty answer and 19 forced answers of 164, in 117.1 minutes of which 38.4 are its own.",
       "pi": {
         "provider": "llama",
-        "id": "gemma-4-26b-a4b",
+        "id": "gemma-4-26b-a4b-q4kxl-mtp2",
         "contextWindow": 212992,
         "maxTokens": 8192
       }
@@ -593,11 +593,11 @@
         "effort": "off"
       },
       "hidden": false,
-      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.",
+      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-12b-q4kxl`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.",
       "pi": {
         "provider": "llama",
-        "id": "gemma-4-12b",
+        "id": "gemma-4-12b-q4kxl",
         "contextWindow": 262144,
         "maxTokens": 8192
       }
@@ -683,11 +683,11 @@
         "effort": "off"
       },
       "hidden": false,
-      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-2x --no-mmproj --parallel 2 \\\n  -ngl 999 -fa on -c 196608 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `gemma-4-12b-2x`. Measured 2026-09-08 at wired limit 25000, both slots swept in turn. The clean per-slot depth is 81958 tokens, and it does not move with `-c`: at every allocation from 221184 up, the sweep stopped on swap growth at the step past 81958, and at `-c 196608` the same depth ran clean to the slot's own window. A larger `-c` loads (770048 serves a short completion) and buys no depth. Two slots hold about 71 percent of the single slot's 114718 clean depth at `-c 131072`. The EvalPlus score is the single-slot config's, same weights and cache type.",
+      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-q4kxl-2slot --no-mmproj --parallel 2 \\\n  -ngl 999 -fa on -c 196608 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `gemma-4-12b-q4kxl-2slot`. Measured 2026-09-08 at wired limit 25000, both slots swept in turn. The clean per-slot depth is 81958 tokens, and it does not move with `-c`: at every allocation from 221184 up, the sweep stopped on swap growth at the step past 81958, and at `-c 196608` the same depth ran clean to the slot's own window. A larger `-c` loads (770048 serves a short completion) and buys no depth. Two slots hold about 71 percent of the single slot's 114718 clean depth at `-c 131072`. The EvalPlus score is the single-slot config's, same weights and cache type.",
       "pi": {
         "provider": "llama",
-        "id": "gemma-4-12b-2x",
+        "id": "gemma-4-12b-q4kxl-2slot",
         "contextWindow": 81920,
         "maxTokens": 8192
       }
@@ -777,11 +777,11 @@
         "effort": "on"
       },
       "hidden": false,
-      "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
+      "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-27b-q2g64-q4bias \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
       "note": "The scored config. The bias file is generated, not downloadable. The file behind the EvalPlus score and the 2026-08-30 sweeps was made with an unrecorded corpus and was lost with `/tmp` on a reboot before 2026-09-04; the file served since bench 11 (2026-09-06) was regenerated with the vendor's `make_kv_bias.sh` and its built-in corpus and lives at `~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf`. The Mendel guided row and every later reading ran on that file; see [the benchmarks](../benchmarks/bonsai-27b.md). The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.951/0.915 with no empty answer and 4 forced answers of 164, in 551.4 minutes. The earlier budget of 10240 read 0.927/0.890 and left 4 answers empty.",
       "pi": {
         "provider": "llama",
-        "id": "bonsai-prism",
+        "id": "bonsai-27b-q2g64-q4bias",
         "contextWindow": 65536,
         "maxTokens": 8192
       }
@@ -839,11 +839,11 @@
         "effort": "on"
       },
       "hidden": false,
-      "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism-f16 \\\n  -ngl 999 -fa on -c 131072 --parallel 1 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "pi id `bonsai-prism-f16`. Measured 2026-09-08 at wired limit 25000, fork revision `abbae72`. The fork at f16 KV has no speed floor inside `-c 131072`: 15.0 tok/s at 4K and 9.67 at 131K, the `-c` boundary itself, with wired flat at 18.3 GB and zero swap growth. The q4_0 KV rows floor at 33K, so the cache type was the floor, not the weights. No larger `-c` was tried. EvalPlus is pending: the f16 cache does not carry the calibrated q4 row's score. Mendel guided at thinking high: 12.5/100 capped from 36 raw, one of eight libraries, 376 tool calls and 74 tool errors at a 127K peak context.",
+      "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-27b-q2g64-f16 \\\n  -ngl 999 -fa on -c 131072 --parallel 1 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "pi id `bonsai-27b-q2g64-f16`. Measured 2026-09-08 at wired limit 25000, fork revision `abbae72`. The fork at f16 KV has no speed floor inside `-c 131072`: 15.0 tok/s at 4K and 9.67 at 131K, the `-c` boundary itself, with wired flat at 18.3 GB and zero swap growth. The q4_0 KV rows floor at 33K, so the cache type was the floor, not the weights. No larger `-c` was tried. EvalPlus is pending: the f16 cache does not carry the calibrated q4 row's score. Mendel guided at thinking high: 12.5/100 capped from 36 raw, one of eight libraries, 376 tool calls and 74 tool errors at a 127K peak context.",
       "pi": {
         "provider": "llama",
-        "id": "bonsai-prism-f16",
+        "id": "bonsai-27b-q2g64-f16",
         "contextWindow": 131072,
         "maxTokens": 8192
       }

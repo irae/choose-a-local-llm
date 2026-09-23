@@ -46,10 +46,10 @@ a harness or serving defect voided is not.
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
-Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.8-27b-iq3s`). Every preset of this page: [`qwen3.8-27b-iq3s`](#preset-qwen3-8-27b-iq3s).
+Best configuration on this page, as a section of `hardware/kamaji/models.ini` (M1 Max 32 GB, llama-server, pi id `qwen3.8-27b-iq3s-f16`). Every preset of this page: [`qwen3.8-27b-iq3s-f16`](#preset-qwen3-8-27b-iq3s-f16), [`qwen3.8-27b-iq3s-q8`](#preset-qwen3-8-27b-iq3s-q8).
 
 ```ini
-[qwen3.8-27b-iq3s]
+[qwen3.8-27b-iq3s-f16]
 hf = unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S
 no-mmproj = true
 parallel = 1
@@ -145,12 +145,12 @@ both serve the q8_0 arm with no drafter. The full curves are on
 ## Server presets
 
 <!-- gen:binary-presets:start -->
-### `qwen3.8-27b-iq3s` {#preset-qwen3-8-27b-iq3s}
+### `qwen3.8-27b-iq3s-f16` {#preset-qwen3-8-27b-iq3s-f16}
 
 M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
 
 ```ini
-[qwen3.8-27b-iq3s]
+[qwen3.8-27b-iq3s-f16]
 hf = unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S
 no-mmproj = true
 parallel = 1
@@ -159,6 +159,27 @@ flash-attn = on
 ctx-size = 188416
 cache-type-k = f16
 cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+
+### `qwen3.8-27b-iq3s-q8` {#preset-qwen3-8-27b-iq3s-q8}
+
+RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models.ini` (llama-server).
+
+```ini
+[qwen3.8-27b-iq3s-q8]
+hf-repo = unsloth/Qwen3.8-27B-GGUF
+hf-file = Qwen3.8-27B-UD-IQ3_S.gguf
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+fit = off
+flash-attn = on
+ctx-size = 65536
+cache-type-k = q8_0
+cache-type-v = q8_0
 jinja = true
 reasoning-budget = 8192
 reasoning-budget-message = Thinking budget reached. Give the final answer now.

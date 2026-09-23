@@ -2,36 +2,47 @@
 // Writes the local pi entries from the site data, the one surface
 // `gen-tables.mjs` did not cover (`docs/methodology/common-rules.md`, rule 7).
 //
-//   node tools/gen-pi-models.mjs [--check] [--dry-run] [--target <file>]
+//   node tools/gen-pi-models.mjs [--check] [--dry-run] [--target <file>] [--setup <id>]
 //
-// A row of `docs/setups/*/models.json` gets an entry when it carries a `pi`
-// block: `{provider, id, contextWindow, maxTokens}`. Two rows of one model and
-// one provider collapse to one entry, the largest window wins. The tool writes
-// `contextWindow` and `maxTokens` only; every other field of an existing entry
-// (thinking map, sampling, headers, credentials, other providers) survives.
-// A new entry with no thinking map is reported, never guessed.
+// Only this machine's rows (`docs/setups/<hostname>/models.json`, or
+// `--setup`) become entries; the other machines' rows are removed when the
+// tool wrote them. A row gets an entry when it carries a `pi` block:
+// `{provider, id, contextWindow}`. Two rows of one id collapse to one
+// entry, the largest window wins. The tool sets `contextWindow`, removes
+// `maxTokens` (pi's default is the value; owner, 2026-09-22), and points
+// the `llama` provider at the router service (`tools/llama-router.sh`,
+// port 8080); rows served by the PrismML fork go to the `prism` provider
+// on port 8082. A new entry copies its shape (thinking map, compat, cost)
+// from an existing entry of the same model family, and is reported when
+// none exists.
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
-import { homedir } from 'node:os'
-import { globSync } from 'node:fs'
+import { homedir, hostname } from 'node:os'
 
 const args = process.argv.slice(2)
 const CHECK = args.includes('--check')
 const DRY = args.includes('--dry-run')
-const target =
-  args[args.indexOf('--target') + 1] && args.includes('--target')
-    ? args[args.indexOf('--target') + 1]
-    : `${homedir()}/.pi/agent/models.json`
+const opt = (name, fallback) => (args.includes(name) ? args[args.indexOf(name) + 1] : fallback)
+const target = opt('--target', `${homedir()}/.pi/agent/models.json`)
+const setup = opt('--setup', hostname().split('.')[0].toLowerCase())
 
+const ROUTERS = {
+  llama: { name: 'llama-server', api: 'openai-completions', baseUrl: 'http://127.0.0.1:8080/v1', apiKey: 'no-key' },
+  prism: { name: 'llama-server (PrismML fork)', api: 'openai-completions', baseUrl: 'http://127.0.0.1:8082/v1', apiKey: 'no-key' },
+}
+const providerOf = (row) => (row.spec.server === 'prism-llama' ? 'prism' : row.pi.provider)
+
+const dataFile = `docs/setups/${setup}/models.json`
+if (!existsSync(dataFile)) {
+  console.error(`no ${dataFile}: this machine has no setup, or pass --setup <id>`)
+  process.exit(2)
+}
 const wanted = new Map()
-for (const file of globSync('docs/setups/*/models.json')) {
-  const data = JSON.parse(readFileSync(file, 'utf8'))
-  for (const row of data.rows) {
-    if (!row.pi || row.hidden || row.retired) continue
-    const key = `${row.pi.provider}/${row.pi.id}`
-    const seen = wanted.get(key)
-    if (!seen || row.pi.contextWindow > seen.pi.contextWindow) wanted.set(key, row)
-  }
+for (const row of JSON.parse(readFileSync(dataFile, 'utf8')).rows) {
+  if (!row.pi || row.hidden || row.retired) continue
+  const key = `${providerOf(row)}/${row.pi.id}`
+  const seen = wanted.get(key)
+  if (!seen || row.pi.contextWindow > seen.pi.contextWindow) wanted.set(key, row)
 }
 
 if (!existsSync(target)) {
@@ -40,34 +51,73 @@ if (!existsSync(target)) {
 }
 const config = JSON.parse(readFileSync(target, 'utf8'))
 config.providers = config.providers || {}
-
 const changes = []
 const created = []
+
+const allEntries = () => Object.values(config.providers).flatMap((p) => p.models || [])
+const family = (id) => id.split('-').slice(0, 2).join('-')
+const templateOf = (id) => {
+  const full = allEntries().filter((m) => m.thinkingLevelMap)
+  return full.find((m) => m.id === id) || full.find((m) => family(m.id) === family(id)) || null
+}
+
 for (const [key, row] of wanted) {
-  const { provider, id, contextWindow, maxTokens } = row.pi
+  const [provider] = key.split('/')
+  const { id, contextWindow } = row.pi
+  if (ROUTERS[provider]) {
+    const p = (config.providers[provider] = config.providers[provider] || { ...ROUTERS[provider], models: [] })
+    for (const [field, value] of Object.entries(ROUTERS[provider])) {
+      if (p[field] === value) continue
+      changes.push(`provider ${provider}: ${field} ${p[field] ?? 'unset'} -> ${value}`)
+      p[field] = value
+    }
+  }
   config.providers[provider] = config.providers[provider] || { models: [] }
-  const models = (config.providers[provider].models =
-    config.providers[provider].models || [])
+  const models = (config.providers[provider].models = config.providers[provider].models || [])
   let entry = models.find((m) => m.id === id)
   if (!entry) {
-    entry = { id, contextWindow, maxTokens, generatedBy: 'gen-pi-models' }
+    const moved = allEntries().find((m) => m.id === id)
+    const template = moved || templateOf(id)
+    entry = template ? { ...structuredClone(template), id, name: moved ? template.name : `${id} (${provider})` } : { id }
+    entry.contextWindow = contextWindow
+    entry.generatedBy = 'gen-pi-models'
+    delete entry.maxTokens
     models.push(entry)
-    created.push(`${key} (window ${contextWindow}) — set its thinking map by hand`)
-    changes.push(`create ${key}`)
+    if (!template) created.push(`${key} (window ${contextWindow}) — no entry of family ${family(id)} to copy; set its thinking map by hand`)
+    changes.push(`create ${key}${template ? ` from ${template.id}` : ''}`)
     continue
   }
-  for (const [field, value] of [
-    ['contextWindow', contextWindow],
-    ['maxTokens', maxTokens],
-  ]) {
-    if (entry[field] === value) continue
-    changes.push(`${key}: ${field} ${entry[field] ?? 'unset'} -> ${value}`)
-    entry[field] = value
+  if (entry.contextWindow !== contextWindow) {
+    changes.push(`${key}: contextWindow ${entry.contextWindow ?? 'unset'} -> ${contextWindow}`)
+    entry.contextWindow = contextWindow
+  }
+  if ('maxTokens' in entry) {
+    changes.push(`${key}: maxTokens ${entry.maxTokens} removed (pi default)`)
+    delete entry.maxTokens
   }
 }
 
+// Entries of the managed providers that no row of this machine wants:
+// another machine's rows, a renamed id, a hidden row. Only entries this
+// tool or a site row produced go; a hand-made entry stays.
+const siteIds = new Set()
+for (const file of ['arrietty', 'kamaji'].map((s) => `docs/setups/${s}/models.json`)) {
+  if (!existsSync(file)) continue
+  for (const row of JSON.parse(readFileSync(file, 'utf8')).rows) if (row.pi) siteIds.add(row.pi.id)
+}
+for (const [provider, p] of Object.entries(config.providers)) {
+  if (!p.models) continue
+  const keep = []
+  for (const m of p.models) {
+    const wantedHere = wanted.has(`${provider}/${m.id}`)
+    if (wantedHere || !(m.generatedBy || siteIds.has(m.id))) keep.push(m)
+    else changes.push(`remove ${provider}/${m.id} (not a row of ${setup})`)
+  }
+  p.models = keep
+}
+
 if (!changes.length) {
-  console.log(`pi entries match the site data (${wanted.size} models, ${target})`)
+  console.log(`pi entries match the site data (${wanted.size} models of ${setup}, ${target})`)
   process.exit(0)
 }
 for (const line of changes) console.log(line)

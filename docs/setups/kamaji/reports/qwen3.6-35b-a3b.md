@@ -54,11 +54,11 @@ Each table row above is one config; start it with its block below.
 <!-- gen:model-configs:start -->
 <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" />
 
-pi id `qwen3.6-35b-a3b`. Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000 with a real completion as the ceiling test: `-c 98304` serves; every `-c` from 100864 up loads and then OOMs on the first real request. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 43.7 tok/s at 4K, 19.2 at 49K, 13.0 at 82K, draft acceptance 54 to 85 percent, wired 25.6 GB flat, zero swap growth. This is the arm with the window: the f16 KV rows below load only `-c 40960`. Mendel at thinking off, guided: 62.5/100 on the 81920 window, complete, against 46.5 for the same config on a 49152 window with twelve compactions. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.939 with no empty answer and 17 forced answers of 164, in 147.4 minutes. The earlier unbudgeted run read 0.957/0.939. The two f16 rows share this score under the shared-score rule.
+pi id `qwen3.6-35b-a3b-q4kxl-q8-mtp3`. Measured 2026-09-06 and confirmed 2026-09-07 at wired limit 25000 with a real completion as the ceiling test: `-c 98304` serves; every `-c` from 100864 up loads and then OOMs on the first real request. Speeds read 2026-09-11 with llama-benchy on real code text at the server's own sampling: 43.7 tok/s at 4K, 19.2 at 49K, 13.0 at 82K, draft acceptance 54 to 85 percent, wired 25.6 GB flat, zero swap growth. This is the arm with the window: the f16 KV rows below load only `-c 40960`. Mendel at thinking off, guided: 62.5/100 on the 81920 window, complete, against 46.5 for the same config on a 49152 window with twelve compactions. The published score is the fast-mode run of 2026-09-22: thinking closed at 8192 tokens, output budget 16384, all 164 problems generated. It reads 0.976/0.939 with no empty answer and 17 forced answers of 164, in 147.4 minutes. The earlier unbudgeted run read 0.957/0.939. The two f16 rows share this score under the shared-score rule.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
-  --alias qwen3.6-35b-a3b --no-mmproj \
+  --alias qwen3.6-35b-a3b-q4kxl-q8-mtp3 --no-mmproj \
   --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \
   -ngl 999 -fa on -c 98304 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
@@ -80,11 +80,11 @@ llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
 
 <ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" kv="f16" effort="on" page="/binaries/qwen36-unsloth-ud-q4kxl" />
 
-pi id `qwen3.6-35b-a3b-f16`. The f16 KV arm without its drafter, laddered and creeped 2026-09-11 at wired limit 25000: `-c 65536` serves, the top of the depth list, and the creep ran clean to 65578 at 33.6 tok/s with no ceiling found, so the deepest step is a list end and not a ceiling. Without the drafter this arm holds a window 60 percent larger than the drafter arm's 40960. On real code text at the server's sampling it reads 49.8 at 4K and 38.3 at 40K. Mendel blind at thinking on, measured 2026-09-11: 50/100, complete 8/8, on the 65536 window, two compactions, one critical trap missed, 33 minutes, sampling temperature 1.0 and top_p 0.95 from the server default. With its vision projector loaded the same server serves `-c 65536` and one 1400-pixel page costs 7005 prompt tokens; see the benchmarks page.
+pi id `qwen3.6-35b-a3b-q4kxl-f16`. The f16 KV arm without its drafter, laddered and creeped 2026-09-11 at wired limit 25000: `-c 65536` serves, the top of the depth list, and the creep ran clean to 65578 at 33.6 tok/s with no ceiling found, so the deepest step is a list end and not a ceiling. Without the drafter this arm holds a window 60 percent larger than the drafter arm's 40960. On real code text at the server's sampling it reads 49.8 at 4K and 38.3 at 40K. Mendel blind at thinking on, measured 2026-09-11: 50/100, complete 8/8, on the 65536 window, two compactions, one critical trap missed, 33 minutes, sampling temperature 1.0 and top_p 0.95 from the server default. With its vision projector loaded the same server serves `-c 65536` and one 1400-pixel page costs 7005 prompt tokens; see the benchmarks page.
 
 ```bash
 llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \
-  --alias qwen3.6-35b-a3b-f16 --no-mmproj --parallel 1 \
+  --alias qwen3.6-35b-a3b-q4kxl-f16 --no-mmproj --parallel 1 \
   -ngl 999 -fa on -c 65536 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081

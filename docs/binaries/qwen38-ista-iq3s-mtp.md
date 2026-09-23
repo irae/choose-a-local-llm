@@ -42,10 +42,10 @@ defect voided is not.
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
-Best configuration on this page, as a section of `hardware/arrietty/models.ini` (RTX 5060 Ti 16 GB, llama-server, pi id `qwen3.8-27b-ista`). Every preset of this page: [`qwen3.8-27b-ista`](#preset-qwen3-8-27b-ista), [`qwen3.8-27b`](#preset-qwen3-8-27b).
+Best configuration on this page, as a section of `hardware/arrietty/models.ini` (RTX 5060 Ti 16 GB, llama-server, pi id `qwen3.8-27b-ista-q8`). Every preset of this page: [`qwen3.8-27b-ista-q8`](#preset-qwen3-8-27b-ista-q8), [`qwen3.8-27b-ista-f16`](#preset-qwen3-8-27b-ista-f16), [`qwen3.8-27b-ista-f16-mtp3`](#preset-qwen3-8-27b-ista-f16-mtp3).
 
 ```ini
-[qwen3.8-27b-ista]
+[qwen3.8-27b-ista-q8]
 hf-repo = ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF
 hf-file = Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf
 no-mmproj = true
@@ -137,12 +137,12 @@ window. The full curves are on the archive pages of
 ## Server presets
 
 <!-- gen:binary-presets:start -->
-### `qwen3.8-27b-ista` {#preset-qwen3-8-27b-ista}
+### `qwen3.8-27b-ista-q8` {#preset-qwen3-8-27b-ista-q8}
 
 RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models.ini` (llama-server).
 
 ```ini
-[qwen3.8-27b-ista]
+[qwen3.8-27b-ista-q8]
 hf-repo = ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF
 hf-file = Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf
 no-mmproj = true
@@ -158,12 +158,31 @@ reasoning-budget = 8192
 reasoning-budget-message = Thinking budget reached. Give the final answer now.
 ```
 
-### `qwen3.8-27b` {#preset-qwen3-8-27b}
+### `qwen3.8-27b-ista-f16` {#preset-qwen3-8-27b-ista-f16}
 
 M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
 
 ```ini
-[qwen3.8-27b]
+[qwen3.8-27b-ista-f16]
+hf = ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp
+no-mmproj = true
+parallel = 1
+n-gpu-layers = 999
+flash-attn = on
+ctx-size = 163840
+cache-type-k = f16
+cache-type-v = f16
+jinja = true
+reasoning-budget = 8192
+reasoning-budget-message = Thinking budget reached. Give the final answer now.
+```
+
+### `qwen3.8-27b-ista-f16-mtp3` {#preset-qwen3-8-27b-ista-f16-mtp3}
+
+M1 Max 32 GB, a section of `hardware/kamaji/models.ini` (llama-server).
+
+```ini
+[qwen3.8-27b-ista-f16-mtp3]
 hf = ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp
 no-mmproj = true
 spec-type = draft-mtp

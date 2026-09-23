@@ -61,11 +61,11 @@ Each table row above is one config; start it with its block below.
 <!-- gen:model-configs:start -->
 <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />
 
-pi id `gemma-4-12b`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.
+pi id `gemma-4-12b-q4kxl`. Measured 2026-09-04 at wired limit 24000; wired memory stays flat from load to the trained window. The trained window ends at 262,144; the deepest step measured is 245K, still above the floor.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
-  --alias gemma-4-12b --no-mmproj --parallel 1 \
+  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \
   -ngl 999 -fa on -c 262144 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081
@@ -82,11 +82,11 @@ LM Studio entry `gemma-4-12b-it-mlx` (`lmstudio-community/gemma-4-12B-it-MLX-4bi
 
 <ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />
 
-pi id `gemma-4-12b-2x`. Measured 2026-09-08 at wired limit 25000, both slots swept in turn. The clean per-slot depth is 81958 tokens, and it does not move with `-c`: at every allocation from 221184 up, the sweep stopped on swap growth at the step past 81958, and at `-c 196608` the same depth ran clean to the slot's own window. A larger `-c` loads (770048 serves a short completion) and buys no depth. Two slots hold about 71 percent of the single slot's 114718 clean depth at `-c 131072`. The EvalPlus score is the single-slot config's, same weights and cache type.
+pi id `gemma-4-12b-q4kxl-2slot`. Measured 2026-09-08 at wired limit 25000, both slots swept in turn. The clean per-slot depth is 81958 tokens, and it does not move with `-c`: at every allocation from 221184 up, the sweep stopped on swap growth at the step past 81958, and at `-c 196608` the same depth ran clean to the slot's own window. A larger `-c` loads (770048 serves a short completion) and buys no depth. Two slots hold about 71 percent of the single slot's 114718 clean depth at `-c 131072`. The EvalPlus score is the single-slot config's, same weights and cache type.
 
 ```bash
 llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \
-  --alias gemma-4-12b-2x --no-mmproj --parallel 2 \
+  --alias gemma-4-12b-q4kxl-2slot --no-mmproj --parallel 2 \
   -ngl 999 -fa on -c 196608 \
   --cache-type-k f16 --cache-type-v f16 \
   --jinja --port 8081

@@ -23,6 +23,9 @@
 #   ROUTER_PRESET     the preset file (default hardware/<hostname>/models.ini)
 #   ROUTER_BIN        the llama-server binary
 #   ROUTER_MODELS_MAX 1
+#   ROUTER_IDLE       seconds of idleness before the loaded model is freed
+#                     (default 300). The two routers share one GPU and do
+#                     not know each other; this is what gives the VRAM back.
 
 set -euo pipefail
 
@@ -44,6 +47,7 @@ else
 fi
 HOST="${ROUTER_HOST:-0.0.0.0}"
 MODELS_MAX="${ROUTER_MODELS_MAX:-1}"
+IDLE="${ROUTER_IDLE:-300}"
 STATE="$HOME/.local/share/choose-a-local-llm/$UNIT.hash"
 HAS_SYSTEMD=0
 command -v systemctl > /dev/null 2>&1 && systemctl --user show-environment > /dev/null 2>&1 && HAS_SYSTEMD=1
@@ -65,7 +69,7 @@ loaded() {
 
 serve() {
     exec "$BIN" --models-preset "$PRESET" --models-max "$MODELS_MAX" \
-        --host "$HOST" --port "$PORT" --cors-origins '*'
+        --host "$HOST" --port "$PORT" --cors-origins '*' --sleep-idle-seconds "$IDLE"
 }
 
 unit_file() {

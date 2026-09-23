@@ -34,9 +34,22 @@ timings, prompt-cache reuse, the KV type decision) live in
    generated tables (`models.json` + `node tools/gen-tables.mjs`), and
    the harness config (`npm run pi:models` writes the pi entries from
    the same `models.json`; `--dry-run` and `--check` show the drift
-   first, and it never touches a field it does not own). Every server config
-   gets a copy-paste command block in its report whose alias equals the
-   harness model id. The report and comparison pages show only numbers
+   first, and it never touches a field it does not own; it writes only
+   the rows of the machine it runs on, points the `llama` provider at
+   the router service on port 8080 and the `prism` provider at 8082,
+   and sets no `maxTokens`: pi's default is the value, and a row sets
+   one only for a measured conflict; owner, 2026-09-22). Every server
+   config gets a copy-paste command block in its report whose alias
+   equals the harness model id, and one section of the machine's preset
+   file (`hardware/<id>/models.ini`) under the same id.
+   **The pi id is unambiguous and has no default** (owner, 2026-09-22):
+   `<model>-<quant>`, then `-<kv>` when the same file is served with
+   more than one KV type on any machine (`q8`, `f16`, `q4bias`; every
+   such row carries it, none is the default), then `-mtp<n>` on a row
+   with a drafter, then a variant word (`-2slot`, `-orca`). The same
+   file with the same KV and drafter has the same id on both machines;
+   a machine suffix (`-arrietty`, `-kamaji`) comes only when one pi
+   file serves both machines, which none does today. The report and comparison pages show only numbers
    measured under the CURRENT wired limit; superseded measurements move
    to the setup's `historical.md` (benchmarks pages keep the full
    archive).
