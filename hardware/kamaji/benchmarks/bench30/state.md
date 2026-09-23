@@ -123,4 +123,27 @@ pruned; its branch and evidence under
 `~/.local/share/mendel-benchmark/runs/` stay, per the Mendel cleanup
 rule.
 
-Next: `qwen38-q4km-blind-tb8192`.
+## `qwen38-q4km-blind-tb8192`, started 2026-09-23 ~03:03
+
+Added temporary pi entry `qwen3.8-27b-q4km-tb8192` (copy of
+`qwen3.8-27b-q4km`, `contextWindow 65536`). Server: alias
+`qwen3.8-27b-q4km`, no drafter, `-c 73728`, f16 KV, port 8080,
+`$FAST_FLAGS`, matching `docs/setups/kamaji/models.json`
+`qwen38-gguf-medium`'s command (the entry that carries the `pi` block
+for id `qwen3.8-27b-q4km`). Probe: `finish_reason: stop`, non-empty
+answer (851 chars) — pass.
+
+Window is exactly 65536, not under it, so `MENDEL_KEEP_RECENT_TOKENS`
+stays unset (pi's default 20000, per `mendel.md`, "Compaction keep").
+
+Launched `run-worker.sh qwen3.8-27b-q4km-tb8192 pi blind xhigh` with
+`MENDEL_CONTEXT_WINDOW=65536 MENDEL_RESERVE_TOKENS=16384`. Worktree
+`../mendel-bench-qwen3.8-27b-q4km-tb8192-xhigh`, branch
+`qwen3.8-27b-q4km-tb8192-xhigh-issue-13`. `gh auth status` still valid
+from earlier. `benchmarks/run-watch.sh` armed on
+`~/.local/share/mendel-benchmark/runs/qwen3.8-27b-q4km-tb8192-xhigh-blind-events.jsonl`,
+`RUNWATCH_SILENCE=2700`. This is the best row of the machine's
+comparison (93/100, 8/8, 213.3 minutes, no budget), so a long run is
+expected. In progress.
+
+Next: `gemma12-q4kxl-guided-high-tb8192`.
