@@ -306,4 +306,26 @@ recovering (~1.86 GB). Removed the worker worktree
 (`../mendel-bench-qwen3.8-27b-ista-f16-tb8192-xhigh`) and pruned;
 branch and evidence stay.
 
-Next: `qwen36-q4kxl-q8-mtp3-guided-tb8192`.
+## `qwen36-q4kxl-q8-mtp3-guided-tb8192`, started 2026-09-23 ~11:45
+
+Added temporary pi entry `qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192` (copy
+of `qwen3.6-35b-a3b-q4kxl-q8-mtp3`, `contextWindow 81920`). Server:
+alias `qwen3.6-35b-a3b-q4kxl-q8-mtp3`, MTP n=3, q8_0 KV, `-c 98304`,
+port 8080, `$FAST_FLAGS`, matching `docs/setups/kamaji/models.json`
+`qwen36-gguf-think`'s command. Probe: `finish_reason: stop`,
+non-empty answer (8023 chars) — pass.
+
+Launched `run-worker.sh qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192 pi guided
+high` with `MENDEL_CONTEXT_WINDOW=81920 MENDEL_RESERVE_TOKENS=16384`
+(no `MENDEL_KEEP_RECENT_TOKENS`, per the block's own note, window
+above 65536). Worktree
+`../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192-high`,
+branch `qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192-high-guided-v3-issue-13`.
+`gh auth status` still valid. `benchmarks/run-watch.sh` armed on
+`~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192-high-guided-events.jsonl`,
+`RUNWATCH_SILENCE=2700`. The MoE row: three prior guided runs at
+46.5, 62.5, 83 (all 8/8, ~90 min), the widest variance on the
+machine, so this run is a fourth sample, not a verdict. Budget-fire
+counting uses the pi-side events/session files. In progress.
+
+This is the last block of run 30's row list.
