@@ -115,6 +115,7 @@ case "${1:-}" in
             "$0" stop
         fi
         echo "$want" > "$STATE"
+        pkill -f "llama-server --models-preset $PRESET" 2> /dev/null && sleep 2 || true
         if [ "$HAS_SYSTEMD" = 1 ]; then
             [ -f "$HOME/.config/systemd/user/$UNIT.service" ] || "$0" install
             systemctl --user restart "$UNIT"
