@@ -77,3 +77,22 @@ Next: step 3, every agent row of this run sets
 `MENDEL_RESERVE_TOKENS=16384`. `MENDEL_KEEP_RECENT_TOKENS`: unset for
 this row (window 212992 is above 65536, per `mendel.md`). Server for
 `gemma-4-26b-a4b-q4kxl-mtp2` is left up for the first row block.
+
+## `gemma26-q4kxl-mtp2-guided-tb8192`, started 2026-09-22 ~23:42
+
+Added temporary pi entry `gemma-4-26b-a4b-q4kxl-mtp2-tb8192` (copy of
+`gemma-4-26b-a4b-q4kxl-mtp2`, `contextWindow 212992`). Server already
+up from `machine-setup` (port 8080, `$FAST_FLAGS`).
+
+Launched `run-worker.sh gemma-4-26b-a4b-q4kxl-mtp2-tb8192 pi guided
+high` with `MENDEL_CONTEXT_WINDOW=212992 MENDEL_RESERVE_TOKENS=16384`
+(no `MENDEL_KEEP_RECENT_TOKENS`, window above 65536). Worktree
+`../mendel-bench-guided-gemma-4-26b-a4b-q4kxl-mtp2-tb8192-high`,
+branch `gemma-4-26b-a4b-q4kxl-mtp2-tb8192-high-guided-v3-issue-13`.
+`gh auth status` passed before the worker started (checked at
+machine-setup, still valid). Output file
+`~/.local/share/mendel-benchmark/runs/gemma-4-26b-a4b-q4kxl-mtp2-tb8192-high-guided-events.jsonl`,
+growing. `benchmarks/run-watch.sh` armed on that file,
+`RUNWATCH_SILENCE=2700`, memory log at
+`hardware/kamaji/benchmarks/bench30/results/mem-gemma26-guided.log`.
+In progress.
