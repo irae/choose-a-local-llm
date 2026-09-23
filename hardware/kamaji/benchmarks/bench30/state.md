@@ -365,16 +365,20 @@ from tool-call formatting) passes both times; the crash needs an
 actual agent turn to reproduce.
 
 Checked the server version: `llama-server 0.4.1, build 10964,
-b29c606e2`. The model's report page recorded its `-c 98304` ceiling
-under an unspecified earlier build (dated 2026-09-06/07, before this
-session's llama-server was necessarily this exact build) — a version
-drift between measurement and this run is plausible but not
-confirmed; not chased further, since a bisect needs the owner's word
-on which build to test against, and the fix ships from upstream
-either way. This is a candidate cause, not a fixed diagnosis: the
-`--reasoning-budget` flag paired with the MTP n=3 drafter is the one
-run-30 change to this row's serving command that risks touching this
-same speculative-decode path.
+b29c606e2`. Found the build that validated `-c 98304` for this file:
+`hardware/kamaji/benchmarks/bench12/results/server-qwen36-gguf-q8-c49920-w24000-oom.log`
+(the q8 KV window sweep for this model, 2026-09-06/07) prints `build
+10621 (c1d0e7a00)`. **A real build gap, confirmed, not guessed**:
+build 10621 to build 10964, roughly 340 builds of upstream `llama.cpp`
+between the measurement and this run. A build regression in the MTP
+speculative-decode path is as good a candidate as `--reasoning-budget`
+interacting with the drafter; nothing here rules either out.
+
+The useful part of this defect for a later reader: **a plain
+completion probe passes on both attempts; only an agent turn (tool-call
+formatting, multi-turn context) triggers the crash.** A health check
+that sends one probe request and calls the server ready would have
+missed this both times.
 
 **Two consecutive crashes on the identical serving command, in
 different ways, makes a third blind retry a guess, not a fix** (the
@@ -391,4 +395,25 @@ temp pi entries removed yet — both `-tb8192` and `-tb8192-r2` stay
 until the coordinator answers, since a third attempt may reuse one.
 
 This is the last block of run 30's row list; the other 4 are closed
-and scored. The run is stop-and-ask on this row only.
+and scored.
+
+**Coordinator's answer, 2026-09-23**: run the no-drafter diagnostic
+(option 1) as a full scored block, not a probe. The budget stays on;
+it is this run's one variable and does not change across diagnostics.
+If it completes, score it as its own row, `qwen36-q4kxl-q8-nodraft-
+guided-tb8192`, a different serving config from the MTP row, which
+stays unmeasured with the defect recorded — never a replacement. If it
+also crashes, run option 2 (drafter on, budget off) as a short health
+check only, unscored, stop as soon as the first real agent turn
+passes or crashes. Leave both temp pi entries and both failed
+worktrees in place until this block closes, then clean up in one
+step.
+
+## `qwen36-q4kxl-q8-nodraft-guided-tb8192` (diagnostic, coordinator-directed)
+
+Added temporary pi entry `qwen3.6-35b-a3b-q4kxl-q8-nodraft-tb8192`
+(copy of `qwen3.6-35b-a3b-q4kxl-q8-mtp3`, `contextWindow 81920`).
+Server: same command as the MTP row minus `--spec-type draft-mtp
+--spec-draft-n-max 3` (no drafter), alias
+`qwen3.6-35b-a3b-q4kxl-q8-nodraft`, `-c 98304`, q8_0 KV, port 8080,
+`$FAST_FLAGS` unchanged (budget stays on). In progress.
