@@ -174,4 +174,34 @@ recovering (~1.85 GB). Removed the worker worktree
 (`../mendel-bench-qwen3.8-27b-q4km-tb8192-xhigh`) and pruned; branch
 and evidence under `~/.local/share/mendel-benchmark/runs/` stay.
 
-Next: `gemma12-q4kxl-guided-high-tb8192`.
+## `gemma12-q4kxl-guided-high-tb8192`, started 2026-09-23 ~07:44
+
+Added temporary pi entry `gemma-4-12b-q4kxl-tb8192` (copy of
+`gemma-4-12b-q4kxl`, `contextWindow 262144`). Server: alias
+`gemma-4-12b-q4kxl`, no drafter, `-c 262144`, f16 KV, port 8080,
+`$FAST_FLAGS`, matching `docs/setups/kamaji/models.json`
+`gemma12-gguf-f16`'s command (the entry that carries the `pi` block
+for id `gemma-4-12b-q4kxl`). Probe: `finish_reason: stop`, non-empty
+answer (6704 chars) — pass.
+
+Level: **high** (thinking on), per the block's note — this row's
+level on this machine is off, but no Mendel run at thinking off is
+allowed (owner rule, 2026-09-14), so it uses its thinking-on level.
+Comparison rows: the card's two guided rows at high both ended in
+about 5 minutes on an answer-channel text loop (818 and 520 repeats),
+0 commits; this machine's own thinking-off guided row ended on a loop
+at 58. A thinking budget cannot cut an answer-channel loop, so this
+row measures whether thinking high with the budget changes the loop
+at all — a short run here (well under an hour) would match the loop
+pattern, not a failure of setup.
+
+Launched `run-worker.sh gemma-4-12b-q4kxl-tb8192 pi guided high` with
+`MENDEL_CONTEXT_WINDOW=262144 MENDEL_RESERVE_TOKENS=16384` (no
+`MENDEL_KEEP_RECENT_TOKENS`, window above 65536). Worktree
+`../mendel-bench-guided-gemma-4-12b-q4kxl-tb8192-high`, branch
+`gemma-4-12b-q4kxl-tb8192-high-guided-v3-issue-13`. `gh auth status`
+still valid. `benchmarks/run-watch.sh` armed on
+`~/.local/share/mendel-benchmark/runs/gemma-4-12b-q4kxl-tb8192-high-guided-events.jsonl`,
+`RUNWATCH_SILENCE=2700`. In progress.
+
+Next: `qwen38-ista-f16-blind-tb8192`.
