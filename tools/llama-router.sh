@@ -48,6 +48,12 @@ ID="$(hostname -s | tr '[:upper:]' '[:lower:]')"
 ACTION="${1:-}"
 ROUTER="${2:-${ROUTER:-official}}"
 PORT="${ROUTER_PORT:-8080}"
+OFFICIAL_BIN_DIR="$(ls -d "$HOME"/.local/share/choose-a-local-llm/llama.cpp/*/bin 2>/dev/null | sort | tail -1 || true)"
+if [ -n "$OFFICIAL_BIN_DIR" ]; then
+    OFFICIAL_LIB_DIR="$(dirname "$OFFICIAL_BIN_DIR")/lib"
+else
+    OFFICIAL_LIB_DIR=""
+fi
 if [ "$ROUTER" = prism ]; then
     PRESET="${ROUTER_PRESET:-$REPO/hardware/$ID/models-prism-llama.ini}"
     LABEL="llama (prism-ml)"
@@ -55,15 +61,14 @@ if [ "$ROUTER" = prism ]; then
     OTHER_LABEL="llama (official)"
     PRISM_DIR="$(ls -d "$HOME"/.local/share/choose-a-local-llm/llama.cpp-prism/release/bin/llama-prism-* 2>/dev/null | sort | tail -1 || true)"
     BIN="${ROUTER_BIN:-$PRISM_DIR/llama-server}"
-    export LD_LIBRARY_PATH="$PRISM_DIR:$HOME/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+    export LD_LIBRARY_PATH="$PRISM_DIR${OFFICIAL_LIB_DIR:+:$OFFICIAL_LIB_DIR}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
     UNIT=llama-router-prism
 elif [ "$ROUTER" = official ]; then
     PRESET="${ROUTER_PRESET:-$REPO/hardware/$ID/models.ini}"
-    OFFICIAL_BIN_DIR="$(ls -d "$HOME"/.local/share/choose-a-local-llm/llama.cpp/*/bin 2>/dev/null | sort | tail -1 || true)"
     BIN="${ROUTER_BIN:-$OFFICIAL_BIN_DIR/llama-server}"
     [ -x "$BIN" ] || BIN="$(command -v llama-server)"
-    if [ -n "$OFFICIAL_BIN_DIR" ]; then
-        export LD_LIBRARY_PATH="$(dirname "$OFFICIAL_BIN_DIR")/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+    if [ -n "$OFFICIAL_LIB_DIR" ]; then
+        export LD_LIBRARY_PATH="$OFFICIAL_LIB_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
     fi
     LABEL="llama (official)"
     OTHER=llama-router-prism
