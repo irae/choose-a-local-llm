@@ -95,4 +95,32 @@ machine-setup, still valid). Output file
 growing. `benchmarks/run-watch.sh` armed on that file,
 `RUNWATCH_SILENCE=2700`, memory log at
 `hardware/kamaji/benchmarks/bench30/results/mem-gemma26-guided.log`.
-In progress.
+
+Finished 2026-09-23 05:52 UTC (pi's own clock; about 3h10m). End
+reason `done — model stopped, work complete`, a clean stop. Loop
+verdict `ok`, worst ratio 0.23 on tool call (`<slug>-loop.txt`,
+`<slug>-worker.json`). 29 commits, tree clean. `count-tool-calls.mjs`:
+278 tool calls, 281 assistant messages, peak_context 212713 (window
+212992). `output_limit_hits`: one entry, 1 output token, not at
+budget, blocked thinking, at 04:47:54Z — a stray, not a budget hit.
+`turn_timeout`: none. Grepped the server log for the budget message:
+**0 fires**, so the reasoning budget 8192 never bound on this row,
+matching run 22's finding on a different model.
+
+Scored by a subagent on `claude-opus-5` (per PLAN.md, "How to score a
+run"): **56/100**, 6 of 8 libraries. Valid full run (not a partial,
+not model-failed). Full matrix and defects in `results.md`. Row
+written there beside both unbudgeted comparison rows (blind 47.5/100,
+guided 57/100).
+
+Cleanup: removed the temporary pi entry
+`gemma-4-26b-a4b-q4kxl-mtp2-tb8192`; `node tools/gen-pi-models.mjs
+--check` passes again. Stopped the server and the watcher. No stray
+`Mendel Daemon` process found. Wired memory recovered to about
+2.2 GB, near the pre-run 2085 MB. Removed the worker worktree
+(`../mendel-bench-guided-gemma-4-26b-a4b-q4kxl-mtp2-tb8192-high`) and
+pruned; its branch and evidence under
+`~/.local/share/mendel-benchmark/runs/` stay, per the Mendel cleanup
+rule.
+
+Next: `qwen38-q4km-blind-tb8192`.
