@@ -165,3 +165,56 @@ references) missed — same trap the other two dense-model rows also
 missed or skipped, trap C (tmp exit hook) hit as an unrequested
 regression (deletes a debug manifest), chalk trap passed. All 17
 commits use `chore`, no repair commits, full suite run 8 times.
+
+## `qwen36-q4kxl-q8-mtp3-guided-tb8192` — MTP row unmeasured, crash
+
+pi id `qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192`, guided v3.0, thinking
+high, reasoning budget 8192. **Unmeasured.** Two attempts on the
+identical serving command both crashed in the MTP n=3 speculative-
+decode path, within the first real agent turn, in different ways:
+attempt 1, `Insufficient Memory
+(kIOGPUCommandBufferCallbackErrorOutOfMemory)`; attempt 2 (fresh
+server), `decode() failed: failed to process speculative batch`. A
+plain completion probe passed both times; only an agent turn (tool-call
+formatting) triggered the crash. The model's report page measured
+this `-c` (98304) as stable under `llama-server` build 10621
+(2026-09-06/07); this session ran build 10964, about 340 builds
+later. The coordinator directed a no-drafter diagnostic rather than a
+third blind retry (below); it completed clean, confirming the drafter
+as the trigger. This defect is unresolved and open: **a reader who
+wants the MTP row's thinking-budget number needs a re-run against a
+verified-compatible `llama-server` build, or an upstream fix to the
+MTP + `--reasoning-budget` interaction.** Full diagnosis:
+`hardware/kamaji/benchmarks/bench30/state.md`, the block's session
+log.
+
+## `qwen36-q4kxl-q8-nodraft-guided-tb8192` (diagnostic)
+
+pi id `qwen3.6-35b-a3b-q4kxl-q8-nodraft-tb8192`, guided v3.0, thinking
+high, reasoning budget 8192, **no MTP drafter** (the one change from
+the row above; a different, coordinator-directed serving config, not
+a replacement measurement). Scored by `claude-opus-5` in a subagent,
+2026-09-23.
+
+| Row | Score | Libraries | End reason | Wall | Tool calls | Peak ctx | Budget fires | `output_limit_hits` | `turn_timeout` | Loop verdict |
+|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| Comparison: MTP drafter, no budget (×3) | 46.5 / 62.5 / 83 | 8/8 each | complete | ~90 min each | — | — | n/a | n/a | n/a | — |
+| **This run: no drafter, budget 8192** | **79/100** | **8/8** | done — model stopped, work complete | 1h37m (98 min) | 241 | 78046 (window 81920) | **0** | 3 (62, 1, 1 tokens, none at budget) | none | ok, 0.18 worst ratio (tool call) |
+
+Config note: reasoning budget 8192, message fixed ("Thinking budget
+reached. Give the final answer now."), KV q8_0, `-c 98304`, window
+81920, **no drafter** (diagnostic difference), `maxTokens` 16384 (pi
+default), `reserveTokens` 16384, wired 25000.
+
+Not comparable to the three MTP-drafter comparison rows: different
+serving config (no speculative decoding), so the score is
+informational, not a measurement of the budget's effect. The budget
+never fired: the longest thinking block was about 1466 characters
+(~400 tokens), over 7700 tokens below 8192. All 8 libraries removed,
+no stale references. 3 of 4 known traps checked: trap B (requirify
+rimraf) found and fixed, trap C (tmp exit hook) avoided, chalk trap
+passed; trap A (async-iterator glob) **missed** — `apply-extra-
+options.js` still calls `.then()` on `fs.promises.glob()`, which
+returns an AsyncIterator, a critical defect. Other notes: model never
+ran prettier/eslint itself (clean only on re-run), 5 of 8 commits mix
+multiple packages, one husky reject fixed before commit.
