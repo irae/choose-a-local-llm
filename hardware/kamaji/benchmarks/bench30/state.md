@@ -107,6 +107,13 @@ budget, blocked thinking, at 04:47:54Z — a stray, not a budget hit.
 **0 fires**, so the reasoning budget 8192 never bound on this row,
 matching run 22's finding on a different model.
 
+**Correction, 2026-09-23** (coordinator, from an `arrietty` test on
+the same build: the server log never carries the injected budget
+message, confirmed independently). Re-counted from the pi-side files
+instead: `…-events.jsonl` and `…-session.jsonl`, both `grep -c` 0
+matches. Conclusion unchanged, now on the right evidence. See
+`results.md` for the corrected note.
+
 Scored by a subagent on `claude-opus-5` (per PLAN.md, "How to score a
 run"): **56/100**, 6 of 8 libraries. Valid full run (not a partial,
 not model-failed). Full matrix and defects in `results.md`. Row
@@ -155,6 +162,10 @@ peak briefly exceeded the pinned window before a compaction cycle).
 `output_limit_hits`: two stray 1-token entries, neither at budget.
 `turn_timeout`: none. Budget message grep in the server log: **0
 fires**, same finding as the first row.
+
+**Correction, 2026-09-23**: the server-log check is wrong (see the
+first row's correction above). Re-counted from `…-events.jsonl` and
+`…-session.jsonl`: 0 matches in either. Conclusion unchanged.
 
 3 tooling nudges came from a hanging `mendel-pipeline` tap test
 harness after tests already passed (idle 42 and 36 minutes each,
@@ -215,17 +226,30 @@ files with uncommitted in-progress work (`xtend`, `urlsafe-base64`
 code-complete; `rimraf`, `tmp` in progress). `count-tool-calls.mjs`:
 92 tool calls, 93 assistant messages, peak_context 167401 (window
 262144). `output_limit_hits`: none. `turn_timeout`: none. Budget
-message grep: **0 fires** again.
+message grep: **0 fires** again (server log; wrong method, see
+correction below).
 
 Scored by a subagent on `claude-opus-5`: **47/100**, 1/8 libraries
 committed (2 more done but uncommitted). Model's final message falsely
 claimed all 8 done. Full matrix and defects in `results.md`.
 
-The budget's link to the loop is inconclusive: every prior turn's
-thinking stayed under 1.5k tokens, but the final (looping) turn's
-thinking reached about 8.3k tokens, close to the 8192 budget, yet the
-budget message never fired — so it is not known whether the budget
-silently truncated that turn's reasoning.
+**Correction, 2026-09-23** (coordinator; the server log never carries
+the injected budget message, confirmed independently on `arrietty`,
+same build). Re-counted from the pi-side files:
+`…-events.jsonl` has 4 matches (one message serialized across
+`message_update`/`message_end`/`turn_end`/`agent_end`, so one real
+fire) and `…-session.jsonl` has 1 match, same turn. **The budget fired
+once, on the run's final turn** — the same turn the live-loop detector
+ended the run on. Reading the thinking content directly
+(`…-session.jsonl` line 189, 29135 characters): the two-phrase cycle
+is already repeated many times **before** the budget message is
+appended at the very end (character 29084 of 29135). The budget did
+not cause the loop — it was already running when the budget capped
+the turn — and the budget's forced stop and the harness's own
+repetition-loop alarm landed within 6 ms of each other on the same
+finished turn (12:29:25.528Z budget, 12:29:25.534Z loop alarm), both
+scanning the same content once it was done. See `results.md` for the
+full note.
 
 Cleanup: removed the temporary pi entry `gemma-4-12b-q4kxl-tb8192`;
 `gen-pi-models.mjs --check` passes. Stopped the server and the
