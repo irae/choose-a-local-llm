@@ -306,4 +306,47 @@ recovering (~1.86 GB). Removed the worker worktree
 (`../mendel-bench-qwen3.8-27b-ista-f16-tb8192-xhigh`) and pruned;
 branch and evidence stay.
 
-Next: `qwen36-q4kxl-q8-mtp3-guided-tb8192`.
+## `qwen36-q4kxl-q8-mtp3-guided-tb8192`, started 2026-09-23 ~11:45
+
+Added temporary pi entry `qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192` (copy
+of `qwen3.6-35b-a3b-q4kxl-q8-mtp3`, `contextWindow 81920`). Server:
+alias `qwen3.6-35b-a3b-q4kxl-q8-mtp3`, MTP n=3, q8_0 KV, `-c 98304`,
+port 8080, `$FAST_FLAGS`, matching `docs/setups/kamaji/models.json`
+`qwen36-gguf-think`'s command. Probe: `finish_reason: stop`,
+non-empty answer (8023 chars) — pass.
+
+Launched `run-worker.sh qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192 pi guided
+high` with `MENDEL_CONTEXT_WINDOW=81920 MENDEL_RESERVE_TOKENS=16384`
+(no `MENDEL_KEEP_RECENT_TOKENS`, per the block's own note, window
+above 65536). Worktree
+`../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192-high`,
+branch `qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192-high-guided-v3-issue-13`.
+`gh auth status` still valid. `benchmarks/run-watch.sh` armed on
+`~/.local/share/mendel-benchmark/runs/qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192-high-guided-events.jsonl`,
+`RUNWATCH_SILENCE=2700`. The MoE row: three prior guided runs at
+46.5, 62.5, 83 (all 8/8, ~90 min), the widest variance on the
+machine, so this run is a fourth sample, not a verdict. Budget-fire
+counting uses the pi-side events/session files.
+
+**Attempt 1 failed, invalid: harness/serving collapse.** The server's
+Metal backend crashed with an unrecoverable GPU OOM 23 seconds into
+the run's first real turn (task 2018, prompt 4340 tokens, well inside
+the 98304 `-c` and the 81920 pinned window): `ggml_metal_synchronize:
+error: command buffer 1 failed with status 5` / `error: Insufficient
+Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)`. Every
+request after that failed with "backend is in error state from a
+previous command buffer failure" (10 in a row), and pi ended on
+`tooling_budget_exhausted`, 0 commits. Per `mendel.md`, "Live loop
+stop": zero commits from a serving collapse, not the model's own
+failure, makes this **invalid**, never scored. Per the owner rule
+(2026-09-13), "a row the machine killed is retried at once, in a
+fresh worktree, before the next block starts": killed the dead server
+(the Metal backend cannot recover in place) and the watcher, and
+retried fresh below. The failed worktree and branch stay untouched
+(never delete before scoring, even though there is nothing here to
+score).
+
+**Attempt 2, started 2026-09-23 ~15:00.** Restarted the server with
+the same command. In progress.
+
+This is the last block of run 30's row list.
