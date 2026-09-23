@@ -346,7 +346,49 @@ retried fresh below. The failed worktree and branch stay untouched
 (never delete before scoring, even though there is nothing here to
 score).
 
-**Attempt 2, started 2026-09-23 ~15:00.** Restarted the server with
-the same command. In progress.
+**Attempt 2, started 2026-09-23 ~15:02, also failed, invalid.** Fresh
+server (new pinned pi id `qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192-r2` to
+avoid the branch collision), same command. Probe passed
+(`finish_reason: stop`, 13330-char answer) before the worker started —
+the server answers a plain completion fine. The worker's first real
+agent turn then failed the same way: `decode() failed: failed to
+process speculative batch`, 10 tool-error retries,
+`tooling_budget_exhausted` at 71 seconds, 0 commits. **Two different
+but related failure signatures** across the two attempts — attempt 1:
+`Insufficient Memory (kIOGPUCommandBufferCallbackErrorOutOfMemory)`;
+attempt 2: `failed to process speculative batch` — both landing in
+the MTP speculative-decode path, both within the first real agent
+turn, both on a `-c` (98304) the model's own report page measured as
+stable with real completions (2026-09-06/07, no OOM, wired 25.6 GB
+flat). The probe request (no tools, no speculative batch pressure
+from tool-call formatting) passes both times; the crash needs an
+actual agent turn to reproduce.
 
-This is the last block of run 30's row list.
+Checked the server version: `llama-server 0.4.1, build 10964,
+b29c606e2`. The model's report page recorded its `-c 98304` ceiling
+under an unspecified earlier build (dated 2026-09-06/07, before this
+session's llama-server was necessarily this exact build) — a version
+drift between measurement and this run is plausible but not
+confirmed; not chased further, since a bisect needs the owner's word
+on which build to test against, and the fix ships from upstream
+either way. This is a candidate cause, not a fixed diagnosis: the
+`--reasoning-budget` flag paired with the MTP n=3 drafter is the one
+run-30 change to this row's serving command that risks touching this
+same speculative-decode path.
+
+**Two consecutive crashes on the identical serving command, in
+different ways, makes a third blind retry a guess, not a fix** (the
+owner rule covers one retry; it does not cover retrying past a
+reproducible failure). Escalated to the coordinator with this
+diagnosis and two candidate next steps that change the row's serving
+config (drop the MTP drafter for this one row as a diagnostic, or
+drop `--reasoning-budget` as a diagnostic) — both are the coordinator's
+or the owner's call, since either changes what the row measures.
+Stopped the server and the watcher; both failed worktrees/branches
+(attempt 1 and attempt 2) stay untouched, per the "never delete
+before scoring" rule, even though neither has anything to score. No
+temp pi entries removed yet — both `-tb8192` and `-tb8192-r2` stay
+until the coordinator answers, since a third attempt may reuse one.
+
+This is the last block of run 30's row list; the other 4 are closed
+and scored. The run is stop-and-ask on this row only.
