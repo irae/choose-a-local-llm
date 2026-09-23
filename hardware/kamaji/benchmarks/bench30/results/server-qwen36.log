@@ -60,3 +60,138 @@
 7.40.441.937 I slot print_timing: id  0 | task 2018 | prompt processing, n_tokens =   3335, progress = 0.77, t =   3.72 s / 896.77 tokens per second
 7.41.084.929 I slot print_timing: id  0 | task 2018 | prompt processing, n_tokens =   3828, progress = 0.88, t =   4.18 s / 916.60 tokens per second
 7.41.750.970 I slot print_timing: id  0 | task 2018 | prompt processing, n_tokens =   4340, progress = 1.00, t =   4.83 s / 898.78 tokens per second
+7.56.083.119 I slot print_timing: id  0 | task 2018 | n_gen =    100, tg =   6.94 t/s, tg_3s =   7.01 t/s
+7.59.191.959 E ggml_metal_synchronize: error: command buffer 1 failed with status 5
+7.59.191.967 E error: Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)
+7.59.193.743 I slot print_timing: id  0 | task 2018 | n_gen =    113, tg =   6.45 t/s, tg_3s =   4.18 t/s
+7.59.218.010 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+7.59.218.013 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+7.59.218.013 E process_ubatch: failed to compute graph, compute status: -1
+7.59.218.013 W decode: removing memory module entries for seq_id = 0, pos = [4456, +inf)
+7.59.218.015 E llama_decode: failed to decode, ret = -3
+7.59.218.039 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+7.59.218.039 E srv    send_error: task id = 2018, error: Compute error.
+7.59.218.045 I slot      release: id  0 | task 2018 | stop processing: n_tokens = 4460, truncated = 0
+7.59.218.054 W srv          stop: cancel task, id_task = 2018
+7.59.219.249 E srv  update_slots: decode() failed: Compute error.
+7.59.235.940 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 392469339241
+7.59.236.097 I slot launch_slot_: id  0 | task 2063 | processing task, is_child = 0
+7.59.241.333 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+7.59.241.337 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+7.59.241.338 E process_ubatch: failed to compute graph, compute status: -1
+7.59.241.339 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+7.59.241.433 E llama_decode: failed to decode, ret = -3
+7.59.241.449 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+7.59.241.451 E srv    send_error: task id = 2063, error: Compute error.
+7.59.241.455 I slot      release: id  0 | task 2063 | stop processing: n_tokens = 2048, truncated = 0
+7.59.241.463 W srv          stop: cancel task, id_task = 2063
+7.59.241.620 E srv  update_slots: decode() failed: Compute error.
+7.59.254.835 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 392469362651
+7.59.254.993 I slot launch_slot_: id  0 | task 2066 | processing task, is_child = 0
+7.59.257.124 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+7.59.257.128 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+7.59.257.129 E process_ubatch: failed to compute graph, compute status: -1
+7.59.257.131 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+7.59.257.227 E llama_decode: failed to decode, ret = -3
+7.59.257.253 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+7.59.257.255 E srv    send_error: task id = 2066, error: Compute error.
+7.59.257.259 I slot      release: id  0 | task 2066 | stop processing: n_tokens = 2048, truncated = 0
+7.59.257.265 W srv          stop: cancel task, id_task = 2066
+7.59.257.415 E srv  update_slots: decode() failed: Compute error.
+7.59.271.430 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 392469378455
+7.59.271.584 I slot launch_slot_: id  0 | task 2069 | processing task, is_child = 0
+7.59.273.576 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+7.59.273.578 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+7.59.273.579 E process_ubatch: failed to compute graph, compute status: -1
+7.59.273.580 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+7.59.273.673 E llama_decode: failed to decode, ret = -3
+7.59.273.685 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+7.59.273.685 E srv    send_error: task id = 2069, error: Compute error.
+7.59.273.687 I slot      release: id  0 | task 2069 | stop processing: n_tokens = 2048, truncated = 0
+7.59.273.694 W srv          stop: cancel task, id_task = 2069
+7.59.273.842 E srv  update_slots: decode() failed: Compute error.
+7.59.289.593 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 392469394884
+7.59.289.732 I slot launch_slot_: id  0 | task 2072 | processing task, is_child = 0
+7.59.291.809 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+7.59.291.811 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+7.59.291.811 E process_ubatch: failed to compute graph, compute status: -1
+7.59.291.813 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+7.59.291.911 E llama_decode: failed to decode, ret = -3
+7.59.291.934 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+7.59.291.937 E srv    send_error: task id = 2072, error: Compute error.
+7.59.291.942 I slot      release: id  0 | task 2072 | stop processing: n_tokens = 2048, truncated = 0
+7.59.291.946 W srv          stop: cancel task, id_task = 2072
+7.59.292.100 E srv  update_slots: decode() failed: Compute error.
+7.59.305.924 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 392469413139
+7.59.306.060 I slot launch_slot_: id  0 | task 2075 | processing task, is_child = 0
+7.59.308.135 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+7.59.308.138 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+7.59.308.138 E process_ubatch: failed to compute graph, compute status: -1
+7.59.308.140 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+7.59.308.241 E llama_decode: failed to decode, ret = -3
+7.59.308.267 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+7.59.308.270 E srv    send_error: task id = 2075, error: Compute error.
+7.59.308.275 I slot      release: id  0 | task 2075 | stop processing: n_tokens = 2048, truncated = 0
+7.59.308.285 W srv          stop: cancel task, id_task = 2075
+7.59.308.419 E srv  update_slots: decode() failed: Compute error.
+7.59.321.890 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 392469429471
+7.59.322.028 I slot launch_slot_: id  0 | task 2078 | processing task, is_child = 0
+7.59.324.065 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+7.59.324.068 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+7.59.324.068 E process_ubatch: failed to compute graph, compute status: -1
+7.59.324.070 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+7.59.324.176 E llama_decode: failed to decode, ret = -3
+7.59.324.193 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+7.59.324.196 E srv    send_error: task id = 2078, error: Compute error.
+7.59.324.200 I slot      release: id  0 | task 2078 | stop processing: n_tokens = 2048, truncated = 0
+7.59.324.204 W srv          stop: cancel task, id_task = 2078
+7.59.324.347 E srv  update_slots: decode() failed: Compute error.
+7.59.337.528 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 392469445396
+7.59.337.664 I slot launch_slot_: id  0 | task 2081 | processing task, is_child = 0
+7.59.339.710 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+7.59.339.712 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+7.59.339.713 E process_ubatch: failed to compute graph, compute status: -1
+7.59.339.714 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+7.59.339.820 E llama_decode: failed to decode, ret = -3
+7.59.339.845 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+7.59.339.847 E srv    send_error: task id = 2081, error: Compute error.
+7.59.339.851 I slot      release: id  0 | task 2081 | stop processing: n_tokens = 2048, truncated = 0
+7.59.339.862 W srv          stop: cancel task, id_task = 2081
+7.59.339.996 E srv  update_slots: decode() failed: Compute error.
+7.59.354.777 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 392469461047
+7.59.354.906 I slot launch_slot_: id  0 | task 2084 | processing task, is_child = 0
+7.59.356.968 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+7.59.356.971 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+7.59.356.971 E process_ubatch: failed to compute graph, compute status: -1
+7.59.356.973 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+7.59.357.077 E llama_decode: failed to decode, ret = -3
+7.59.357.096 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+7.59.357.099 E srv    send_error: task id = 2084, error: Compute error.
+7.59.357.104 I slot      release: id  0 | task 2084 | stop processing: n_tokens = 2048, truncated = 0
+7.59.357.108 W srv          stop: cancel task, id_task = 2084
+7.59.357.253 E srv  update_slots: decode() failed: Compute error.
+7.59.371.627 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 392469478300
+7.59.371.767 I slot launch_slot_: id  0 | task 2087 | processing task, is_child = 0
+7.59.373.832 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+7.59.373.835 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+7.59.373.835 E process_ubatch: failed to compute graph, compute status: -1
+7.59.373.837 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+7.59.373.935 E llama_decode: failed to decode, ret = -3
+7.59.373.953 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+7.59.373.954 E srv    send_error: task id = 2087, error: Compute error.
+7.59.373.963 W srv          stop: cancel task, id_task = 2087
+7.59.373.969 I slot      release: id  0 | task 2087 | stop processing: n_tokens = 2048, truncated = 0
+7.59.374.128 E srv  update_slots: decode() failed: Compute error.
+7.59.388.153 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 392469495165
+7.59.388.299 I slot launch_slot_: id  0 | task 2090 | processing task, is_child = 0
+7.59.390.330 E ggml_metal_graph_compute: backend is in error state from a previous command buffer failure - recreate the backend to recover
+7.59.390.334 E graph_compute: ggml_backend_sched_graph_compute_async failed with error -1
+7.59.390.335 E process_ubatch: failed to compute graph, compute status: -1
+7.59.390.337 W decode: removing memory module entries for seq_id = 0, pos = [0, +inf)
+7.59.390.434 E llama_decode: failed to decode, ret = -3
+7.59.390.453 E srv        decode: Compute error. off = 0, n_batch = 2048, ret = -3
+7.59.390.456 E srv    send_error: task id = 2090, error: Compute error.
+7.59.390.464 W srv          stop: cancel task, id_task = 2090
+7.59.390.469 I slot      release: id  0 | task 2090 | stop processing: n_tokens = 2048, truncated = 0
+7.59.390.627 E srv  update_slots: decode() failed: Compute error.
+8.52.426.257 I srv    operator(): operator(): cleaning up before exit...
