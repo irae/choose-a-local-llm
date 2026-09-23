@@ -7,6 +7,39 @@ run's runbook (`AGENT.md`), log (`state.md`), and results (`results.md`,
 (`run-humaneval.sh`, `run_codegen_wrapper.py`, `calibrate.py`,
 `mem-watch.sh`, `calibration-*.json`).
 
+## bench30, 2026-09-22 to 2026-09-23 ([report](bench30/report.md), [state](bench30/state.md), [results](bench30/results.md))
+
+- Runbook: [bench30/AGENT.md](bench30/AGENT.md). Five agent rows under
+  the fast-mode thinking budget of 8192, at pi's own output budget
+  (16384, read from the installed package, never written into a pi
+  entry).
+- **The budget does not bind on an agent row.** It fired once in five
+  rows, across three models, a MoE and two dense builds, blind and
+  guided. The longest thinking block of the run was about 1400 tokens,
+  17 percent of the budget. Score moves against the comparison rows
+  (56 vs 57, 91 vs 93, 87 vs 80.5) are variance on one sample per
+  cell, not budget effects.
+- **The one fire capped a loop it did not cause.** On the Gemma-4-12B
+  row the two-phrase cycle already repeats through 29135 characters of
+  one turn's thinking; the budget message lands at character 29084.
+  That row also carries a loop signature new to this project: a
+  repetition loop in the **thinking** channel after 1h51m of real
+  work, against the card's answer-channel loops at five minutes.
+- **Never count budget fires from the server log.** The server appends
+  the message to `reasoning_content` and logs nothing; a deliberate
+  64-token budget on the other machine returns the message in the
+  answer with `grep -ic budget` = 0 on the whole log. Three rows were
+  re-counted from the pi-side `events.jsonl` and `session.jsonl`, and
+  one conclusion changed.
+- **MTP n=3 plus `--reasoning-budget` cannot be served on this build.**
+  Two crashes in the speculative-decode path inside the first agent
+  turn (`Insufficient Memory`, then `failed to process speculative
+  batch`), on a command this file passed under build 10621; the
+  session ran 10964. A plain probe passes, only an agent turn crashes.
+  The same row without the drafter completes clean at 79/100, which
+  names the trigger and leaves the cause open. The MTP row stays
+  unmeasured.
+
 ## bench26, 2026-09-19 to 2026-09-21 ([report](bench26/report.md), [state](bench26/state.md), [results](bench26/results.md))
 
 - Runbook: [bench26/AGENT.md](bench26/AGENT.md). The ternary 27B of the
