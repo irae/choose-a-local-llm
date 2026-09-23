@@ -416,4 +416,74 @@ Added temporary pi entry `qwen3.6-35b-a3b-q4kxl-q8-nodraft-tb8192`
 Server: same command as the MTP row minus `--spec-type draft-mtp
 --spec-draft-n-max 3` (no drafter), alias
 `qwen3.6-35b-a3b-q4kxl-q8-nodraft`, `-c 98304`, q8_0 KV, port 8080,
-`$FAST_FLAGS` unchanged (budget stays on). In progress.
+`$FAST_FLAGS` unchanged (budget stays on). Probe: `finish_reason:
+stop`, non-empty answer (10075 chars) — pass.
+
+Launched `run-worker.sh qwen3.6-35b-a3b-q4kxl-q8-nodraft-tb8192 pi
+guided high` with `MENDEL_CONTEXT_WINDOW=81920
+MENDEL_RESERVE_TOKENS=16384`. Worktree
+`../mendel-bench-guided-qwen3.6-35b-a3b-q4kxl-q8-nodraft-tb8192-high`,
+branch
+`qwen3.6-35b-a3b-q4kxl-q8-nodraft-tb8192-high-guided-v3-issue-13`.
+Watched the server log closely (Monitor) for the crash signature
+through the point where both prior attempts had already failed — no
+recurrence. **Confirmed: the drafter was the trigger.**
+
+Finished 2026-09-23 16:51 UTC (1h37m, `done — model stopped, work
+complete`, clean). Loop verdict `ok`, worst ratio 0.18 on tool call.
+8 commits, tree clean. `count-tool-calls.mjs`: 241 tool calls, 244
+assistant messages, peak_context 78046 (window 81920).
+`output_limit_hits`: 3 entries (62, 1, 1 tokens), none at budget.
+`turn_timeout`: none. Budget message grep, pi-side files: **0 fires**
+in both `events.jsonl` and `session.jsonl`; longest thinking block
+about 1466 characters (~400 tokens), over 7700 tokens below 8192.
+
+Scored by a subagent on `claude-opus-5`: **79/100**, all 8 libraries
+removed. Valid full run. Trap A (async-iterator glob) missed —
+critical defect (`apply-extra-options.js` calls `.then()` on
+`fs.promises.glob()`). Not comparable to the three MTP-drafter
+guided comparisons (46.5, 62.5, 83); informational only. Full matrix
+in `results.md`.
+
+## Close-out, 2026-09-23 ~17:05
+
+All 5 blocks of `AGENT.md`'s order are closed:
+
+| Block | Result |
+|---|---|
+| `gemma26-q4kxl-mtp2-guided-tb8192` | 56/100, budget never fired |
+| `qwen38-q4km-blind-tb8192` | 91/100, budget never fired |
+| `gemma12-q4kxl-guided-high-tb8192` | 47/100 valid partial (thinking-channel loop); budget fired once, on the loop turn itself, after the loop was already running — did not cause it |
+| `qwen38-ista-f16-blind-tb8192` | 87/100, budget never fired |
+| `qwen36-q4kxl-q8-mtp3-guided-tb8192` | **unmeasured** — 2 crashes in the MTP speculative-decode path, open defect (build gap 10621→10964, candidate cause); coordinator-directed no-drafter diagnostic scored 79/100 instead, not comparable to the MTP comparison rows |
+
+**The thinking budget (8192) never fired on any of the four scored
+MTP/no-drafter rows that completed under it**, across three different
+models and three serving configs. It fired exactly once across the
+whole run, on the gemma12 row's already-looping final turn, capping a
+turn already in a thinking-channel repetition cycle rather than
+causing or preventing it. No row's score shows a clear budget effect;
+every score delta from its comparison row is within the variance
+already seen between unbudgeted runs of the same config on this
+machine.
+
+**Machine state left behind**: no server running, no watcher, no
+stray `Mendel Daemon`. Wired memory recovered to ~1.84 GB (pre-run
+2085 MB). All 6 temporary `-tb8192*` pi entries removed across the
+run; `node tools/gen-pi-models.mjs --check` passes with the original
+17 entries of `kamaji`. All run-30 worker worktrees removed and
+pruned (5 completed rows plus the 2 failed MTP attempts); their
+branches and evidence under `~/.local/share/mendel-benchmark/runs/`
+stay, per the Mendel cleanup rule. `~/.pi/agent/models.json.bak-run30`
+still holds the pre-run backup.
+
+**Open items for the coordinator/owner**: the MTP-drafter row of
+`qwen3.6-35b-a3b-q4kxl-q8-mtp3` under a reasoning budget is
+unmeasured; a re-run needs either a verified-compatible
+`llama-server` build or an upstream fix to the MTP +
+`--reasoning-budget` interaction. Whether the no-drafter diagnostic's
+79/100 reaches the site, and how the whole run's null result on the
+thinking budget is written up, are the coordinator's calls.
+
+Evidence archived: `tools/archive-evidence.sh
+hardware/kamaji/benchmarks/bench30/results run30`.
