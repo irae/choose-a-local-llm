@@ -259,4 +259,51 @@ recovering (~1.85 GB). Removed the worker worktree
 uncommitted changes) and pruned; branch and evidence under
 `~/.local/share/mendel-benchmark/runs/` stay.
 
-Next: `qwen38-ista-f16-blind-tb8192`.
+## `qwen38-ista-f16-blind-tb8192`, started 2026-09-23 ~09:41
+
+Added temporary pi entry `qwen3.8-27b-ista-f16-tb8192` (copy of
+`qwen3.8-27b-ista-f16`, `contextWindow 147456`). Server: alias
+`qwen3.8-27b-ista-f16`, no drafter, `-c 163840`, f16 KV, port 8080,
+`$FAST_FLAGS`, matching `docs/setups/kamaji/models.json`
+`qwen38-gguf-ista-nodrafter-xhigh`'s command. Probe: `finish_reason:
+stop`, non-empty answer (763 chars) — pass.
+
+Launched `run-worker.sh qwen3.8-27b-ista-f16-tb8192 pi blind xhigh`
+with `MENDEL_CONTEXT_WINDOW=147456 MENDEL_RESERVE_TOKENS=16384` (no
+`MENDEL_KEEP_RECENT_TOKENS`, window above 65536). Worktree
+`../mendel-bench-qwen3.8-27b-ista-f16-tb8192-xhigh`, branch
+`qwen3.8-27b-ista-f16-tb8192-xhigh-issue-13`. `gh auth status` still
+valid. `benchmarks/run-watch.sh` armed on
+`~/.local/share/mendel-benchmark/runs/qwen3.8-27b-ista-f16-tb8192-xhigh-blind-events.jsonl`,
+`RUNWATCH_SILENCE=2700`. This is the 3-bit row: comparison 80.5/100,
+8/8, 109.4 minutes, no budget. Its fast-mode EvalPlus forced the most
+answers of the dense Qwen rows here, so it is the dense row most
+likely to reach the budget on an agent turn — count fires from the
+pi-side events/session files, not the server log (correction above).
+
+Finished 2026-09-23 14:42 UTC (about 2h4m). End reason `done — model
+stopped, work complete`, a clean stop. Loop verdict `ok`, worst ratio
+0.27 on tool call. 17 commits (all chore), tree clean.
+`count-tool-calls.mjs`: 214 tool calls, 175 assistant messages,
+peak_context 119250 (window 147456). `output_limit_hits`: none.
+`turn_timeout`: none. 1 tooling nudge (a 10-minute stall). Budget
+message grep, pi-side files this time: **0 fires** in both
+`events.jsonl` and `session.jsonl`. The longest thinking block in the
+session was about 5445 characters (~1400 tokens), roughly 6800 tokens
+below the 8192 budget — no turn came close.
+
+Scored by a subagent on `claude-opus-5`: **87/100**, 8/8 libraries
+(1 stale `rimraf` reference left in `mendel-requirify`, the same trap
+the other two dense-model rows also missed or skipped). Valid full
+run. Score rose 6.5 points over the unbudgeted comparison (80.5 to
+87); since the budget never bound, this is run-to-run variance, not a
+budget effect. Full matrix and defects in `results.md`.
+
+Cleanup: removed the temporary pi entry `qwen3.8-27b-ista-f16-tb8192`;
+`gen-pi-models.mjs --check` passes. Stopped the server and the
+watcher. No stray `Mendel Daemon` process found. Wired memory
+recovering (~1.86 GB). Removed the worker worktree
+(`../mendel-bench-qwen3.8-27b-ista-f16-tb8192-xhigh`) and pruned;
+branch and evidence stay.
+
+Next: `qwen36-q4kxl-q8-mtp3-guided-tb8192`.

@@ -134,3 +134,34 @@ backed by the diff. The rubric scores the committed branch only.
 Other defects: root `rimraf` and `tmp` still declared (critical), no
 full test suite or lint run in the whole session, 5 Prettier warnings
 in uncommitted files from whole-file rewrites.
+
+## `qwen38-ista-f16-blind-tb8192`
+
+pi id `qwen3.8-27b-ista-f16-tb8192`, blind v1.1, effort xhigh,
+reasoning budget 8192. Scored by `claude-opus-5` in a subagent,
+2026-09-23. Budget fires counted from the pi-side `events.jsonl` and
+`session.jsonl`, per the correction above.
+
+| Row | Score | Libraries | End reason | Wall | Tool calls | Peak ctx | Budget fires | `output_limit_hits` | `turn_timeout` | Loop verdict |
+|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| Comparison: blind, no budget | 80.5/100 | 8/8 | complete | 109.4 min | — | — | n/a | n/a | n/a | — |
+| **This run: blind, budget 8192** | **87/100** | **8/8, 1 stale ref left** | done — model stopped, work complete | 2h4m (124 min) | 214 | 119250 (window 147456) | **0** | none | none | ok, 0.27 worst ratio (tool call) |
+
+Config note: reasoning budget 8192, message fixed ("Thinking budget
+reached. Give the final answer now."), KV f16, `-c 163840`, window
+147456, no drafter, ISTA-DASLab GSQ-RCO 3-bit (IQ3_S-mtp), `maxTokens`
+16384 (pi default), `reserveTokens` 16384, wired 25000.
+
+The budget never fired: the longest thinking block in the session was
+about 5445 characters (~1400 tokens), roughly 17% of the 8192 budget
+and about 6800 tokens below it — no turn came close. Score rose 6.5
+points over the unbudgeted comparison (80.5 to 87); since the budget
+never bound, this is run-to-run variance, not a budget effect. This
+model was flagged going in as "the dense row most likely to reach the
+budget" from its fast-mode EvalPlus forcing behavior, but that did not
+carry over to the agent task. All 4 known traps checked: trap A
+(async-iterator glob) passed, trap B (`mendel-requirify` rimraf
+references) missed — same trap the other two dense-model rows also
+missed or skipped, trap C (tmp exit hook) hit as an unrequested
+regression (deletes a debug manifest), chalk trap passed. All 17
+commits use `chore`, no repair commits, full suite run 8 times.
