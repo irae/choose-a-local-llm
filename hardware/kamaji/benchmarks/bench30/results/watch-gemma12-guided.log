@@ -1,0 +1,1 @@
+run-watch: log=none output=/Users/irae/.local/share/mendel-benchmark/runs/gemma-4-12b-q4kxl-tb8192-high-guided-events.jsonl url=http://127.0.0.1:8080 silence=2700s probe_timeout=300s poll=10s mem_log=hardware/kamaji/benchmarks/bench30/results/mem-gemma12-guided.log mem_interval=20s
