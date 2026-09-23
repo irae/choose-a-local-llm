@@ -144,6 +144,34 @@ from earlier. `benchmarks/run-watch.sh` armed on
 `~/.local/share/mendel-benchmark/runs/qwen3.8-27b-q4km-tb8192-xhigh-blind-events.jsonl`,
 `RUNWATCH_SILENCE=2700`. This is the best row of the machine's
 comparison (93/100, 8/8, 213.3 minutes, no budget), so a long run is
-expected. In progress.
+expected.
+
+Finished 2026-09-23 10:28 UTC (about 4h18m). End reason `done — model
+stopped, work complete`, a clean stop. Loop verdict `ok`, worst ratio
+0.33 on thinking. 17 commits (15 non-chore), tree clean.
+`count-tool-calls.mjs`: 249 tool calls, 227 assistant messages,
+peak_context 72829 (pinned window 65536, `-c` 73728 covers it — the
+peak briefly exceeded the pinned window before a compaction cycle).
+`output_limit_hits`: two stray 1-token entries, neither at budget.
+`turn_timeout`: none. Budget message grep in the server log: **0
+fires**, same finding as the first row.
+
+3 tooling nudges came from a hanging `mendel-pipeline` tap test
+harness after tests already passed (idle 42 and 36 minutes each,
+unrelated to the model or the budget) — not a loop, not slow
+generation.
+
+Scored by a subagent on `claude-opus-5`: **91/100**, all 8 libraries
+removed but 2 stale references left in `mendel-requirify` (found by
+the model, skipped as out of scope). Valid full run. Full matrix and
+defects in `results.md`, beside the unbudgeted comparison row
+(93/100, 8/8, 213.3 min).
+
+Cleanup: removed the temporary pi entry `qwen3.8-27b-q4km-tb8192`;
+`gen-pi-models.mjs --check` passes. Stopped the server and the
+watcher. No stray `Mendel Daemon` process found. Wired memory
+recovering (~1.85 GB). Removed the worker worktree
+(`../mendel-bench-qwen3.8-27b-q4km-tb8192-xhigh`) and pruned; branch
+and evidence under `~/.local/share/mendel-benchmark/runs/` stay.
 
 Next: `gemma12-q4kxl-guided-high-tb8192`.
