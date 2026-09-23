@@ -76,8 +76,17 @@ the coordinator's call after the run.
   with `LD_LIBRARY_PATH` listing that directory first, then
   `~/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/lib`
   (the reverse order loads the official ggml and fails on the ternary
-  types; `hardware/arrietty/benchmarks/bench27/state.md`). The
-  official `llama-server` on `PATH` serves the other three rows.
+  types; `hardware/arrietty/benchmarks/bench27/state.md`).
+- **The official build** serves the other three rows. Binary:
+  `~/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/bin/llama-server`,
+  with that build's `lib` directory on `LD_LIBRARY_PATH`. **Never the
+  `llama-server` of `PATH`**: on this machine that is the
+  distribution package, its GPU backend is a second package that is
+  not installed, and it loads every model on the CPU. Before the
+  first server of the run, `"$BIN" --list-devices` must name `CUDA0`.
+  A server log line `no usable GPU found` means you took the wrong
+  binary; stop the server and take the one above
+  (`docs/methodology/server-lore.md`).
 - Every agent row: `benchmarks/run-watch.sh` as a background task
   (`RUNWATCH_SILENCE=2700`, the checklist's memory log path); the
   worker from `~/code/mendel-benchmark/benchmark`; `gh auth status`
