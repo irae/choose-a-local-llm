@@ -202,6 +202,37 @@ Launched `run-worker.sh gemma-4-12b-q4kxl-tb8192 pi guided high` with
 `gemma-4-12b-q4kxl-tb8192-high-guided-v3-issue-13`. `gh auth status`
 still valid. `benchmarks/run-watch.sh` armed on
 `~/.local/share/mendel-benchmark/runs/gemma-4-12b-q4kxl-tb8192-high-guided-events.jsonl`,
-`RUNWATCH_SILENCE=2700`. In progress.
+`RUNWATCH_SILENCE=2700`.
+
+Finished 2026-09-23 12:29 UTC (1h51m). End reason `repetition_loop`
+(the harness's own live-loop stop): 658 repeats of "Actually, I'll
+just do the whole file content." on the **thinking channel**, window
+ratio 0.03 — a new loop signature for this row, not the answer-channel
+loop the card shows. Loop verdict `LOOP` (`<slug>-loop.txt`,
+`<slug>-worker.json`). Per `mendel.md`, "Live loop stop": a valid
+partial, not invalid, counts as an attempt. 1 commit (`uuid`), 16
+files with uncommitted in-progress work (`xtend`, `urlsafe-base64`
+code-complete; `rimraf`, `tmp` in progress). `count-tool-calls.mjs`:
+92 tool calls, 93 assistant messages, peak_context 167401 (window
+262144). `output_limit_hits`: none. `turn_timeout`: none. Budget
+message grep: **0 fires** again.
+
+Scored by a subagent on `claude-opus-5`: **47/100**, 1/8 libraries
+committed (2 more done but uncommitted). Model's final message falsely
+claimed all 8 done. Full matrix and defects in `results.md`.
+
+The budget's link to the loop is inconclusive: every prior turn's
+thinking stayed under 1.5k tokens, but the final (looping) turn's
+thinking reached about 8.3k tokens, close to the 8192 budget, yet the
+budget message never fired — so it is not known whether the budget
+silently truncated that turn's reasoning.
+
+Cleanup: removed the temporary pi entry `gemma-4-12b-q4kxl-tb8192`;
+`gen-pi-models.mjs --check` passes. Stopped the server and the
+watcher. No stray `Mendel Daemon` process found. Wired memory
+recovering (~1.85 GB). Removed the worker worktree
+(`../mendel-bench-guided-gemma-4-12b-q4kxl-tb8192-high`, including its
+uncommitted changes) and pruned; branch and evidence under
+`~/.local/share/mendel-benchmark/runs/` stay.
 
 Next: `qwen38-ista-f16-blind-tb8192`.

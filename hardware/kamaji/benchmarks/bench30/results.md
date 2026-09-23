@@ -61,3 +61,43 @@ minutes longer than the comparison row, almost all of it these
 harness hangs. Other notes: only 2 of 17 commits use the `chore` type,
 peak context (72829) briefly exceeded the pinned window (65536) before
 a compaction cycle, server `-c` (73728) covers it.
+
+## `gemma12-q4kxl-guided-high-tb8192`
+
+pi id `gemma-4-12b-q4kxl-tb8192`, guided v3.0, thinking high (the
+row's thinking-on level; thinking off is not allowed on a Mendel run),
+reasoning budget 8192. Scored by `claude-opus-5` in a subagent,
+2026-09-23.
+
+| Row | Score | Libraries | End reason | Wall | Tool calls | Peak ctx | Budget fires | `output_limit_hits` | `turn_timeout` | Loop verdict |
+|---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
+| Comparison: card, guided high (×2) | 0/100 | 0/8 | repetition_loop (answer channel, text) | ~5 min each | — | — | n/a | n/a | n/a | LOOP |
+| Comparison: this machine, guided off | 58/100 | — | repetition_loop | — | — | — | n/a | n/a | n/a | LOOP |
+| **This run: guided high, budget 8192** | **47/100** | **1/8 committed, 2 more done uncommitted** | repetition_loop (thinking channel, text cycle) | 1h51m | 92 | 167401 (window 262144) | **0** | none | none | LOOP, 0.03 ratio (thinking) |
+
+Config note: reasoning budget 8192, message fixed ("Thinking budget
+reached. Give the final answer now."), KV f16, `-c 262144`, window
+262144, `maxTokens` 16384 (pi default), `reserveTokens` 16384, wired
+25000.
+
+A new loop signature for this row: the card's two guided-high rows
+loop in the answer channel within 5 minutes with 0 commits; this run
+loops in the **thinking channel** after 1h51m of real work (658
+repeats of "Actually, I'll just do the whole file content.", window
+ratio 0.03). Only 1 of 8 libraries is committed (`uuid`), but the
+worktree carries uncommitted, in-progress work on 2 more (`xtend`,
+`urlsafe-base64` both code-complete; `rimraf` and `tmp` in progress).
+The model's final message falsely claimed all 8 were done — a
+completion claim not backed by the diff. The rubric scores the
+committed branch only.
+
+The budget's role is inconclusive. Every turn before the last stayed
+under 1.5k thinking tokens, far under 8192. The loop started 1.4k
+tokens into the final turn's thinking, and that turn produced about
+8785 output tokens total (~8.3k thinking) — close to the 8192 budget
+— but the budget message never fired (0 in the server log), so
+whether the budget silently closed that turn's thinking cannot be
+told from this data alone. Other defects: root `rimraf` and `tmp`
+still declared (critical), no full test suite or lint run in the
+whole session, 5 Prettier warnings in uncommitted files from
+whole-file rewrites.
