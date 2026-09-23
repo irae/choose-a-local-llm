@@ -21,6 +21,17 @@ reached. Give the final answer now."), KV f16, `-c 212992`, window
 212992, `maxTokens` 16384 (pi default), `reserveTokens` 16384, wired
 25000.
 
+**Correction, 2026-09-23** (owner via the coordinator): the budget
+fire count is counted wrong below and in `state.md`'s first pass. The
+server log never carries the injected message (confirmed on
+`arrietty`, same build, 2026-09-23: the message lands only in
+`reasoning_content` of the pi-side response, never in the server's own
+log). Re-counted from
+`~/.local/share/mendel-benchmark/runs/gemma-4-26b-a4b-q4kxl-mtp2-tb8192-high-guided-events.jsonl`
+and `…-session.jsonl` (both files, `grep -c` on the fixed message):
+**0 matches in either file**. The original conclusion stands, now on
+the right evidence: the budget never fired on this row.
+
 The budget never fired: no thinking turn reached 8192 reasoning
 tokens, matching the run-22 finding on a different model. Score fell
 2 points from the unbudgeted guided comparison row (57 to 56) and the
@@ -48,6 +59,13 @@ reached. Give the final answer now."), KV f16, `-c 73728`, pinned
 window 65536, no drafter, `maxTokens` 16384 (pi default),
 `reserveTokens` 16384, wired 25000.
 
+**Correction, 2026-09-23**: re-counted from
+`~/.local/share/mendel-benchmark/runs/qwen3.8-27b-q4km-tb8192-xhigh-blind-events.jsonl`
+and `…-session.jsonl` (the server-log method used originally cannot
+see the message at all — see the gemma26 row's correction above):
+**0 matches in either file**. The original conclusion stands, now on
+the right evidence.
+
 The budget never fired here either: no thinking turn came near 8192
 reasoning tokens. Score fell 2 points from the unbudgeted comparison
 row (93 to 91), on the machine's best row so far. The model found but
@@ -73,31 +91,46 @@ reasoning budget 8192. Scored by `claude-opus-5` in a subagent,
 |---|--:|--:|---|--:|--:|--:|--:|--:|--:|---|
 | Comparison: card, guided high (×2) | 0/100 | 0/8 | repetition_loop (answer channel, text) | ~5 min each | — | — | n/a | n/a | n/a | LOOP |
 | Comparison: this machine, guided off | 58/100 | — | repetition_loop | — | — | — | n/a | n/a | n/a | LOOP |
-| **This run: guided high, budget 8192** | **47/100** | **1/8 committed, 2 more done uncommitted** | repetition_loop (thinking channel, text cycle) | 1h51m | 92 | 167401 (window 262144) | **0** | none | none | LOOP, 0.03 ratio (thinking) |
+| **This run: guided high, budget 8192** | **47/100** | **1/8 committed, 2 more done uncommitted** | repetition_loop (thinking channel, text cycle) | 1h51m | 92 | 167401 (window 262144) | **1** | none | none | LOOP, 0.03 ratio (thinking) |
 
 Config note: reasoning budget 8192, message fixed ("Thinking budget
 reached. Give the final answer now."), KV f16, `-c 262144`, window
 262144, `maxTokens` 16384 (pi default), `reserveTokens` 16384, wired
 25000.
 
+**Correction, 2026-09-23** (owner via the coordinator): the budget
+fire count above and this section's first pass both said 0, counted
+from the server log, which never carries the injected message (see
+the gemma26 row's correction). Re-counted from
+`~/.local/share/mendel-benchmark/runs/gemma-4-12b-q4kxl-tb8192-high-guided-events.jsonl`
+(4 matches, one message serialized across `message_update`,
+`message_end`, `turn_end`, `agent_end` — one real fire) and
+`…-session.jsonl` (1 match, same turn). **The budget fired once, on
+this row's very last turn** — the same turn the harness's live-loop
+detector ended the run on. Read directly from the thinking content
+(`…-session.jsonl` line 189): the two-phrase cycle ("Actually, I'll
+just do the whole file content." / "Wait, I'll check if I can do the
+targeted edit.") is already running, repeated many times, in the
+29135 characters of that turn's thinking **before** the budget
+message appears, appended once at the very end (character 29084 of
+29135). The loop was not caused by the budget: it was already
+established when the budget capped the turn. The budget's only
+visible effect here is that it ended the runaway thinking generation
+at the point the reasoning-token cap hit, at the same moment the
+harness's own repetition detector also fired on the same content —
+the two stops landed 6 ms apart (12:29:25.528Z budget,
+12:29:25.534Z loop alarm) because both were scanning the same
+finished turn.
+
 A new loop signature for this row: the card's two guided-high rows
 loop in the answer channel within 5 minutes with 0 commits; this run
-loops in the **thinking channel** after 1h51m of real work (658
-repeats of "Actually, I'll just do the whole file content.", window
-ratio 0.03). Only 1 of 8 libraries is committed (`uuid`), but the
-worktree carries uncommitted, in-progress work on 2 more (`xtend`,
-`urlsafe-base64` both code-complete; `rimraf` and `tmp` in progress).
-The model's final message falsely claimed all 8 were done — a
-completion claim not backed by the diff. The rubric scores the
-committed branch only.
+loops in the **thinking channel** after 1h51m of real work. Only 1 of
+8 libraries is committed (`uuid`), but the worktree carries
+uncommitted, in-progress work on 2 more (`xtend`, `urlsafe-base64`
+both code-complete; `rimraf` and `tmp` in progress). The model's final
+message falsely claimed all 8 were done — a completion claim not
+backed by the diff. The rubric scores the committed branch only.
 
-The budget's role is inconclusive. Every turn before the last stayed
-under 1.5k thinking tokens, far under 8192. The loop started 1.4k
-tokens into the final turn's thinking, and that turn produced about
-8785 output tokens total (~8.3k thinking) — close to the 8192 budget
-— but the budget message never fired (0 in the server log), so
-whether the budget silently closed that turn's thinking cannot be
-told from this data alone. Other defects: root `rimraf` and `tmp`
-still declared (critical), no full test suite or lint run in the
-whole session, 5 Prettier warnings in uncommitted files from
-whole-file rewrites.
+Other defects: root `rimraf` and `tmp` still declared (critical), no
+full test suite or lint run in the whole session, 5 Prettier warnings
+in uncommitted files from whole-file rewrites.
