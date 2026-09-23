@@ -118,7 +118,11 @@ the block names at the point it is needed.
    when the preset file is unchanged, and restarts it when the file
    changed. Then name the row's pi id in the request's `model` field
    and the router loads that preset alone (`--models-max 1`); the run
-   starts no server of its own, and the port is 8080. The PrismML build
+   starts no server of its own, and the port is 8080. After the idle
+   window the router puts the model in the `sleeping` state and gives
+   the GPU memory back; the next request wakes it. A sleeping model
+   holds nothing, so read `sleeping` as free and only `loaded` as
+   busy ([server lore](./server-lore.md)). The PrismML build
    (`tools/llama-router.sh start prism`, the Bonsai rows) runs on the
    same port and never beside the official one: stop one, start the
    other. A row whose flags are not in

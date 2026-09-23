@@ -20,13 +20,25 @@
 # A run that needs a model asks the running server by pi id; it starts
 # no server of its own.
 #
+# The official build is the newest one under
+# ~/.local/share/choose-a-local-llm/llama.cpp/, the same build every run
+# uses, and `llama-server` on PATH only when that directory is absent.
+# The PATH binary of a distribution package can carry no GPU backend, so
+# `start` first asks the chosen binary for its devices and refuses when
+# it names none.
+#
+# After ROUTER_IDLE seconds the model goes to `sleeping`: the child
+# server stays, the GPU memory goes back (8632 MiB to 944 MiB, measured
+# 2026-09-23). The next request wakes it. `sleeping` means the card is
+# free; only `loaded` holds it.
+#
 # Environment:
 #   ROUTER_PORT       8080
 #   ROUTER_HOST       0.0.0.0
 #   ROUTER_PRESET     the preset file
 #   ROUTER_BIN        the llama-server binary
 #   ROUTER_MODELS_MAX 1
-#   ROUTER_IDLE       seconds of idleness before the loaded model is freed
+#   ROUTER_IDLE       seconds of idleness before the loaded model sleeps
 #                     (default 300)
 
 set -euo pipefail
@@ -47,7 +59,12 @@ if [ "$ROUTER" = prism ]; then
     UNIT=llama-router-prism
 elif [ "$ROUTER" = official ]; then
     PRESET="${ROUTER_PRESET:-$REPO/hardware/$ID/models.ini}"
-    BIN="${ROUTER_BIN:-$(command -v llama-server)}"
+    OFFICIAL_BIN_DIR="$(ls -d "$HOME"/.local/share/choose-a-local-llm/llama.cpp/*/bin 2>/dev/null | sort | tail -1 || true)"
+    BIN="${ROUTER_BIN:-$OFFICIAL_BIN_DIR/llama-server}"
+    [ -x "$BIN" ] || BIN="$(command -v llama-server)"
+    if [ -n "$OFFICIAL_BIN_DIR" ]; then
+        export LD_LIBRARY_PATH="$(dirname "$OFFICIAL_BIN_DIR")/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+    fi
     LABEL="llama (official)"
     OTHER=llama-router-prism
     OTHER_LABEL="llama (prism-ml)"
@@ -83,7 +100,11 @@ other_running() {
 
 loaded() {
     curl -sf "http://127.0.0.1:$PORT/models" 2> /dev/null \
-        | python3 -c 'import json,sys; d=json.load(sys.stdin)["data"]; print(", ".join(m["id"] for m in d if m["status"]["value"]!="unloaded") or "none")' 2> /dev/null || echo "no answer"
+        | python3 -c 'import json,sys; d=json.load(sys.stdin)["data"]; live=[m["id"] for m in d if m["status"]["value"] not in ("unloaded","sleeping")]; nap=[m["id"] for m in d if m["status"]["value"]=="sleeping"]; print(", ".join(live) or ("none, asleep: " + ", ".join(nap) if nap else "none"))' 2> /dev/null || echo "no answer"
+}
+
+has_device() {
+    "$BIN" --list-devices 2> /dev/null | grep -qE '^[[:space:]]+[A-Za-z]+[0-9]+:'
 }
 
 serve() {
@@ -125,6 +146,10 @@ case "$ACTION" in
             exit 1
         fi
         [ -f "$PRESET" ] || { echo "no preset file $PRESET; run npm run docs:tables" >&2; exit 1; }
+        if ! has_device; then
+            echo "$BIN lists no GPU device. It would serve on the CPU, at about one token per second, and it would swap. Install the GPU backend for that binary, or set ROUTER_BIN to a build that finds the card ('<build>/bin/llama-server --list-devices' must name one)." >&2
+            exit 1
+        fi
         mkdir -p "$(dirname "$STATE")"
         want="$(hash_preset)"
         have="$(cat "$STATE" 2> /dev/null || true)"

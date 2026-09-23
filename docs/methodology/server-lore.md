@@ -3,6 +3,24 @@
 Read this before touching a server and before blaming a model for a
 stall. Everything here was hit at least once.
 
+## llama-server
+
+- **A binary on `PATH` can have no GPU backend.** A distribution
+  package can ship the server and leave the GPU backend in a second
+  package. `llama-server --list-devices` then prints `(none)` and the
+  server loads the model on the CPU without one error line. A 27B
+  answered at 1.56 tok/s under 13 GB of swap for a whole night this
+  way (2026-09-22). Ask a server binary for its devices before you
+  serve with it, and give it the library directory of the build you
+  trust: the same package binary finds the card when that directory is
+  on `LD_LIBRARY_PATH`.
+- **`sleeping` is not `loaded`, and it is not `unloaded`.** After the
+  idle window of `--sleep-idle-seconds` the router puts the model in
+  the `sleeping` state: `/models` keeps the entry, the child server
+  stays alive, and the GPU memory goes back (13138 MiB to 1166 MiB,
+  measured 2026-09-23). The next request wakes it. A check that reads
+  "not `unloaded`" as "busy" reports a free card as busy for ever.
+
 ## mlx_lm.server
 
 - **Dead-thread trap**: the generation thread can die (Metal OOM) while
