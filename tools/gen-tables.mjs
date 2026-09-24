@@ -872,7 +872,7 @@ function presetOf(r) {
     if (hasValue) i++
     if (PRESET_DROP.has(key)) continue
     if (key === 'lora') {
-      if (lora) lines.push(`lora = ${lora.replace(/^~/, process.env.HOME)}`)
+      if (lora) lines.push(`lora = ${lora}`)
       continue
     }
     lines.push(`${key} = ${hasValue ? next : 'true'}`)
@@ -935,13 +935,15 @@ function writePresetFile(data) {
       '',
       ...presets.map((p) => `${p.preset}\n`),
     ].join('\n')
+    const local = block.replace(/^lora = ~\//gm, `lora = ${process.env.HOME}/`)
     const original = existsSync(target) ? readFileSync(target, 'utf8') : ''
-    if (original === block) continue
+    if (original === local) continue
     if (CHECK) {
+      if (original.replace(/^lora = \/[^/]+\/[^/]+\//gm, 'lora = ~/') === block) continue
       console.error(`STALE: ${target} does not match docs/setups/${data.setup}/models.json. Run \`npm run docs:tables\`.`)
       drift = true
     } else {
-      writeFileSync(target, block)
+      writeFileSync(target, local)
       console.log(`updated: ${target}`)
     }
   }

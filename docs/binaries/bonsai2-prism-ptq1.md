@@ -154,7 +154,7 @@ RTX 5060 Ti 16 GB, a section of `hardware/arrietty/models-prism-llama.ini` (pris
 [bonsai2-27b-ptq1-f16-orca]
 hf-repo = prism-ml/Ternary-Bonsai-2-27B-gguf
 hf-file = Ternary-Bonsai-2-27B-PTQ1_0.gguf
-lora = /home/irae/.local/share/choose-a-local-llm/OrcaBonsai-27B-Uncensored/gguf/bonsai-abliterate-lora.gguf
+lora = ~/.local/share/choose-a-local-llm/OrcaBonsai-27B-Uncensored/gguf/bonsai-abliterate-lora.gguf
 no-mmproj = true
 parallel = 1
 n-gpu-layers = 999
