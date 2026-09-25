@@ -1,7 +1,7 @@
 # Run 31 (card): the thinking budget on the agent rows only this machine has
 
-Ready to start, 2026-09-22, after the owner frees the card. Four agent
-rows, about 7 hours. Run 30 on the Mac runs the same question on the
+Ready to start, 2026-09-22, after the owner frees the card. Five agent
+rows, about 10.5 hours. Run 30 on the Mac runs the same question on the
 rows both machines share; this run takes only what the Mac cannot
 answer: the two NVFP4 builds, the ternary build, and the reference
 3-bit build at q8_0 KV on a guided row.
@@ -34,6 +34,7 @@ the coordinator's call after the run.
 - `gemma26-nvfp4-guided-tb8192`
 - `bonsai2-ptq1-f16-guided-tb8192`
 - `qwen38-ista-q8-guided-tb8192`
+- `qwen38-iq3s-q8-guided-tb8192`
 - `gemma12-nvfp4-guided-high-tb8192`
 - `retry-sweep`
 
@@ -77,7 +78,7 @@ the coordinator's call after the run.
   `~/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/lib`
   (the reverse order loads the official ggml and fails on the ternary
   types; `hardware/arrietty/benchmarks/bench27/state.md`).
-- **The official build** serves the other three rows. Binary:
+- **The official build** serves the other four rows. Binary:
   `~/.local/share/choose-a-local-llm/llama.cpp/v0.4.0-sm120/bin/llama-server`,
   with that build's `lib` directory on `LD_LIBRARY_PATH`. **Never the
   `llama-server` of `PATH`**: on this machine that is the
@@ -111,32 +112,25 @@ the coordinator's call after the run.
 Read `docs/methodology/mendel.md`, "House rules" and "Window and
 budget", and `docs/methodology/common-rules.md`, rule 7.
 
-1. `node tools/gen-pi-models.mjs --check` must pass: the pi file of
-   this machine was regenerated on 2026-09-22 (new ids, no
-   `maxTokens`, `baseUrl` on port 8080). If it reports STALE, stop and
-   ask; the candidate answer is `npm run pi:models` after a backup to
-   `~/.pi/agent/models.json.bak-run31`. Write the list of `llama` ids
-   into `state.md`.
-2. Find pi's default output budget: serve the first row's model as its
-   block says, then run `benchmarks/mendel-smoke.sh` on it with
-   `SMOKE_MENDEL_CONTEXT_WINDOW=<the row's window>` and
-   `SMOKE_MENDEL_RESERVE_TOKENS=16384`. The smoke's `<slug>-meta.json`
-   carries the resolved model entry as `model_info`; its
-   `model_info.maxTokens` is the default pi filled in. Record it in
-   `state.md` as `output_budget`. If the runner refuses with
-   `bad_config` because the entry has no `maxTokens`, stop and ask;
-   the candidate answer is a `maxTokens` of the value pi documents as
-   its default, written into the temporary `-tb8192` entries only,
-   and recorded as such. If run 30 has already recorded
-   `output_budget` on `origin/run30`, take that value and skip the
-   smoke's reading, not the smoke.
-3. Every agent row then sets `MENDEL_RESERVE_TOKENS=<output_budget>`.
-   `MENDEL_KEEP_RECENT_TOKENS` follows `mendel.md`: 8192 under a
-   65536 window, unset above.
+1. **The harness changed on 2026-09-25** (owner). A run never copies
+   `~/.pi/agent/`: the worker and the smoke build the run's own pi
+   config with `tools/gen-pi-models.mjs --run-dir`, for the one model
+   the server holds. No `maxTokens` and no `reserveTokens` anywhere;
+   `keepRecentTokens` follows the window curve in `mendel.md`, "Window
+   and budget" (8192 under 65536, 16384 under 131072, unset above).
+   `MENDEL_RESERVE_TOKENS` is gone. Never edit `~/.pi/agent/`.
+2. `tools/preflight.sh` must print `ok pi-version`. On `fix
+   pi-version`, run the command the line prints, then preflight again.
+   Record `pi --version` in `state.md` as `pi_version`.
+3. Serve the first row's model as its block says, then run
+   `benchmarks/mendel-smoke.sh` on it with
+   `SMOKE_MENDEL_SITE_ID=<pi id>` and
+   `SMOKE_MENDEL_CONTEXT_WINDOW=<the row's window>`. The SMOKE-MENDEL
+   line carries the pi version.
 4. The smoke must pass. Leave the server up for the first row.
 
-Values this block sets in `state.md`: `pi_ids`, `output_budget`,
-`smoke_result`, `vram_start_mb`.
+Values this block sets in `state.md`: `pi_version`, `smoke_result`,
+`vram_start_mb`.
 
 ## How every agent row runs
 
@@ -146,22 +140,21 @@ budget 8192 with `$BUDGET_MSG`. Derived: the window
 (`MENDEL_CONTEXT_WINDOW`) from the row's `pi.contextWindow` in
 `docs/setups/arrietty/models.json` unless a newer committed creep
 under `hardware/arrietty/` says otherwise; the serving `-c` from the
-row's command; `output_budget` from `machine-setup`.
+row's command; `keepRecentTokens` from the window curve, which the
+generator applies.
 
-1. Add the temporary pi entry `<pi id>-tb8192` to
-   `~/.pi/agent/models.json`, under `llama`, a copy of `<pi id>` in
-   every field, with the run's window as `contextWindow` if it differs.
-   Remove it after the row.
+1. The run id is `<pi id>-tb8192`. The worker builds its config from
+   `MENDEL_SITE_ID=<pi id>`; nothing goes into `~/.pi/agent/`.
 2. Serve with the row's command from `docs/setups/arrietty/models.json`,
    `--port 8080` in place of `8081`, `$FAST_FLAGS` appended. Probe.
    Record `nvidia-smi` at load in `state.md`.
-3. `cd ~/code/mendel-benchmark/benchmark && MENDEL_CONTEXT_WINDOW=<window>
-   MENDEL_RESERVE_TOKENS=<output_budget> ./run-worker.sh <pi id>-tb8192
+3. `cd ~/code/mendel-benchmark/benchmark && MENDEL_SITE_ID=<pi id>
+   MENDEL_CONTEXT_WINDOW=<window> ./run-worker.sh <pi id>-tb8192
    pi guided <level>`, watcher up.
 4. Score in a subagent. The config note carries `reasoning budget
-   8192, message fixed`, the KV type, `-c`, the window, `maxTokens
-   <output_budget> (pi default)`, `reserveTokens <output_budget>` and
-   the VRAM at load.
+   8192, message fixed`, the KV type, `-c`, the window, `maxTokens and
+   reserveTokens pi default`, the keep value, the pi version (from the
+   meta file's `pi_version`) and the VRAM at load.
 5. Done: in `results.md`, one row beside the comparison row named in
    the block: score, libraries, end reason, wall, tool calls, peak
    context, the count of turns where the budget fired (grep
@@ -195,9 +188,23 @@ effort xhigh, official build. The best guided row of this machine and
 the reference config: 85/100, 8 of 8, 214.8 minutes, no budget. The
 question is whether the budget costs a guided row that does not loop;
 run 30 asks it on a blind row. The level is xhigh, never medium (owner
-rule, 2026-09-09). Planning window 61440;
-`MENDEL_KEEP_RECENT_TOKENS=8192` (window under 65536). The long row of
-the run, about 3.5 hours.
+rule, 2026-09-09). Planning window 61440; the generator sets keep 8192.
+The long row of the run, about 3.5 hours. **This row also replaces its
+comparison row** (owner, 2026-09-25): 17 of 23 compactions there failed
+at pi's summary cap (`/history/compaction-summary-cap.html`). The
+harness caused it, so there is no retry penalty. The note says the
+re-run also added the thinking budget.
+
+## `qwen38-iq3s-q8-guided-tb8192`
+
+Row `qwen38-iq3s-xhigh` (pi id `qwen3.8-27b-iq3s-q8`), guided v3.0,
+effort xhigh, never medium, official build. Retry and replace (owner,
+2026-09-25): its guided row scored 79/100 with 7 of 8 libraries and
+ended on `tooling_budget_exhausted`, while 29 of 40 compactions failed
+at pi's summary cap and several overflow compactions failed in a row.
+The harness caused it, so there is no retry penalty. Comparison row:
+that one. Planning window 61440; the generator sets keep 8192. About
+3.5 hours.
 
 ## `gemma12-nvfp4-guided-high-tb8192`
 
@@ -217,9 +224,8 @@ decision. List each with its condition in `state.md` and ask once.
 
 ## After the run
 
-Remove every `-tb8192` entry from `~/.pi/agent/models.json`;
-`node tools/gen-pi-models.mjs --check` must pass again. Update
-`state.md` with a handing-over section: what ran, `output_budget`,
+`node tools/gen-pi-models.mjs --check` must pass. Update
+`state.md` with a handing-over section: what ran, `pi_version`,
 machine state left behind (no server, VRAM at `vram_start_mb`, no
 Mendel Daemon), evidence archived. Push `run31` and message the
 coordinator with the last commit id. The coordinator merges, imports

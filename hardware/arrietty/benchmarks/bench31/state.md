@@ -9,7 +9,6 @@ session below, and close each one with a handing-over section.
 
 | name | value | block |
 | --- | --- | --- |
-| `pi_ids` | | `machine-setup` |
-| `output_budget` | | `machine-setup` |
+| `pi_version` | | `machine-setup` |
 | `smoke_result` | | `machine-setup` |
 | `vram_start_mb` | | `machine-setup` |
