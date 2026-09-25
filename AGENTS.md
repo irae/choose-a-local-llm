@@ -364,18 +364,19 @@ Benchmark work:
   entry for a model under test is a derived artifact: the runner
   creates or updates it in the run's pinned config from the block's
   parameter table (provider, model id, `contextWindow` from the
-  measured window, `maxTokens` and `reserveTokens` from the output
-  budget rule, the thinking map mapped down by
+  measured window, the keep budget from the window curve, no
+  `maxTokens` and no `reserveTokens`, the thinking map mapped down by
   `benchmarks/PLANNING.md`, "A pi thinking map maps down"), records the entry in `state.md`, and runs. The
   coordinator writes the final entry into the owner's file at
   close-out. On a machine with the repo, `npm run pi:models` writes
   every entry from the site's `models.json`; a row carries its entry
   in a `pi` block (`provider`, `id`, `contextWindow`, `maxTokens`),
   the largest window wins when two rows share a model, and no other
-  field of an existing entry is touched. The block's `maxTokens` is
-  the run's value only: the owner's file never sets `maxTokens`, so
-  daily work gets pi's default
-  (`docs/methodology/common-rules.md`, rule 7).
+  field of an existing entry is touched. No pi config, the owner's or
+  a run's, sets `maxTokens` or `reserveTokens`
+  (`docs/methodology/common-rules.md`, rule 7). A run's config comes
+  from `npm run pi:models -- --run-dir <dir> --id <pi id>`, never from
+  a copy of the owner's file.
 - **No `backlog/` item without an explicit owner request** (owner
   rule, 2026-09-07, mandatory). The backlog is the owner's queue, not
   a place to park findings. Where a finding goes instead:

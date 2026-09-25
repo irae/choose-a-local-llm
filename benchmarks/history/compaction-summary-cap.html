@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compaction summary cap</title>
+<style>
+:root{--bg:#fbfbf9;--fg:#1d1d1b;--mut:#5d5d58;--line:#d9d9d2;--head:#efefe9;--acc:#8a3b00;--warn:#b00020;--ok:#1f6b3a;--code:#f1f1ec}
+@media(prefers-color-scheme:dark){:root{--bg:#161615;--fg:#e7e7e2;--mut:#a3a39c;--line:#3a3a36;--head:#22221f;--acc:#f0a35e;--warn:#ff6b7a;--ok:#6fd39a;--code:#22221f}}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;padding:2rem 1.5rem 4rem;max-width:1400px;margin:auto}
+h1{font-size:1.6rem;margin:.2rem 0 .6rem}h2{font-size:1.25rem;margin:2.2rem 0 .6rem;border-bottom:1px solid var(--line);padding-bottom:.25rem}h3{font-size:1.05rem;margin:1.4rem 0 .4rem}
+p,li{max-width:80ch}
+.wrap{overflow-x:auto;margin:.6rem 0 1rem}
+table{border-collapse:collapse;font-size:13px;white-space:nowrap}
+th,td{border:1px solid var(--line);padding:.3rem .5rem;text-align:right;vertical-align:top}
+th{background:var(--head);position:sticky;top:0;text-align:right}
+td:first-child,th:first-child,td.l,th.l{text-align:left}
+tr.local td:first-child{border-left:3px solid var(--acc)}
+.mut{color:var(--mut)}.warn{color:var(--warn);font-weight:600}.ok{color:var(--ok)}.acc{color:var(--acc);font-weight:600}
+code{background:var(--code);padding:0 .25em;border-radius:3px;font-size:.92em}
+details{margin:.5rem 0}summary{cursor:pointer;color:var(--acc)}
+.box{border:1px solid var(--line);border-left:4px solid var(--acc);padding:.6rem 1rem;margin:1rem 0;max-width:90ch;background:var(--head)}
+.small{font-size:12px}
+pre{white-space:pre-wrap;background:var(--code);padding:1rem;border-radius:4px;font-size:13px;max-width:none}
+</style>
+</head><body>
+<h1>Compaction summaries at pi's reserve-based cap</h1>
+<div class="box">Two read-only searches of the simulator(mendel) logs, one per machine, 2026-09-25. pi caps a compaction summary at <code>min(0.8 × reserveTokens, maxTokens)</code> and a split-turn prefix summary at <code>0.5 × reserveTokens</code>, thinking included. The simulator pinned <code>reserveTokens</code> 8192 from 2026-09-06, so the caps were 6553 and 4096. On 2026-09-25 the owner decided to leave <code>reserveTokens</code> and <code>maxTokens</code> at pi's defaults in every config (<code>docs/methodology/mendel.md</code>, "Window and budget"). The two reports are kept as written.</div>
+<h2>arrietty</h2>
+<pre># Search: did a capped compaction summary fail or truncate in a simulator(mendel) run?
+
+Machine searched: arrietty. Data found under
+`~/.local/share/mendel-benchmark/runs/` (138 files, one run&#x27;s set: run
+17, bench17) and the repo&#x27;s `hardware/arrietty/benchmarks/bench17/`.
+
+## Verdict
+
+**CONFIRMED.** Two runs from bench17 (both on arrietty, model
+`qwen3.8-27b`, level xhigh, reserve 8192) hit the compaction token cap
+many times. pi 0.87.1 caught each one (pattern A: `stopReason ===
+&quot;length&quot;`) and logged the exact text the hypothesis names. Neither run
+lost its session; each kept working after the failed compaction and one
+(`qwen3.8-27b-ista-xhigh-guided`) still reached `end_reason: complete`
+with a top score.
+
+## Evidence
+
+File: `qwen3.8-27b-iq3s-xhigh-guided-events.jsonl`
+(`~/.local/share/mendel-benchmark/runs/`).
+
+- Line 26256: `&quot;type&quot;:&quot;compaction_end&quot;,&quot;reason&quot;:&quot;threshold&quot;,&quot;aborted&quot;:false,&quot;willRetry&quot;:false,&quot;errorMessage&quot;:&quot;Auto-compaction failed: Turn prefix summarization failed: generation hit the token cap and the summary is incomplete&quot;`
+- Line 84654 (and lines 85352, 85830, 111684, 112129, 131115, 131436,
+  131611, 131768, 132421, 134318, 149415, 150044, 151471, 151749,
+  152022, 152287, 152544): same text, `&quot;Summarization failed: ...&quot;`.
+- Lines 134328, 134343, 134358, 134373, 134388, 151746, 152019, 152284,
+  152541: `&quot;reason&quot;:&quot;overflow&quot;`, `&quot;errorMessage&quot;:&quot;Context overflow
+  recovery failed: Summarization failed: generation hit the token cap
+  and the summary is incomplete&quot;`.
+- Lines 134330, 134345, 134360, 134375, 134390: `&quot;Truncated response
+  recovery failed after one compact-and-retry attempt.&quot;` — a second
+  failure right after the overflow retry, at the same spot each time
+  (pattern D, a compaction loop: 5 paired failures inside about 90
+  seconds of run time, 15:18–15:33Z).
+- 29 of 40 `compaction_end` events in this file carry the cap error.
+  35 `compaction_start`, 40 `compaction_end` (more ends than starts:
+  the overflow-retry path emits a second `compaction_end` after the
+  first fails, without a matching new `compaction_start`).
+- `worker.json`: `&quot;loop_flag&quot;:&quot;ok&quot;`, so pi&#x27;s own repetition-loop check
+  did not flag this as a text loop; it is a compaction-retry loop, a
+  different mechanism.
+- Recovered summaries right after a string of failures show output at
+  or near the cap: line 86323, `output:5964` (91% of the 6553 normal
+  cap); line 103374 (other file, below), `output:6552`, one token under
+  the 6553 cap.
+
+File: `qwen3.8-27b-ista-xhigh-guided-events.jsonl`.
+
+- Line 81127 (and 81272, 81758, 102212, 103297, 103310, 103326, 103342,
+  103358, 123814, 124158, 125794): `&quot;Auto-compaction failed:
+  Summarization failed: generation hit the token cap and the summary
+  is incomplete&quot;`.
+- Lines 103307, 103323, 103339, 103355, 103371: `&quot;reason&quot;:&quot;overflow&quot;`,
+  same `&quot;Context overflow recovery failed: ...&quot;` text, each followed
+  a few seconds later by another `&quot;threshold&quot;` failure at the same
+  cap (pattern D again, 05:45–06:24Z, six back-to-back failed pairs).
+- 17 of 23 `compaction_end` events carry the cap error. `compaction_start`
+  and `compaction_end` both 23 (no orphaned starts here).
+- This run still finished `end_reason: complete` and scored 85/100
+  (8/8 libraries), per
+  `hardware/arrietty/benchmarks/bench17/results.md` and `state.md`
+  line 880. The cap failures did not stop the run; pi discarded the
+  bad summary and the runner&#x27;s &quot;Continue from where you stopped&quot;
+  nudge (5 tooling nudges logged) carried the model forward.
+
+Confirmation of the formula and the fail-on-`length` behavior, in the
+installed pi binary (`~/.local/share/mise/installs/pi/0.87.1/pi/pi`,
+via `strings`):
+
+- `const maxTokens = Math.min(Math.floor(0.8 * reserveTokens), model.maxTokens &gt; 0 ? model.maxTokens : Number.POSITIVE_INFINITY);` (normal summary)
+- `const maxTokens = Math.min(Math.floor(0.5 * reserveTokens), model.maxTokens &gt; 0 ? model.maxTokens : Number.POSITIVE_INFINITY);` (turn-prefix summary)
+- `reserveTokens: 16384` is pi&#x27;s own default; `run-worker.sh` line 161
+  overrides it: `compaction = {&#x27;enabled&#x27;: True, &#x27;reserveTokens&#x27;:
+  int(os.environ[&#x27;RESERVE&#x27;])}`, `RESERVE` defaults to 8192
+  (`run-worker.sh` line 125). This run used pi&#x27;s default reserve
+  nowhere; both runs used reserve 8192, caps 6553 and 4096, matching
+  the hypothesis.
+- pi checks `stopReason` (`length` at line ~479552 of the binary&#x27;s
+  strings) and rejects the summary rather than accepting a cut one —
+  confirms pattern A applies to this version, not pattern B.
+
+## Table
+
+| run slug | date | machine | model | level | pi version | reserveTokens | contextWindow | cap applied | compactions (start/end) | cap-failure hits | end_reason / score |
+|---|---|---|---|---|---|--:|--:|---|---|--:|---|
+| qwen3.8-27b-iq3s-xhigh-guided | 2026-09-14 | arrietty (bench17) | qwen3.8-27b (unsloth IQ3_S) | xhigh | 0.87.1 (installed; run install log did not print its own pi version) | 8192 | 61440 | 6553 normal / 4096 prefix | 35 / 40 | 29 | tooling_budget_exhausted, 79/100 (7/8 partial) |
+| qwen3.8-27b-ista-xhigh-guided | 2026-09-15 | arrietty (bench17) | qwen3.8-27b (ISTA-DASLab IQ3_S-mtp) | xhigh | 0.87.1 | 8192 | 61440 | 6553 / 4096 | 23 / 23 | 17 | complete, 85/100 (8/8) |
+| qwen3.8-27b-ista-xhigh-blind | 2026-09-15 | arrietty (bench17) | same, blind | xhigh | 0.87.1 | 8192 | 61440 | 6553 / 4096 | 3 / 3 | 0 (all clean, outputs 2892/3256/4668) | complete, 91/100 |
+| bonsai2-27b-pq2-f16-xhigh-blind | 2026-09-18 | (machine per meta, likely kamaji/MLX) | bonsai2 27B, f16 | xhigh | not checked (no pi binary path in this run&#x27;s files) | not confirmed in this run&#x27;s files | not confirmed | not confirmed | 1 / 1 | 0 (output 1751) | not scored here |
+| bonsai2-27b-ptq1-f16-orca-xhigh-blind | 2026-09-19 | (same family) | bonsai2 27B ptq1 orca | xhigh | not checked | not confirmed | not confirmed | not confirmed | 1 / 1 | 0 (output 2347) | not scored here |
+| bonsai2-27b-ptq1-f16-xhigh-blind | 2026-09-18 | (same family) | bonsai2 27B ptq1 | xhigh | not checked | not confirmed | not confirmed | not confirmed | 1 / 1 | 0 (output 1718) | not scored here |
+| gemma-4-26b-a4b-nvfp4-high-guided | 2026-09-14 | arrietty (bench17) | gemma-4-26b-a4b | high | 0.87.1 | 8192 (bench17 table) | 94208 | 6553 / 4096 | 1 / 1 | 0 (output 482) | repetition_loop, 37.5 (partial 3/8) |
+| qwen3.6-35b-a3b-q4kxl-high-guided | 2026-09-15 | arrietty (bench17) | qwen3.6-35b-a3b | high | 0.87.1 | 8192 (bench17 table) | 94208 | 6553 / 4096 | 1 / 1 | 0 (output 2035) | scored 48.5 (partial 6/8, per bench17 table) |
+
+All compaction events found in the other files (`bonsai2-*`,
+`gemma-4-26b-a4b`, `qwen3.6-35b-a3b`) were single, well-formed
+&quot;No prior history&quot; turn-prefix splits, output well under the cap
+(under 40% of it in every case) — no near miss, no failure. The two
+qwen3.8-27b-xhigh guided rows are the only confirmed hits, and both
+were served at window 61440, reserve 8192, matching the hypothesis&#x27;s
+predicted risk (a thinking model at xhigh under an 8192 reserve).
+
+## Gaps
+
+- The three `bonsai2-*` runs and the `qwen3.8-27b-ptq1*` runs list no
+  machine name, pi version, or `contextWindow` inside their own event
+  or meta files that I could confirm in this pass; their filenames and
+  timestamps (Sep 18-19) suggest a different, later run than bench17,
+  possibly on kamaji — I did not cross-check the kamaji-side repo
+  folders from this machine, since the brief&#x27;s evidence and Mendel-kit
+  paths given are local to whichever machine ran them and this session
+  only has arrietty&#x27;s home directory.
+- `~/code/mendel-benchmark/benchmark/runs/` (the kit&#x27;s own copy) and
+  `hardware/kamaji/research/compaction-experiment/` were not present on
+  this machine to cross-check the compaction-experiment ladder; only
+  `compaction-experiment.md` (the plan, not started) exists in the
+  repo checkout here.
+- I did not open the full `*-session.jsonl` files (900 KB-1.1 MB each)
+  entry-by-entry for the two confirmed runs; the `-events.jsonl` files
+  already gave exact `compaction_end` records with `errorMessage` and
+  `usage`, which is the stronger and more complete source per the
+  brief&#x27;s pattern A/C. If a session-level view of the surrounding turns
+  is wanted, it is at `qwen3.8-27b-iq3s-xhigh-guided-session.jsonl` and
+  `qwen3.8-27b-ista-xhigh-guided-session.jsonl` in the same runs
+  directory.
+- No llama-server or MLX server log for these two runs was checked
+  (pattern E, server-side request logs); the evidence archive
+  (`~/.local/share/choose-a-local-llm/evidence/`) holds `run17`-labeled
+  logs but I did not grep them for `max_tokens&quot;:6553` or `n_decoded`
+  matching the cap, since the events.jsonl already gives a direct,
+  unambiguous confirmation from pi&#x27;s own side.
+</pre>
+<h2>kamaji</h2>
+<pre># Compaction cap search on kamaji, 2026-09-25
+
+## 1. Verdict
+CONFIRMED. One run saved an EMPTY summary that stopped at exactly 6553 output tokens (the normal-summary cap at reserve 8192). pi 0.84.3 has no length check, so it kept the empty summary. A second summary stopped at exactly 4096 (the split-turn prefix cap) and may be cut. No failed compaction exists in any log, because this pi version never raises that error.
+
+## 2. Evidence
+Formula in the installed pi (~/.nvm/versions/node/v22.23.1/lib/node_modules/@earendil-works/pi-coding-agent, package 0.84.3):
+- dist/core/compaction/compaction.js:477: Math.min(Math.floor(0.8 * reserveTokens), model.maxTokens &gt; 0 ? model.maxTokens : Number.POSITIVE_INFINITY)
+- compaction.js:638: same with 0.5 * reserveTokens (turn prefix).
+- The code checks response.stopReason === &quot;error&quot; only (lines 495 and 643). No check for &quot;length&quot;. A cut summary is accepted.
+- grep &quot;summary is incomplete&quot; and &quot;token cap&quot; in dist/: no match. The 0.87 error text does not exist here.
+- Request field is max_tokens = options.maxTokens (pi-ai/dist/api/openai-completions.js:569-570). No other pi version found on the Mac. Run records do not store the pi version; 0.84.3 assumed (symlink dated Aug 24; compaction-experiment.md also names 0.84.4).
+
+### Hit A: empty summary at the cap (CONFIRMED)
+- File: ~/code/mendel-benchmark/scratchpad/benchmark/.pi-agent-bonsai-prism-high-guided/sessions/--~-code-mendel-bench-guided-bonsai-prism-high--/2026-09-07T02-35-58-727Z_01a079b8-f187-7534-8e45-826dd17c8ca0.jsonl, line 981 (compaction entry, 2026-09-07T09:01:47Z).
+- usage.output = 6553, usage.reasoning = 0. settings.json: reserveTokens 8192. maxTokens 8192, contextWindow 65536.
+- Summary field is &quot;\n\n&lt;read-files&gt;...&quot; with no text. Body before the file lists is 0 characters. No Goal, Progress or Next Steps section.
+- Line 980 (trigger turn): assistant message, stopReason &quot;length&quot;, thinking &quot;The&quot;, output 1. Overflow compaction.
+- Same event in ~/code/mendel-benchmark/scratchpad/benchmark/runs/bonsai-prism-high-guided-events.jsonl line 90633: compaction_end, reason overflow, &quot;summary&quot;:&quot;\n\n&lt;read-files&gt;\n~/code/mendel-bench-guided-bonsai-prism-high/packages/mendel-config/legacy/defaults.js ...&quot;. No error field.
+- After it, lines 982-990+: the model repeats failing git show calls on paths &quot;not in &#x27;3de6fc3f&#x27;&quot;. Task state was lost. The next compaction (line 1299, 10:04, out 1524) has a normal Goal section.
+- Run ended wall_clock (meta). Row: bonsai-prism-high-guided-v3-issue-13.
+- Cause is inferred, not logged: all 6553 tokens were probably thinking, so no answer text was left.
+
+### Hit B: prefix summary at exactly the prefix cap (possible cut)
+- ~/.local/share/mendel-benchmark/runs/qwen3.8-27b-xhigh-blind-session.jsonl line 196 (2026-09-11T08:10:21Z, events line 25853): usage.output 4096 (reserve 8192, prefix cap 4096). qwen3.8-27b, xhigh, model maxTokens 8192.
+- Body has &quot;Original Request&quot;, &quot;Early Progress&quot;, &quot;Context for Suffix&quot;. It ends on an open bullet list: &quot;- `packages/mendel-core/tree-deserialiser.js` requires and decodes&quot;. May be cut; the log cannot tell.
+
+### Hit C: output above the cap (unexplained)
+The request cap should stop these, yet logs show larger outputs. No server request log exists to check.
+- qwen3.8-27b-xhigh-blind (reserve 8192, cap 6553): 9201 (line 307), 8672 (line 417).
+- qwen3.8-27b-iq3s-m1-xhigh-guided (reserve 8192, prefix cap 4096): 9482 (line 330, prefix summary, body ends on a path list).
+- qwen3.8-27b-iq3s-xhigh-guided-v3 (reserve 8192 per results-guided.json config_note, cap 6553): 9031 (line 558 of ~/code/mendel-benchmark/benchmark/runs/qwen3.8-27b-iq3s-xhigh-guided-v3-issue-13-session.jsonl).
+- These summaries end on complete lines and carry all standard sections. Not empty.
+
+### Near misses (&gt;= 80% of the cap for that run)
+- qwen3.8-27b-ista-xhigh-guided-v3 (reserve 8192, cap 6553): 6552 (line 513), 6204 (line 272), 5569 (line 330), 5467 (line 406). All complete, 4 standard sections.
+- qwen3.8-27b-iq3s-xhigh-guided-v3: 5964 (line 396), 5548 (line 476).
+- qwen3.8-27b-q4km-tb8192-xhigh-blind (reserve 16384, cap 13107; no model maxTokens): 11604 = 89% (events line 58194). 10200 = 78% (not a near miss).
+- qwen3.6-35b-a3b-off-guided-v3 line 428: 3168 = 77% of prefix cap 4096 (not a near miss).
+
+### Other findings
+- Bad-format summary, no cap hit: qwen3.6-35b-a3b-off-guided-v3-issue-13-session.jsonl line 428 (2026-09-06T20:17, out 3168). Starts with &quot;&lt;conversation&gt;\n[Assistant]: ...&quot;; the model echoed the conversation instead of a summary.
+- &quot;&lt;summary&gt;&quot; wrapper text at the start of two iq3s-xhigh-guided-v3 summaries (lines 220, 302). Content complete.
+- Search A: no hits for &quot;token cap&quot;, &quot;summary is incomplete&quot;, &quot;Summarization failed&quot;, &quot;compaction failed&quot;, &quot;session_compact_failed&quot; under ~/.local/share/mendel-benchmark, ~/.local/share/choose-a-local-llm, ~/code/mendel-benchmark, ~/code/mendel scratchpad, ~/code/choose-a-local-llm/hardware. No compaction_end event has an error, abort or success:false.
+- Search D: every compaction_start has a matching compaction_end. No two compactions in a row without a turn. Hit A led to a tool-call retry loop, not a compaction loop.
+- Search E: no llama-server or MLX request log for Mendel runs exists on this Mac. &quot;max_tokens&quot;:6553, &quot;max_tokens&quot;:4096 and n_predict = 6553/4096 match nothing in any log tree searched. The -stderr.log files of the two MLX rows have no compaction lines.
+
+## 3. Table
+Machine kamaji for all rows. pi 0.84.3 (assumed). Reserve, window, maxTokens from the run&#x27;s pi-agent/&lt;slug&gt;/settings.json and models.json, or the row&#x27;s config_note for kit rows. Thinking budget: only slugs with tb8192 ran with a server thinking budget (8192); others not checked. keepRecentTokens: pi default 20000 unless noted. P = split-turn prefix summary. Caps at reserve 8192: 6553 / 4096. Reserve 16384 with maxTokens 8192: 8192 / 8192. Reserve 16384, no maxTokens: 13107 / 8192.
+
+Mendel runs in ~/.local/share/mendel-benchmark/runs/:
+
+| slug | date | model, thinking | reserve | window / maxTokens | comps (output tokens) | worst vs cap |
+| --- | --- | --- | --- | --- | --- | --- |
+| qwen3.6-35b-a3b-off-blind | 09-11 | qwen3.6-35b-a3b, off | 8192 | 81920 / 8192 | 2: 518 P, 1533 | ok |
+| qwen3.8-27b-xhigh-blind | 09-11 | qwen3.8-27b, xhigh | 8192 | 65536 / 8192 | 3: 4096 P, 9201, 8672 | 4096 = prefix cap, possible cut; 9201, 8672 above 6553 |
+| qwen3.6-35b-a3b-f16-on-blind | 09-11 | qwen3.6-35b-a3b, on | 8192 | 65536 / 8192 | 2: 2754 P, 2908 | 67% of prefix cap |
+| mlx-community-Qwen3.6-35B-A3B-4bit-on-blind | 09-13 | qwen3.6 MLX, on | 8192, keep 8192 | 36864 / 8192 | 1: 4578 | 70% |
+| qwen3.8-27b-iq3s-m1-xhigh-blind | 09-15 | qwen3.8-27b iq3s, xhigh | 8192 | 147456 / 8192 | 1: 2029 P | 50% |
+| qwen3.8-27b-iq3s-m1-xhigh-guided | 09-15 | same, xhigh | 8192 | 147456 / 8192 | 1: 9482 P | above prefix cap 4096 |
+| bonsai-prism-tb8192-high-guided | 09-22 | bonsai-prism, high, tb8192 | 8192 | 65536 / 8192 | 1: 550 P | ok |
+| gemma-4-12b-q4kxl-tb8192-high-guided | 09-23 | gemma-4-12b, high, tb8192 | 16384 | 262144 / none | 0 | none |
+| gemma-4-26b-a4b-q4kxl-mtp2-tb8192-high-guided | 09-23 | gemma-4-26b-a4b, high, tb8192 | 16384 | 212992 / none | 1: 2918 | 36% of 8192 |
+| qwen3.8-27b-q4km-tb8192-xhigh-blind | 09-23 | qwen3.8-27b Q4_K_M, xhigh, tb8192 | 16384 | 65536 / none | 4: 2942 P, 5573, 11604, 10200 | 11604 = 89% of 13107 |
+| qwen3.8-27b-ista-f16-tb8192-xhigh-blind | 09-23 | qwen3.8-27b ista, xhigh, tb8192 | 16384 | 147456 / none | 0 | none |
+| qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192-high-guided (and -r2) | 09-23 | qwen3.6-35b-a3b, high, tb8192 | 16384 | 81920 / none | 0 (both) | none |
+| qwen3.6-35b-a3b-q4kxl-q8-nodraft-tb8192-high-guided | 09-23 | same | 16384 | 81920 / none | 2: 2009 P, 3651 | 45% of 8192 |
+| qwen3.8-27b-r2-xhigh-blind | not in runs/ | pi-agent dir only | 8192 | not read | no session log | see Gaps |
+
+Kit runs and scratchpad sessions (~/code/mendel-benchmark/benchmark/runs/, scratchpad, ~/code/mendel/scratchpad). Reserve from config_note in results-guided.json / results.json. Rows before 09-06 ran at pi default 16384 (caps 13107 / 8192); their local outputs stay at or under 5342.
+
+| slug | date | model, thinking | reserve | window / maxTokens | comps (output tokens) | worst vs cap |
+| --- | --- | --- | --- | --- | --- | --- |
+| bonsai-prism-high-guided-v3-issue-13 (scratchpad copy) | 09-07 | bonsai-prism, high | 8192 | 65536 / 8192 | 11: 1771 P, 1496, 2551, 3445, 4076, 2270, 2633, 2973, 6553 (empty), 1524 | Hit A |
+| qwen3.6-35b-a3b-off-guided-v3 | 09-06 | qwen3.6-35b-a3b, off | 8192 | 49152 / 8192 | 12, max 3168 (echoed conversation) | 77% of prefix cap |
+| qwen3.6-35b-a3b-off-guided-v3-w81920 | 09-07 | same | 8192 | 81920 / 8192 | 1: 571 P | ok |
+| gemma-4-26b-a4b-high-guided-v3 | 09-07 | gemma-4-26b-a4b, high | 8192 | 212992 / 8192 | 2: 1397 P, 2047 | ok |
+| bonsai-prism-f16-high-guided-v3 | 09-08 | bonsai-prism f16, high | 8192 (not confirmed) | 131072 | 1: 905 P | ok |
+| qwen3.8-27b-reserve8192-medium | 09-09 | qwen3.8-27b, medium | 8192 | 65536 / 8192 | 1: 1535 P | ok |
+| qwen3.8-27b-iq3s-xhigh-guided-v3 | 09-14 | qwen3.8-27b iq3s, xhigh | 8192 | 65536 | 6: 2837 P, 4180, 4893, 5964, 5548, 9031 | 9031 above 6553 |
+| qwen3.8-27b-ista-xhigh-guided-v3 | 09-15 | qwen3.8-27b ista, xhigh | 8192 | 65536 | 6: 3554 P, 4448, 6204, 5569, 5467, 6552 | 6552 = 100% |
+| qwen3.6-35b-a3b-q4kxl-high-guided-v3 | 09-15 | qwen3.6-35b-a3b, high | 8192 | not read | 1: 2035 P | 50% of prefix cap |
+| gemma-4-26b-a4b-nvfp4-high-guided-v3 | 09-14 | gemma-4-26b nvfp4, high | 8192 | not read | 1: 482 P | ok |
+| qwen3.8-27b-medium (first row) | 09-06 | qwen3.8-27b, medium | 16384 (ran before the pin, per results.json note) | 65536 / 8192 | 5, max 3896 | ok |
+| research sessions 09-08 (unnamed) | 09-08 | gemma-4-12b, gemma-4-26b, qwen3.8-27b (smoke-style) | 8192 | see next table | 315-706 | ok |
+| earlier rows 08-25 to 09-05 | | many | pi default 16384 | | max 5342 local (mlx qwen3.8-27b low guided); API rows 8199-10590 | not capped by this formula |
+
+Compaction experiment (mendel-smoke.sh, task xtend-wide, outputs in ~/.local/share/choose-a-local-llm/evidence/run3-compaction/&lt;name&gt;/, reserve 8192, pi maxTokens 8192, keepRecent default unless noted):
+
+| name | date | model, thinking | window | comps (output tokens) |
+| --- | --- | --- | --- | --- |
+| gemma12-baseline-1, -2 | 09-08 | gemma-4-12b, off | 262144 | 0 |
+| gemma12-w39936-1, -2 | 09-08 | gemma-4-12b, off | 39936 | 1 P each: 303, 330 |
+| gemma12-w31744-1 (keep 11264) | 09-08 | gemma-4-12b, off | 31744 | 2: 338 P, 701 |
+| gemma12-w31744-2 (keep 11264) | 09-08 | gemma-4-12b, off | 31744 | 4: 315 P, 701, 706, 693 |
+| gemma12-w23552-1, -2 (keep 7168) | 09-08 | gemma-4-12b, off | 23552 | 0 |
+| gemma26-baseline-1, -2 | 09-08 | gemma-4-26b-a4b, off | 212992 | 0 |
+| gemma26-w35840-1, -2 | 09-08 | gemma-4-26b-a4b, off | 35840 | 1 P each: 347, 382 |
+| qwen38-w49152-1, -2 | 09-08 | qwen3.8-27b, medium | 49152 | 0 |
+
+All experiment summaries stay at or under 706 tokens (17% of 4096, 11% of 6553). No experiment run compacted a thinking model at high or xhigh. The one thinking model (qwen3.8-27b medium) never compacted.
+
+## 4. Gaps
+- qwen3.8-27b-r2-xhigh-blind, qwen3.6-35b-a3b-q4kxl-q8-mtp3-tb8192-high-guided and -r2 have a pi-agent dir but no compaction in the runs/ session log. Other files in the pi-agent sessions/ folder were not opened.
+- No server log of any Mendel run holds per-request max_tokens or finish reasons. Cannot tell whether server or harness ended the 6553 and 4096 summaries, and cannot explain outputs above the cap (Hit C).
+- Session compaction entries do not store the summary request&#x27;s stop reason. Length stop is inferred from output = cap.
+- Run records do not store the pi version. 0.84.3 is the only install found.
+- Kit rows 09-06 to 09-15 in ~/code/mendel-benchmark/benchmark/runs/ have session logs only; their private pi-agent settings are gone. Reserve comes from results*.json config notes. bonsai-prism-f16-high-guided-v3 has no reserve in its note. Windows of qwen3.6-35b-a3b-q4kxl-high-guided-v3 and gemma-4-26b-a4b-nvfp4-high-guided-v3 not read.
+- Server thinking-budget flag not checked for rows without tb8192 in the slug.
+</pre>
+</body></html>

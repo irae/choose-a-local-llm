@@ -142,8 +142,9 @@ Two kinds of parameter, and the runbook says which is which:
   set. They are what the row is about. A different value is a
   different row, so a mismatch is stop and ask, never a substitute.
 - **Derived** parameters are measurements. The serving `-c`; the
-  harness window (`contextWindow`); `maxTokens` and `reserveTokens`
-  from the output budget rule; the drafter depth; `keepRecentTokens`;
+  harness window (`contextWindow`); `keepRecentTokens`, from the
+  window curve (`docs/methodology/mendel.md`, "Window and budget"; no
+  run sets `maxTokens` or `reserveTokens`); the drafter depth;
   any gate input such as clean depth or decode speed. The runbook
   names each one, gives the planning-time value with its date and
   source, and says where the run gets a newer one: a block of this

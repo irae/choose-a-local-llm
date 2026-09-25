@@ -36,14 +36,15 @@ timings, prompt-cache reuse, the KV type decision) live in
    the same `models.json`; `--dry-run` and `--check` show the drift
    first, and it never touches a field it does not own; it writes only
    the rows of the machine it runs on, points the `llama` provider at
-   the router service on port 8080, whichever build is up, and never
-   writes `maxTokens`). **The end-user pi config never sets
-   `maxTokens`; pi's default is the value, always** (owner,
-   2026-09-25). A benchmark pins a small `maxTokens` in its own
-   config, so a run stays fast and a loop ends at a known cap. Daily
-   coding needs the opposite: one response can be a whole single-file
-   HTML page or a long report. A row's `pi` block carries the
-   benchmark value; the generator drops it. Every server
+   the router service on port 8080, whichever build is up, and writes
+   each row's `keepRecentTokens` override into `settings.json` by the
+   window curve of [mendel.md](./mendel.md), "Window and budget").
+   **No pi config sets `maxTokens` or `reserveTokens`; pi's defaults
+   are the values, always** (owner, 2026-09-25). Daily coding needs
+   long single outputs, such as a whole single-file HTML page or a
+   long report, and a benchmark row now has the server's thinking
+   budget instead of an output cap. A row's `pi` block may still carry
+   an old `maxTokens`; the generator drops it. Every server
    config gets a copy-paste command block in its report whose alias
    equals the harness model id, and one section of the machine's preset
    file (`hardware/<id>/models.ini`) under the same id.

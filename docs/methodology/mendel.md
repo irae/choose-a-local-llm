@@ -148,25 +148,18 @@ window ladder and the summary rubric live in
   window or output budget that could not fit, a flag the serving stack
   ignored), the corrected re-run keeps the best row with no penalty.
   Mendel's `PLAN.md` holds the formula.
-- **Output budget.** `maxTokens` in a pi entry caps one response. It
-  is not a context size and it is not a loop detector. Set it with
-  `min(max(8192, pow2ceil(2 x L)), contextWindow / 4)`, where L is the
-  longest healthy output the model has produced (a turn that ended on
-  `toolUse` or `stop`). Set pi `reserveTokens` to the same value, or
-  compaction keeps 16384 tokens of window free for an answer that
-  cannot be that long. The Mendel worker and the smoke pin 8192 in
-  their private pi config since 2026-09-06; rows before that date ran
-  at pi's default 16384, and their config notes say so. This value
-  belongs to the run's pinned config only. The owner's own pi config
-  never carries it, because daily work needs longer single outputs
-  ([common rules](./common-rules.md), rule 7). For a new model, a ten-minute probe gives the
-  first L: one prompt at 60 percent of the window for fit, one request
-  for a complete 400-line file with thinking on and the cap at 16384,
-  one failing edit followed by its retry. Any `length` stop in the
-  probe is a failure sign, not a value. The first scored run then
-  confirms the value from its output-limit counters, and corrects it
-  if healthy output comes near the line. Evidence and the per-model
-  values as of 2026-09-05:
+- **Output budget.** pi's defaults, in every config: no `maxTokens`
+  and no `reserveTokens` in a run's config or in the owner's (owner,
+  2026-09-25). The server's thinking budget bounds the thinking, so a
+  per-model cap is no longer needed. pi also caps a compaction summary
+  at `0.8 x reserveTokens` and a split-turn prefix summary at
+  `0.5 x reserveTokens`, thinking included. From 2026-09-06 to
+  2026-09-24 the runs pinned both values at 8192; thinking models at
+  high and xhigh then spent the 6553-token summary cap on thinking,
+  and summaries failed (pi 0.87) or came back empty (pi 0.84):
+  `/history/compaction-summary-cap.html`. Rows before 2026-09-06 ran
+  at pi's default. Every config note says which values its row ran
+  with. The older per-model rule and its evidence:
   `/history/runner-alarms-output-limit-and-loop-stop.html`.
 - **Live loop stop.** The runner ends a run on the same tool call five
   times in a row (three when that call already stalled a turn), on a
@@ -239,21 +232,31 @@ never copied from a runbook or from the owner's daily-driver entry.
   4096: that runtime often triggers macOS memory compression near
   its ceiling and dies. The site's Ctx cell for an MLX row shows this
   harness window, not the ceiling.
-- **Output budget**: `maxTokens` and `reserveTokens` by the output
-  budget rule above.
-- **Compaction keep** (`keepRecentTokens`): 8192 when the window is
-  under 65536, pi's default 20000 above it. pi cannot shrink a context
-  below its system prompt plus the summary plus this budget, so on a
+- **Output budget**: none; pi's defaults, by the output budget rule
+  above.
+- **Compaction keep** (`keepRecentTokens`), on the harness window
+  (owner, 2026-09-25): 8192 under 65536, 16384 under 131072, and pi's
+  default 20000 from 131072 up. The same curve applies to the owner's
+  own config. pi cannot shrink a context below its system prompt plus
+  the summary plus this budget, and it counts the budget as characters
+  divided by 4, which is well under the server's real count on code
+  (about 35K real tokens kept for a 20K budget on one 27B model). On a
   small window the default leaves almost no headroom and the run
   compacts every few turns (measured 2026-09-06 on a guided row of one
   MoE 35B model: twelve compactions, several freeing 1 to 8 points).
+- **pi version**: the newest release (`tools/preflight.sh` checks it).
+  The worker and the smoke record `pi --version` in the run's meta
+  file, and the config note carries it.
 
-These values live in the run's pinned pi config, never in the owner's
-file. The worker takes them from `MENDEL_CONTEXT_WINDOW`,
-`MENDEL_RESERVE_TOKENS` and `MENDEL_KEEP_RECENT_TOKENS`, and the smoke
-from the same names with a `SMOKE_` prefix. The config note of every
-row carries the window, the `-c`, the budget, the keep budget and the
-source block of each.
+A run never copies the owner's pi config. `node
+tools/gen-pi-models.mjs --run-dir <dir> --id <pi id> [--window <N>]`
+writes the run's own config for the one model the server holds: one
+entry from the site's `models.json` and a `settings.json` with the keep
+value from the curve. The worker takes the window from
+`MENDEL_CONTEXT_WINDOW` and an explicit keep value from
+`MENDEL_KEEP_RECENT_TOKENS`, and the smoke from the same names with a
+`SMOKE_` prefix. The config note of every row carries the window, the
+`-c`, the keep budget, the pi version and the source block of each.
 
 ## Comparing two builds of one model
 

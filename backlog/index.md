@@ -27,7 +27,6 @@ named by its mnemonic, no index and no order.
 
 - [ ] Resume an interrupted Mendel run in place: worker `--resume`, runner counts earlier sessions toward the cap, cleanup only by an explicit close (mendel-resume-interrupted-run.md)
 - [ ] Real near-OOM in run 11 block 5: mediaanalysisd (macOS media indexing) at ~70% CPU competed for memory while the server held wired 25000; free RAM crashed 1565→62 MB in 20s, harness killed the run mid-work, uncommitted work lost (mediaanalysisd-memory-contention.md)
-- [ ] pi's compaction may be too shallow under a small contextWindow: frequency climbed from 1/9min to 1/2-3min mid-run, several compactions freed only 1-8 points of headroom; research pi's compaction options (pi-compaction-efficiency.md)
 - [ ] Shared-score rule: the owner's sentence for when two quants of one model carry their own scores (shared-score-quant-exception.md)
 - [ ] Budget for cloud Mendel re-runs, and which models go to polyglot (cloud-reruns-and-polyglot-tier.md)
 - [l] Aider polyglot, the ranking tier, parked off the site on 2026-09-12; the method page lives here until it is scheduled (aider-polyglot.md)
@@ -38,6 +37,7 @@ named by its mnemonic, no index and no order.
 
 ## Changelog
 
+- 2026-09-25 [x] pi compaction too shallow under a small window: `keepRecentTokens` now follows the window (8192 under 65536, 16384 under 131072, pi default above), `reserveTokens` and `maxTokens` stay at pi's default, and `tools/gen-pi-models.mjs` writes the overrides (`docs/methodology/mendel.md`, "Window and budget"; evidence `/history/compaction-summary-cap.html`)
 - 2026-09-16 [x] Binary pages: one page per model file per machine, every run aggregated, with a log (21 pages, generator blocks `gen:binary-*`, `EDITOR.md` "Binary pages")
 - 2026-09-07 Unscheduled work moved out of the backlog into `hardware/kamaji/benchmarks/unscheduled/` and `research/unscheduled/`: the wired ladder above 24000, the Qwen3.8 MLX window, the Bonsai KV bias corpus, the no-OOM margin rule, the small agent models and the specialized models
 

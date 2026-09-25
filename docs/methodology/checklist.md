@@ -92,6 +92,12 @@ the block names at the point it is needed.
       block, never wait, never ask. The line reads the refresh token,
       the credential that carries the login for weeks, not the access
       token the harness refreshes by itself.
+   8. `fix pi-version`: the installed pi is older than the newest
+      release (owner, 2026-09-25: every run uses the newest pi). The
+      line names both versions and the upgrade command of this
+      machine's install. Run it, then preflight again. On the Mac the
+      upgrade is a download, so it goes to the owner. The worker and
+      the smoke record `pi --version` with every run.
    6. Read the balloon verdict on the `memory` line. "No balloon"
       needs no action. "Balloon needed" means: load the model under
       test and drive its context up SLOWLY towards the configured
