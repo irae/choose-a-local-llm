@@ -372,7 +372,10 @@ Benchmark work:
   every entry from the site's `models.json`; a row carries its entry
   in a `pi` block (`provider`, `id`, `contextWindow`, `maxTokens`),
   the largest window wins when two rows share a model, and no other
-  field of an existing entry is touched.
+  field of an existing entry is touched. The block's `maxTokens` is
+  the run's value only: the owner's file never sets `maxTokens`, so
+  daily work gets pi's default
+  (`docs/methodology/common-rules.md`, rule 7).
 - **No `backlog/` item without an explicit owner request** (owner
   rule, 2026-09-07, mandatory). The backlog is the owner's queue, not
   a place to park findings. Where a finding goes instead:

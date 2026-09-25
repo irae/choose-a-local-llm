@@ -156,7 +156,10 @@ window ladder and the summary rubric live in
   compaction keeps 16384 tokens of window free for an answer that
   cannot be that long. The Mendel worker and the smoke pin 8192 in
   their private pi config since 2026-09-06; rows before that date ran
-  at pi's default 16384, and their config notes say so. For a new model, a ten-minute probe gives the
+  at pi's default 16384, and their config notes say so. This value
+  belongs to the run's pinned config only. The owner's own pi config
+  never carries it, because daily work needs longer single outputs
+  ([common rules](./common-rules.md), rule 7). For a new model, a ten-minute probe gives the
   first L: one prompt at 60 percent of the window for fit, one request
   for a complete 400-line file with thinking on and the cap at 16384,
   one failing edit followed by its retry. Any `length` stop in the

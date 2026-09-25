@@ -9,7 +9,8 @@
 // tool wrote them. A row gets an entry when it carries a `pi` block:
 // `{provider, id, contextWindow}`. Two rows of one id collapse to one
 // entry, the largest window wins. The tool sets `contextWindow`, removes
-// `maxTokens` (pi's default is the value; owner, 2026-09-22), and points
+// `maxTokens` always (the row's value is the benchmark cap; daily work
+// needs pi's default; docs/methodology/common-rules.md, rule 7), and points
 // the `llama` provider at the router service (`tools/llama-router.sh`,
 // port 8080, the official build or the PrismML build, one at a time). A
 // model the running build does not hold gets the server's own "model
