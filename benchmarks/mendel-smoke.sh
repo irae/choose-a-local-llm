@@ -18,10 +18,11 @@
 # and drop the config or send it back to research.
 #
 # What it changes on the machine: nothing outside SMOKE_MENDEL_OUT. The
-# fixture, the pinned pi config, and the session log all live there. It
-# does NOT touch ~/.pi/agent/models.json: the pi config is a copy built
-# for this run only. Reverse direction: `rm -rf` the directory the tool
-# prints when it starts.
+# fixture, the pinned pi config, and the session log all live there. The
+# pi config is built by `tools/gen-pi-models.mjs --run-dir`, for the one
+# model under test only, and never reads or writes
+# ~/.pi/agent/models.json. Reverse direction: `rm -rf` the directory the
+# tool prints when it starts.
 #
 # Usage: mendel-smoke.sh <pi-model-id> <thinking-level>
 #        mendel-smoke.sh --help
@@ -31,9 +32,6 @@
 #   SMOKE_MENDEL_OUT      directory for the fixture, the pinned config
 #                         and the session log. Default a fresh
 #                         temporary directory, printed at the start.
-#   SMOKE_MENDEL_BASE     server base URL for the pinned config, for
-#                         example http://127.0.0.1:8081/v1. Empty keeps
-#                         the base URL the owner's config already has.
 #   SMOKE_MENDEL_SESSION  a session log to read instead of running pi.
 #                         Verification path: it computes the counters
 #                         from a log that already exists, and reports
@@ -42,29 +40,32 @@
 #                         swap that gates a run) or `xtend-wide` (the same
 #                         swap across ten longer files, the task of the
 #                         compaction experiment. Same pass rule).
+#   SMOKE_MENDEL_SITE_ID  the site's pi id to read the row from
+#                         (docs/setups/<setup>/models.json), when it
+#                         differs from <pi-model-id>. Default
+#                         <pi-model-id>. The pinned config still names the
+#                         model <pi-model-id>, so the pi call and the
+#                         config agree.
 #   SMOKE_MENDEL_CONTEXT_WINDOW
-#                         pins `contextWindow` for the model in the pinned
-#                         models.json. Empty keeps the owner's value. This
-#                         is the compaction experiment's knob: pi compacts
-#                         between turns when the context passes
-#                         contextWindow - reserveTokens.
-#   SMOKE_MENDEL_RESERVE_TOKENS
-#                         pins `compaction.reserveTokens` in the pinned
-#                         settings.json. Default 8192, the output budget
-#                         rule's value; the pinned config never inherits
-#                         the owner's, and pi's own default is 16384.
+#                         passed as `--window` to the generator: pins
+#                         `contextWindow` for the model in the pinned
+#                         models.json. Empty keeps the site row's value.
+#                         This is the compaction experiment's knob: pi
+#                         compacts between turns as the context nears this
+#                         window.
 #   SMOKE_MENDEL_KEEP_RECENT_TOKENS
-#                         pins `compaction.keepRecentTokens`. Empty keeps
-#                         pi's default (20000). pi cannot shrink a context
-#                         below system prompt + summary + this value, so a
-#                         window under that line makes pi compact on every
-#                         turn. The design in
-#                         hardware/kamaji/research/compaction-experiment.md
-#                         says which rungs lower it.
+#                         passed as `--keep` to the generator: forces
+#                         `compaction.keepRecentTokens`. Empty derives it
+#                         from the window curve (docs/methodology/mendel.md,
+#                         "Window and budget"): 8192 under 65536, 16384
+#                         under 131072, else pi's own default. pi cannot
+#                         shrink a context below system prompt + summary +
+#                         this value, so a window under that line makes pi
+#                         compact on every turn.
 #
 # Output, one line:
 #   SMOKE-MENDEL model=<id> level=<level> task=<name> window=<n|default>
-#   calls=<n> distinct=<n> longest_run=<n> loop=<LOOP|ok:ratio>
+#   pi=<version> calls=<n> distinct=<n> longest_run=<n> loop=<LOOP|ok:ratio>
 #   compactions=<n> splits=<n> peak=<tokens> commits=<n> clean=<yes|no>
 #   end=<reason> wall_s=<n> verdict=<pass|fail>
 #
@@ -103,16 +104,18 @@ LEVEL="${2:?usage: mendel-smoke.sh <pi-model-id> <thinking-level>}"
 
 CAP="${SMOKE_MENDEL_CAP:-1500}"
 OUT="${SMOKE_MENDEL_OUT:-$(mkdir -p "$HOME/.cache/choose-a-local-llm" && mktemp -d "$HOME/.cache/choose-a-local-llm/mendel-smoke.XXXXXX")}"
-BASE="${SMOKE_MENDEL_BASE:-}"
 GIVEN_SESSION="${SMOKE_MENDEL_SESSION:-}"
 TASK_NAME="${SMOKE_MENDEL_TASK:-xtend}"
+SITE_ID="${SMOKE_MENDEL_SITE_ID:-}"
 WINDOW="${SMOKE_MENDEL_CONTEXT_WINDOW:-}"
-RESERVE="${SMOKE_MENDEL_RESERVE_TOKENS:-8192}"
 KEEP_RECENT="${SMOKE_MENDEL_KEEP_RECENT_TOKENS:-}"
+PI_VERSION="$(pi --version 2>/dev/null)"
+[ -n "$PI_VERSION" ] || PI_VERSION=unknown
 
 WORK="$OUT/fixture"
 PI_DIR="$OUT/pi-agent"
 SESSION_DIR="$OUT/session"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 LOOP_CHECK="$(dirname "$0")/loop-check.py"
 
 case "$TASK_NAME" in
@@ -384,56 +387,20 @@ PYEOF
 
 build_pi_config() {
     rm -rf "$PI_DIR"
-    mkdir -p "$PI_DIR"
+    local gen="$ROOT/tools/gen-pi-models.mjs"
+    [ -e "$gen" ] || { echo "abort: no generator at $gen" >&2; exit 1; }
+    local site_id="${SITE_ID:-$MODEL}"
+    local gen_args=(--run-dir "$PI_DIR" --id "$site_id" --as "$MODEL")
+    [ -n "$WINDOW" ] && gen_args+=(--window "$WINDOW")
+    [ -n "$KEEP_RECENT" ] && gen_args+=(--keep "$KEEP_RECENT")
+    if ! ( cd "$ROOT" && node tools/gen-pi-models.mjs "${gen_args[@]}" ); then
+        echo "abort: gen-pi-models.mjs failed for $site_id" >&2
+        exit 1
+    fi
 
-    for f in models.json auth.json models-store.json; do
+    for f in auth.json models-store.json; do
         [ -e "$HOME/.pi/agent/$f" ] && cp "$HOME/.pi/agent/$f" "$PI_DIR/"
     done
-    RESERVE="$RESERVE" KEEP_RECENT="$KEEP_RECENT" python3 - "$PI_DIR/settings.json" <<'PYEOF'
-import json
-import os
-import sys
-
-compaction = {'enabled': True}
-if os.environ['RESERVE']:
-    compaction['reserveTokens'] = int(os.environ['RESERVE'])
-if os.environ['KEEP_RECENT']:
-    compaction['keepRecentTokens'] = int(os.environ['KEEP_RECENT'])
-json.dump({'compaction': compaction, 'retry': {'enabled': True}}, open(sys.argv[1], 'w'))
-print('mendel-smoke: compaction settings %s' % json.dumps(compaction))
-PYEOF
-
-    if [ -n "$BASE" ] || [ -n "$WINDOW" ]; then
-        MODEL="$MODEL" BASE="$BASE" WINDOW="$WINDOW" python3 - "$PI_DIR/models.json" <<'PYEOF'
-import json
-import os
-import sys
-
-path = sys.argv[1]
-config = json.load(open(path))
-wanted = os.environ['MODEL']
-touched = []
-for name, provider in config.get('providers', {}).items():
-    for model in provider.get('models', []):
-        if model.get('id') == wanted:
-            if os.environ['BASE']:
-                provider['baseUrl'] = os.environ['BASE']
-            if os.environ['WINDOW']:
-                model['contextWindow'] = int(os.environ['WINDOW'])
-            touched.append(name)
-    override = provider.get('modelOverrides', {}).get(wanted)
-    if override is not None and os.environ['WINDOW']:
-        override['contextWindow'] = int(os.environ['WINDOW'])
-        touched.append(name + ' (modelOverrides)')
-json.dump(config, open(path, 'w'), indent=2)
-what = []
-if os.environ['BASE']:
-    what.append('base URL')
-if os.environ['WINDOW']:
-    what.append('contextWindow %s' % os.environ['WINDOW'])
-print('mendel-smoke: %s pinned on provider %s' % (' and '.join(what), ', '.join(touched) or 'none'))
-PYEOF
-    fi
 
     echo "mendel-smoke: pi config pinned at $PI_DIR"
 }
@@ -608,6 +575,19 @@ check_loop
 read_git
 decide
 
-printf 'SMOKE-MENDEL model=%s level=%s task=%s window=%s calls=%s distinct=%s longest_run=%s loop=%s compactions=%s splits=%s peak=%s commits=%s clean=%s end=%s wall_s=%s verdict=%s\n' \
-    "$MODEL" "$LEVEL" "$TASK_NAME" "${WINDOW:-default}" "$CALLS" "$DISTINCT" "$LONGEST" "$LOOP" \
+MODEL="$MODEL" LEVEL="$LEVEL" TASK_NAME="$TASK_NAME" PI_VERSION="$PI_VERSION" python3 - "$OUT/meta.json" <<'PYEOF'
+import json
+import os
+import sys
+
+json.dump({
+    'model': os.environ['MODEL'],
+    'level': os.environ['LEVEL'],
+    'task': os.environ['TASK_NAME'],
+    'pi_version': os.environ['PI_VERSION'],
+}, open(sys.argv[1], 'w'), indent=2)
+PYEOF
+
+printf 'SMOKE-MENDEL model=%s level=%s task=%s window=%s pi=%s calls=%s distinct=%s longest_run=%s loop=%s compactions=%s splits=%s peak=%s commits=%s clean=%s end=%s wall_s=%s verdict=%s\n' \
+    "$MODEL" "$LEVEL" "$TASK_NAME" "${WINDOW:-default}" "$PI_VERSION" "$CALLS" "$DISTINCT" "$LONGEST" "$LOOP" \
     "$COMPACTIONS" "$SPLITS" "$PEAK" "$COMMITS" "$CLEAN" "$END" "$WALL" "$VERDICT"

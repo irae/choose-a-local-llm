@@ -3,7 +3,7 @@
 // `gen-tables.mjs` did not cover (`docs/methodology/common-rules.md`, rule 7).
 //
 //   node tools/gen-pi-models.mjs [--check] [--dry-run] [--target <file>] [--settings <file>] [--setup <id>]
-//   node tools/gen-pi-models.mjs --run-dir <dir> --id <pi id> [--window <N>] [--setup <id>]
+//   node tools/gen-pi-models.mjs --run-dir <dir> --id <pi id> [--window <N>] [--keep <N>] [--as <run id>] [--setup <id>]
 //
 // User mode (no --run-dir): only this machine's rows
 // (`docs/setups/<hostname>/models.json`, or `--setup`) become entries; the
@@ -36,7 +36,12 @@
 // the user's `models.json` to copy an existing entry's shape (thinking
 // map, compat, cost) for the same model family. `--window <N>` overrides
 // the row's `contextWindow` (for example a depth-sweep window); the keep
-// curve above then applies to that window.
+// curve above then applies to that window. `--keep <N>` forces the keep
+// value instead of the curve (a run's explicit env override). `--as <run
+// id>` writes the entry under a run-only id, for example
+// `qwen3.8-27b-ista-q8-tb8192`, instead of the site's `--id`; the entry's
+// `name` is then `<run id> (<provider>)`. Without `--as`, the entry's id
+// is `--id`.
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
 import { homedir, hostname } from 'node:os'
@@ -86,6 +91,8 @@ if (runDir) {
   const provider = found.pi.provider
   const windowOpt = opt('--window', null)
   const contextWindow = windowOpt ? Number(windowOpt) : found.pi.contextWindow
+  const asId = opt('--as', null)
+  const runId = asId || id
 
   const userTarget = opt('--target', `${homedir()}/.pi/agent/models.json`)
   const userEntries = existsSync(userTarget)
@@ -96,7 +103,8 @@ if (runDir) {
     return full.find((m) => m.id === modelId) || full.find((m) => family(m.id) === family(modelId)) || null
   }
   const template = templateOf(id)
-  const entry = template ? { ...structuredClone(template), id, name: template.name } : { id }
+  const entry = template ? { ...structuredClone(template), id: runId, name: template.name } : { id: runId }
+  if (asId) entry.name = `${runId} (${provider})`
   entry.contextWindow = contextWindow
   delete entry.maxTokens
   delete entry.generatedBy
@@ -104,7 +112,8 @@ if (runDir) {
   const providerBlock = { ...(ROUTERS[provider] || {}), models: [entry] }
   const runModels = { providers: { [provider]: providerBlock } }
 
-  const keep = keepRecentFor(contextWindow)
+  const keepOpt = opt('--keep', null)
+  const keep = keepOpt ? Number(keepOpt) : keepRecentFor(contextWindow)
   const runSettings = {
     compaction: { enabled: true, ...(keep != null ? { keepRecentTokens: keep } : {}) },
     retry: { enabled: true },
@@ -113,7 +122,7 @@ if (runDir) {
   mkdirSync(runDir, { recursive: true })
   writeFileSync(`${runDir}/models.json`, `${JSON.stringify(runModels, null, 2)}\n`)
   writeFileSync(`${runDir}/settings.json`, `${JSON.stringify(runSettings, null, 2)}\n`)
-  console.log(`${runDir}: ${id} window=${contextWindow} keep=${keep ?? 'default'}`)
+  console.log(`${runDir}: ${runId} (site id ${id}) window=${contextWindow} keep=${keep ?? 'default'}`)
   process.exit(0)
 }
 

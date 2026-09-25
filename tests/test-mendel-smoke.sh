@@ -266,22 +266,46 @@ fake_pi_home() {
 JSONEOF
 }
 
+# A throwaway copy of this repo's shape, just enough for
+# `tools/gen-pi-models.mjs --run-dir` to run from: the generator itself,
+# loop-check.py, a copy of mendel-smoke.sh so its own repo root ($0's
+# parent) resolves to this copy, and one site row under the setup id
+# this test host resolves to (so no test depends on the real machine's
+# hostname or the real site data).
+fake_choose_repo() {
+    local base="$1" repo host
+    repo="$base/repo"
+    host="$(node -e "console.log(require('os').hostname().split('.')[0].toLowerCase())")"
+    mkdir -p "$repo/benchmarks" "$repo/tools" "$repo/docs/setups/$host"
+    cp "$SMOKE" "$repo/benchmarks/mendel-smoke.sh"
+    cp "$ROOT/tools/gen-pi-models.mjs" "$repo/tools/gen-pi-models.mjs"
+    cp "$ROOT/benchmarks/loop-check.py" "$repo/benchmarks/loop-check.py"
+    cat > "$repo/docs/setups/$host/models.json" <<'JSONEOF'
+{"rows":[{"pi":{"provider":"llama","id":"test-model","contextWindow":49152}}]}
+JSONEOF
+    echo "$repo"
+}
+
 test_the_window_lands_in_the_pinned_config() {
     CASE_DIR=$(mktemp -d "${TMPDIR:-/tmp}/mendel-smoke-test.XXXXXX")
     fake_pi_home
+    REPO=$(fake_choose_repo "$CASE_DIR")
     OUT_TEXT=$(HOME="$FAKE_HOME" PATH="$FAKE_HOME/bin:$PATH" SMOKE_MENDEL_OUT="$CASE_DIR" \
-        SMOKE_MENDEL_CONTEXT_WINDOW=28672 SMOKE_MENDEL_RESERVE_TOKENS=8192 \
+        SMOKE_MENDEL_SITE_ID=test-model SMOKE_MENDEL_CONTEXT_WINDOW=28672 \
         SMOKE_MENDEL_KEEP_RECENT_TOKENS=10240 \
-        bash "$SMOKE" test-model low 2>&1)
+        bash "$REPO/benchmarks/mendel-smoke.sh" test-model-tb8192 low 2>&1)
     LINE=$(echo "$OUT_TEXT" | grep '^SMOKE-MENDEL' || true)
-    assert_contains "it says the window is pinned" "$OUT_TEXT" "contextWindow 28672 pinned on provider llama"
-    assert_contains "the pinned models.json carries the window" \
+    assert_contains "it says the window is pinned" "$OUT_TEXT" "window=28672 keep=10240"
+    assert_contains "the pinned models.json carries the run id, not the site id" \
+        "$(cat "$CASE_DIR/pi-agent/models.json")" '"id": "test-model-tb8192"'
+    assert_contains "and the window" \
         "$(cat "$CASE_DIR/pi-agent/models.json")" '"contextWindow": 28672'
-    assert_contains "the pinned settings carry the reserve" \
-        "$(cat "$CASE_DIR/pi-agent/settings.json")" '"reserveTokens": 8192'
-    assert_contains "and the recent budget" \
+    assert_missing "no reserveTokens is ever written" \
+        "$(cat "$CASE_DIR/pi-agent/settings.json")" "reserveTokens"
+    assert_contains "the pinned settings carry the forced keep budget" \
         "$(cat "$CASE_DIR/pi-agent/settings.json")" '"keepRecentTokens": 10240'
     assert_contains "the line says the window" "$LINE" "window=28672"
+    assert_contains "the fake pi reports its (unresolvable) version" "$LINE" "pi=unknown"
     assert_contains "no session log is still a fail" "$LINE" "verdict=fail"
     rm -rf "$CASE_DIR" "$FAKE_HOME"
 }
@@ -289,22 +313,25 @@ test_the_window_lands_in_the_pinned_config() {
 test_the_default_config_pins_no_window() {
     CASE_DIR=$(mktemp -d "${TMPDIR:-/tmp}/mendel-smoke-test.XXXXXX")
     fake_pi_home
+    REPO=$(fake_choose_repo "$CASE_DIR")
     OUT_TEXT=$(HOME="$FAKE_HOME" PATH="$FAKE_HOME/bin:$PATH" SMOKE_MENDEL_OUT="$CASE_DIR" \
-        bash "$SMOKE" test-model low 2>&1)
-    assert_missing "nothing is pinned without the override" "$OUT_TEXT" "pinned on provider"
-    assert_contains "the owner's window stays" \
-        "$(cat "$CASE_DIR/pi-agent/models.json")" '"contextWindow":49152'
-    assert_equal "and the settings pin the rule's reserve, 8192" \
-        "$(cat "$CASE_DIR/pi-agent/settings.json")" \
-        '{"compaction": {"enabled": true, "reserveTokens": 8192}, "retry": {"enabled": true}}'
+        bash "$REPO/benchmarks/mendel-smoke.sh" test-model low 2>&1)
+    assert_contains "the site row's own window carries through" "$OUT_TEXT" "window=49152 keep=8192"
+    assert_contains "the pinned models.json carries the site window" \
+        "$(cat "$CASE_DIR/pi-agent/models.json")" '"contextWindow": 49152'
+    assert_missing "and no reserveTokens" \
+        "$(cat "$CASE_DIR/pi-agent/settings.json")" "reserveTokens"
+    assert_contains "and the settings pin the curve's keep budget, 8192" \
+        "$(cat "$CASE_DIR/pi-agent/settings.json")" '"keepRecentTokens": 8192'
     rm -rf "$CASE_DIR" "$FAKE_HOME"
 }
 
 test_the_wide_task_builds_ten_xtend_files() {
     CASE_DIR=$(mktemp -d "${TMPDIR:-/tmp}/mendel-smoke-test.XXXXXX")
     fake_pi_home
+    REPO=$(fake_choose_repo "$CASE_DIR")
     OUT_TEXT=$(HOME="$FAKE_HOME" PATH="$FAKE_HOME/bin:$PATH" SMOKE_MENDEL_OUT="$CASE_DIR" \
-        SMOKE_MENDEL_TASK=xtend-wide bash "$SMOKE" test-model low 2>&1)
+        SMOKE_MENDEL_TASK=xtend-wide bash "$REPO/benchmarks/mendel-smoke.sh" test-model low 2>&1)
     LINE=$(echo "$OUT_TEXT" | grep '^SMOKE-MENDEL' || true)
     assert_contains "the fixture line names the task" "$OUT_TEXT" "fixture ready (xtend-wide, 12 files"
     assert_equal "ten files require xtend" \
