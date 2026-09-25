@@ -34,6 +34,8 @@
 #   PREFLIGHT_START_WIRED_FILE  file holding the last recorded start
 #                            value of wired MB (default
 #                            $XDG_CONFIG_HOME/choose-a-local-llm/last-start-wired-mb)
+#   PREFLIGHT_PI_NEWEST_VERSION  the newest pi version, skipping the
+#                            npm lookup (for tests)
 
 set -u
 
@@ -93,6 +95,7 @@ Checks:
                  through gh and loops on a dead token
   claude-auth    warns when the Claude login has under 48 h left; it
                  never blocks a run
+  pi-version     the installed pi against the newest release on npm
 
 The values come from ~/.config/choose-a-local-llm/machine.md. The
 header of this file lists the environment variables that override them.
@@ -487,6 +490,53 @@ else:
     report "${verdict%%|*}" claude-auth "${verdict#*|}"
 }
 
+# Detects which tool installed pi, to give the right upgrade command:
+# a mise install path upgrades with "mise upgrade pi" (the command that
+# moves a "latest" pin forward); anything else is an npm global install.
+check_pi_version() {
+    local installed
+    local newest
+    local resolved
+    local upgrade_cmd
+
+    if ! command -v pi >/dev/null 2>&1; then
+        report warn pi-version "pi is not on PATH"
+        return
+    fi
+
+    installed=$(pi --version 2>/dev/null | tr -d '[:space:]')
+
+    if [ -z "$installed" ]; then
+        report warn pi-version "pi --version gave no output"
+        return
+    fi
+
+    newest="${PREFLIGHT_PI_NEWEST_VERSION:-$(npm view @earendil-works/pi-coding-agent version 2>/dev/null)}"
+
+    if [ -z "$newest" ]; then
+        report warn pi-version "npm view @earendil-works/pi-coding-agent version gave no result. Offline?"
+        return
+    fi
+
+    if [ "$installed" = "$newest" ]; then
+        report ok pi-version "$installed"
+        return
+    fi
+
+    resolved=$(readlink -f "$(command -v pi)" 2>/dev/null)
+
+    case "$resolved" in
+        *"/mise/"*)
+            upgrade_cmd="mise upgrade pi"
+            ;;
+        *)
+            upgrade_cmd="npm install -g @earendil-works/pi-coding-agent@latest"
+            ;;
+    esac
+
+    report fix pi-version "$installed -> $newest: $upgrade_cmd"
+}
+
 check_gpu_free
 check_apps
 check_login_items
@@ -496,5 +546,6 @@ check_memory
 check_reboot
 check_gh_auth
 check_claude_auth
+check_pi_version
 
 exit "$exit_code"
