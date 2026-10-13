@@ -1,0 +1,15 @@
+{
+  "is_complaint": {
+    "type": "noul",
+    "instructions": "The message is a complaint about a service."
+  },
+  "topic": {
+    "type": "choice",
+    "instructions": "Which topic does the message belong to?",
+    "criteria": {
+      "billing": "money, invoices, charges or refunds",
+      "delivery": "shipping, tracking or a late parcel",
+      "technical": "an app, a device or a website that does not work"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+{"state": "You charged my card twice this month and nobody answers the phone. I want the second charge back today.", "labels": {"is_complaint": true, "topic": "billing"}}
+{"state": "My parcel says delivered but it is not at my door. The tracking page stopped updating three days ago.", "labels": {"is_complaint": true, "topic": "delivery"}}
+{"state": "Thank you for the quick fix, the app opens again on my phone and the login works.", "labels": {"is_complaint": false, "topic": "technical"}}
+{"state": "The invoice for August lists a plan I never bought, and the total is higher than the quote.", "labels": {"is_complaint": true, "topic": "billing"}}

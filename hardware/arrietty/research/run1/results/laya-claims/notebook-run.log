@@ -1,0 +1,464 @@
+--- cell 0 ---
+NVIDIA GeForce RTX 5060 Ti, 16311 MiB, 12.0
+torch 2.14.0+cu130 | cuda True | device NVIDIA GeForce RTX 5060 Ti
+--- cell 2 ---
+Fetching 38 files:   0%|          | 0/38 [00:00<?, ?it/s]Fetching 38 files: 100%|██████████| 38/38 [00:00<00:00, 6210.88it/s]
+laya -> /home/irae/.cache/huggingface/hub/models--convaiinnovations--laya/snapshots/1c5edc17a7acd8701df6fc341c0d179f1c62c982
+    {"repo": "convaiinnovations/laya", "params_total_m": 421.29, "params_encoder_m": 394.78, "params_head_m": 26.51, "hidden_size": 1024, "num_layers": 28, "vocab_size": 50368, "max_len": 512, "head_max_len": 192, "temperature": [1.6369030475616455, 1.2514300346374512, 1.983399510383606], "training": {"updates": 7313, "epochs_completed": 1, "hours": 1.96, "world_size": 1, "fine_tuned_from_checkpoint": true}, "download_s": 0.2, "tokenizer_config_patched": []}
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files: 100%|██████████| 7/7 [00:00<00:00, 4756.22it/s]
+laya-multilingual -> /home/irae/.cache/huggingface/hub/models--convaiinnovations--laya-multilingual/snapshots/052592a15d198d9ad47da779604259b10b47b7aa
+    {"repo": "convaiinnovations/laya-multilingual", "params_total_m": 321.91, "params_encoder_m": 306.94, "params_head_m": 14.97, "hidden_size": 768, "num_layers": 22, "vocab_size": 256000, "max_len": 1024, "head_max_len": 256, "temperature": [1.0, 1.0, 1.0], "training": {"updates": 15987, "epochs_completed": 4, "hours": 4.97, "world_size": 1, "fine_tuned_from_checkpoint": false}, "download_s": 0.1, "tokenizer_config_patched": []}
+--- cell 3: writing bench_engine.py
+--- cell 4 ---
+--- cell 5 ---
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  typed_decisions                     400 cases /  2000 questions   4 workflows, soft teacher labels
+--- cell 6 ---
+  massive_intent.en                   300 cases /   300 questions   
+  massive_intent.de                   300 cases /   300 questions   
+  massive_intent.fr                   300 cases /   300 questions   
+  massive_intent.es                   300 cases /   300 questions   
+  massive_intent.pt                   300 cases /   300 questions   
+  massive_intent.ru                   300 cases /   300 questions   
+  massive_intent.tr                   300 cases /   300 questions   
+  massive_intent.ar                   300 cases /   300 questions   
+  massive_intent.hi                   300 cases /   300 questions   
+  massive_intent.ta                   300 cases /   300 questions   
+  massive_intent.zh-CN                300 cases /   300 questions   
+  massive_intent.ja                   300 cases /   300 questions   
+  massive_intent.ko                   300 cases /   300 questions   
+  massive_intent.sw                   300 cases /   300 questions   
+  massive_scenario.en                 300 cases /   300 questions   
+  massive_scenario.de                 300 cases /   300 questions   
+  massive_scenario.fr                 300 cases /   300 questions   
+  massive_scenario.es                 300 cases /   300 questions   
+  massive_scenario.pt                 300 cases /   300 questions   
+  massive_scenario.ru                 300 cases /   300 questions   
+  massive_scenario.tr                 300 cases /   300 questions   
+  massive_scenario.ar                 300 cases /   300 questions   
+  massive_scenario.hi                 300 cases /   300 questions   
+  massive_scenario.ta                 300 cases /   300 questions   
+  massive_scenario.zh-CN              300 cases /   300 questions   
+  massive_scenario.ja                 300 cases /   300 questions   
+  massive_scenario.ko                 300 cases /   300 questions   
+  massive_scenario.sw                 300 cases /   300 questions   
+  xnli.en                             300 cases /   300 questions   
+  xnli.de                             300 cases /   300 questions   
+  xnli.fr                             300 cases /   300 questions   
+  xnli.es                             300 cases /   300 questions   
+  xnli.ru                             300 cases /   300 questions   
+  xnli.tr                             300 cases /   300 questions   
+  xnli.ar                             300 cases /   300 questions   
+  xnli.hi                             300 cases /   300 questions   
+  xnli.ur                             300 cases /   300 questions   
+  xnli.vi                             300 cases /   300 questions   
+  xnli.th                             300 cases /   300 questions   
+  xnli.el                             300 cases /   300 questions   
+  xnli.bg                             300 cases /   300 questions   
+  xnli.zh                             300 cases /   300 questions   
+  xnli.sw                             300 cases /   300 questions   
+--- cell 7 ---
+Repo card metadata block was not found. Setting CardData to empty.
+  en.sst5                             600 cases /   600 questions   zero-shot, ordinal
+  en.emotion                          600 cases /   600 questions   zero-shot
+  en.prompt_injections                116 cases /   116 questions   zero-shot
+  FAIL banking77: Dataset scripts are no longer supported, but found banking77.py
+  en.ag_news                          600 cases /   600 questions   in-task (trained on)
+  en.boolq                            600 cases /   600 questions   in-task (trained on)
+
+suites built: 49 | total questions: 17416
+--- cell 8 ---
+
+==============================================================================
+  laya
+==============================================================================
+  [laya/typed_decisions] 106/2000 seq | 97 seq/s | ETA 19s      [laya/typed_decisions] 202/2000 seq | 126 seq/s | ETA 14s      [laya/typed_decisions] 295/2000 seq | 139 seq/s | ETA 12s      [laya/typed_decisions] 385/2000 seq | 146 seq/s | ETA 11s      [laya/typed_decisions] 472/2000 seq | 150 seq/s | ETA 10s      [laya/typed_decisions] 547/2000 seq | 149 seq/s | ETA 9s      [laya/typed_decisions] 612/2000 seq | 146 seq/s | ETA 9s      [laya/typed_decisions] 674/2000 seq | 143 seq/s | ETA 9s      [laya/typed_decisions] 734/2000 seq | 140 seq/s | ETA 9s      [laya/typed_decisions] 792/2000 seq | 137 seq/s | ETA 8s      [laya/typed_decisions] 848/2000 seq | 135 seq/s | ETA 8s      [laya/typed_decisions] 903/2000 seq | 132 seq/s | ETA 8s      [laya/typed_decisions] 957/2000 seq | 130 seq/s | ETA 8s      [laya/typed_decisions] 1010/2000 seq | 128 seq/s | ETA 7s      [laya/typed_decisions] 1062/2000 seq | 126 seq/s | ETA 7s      [laya/typed_decisions] 1113/2000 seq | 125 seq/s | ETA 7s      [laya/typed_decisions] 1163/2000 seq | 123 seq/s | ETA 6s      [laya/typed_decisions] 1213/2000 seq | 121 seq/s | ETA 6s      [laya/typed_decisions] 1262/2000 seq | 120 seq/s | ETA 6s      [laya/typed_decisions] 1310/2000 seq | 118 seq/s | ETA 5s      [laya/typed_decisions] 1357/2000 seq | 117 seq/s | ETA 5s      [laya/typed_decisions] 1404/2000 seq | 116 seq/s | ETA 5s      [laya/typed_decisions] 1450/2000 seq | 115 seq/s | ETA 4s      [laya/typed_decisions] 1496/2000 seq | 113 seq/s | ETA 4s      [laya/typed_decisions] 1542/2000 seq | 112 seq/s | ETA 4s      [laya/typed_decisions] 1587/2000 seq | 111 seq/s | ETA 3s      [laya/typed_decisions] 1631/2000 seq | 110 seq/s | ETA 3s      [laya/typed_decisions] 1675/2000 seq | 109 seq/s | ETA 2s      [laya/typed_decisions] 1718/2000 seq | 108 seq/s | ETA 2s      [laya/typed_decisions] 1761/2000 seq | 108 seq/s | ETA 2s      [laya/typed_decisions] 1803/2000 seq | 107 seq/s | ETA 1s      [laya/typed_decisions] 1844/2000 seq | 106 seq/s | ETA 1s      [laya/typed_decisions] 1883/2000 seq | 105 seq/s | ETA 1s      [laya/typed_decisions] 1919/2000 seq | 104 seq/s | ETA 0s      [laya/typed_decisions] 1953/2000 seq | 103 seq/s | ETA 0s      [laya/typed_decisions] 1985/2000 seq | 101 seq/s | ETA 0s      [laya/typed_decisions] 2000/2000 seq | 101 seq/s | ETA 0s      [laya/typed_decisions] 2000 sequences in 19.9s (0 dropped: options did not fit)                    
+   typed_decisions                  acc 0.361  f1 0.322  ECE 0.175  n=2000
+  [laya/massive_intent.en] 89/300 seq | 173 seq/s | ETA 1s      [laya/massive_intent.en] 176/300 seq | 171 seq/s | ETA 0s      [laya/massive_intent.en] 256/300 seq | 165 seq/s | ETA 0s      [laya/massive_intent.en] 300/300 seq | 161 seq/s | ETA 0s      [laya/massive_intent.en] 300 sequences in 1.9s (0 dropped: options did not fit)                    
+   massive_intent.en                acc 0.783  f1 0.786  ECE 0.214  n=300
+  [laya/massive_intent.de] 87/300 seq | 169 seq/s | ETA 1s      [laya/massive_intent.de] 171/300 seq | 164 seq/s | ETA 0s      [laya/massive_intent.de] 249/300 seq | 160 seq/s | ETA 0s      [laya/massive_intent.de] 300/300 seq | 155 seq/s | ETA 0s      [laya/massive_intent.de] 300 sequences in 1.9s (0 dropped: options did not fit)                    
+   massive_intent.de                acc 0.423  f1 0.422  ECE 0.555  n=300
+  [laya/massive_intent.fr] 87/300 seq | 168 seq/s | ETA 1s      [laya/massive_intent.fr] 171/300 seq | 164 seq/s | ETA 0s      [laya/massive_intent.fr] 249/300 seq | 159 seq/s | ETA 0s      [laya/massive_intent.fr] 300/300 seq | 155 seq/s | ETA 0s      [laya/massive_intent.fr] 300 sequences in 1.9s (0 dropped: options did not fit)                    
+   massive_intent.fr                acc 0.483  f1 0.487  ECE 0.496  n=300
+  [laya/massive_intent.es] 88/300 seq | 170 seq/s | ETA 1s      [laya/massive_intent.es] 172/300 seq | 168 seq/s | ETA 0s      [laya/massive_intent.es] 251/300 seq | 162 seq/s | ETA 0s      [laya/massive_intent.es] 300/300 seq | 157 seq/s | ETA 0s      [laya/massive_intent.es] 300 sequences in 1.9s (0 dropped: options did not fit)                    
+   massive_intent.es                acc 0.477  f1 0.474  ECE 0.507  n=300
+  [laya/massive_intent.pt] 87/300 seq | 169 seq/s | ETA 1s      [laya/massive_intent.pt] 171/300 seq | 165 seq/s | ETA 0s      [laya/massive_intent.pt] 250/300 seq | 160 seq/s | ETA 0s      [laya/massive_intent.pt] 300/300 seq | 155 seq/s | ETA 0s      [laya/massive_intent.pt] 300 sequences in 1.9s (0 dropped: options did not fit)                    
+   massive_intent.pt                acc 0.457  f1 0.450  ECE 0.532  n=300
+  [laya/massive_intent.ru] 85/300 seq | 165 seq/s | ETA 1s      [laya/massive_intent.ru] 167/300 seq | 160 seq/s | ETA 0s      [laya/massive_intent.ru] 244/300 seq | 156 seq/s | ETA 0s      [laya/massive_intent.ru] 300/300 seq | 149 seq/s | ETA 0s      [laya/massive_intent.ru] 300 sequences in 2.0s (0 dropped: options did not fit)                    
+   massive_intent.ru                acc 0.290  f1 0.290  ECE 0.685  n=300
+  [laya/massive_intent.tr] 86/300 seq | 168 seq/s | ETA 1s      [laya/massive_intent.tr] 170/300 seq | 163 seq/s | ETA 0s      [laya/massive_intent.tr] 248/300 seq | 158 seq/s | ETA 0s      [laya/massive_intent.tr] 300/300 seq | 152 seq/s | ETA 0s      [laya/massive_intent.tr] 300 sequences in 2.0s (0 dropped: options did not fit)                    
+   massive_intent.tr                acc 0.160  f1 0.149  ECE 0.790  n=300
+  [laya/massive_intent.ar] 85/300 seq | 166 seq/s | ETA 1s      [laya/massive_intent.ar] 166/300 seq | 160 seq/s | ETA 0s      [laya/massive_intent.ar] 243/300 seq | 156 seq/s | ETA 0s      [laya/massive_intent.ar] 300/300 seq | 150 seq/s | ETA 0s      [laya/massive_intent.ar] 300 sequences in 2.0s (0 dropped: options did not fit)                    
+   massive_intent.ar                acc 0.137  f1 0.134  ECE 0.787  n=300
+  [laya/massive_intent.hi] 80/300 seq | 153 seq/s | ETA 1s      [laya/massive_intent.hi] 156/300 seq | 149 seq/s | ETA 0s      [laya/massive_intent.hi] 229/300 seq | 146 seq/s | ETA 0s      [laya/massive_intent.hi] 294/300 seq | 141 seq/s | ETA 0s      [laya/massive_intent.hi] 300/300 seq | 140 seq/s | ETA 0s      [laya/massive_intent.hi] 300 sequences in 2.1s (0 dropped: options did not fit)                    
+   massive_intent.hi                acc 0.097  f1 0.094  ECE 0.849  n=300
+  [laya/massive_intent.ta] 74/300 seq | 142 seq/s | ETA 1s      [laya/massive_intent.ta] 144/300 seq | 138 seq/s | ETA 1s      [laya/massive_intent.ta] 211/300 seq | 135 seq/s | ETA 0s      [laya/massive_intent.ta] 273/300 seq | 130 seq/s | ETA 0s      [laya/massive_intent.ta] 300/300 seq | 124 seq/s | ETA 0s      [laya/massive_intent.ta] 300 sequences in 2.4s (0 dropped: options did not fit)                    
+   massive_intent.ta                acc 0.110  f1 0.102  ECE 0.827  n=300
+  [laya/massive_intent.zh-CN] 86/300 seq | 168 seq/s | ETA 1s      [laya/massive_intent.zh-CN] 170/300 seq | 163 seq/s | ETA 0s      [laya/massive_intent.zh-CN] 248/300 seq | 159 seq/s | ETA 0s      [laya/massive_intent.zh-CN] 300/300 seq | 154 seq/s | ETA 0s      [laya/massive_intent.zh-CN] 300 sequences in 1.9s (0 dropped: options did not fit)                    
+   massive_intent.zh-CN             acc 0.587  f1 0.591  ECE 0.405  n=300
+  [laya/massive_intent.ja] 86/300 seq | 168 seq/s | ETA 1s      [laya/massive_intent.ja] 169/300 seq | 163 seq/s | ETA 0s      [laya/massive_intent.ja] 247/300 seq | 158 seq/s | ETA 0s      [laya/massive_intent.ja] 300/300 seq | 153 seq/s | ETA 0s      [laya/massive_intent.ja] 300 sequences in 2.0s (0 dropped: options did not fit)                    
+   massive_intent.ja                acc 0.547  f1 0.551  ECE 0.437  n=300
+  [laya/massive_intent.ko] 83/300 seq | 158 seq/s | ETA 1s      [laya/massive_intent.ko] 162/300 seq | 155 seq/s | ETA 0s      [laya/massive_intent.ko] 237/300 seq | 151 seq/s | ETA 0s      [laya/massive_intent.ko] 300/300 seq | 145 seq/s | ETA 0s      [laya/massive_intent.ko] 300 sequences in 2.1s (0 dropped: options did not fit)                    
+   massive_intent.ko                acc 0.107  f1 0.098  ECE 0.842  n=300
+  [laya/massive_intent.sw] 87/300 seq | 168 seq/s | ETA 1s      [laya/massive_intent.sw] 170/300 seq | 163 seq/s | ETA 0s      [laya/massive_intent.sw] 248/300 seq | 158 seq/s | ETA 0s      [laya/massive_intent.sw] 300/300 seq | 153 seq/s | ETA 0s      [laya/massive_intent.sw] 300 sequences in 2.0s (0 dropped: options did not fit)                    
+   massive_intent.sw                acc 0.103  f1 0.096  ECE 0.850  n=300
+  [laya/massive_scenario.en] 128/300 seq | 297 seq/s | ETA 0s      [laya/massive_scenario.en] 256/300 seq | 293 seq/s | ETA 0s      [laya/massive_scenario.en] 300/300 seq | 292 seq/s | ETA 0s      [laya/massive_scenario.en] 300 sequences in 1.0s (0 dropped: options did not fit)                    
+   massive_scenario.en              acc 0.603  f1 0.594  ECE 0.394  n=300
+  [laya/massive_scenario.de] 128/300 seq | 287 seq/s | ETA 0s      [laya/massive_scenario.de] 256/300 seq | 280 seq/s | ETA 0s      [laya/massive_scenario.de] 300/300 seq | 274 seq/s | ETA 0s      [laya/massive_scenario.de] 300 sequences in 1.1s (0 dropped: options did not fit)                    
+   massive_scenario.de              acc 0.290  f1 0.281  ECE 0.679  n=300
+  [laya/massive_scenario.fr] 128/300 seq | 284 seq/s | ETA 0s      [laya/massive_scenario.fr] 256/300 seq | 277 seq/s | ETA 0s      [laya/massive_scenario.fr] 300/300 seq | 270 seq/s | ETA 0s      [laya/massive_scenario.fr] 300 sequences in 1.1s (0 dropped: options did not fit)                    
+   massive_scenario.fr              acc 0.460  f1 0.452  ECE 0.523  n=300
+  [laya/massive_scenario.es] 128/300 seq | 290 seq/s | ETA 0s      [laya/massive_scenario.es] 256/300 seq | 282 seq/s | ETA 0s      [laya/massive_scenario.es] 300/300 seq | 274 seq/s | ETA 0s      [laya/massive_scenario.es] 300 sequences in 1.1s (0 dropped: options did not fit)                    
+   massive_scenario.es              acc 0.380  f1 0.376  ECE 0.598  n=300
+  [laya/massive_scenario.pt] 128/300 seq | 287 seq/s | ETA 0s      [laya/massive_scenario.pt] 256/300 seq | 279 seq/s | ETA 0s      [laya/massive_scenario.pt] 300/300 seq | 274 seq/s | ETA 0s      [laya/massive_scenario.pt] 300 sequences in 1.1s (0 dropped: options did not fit)                    
+   massive_scenario.pt              acc 0.423  f1 0.419  ECE 0.563  n=300
+  [laya/massive_scenario.ru] 128/300 seq | 275 seq/s | ETA 0s      [laya/massive_scenario.ru] 256/300 seq | 266 seq/s | ETA 0s      [laya/massive_scenario.ru] 300/300 seq | 257 seq/s | ETA 0s      [laya/massive_scenario.ru] 300 sequences in 1.2s (0 dropped: options did not fit)                    
+   massive_scenario.ru              acc 0.340  f1 0.338  ECE 0.638  n=300
+  [laya/massive_scenario.tr] 128/300 seq | 282 seq/s | ETA 0s      [laya/massive_scenario.tr] 256/300 seq | 274 seq/s | ETA 0s      [laya/massive_scenario.tr] 300/300 seq | 264 seq/s | ETA 0s      [laya/massive_scenario.tr] 300 sequences in 1.1s (0 dropped: options did not fit)                    
+   massive_scenario.tr              acc 0.223  f1 0.226  ECE 0.739  n=300
+  [laya/massive_scenario.ar] 128/300 seq | 275 seq/s | ETA 0s      [laya/massive_scenario.ar] 256/300 seq | 264 seq/s | ETA 0s      [laya/massive_scenario.ar] 300/300 seq | 257 seq/s | ETA 0s      [laya/massive_scenario.ar] 300 sequences in 1.2s (0 dropped: options did not fit)                    
+   massive_scenario.ar              acc 0.133  f1 0.133  ECE 0.828  n=300
+  [laya/massive_scenario.hi] 128/300 seq | 250 seq/s | ETA 0s      [laya/massive_scenario.hi] 245/300 seq | 237 seq/s | ETA 0s      [laya/massive_scenario.hi] 300/300 seq | 220 seq/s | ETA 0s      [laya/massive_scenario.hi] 300 sequences in 1.4s (0 dropped: options did not fit)                    
+   massive_scenario.hi              acc 0.093  f1 0.090  ECE 0.870  n=300
+  [laya/massive_scenario.ta] 112/300 seq | 217 seq/s | ETA 0s      [laya/massive_scenario.ta] 214/300 seq | 207 seq/s | ETA 0s      [laya/massive_scenario.ta] 294/300 seq | 190 seq/s | ETA 0s      [laya/massive_scenario.ta] 300/300 seq | 188 seq/s | ETA 0s      [laya/massive_scenario.ta] 300 sequences in 1.6s (0 dropped: options did not fit)                    
+   massive_scenario.ta              acc 0.103  f1 0.101  ECE 0.870  n=300
+  [laya/massive_scenario.zh-CN] 128/300 seq | 282 seq/s | ETA 0s      [laya/massive_scenario.zh-CN] 256/300 seq | 275 seq/s | ETA 0s      [laya/massive_scenario.zh-CN] 300/300 seq | 267 seq/s | ETA 0s      [laya/massive_scenario.zh-CN] 300 sequences in 1.1s (0 dropped: options did not fit)                    
+   massive_scenario.zh-CN           acc 0.483  f1 0.479  ECE 0.495  n=300
+  [laya/massive_scenario.ja] 128/300 seq | 282 seq/s | ETA 0s      [laya/massive_scenario.ja] 256/300 seq | 272 seq/s | ETA 0s      [laya/massive_scenario.ja] 300/300 seq | 263 seq/s | ETA 0s      [laya/massive_scenario.ja] 300 sequences in 1.1s (0 dropped: options did not fit)                    
+   massive_scenario.ja              acc 0.463  f1 0.462  ECE 0.515  n=300
+  [laya/massive_scenario.ko] 128/300 seq | 266 seq/s | ETA 0s      [laya/massive_scenario.ko] 251/300 seq | 251 seq/s | ETA 0s      [laya/massive_scenario.ko] 300/300 seq | 242 seq/s | ETA 0s      [laya/massive_scenario.ko] 300 sequences in 1.2s (0 dropped: options did not fit)                    
+   massive_scenario.ko              acc 0.130  f1 0.126  ECE 0.837  n=300
+  [laya/massive_scenario.sw] 128/300 seq | 284 seq/s | ETA 0s      [laya/massive_scenario.sw] 256/300 seq | 275 seq/s | ETA 0s      [laya/massive_scenario.sw] 300/300 seq | 268 seq/s | ETA 0s      [laya/massive_scenario.sw] 300 sequences in 1.1s (0 dropped: options did not fit)                    
+   massive_scenario.sw              acc 0.097  f1 0.093  ECE 0.865  n=300
+  [laya/xnli.en] 128/300 seq | 341 seq/s | ETA 0s      [laya/xnli.en] 256/300 seq | 312 seq/s | ETA 0s      [laya/xnli.en] 300/300 seq | 300 seq/s | ETA 0s      [laya/xnli.en] 300 sequences in 1.0s (0 dropped: options did not fit)                    
+   xnli.en                          acc 0.860  f1 0.861  ECE 0.064  n=300
+  [laya/xnli.de] 128/300 seq | 297 seq/s | ETA 0s      [laya/xnli.de] 250/300 seq | 262 seq/s | ETA 0s      [laya/xnli.de] 300/300 seq | 244 seq/s | ETA 0s      [laya/xnli.de] 300 sequences in 1.2s (0 dropped: options did not fit)                    
+   xnli.de                          acc 0.633  f1 0.627  ECE 0.214  n=300
+  [laya/xnli.fr] 128/300 seq | 292 seq/s | ETA 0s      [laya/xnli.fr] 250/300 seq | 260 seq/s | ETA 0s      [laya/xnli.fr] 300/300 seq | 242 seq/s | ETA 0s      [laya/xnli.fr] 300 sequences in 1.2s (0 dropped: options did not fit)                    
+   xnli.fr                          acc 0.680  f1 0.676  ECE 0.185  n=300
+  [laya/xnli.es] 128/300 seq | 312 seq/s | ETA 0s      [laya/xnli.es] 255/300 seq | 273 seq/s | ETA 0s      [laya/xnli.es] 300/300 seq | 259 seq/s | ETA 0s      [laya/xnli.es] 300 sequences in 1.2s (0 dropped: options did not fit)                    
+   xnli.es                          acc 0.683  f1 0.681  ECE 0.176  n=300
+  [laya/xnli.ru] 128/300 seq | 260 seq/s | ETA 0s      [laya/xnli.ru] 233/300 seq | 230 seq/s | ETA 0s      [laya/xnli.ru] 300/300 seq | 201 seq/s | ETA 0s      [laya/xnli.ru] 300 sequences in 1.5s (0 dropped: options did not fit)                    
+   xnli.ru                          acc 0.620  f1 0.612  ECE 0.217  n=300
+  [laya/xnli.tr] 128/300 seq | 285 seq/s | ETA 0s      [laya/xnli.tr] 243/300 seq | 250 seq/s | ETA 0s      [laya/xnli.tr] 300/300 seq | 224 seq/s | ETA 0s      [laya/xnli.tr] 300 sequences in 1.3s (0 dropped: options did not fit)                    
+   xnli.tr                          acc 0.387  f1 0.368  ECE 0.356  n=300
+  [laya/xnli.ar] 123/300 seq | 237 seq/s | ETA 0s      [laya/xnli.ar] 224/300 seq | 216 seq/s | ETA 0s      [laya/xnli.ar] 298/300 seq | 190 seq/s | ETA 0s      [laya/xnli.ar] 300/300 seq | 189 seq/s | ETA 0s      [laya/xnli.ar] 300 sequences in 1.6s (0 dropped: options did not fit)                    
+   xnli.ar                          acc 0.433  f1 0.406  ECE 0.285  n=300
+  [laya/xnli.hi] 102/300 seq | 197 seq/s | ETA 1s      [laya/xnli.hi] 184/300 seq | 176 seq/s | ETA 0s      [laya/xnli.hi] 252/300 seq | 161 seq/s | ETA 0s      [laya/xnli.hi] 300/300 seq | 143 seq/s | ETA 0s      [laya/xnli.hi] 300 sequences in 2.1s (0 dropped: options did not fit)                    
+   xnli.hi                          acc 0.393  f1 0.384  ECE 0.292  n=300
+  [laya/xnli.ur] 104/300 seq | 200 seq/s | ETA 0s      [laya/xnli.ur] 188/300 seq | 180 seq/s | ETA 0s      [laya/xnli.ur] 257/300 seq | 164 seq/s | ETA 0s      [laya/xnli.ur] 300/300 seq | 150 seq/s | ETA 0s      [laya/xnli.ur] 300 sequences in 2.0s (0 dropped: options did not fit)                    
+   xnli.ur                          acc 0.373  f1 0.336  ECE 0.321  n=300
+  [laya/xnli.vi] 118/300 seq | 227 seq/s | ETA 0s      [laya/xnli.vi] 213/300 seq | 206 seq/s | ETA 0s      [laya/xnli.vi] 286/300 seq | 184 seq/s | ETA 0s      [laya/xnli.vi] 300/300 seq | 180 seq/s | ETA 0s      [laya/xnli.vi] 300 sequences in 1.7s (0 dropped: options did not fit)                    
+   xnli.vi                          acc 0.503  f1 0.499  ECE 0.202  n=300
+  [laya/xnli.th] 102/300 seq | 197 seq/s | ETA 1s      [laya/xnli.th] 186/300 seq | 181 seq/s | ETA 0s      [laya/xnli.th] 253/300 seq | 164 seq/s | ETA 0s      [laya/xnli.th] 300/300 seq | 147 seq/s | ETA 0s      [laya/xnli.th] 300 sequences in 2.0s (0 dropped: options did not fit)                    
+   xnli.th                          acc 0.423  f1 0.423  ECE 0.178  n=300
+  [laya/xnli.el] 124/300 seq | 237 seq/s | ETA 0s      [laya/xnli.el] 221/300 seq | 213 seq/s | ETA 0s      [laya/xnli.el] 297/300 seq | 190 seq/s | ETA 0s      [laya/xnli.el] 300/300 seq | 189 seq/s | ETA 0s      [laya/xnli.el] 300 sequences in 1.6s (0 dropped: options did not fit)                    
+   xnli.el                          acc 0.517  f1 0.508  ECE 0.217  n=300
+  [laya/xnli.bg] 128/300 seq | 260 seq/s | ETA 0s      [laya/xnli.bg] 232/300 seq | 229 seq/s | ETA 0s      [laya/xnli.bg] 300/300 seq | 200 seq/s | ETA 0s      [laya/xnli.bg] 300 sequences in 1.5s (0 dropped: options did not fit)                    
+   xnli.bg                          acc 0.547  f1 0.537  ECE 0.231  n=300
+  [laya/xnli.zh] 128/300 seq | 292 seq/s | ETA 0s      [laya/xnli.zh] 246/300 seq | 257 seq/s | ETA 0s      [laya/xnli.zh] 300/300 seq | 236 seq/s | ETA 0s      [laya/xnli.zh] 300 sequences in 1.3s (0 dropped: options did not fit)                    
+   xnli.zh                          acc 0.680  f1 0.668  ECE 0.190  n=300
+  [laya/xnli.sw] 128/300 seq | 287 seq/s | ETA 0s      [laya/xnli.sw] 245/300 seq | 253 seq/s | ETA 0s      [laya/xnli.sw] 300/300 seq | 236 seq/s | ETA 0s      [laya/xnli.sw] 300 sequences in 1.3s (0 dropped: options did not fit)                    
+   xnli.sw                          acc 0.430  f1 0.427  ECE 0.286  n=300
+  [laya/en.sst5] 128/600 seq | 401 seq/s | ETA 1s      [laya/en.sst5] 256/600 seq | 427 seq/s | ETA 0s      [laya/en.sst5] 384/600 seq | 425 seq/s | ETA 0s      [laya/en.sst5] 512/600 seq | 412 seq/s | ETA 0s      [laya/en.sst5] 600/600 seq | 387 seq/s | ETA 0s      [laya/en.sst5] 600 sequences in 1.6s (0 dropped: options did not fit)                    
+   en.sst5                          acc 0.368  f1 0.327  ECE 0.251  n=600
+  [laya/en.emotion] 128/600 seq | 739 seq/s | ETA 0s      [laya/en.emotion] 256/600 seq | 692 seq/s | ETA 0s      [laya/en.emotion] 384/600 seq | 644 seq/s | ETA 0s      [laya/en.emotion] 512/600 seq | 590 seq/s | ETA 0s      [laya/en.emotion] 600/600 seq | 527 seq/s | ETA 0s      [laya/en.emotion] 600 sequences in 1.1s (0 dropped: options did not fit)                    
+   en.emotion                       acc 0.573  f1 0.476  ECE 0.323  n=600
+  [laya/en.prompt_injections] 110/116 seq | 212 seq/s | ETA 0s      [laya/en.prompt_injections] 116/116 seq | 207 seq/s | ETA 0s      [laya/en.prompt_injections] 116 sequences in 0.6s (0 dropped: options did not fit)                    
+   en.prompt_injections             acc 0.698  f1 0.675  ECE 0.273  n=116
+  [laya/en.ag_news] 128/600 seq | 360 seq/s | ETA 1s      [laya/en.ag_news] 256/600 seq | 340 seq/s | ETA 1s      [laya/en.ag_news] 384/600 seq | 325 seq/s | ETA 0s      [laya/en.ag_news] 512/600 seq | 310 seq/s | ETA 0s      [laya/en.ag_news] 594/600 seq | 281 seq/s | ETA 0s      [laya/en.ag_news] 600/600 seq | 279 seq/s | ETA 0s      [laya/en.ag_news] 600 sequences in 2.2s (0 dropped: options did not fit)                    
+   en.ag_news                       acc 0.950  f1 0.947  ECE 0.040  n=600
+  [laya/en.boolq] 128/600 seq | 252 seq/s | ETA 1s      [laya/en.boolq] 234/600 seq | 228 seq/s | ETA 1s      [laya/en.boolq] 327/600 seq | 212 seq/s | ETA 1s      [laya/en.boolq] 410/600 seq | 198 seq/s | ETA 0s      [laya/en.boolq] 483/600 seq | 186 seq/s | ETA 0s      [laya/en.boolq] 544/600 seq | 174 seq/s | ETA 0s      [laya/en.boolq] 587/600 seq | 161 seq/s | ETA 0s      [laya/en.boolq] 600/600 seq | 156 seq/s | ETA 0s      [laya/en.boolq] 600 sequences in 3.9s (0 dropped: options did not fit)                    
+   en.boolq                         acc 0.830  f1 0.820  ECE 0.097  n=600
+
+==============================================================================
+  laya-multilingual
+==============================================================================
+  [laya-multilingual/typed_decisions] 104/2000 seq | 439 seq/s | ETA 4s      [laya-multilingual/typed_decisions] 199/2000 seq | 420 seq/s | ETA 4s      [laya-multilingual/typed_decisions] 290/2000 seq | 408 seq/s | ETA 4s      [laya-multilingual/typed_decisions] 378/2000 seq | 399 seq/s | ETA 4s      [laya-multilingual/typed_decisions] 463/2000 seq | 391 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 539/2000 seq | 379 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 604/2000 seq | 364 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 664/2000 seq | 349 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 722/2000 seq | 336 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 778/2000 seq | 325 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 833/2000 seq | 315 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 886/2000 seq | 307 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 938/2000 seq | 300 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 989/2000 seq | 293 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 1038/2000 seq | 287 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 1087/2000 seq | 281 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 1135/2000 seq | 275 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 1182/2000 seq | 271 seq/s | ETA 3s      [laya-multilingual/typed_decisions] 1229/2000 seq | 266 seq/s | ETA 2s      [laya-multilingual/typed_decisions] 1275/2000 seq | 262 seq/s | ETA 2s      [laya-multilingual/typed_decisions] 1320/2000 seq | 258 seq/s | ETA 2s      [laya-multilingual/typed_decisions] 1365/2000 seq | 255 seq/s | ETA 2s      [laya-multilingual/typed_decisions] 1409/2000 seq | 251 seq/s | ETA 2s      [laya-multilingual/typed_decisions] 1453/2000 seq | 248 seq/s | ETA 2s      [laya-multilingual/typed_decisions] 1496/2000 seq | 245 seq/s | ETA 2s      [laya-multilingual/typed_decisions] 1539/2000 seq | 242 seq/s | ETA 1s      [laya-multilingual/typed_decisions] 1581/2000 seq | 240 seq/s | ETA 1s      [laya-multilingual/typed_decisions] 1623/2000 seq | 237 seq/s | ETA 1s      [laya-multilingual/typed_decisions] 1664/2000 seq | 234 seq/s | ETA 1s      [laya-multilingual/typed_decisions] 1705/2000 seq | 232 seq/s | ETA 1s      [laya-multilingual/typed_decisions] 1745/2000 seq | 229 seq/s | ETA 1s      [laya-multilingual/typed_decisions] 1785/2000 seq | 227 seq/s | ETA 0s      [laya-multilingual/typed_decisions] 1824/2000 seq | 225 seq/s | ETA 0s      [laya-multilingual/typed_decisions] 1862/2000 seq | 223 seq/s | ETA 0s      [laya-multilingual/typed_decisions] 1898/2000 seq | 220 seq/s | ETA 0s      [laya-multilingual/typed_decisions] 1932/2000 seq | 218 seq/s | ETA 0s      [laya-multilingual/typed_decisions] 1963/2000 seq | 215 seq/s | ETA 0s      [laya-multilingual/typed_decisions] 1990/2000 seq | 212 seq/s | ETA 0s      [laya-multilingual/typed_decisions] 2000/2000 seq | 211 seq/s | ETA 0s      [laya-multilingual/typed_decisions] 2000 sequences in 9.5s (0 dropped: options did not fit)                    
+   typed_decisions                  acc 0.352  f1 0.352  ECE 0.315  n=2000
+  [laya-multilingual/massive_intent.en] 84/300 seq | 345 seq/s | ETA 0s      [laya-multilingual/massive_intent.en] 165/300 seq | 340 seq/s | ETA 0s      [laya-multilingual/massive_intent.en] 243/300 seq | 335 seq/s | ETA 0s      [laya-multilingual/massive_intent.en] 300/300 seq | 324 seq/s | ETA 0s      [laya-multilingual/massive_intent.en] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.en                acc 0.657  f1 0.660  ECE 0.239  n=300
+  [laya-multilingual/massive_intent.de] 83/300 seq | 341 seq/s | ETA 0s      [laya-multilingual/massive_intent.de] 164/300 seq | 336 seq/s | ETA 0s      [laya-multilingual/massive_intent.de] 242/300 seq | 331 seq/s | ETA 0s      [laya-multilingual/massive_intent.de] 300/300 seq | 321 seq/s | ETA 0s      [laya-multilingual/massive_intent.de] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.de                acc 0.463  f1 0.463  ECE 0.368  n=300
+  [laya-multilingual/massive_intent.fr] 83/300 seq | 341 seq/s | ETA 0s      [laya-multilingual/massive_intent.fr] 163/300 seq | 336 seq/s | ETA 0s      [laya-multilingual/massive_intent.fr] 241/300 seq | 331 seq/s | ETA 0s      [laya-multilingual/massive_intent.fr] 300/300 seq | 321 seq/s | ETA 0s      [laya-multilingual/massive_intent.fr] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.fr                acc 0.560  f1 0.558  ECE 0.270  n=300
+  [laya-multilingual/massive_intent.es] 84/300 seq | 343 seq/s | ETA 0s      [laya-multilingual/massive_intent.es] 165/300 seq | 338 seq/s | ETA 0s      [laya-multilingual/massive_intent.es] 243/300 seq | 333 seq/s | ETA 0s      [laya-multilingual/massive_intent.es] 300/300 seq | 322 seq/s | ETA 0s      [laya-multilingual/massive_intent.es] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.es                acc 0.510  f1 0.501  ECE 0.307  n=300
+  [laya-multilingual/massive_intent.pt] 84/300 seq | 343 seq/s | ETA 0s      [laya-multilingual/massive_intent.pt] 165/300 seq | 338 seq/s | ETA 0s      [laya-multilingual/massive_intent.pt] 243/300 seq | 332 seq/s | ETA 0s      [laya-multilingual/massive_intent.pt] 300/300 seq | 322 seq/s | ETA 0s      [laya-multilingual/massive_intent.pt] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.pt                acc 0.500  f1 0.494  ECE 0.333  n=300
+  [laya-multilingual/massive_intent.ru] 83/300 seq | 342 seq/s | ETA 0s      [laya-multilingual/massive_intent.ru] 164/300 seq | 337 seq/s | ETA 0s      [laya-multilingual/massive_intent.ru] 242/300 seq | 332 seq/s | ETA 0s      [laya-multilingual/massive_intent.ru] 300/300 seq | 322 seq/s | ETA 0s      [laya-multilingual/massive_intent.ru] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.ru                acc 0.500  f1 0.506  ECE 0.323  n=300
+  [laya-multilingual/massive_intent.tr] 83/300 seq | 342 seq/s | ETA 0s      [laya-multilingual/massive_intent.tr] 164/300 seq | 337 seq/s | ETA 0s      [laya-multilingual/massive_intent.tr] 242/300 seq | 331 seq/s | ETA 0s      [laya-multilingual/massive_intent.tr] 300/300 seq | 320 seq/s | ETA 0s      [laya-multilingual/massive_intent.tr] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.tr                acc 0.437  f1 0.435  ECE 0.358  n=300
+  [laya-multilingual/massive_intent.ar] 84/300 seq | 343 seq/s | ETA 0s      [laya-multilingual/massive_intent.ar] 165/300 seq | 337 seq/s | ETA 0s      [laya-multilingual/massive_intent.ar] 242/300 seq | 331 seq/s | ETA 0s      [laya-multilingual/massive_intent.ar] 300/300 seq | 321 seq/s | ETA 0s      [laya-multilingual/massive_intent.ar] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.ar                acc 0.390  f1 0.383  ECE 0.367  n=300
+  [laya-multilingual/massive_intent.hi] 82/300 seq | 338 seq/s | ETA 0s      [laya-multilingual/massive_intent.hi] 161/300 seq | 332 seq/s | ETA 0s      [laya-multilingual/massive_intent.hi] 237/300 seq | 327 seq/s | ETA 0s      [laya-multilingual/massive_intent.hi] 300/300 seq | 316 seq/s | ETA 0s      [laya-multilingual/massive_intent.hi] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.hi                acc 0.390  f1 0.383  ECE 0.392  n=300
+  [laya-multilingual/massive_intent.ta] 81/300 seq | 332 seq/s | ETA 0s      [laya-multilingual/massive_intent.ta] 159/300 seq | 326 seq/s | ETA 0s      [laya-multilingual/massive_intent.ta] 234/300 seq | 321 seq/s | ETA 0s      [laya-multilingual/massive_intent.ta] 300/300 seq | 309 seq/s | ETA 0s      [laya-multilingual/massive_intent.ta] 300 sequences in 1.0s (0 dropped: options did not fit)                    
+   massive_intent.ta                acc 0.253  f1 0.250  ECE 0.481  n=300
+  [laya-multilingual/massive_intent.zh-CN] 84/300 seq | 347 seq/s | ETA 0s      [laya-multilingual/massive_intent.zh-CN] 165/300 seq | 341 seq/s | ETA 0s      [laya-multilingual/massive_intent.zh-CN] 244/300 seq | 336 seq/s | ETA 0s      [laya-multilingual/massive_intent.zh-CN] 300/300 seq | 325 seq/s | ETA 0s      [laya-multilingual/massive_intent.zh-CN] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.zh-CN             acc 0.603  f1 0.605  ECE 0.263  n=300
+  [laya-multilingual/massive_intent.ja] 84/300 seq | 345 seq/s | ETA 0s      [laya-multilingual/massive_intent.ja] 165/300 seq | 339 seq/s | ETA 0s      [laya-multilingual/massive_intent.ja] 244/300 seq | 334 seq/s | ETA 0s      [laya-multilingual/massive_intent.ja] 300/300 seq | 324 seq/s | ETA 0s      [laya-multilingual/massive_intent.ja] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.ja                acc 0.587  f1 0.579  ECE 0.272  n=300
+  [laya-multilingual/massive_intent.ko] 83/300 seq | 340 seq/s | ETA 0s      [laya-multilingual/massive_intent.ko] 163/300 seq | 335 seq/s | ETA 0s      [laya-multilingual/massive_intent.ko] 240/300 seq | 330 seq/s | ETA 0s      [laya-multilingual/massive_intent.ko] 300/300 seq | 319 seq/s | ETA 0s      [laya-multilingual/massive_intent.ko] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.ko                acc 0.490  f1 0.488  ECE 0.309  n=300
+  [laya-multilingual/massive_intent.sw] 83/300 seq | 340 seq/s | ETA 0s      [laya-multilingual/massive_intent.sw] 163/300 seq | 334 seq/s | ETA 0s      [laya-multilingual/massive_intent.sw] 240/300 seq | 329 seq/s | ETA 0s      [laya-multilingual/massive_intent.sw] 300/300 seq | 318 seq/s | ETA 0s      [laya-multilingual/massive_intent.sw] 300 sequences in 0.9s (0 dropped: options did not fit)                    
+   massive_intent.sw                acc 0.213  f1 0.213  ECE 0.489  n=300
+  [laya-multilingual/massive_scenario.en] 128/300 seq | 675 seq/s | ETA 0s      [laya-multilingual/massive_scenario.en] 256/300 seq | 666 seq/s | ETA 0s      [laya-multilingual/massive_scenario.en] 300/300 seq | 673 seq/s | ETA 0s      [laya-multilingual/massive_scenario.en] 300 sequences in 0.4s (0 dropped: options did not fit)                    
+   massive_scenario.en              acc 0.560  f1 0.555  ECE 0.307  n=300
+  [laya-multilingual/massive_scenario.de] 128/300 seq | 670 seq/s | ETA 0s      [laya-multilingual/massive_scenario.de] 256/300 seq | 657 seq/s | ETA 0s      [laya-multilingual/massive_scenario.de] 300/300 seq | 662 seq/s | ETA 0s      [laya-multilingual/massive_scenario.de] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   massive_scenario.de              acc 0.467  f1 0.456  ECE 0.371  n=300
+  [laya-multilingual/massive_scenario.fr] 128/300 seq | 663 seq/s | ETA 0s      [laya-multilingual/massive_scenario.fr] 256/300 seq | 648 seq/s | ETA 0s      [laya-multilingual/massive_scenario.fr] 300/300 seq | 652 seq/s | ETA 0s      [laya-multilingual/massive_scenario.fr] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   massive_scenario.fr              acc 0.457  f1 0.456  ECE 0.409  n=300
+  [laya-multilingual/massive_scenario.es] 128/300 seq | 675 seq/s | ETA 0s      [laya-multilingual/massive_scenario.es] 256/300 seq | 659 seq/s | ETA 0s      [laya-multilingual/massive_scenario.es] 300/300 seq | 661 seq/s | ETA 0s      [laya-multilingual/massive_scenario.es] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   massive_scenario.es              acc 0.447  f1 0.442  ECE 0.401  n=300
+  [laya-multilingual/massive_scenario.pt] 128/300 seq | 670 seq/s | ETA 0s      [laya-multilingual/massive_scenario.pt] 256/300 seq | 657 seq/s | ETA 0s      [laya-multilingual/massive_scenario.pt] 300/300 seq | 661 seq/s | ETA 0s      [laya-multilingual/massive_scenario.pt] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   massive_scenario.pt              acc 0.460  f1 0.454  ECE 0.402  n=300
+  [laya-multilingual/massive_scenario.ru] 128/300 seq | 669 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ru] 256/300 seq | 656 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ru] 300/300 seq | 660 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ru] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   massive_scenario.ru              acc 0.470  f1 0.465  ECE 0.386  n=300
+  [laya-multilingual/massive_scenario.tr] 128/300 seq | 670 seq/s | ETA 0s      [laya-multilingual/massive_scenario.tr] 256/300 seq | 657 seq/s | ETA 0s      [laya-multilingual/massive_scenario.tr] 300/300 seq | 661 seq/s | ETA 0s      [laya-multilingual/massive_scenario.tr] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   massive_scenario.tr              acc 0.487  f1 0.485  ECE 0.347  n=300
+  [laya-multilingual/massive_scenario.ar] 128/300 seq | 661 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ar] 256/300 seq | 650 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ar] 300/300 seq | 655 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ar] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   massive_scenario.ar              acc 0.393  f1 0.391  ECE 0.413  n=300
+  [laya-multilingual/massive_scenario.hi] 128/300 seq | 645 seq/s | ETA 0s      [laya-multilingual/massive_scenario.hi] 256/300 seq | 627 seq/s | ETA 0s      [laya-multilingual/massive_scenario.hi] 300/300 seq | 621 seq/s | ETA 0s      [laya-multilingual/massive_scenario.hi] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   massive_scenario.hi              acc 0.450  f1 0.450  ECE 0.359  n=300
+  [laya-multilingual/massive_scenario.ta] 128/300 seq | 623 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ta] 256/300 seq | 598 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ta] 300/300 seq | 589 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ta] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   massive_scenario.ta              acc 0.337  f1 0.325  ECE 0.425  n=300
+  [laya-multilingual/massive_scenario.zh-CN] 128/300 seq | 682 seq/s | ETA 0s      [laya-multilingual/massive_scenario.zh-CN] 256/300 seq | 673 seq/s | ETA 0s      [laya-multilingual/massive_scenario.zh-CN] 300/300 seq | 681 seq/s | ETA 0s      [laya-multilingual/massive_scenario.zh-CN] 300 sequences in 0.4s (0 dropped: options did not fit)                    
+   massive_scenario.zh-CN           acc 0.497  f1 0.495  ECE 0.370  n=300
+  [laya-multilingual/massive_scenario.ja] 128/300 seq | 676 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ja] 256/300 seq | 663 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ja] 300/300 seq | 667 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ja] 300 sequences in 0.4s (0 dropped: options did not fit)                    
+   massive_scenario.ja              acc 0.507  f1 0.506  ECE 0.339  n=300
+  [laya-multilingual/massive_scenario.ko] 128/300 seq | 663 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ko] 256/300 seq | 644 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ko] 300/300 seq | 647 seq/s | ETA 0s      [laya-multilingual/massive_scenario.ko] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   massive_scenario.ko              acc 0.427  f1 0.418  ECE 0.385  n=300
+  [laya-multilingual/massive_scenario.sw] 128/300 seq | 657 seq/s | ETA 0s      [laya-multilingual/massive_scenario.sw] 256/300 seq | 642 seq/s | ETA 0s      [laya-multilingual/massive_scenario.sw] 300/300 seq | 644 seq/s | ETA 0s      [laya-multilingual/massive_scenario.sw] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   massive_scenario.sw              acc 0.297  f1 0.293  ECE 0.483  n=300
+  [laya-multilingual/xnli.en] 128/300 seq | 795 seq/s | ETA 0s      [laya-multilingual/xnli.en] 256/300 seq | 716 seq/s | ETA 0s      [laya-multilingual/xnli.en] 300/300 seq | 704 seq/s | ETA 0s      [laya-multilingual/xnli.en] 300 sequences in 0.4s (0 dropped: options did not fit)                    
+   xnli.en                          acc 0.843  f1 0.843  ECE 0.090  n=300
+  [laya-multilingual/xnli.de] 128/300 seq | 785 seq/s | ETA 0s      [laya-multilingual/xnli.de] 256/300 seq | 695 seq/s | ETA 0s      [laya-multilingual/xnli.de] 300/300 seq | 670 seq/s | ETA 0s      [laya-multilingual/xnli.de] 300 sequences in 0.4s (0 dropped: options did not fit)                    
+   xnli.de                          acc 0.787  f1 0.786  ECE 0.137  n=300
+  [laya-multilingual/xnli.fr] 128/300 seq | 743 seq/s | ETA 0s      [laya-multilingual/xnli.fr] 256/300 seq | 660 seq/s | ETA 0s      [laya-multilingual/xnli.fr] 300/300 seq | 636 seq/s | ETA 0s      [laya-multilingual/xnli.fr] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   xnli.fr                          acc 0.767  f1 0.766  ECE 0.164  n=300
+  [laya-multilingual/xnli.es] 128/300 seq | 795 seq/s | ETA 0s      [laya-multilingual/xnli.es] 256/300 seq | 717 seq/s | ETA 0s      [laya-multilingual/xnli.es] 300/300 seq | 694 seq/s | ETA 0s      [laya-multilingual/xnli.es] 300 sequences in 0.4s (0 dropped: options did not fit)                    
+   xnli.es                          acc 0.797  f1 0.796  ECE 0.128  n=300
+  [laya-multilingual/xnli.ru] 128/300 seq | 757 seq/s | ETA 0s      [laya-multilingual/xnli.ru] 256/300 seq | 669 seq/s | ETA 0s      [laya-multilingual/xnli.ru] 300/300 seq | 639 seq/s | ETA 0s      [laya-multilingual/xnli.ru] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   xnli.ru                          acc 0.740  f1 0.734  ECE 0.175  n=300
+  [laya-multilingual/xnli.tr] 128/300 seq | 777 seq/s | ETA 0s      [laya-multilingual/xnli.tr] 256/300 seq | 695 seq/s | ETA 0s      [laya-multilingual/xnli.tr] 300/300 seq | 670 seq/s | ETA 0s      [laya-multilingual/xnli.tr] 300 sequences in 0.4s (0 dropped: options did not fit)                    
+   xnli.tr                          acc 0.740  f1 0.738  ECE 0.202  n=300
+  [laya-multilingual/xnli.ar] 128/300 seq | 735 seq/s | ETA 0s      [laya-multilingual/xnli.ar] 256/300 seq | 654 seq/s | ETA 0s      [laya-multilingual/xnli.ar] 300/300 seq | 638 seq/s | ETA 0s      [laya-multilingual/xnli.ar] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   xnli.ar                          acc 0.727  f1 0.726  ECE 0.197  n=300
+  [laya-multilingual/xnli.hi] 128/300 seq | 683 seq/s | ETA 0s      [laya-multilingual/xnli.hi] 254/300 seq | 592 seq/s | ETA 0s      [laya-multilingual/xnli.hi] 300/300 seq | 566 seq/s | ETA 0s      [laya-multilingual/xnli.hi] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   xnli.hi                          acc 0.670  f1 0.666  ECE 0.237  n=300
+  [laya-multilingual/xnli.ur] 128/300 seq | 664 seq/s | ETA 0s      [laya-multilingual/xnli.ur] 250/300 seq | 577 seq/s | ETA 0s      [laya-multilingual/xnli.ur] 300/300 seq | 547 seq/s | ETA 0s      [laya-multilingual/xnli.ur] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   xnli.ur                          acc 0.683  f1 0.680  ECE 0.226  n=300
+  [laya-multilingual/xnli.vi] 128/300 seq | 752 seq/s | ETA 0s      [laya-multilingual/xnli.vi] 256/300 seq | 661 seq/s | ETA 0s      [laya-multilingual/xnli.vi] 300/300 seq | 641 seq/s | ETA 0s      [laya-multilingual/xnli.vi] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   xnli.vi                          acc 0.723  f1 0.716  ECE 0.211  n=300
+  [laya-multilingual/xnli.th] 128/300 seq | 730 seq/s | ETA 0s      [laya-multilingual/xnli.th] 256/300 seq | 638 seq/s | ETA 0s      [laya-multilingual/xnli.th] 300/300 seq | 608 seq/s | ETA 0s      [laya-multilingual/xnli.th] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   xnli.th                          acc 0.693  f1 0.684  ECE 0.214  n=300
+  [laya-multilingual/xnli.el] 128/300 seq | 657 seq/s | ETA 0s      [laya-multilingual/xnli.el] 246/300 seq | 566 seq/s | ETA 0s      [laya-multilingual/xnli.el] 300/300 seq | 521 seq/s | ETA 0s      [laya-multilingual/xnli.el] 300 sequences in 0.6s (0 dropped: options did not fit)                    
+   xnli.el                          acc 0.730  f1 0.727  ECE 0.192  n=300
+  [laya-multilingual/xnli.bg] 128/300 seq | 730 seq/s | ETA 0s      [laya-multilingual/xnli.bg] 256/300 seq | 639 seq/s | ETA 0s      [laya-multilingual/xnli.bg] 300/300 seq | 614 seq/s | ETA 0s      [laya-multilingual/xnli.bg] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   xnli.bg                          acc 0.797  f1 0.795  ECE 0.141  n=300
+  [laya-multilingual/xnli.zh] 128/300 seq | 832 seq/s | ETA 0s      [laya-multilingual/xnli.zh] 256/300 seq | 758 seq/s | ETA 0s      [laya-multilingual/xnli.zh] 300/300 seq | 746 seq/s | ETA 0s      [laya-multilingual/xnli.zh] 300 sequences in 0.4s (0 dropped: options did not fit)                    
+   xnli.zh                          acc 0.757  f1 0.754  ECE 0.157  n=300
+  [laya-multilingual/xnli.sw] 128/300 seq | 735 seq/s | ETA 0s      [laya-multilingual/xnli.sw] 256/300 seq | 646 seq/s | ETA 0s      [laya-multilingual/xnli.sw] 300/300 seq | 625 seq/s | ETA 0s      [laya-multilingual/xnli.sw] 300 sequences in 0.5s (0 dropped: options did not fit)                    
+   xnli.sw                          acc 0.627  f1 0.623  ECE 0.270  n=300
+  [laya-multilingual/en.sst5] 128/600 seq | 1067 seq/s | ETA 0s      [laya-multilingual/en.sst5] 256/600 seq | 1019 seq/s | ETA 0s      [laya-multilingual/en.sst5] 384/600 seq | 970 seq/s | ETA 0s      [laya-multilingual/en.sst5] 512/600 seq | 922 seq/s | ETA 0s      [laya-multilingual/en.sst5] 600/600 seq | 865 seq/s | ETA 0s      [laya-multilingual/en.sst5] 600 sequences in 0.7s (0 dropped: options did not fit)                    
+   en.sst5                          acc 0.283  f1 0.207  ECE 0.525  n=600
+  [laya-multilingual/en.emotion] 128/600 seq | 1788 seq/s | ETA 0s      [laya-multilingual/en.emotion] 256/600 seq | 1674 seq/s | ETA 0s      [laya-multilingual/en.emotion] 384/600 seq | 1548 seq/s | ETA 0s      [laya-multilingual/en.emotion] 512/600 seq | 1392 seq/s | ETA 0s      [laya-multilingual/en.emotion] 600/600 seq | 1239 seq/s | ETA 0s      [laya-multilingual/en.emotion] 600 sequences in 0.5s (0 dropped: options did not fit)                    
+   en.emotion                       acc 0.515  f1 0.427  ECE 0.351  n=600
+  [laya-multilingual/en.prompt_injections] 112/116 seq | 472 seq/s | ETA 0s      [laya-multilingual/en.prompt_injections] 116/116 seq | 467 seq/s | ETA 0s      [laya-multilingual/en.prompt_injections] 116 sequences in 0.2s (0 dropped: options did not fit)                    
+   en.prompt_injections             acc 0.578  f1 0.530  ECE 0.367  n=116
+  [laya-multilingual/en.ag_news] 128/600 seq | 803 seq/s | ETA 0s      [laya-multilingual/en.ag_news] 256/600 seq | 764 seq/s | ETA 0s      [laya-multilingual/en.ag_news] 384/600 seq | 729 seq/s | ETA 0s      [laya-multilingual/en.ag_news] 512/600 seq | 693 seq/s | ETA 0s      [laya-multilingual/en.ag_news] 594/600 seq | 627 seq/s | ETA 0s      [laya-multilingual/en.ag_news] 600/600 seq | 621 seq/s | ETA 0s      [laya-multilingual/en.ag_news] 600 sequences in 1.0s (0 dropped: options did not fit)                    
+   en.ag_news                       acc 0.937  f1 0.934  ECE 0.038  n=600
+  [laya-multilingual/en.boolq] 128/600 seq | 550 seq/s | ETA 0s      [laya-multilingual/en.boolq] 235/600 seq | 498 seq/s | ETA 0s      [laya-multilingual/en.boolq] 328/600 seq | 462 seq/s | ETA 0s      [laya-multilingual/en.boolq] 411/600 seq | 432 seq/s | ETA 0s      [laya-multilingual/en.boolq] 484/600 seq | 405 seq/s | ETA 0s      [laya-multilingual/en.boolq] 544/600 seq | 378 seq/s | ETA 0s      [laya-multilingual/en.boolq] 588/600 seq | 349 seq/s | ETA 0s      [laya-multilingual/en.boolq] 600/600 seq | 327 seq/s | ETA 0s      [laya-multilingual/en.boolq] 600 sequences in 1.8s (0 dropped: options did not fit)                    
+   en.boolq                         acc 0.788  f1 0.776  ECE 0.146  n=600
+
+checkpoint saved
+--- cell 9 ---
+  [laya/td@512] 106/2000 seq | 204 seq/s | ETA 9s      [laya/td@512] 202/2000 seq | 196 seq/s | ETA 9s      [laya/td@512] 295/2000 seq | 190 seq/s | ETA 8s      [laya/td@512] 385/2000 seq | 186 seq/s | ETA 8s      [laya/td@512] 472/2000 seq | 182 seq/s | ETA 8s      [laya/td@512] 547/2000 seq | 176 seq/s | ETA 8s      [laya/td@512] 612/2000 seq | 169 seq/s | ETA 8s      [laya/td@512] 674/2000 seq | 162 seq/s | ETA 8s      [laya/td@512] 734/2000 seq | 156 seq/s | ETA 8s      [laya/td@512] 792/2000 seq | 152 seq/s | ETA 7s      [laya/td@512] 848/2000 seq | 148 seq/s | ETA 7s      [laya/td@512] 903/2000 seq | 144 seq/s | ETA 7s      [laya/td@512] 957/2000 seq | 141 seq/s | ETA 7s      [laya/td@512] 1010/2000 seq | 138 seq/s | ETA 7s      [laya/td@512] 1062/2000 seq | 135 seq/s | ETA 6s      [laya/td@512] 1113/2000 seq | 133 seq/s | ETA 6s      [laya/td@512] 1163/2000 seq | 130 seq/s | ETA 6s      [laya/td@512] 1213/2000 seq | 128 seq/s | ETA 6s      [laya/td@512] 1262/2000 seq | 126 seq/s | ETA 5s      [laya/td@512] 1310/2000 seq | 124 seq/s | ETA 5s      [laya/td@512] 1357/2000 seq | 123 seq/s | ETA 5s      [laya/td@512] 1404/2000 seq | 121 seq/s | ETA 4s      [laya/td@512] 1450/2000 seq | 120 seq/s | ETA 4s      [laya/td@512] 1496/2000 seq | 118 seq/s | ETA 4s      [laya/td@512] 1542/2000 seq | 117 seq/s | ETA 3s      [laya/td@512] 1587/2000 seq | 116 seq/s | ETA 3s      [laya/td@512] 1631/2000 seq | 114 seq/s | ETA 3s      [laya/td@512] 1675/2000 seq | 113 seq/s | ETA 2s      [laya/td@512] 1718/2000 seq | 112 seq/s | ETA 2s      [laya/td@512] 1761/2000 seq | 111 seq/s | ETA 2s      [laya/td@512] 1803/2000 seq | 110 seq/s | ETA 1s      [laya/td@512] 1844/2000 seq | 109 seq/s | ETA 1s      [laya/td@512] 1883/2000 seq | 108 seq/s | ETA 1s      [laya/td@512] 1919/2000 seq | 107 seq/s | ETA 0s      [laya/td@512] 1953/2000 seq | 105 seq/s | ETA 0s      [laya/td@512] 1985/2000 seq | 104 seq/s | ETA 0s      [laya/td@512] 2000/2000 seq | 103 seq/s | ETA 0s      [laya/td@512] 2000 sequences in 19.3s (0 dropped: options did not fit)                    
+  laya                   max_len 512 -> acc 0.361  ECE 0.175  n=2000
+  [laya-multilingual/td@512] 104/2000 seq | 439 seq/s | ETA 4s      [laya-multilingual/td@512] 199/2000 seq | 419 seq/s | ETA 4s      [laya-multilingual/td@512] 290/2000 seq | 407 seq/s | ETA 4s      [laya-multilingual/td@512] 378/2000 seq | 399 seq/s | ETA 4s      [laya-multilingual/td@512] 463/2000 seq | 391 seq/s | ETA 3s      [laya-multilingual/td@512] 539/2000 seq | 378 seq/s | ETA 3s      [laya-multilingual/td@512] 604/2000 seq | 363 seq/s | ETA 3s      [laya-multilingual/td@512] 664/2000 seq | 348 seq/s | ETA 3s      [laya-multilingual/td@512] 722/2000 seq | 336 seq/s | ETA 3s      [laya-multilingual/td@512] 778/2000 seq | 325 seq/s | ETA 3s      [laya-multilingual/td@512] 833/2000 seq | 315 seq/s | ETA 3s      [laya-multilingual/td@512] 886/2000 seq | 307 seq/s | ETA 3s      [laya-multilingual/td@512] 938/2000 seq | 300 seq/s | ETA 3s      [laya-multilingual/td@512] 989/2000 seq | 293 seq/s | ETA 3s      [laya-multilingual/td@512] 1038/2000 seq | 286 seq/s | ETA 3s      [laya-multilingual/td@512] 1087/2000 seq | 281 seq/s | ETA 3s      [laya-multilingual/td@512] 1135/2000 seq | 275 seq/s | ETA 3s      [laya-multilingual/td@512] 1182/2000 seq | 271 seq/s | ETA 3s      [laya-multilingual/td@512] 1229/2000 seq | 266 seq/s | ETA 2s      [laya-multilingual/td@512] 1275/2000 seq | 262 seq/s | ETA 2s      [laya-multilingual/td@512] 1320/2000 seq | 258 seq/s | ETA 2s      [laya-multilingual/td@512] 1365/2000 seq | 255 seq/s | ETA 2s      [laya-multilingual/td@512] 1409/2000 seq | 251 seq/s | ETA 2s      [laya-multilingual/td@512] 1453/2000 seq | 248 seq/s | ETA 2s      [laya-multilingual/td@512] 1496/2000 seq | 245 seq/s | ETA 2s      [laya-multilingual/td@512] 1539/2000 seq | 242 seq/s | ETA 1s      [laya-multilingual/td@512] 1581/2000 seq | 240 seq/s | ETA 1s      [laya-multilingual/td@512] 1623/2000 seq | 237 seq/s | ETA 1s      [laya-multilingual/td@512] 1664/2000 seq | 234 seq/s | ETA 1s      [laya-multilingual/td@512] 1705/2000 seq | 232 seq/s | ETA 1s      [laya-multilingual/td@512] 1745/2000 seq | 229 seq/s | ETA 1s      [laya-multilingual/td@512] 1785/2000 seq | 227 seq/s | ETA 0s      [laya-multilingual/td@512] 1824/2000 seq | 225 seq/s | ETA 0s      [laya-multilingual/td@512] 1862/2000 seq | 223 seq/s | ETA 0s      [laya-multilingual/td@512] 1898/2000 seq | 220 seq/s | ETA 0s      [laya-multilingual/td@512] 1932/2000 seq | 218 seq/s | ETA 0s      [laya-multilingual/td@512] 1964/2000 seq | 215 seq/s | ETA 0s      [laya-multilingual/td@512] 1996/2000 seq | 213 seq/s | ETA 0s      [laya-multilingual/td@512] 2000/2000 seq | 213 seq/s | ETA 0s      [laya-multilingual/td@512] 2000 sequences in 9.4s (0 dropped: options did not fit)                    
+  laya-multilingual      max_len 512 -> acc 0.351  ECE 0.317  n=2000
+--- cell 10 ---
+laya {"1_questions": {"p50_ms": 12.8, "p95_ms": 13.1, "ms_per_question": 12.8}, "5_questions": {"p50_ms": 33.8, "p95_ms": 34.1, "ms_per_question": 6.76}, "10_questions": {"p50_ms": 62.4, "p95_ms": 63.0, "ms_per_question": 6.24}, "50_questions": {"p50_ms": 348.5, "p95_ms": 349.9, "ms_per_question": 6.97}}
+laya-multilingual {"1_questions": {"p50_ms": 9.3, "p95_ms": 9.9, "ms_per_question": 9.26}, "5_questions": {"p50_ms": 15.1, "p95_ms": 15.3, "ms_per_question": 3.02}, "10_questions": {"p50_ms": 26.2, "p95_ms": 26.9, "ms_per_question": 2.62}, "50_questions": {"p50_ms": 155.0, "p95_ms": 156.1, "ms_per_question": 3.1}}
+--- cell 11 ---
+  laya                   massive_intent.en        flip rate 0.140 (n=200)
+  laya                   en.emotion               flip rate 0.045 (n=200)
+  laya                   xnli.en                  flip rate 0.000 (n=200)
+  laya-multilingual      massive_intent.en        flip rate 0.225 (n=200)
+  laya-multilingual      en.emotion               flip rate 0.095 (n=200)
+  laya-multilingual      xnli.en                  flip rate 0.005 (n=200)
+--- cell 12 ---
+laya                   mean ECE  shipped 0.4653  ->  refit 0.0833
+laya-multilingual      mean ECE  shipped 0.3131  ->  refit 0.1085
+--- cell 13 ---
+{
+  "typed_decisions": {
+    "laya": {
+      "n": 2000,
+      "accuracy": 0.3615,
+      "macro_f1": 0.3223870916483992,
+      "ece": 0.1747687530351127,
+      "brier": 0.7499083417842067,
+      "nll": 1.3231151634226836,
+      "aurc": 0.5937553851286141,
+      "mean_confidence": 0.5362687530351127,
+      "acc_at_50_coverage": 0.425,
+      "acc_at_80_coverage": 0.38625
+    },
+    "laya-multilingual": {
+      "n": 2000,
+      "accuracy": 0.3525,
+      "macro_f1": 0.3518037678740355,
+      "ece": 0.3149346138819795,
+      "brier": 0.8906704375389008,
+      "nll": 1.8239279933263897,
+      "aurc": 0.5562116076011487,
+      "mean_confidence": 0.663035265580421,
+      "acc_at_50_coverage": 0.412,
+      "acc_at_80_coverage": 0.366875
+    }
+  },
+  "massive_intent": {
+    "laya": {
+      "macro_accuracy": 0.34,
+      "macro_ece": 0.6268,
+      "n_questions": 4200,
+      "n_suites": 14
+    },
+    "laya-multilingual": {
+      "macro_accuracy": 0.4681,
+      "macro_ece": 0.3406,
+      "n_questions": 4200,
+      "n_suites": 14
+    }
+  },
+  "massive_scenario": {
+    "laya": {
+      "macro_accuracy": 0.3017,
+      "macro_ece": 0.6724,
+      "n_questions": 4200,
+      "n_suites": 14
+    },
+    "laya-multilingual": {
+      "macro_accuracy": 0.4467,
+      "macro_ece": 0.3855,
+      "n_questions": 4200,
+      "n_suites": 14
+    }
+  },
+  "xnli": {
+    "laya": {
+      "macro_accuracy": 0.5442,
+      "macro_ece": 0.2276,
+      "n_questions": 4500,
+      "n_suites": 15
+    },
+    "laya-multilingual": {
+      "macro_accuracy": 0.7387,
+      "macro_ece": 0.1827,
+      "n_questions": 4500,
+      "n_suites": 15
+    }
+  },
+  "english": {
+    "laya": {
+      "macro_accuracy": 0.684,
+      "macro_ece": 0.197,
+      "n_questions": 2516,
+      "n_suites": 5
+    },
+    "laya-multilingual": {
+      "macro_accuracy": 0.6202,
+      "macro_ece": 0.2854,
+      "n_questions": 2516,
+      "n_suites": 5
+    }
+  },
+  "massive_intent_english_vs_rest": {
+    "english": {
+      "laya": 0.7833,
+      "laya-multilingual": 0.6567
+    },
+    "non_english": {
+      "laya": 0.3059,
+      "laya-multilingual": 0.4536
+    }
+  },
+  "massive_scenario_english_vs_rest": {
+    "english": {
+      "laya": 0.6033,
+      "laya-multilingual": 0.56
+    },
+    "non_english": {
+      "laya": 0.2785,
+      "laya-multilingual": 0.4379
+    }
+  },
+  "xnli_english_vs_rest": {
+    "english": {
+      "laya": 0.86,
+      "laya-multilingual": 0.8433
+    },
+    "non_english": {
+      "laya": 0.5217,
+      "laya-multilingual": 0.7312
+    }
+  }
+}
+
+wrote laya_benchmark_results.json  (140.7 KB)
+--- cell 14 ---
+
+=== massive_intent : accuracy by language ===
+lang             laya      laya-multilingual      delta
+ar              0.137                  0.390     +0.253
+de              0.423                  0.463     +0.040
+en              0.783                  0.657     -0.127
+es              0.477                  0.510     +0.033
+fr              0.483                  0.560     +0.077
+hi              0.097                  0.390     +0.293
+ja              0.547                  0.587     +0.040
+ko              0.107                  0.490     +0.383
+pt              0.457                  0.500     +0.043
+ru              0.290                  0.500     +0.210
+sw              0.103                  0.213     +0.110
+ta              0.110                  0.253     +0.143
+tr              0.160                  0.437     +0.277
+zh-CN           0.587                  0.603     +0.017
+
+=== massive_scenario : accuracy by language ===
+lang             laya      laya-multilingual      delta
+ar              0.133                  0.393     +0.260
+de              0.290                  0.467     +0.177
+en              0.603                  0.560     -0.043
+es              0.380                  0.447     +0.067
+fr              0.460                  0.457     -0.003
+hi              0.093                  0.450     +0.357
+ja              0.463                  0.507     +0.043
+ko              0.130                  0.427     +0.297
+pt              0.423                  0.460     +0.037
+ru              0.340                  0.470     +0.130
+sw              0.097                  0.297     +0.200
+ta              0.103                  0.337     +0.233
+tr              0.223                  0.487     +0.263
+zh-CN           0.483                  0.497     +0.013
+
+=== xnli : accuracy by language ===
+lang             laya      laya-multilingual      delta
+ar              0.433                  0.727     +0.293
+bg              0.547                  0.797     +0.250
+de              0.633                  0.787     +0.153
+el              0.517                  0.730     +0.213
+en              0.860                  0.843     -0.017
+es              0.683                  0.797     +0.113
+fr              0.680                  0.767     +0.087
+hi              0.393                  0.670     +0.277
+ru              0.620                  0.740     +0.120
+sw              0.430                  0.627     +0.197
+th              0.423                  0.693     +0.270
+tr              0.387                  0.740     +0.353
+ur              0.373                  0.683     +0.310
+vi              0.503                  0.723     +0.220
+zh              0.680                  0.757     +0.077

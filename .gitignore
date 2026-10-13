@@ -12,3 +12,4 @@ docs/public/
 services-*.conf
 services-state
 __pycache__/
+scratchpad/

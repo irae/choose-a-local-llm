@@ -1,0 +1,22 @@
+{
+  "sentiment": {
+    "type": "choice",
+    "instructions": "What is the opinion of the writer about the product in `review`?",
+    "criteria": {
+      "negative": "unhappy with the product",
+      "neutral": "neither happy nor unhappy",
+      "positive": "happy with the product"
+    }
+  },
+  "stars": {
+    "type": "score",
+    "instructions": "How many stars out of five does the writer give the product?",
+    "criteria": [
+      "one star",
+      "two stars",
+      "three stars",
+      "four stars",
+      "five stars"
+    ]
+  }
+}

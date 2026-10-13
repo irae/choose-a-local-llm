@@ -1,0 +1,372 @@
+{
+  "checkpoint": "typed-decisions",
+  "device": "cuda",
+  "dtype": "torch.bfloat16",
+  "max_len": 1024,
+  "cases": 200,
+  "reported_cases": 200,
+  "questions_per_case": 50,
+  "per_case_questions": false,
+  "over_context": 0,
+  "skipped_over_context": 0,
+  "batch": 1,
+  "cold_load_s": 12.634,
+  "calls": 200,
+  "p50_ms": 441.1248395917937,
+  "p95_ms": 441.4186927082483,
+  "questions_per_s": 113.35836960359997,
+  "peak_gpu_mb_nvidia_smi": 4203,
+  "peak_gpu_mb_torch": 2814.2,
+  "torch_memory": {
+    "peak_allocated_mb": 2814.2,
+    "peak_reserved_mb": 3080.0,
+    "allocated_at_end_mb": 1639.4,
+    "reserved_at_end_mb": 3080.0
+  },
+  "gpu": {
+    "whole_run": {
+      "samples": 113,
+      "mem_used_mb": {
+        "min": 954.0,
+        "p50": 4203.0,
+        "p95": 4203.0,
+        "max": 4203.0,
+        "mean": 3768.44
+      },
+      "util_gpu_pct": {
+        "min": 0.0,
+        "p50": 100.0,
+        "p95": 100.0,
+        "max": 100.0,
+        "mean": 83.04
+      },
+      "util_mem_pct": {
+        "min": 0.0,
+        "p50": 80.0,
+        "p95": 81.0,
+        "max": 81.0,
+        "mean": 66.42
+      },
+      "power_w": {
+        "min": 5.43,
+        "p50": 166.26,
+        "p95": 166.61,
+        "max": 166.76,
+        "mean": 141.63
+      },
+      "temp_c": {
+        "min": 39.0,
+        "p50": 60.0,
+        "p95": 61.0,
+        "max": 61.0,
+        "mean": 56.88
+      },
+      "clock_mhz": {
+        "min": 172.0,
+        "p50": 2737.0,
+        "p95": 2752.0,
+        "max": 2782.0,
+        "mean": 2489.71
+      }
+    },
+    "measure_only": {
+      "samples": 87,
+      "mem_used_mb": {
+        "min": 4203.0,
+        "p50": 4203.0,
+        "p95": 4203.0,
+        "max": 4203.0,
+        "mean": 4203.0
+      },
+      "util_gpu_pct": {
+        "min": 97.0,
+        "p50": 100.0,
+        "p95": 100.0,
+        "max": 100.0,
+        "mean": 99.31
+      },
+      "util_mem_pct": {
+        "min": 77.0,
+        "p50": 80.0,
+        "p95": 81.0,
+        "max": 81.0,
+        "mean": 79.41
+      },
+      "power_w": {
+        "min": 164.63,
+        "p50": 166.35,
+        "p95": 166.63,
+        "max": 166.76,
+        "mean": 166.25
+      },
+      "temp_c": {
+        "min": 57.0,
+        "p50": 60.0,
+        "p95": 61.0,
+        "max": 61.0,
+        "mean": 60.2
+      },
+      "clock_mhz": {
+        "min": 2737.0,
+        "p50": 2737.0,
+        "p95": 2752.0,
+        "max": 2752.0,
+        "mean": 2740.99
+      }
+    },
+    "load_only": {
+      "samples": 13,
+      "mem_used_mb": {
+        "min": 954.0,
+        "p50": 954.0,
+        "p95": 954.0,
+        "max": 954.0,
+        "mean": 954.0
+      },
+      "util_gpu_pct": {
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "max": 0.0,
+        "mean": 0.0
+      },
+      "util_mem_pct": {
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "max": 0.0,
+        "mean": 0.0
+      },
+      "power_w": {
+        "min": 5.43,
+        "p50": 8.49,
+        "p95": 29.84,
+        "max": 29.84,
+        "mean": 11.74
+      },
+      "temp_c": {
+        "min": 39.0,
+        "p50": 41.0,
+        "p95": 45.0,
+        "max": 45.0,
+        "mean": 41.23
+      },
+      "clock_mhz": {
+        "min": 172.0,
+        "p50": 180.0,
+        "p95": 2782.0,
+        "max": 2782.0,
+        "mean": 598.08
+      }
+    }
+  },
+  "peak_rss_mb": 3302.4,
+  "input_tokens": 2537200,
+  "fitted_temperature": null,
+  "overall": {
+    "cases": 10000,
+    "labelled": 0
+  },
+  "per_question": {
+    "n00": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "topic": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "urgency": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n01": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "channel": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "risk": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n02": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "language_register": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "effort": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n03": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "customer_type": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "clarity": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n04": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "next_action": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "churn_risk": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n05": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "product_area": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "satisfaction": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n06": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "intent": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "complexity": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n07": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "sentiment": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "evidence": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n08": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "priority_class": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "politeness": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n09": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "outcome": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "completeness": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n10": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n11": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n12": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n13": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n14": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n15": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n16": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n17": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n18": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n19": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n20": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n21": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n22": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n23": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n24": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n25": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n26": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n27": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n28": {
+      "cases": 200,
+      "labelled": 0
+    },
+    "n29": {
+      "cases": 200,
+      "labelled": 0
+    }
+  }
+}

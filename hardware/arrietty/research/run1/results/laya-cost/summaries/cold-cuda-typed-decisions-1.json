@@ -1,0 +1,30 @@
+{
+  "checkpoint": "typed-decisions",
+  "device": "cuda",
+  "dtype": "torch.bfloat16",
+  "max_len": 1024,
+  "cases": 1,
+  "reported_cases": 1,
+  "questions_per_case": 1,
+  "batch": 1,
+  "cold_load_s": 12.98,
+  "calls": 1,
+  "p50_ms": 576.5186279313639,
+  "p95_ms": 576.5186279313639,
+  "questions_per_s": 1.7345493303280615,
+  "peak_gpu_mb_nvidia_smi": 2829,
+  "peak_gpu_mb_torch": 2356.1,
+  "peak_rss_mb": 3300.1,
+  "input_tokens": 253,
+  "fitted_temperature": null,
+  "overall": {
+    "cases": 1,
+    "labelled": 0
+  },
+  "per_question": {
+    "n00": {
+      "cases": 1,
+      "labelled": 0
+    }
+  }
+}

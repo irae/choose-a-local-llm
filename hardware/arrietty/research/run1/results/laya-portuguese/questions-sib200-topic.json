@@ -1,0 +1,15 @@
+{
+  "topic": {
+    "type": "choice",
+    "instructions": "What is the topic of `text`?",
+    "criteria": {
+      "entertainment": "entertainment",
+      "geography": "geography",
+      "health": "health",
+      "politics": "politics",
+      "science/technology": "science or technology",
+      "sports": "sports",
+      "travel": "travel"
+    }
+  }
+}

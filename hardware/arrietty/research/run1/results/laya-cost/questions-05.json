@@ -1,0 +1,39 @@
+{
+  "n00": {
+    "type": "noul",
+    "instructions": "The customer asks for money back."
+  },
+  "topic": {
+    "type": "choice",
+    "instructions": "Which topic fits the text?",
+    "criteria": {
+      "billing": "money, invoices or refunds",
+      "delivery": "shipping or a late parcel",
+      "technical": "an app or a device that does not work",
+      "other": "none of the above"
+    }
+  },
+  "urgency": {
+    "type": "score",
+    "instructions": "Rate the urgency of the text.",
+    "criteria": [
+      "not urgent",
+      "soon",
+      "today",
+      "now"
+    ]
+  },
+  "n01": {
+    "type": "noul",
+    "instructions": "The message names an order number."
+  },
+  "channel": {
+    "type": "choice",
+    "instructions": "Which channel fits the text?",
+    "criteria": {
+      "email": "written as an email",
+      "chat": "short chat turns",
+      "phone": "a call transcript"
+    }
+  }
+}

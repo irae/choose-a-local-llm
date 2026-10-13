@@ -1,0 +1,6 @@
+{
+  "is_spam": {
+    "type": "noul",
+    "instructions": "Is this text message unsolicited spam or bulk marketing?"
+  }
+}
