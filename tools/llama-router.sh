@@ -8,7 +8,7 @@
 #                                         the preset file changed
 #   tools/llama-router.sh status [prism]
 #   tools/llama-router.sh stop [prism]
-#   tools/llama-router.sh install [prism] write the systemd user unit
+#   tools/llama-router.sh install [prism] write the systemd user unit; only this build starts at boot
 #
 # Two builds exist: the official llama.cpp (default) with
 # hardware/<id>/models.ini, and the PrismML build (`prism`) with
@@ -142,8 +142,9 @@ case "$ACTION" in
         mkdir -p "$HOME/.config/systemd/user"
         unit_file > "$HOME/.config/systemd/user/$UNIT.service"
         systemctl --user daemon-reload
+        systemctl --user disable "$OTHER" > /dev/null 2>&1 || true
         systemctl --user enable "$UNIT" > /dev/null 2>&1
-        echo "installed $UNIT.service; 'start' brings it up, logs: journalctl --user -u $UNIT"
+        echo "installed $UNIT.service, starts at boot; $OTHER no longer starts at boot. 'start' brings it up, logs: journalctl --user -u $UNIT"
         ;;
     start)
         if other_running; then
