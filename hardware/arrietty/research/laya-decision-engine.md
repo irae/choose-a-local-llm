@@ -1,9 +1,11 @@
 # Laya: a typed decision engine beside the local LLM
 
-Status: planned 2026-09-20, scheduled as the only item of research run 1.
-Starts only after benchmark run 28 closes (owner, 2026-09-20). Needs
-hardware: yes, the RTX machine, about half a day; GPU memory under
-2 GB, so the limit is the rule of one job on the GPU, not the fit.
+Status: done 2026-09-21 in research run 1; every test closed. Tables:
+[run1/results.md](run1/results.md), log: [run1/state.md](run1/state.md).
+The raw answer files are not in git; they are archived in
+`~/.local/share/choose-a-local-llm/evidence/research1-laya/`. Not
+published on the site. Needs hardware: yes, the RTX machine; GPU
+memory under 2 GB.
 Origin: the owner's interest in <https://github.com/NandhaKishorM/laya>.
 
 ## What Laya is

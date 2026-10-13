@@ -111,7 +111,9 @@ Benchmark work:
   `index.md` is the task list that links the items the run takes, in
   order, with a checkbox per item; the executor writes results beside
   each item. `AGENT.md` and the rest of the kit appear only when the
-  run starts.
+  run starts. Research results stay in the repo and never reach the
+  site. Closed: `hardware/arrietty/research/run1/` (Laya, a typed
+  decision encoder; item `laya-decision-engine.md`).
 - `benchmarks/` (root). The shared tools every run uses:
   `run-humaneval.sh`, `run_codegen_wrapper.py` (patched EvalPlus
   client), `calibrate.py` (the ten-problem natural run, no longer part
