@@ -39,7 +39,7 @@
 #   ROUTER_BIN        the llama-server binary
 #   ROUTER_MODELS_MAX 1
 #   ROUTER_IDLE       seconds of idleness before the loaded model sleeps
-#                     (default 300)
+#                     (default 7200, two hours)
 
 set -euo pipefail
 
@@ -80,7 +80,7 @@ else
 fi
 HOST="${ROUTER_HOST:-0.0.0.0}"
 MODELS_MAX="${ROUTER_MODELS_MAX:-1}"
-IDLE="${ROUTER_IDLE:-300}"
+IDLE="${ROUTER_IDLE:-7200}"
 STATE="$HOME/.local/share/choose-a-local-llm/$UNIT.hash"
 HAS_SYSTEMD=0
 command -v systemctl > /dev/null 2>&1 && systemctl --user show-environment > /dev/null 2>&1 && HAS_SYSTEMD=1
