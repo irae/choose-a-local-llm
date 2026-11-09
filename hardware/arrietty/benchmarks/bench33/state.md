@@ -456,3 +456,22 @@ decoded 41.35 tok/s at 32768. Both weights and KV precision changed,
 so this comparison does not assign the speed difference to either one.
 The pinned file, load attempts, resolved args, warmups, per-cell speed
 and memory samples, and router output are in `results/`.
+
+
+## s5-bf16-f16-eval-smoke
+
+Started 2026-11-09 09:56 UTC. Ended 10:00 UTC. The smoke used the
+loaded BF16/f16 server at `c=204800`, high Think and the measured
+200704 window. It used the fixed four-problem set, temperature 0,
+server reasoning budget 8192 and output budget 16384. It used no
+calibration. The request set `enable_thinking` true. The watcher saw
+no server failure.
+
+`SMOKE	label=s5-bf16-f16-eval-smoke	problems=4	passed=4	empty=0	completion_tokens=10335	max_tokens=16384	wall_s=249.3`
+
+HumanEval/53, /45, /34 and /129 passed. All four answers were
+nonempty. The Q8_0/q8_0 baseline smoke passed 3/4 with 0 empty answers,
+so this config reads better on this unscored subset. This is not a
+quality score. The samples, evaluator output, stdout and watcher memory
+are in `results/s5-bf16-f16-eval-smoke/` and matching result files.
+The BF16 server log is in `results/server-s5-bf16-f16.log`.

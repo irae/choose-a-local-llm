@@ -280,3 +280,16 @@ to either setting alone. The setup swap use rose 214 MiB while loading;
 timed cells had no observed swap growth. Raw cells and memory samples
 are in `results/s5-bf16-f16-depth-*`; router output is in
 `results/server-s5-bf16-f16.log`.
+
+
+### BF16/f16 EvalPlus smoke
+
+The BF16/f16 config at `c=204800` passed 4/4 fixed problems with
+0 empty answers. It used the 200704 measured window, high Think,
+reasoning budget 8192, output budget 16384 and no calibration.
+HumanEval/53, /45, /34 and /129 passed. The Q8_0/q8_0 baseline passed
+3/4 with 0 empty answers. The BF16/f16 config reads better on this
+four-problem subset only. This smoke is unscored and does not establish
+full coding quality. Samples, evaluator output, stdout, watcher memory
+and server evidence are in `results/s5-bf16-f16-eval-smoke/` and
+`results/server-s5-bf16-f16.log`.

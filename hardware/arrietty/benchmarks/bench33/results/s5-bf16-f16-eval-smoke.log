@@ -1,0 +1,15 @@
+event	budget	source=fast-mode	max_tokens=16384
+event	start	label=s5-bf16-f16-eval-smoke	model=s5-nano-bf16-f16	base=http://127.0.0.1:8081	out=/home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/s5-bf16-f16-eval-smoke
+event	generated	HumanEval/53	empty=false	completion_tokens=1192	finish_reason=stop	wall_s=26.7
+event	generated	HumanEval/45	empty=false	completion_tokens=1845	finish_reason=stop	wall_s=40.4
+event	generated	HumanEval/34	empty=false	completion_tokens=2867	finish_reason=stop	wall_s=62.8
+event	generated	HumanEval/129	empty=false	completion_tokens=4431	finish_reason=stop	wall_s=97.6
+event	evaluating	/home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/s5-bf16-f16-eval-smoke/s5-bf16-f16-eval-smoke.smoke.jsonl
+task_id	base	plus	empty	completion_tokens	reasoning_tokens	finish_reason	wall_s
+HumanEval/53	pass	pass	false	1192	-1	stop	26.7
+HumanEval/45	pass	pass	false	1845	-1	stop	40.4
+HumanEval/34	pass	pass	false	2867	-1	stop	62.8
+HumanEval/129	pass	pass	false	4431	-1	stop	97.6
+SMOKE	label=s5-bf16-f16-eval-smoke	problems=4	passed=4	empty=0	completion_tokens=10335	max_tokens=16384	wall_s=249.3	out=/home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/s5-bf16-f16-eval-smoke
+event	read	compare this SMOKE line with the other side's line at the same max_tokens: level (same passed, same empty), better (passed higher, empty not higher), worse (passed lower, or passed equal and empty higher), otherwise no verdict
+smoke_exit=0 watcher_pid=587918
