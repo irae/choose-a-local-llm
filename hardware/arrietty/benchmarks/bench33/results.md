@@ -187,7 +187,7 @@ chat-template body
 
 | base pass@1 | plus pass@1 | completion | empty | forced |
 |---:|---:|---:|---:|---:|
-| 0.811 | 0.726 | 164/164 | 0/164 | 0/164 |
+| 0.811 | 0.726 | 164/164 | 0/164 | 26/164 |
 
 The base score meets the 0.800 quality threshold. The S5 tool smoke
 failed its commit and clean-tree gates, so the full S5
@@ -195,3 +195,21 @@ simulator(mendel) blocks remain skipped. Raw and sanitized samples,
 finish records, evaluation output and code generation log are in
 `results/s5-quality-think/`. Watcher memory is in
 `results/s5-quality-think-watch-memory.log`.
+
+## S5-nano Instruct quality
+
+The q8_0 K/V configuration loaded at `-c 262144` with thinking off
+and output budget 16384. The chat template set
+`enable_thinking` false. The server had no reasoning-budget flag. The
+run completed all 164 HumanEval+ problems without calibration. The
+active wall was 25.5 minutes.
+
+| base pass@1 | plus pass@1 | completion | empty | forced |
+|---:|---:|---:|---:|---:|
+| 0.720 | 0.634 | 164/164 | 0/164 | 0/164 |
+
+This off score does not qualify the thinking-on agent row. S5 full
+simulator(mendel) remains skipped because the tool smoke failed its
+commit and clean-tree gates. Samples, finish records, evaluation,
+resolved args, warmup, server log and watcher memory are in
+`results/s5-quality-instruct*`.

@@ -317,10 +317,44 @@ body `{"chat_template_kwargs":{"enable_thinking":true}}`.
 
 Ended 2026-11-09 05:05:41 UTC. EvalPlus completed all 164 problems.
 Base pass@1 was 0.811. Plus pass@1 was 0.726. The completed samples
-had 0 empty answers and 0 forced answers. The active wall was 116.3
+had 0 empty answers and 26 forced answers. The active wall was 116.3
 minutes. The watcher saw no server failure. The model met the base
 score threshold. S5 full simulator(mendel) remains skipped because
 the tool smoke failed its commit and clean-tree gates. Raw samples,
 finish records, evaluator output and watcher memory are in
 `results/s5-quality-think/` and
 `results/s5-quality-think-watch-memory.log`.
+
+Correction for the prior quality record: the first count used the wrong
+message and reported 0 forced. The fixed command is
+`python3 benchmarks/thinking-budget.py count hardware/arrietty/benchmarks/bench33/results/s5-quality-think --message 'Thinking budget reached. Give the final answer now.'`.
+It reports 164 answers, 26 forced and 0 empty. The scores do not change.
+
+## s5-quality-instruct
+
+The corrected thinking count above is recorded at this block boundary.
+Started 2026-11-09 05:12 UTC. Use S5-nano q8_0 with thinking off and
+output budget 16384. The run uses the measured context 262144. It uses
+no calibration. The request sets
+`{"chat_template_kwargs":{"enable_thinking":false}}`.
+
+I updated the active preset and reloaded the model through the router.
+The run-owned router process stayed up. Its PID did not change. The
+resolved child args set `--n-gpu-layers 999` and `--fit off`. They have
+no CPU-MoE or tensor-placement override. They have no reasoning-budget
+flag. The chat template sets `enable_thinking` false. The model loaded
+and completed a real warmup. The response returned `ready` without a
+reasoning field. GPU memory was 11111 MiB used and 4828 MiB free after
+load. The watcher is active. Raw response, resolved args, server log
+and watcher memory are in `results/`.
+
+Ended 2026-11-09 05:38:27 UTC. EvalPlus completed all 164 problems.
+Base pass@1 was 0.720. Plus pass@1 was 0.634. The completed samples
+had 0 empty and 0 forced answers. The active wall was 25.5 minutes.
+The fixed count command was
+`python3 benchmarks/thinking-budget.py count hardware/arrietty/benchmarks/bench33/results/s5-quality-instruct --message 'Thinking budget reached. Give the final answer now.'`.
+The run used no reasoning budget. This off score does not qualify the
+thinking-on agent row. S5 simulator(mendel) remains skipped because
+the tool smoke failed its commit and clean-tree gates. Samples,
+finish records, evaluation output, resolved args, warmup, server log
+and watcher memory are in `results/s5-quality-instruct*`.
