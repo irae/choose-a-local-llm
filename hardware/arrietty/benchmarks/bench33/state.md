@@ -317,3 +317,8 @@ The smoke failed its commit and clean-tree gates. The loop check passed.
 Skip S5 full simulator(mendel) blocks. Continue with S5 thinking quality.
 Deviation: the model directed Git to the outer run branch; I removed
 the local commit before pushing this block.
+
+The coordinator retained the failed unscored gate. See
+[the session review](results/s5-tool-smoke-review.md). S5's full
+thinking quality test continues. Its full simulator(mendel) rows stay
+skipped, and the site records the agent task as not run.

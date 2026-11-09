@@ -1,13 +1,13 @@
 # S5-nano
 
-[Publisher model card](https://huggingface.co/maritaca-ai/S5-nano). Full quality and agent results are pending.
+[Publisher model card](https://huggingface.co/maritaca-ai/S5-nano). Full quality results are pending. The agent task was not run.
 
 ## Configurations
 
 <!-- gen:model-all:start -->
 | Model / Config | Ctx | tok/s | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|
-| <ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/s5-nano-maritaca-q8" hide="server" top /> | **261k** | <TokCell shallow="77.37" deep="30.59" cap="mem" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
+| <ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/s5-nano-maritaca-q8" hide="server" top /> | **261k** | <TokCell shallow="77.37" deep="30.59" cap="mem" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="not run" /> | — |
 <!-- gen:model-all:end -->
 
 ## Files
