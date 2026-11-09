@@ -11,7 +11,7 @@ File: [maritaca-ai/S5-nano-GGUF](https://huggingface.co/maritaca-ai/S5-nano-GGUF
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/s5-nano-maritaca-q8" top /> | **pending** | <TokCell shallow="pending" deep="pending" cap="pending" /> | pending | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
+| <ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/s5-nano-maritaca-q8" top /> | **261k** | <TokCell shallow="77.37" deep="30.59" cap="mem" top-shallow top-deep /> | **10.9 GiB** | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
@@ -26,7 +26,7 @@ parallel = 1
 n-gpu-layers = 999
 fit = off
 flash-attn = on
-ctx-size = 34816
+ctx-size = 262144
 cache-type-k = q8_0
 cache-type-v = q8_0
 jinja = true
@@ -49,7 +49,9 @@ No Mendel run yet.
 
 ## Speed and context
 
-Full depth testing is pending. See the [measurement record](../setups/arrietty/benchmarks/s5-nano.md).
+<ModelSpec base="S5-nano" quant="Q8_0" publisher="maritaca-ai" server="llama-server" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" />
+
+At `-c 262144`, decode was 77.37 tok/s at 4,096 used tokens and 30.59 at 261,120. The harness window is 258,048. The run reached the planned model context cap; it did not establish an absolute memory ceiling. Peak total GPU use was 11,117 MiB, with no swap growth during the timed cells. See the [full curve and conditions](../setups/arrietty/benchmarks/s5-nano.md#depth-measurement).
 
 ## Server presets
 
@@ -67,7 +69,7 @@ parallel = 1
 n-gpu-layers = 999
 fit = off
 flash-attn = on
-ctx-size = 34816
+ctx-size = 262144
 cache-type-k = q8_0
 cache-type-v = q8_0
 jinja = true
@@ -79,3 +81,5 @@ reasoning-budget-message = Thinking budget reached. Give the final answer now.
 ## Log
 
 - 2026-11-08: pinned the publisher file for benchmark run 33.
+
+- 2026-11-08: measured the full model context allocation and set the harness window to 258,048.

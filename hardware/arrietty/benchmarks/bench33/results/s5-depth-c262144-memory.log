@@ -1,0 +1,144 @@
+2026-11-09T02:21:39Z
+s5-depth c=262144 depth=261120 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11111 MiB, 4828 MiB, 34, 3.60 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6611        2943         383       24383       25283
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	63376		100
+2026-11-09T02:29:21Z
+s5-depth c=262144 depth=261120 after status=0
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 42, 24.42 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6741        2780         383       24416       25153
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	63048		100
+2026-11-09T02:30:02Z
+s5-depth c=262144 depth=4096 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 37, 4.78 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6737        2783         383       24417       25157
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62928		100
+2026-11-09T02:30:31Z
+s5-depth c=262144 depth=4096 after
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 40, 22.91 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6680        2839         383       24417       25214
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62928		100
+2026-11-09T02:30:31Z
+s5-depth c=262144 depth=24576 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 40, 22.91 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6660        2859         383       24417       25233
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62928		100
+2026-11-09T02:31:12Z
+s5-depth c=262144 depth=24576 after
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 42, 24.08 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6731        2788         383       24417       25163
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62928		100
+2026-11-09T02:31:12Z
+s5-depth c=262144 depth=32768 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 42, 24.08 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6720        2799         383       24417       25174
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62928		100
+2026-11-09T02:32:00Z
+s5-depth c=262144 depth=32768 after
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 42, 24.00 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6721        2797         383       24418       25173
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62928		100
+2026-11-09T02:32:26Z
+s5-depth c=262144 depth=65536 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 38, 5.13 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6720        2798         383       24419       25174
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62928		100
+2026-11-09T02:33:45Z
+s5-depth c=262144 depth=65536 after status=0
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 42, 24.22 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6755        2762         383       24420       25139
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62928		100
+2026-11-09T02:34:05Z
+s5-depth c=262144 depth=131072 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 38, 5.11 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6744        2772         383       24420       25149
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62928		100
+2026-11-09T02:36:53Z
+s5-depth c=262144 depth=131072 after status=0
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 42, 24.21 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6727        2790         383       24419       25167
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62920		100
+2026-11-09T02:37:19Z
+s5-depth c=262144 depth=196608 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 38, 5.00 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6736        2780         383       24420       25158
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62920		100
+2026-11-09T02:42:16Z
+s5-depth c=262144 depth=196608 after status=0
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 42, 24.25 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6769        2744         383       24423       25125
+Swap:          31893          61       31832
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	62896		100
+Mon Nov  9 02:45:12 UTC 2026
+s5-depth c=262144 depth=245760 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 35, 3.75 W
+               total        used        free      shared  buff/cache   available
+Mem:            31Gi       6.7Gi       2.6Gi       383Mi        23Gi        24Gi
+Swap:           31Gi        59Mi        31Gi
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	61272		100
+Mon Nov  9 02:52:11 UTC 2026
+s5-depth c=262144 depth=245760 after status=0
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+11117 MiB, 4822 MiB, 42, 24.28 W
+               total        used        free      shared  buff/cache   available
+Mem:            31Gi       6.7Gi       2.6Gi       383Mi        23Gi        24Gi
+Swap:           31Gi        59Mi        31Gi
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	61252		100

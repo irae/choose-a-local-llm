@@ -9,6 +9,7 @@ tokens count, not allocated ones. Method:
 <!-- gen:decode-summary:start -->
 | best curve | tok/s (shallow → deep) | at |
 |---|--:|--:|
+| [<ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/s5-nano-maritaca-q8" />](../setups/arrietty/benchmarks/s5-nano.md) | <TokCell shallow="77.37" deep="30.59" cap="mem" top-shallow /> | **261k** |
 | [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/2" offload="n-cpu-moe 21" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/qwen36-unsloth-ud-q4kxl" />](../setups/arrietty/benchmarks/qwen3.6-35b-a3b.md) | <TokCell shallow="61.16" deep="45.42" cap="mem" top-shallow top-deep /> | 97k |
 | [<ModelSpec base="Gemma-4-26B-A4B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-26b-a4b-it-GGUF" drafter="mtp/2" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/gemma26-unsloth-ud-q4kxl" />](../setups/kamaji/benchmarks/gemma-4-26b-a4b.md) | <TokCell shallow="60.1" deep="19.1" cap="mem" top-shallow /> | 197k |
 | [<ModelSpec base="Gemma-4-26B-A4B" quant="NVFP4Q8" server="llama-server" publisher="catlilface" repo="catlilface/Gemma-4-26B-A4B-NVFP4-GGUF" offload="n-cpu-moe 7" kv="f16" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/gemma26-catlilface-nvfp4q8" />](../setups/arrietty/benchmarks/gemma-4-26b-a4b.md) | <TokCell shallow="58.77" deep="45.59" cap="mem" top-shallow top-deep /> | 97k |
@@ -25,7 +26,6 @@ tokens count, not allocated ones. Method:
 | [<ModelSpec base="Qwen3.8-27B" quant="4-bit" server="mlx_lm.server" publisher="mlx-community" repo="mlx-community/Qwen3.8-27B-4bit" kv="f16" effort="low" hardware="m1-max-32gb" page="/binaries/qwen38-mlx-4bit" />](../setups/kamaji/benchmarks/qwen3.8-27b.md) | <TokCell shallow="17.3" deep="14.8" cap="mem" /> | 25k |
 | [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" />](../setups/kamaji/benchmarks/bonsai-27b.md) | <TokCell shallow="14.7" deep="7.8" cap="speed" /> | 33k |
 | [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" hardware="m1-max-32gb" page="/binaries/qwen38-bartowski-q4km" />](../setups/kamaji/benchmarks/qwen3.8-27b.md) | <TokCell shallow="12.4" deep="9.7" cap="mem" /> | 72k |
-| [<ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/s5-nano-maritaca-q8" />](../setups/arrietty/benchmarks/s5-nano.md) | <TokCell shallow="pending" deep="pending" cap="pending" /> | pending |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:decode-summary:end -->
@@ -135,3 +135,20 @@ needed a smaller one.
 | 64512 | 20.07 |
 
 Official llama.cpp stable v0.9.0, b12110. One slot, no drafter, `-c 65536`. Linux llama-benchy 0.4.0, two repetitions per cell and a five-second pause. The run reached its planned cap with no swap growth during the timed cells. [Full conditions and context window](../setups/arrietty/benchmarks/arete-27b.md#depth-measurement).
+
+## RTX 5060 Ti 16 GB, S5-nano depth measurement
+
+<ModelSpec base="S5-nano" quant="Q8_0" publisher="maritaca-ai" server="llama-server" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" />
+
+| used tokens | decode tok/s |
+|---:|---:|
+| 4096 | 77.37 |
+| 24576 | 69.00 |
+| 32768 | 66.01 |
+| 65536 | 56.76 |
+| 131072 | 44.29 |
+| 196608 | 36.16 |
+| 245760 | 31.76 |
+| 261120 | 30.59 |
+
+Official llama.cpp stable v0.9.0, b12110. One slot, no drafter, `-c 262144`. Linux llama-benchy 0.4.0, two repetitions per cell and a five-second pause. The run reached its planned model context cap with no swap growth during the timed cells. [Full conditions and context window](../setups/arrietty/benchmarks/s5-nano.md#depth-measurement).

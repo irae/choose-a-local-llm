@@ -497,21 +497,21 @@
         "kv": "q8_0",
         "effort": "on"
       },
-      "maxCtx": "pending",
-      "gatedBy": "pending",
-      "tokShallow": "pending",
-      "tokDeep": "pending",
-      "memory": "pending",
+      "maxCtx": "261k",
+      "gatedBy": "mem",
+      "tokShallow": "77.37",
+      "tokDeep": "30.59",
+      "memory": "10.9 GiB",
       "evalplus": "pending",
       "mendel": "pending",
       "hidden": false,
       "added": "2026-11-08",
-      "command": "llama-server -m \"$(hf download maritaca-ai/S5-nano-GGUF S5-nano-Q8_0.gguf --revision 5fd041274829d60aeeba1e2edc4aabb621a432e4)\" \\\n  --alias s5-nano-q8 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 34816 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "Quality gate pending. Official llama.cpp stable v0.9.0, b12110. q8_0 KV selected in benchmark run 33. The short test served -c 34816; the depth test must set the final serving context and harness window. No MTP or vision. The four-problem smoke is unscored and is not a quality result.",
+      "command": "llama-server -m \"$(hf download maritaca-ai/S5-nano-GGUF S5-nano-Q8_0.gguf --revision 5fd041274829d60aeeba1e2edc4aabb621a432e4)\" \\\n  --alias s5-nano-q8 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "Quality and agent tasks pending. Official llama.cpp stable v0.9.0, b12110. q8_0 KV, high Think, no drafter or vision. Benchmark run 33 served -c 262144 and measured a deepest clean cell of 261120 tokens at 30.59 tok/s. The run reached its planned model context cap, not an observed OOM or speed floor. The harness window is 258048, rounded down to 4096 from the clean depth. Compaction keep uses pi default 20000; maxTokens and reserveTokens also use pi defaults. Peak total GPU use was 11117 MiB. Timed cells showed no swap growth; setup had recorded premeasurement swap use.",
       "pi": {
         "provider": "llama",
         "id": "s5-nano-q8",
-        "contextWindow": 32768
+        "contextWindow": 258048
       }
     },
     {
@@ -688,6 +688,8 @@
     "s5-nano": {
       "rowMatch": "S5-nano,",
       "kpis": [
+        "window",
+        "decode",
         "quality",
         "agent"
       ],
@@ -699,6 +701,15 @@
         "agent": {
           "value": "pending",
           "label": "Agent task"
+        },
+        "window": {
+          "value": "261,120",
+          "label": "Deepest clean used context",
+          "sub": "258,048-token harness window"
+        },
+        "decode": {
+          "value": "77.37 / 30.59",
+          "label": "Decode tok/s, shallow / deep"
         }
       }
     },
@@ -1402,6 +1413,25 @@
         "24576": 24.49,
         "32768": 23.4,
         "64512": 20.07
+      },
+      "run": "bench33",
+      "method": "benchy"
+    },
+    {
+      "model": "s5-nano",
+      "arm": "Q8_0, q8_0 KV, no drafter",
+      "c": 262144,
+      "cAt": 261120,
+      "served": true,
+      "points": {
+        "4096": 77.37,
+        "24576": 69.0,
+        "32768": 66.01,
+        "65536": 56.76,
+        "131072": 44.29,
+        "196608": 36.16,
+        "245760": 31.76,
+        "261120": 30.59
       },
       "run": "bench33",
       "method": "benchy"
