@@ -311,3 +311,7 @@ session, generated config without copied credentials, loop report,
 watcher memory and server log remain as evidence. The earlier Q8_0
 smoke also failed its commit and clean-tree gate. This trial ends at
 its smokes; no full BF16 EvalPlus or simulator(mendel) score exists.
+
+## Arete simulator(mendel)
+
+NOT STARTED. The owner deferred the guided and blind rows to a future run. Neither row has a partial result or score. The owner directed cleanup of the aborted guided run. We removed its outputs, generated pi config, watcher, task worktree and local branches. We kept completed Arete depth, tool-smoke and xhigh EvalPlus evidence, and all S5 evidence. The run router and Arete child stopped. Port 8080 is closed. VRAM use is 858 MiB.
