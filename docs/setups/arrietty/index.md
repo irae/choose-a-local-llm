@@ -9,9 +9,9 @@
 - GeForce RTX 5060 Ti, 16311 MiB of VRAM, compute capability 12.0.
   12 CPU threads, 32 GB of RAM, Linux.
 - The desktop shares the card: about 1.2 GB of VRAM at idle.
-- Runtime: llama-server on CUDA, the `sm120` `cuda12.8` prebuilt from
-  [llamaup](https://github.com/keypaa/llamaup), under
-  `~/.local/share/choose-a-local-llm/llama.cpp/`.
+- Runtime for new measurements: official llama.cpp stable v0.9.0,
+  build b12110, installed through mise from upstream CUDA 12.8 binaries.
+  Earlier measurements retain the runtime stated in their records.
 - Port 8081. Harness: pi, provider `llama`. Aliases equal the pi model
   ids.
 - Model files: the default Hugging Face hub cache
@@ -29,6 +29,7 @@
 
 | model | files | reports |
 |---|---|---|
+| S5-nano | `maritaca-ai/S5-nano-GGUF`, Q8_0 | [report](./reports/s5-nano.md), [benchmarks](./benchmarks/s5-nano.md) |
 | Qwen3.8-27B | `unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S`; `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF`, IQ3_S-mtp file | [report](./reports/qwen3.8-27b.md), [benchmarks](./benchmarks/qwen3.8-27b.md) |
 | Qwen3.6-35B-A3B (MoE) | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` | [report](./reports/qwen3.6-35b-a3b.md), [benchmarks](./benchmarks/qwen3.6-35b-a3b.md) |
 | Gemma-4-26B-A4B (MoE) | `catlilface/Gemma-4-26B-A4B-NVFP4-GGUF`, NVFP4Q8 file | [report](./reports/gemma-4-26b-a4b.md), [benchmarks](./benchmarks/gemma-4-26b-a4b.md) |

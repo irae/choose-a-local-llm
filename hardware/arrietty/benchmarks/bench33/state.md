@@ -122,8 +122,8 @@ at 16K, 69.05 at 24K and 66.02 at 32K. All cells completed. The smoke
 passed 3 of 4 problems, with 0 empty answers and 11,807 completion
 tokens. Its wall time was 172.7 s. The two smoke lines read LEVEL.
 Both types loaded at `-c 34816`, and their 32K decode speeds differ by
-less than 10%. The candidate is q8_0 under the method. The coordinator
-must record the final KV choice.
+less than 10%. The coordinator selected q8_0 for S5 depth. See
+[`results/s5-kv-decision.md`](results/s5-kv-decision.md).
 
 Swap used was 0 MiB at machine start. It rose to 13,288 KiB before the
 first timed S5 cell. It stayed at 13,288 KiB before and after every
@@ -133,6 +133,16 @@ does not show swap-free setup or establish a maximum memory ceiling.
 The coordinator selected q8_0 for S5 depth. The site entry is
 `s5-nano-q8`. Its provisional site window is 32,768 tokens. Use the
 measured s5-depth window for the tool smoke and full task.
+
+## S5 coordinator decision
+
+The timed cells are accepted with the pre-cell swap increase recorded
+as a deviation. The full decision is in
+[`results/s5-kv-decision.md`](results/s5-kv-decision.md). The depth
+block must set the final serving context and harness window. The new
+pending site row and pi id are `s5-nano-q8`. The initial 32,768-token
+harness window comes from the short test, not a full depth ceiling.
+The newer depth result must replace it.
 
 ## arete-kv-feedback
 
@@ -157,7 +167,7 @@ completed. The 4K and 32K GPU samples were 14,591–14,601 MiB and
 14,601 MiB. The smoke passed 4 of 4 problems, with 0 empty answers
 and 8,519 completion tokens. Its wall time was 328.9 s. Both smoke
 lines read LEVEL. At 32K, q8_0 saved about 920 MiB and its speed was
-within 10% of f16. The coordinator decides the Arete cache for depth.
+within 10% of f16. The coordinator selected q8_0 for Arete depth.
 
 The first run router used PID 432837 with child 432912 and socat PID
 432838. The f16 smoke reload used router PID 437251 with child 437298
@@ -173,5 +183,5 @@ for each depth; these are not slow-context-creep results.
 
 | model | KV | serving context | clean depth | harness window | source |
 |---|---|---|---|---|---|
-| Arete | pending coordinator decision | 34816 | 32768 | pending | `arete-kv-feedback` |
-| S5-nano | q8_0 | 34816 | 32768 | pending newer depth result | `s5-kv-feedback` |
+| Arete | q8_0 | pending depth allocation | 32768 | pending | `arete-kv-feedback` |
+| S5-nano | q8_0 | pending depth allocation | 32768 | pending newer depth result | `s5-kv-feedback` |

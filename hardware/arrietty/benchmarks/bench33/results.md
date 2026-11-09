@@ -1,7 +1,7 @@
 # Run 33 results
 
 The run tests Arete Q3_K_M and S5-nano Q8_0 on arrietty with official
-llama.cpp stable v0.9.0.
+llama.cpp stable v0.9.0. Full quality and agent results are pending.
 
 ## Machine setup
 
@@ -35,8 +35,9 @@ speed run used the same pinned Q8_0 model file as the f16 run.
 | q8_0 | 6141.07 tok/s | 77.45 tok/s | 75.68 tok/s | 72.28 tok/s | 69.05 tok/s | 66.02 tok/s | 6227–6233 / 6233 MiB | 3/4, 0 empty |
 
 The smoke results read LEVEL at the same 16,384-token budget. The
-candidate is q8_0 because the speed curves are within 10% and both
-types loaded at `-c 34816`. The coordinator records the final choice.
+coordinator selected q8_0 because the speed curves are within 10% and
+both types loaded at `-c 34816`. See the
+[KV decision](results/s5-kv-decision.md).
 Raw results, memory logs, server logs, resolved arguments, warmup
 responses and smoke files are in `results/`.
 
@@ -65,7 +66,7 @@ an N/N count.
 
 Both smokes read LEVEL at the same 16,384-token budget. Q8_0 saved
 about 920 MiB at 32K. The speed curves stayed within 10%. The
-coordinator decides the cache for Arete depth. Raw cells, memory logs,
+coordinator selected q8_0 for Arete depth. Raw cells, memory logs,
 server logs, resolved arguments, warmups, GPU samples and smoke files
 are in `results/`.
 
