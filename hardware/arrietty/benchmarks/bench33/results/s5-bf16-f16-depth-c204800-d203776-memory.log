@@ -1,0 +1,15 @@
+Mon Nov  9 09:36:11 UTC 2026
+15820 MiB, 119 MiB, 35, 4.01 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6678        1079         279       26058       25216
+Swap:          31893         726       31167
+NAME       TYPE             SIZE      USED PRIO
+/dev/zram0 partition 33443278848 762163200  100
+Mon Nov  9 09:41:52 UTC 2026
+15870 MiB, 69 MiB, 41, 23.54 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        7047        1457         279       25312       24846
+Swap:          31893         725       31168
+NAME       TYPE             SIZE      USED PRIO
+/dev/zram0 partition 33443278848 760344576  100
+benchy_exit=0

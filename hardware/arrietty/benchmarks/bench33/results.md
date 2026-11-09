@@ -237,3 +237,46 @@ the EvalPlus gate for Arete's thinking-on simulator(mendel) rows. Raw
 and sanitized samples, finish records, evaluation output and code
 generation log are in `results/arete-quality-xhigh/`. Watcher memory
 is in `results/arete-quality-xhigh-watch-memory.log`.
+
+
+## S5-nano BF16 weights with f16 K/V
+
+The pinned BF16 file loaded with high Think and f16 K/V. The router
+served the new BF16 alias from the requested file. The resolved args
+set `n-gpu-layers=999` and `fit=off`, without CPU-MoE or tensor
+placement overrides. Warmup returned reasoning. The server log has no
+explicit layer-count line; the evidence supports an operational
+full-offload reading only.
+
+| allocation | probe depth | prefill | decode | peak GPU used | swap change | result |
+|---:|---:|---:|---:|---:|---:|---|
+| 131072 | 130048 | 2593.16 tok/s | 30.55 tok/s | 13451 MiB | −9 MiB | pass |
+| 163840 | 162816 | 2240.69 tok/s | 28.89 tok/s | 14670 MiB | −3 MiB | pass |
+| 196608 | 195584 | 2117.08 tok/s | 26.87 tok/s | 15665 MiB | −10 MiB | pass |
+| 204800 | 203776 | 2073.56 tok/s | 26.41 tok/s | 15870 MiB | −1 MiB | pass |
+| 212992 | — | — | — | — | — | OOM: 282.02 MiB compute buffer |
+| 229376 | — | — | — | — | — | OOM: 7168 MiB KV buffer |
+| 262144 | — | — | — | — | — | OOM: 8192 MiB KV buffer |
+
+The trial's largest passing allocation was 204800. The cell at 203776
+decoded at 26.41 tok/s. The selected clean depth is 203776, and the
+window is 200704. This is the bound tested in this run, not the card's
+absolute maximum.
+
+| depth | prefill | decode |
+|---:|---:|---:|
+| 4096 | 4458.05 tok/s | 45.68 tok/s |
+| 24576 | 4156.59 tok/s | 42.46 tok/s |
+| 32768 | 3983.80 tok/s | 41.35 tok/s |
+| 65536 | 3400.07 tok/s | 37.31 tok/s |
+| 131072 | 2617.87 tok/s | 31.23 tok/s |
+| 203776 | 2073.56 tok/s | 26.41 tok/s |
+
+The q8_0/q8_0 baseline used `c=262144`, window 258048 and decoded
+66.01 tok/s at 32768. The BF16/f16 configuration used `c=204800`,
+window 200704 and decoded 41.35 tok/s at 32768, 37% lower. Both the
+weights and KV cache changed. This result cannot attribute the change
+to either setting alone. The setup swap use rose 214 MiB while loading;
+timed cells had no observed swap growth. Raw cells and memory samples
+are in `results/s5-bf16-f16-depth-*`; router output is in
+`results/server-s5-bf16-f16.log`.

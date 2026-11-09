@@ -405,3 +405,54 @@ The model met the base score threshold. Raw and sanitized samples,
 finish records, evaluator output and code generation log are in
 `results/arete-quality-xhigh/`. Watcher memory is in
 `results/arete-quality-xhigh-watch-memory.log`.
+
+
+## s5-bf16-f16-depth
+
+Started 2026-11-09 09:17 UTC. Ended 09:47 UTC. I fetched the pinned
+`S5-nano-BF16.gguf` file from revision
+`5fd041274829d60aeeba1e2edc4aabb621a432e4`. It is 8,665,620,032
+bytes with SHA-256
+`565c6441c8c5297500f0bfc5d0cf14053b6e80e90976a5bd6586b56715cd8f1f`.
+It uses the official llama.cpp b12110 build, high Think, f16 K/V and
+no MTP or vision. The router PID stayed up. I reloaded its run-owned
+preset through `/models?reload=1`; it served alias `s5-nano-bf16-f16`
+from the BF16 file. Warmup returned `reasoning_content`.
+
+The resolved child args set `--n-gpu-layers 999` and `--fit off`.
+They have no CPU-MoE or tensor-placement override. A real completion
+passed. The GPU reached 15,870 MiB used. The separate BF16 server log
+has no explicit layer-count line. Record operational offload evidence;
+do not infer a layer count from these observations.
+
+| allocation | probe depth | decode | result |
+|---:|---:|---:|---|
+| 131072 | 130048 | 30.55 tok/s | pass |
+| 163840 | 162816 | 28.89 tok/s | pass |
+| 196608 | 195584 | 26.87 tok/s | pass |
+| 204800 | 203776 | 26.41 tok/s | pass |
+| 212992 | — | — | OOM in 282.02 MiB compute-buffer allocation |
+| 229376 | — | — | OOM allocating a 7168 MiB KV buffer |
+| 262144 | — | — | OOM allocating an 8192 MiB KV buffer |
+
+The largest tested passing allocation is 204800. The depth curve at
+that allocation passed at 4096, 24576, 32768, 65536, 131072 and 203776.
+Decode speed fell from 45.68 to 26.41 tok/s. The deepest clean depth is
+203776. The measured window is 200704, rounded down to 4096. This is
+the trial's tested allocation bound, not the card's absolute maximum.
+
+Swap use was 598 MiB before model load and 812 MiB after load, an
+increase of 214 MiB. This is a setup deviation. Swap did not grow during
+a timed cell; it fell by 1–10 MiB in the allocation probes and was flat
+or fell across the depth curve. This does not establish swap-free setup
+or a maximum swap ceiling. Host memory stayed available; GPU peak use
+was 15870 MiB. The run used separate Linux benchy calls at two
+repetitions with a five-second pause. This is not a
+slow-context-creep-tool result.
+
+The q8_0/q8_0 baseline used `c=262144`, window 258048 and decoded
+66.01 tok/s at 32768. BF16/f16 used `c=204800`, window 200704 and
+decoded 41.35 tok/s at 32768. Both weights and KV precision changed,
+so this comparison does not assign the speed difference to either one.
+The pinned file, load attempts, resolved args, warmups, per-cell speed
+and memory samples, and router output are in `results/`.
