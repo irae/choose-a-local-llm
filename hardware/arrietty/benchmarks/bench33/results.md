@@ -103,3 +103,18 @@ does not prove swap-free setup or set a larger memory ceiling.
 
 The run used separate Linux benchy calls. It did not use the slow
 context-creep measurement tool.
+
+## Arete tool smoke
+
+The smoke passed at xhigh with pi 1.5.0. It used site id
+`arete-27b-q3km`, measured window 61,440 and keep budget 8,192. The
+generated config sent `enable_thinking` and `reasoning_effort` through
+the chat template. It set no `maxTokens` or `reserveTokens`. The
+source entry came from origin/master commit
+`6bd14cd19d590b47d72ed2640c4075f479a95371`.
+
+`SMOKE-MENDEL model=arete-27b-q3km level=xhigh task=xtend window=61440 pi=1.5.0 calls=14 distinct=14 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=14621 commits=1 clean=yes end=stop wall_s=122 verdict=pass`
+
+This smoke is unscored. It permits the full simulator(mendel) blocks
+after the EvalPlus gate. Raw session, config, fixture and logs are in
+`results/arete-tool-smoke/`.

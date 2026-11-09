@@ -525,3 +525,111 @@
 [54371] 12.35.410.703 I slot print_timing: id  0 | task 3238 |    graphs reused =       3208
 [54371] 12.35.410.703 I slot print_timing: id  0 | task 3238 |   graph reallocs =          0    /     0        (same size) / (changed size)
 [54371] 12.35.411.445 I slot      release: id  0 | task 3238 | stop processing: n_tokens = 33531, truncated = 0
+18.45.189.481 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 54371
+[54371] 18.30.871.903 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 33531, t_last = 44781304247
+[54371] 18.30.872.108 I slot launch_slot_: id  0 | task 3513 | processing task, is_child = 0
+[54371] 18.35.115.899 I slot print_timing: id  0 | task 3513 | prompt processing, n_tokens =   4096, progress = 0.39, t =   4.24 s / 965.18 tokens per second
+[54371] 18.37.410.758 I slot print_timing: id  0 | task 3513 | prompt processing, n_tokens =   6144, progress = 0.58, t =   6.54 s / 939.65 tokens per second
+[54371] 18.39.749.120 I slot print_timing: id  0 | task 3513 | prompt processing, n_tokens =   8192, progress = 0.77, t =   8.88 s / 922.84 tokens per second
+[54371] 18.42.038.482 I slot print_timing: id  0 | task 3513 | prompt processing, n_tokens =  10070, progress = 0.95, t =  11.17 s / 901.82 tokens per second
+[54371] 18.42.549.928 I slot print_timing: id  0 | task 3513 | prompt processing, n_tokens =  10518, progress = 0.99, t =  11.68 s / 900.68 tokens per second
+[54371] 18.42.845.010 I slot print_timing: id  0 | task 3513 | prompt processing, n_tokens =  10582, progress = 1.00, t =  11.97 s / 883.83 tokens per second
+[54371] 18.46.669.566 I slot print_timing: id  0 | task 3513 | n_gen =    100, tg =  26.61 t/s, tg_3s =  26.88 t/s
+[54371] 18.49.676.621 I slot print_timing: id  0 | task 3513 | n_gen =    180, tg =  26.61 t/s, tg_3s =  26.60 t/s
+[54371] 18.50.052.542 I slot print_timing: id  0 | task 3513 | prompt eval time =   12077.20 ms / 10586 tokens (    1.14 ms per token,   876.53 tokens per second)
+[54371] 18.50.052.544 I slot print_timing: id  0 | task 3513 |        eval time =    7103.23 ms /   190 tokens (   37.58 ms per token,    26.61 tokens per second)
+[54371] 18.50.052.544 I slot print_timing: id  0 | task 3513 |       total time =   19180.42 ms / 10776 tokens
+[54371] 18.50.052.545 I slot print_timing: id  0 | task 3513 |    graphs reused =       3395
+[54371] 18.50.052.545 I slot print_timing: id  0 | task 3513 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[54371] 18.50.052.838 I slot      release: id  0 | task 3513 | stop processing: n_tokens = 10775, truncated = 0
+19.04.400.266 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 54371
+[54371] 18.50.084.764 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.992 (> 0.100 thold), f_keep = 1.000
+[54371] 18.50.084.960 I slot launch_slot_: id  0 | task 3711 | processing task, is_child = 0
+[54371] 18.54.031.898 I slot print_timing: id  0 | task 3711 | n_gen =    100, tg =  26.55 t/s, tg_3s =  26.82 t/s
+[54371] 18.57.044.970 I slot print_timing: id  0 | task 3711 | n_gen =    180, tg =  26.55 t/s, tg_3s =  26.55 t/s
+[54371] 18.58.855.244 I slot print_timing: id  0 | task 3711 | prompt eval time =     218.01 ms /    86 tokens (    2.53 ms per token,   394.48 tokens per second)
+[54371] 18.58.855.246 I slot print_timing: id  0 | task 3711 |        eval time =    8552.26 ms /   228 tokens (   37.68 ms per token,    26.54 tokens per second)
+[54371] 18.58.855.246 I slot print_timing: id  0 | task 3711 |       total time =    8770.27 ms /   314 tokens
+[54371] 18.58.855.247 I slot print_timing: id  0 | task 3711 |    graphs reused =       3620
+[54371] 18.58.855.247 I slot print_timing: id  0 | task 3711 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[54371] 18.58.855.544 I slot      release: id  0 | task 3711 | stop processing: n_tokens = 11088, truncated = 0
+19.13.194.321 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 54371
+[54371] 18.58.880.697 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.986 (> 0.100 thold), f_keep = 1.000
+[54371] 18.58.880.881 I slot launch_slot_: id  0 | task 3941 | processing task, is_child = 0
+[54371] 19.02.923.816 I slot print_timing: id  0 | task 3941 | n_gen =    100, tg =  26.41 t/s, tg_3s =  26.68 t/s
+[54371] 19.05.942.950 I slot print_timing: id  0 | task 3941 | n_gen =    180, tg =  26.45 t/s, tg_3s =  26.50 t/s
+[54371] 19.08.961.542 I slot print_timing: id  0 | task 3941 | n_gen =    260, tg =  26.47 t/s, tg_3s =  26.50 t/s
+[54371] 19.09.376.602 I slot print_timing: id  0 | task 3941 | prompt eval time =     295.04 ms /   158 tokens (    1.87 ms per token,   535.52 tokens per second)
+[54371] 19.09.376.603 I slot print_timing: id  0 | task 3941 |        eval time =   10200.67 ms /   271 tokens (   37.78 ms per token,    26.47 tokens per second)
+[54371] 19.09.376.604 I slot print_timing: id  0 | task 3941 |       total time =   10495.71 ms /   429 tokens
+[54371] 19.09.376.604 I slot print_timing: id  0 | task 3941 |    graphs reused =       3888
+[54371] 19.09.376.605 I slot print_timing: id  0 | task 3941 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[54371] 19.09.376.935 I slot      release: id  0 | task 3941 | stop processing: n_tokens = 11516, truncated = 0
+19.23.716.555 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 54371
+[54371] 19.09.403.946 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[54371] 19.09.404.129 I slot launch_slot_: id  0 | task 4214 | processing task, is_child = 0
+[54371] 19.13.306.162 I slot print_timing: id  0 | task 4214 | n_gen =    100, tg =  26.44 t/s, tg_3s =  26.71 t/s
+[54371] 19.16.332.283 I slot print_timing: id  0 | task 4214 | n_gen =    180, tg =  26.44 t/s, tg_3s =  26.44 t/s
+[54371] 19.19.362.836 I slot print_timing: id  0 | task 4214 | n_gen =    260, tg =  26.43 t/s, tg_3s =  26.40 t/s
+[54371] 19.22.396.800 I slot print_timing: id  0 | task 4214 | n_gen =    340, tg =  26.41 t/s, tg_3s =  26.37 t/s
+[54371] 19.25.432.772 I slot print_timing: id  0 | task 4214 | n_gen =    420, tg =  26.40 t/s, tg_3s =  26.35 t/s
+[54371] 19.26.948.428 I slot print_timing: id  0 | task 4214 | prompt eval time =     157.93 ms /    34 tokens (    4.65 ms per token,   215.28 tokens per second)
+[54371] 19.26.948.430 I slot print_timing: id  0 | task 4214 |        eval time =   17386.36 ms /   460 tokens (   37.88 ms per token,    26.40 tokens per second)
+[54371] 19.26.948.431 I slot print_timing: id  0 | task 4214 |       total time =   17544.29 ms /   494 tokens
+[54371] 19.26.948.431 I slot print_timing: id  0 | task 4214 |    graphs reused =       4345
+[54371] 19.26.948.431 I slot print_timing: id  0 | task 4214 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[54371] 19.26.948.749 I slot      release: id  0 | task 4214 | stop processing: n_tokens = 12009, truncated = 0
+19.41.288.499 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 54371
+[54371] 19.26.978.453 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.985 (> 0.100 thold), f_keep = 1.000
+[54371] 19.26.978.637 I slot launch_slot_: id  0 | task 4676 | processing task, is_child = 0
+[54371] 19.31.078.778 I slot print_timing: id  0 | task 4676 | n_gen =    100, tg =  26.35 t/s, tg_3s =  26.62 t/s
+[54371] 19.34.081.189 I slot print_timing: id  0 | task 4676 | n_gen =    179, tg =  26.33 t/s, tg_3s =  26.31 t/s
+[54371] 19.37.083.857 I slot print_timing: id  0 | task 4676 | n_gen =    258, tg =  26.33 t/s, tg_3s =  26.31 t/s
+[54371] 19.40.086.410 I slot print_timing: id  0 | task 4676 | n_gen =    337, tg =  26.32 t/s, tg_3s =  26.31 t/s
+[54371] 19.43.095.712 I slot print_timing: id  0 | task 4676 | n_gen =    416, tg =  26.31 t/s, tg_3s =  26.25 t/s
+[54371] 19.46.103.812 I slot print_timing: id  0 | task 4676 | n_gen =    495, tg =  26.30 t/s, tg_3s =  26.26 t/s
+[54371] 19.46.560.408 I slot print_timing: id  0 | task 4676 | prompt eval time =     342.96 ms /   189 tokens (    1.81 ms per token,   551.08 tokens per second)
+[54371] 19.46.560.410 I slot print_timing: id  0 | task 4676 |        eval time =   19238.80 ms /   507 tokens (   38.02 ms per token,    26.30 tokens per second)
+[54371] 19.46.560.410 I slot print_timing: id  0 | task 4676 |       total time =   19581.76 ms /   696 tokens
+[54371] 19.46.560.411 I slot print_timing: id  0 | task 4676 |    graphs reused =       4848
+[54371] 19.46.560.411 I slot print_timing: id  0 | task 4676 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[54371] 19.46.560.733 I slot      release: id  0 | task 4676 | stop processing: n_tokens = 12704, truncated = 0
+20.00.941.724 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 54371
+[54371] 19.46.633.389 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.994 (> 0.100 thold), f_keep = 1.000
+[54371] 19.46.633.582 I slot launch_slot_: id  0 | task 5185 | processing task, is_child = 0
+[54371] 19.50.616.981 I slot print_timing: id  0 | task 5185 | n_gen =    100, tg =  26.24 t/s, tg_3s =  26.50 t/s
+[54371] 19.53.625.383 I slot print_timing: id  0 | task 5185 | n_gen =    179, tg =  26.25 t/s, tg_3s =  26.26 t/s
+[54371] 19.56.630.929 I slot print_timing: id  0 | task 5185 | n_gen =    258, tg =  26.26 t/s, tg_3s =  26.28 t/s
+[54371] 19.59.645.668 I slot print_timing: id  0 | task 5185 | n_gen =    337, tg =  26.25 t/s, tg_3s =  26.20 t/s
+[54371] 20.01.172.658 I slot print_timing: id  0 | task 5185 | prompt eval time =     209.94 ms /    78 tokens (    2.69 ms per token,   371.53 tokens per second)
+[54371] 20.01.172.660 I slot print_timing: id  0 | task 5185 |        eval time =   14329.12 ms /   377 tokens (   38.11 ms per token,    26.24 tokens per second)
+[54371] 20.01.172.660 I slot print_timing: id  0 | task 5185 |       total time =   14539.06 ms /   455 tokens
+[54371] 20.01.172.661 I slot print_timing: id  0 | task 5185 |    graphs reused =       5221
+[54371] 20.01.172.661 I slot print_timing: id  0 | task 5185 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[54371] 20.01.173.000 I slot      release: id  0 | task 5185 | stop processing: n_tokens = 13158, truncated = 0
+20.15.516.276 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 54371
+[54371] 20.01.210.014 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.957 (> 0.100 thold), f_keep = 1.000
+[54371] 20.01.210.194 I slot launch_slot_: id  0 | task 5564 | processing task, is_child = 0
+[54371] 20.05.820.151 I slot print_timing: id  0 | task 5564 | n_gen =    100, tg =  26.11 t/s, tg_3s =  26.37 t/s
+[54371] 20.08.850.210 I slot print_timing: id  0 | task 5564 | n_gen =    179, tg =  26.09 t/s, tg_3s =  26.07 t/s
+[54371] 20.11.878.783 I slot print_timing: id  0 | task 5564 | n_gen =    258, tg =  26.09 t/s, tg_3s =  26.08 t/s
+[54371] 20.14.910.753 I slot print_timing: id  0 | task 5564 | n_gen =    337, tg =  26.08 t/s, tg_3s =  26.06 t/s
+[54371] 20.17.947.141 I slot print_timing: id  0 | task 5564 | n_gen =    416, tg =  26.07 t/s, tg_3s =  26.02 t/s
+[54371] 20.20.676.860 I slot print_timing: id  0 | task 5564 | prompt eval time =     817.66 ms /   590 tokens (    1.39 ms per token,   721.57 tokens per second)
+[54371] 20.20.676.862 I slot print_timing: id  0 | task 5564 |        eval time =   18648.99 ms /   487 tokens (   38.37 ms per token,    26.06 tokens per second)
+[54371] 20.20.676.863 I slot print_timing: id  0 | task 5564 |       total time =   19466.66 ms /  1077 tokens
+[54371] 20.20.676.863 I slot print_timing: id  0 | task 5564 |    graphs reused =       5704
+[54371] 20.20.676.864 I slot print_timing: id  0 | task 5564 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[54371] 20.20.677.234 I slot      release: id  0 | task 5564 | stop processing: n_tokens = 14234, truncated = 0
+20.35.023.285 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 54371
+[54371] 20.20.719.046 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.994 (> 0.100 thold), f_keep = 1.000
+[54371] 20.20.719.239 I slot launch_slot_: id  0 | task 6054 | processing task, is_child = 0
+[54371] 20.24.770.977 I slot print_timing: id  0 | task 6054 | n_gen =    100, tg =  26.00 t/s, tg_3s =  26.26 t/s
+[54371] 20.27.804.588 I slot print_timing: id  0 | task 6054 | n_gen =    179, tg =  26.02 t/s, tg_3s =  26.04 t/s
+[54371] 20.30.839.983 I slot print_timing: id  0 | task 6054 | n_gen =    258, tg =  26.02 t/s, tg_3s =  26.03 t/s
+[54371] 20.32.496.679 I slot print_timing: id  0 | task 6054 | prompt eval time =     243.98 ms /    86 tokens (    2.84 ms per token,   352.49 tokens per second)
+[54371] 20.32.496.681 I slot print_timing: id  0 | task 6054 |        eval time =   11533.45 ms /   301 tokens (   38.44 ms per token,    26.01 tokens per second)
+[54371] 20.32.496.681 I slot print_timing: id  0 | task 6054 |       total time =   11777.43 ms /   387 tokens
+[54371] 20.32.496.682 I slot print_timing: id  0 | task 6054 |    graphs reused =       6001
+[54371] 20.32.496.682 I slot print_timing: id  0 | task 6054 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[54371] 20.32.497.057 I slot      release: id  0 | task 6054 | stop processing: n_tokens = 14620, truncated = 0

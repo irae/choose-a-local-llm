@@ -1,0 +1,9 @@
+{
+  "compaction": {
+    "enabled": true,
+    "keepRecentTokens": 8192
+  },
+  "retry": {
+    "enabled": true
+  }
+}
