@@ -1,6 +1,6 @@
 # Run 33 state
 
-Planned 2026-11-08. No model test has started.
+Planned 2026-11-08. Block records follow below.
 
 Read `AGENT.md` for the order and fixed identities. Record each derived
 cache choice, allocation ceiling, clean depth and harness window here,
@@ -136,4 +136,14 @@ decide whether this affects the KV readings.
 | model | KV | serving context | clean depth | harness window | source |
 |---|---|---|---|---|---|
 | Arete | pending | pending | pending | pending | |
-| S5-nano | pending | pending | pending | pending | |
+| S5-nano | q8_0 | pending | pending | pending | `results/s5-kv-decision.md` |
+
+## S5 coordinator decision
+
+Use q8_0 KV. The timed cells are accepted with the pre-cell swap
+increase recorded as a deviation. The full decision is in
+[results/s5-kv-decision.md](results/s5-kv-decision.md).
+The depth block must set the final serving context and harness window.
+The new pending site row and pi id are `s5-nano-q8`. The initial
+32768-token harness entry comes from the short test, not a full depth
+ceiling. The run's newer depth result must replace it.

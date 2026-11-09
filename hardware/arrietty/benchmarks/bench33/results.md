@@ -1,7 +1,7 @@
 # Run 33 results
 
-No model measurement has run. The run tests Arete Q3_K_M and S5-nano
-Q8_0 on arrietty with official llama.cpp stable v0.9.0.
+The run tests Arete Q3_K_M and S5-nano Q8_0 on arrietty with official
+llama.cpp stable v0.9.0. Full quality and agent results are pending.
 
 ## Machine setup
 
@@ -36,14 +36,16 @@ speed run used the same pinned Q8_0 model file as the f16 run.
 
 The smoke results read LEVEL at the same 16,384-token budget. The
 candidate is q8_0 because the speed curves are within 10% and both
-types loaded at `-c 34816`. The coordinator records the final choice.
+types loaded at `-c 34816`. The coordinator selected q8_0.
 Raw results, memory logs, server logs, resolved arguments, warmup
 responses and smoke files are in `results/`.
 
 The direct machine-start sample showed 0 MiB swap used. The first f16
 cell began at 13,288 KiB, and every measured cell had the same value
 before and after. The growth happened before the first speed cell. The
-coordinator must decide whether this affects the readings.
+coordinator accepted the timed readings with this deviation. The
+cells show zero observed swap growth. See the
+[KV decision](results/s5-kv-decision.md).
 
 Record KV comparisons and smoke verdicts first. Smokes are unscored
 and stay in this run. Add the measured depth curves, full EvalPlus
