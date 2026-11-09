@@ -118,7 +118,7 @@ Read this once and the rest of the page is detail.
 ```bash
 DEPTH_LIST=4096,8192,16384,24576,32768,49152,65536 \
 MODEL=<the id the server answers to> \
-SWEEP_BASE=http://127.0.0.1:8081 \
+SWEEP_BASE=http://127.0.0.1:8888 \
 python3 ~/code/local-llm-eval-tools/slow-context-creep/creep.py llama \
   > ~/.local/share/slow-context-creep/<config>-creep.tsv 2>&1
 ```

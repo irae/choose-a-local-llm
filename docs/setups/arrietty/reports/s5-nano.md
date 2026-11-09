@@ -6,7 +6,7 @@ Backends: llama-server · [Publisher GGUF](https://huggingface.co/maritaca-ai/S5
 <div class="kpis">
   <div class="kpi"><b>261,120</b><span>Deepest clean used context</span><small>258,048-token harness window</small></div>
   <div class="kpi"><b>77.37 / 30.59</b><span>Decode tok/s, shallow / deep</span></div>
-  <div class="kpi"><b>0.811 / 0.726</b><span>EvalPlus base / plus, thinking on</span><small>0 empty, 26 forced of 164</small></div>
+  <div class="kpi"><b>0.841 / 0.774</b><span>EvalPlus base / plus, BF16 / f16 KV</span><small>64K, 0 empty, 31 forced of 164</small></div>
   <div class="kpi"><b>not run</b><span>Agent task</span></div>
 </div>
 <!-- gen:model-kpis:end -->
@@ -17,7 +17,8 @@ Benchmark run 33 uses official llama.cpp stable v0.9.0. The thinking quality gat
 
 - The Q8_0 build serves the full 262,144-token allocation on this card.
 - Decode reaches 30.59 tok/s at 261,120 used tokens with q8_0 KV.
-- Think mode delivered code for all 164 quality problems.
+- BF16/f16 Think scored 0.841 base and 0.774 plus at a 65,536-token allocation.
+- Both full quality runs delivered code for all 164 problems. The full agent task was not run.
 
 ## All configs
 
@@ -39,7 +40,7 @@ llama-server -m "$(hf download maritaca-ai/S5-nano-GGUF S5-nano-Q8_0.gguf --revi
   --alias s5-nano-q8 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 262144 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 <!-- gen:model-configs:end -->
 
@@ -53,11 +54,25 @@ Fast mode scored 133 base passes and 119 plus passes out of 164, or 0.811 / 0.72
 
 Instruct mode, with thinking disabled, scored 118 base passes and 104 plus passes out of 164, or 0.720 / 0.634. No answer was empty or forced. Active wall was 25.5 minutes at the same 16,384-token output budget, without a server reasoning budget. This is a separate quality result. The agent task was not run.
 
+BF16 weights with f16 KV scored 138 base passes and 127 plus passes
+out of 164, or 0.841 / 0.774. No answer was empty; 31 answers were
+forced at the 8,192-token thinking budget. Output budget was 16,384,
+temperature was 0, and the serving allocation was 65,536. Both weights
+and KV differ from the Q8_0/q8_0 baseline, so the score difference does
+not isolate either change. The full agent task remains unmeasured.
+
+Active time was 221.2–222.1 minutes across three parts. Two T3
+interruptions preserved completed samples. The table uses the upper
+bound, 222.1 minutes; interruption gaps do not count. No 64K decode
+curve was measured, so the quality table leaves speed blank for this
+configuration. The separate depth curve used a 204,800-token allocation.
+
 <!-- gen:model-evalplus:start -->
 | config | think | budget | Scores | empties | forced | tok/s | wall |
 |---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="S5-nano" quant="BF16" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="f16" effort="on" page="/binaries/s5-nano-maritaca-bf16" />](../benchmarks/s5-nano.md) | 8192 | 16384 | <ScoreCell value="0.841/0.774" sub="100% completion" top /> | none | 31/164 | — | 3h42 |
 | [<ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" page="/binaries/s5-nano-maritaca-q8" />](../benchmarks/s5-nano.md) | 8192 | 16384 | <ScoreCell value="0.811/0.726" sub="100% completion" top /> | none | 26/164 | <TokCell shallow="77.37" deep="30.59" /> | 1h56 |
-| [<ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="off" page="/binaries/s5-nano-maritaca-q8" />](../benchmarks/s5-nano.md) | none | 16384 | <ScoreCell value="0.720/0.634" sub="100% completion" top /> | none | 0/164 | <TokCell shallow="77.37" deep="30.59" /> | 0h26 |
+| [<ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="off" page="/binaries/s5-nano-maritaca-q8" />](../benchmarks/s5-nano.md) | none | 16384 | <ScoreCell value="0.720/0.634" sub="100% completion" /> | none | 0/164 | <TokCell shallow="77.37" deep="30.59" /> | 0h26 |
 <!-- gen:model-evalplus:end -->
 
 ## Agent task

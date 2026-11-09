@@ -52,7 +52,7 @@ llama-server -m "$(hf download ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF Qwen3.8-27B-
   --alias qwen3.8-27b-ista-q8 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 65536 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 
 <ModelSpec base="Qwen3.8-27B" quant="UD-IQ3_S" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.8-27B-GGUF" kv="q8_0" effort="xhigh" page="/binaries/qwen38-unsloth-ud-iq3s" />
@@ -64,7 +64,7 @@ llama-server -m "$(hf download unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-IQ3_S.ggu
   --alias qwen3.8-27b-iq3s-q8 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 65536 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 <!-- gen:model-configs:end -->
 

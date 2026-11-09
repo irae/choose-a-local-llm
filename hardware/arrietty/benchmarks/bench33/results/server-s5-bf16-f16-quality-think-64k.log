@@ -1,0 +1,481 @@
+0.00.000.692 I srv  llama_server: initializing ...
+0.00.057.958 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.057.961 I srv  server_run_r: starting server in router mode. models will be automatically loaded on-demand
+0.00.245.096 E gguf_init_from_reader: tensor 'output.weight' has invalid ggml type 143. should be in [0, 44)
+0.00.245.100 E gguf_init_from_reader: failed to read tensor info
+0.00.419.086 I srv    operator(): Available models (6):
+0.00.419.089 I srv    operator():   [     cache] FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF:NVFP4
+0.00.419.090 I srv    operator():   [     cache] ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:MTP
+0.00.419.090 I srv    operator():   [     cache] OS-Software/Ternary-Bonsai-2-27B-Uncensored-Heretic-GGUF:PTQ1_0
+0.00.419.090 I srv    operator():   [     cache] catlilface/Gemma-4-26B-A4B-NVFP4-GGUF:NVFP4Q8
+0.00.419.090 I srv    operator():   [    preset] s5-nano-bf16-f16
+0.00.419.090 I srv    operator():   [     cache] unsloth/gemma-4-12b-it-GGUF:Q4_K_XL
+0.00.419.181 W srv  server_setup: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+0.00.419.185 W srv  server_setup: security: router mode enabled - do not expose to untrusted environments
+0.00.420.552 I srv  server_on_li: listening on http://127.0.0.1:8080
+0.42.845.655 I srv          join: request for name=s5-nano-bf16-f16 queued at position 1
+0.42.845.658 I srv  ensure_model: waiting until model name=s5-nano-bf16-f16 is fully loaded...
+0.42.845.661 I srv  ensure_model: slot available, loading queued model name=s5-nano-bf16-f16
+0.42.845.701 I srv          load: spawning server instance with name=s5-nano-bf16-f16 on port 37695
+0.42.845.726 I srv          load: spawning server instance with args:
+0.42.845.727 I srv          load:   /home/irae/.local/share/mise/installs/llama-cpp/b12110/llama-server
+0.42.845.728 I srv          load:   --chat-template-kwargs
+0.42.845.728 I srv          load:   {"enable_thinking":true}
+0.42.845.728 I srv          load:   --cors-origins
+0.42.845.728 I srv          load:   *
+0.42.845.728 I srv          load:   --host
+0.42.845.728 I srv          load:   127.0.0.1
+0.42.845.728 I srv          load:   --jinja
+0.42.845.728 I srv          load:   --log-colors
+0.42.845.728 I srv          load:   off
+0.42.845.729 I srv          load:   --no-mmproj-auto
+0.42.845.729 I srv          load:   --port
+0.42.845.730 I srv          load:   37695
+0.42.845.730 I srv          load:   --reasoning-budget
+0.42.845.730 I srv          load:   8192
+0.42.845.730 I srv          load:   --reasoning-budget-message
+0.42.845.730 I srv          load:   Thinking budget reached. Give the final answer now.
+0.42.845.730 I srv          load:   --sleep-idle-seconds
+0.42.845.730 I srv          load:   7200
+0.42.845.730 I srv          load:   --alias
+0.42.845.730 I srv          load:   s5-nano-bf16-f16
+0.42.845.730 I srv          load:   --ctx-size
+0.42.845.731 I srv          load:   65536
+0.42.845.731 I srv          load:   --cache-ram
+0.42.845.731 I srv          load:   0
+0.42.845.731 I srv          load:   --cache-type-k
+0.42.845.731 I srv          load:   f16
+0.42.845.731 I srv          load:   --cache-type-v
+0.42.845.731 I srv          load:   f16
+0.42.845.731 I srv          load:   --flash-attn
+0.42.845.731 I srv          load:   on
+0.42.845.731 I srv          load:   --fit
+0.42.845.731 I srv          load:   off
+0.42.845.731 I srv          load:   --model
+0.42.845.732 I srv          load:   /home/irae/.cache/huggingface/hub/models--maritaca-ai--S5-nano-GGUF/snapshots/5fd041274829d60aeeba1e2edc4aabb621a432e4/S5-nano-BF16.gguf
+0.42.845.732 I srv          load:   --n-gpu-layers
+0.42.845.732 I srv          load:   999
+0.42.845.732 I srv          load:   --parallel
+0.42.845.732 I srv          load:   1
+[37695] 0.00.000.551 W Setting 'enable_thinking' via --chat-template-kwargs is deprecated. Use --reasoning on / --reasoning off instead.
+[37695] 0.00.047.059 I srv  llama_server: initializing ...
+[37695] 0.00.047.073 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+[37695] 0.00.047.372 W srv  server_setup: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+[37695] 0.00.048.838 I srv    load_model: loading model '/home/irae/.cache/huggingface/hub/models--maritaca-ai--S5-nano-GGUF/snapshots/5fd041274829d60aeeba1e2edc4aabb621a432e4/S5-nano-BF16.gguf'
+[37695] 0.00.346.384 W model has unused tensor blk.32.attn_norm.weight (size = 10240 bytes) -- ignoring
+[37695] 0.00.346.390 W model has unused tensor blk.32.post_attention_norm.weight (size = 10240 bytes) -- ignoring
+[37695] 0.00.346.396 W model has unused tensor blk.32.attn_q.weight (size = 41943040 bytes) -- ignoring
+[37695] 0.00.346.398 W model has unused tensor blk.32.attn_k.weight (size = 5242880 bytes) -- ignoring
+[37695] 0.00.346.400 W model has unused tensor blk.32.attn_v.weight (size = 5242880 bytes) -- ignoring
+[37695] 0.00.346.407 W model has unused tensor blk.32.attn_output.weight (size = 20971520 bytes) -- ignoring
+[37695] 0.00.346.409 W model has unused tensor blk.32.attn_q_norm.weight (size = 1024 bytes) -- ignoring
+[37695] 0.00.346.411 W model has unused tensor blk.32.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+[37695] 0.00.346.413 W model has unused tensor blk.32.ffn_gate.weight (size = 47185920 bytes) -- ignoring
+[37695] 0.00.346.415 W model has unused tensor blk.32.ffn_down.weight (size = 47185920 bytes) -- ignoring
+[37695] 0.00.346.417 W model has unused tensor blk.32.ffn_up.weight (size = 47185920 bytes) -- ignoring
+[37695] 0.00.346.420 W model has unused tensor blk.32.nextn.eh_proj.weight (size = 26214400 bytes) -- ignoring
+[37695] 0.00.346.422 W model has unused tensor blk.32.nextn.enorm.weight (size = 10240 bytes) -- ignoring
+[37695] 0.00.346.424 W model has unused tensor blk.32.nextn.hnorm.weight (size = 10240 bytes) -- ignoring
+[37695] 0.00.346.431 W model has unused tensor blk.32.nextn.shared_head_norm.weight (size = 10240 bytes) -- ignoring
+[37695] 0.01.541.695 I cmn          init: llama threadpool init, n_threads = 6
+[37695] 0.01.681.785 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 65536, kv_unified = 'false'
+[37695] 0.01.681.851 W srv          init: --cache-idle-slots requires --cache-ram, disabling
+[37695] 0.01.685.233 W srv          init: chat template supports preserving reasoning, it is enabled by default (may use more tokens, disable via --no-reasoning-preserve)
+[37695] 0.01.685.287 I srv  server_run_i: model loaded
+[37695] 0.01.685.293 I srv  server_on_li: listening on http://127.0.0.1:37695
+[37695] 0.01.685.376 I srv    operator(): child server monitoring thread started, waiting for EOF on stdin...
+0.44.535.921 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 0.01.688.006 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 0, t_last = -1
+[37695] 0.01.688.067 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+[37695] 0.02.562.147 I slot print_timing: id  0 | task 0 | prompt eval time =     324.61 ms /    16 tokens (   20.29 ms per token,    49.29 tokens per second)
+[37695] 0.02.562.151 I slot print_timing: id  0 | task 0 |        eval time =     549.45 ms /    24 tokens (   23.89 ms per token,    41.86 tokens per second)
+[37695] 0.02.562.151 I slot print_timing: id  0 | task 0 |       total time =     874.05 ms /    40 tokens
+[37695] 0.02.562.155 I slot print_timing: id  0 | task 0 |    graphs reused =         23
+[37695] 0.02.562.155 I slot print_timing: id  0 | task 0 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 0.02.562.179 I slot      release: id  0 | task 0 | stop processing: n_tokens = 39, truncated = 0
+1.35.971.133 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 0.53.122.815 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.294 (> 0.100 thold), f_keep = 0.128
+[37695] 0.53.122.870 I slot launch_slot_: id  0 | task 26 | processing task, is_child = 0
+[37695] 0.54.094.165 I slot print_timing: id  0 | task 26 | prompt eval time =     272.33 ms /    17 tokens (   16.02 ms per token,    62.42 tokens per second)
+[37695] 0.54.094.167 I slot print_timing: id  0 | task 26 |        eval time =     698.95 ms /    33 tokens (   21.84 ms per token,    45.78 tokens per second)
+[37695] 0.54.094.167 I slot print_timing: id  0 | task 26 |       total time =     971.28 ms /    50 tokens
+[37695] 0.54.094.168 I slot print_timing: id  0 | task 26 |    graphs reused =         54
+[37695] 0.54.094.168 I slot print_timing: id  0 | task 26 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 0.54.094.177 I slot      release: id  0 | task 26 | stop processing: n_tokens = 49, truncated = 0
+3.13.079.219 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 2.30.231.474 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 49, t_last = 77503934390
+[37695] 2.30.231.518 I slot launch_slot_: id  0 | task 61 | processing task, is_child = 0
+[37695] 2.33.479.493 I slot print_timing: id  0 | task 61 | n_gen =    138, tg =  45.54 t/s, tg_3s =  45.88 t/s
+[37695] 2.36.486.534 I slot print_timing: id  0 | task 61 | n_gen =    276, tg =  45.72 t/s, tg_3s =  45.89 t/s
+[37695] 2.39.504.434 I slot print_timing: id  0 | task 61 | n_gen =    414, tg =  45.72 t/s, tg_3s =  45.73 t/s
+[37695] 2.42.516.179 I slot print_timing: id  0 | task 61 | n_gen =    552, tg =  45.75 t/s, tg_3s =  45.82 t/s
+[37695] 2.45.527.306 I slot print_timing: id  0 | task 61 | n_gen =    690, tg =  45.76 t/s, tg_3s =  45.83 t/s
+[37695] 2.48.540.252 I slot print_timing: id  0 | task 61 | n_gen =    828, tg =  45.77 t/s, tg_3s =  45.80 t/s
+[37695] 2.51.550.221 I slot print_timing: id  0 | task 61 | n_gen =    965, tg =  45.73 t/s, tg_3s =  45.52 t/s
+[37695] 2.54.562.164 I slot print_timing: id  0 | task 61 | n_gen =   1103, tg =  45.74 t/s, tg_3s =  45.82 t/s
+[37695] 2.57.562.404 I slot print_timing: id  0 | task 61 | n_gen =   1240, tg =  45.73 t/s, tg_3s =  45.66 t/s
+[37695] 3.00.564.234 I slot print_timing: id  0 | task 61 | n_gen =   1377, tg =  45.73 t/s, tg_3s =  45.64 t/s
+[37695] 3.03.567.763 I slot print_timing: id  0 | task 61 | n_gen =   1514, tg =  45.72 t/s, tg_3s =  45.61 t/s
+[37695] 3.06.571.015 I slot print_timing: id  0 | task 61 | n_gen =   1651, tg =  45.71 t/s, tg_3s =  45.62 t/s
+[37695] 3.09.580.624 I slot print_timing: id  0 | task 61 | n_gen =   1788, tg =  45.69 t/s, tg_3s =  45.52 t/s
+[37695] 3.12.583.483 I slot print_timing: id  0 | task 61 | n_gen =   1925, tg =  45.69 t/s, tg_3s =  45.62 t/s
+[37695] 3.15.583.840 I slot print_timing: id  0 | task 61 | n_gen =   2062, tg =  45.69 t/s, tg_3s =  45.66 t/s
+[37695] 3.18.590.552 I slot print_timing: id  0 | task 61 | n_gen =   2199, tg =  45.68 t/s, tg_3s =  45.56 t/s
+[37695] 3.21.610.831 I slot print_timing: id  0 | task 61 | n_gen =   2336, tg =  45.66 t/s, tg_3s =  45.36 t/s
+[37695] 3.24.623.777 I slot print_timing: id  0 | task 61 | n_gen =   2473, tg =  45.65 t/s, tg_3s =  45.47 t/s
+[37695] 3.27.629.183 I slot print_timing: id  0 | task 61 | n_gen =   2610, tg =  45.65 t/s, tg_3s =  45.58 t/s
+[37695] 3.30.648.434 I slot print_timing: id  0 | task 61 | n_gen =   2747, tg =  45.63 t/s, tg_3s =  45.38 t/s
+[37695] 3.31.290.632 I slot print_timing: id  0 | task 61 | prompt eval time =     239.91 ms /   170 tokens (    1.41 ms per token,   708.60 tokens per second)
+[37695] 3.31.290.634 I slot print_timing: id  0 | task 61 |        eval time =   60819.19 ms /  2776 tokens (   21.92 ms per token,    45.63 tokens per second)
+[37695] 3.31.290.634 I slot print_timing: id  0 | task 61 |       total time =   61059.10 ms /  2946 tokens
+[37695] 3.31.290.635 I slot print_timing: id  0 | task 61 |    graphs reused =       2817
+[37695] 3.31.290.635 I slot print_timing: id  0 | task 61 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 3.31.290.650 I slot      release: id  0 | task 61 | stop processing: n_tokens = 2945, truncated = 0
+4.14.155.371 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 3.31.307.736 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.278 (> 0.100 thold), f_keep = 0.015
+[37695] 3.31.307.776 I slot launch_slot_: id  0 | task 2840 | processing task, is_child = 0
+[37695] 3.34.408.822 I slot print_timing: id  0 | task 2840 | n_gen =    139, tg =  45.80 t/s, tg_3s =  46.13 t/s
+[37695] 3.37.413.073 I slot print_timing: id  0 | task 2840 | n_gen =    277, tg =  45.87 t/s, tg_3s =  45.93 t/s
+[37695] 3.40.427.345 I slot print_timing: id  0 | task 2840 | n_gen =    415, tg =  45.84 t/s, tg_3s =  45.78 t/s
+[37695] 3.43.439.389 I slot print_timing: id  0 | task 2840 | n_gen =    553, tg =  45.83 t/s, tg_3s =  45.82 t/s
+[37695] 3.46.460.691 I slot print_timing: id  0 | task 2840 | n_gen =    691, tg =  45.80 t/s, tg_3s =  45.68 t/s
+[37695] 3.49.461.722 I slot print_timing: id  0 | task 2840 | n_gen =    829, tg =  45.83 t/s, tg_3s =  45.98 t/s
+[37695] 3.52.472.410 I slot print_timing: id  0 | task 2840 | n_gen =    967, tg =  45.83 t/s, tg_3s =  45.84 t/s
+[37695] 3.55.483.359 I slot print_timing: id  0 | task 2840 | n_gen =   1105, tg =  45.83 t/s, tg_3s =  45.83 t/s
+[37695] 3.58.485.876 I slot print_timing: id  0 | task 2840 | n_gen =   1242, tg =  45.81 t/s, tg_3s =  45.63 t/s
+[37695] 4.01.501.783 I slot print_timing: id  0 | task 2840 | n_gen =   1380, tg =  45.80 t/s, tg_3s =  45.76 t/s
+[37695] 4.04.523.150 I slot print_timing: id  0 | task 2840 | n_gen =   1518, tg =  45.79 t/s, tg_3s =  45.67 t/s
+[37695] 4.07.529.518 I slot print_timing: id  0 | task 2840 | n_gen =   1655, tg =  45.77 t/s, tg_3s =  45.57 t/s
+[37695] 4.10.545.002 I slot print_timing: id  0 | task 2840 | n_gen =   1793, tg =  45.77 t/s, tg_3s =  45.76 t/s
+[37695] 4.13.558.176 I slot print_timing: id  0 | task 2840 | n_gen =   1931, tg =  45.78 t/s, tg_3s =  45.80 t/s
+[37695] 4.16.578.250 I slot print_timing: id  0 | task 2840 | n_gen =   2068, tg =  45.75 t/s, tg_3s =  45.36 t/s
+[37695] 4.19.585.803 I slot print_timing: id  0 | task 2840 | n_gen =   2205, tg =  45.74 t/s, tg_3s =  45.55 t/s
+[37695] 4.22.592.273 I slot print_timing: id  0 | task 2840 | n_gen =   2342, tg =  45.73 t/s, tg_3s =  45.57 t/s
+[37695] 4.25.598.334 I slot print_timing: id  0 | task 2840 | n_gen =   2479, tg =  45.72 t/s, tg_3s =  45.57 t/s
+[37695] 4.28.601.776 I slot print_timing: id  0 | task 2840 | n_gen =   2616, tg =  45.71 t/s, tg_3s =  45.61 t/s
+[37695] 4.31.619.689 I slot print_timing: id  0 | task 2840 | n_gen =   2753, tg =  45.70 t/s, tg_3s =  45.40 t/s
+[37695] 4.34.632.297 I slot print_timing: id  0 | task 2840 | n_gen =   2890, tg =  45.69 t/s, tg_3s =  45.48 t/s
+[37695] 4.37.649.863 I slot print_timing: id  0 | task 2840 | n_gen =   3027, tg =  45.67 t/s, tg_3s =  45.40 t/s
+[37695] 4.40.671.376 I slot print_timing: id  0 | task 2840 | n_gen =   3164, tg =  45.66 t/s, tg_3s =  45.34 t/s
+[37695] 4.43.683.539 I slot print_timing: id  0 | task 2840 | n_gen =   3299, tg =  45.62 t/s, tg_3s =  44.82 t/s
+[37695] 4.46.704.469 I slot print_timing: id  0 | task 2840 | n_gen =   3436, tg =  45.61 t/s, tg_3s =  45.35 t/s
+[37695] 4.49.707.977 I slot print_timing: id  0 | task 2840 | n_gen =   3572, tg =  45.60 t/s, tg_3s =  45.28 t/s
+[37695] 4.52.711.577 I slot print_timing: id  0 | task 2840 | n_gen =   3699, tg =  45.48 t/s, tg_3s =  42.28 t/s
+[37695] 4.55.718.827 I slot print_timing: id  0 | task 2840 | n_gen =   3831, tg =  45.42 t/s, tg_3s =  43.89 t/s
+[37695] 4.58.738.343 I slot print_timing: id  0 | task 2840 | n_gen =   3968, tg =  45.42 t/s, tg_3s =  45.37 t/s
+[37695] 5.01.755.617 I slot print_timing: id  0 | task 2840 | n_gen =   4105, tg =  45.42 t/s, tg_3s =  45.41 t/s
+[37695] 5.04.776.933 I slot print_timing: id  0 | task 2840 | n_gen =   4242, tg =  45.42 t/s, tg_3s =  45.34 t/s
+[37695] 5.07.777.616 I slot print_timing: id  0 | task 2840 | n_gen =   4378, tg =  45.41 t/s, tg_3s =  45.32 t/s
+[37695] 5.10.781.769 I slot print_timing: id  0 | task 2840 | n_gen =   4514, tg =  45.41 t/s, tg_3s =  45.27 t/s
+[37695] 5.13.802.429 I slot print_timing: id  0 | task 2840 | n_gen =   4651, tg =  45.41 t/s, tg_3s =  45.35 t/s
+[37695] 5.16.804.438 I slot print_timing: id  0 | task 2840 | n_gen =   4786, tg =  45.39 t/s, tg_3s =  44.97 t/s
+[37695] 5.19.816.524 I slot print_timing: id  0 | task 2840 | n_gen =   4922, tg =  45.39 t/s, tg_3s =  45.15 t/s
+[37695] 5.22.828.347 I slot print_timing: id  0 | task 2840 | n_gen =   5058, tg =  45.38 t/s, tg_3s =  45.16 t/s
+[37695] 5.25.845.413 I slot print_timing: id  0 | task 2840 | n_gen =   5194, tg =  45.37 t/s, tg_3s =  45.08 t/s
+[37695] 5.28.857.292 I slot print_timing: id  0 | task 2840 | n_gen =   5330, tg =  45.37 t/s, tg_3s =  45.15 t/s
+[37695] 5.31.874.222 I slot print_timing: id  0 | task 2840 | n_gen =   5466, tg =  45.36 t/s, tg_3s =  45.08 t/s
+[37695] 5.34.894.104 I slot print_timing: id  0 | task 2840 | n_gen =   5595, tg =  45.30 t/s, tg_3s =  42.72 t/s
+[37695] 5.37.914.360 I slot print_timing: id  0 | task 2840 | n_gen =   5728, tg =  45.27 t/s, tg_3s =  44.04 t/s
+[37695] 5.40.932.222 I slot print_timing: id  0 | task 2840 | n_gen =   5863, tg =  45.25 t/s, tg_3s =  44.73 t/s
+[37695] 5.43.949.691 I slot print_timing: id  0 | task 2840 | n_gen =   5998, tg =  45.24 t/s, tg_3s =  44.74 t/s
+[37695] 5.46.966.330 I slot print_timing: id  0 | task 2840 | n_gen =   6133, tg =  45.23 t/s, tg_3s =  44.75 t/s
+[37695] 5.49.974.024 I slot print_timing: id  0 | task 2840 | n_gen =   6268, tg =  45.22 t/s, tg_3s =  44.88 t/s
+[37695] 5.52.980.762 I slot print_timing: id  0 | task 2840 | n_gen =   6403, tg =  45.22 t/s, tg_3s =  44.90 t/s
+[37695] 5.55.991.117 I slot print_timing: id  0 | task 2840 | n_gen =   6538, tg =  45.21 t/s, tg_3s =  44.85 t/s
+[37695] 5.59.007.576 I slot print_timing: id  0 | task 2840 | n_gen =   6673, tg =  45.20 t/s, tg_3s =  44.75 t/s
+[37695] 6.02.021.563 I slot print_timing: id  0 | task 2840 | n_gen =   6808, tg =  45.19 t/s, tg_3s =  44.79 t/s
+[37695] 6.05.034.863 I slot print_timing: id  0 | task 2840 | n_gen =   6943, tg =  45.18 t/s, tg_3s =  44.80 t/s
+[37695] 6.08.041.366 I slot print_timing: id  0 | task 2840 | n_gen =   7078, tg =  45.18 t/s, tg_3s =  44.90 t/s
+[37695] 6.11.063.338 I slot print_timing: id  0 | task 2840 | n_gen =   7213, tg =  45.17 t/s, tg_3s =  44.67 t/s
+[37695] 6.14.072.158 I slot print_timing: id  0 | task 2840 | n_gen =   7346, tg =  45.15 t/s, tg_3s =  44.20 t/s
+[37695] 6.17.082.843 I slot print_timing: id  0 | task 2840 | n_gen =   7479, tg =  45.13 t/s, tg_3s =  44.18 t/s
+[37695] 6.20.103.659 I slot print_timing: id  0 | task 2840 | n_gen =   7613, tg =  45.12 t/s, tg_3s =  44.36 t/s
+[37695] 6.23.126.271 I slot print_timing: id  0 | task 2840 | n_gen =   7742, tg =  45.08 t/s, tg_3s =  42.68 t/s
+[37695] 6.26.129.589 I slot print_timing: id  0 | task 2840 | n_gen =   7873, tg =  45.05 t/s, tg_3s =  43.62 t/s
+[37695] 6.29.132.111 I slot print_timing: id  0 | task 2840 | n_gen =   8003, tg =  45.02 t/s, tg_3s =  43.30 t/s
+[37695] 6.32.141.893 I slot print_timing: id  0 | task 2840 | n_gen =   8135, tg =  45.00 t/s, tg_3s =  43.86 t/s
+[37695] 6.35.152.562 I slot print_timing: id  0 | task 2840 | n_gen =   8269, tg =  44.99 t/s, tg_3s =  44.51 t/s
+[37695] 6.38.160.811 I slot print_timing: id  0 | task 2840 | n_gen =   8403, tg =  44.99 t/s, tg_3s =  44.54 t/s
+[37695] 6.41.180.635 I slot print_timing: id  0 | task 2840 | n_gen =   8535, tg =  44.97 t/s, tg_3s =  43.71 t/s
+[37695] 6.42.815.059 I slot print_timing: id  0 | task 2840 | prompt eval time =      87.80 ms /   148 tokens (    0.59 ms per token,  1685.69 tokens per second)
+[37695] 6.42.815.061 I slot print_timing: id  0 | task 2840 |        eval time =  191419.47 ms /  8605 tokens (   22.25 ms per token,    44.95 tokens per second)
+[37695] 6.42.815.062 I slot print_timing: id  0 | task 2840 |       total time =  191507.27 ms /  8753 tokens
+[37695] 6.42.815.063 I slot print_timing: id  0 | task 2840 |    graphs reused =      11386
+[37695] 6.42.815.063 I slot print_timing: id  0 | task 2840 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 6.42.815.081 I slot      release: id  0 | task 2840 | stop processing: n_tokens = 8766, truncated = 0
+7.25.690.094 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 6.42.842.238 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.298 (> 0.100 thold), f_keep = 0.004
+[37695] 6.42.842.288 I slot launch_slot_: id  0 | task 11447 | processing task, is_child = 0
+[37695] 6.45.944.583 I slot print_timing: id  0 | task 11447 | n_gen =    134, tg =  44.26 t/s, tg_3s =  44.60 t/s
+[37695] 6.48.945.674 I slot print_timing: id  0 | task 11447 | n_gen =    272, tg =  45.12 t/s, tg_3s =  45.98 t/s
+[37695] 6.51.953.075 I slot print_timing: id  0 | task 11447 | n_gen =    409, tg =  45.27 t/s, tg_3s =  45.55 t/s
+[37695] 6.54.975.251 I slot print_timing: id  0 | task 11447 | n_gen =    544, tg =  45.12 t/s, tg_3s =  44.67 t/s
+[37695] 6.57.993.351 I slot print_timing: id  0 | task 11447 | n_gen =    675, tg =  44.77 t/s, tg_3s =  43.40 t/s
+[37695] 7.01.000.920 I slot print_timing: id  0 | task 11447 | n_gen =    811, tg =  44.85 t/s, tg_3s =  45.22 t/s
+[37695] 7.04.018.312 I slot print_timing: id  0 | task 11447 | n_gen =    949, tg =  44.97 t/s, tg_3s =  45.73 t/s
+[37695] 7.07.036.772 I slot print_timing: id  0 | task 11447 | n_gen =   1084, tg =  44.94 t/s, tg_3s =  44.72 t/s
+[37695] 7.10.058.429 I slot print_timing: id  0 | task 11447 | n_gen =   1219, tg =  44.91 t/s, tg_3s =  44.68 t/s
+[37695] 7.13.065.406 I slot print_timing: id  0 | task 11447 | n_gen =   1353, tg =  44.88 t/s, tg_3s =  44.56 t/s
+[37695] 7.16.066.280 I slot print_timing: id  0 | task 11447 | n_gen =   1484, tg =  44.77 t/s, tg_3s =  43.65 t/s
+[37695] 7.19.067.269 I slot print_timing: id  0 | task 11447 | n_gen =   1617, tg =  44.73 t/s, tg_3s =  44.32 t/s
+[37695] 7.22.074.661 I slot print_timing: id  0 | task 11447 | n_gen =   1749, tg =  44.67 t/s, tg_3s =  43.89 t/s
+[37695] 7.25.083.650 I slot print_timing: id  0 | task 11447 | n_gen =   1886, tg =  44.73 t/s, tg_3s =  45.53 t/s
+[37695] 7.28.089.113 I slot print_timing: id  0 | task 11447 | n_gen =   2023, tg =  44.78 t/s, tg_3s =  45.58 t/s
+[37695] 7.31.098.097 I slot print_timing: id  0 | task 11447 | n_gen =   2160, tg =  44.83 t/s, tg_3s =  45.53 t/s
+[37695] 7.34.103.492 I slot print_timing: id  0 | task 11447 | n_gen =   2297, tg =  44.88 t/s, tg_3s =  45.58 t/s
+[37695] 7.37.107.504 I slot print_timing: id  0 | task 11447 | n_gen =   2434, tg =  44.92 t/s, tg_3s =  45.61 t/s
+[37695] 7.40.127.553 I slot print_timing: id  0 | task 11447 | n_gen =   2570, tg =  44.92 t/s, tg_3s =  45.03 t/s
+[37695] 7.43.140.749 I slot print_timing: id  0 | task 11447 | n_gen =   2705, tg =  44.92 t/s, tg_3s =  44.80 t/s
+[37695] 7.46.155.326 I slot print_timing: id  0 | task 11447 | n_gen =   2841, tg =  44.93 t/s, tg_3s =  45.11 t/s
+[37695] 7.49.157.400 I slot print_timing: id  0 | task 11447 | n_gen =   2977, tg =  44.94 t/s, tg_3s =  45.30 t/s
+[37695] 7.51.915.943 I slot print_timing: id  0 | task 11447 | prompt eval time =      97.48 ms /   117 tokens (    0.83 ms per token,  1200.25 tokens per second)
+[37695] 7.51.915.945 I slot print_timing: id  0 | task 11447 |        eval time =   68976.16 ms /  3101 tokens (   22.25 ms per token,    44.94 tokens per second)
+[37695] 7.51.915.946 I slot print_timing: id  0 | task 11447 |       total time =   69073.64 ms /  3218 tokens
+[37695] 7.51.915.946 I slot print_timing: id  0 | task 11447 |    graphs reused =      14473
+[37695] 7.51.915.947 I slot print_timing: id  0 | task 11447 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 7.51.915.962 I slot      release: id  0 | task 11447 | stop processing: n_tokens = 3231, truncated = 0
+8.34.770.079 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 7.51.922.361 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.236 (> 0.100 thold), f_keep = 0.012
+[37695] 7.51.922.409 I slot launch_slot_: id  0 | task 14550 | processing task, is_child = 0
+[37695] 7.55.030.918 I slot print_timing: id  0 | task 14550 | n_gen =    139, tg =  45.71 t/s, tg_3s =  46.04 t/s
+[37695] 7.58.052.012 I slot print_timing: id  0 | task 14550 | n_gen =    275, tg =  45.36 t/s, tg_3s =  45.02 t/s
+[37695] 8.01.072.690 I slot print_timing: id  0 | task 14550 | n_gen =    408, tg =  44.92 t/s, tg_3s =  44.03 t/s
+[37695] 8.04.087.473 I slot print_timing: id  0 | task 14550 | n_gen =    540, tg =  44.64 t/s, tg_3s =  43.78 t/s
+[37695] 8.07.104.870 I slot print_timing: id  0 | task 14550 | n_gen =    676, tg =  44.72 t/s, tg_3s =  45.07 t/s
+[37695] 8.07.366.199 I slot print_timing: id  0 | task 14550 | prompt eval time =      89.68 ms /   151 tokens (    0.59 ms per token,  1683.82 tokens per second)
+[37695] 8.07.366.202 I slot print_timing: id  0 | task 14550 |        eval time =   15354.10 ms /   688 tokens (   22.35 ms per token,    44.74 tokens per second)
+[37695] 8.07.366.202 I slot print_timing: id  0 | task 14550 |       total time =   15443.78 ms /   839 tokens
+[37695] 8.07.366.203 I slot print_timing: id  0 | task 14550 |    graphs reused =      15156
+[37695] 8.07.366.203 I slot print_timing: id  0 | task 14550 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 8.07.366.217 I slot      release: id  0 | task 14550 | stop processing: n_tokens = 852, truncated = 0
+8.50.224.251 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 8.07.376.490 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.274 (> 0.100 thold), f_keep = 0.053
+[37695] 8.07.376.530 I slot launch_slot_: id  0 | task 15240 | processing task, is_child = 0
+[37695] 8.10.476.134 I slot print_timing: id  0 | task 15240 | n_gen =    137, tg =  45.16 t/s, tg_3s =  45.49 t/s
+[37695] 8.13.479.582 I slot print_timing: id  0 | task 15240 | n_gen =    274, tg =  45.39 t/s, tg_3s =  45.61 t/s
+[37695] 8.16.481.864 I slot print_timing: id  0 | task 15240 | n_gen =    410, tg =  45.36 t/s, tg_3s =  45.30 t/s
+[37695] 8.19.491.384 I slot print_timing: id  0 | task 15240 | n_gen =    547, tg =  45.40 t/s, tg_3s =  45.52 t/s
+[37695] 8.22.504.297 I slot print_timing: id  0 | task 15240 | n_gen =    684, tg =  45.41 t/s, tg_3s =  45.47 t/s
+[37695] 8.25.513.671 I slot print_timing: id  0 | task 15240 | n_gen =    822, tg =  45.49 t/s, tg_3s =  45.86 t/s
+[37695] 8.28.516.684 I slot print_timing: id  0 | task 15240 | n_gen =    960, tg =  45.55 t/s, tg_3s =  45.95 t/s
+[37695] 8.31.525.238 I slot print_timing: id  0 | task 15240 | n_gen =   1098, tg =  45.59 t/s, tg_3s =  45.87 t/s
+[37695] 8.34.532.988 I slot print_timing: id  0 | task 15240 | n_gen =   1236, tg =  45.63 t/s, tg_3s =  45.88 t/s
+[37695] 8.36.209.766 I slot print_timing: id  0 | task 15240 | prompt eval time =      87.99 ms /   150 tokens (    0.59 ms per token,  1704.72 tokens per second)
+[37695] 8.36.209.768 I slot print_timing: id  0 | task 15240 |        eval time =   28745.24 ms /  1313 tokens (   21.91 ms per token,    45.64 tokens per second)
+[37695] 8.36.209.769 I slot print_timing: id  0 | task 15240 |       total time =   28833.23 ms /  1463 tokens
+[37695] 8.36.209.769 I slot print_timing: id  0 | task 15240 |    graphs reused =      16462
+[37695] 8.36.209.770 I slot print_timing: id  0 | task 15240 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 8.36.209.784 I slot      release: id  0 | task 15240 | stop processing: n_tokens = 1476, truncated = 0
+9.19.067.828 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 8.36.220.063 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.321 (> 0.100 thold), f_keep = 0.030
+[37695] 8.36.220.122 I slot launch_slot_: id  0 | task 16555 | processing task, is_child = 0
+[37695] 8.39.312.993 I slot print_timing: id  0 | task 16555 | n_gen =    139, tg =  45.95 t/s, tg_3s =  46.29 t/s
+[37695] 8.42.330.654 I slot print_timing: id  0 | task 16555 | n_gen =    277, tg =  45.84 t/s, tg_3s =  45.73 t/s
+[37695] 8.45.334.114 I slot print_timing: id  0 | task 16555 | n_gen =    415, tg =  45.88 t/s, tg_3s =  45.95 t/s
+[37695] 8.48.339.827 I slot print_timing: id  0 | task 16555 | n_gen =    553, tg =  45.89 t/s, tg_3s =  45.91 t/s
+[37695] 8.51.350.580 I slot print_timing: id  0 | task 16555 | n_gen =    691, tg =  45.88 t/s, tg_3s =  45.84 t/s
+[37695] 8.54.353.714 I slot print_timing: id  0 | task 16555 | n_gen =    829, tg =  45.89 t/s, tg_3s =  45.95 t/s
+[37695] 8.57.361.922 I slot print_timing: id  0 | task 16555 | n_gen =    967, tg =  45.89 t/s, tg_3s =  45.87 t/s
+[37695] 9.00.372.955 I slot print_timing: id  0 | task 16555 | n_gen =   1105, tg =  45.88 t/s, tg_3s =  45.83 t/s
+[37695] 9.03.387.055 I slot print_timing: id  0 | task 16555 | n_gen =   1243, tg =  45.87 t/s, tg_3s =  45.78 t/s
+[37695] 9.06.399.685 I slot print_timing: id  0 | task 16555 | n_gen =   1381, tg =  45.86 t/s, tg_3s =  45.81 t/s
+[37695] 9.09.417.858 I slot print_timing: id  0 | task 16555 | n_gen =   1519, tg =  45.85 t/s, tg_3s =  45.72 t/s
+[37695] 9.12.418.547 I slot print_timing: id  0 | task 16555 | n_gen =   1656, tg =  45.83 t/s, tg_3s =  45.66 t/s
+[37695] 9.15.436.510 I slot print_timing: id  0 | task 16555 | n_gen =   1794, tg =  45.83 t/s, tg_3s =  45.73 t/s
+[37695] 9.18.454.222 I slot print_timing: id  0 | task 16555 | n_gen =   1932, tg =  45.82 t/s, tg_3s =  45.73 t/s
+[37695] 9.19.000.010 I slot print_timing: id  0 | task 16555 | prompt eval time =      89.84 ms /   126 tokens (    0.71 ms per token,  1402.43 tokens per second)
+[37695] 9.19.000.013 I slot print_timing: id  0 | task 16555 |        eval time =   42690.03 ms /  1957 tokens (   21.83 ms per token,    45.82 tokens per second)
+[37695] 9.19.000.013 I slot print_timing: id  0 | task 16555 |       total time =   42779.88 ms /  2083 tokens
+[37695] 9.19.000.014 I slot print_timing: id  0 | task 16555 |    graphs reused =      18409
+[37695] 9.19.000.014 I slot print_timing: id  0 | task 16555 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 9.19.000.029 I slot      release: id  0 | task 16555 | stop processing: n_tokens = 2096, truncated = 0
+10.01.856.349 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 9.19.008.569 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.281 (> 0.100 thold), f_keep = 0.021
+[37695] 9.19.008.618 I slot launch_slot_: id  0 | task 18514 | processing task, is_child = 0
+[37695] 9.22.113.417 I slot print_timing: id  0 | task 18514 | n_gen =    140, tg =  46.07 t/s, tg_3s =  46.40 t/s
+[37695] 9.25.127.791 I slot print_timing: id  0 | task 18514 | n_gen =    279, tg =  46.09 t/s, tg_3s =  46.11 t/s
+[37695] 9.28.146.560 I slot print_timing: id  0 | task 18514 | n_gen =    418, tg =  46.07 t/s, tg_3s =  46.05 t/s
+[37695] 9.31.167.715 I slot print_timing: id  0 | task 18514 | n_gen =    557, tg =  46.06 t/s, tg_3s =  46.01 t/s
+[37695] 9.34.170.918 I slot print_timing: id  0 | task 18514 | n_gen =    695, tg =  46.04 t/s, tg_3s =  45.95 t/s
+[37695] 9.36.680.488 I slot print_timing: id  0 | task 18514 | prompt eval time =      87.42 ms /   146 tokens (    0.60 ms per token,  1670.00 tokens per second)
+[37695] 9.36.680.491 I slot print_timing: id  0 | task 18514 |        eval time =   17584.43 ms /   808 tokens (   21.79 ms per token,    45.89 tokens per second)
+[37695] 9.36.680.491 I slot print_timing: id  0 | task 18514 |       total time =   17671.86 ms /   954 tokens
+[37695] 9.36.680.492 I slot print_timing: id  0 | task 18514 |    graphs reused =      19212
+[37695] 9.36.680.492 I slot print_timing: id  0 | task 18514 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 9.36.680.509 I slot      release: id  0 | task 18514 | stop processing: n_tokens = 967, truncated = 0
+10.19.539.207 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 9.36.691.378 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.321 (> 0.100 thold), f_keep = 0.047
+[37695] 9.36.691.431 I slot launch_slot_: id  0 | task 19324 | processing task, is_child = 0
+[37695] 9.39.786.345 I slot print_timing: id  0 | task 19324 | n_gen =    135, tg =  44.66 t/s, tg_3s =  44.99 t/s
+[37695] 9.42.803.323 I slot print_timing: id  0 | task 19324 | n_gen =    268, tg =  44.37 t/s, tg_3s =  44.08 t/s
+[37695] 9.45.823.159 I slot print_timing: id  0 | task 19324 | n_gen =    404, tg =  44.59 t/s, tg_3s =  45.04 t/s
+[37695] 9.48.824.784 I slot print_timing: id  0 | task 19324 | n_gen =    541, tg =  44.85 t/s, tg_3s =  45.64 t/s
+[37695] 9.51.356.995 I slot print_timing: id  0 | task 19324 | prompt eval time =      94.49 ms /   126 tokens (    0.75 ms per token,  1333.43 tokens per second)
+[37695] 9.51.356.998 I slot print_timing: id  0 | task 19324 |        eval time =   14571.06 ms /   656 tokens (   22.25 ms per token,    44.95 tokens per second)
+[37695] 9.51.356.998 I slot print_timing: id  0 | task 19324 |       total time =   14665.55 ms /   782 tokens
+[37695] 9.51.356.999 I slot print_timing: id  0 | task 19324 |    graphs reused =      19863
+[37695] 9.51.356.999 I slot print_timing: id  0 | task 19324 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 9.51.357.028 I slot      release: id  0 | task 19324 | stop processing: n_tokens = 795, truncated = 0
+10.34.211.380 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 9.51.363.565 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.265 (> 0.100 thold), f_keep = 0.054
+[37695] 9.51.363.626 I slot launch_slot_: id  0 | task 19982 | processing task, is_child = 0
+[37695] 9.54.468.991 I slot print_timing: id  0 | task 19982 | n_gen =    138, tg =  45.43 t/s, tg_3s =  45.76 t/s
+[37695] 9.57.489.695 I slot print_timing: id  0 | task 19982 | n_gen =    277, tg =  45.72 t/s, tg_3s =  46.02 t/s
+[37695] 10.00.498.296 I slot print_timing: id  0 | task 19982 | n_gen =    415, tg =  45.77 t/s, tg_3s =  45.87 t/s
+[37695] 10.03.500.447 I slot print_timing: id  0 | task 19982 | n_gen =    553, tg =  45.82 t/s, tg_3s =  45.97 t/s
+[37695] 10.06.511.241 I slot print_timing: id  0 | task 19982 | n_gen =    691, tg =  45.82 t/s, tg_3s =  45.84 t/s
+[37695] 10.06.858.930 I slot print_timing: id  0 | task 19982 | prompt eval time =      89.44 ms /   148 tokens (    0.60 ms per token,  1654.80 tokens per second)
+[37695] 10.06.858.932 I slot print_timing: id  0 | task 19982 |        eval time =   15405.86 ms /   707 tokens (   21.82 ms per token,    45.83 tokens per second)
+[37695] 10.06.858.933 I slot print_timing: id  0 | task 19982 |       total time =   15495.29 ms /   855 tokens
+[37695] 10.06.858.933 I slot print_timing: id  0 | task 19982 |    graphs reused =      20565
+[37695] 10.06.858.934 I slot print_timing: id  0 | task 19982 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 10.06.858.950 I slot      release: id  0 | task 19982 | stop processing: n_tokens = 868, truncated = 0
+10.49.716.460 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 10.06.868.555 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.322 (> 0.100 thold), f_keep = 0.054
+[37695] 10.06.868.617 I slot launch_slot_: id  0 | task 20691 | processing task, is_child = 0
+[37695] 10.09.975.659 I slot print_timing: id  0 | task 20691 | n_gen =    140, tg =  46.07 t/s, tg_3s =  46.40 t/s
+[37695] 10.12.977.301 I slot print_timing: id  0 | task 20691 | n_gen =    278, tg =  46.02 t/s, tg_3s =  45.97 t/s
+[37695] 10.15.993.822 I slot print_timing: id  0 | task 20691 | n_gen =    412, tg =  45.49 t/s, tg_3s =  44.42 t/s
+[37695] 10.19.008.583 I slot print_timing: id  0 | task 20691 | n_gen =    545, tg =  45.15 t/s, tg_3s =  44.12 t/s
+[37695] 10.22.012.773 I slot print_timing: id  0 | task 20691 | n_gen =    683, tg =  45.30 t/s, tg_3s =  45.94 t/s
+[37695] 10.25.022.687 I slot print_timing: id  0 | task 20691 | n_gen =    817, tg =  45.17 t/s, tg_3s =  44.52 t/s
+[37695] 10.28.023.106 I slot print_timing: id  0 | task 20691 | n_gen =    949, tg =  45.00 t/s, tg_3s =  43.99 t/s
+[37695] 10.30.589.519 I slot print_timing: id  0 | task 20691 | prompt eval time =      90.06 ms /   132 tokens (    0.68 ms per token,  1465.62 tokens per second)
+[37695] 10.30.589.522 I slot print_timing: id  0 | task 20691 |        eval time =   23630.82 ms /  1066 tokens (   22.19 ms per token,    45.07 tokens per second)
+[37695] 10.30.589.522 I slot print_timing: id  0 | task 20691 |       total time =   23720.89 ms /  1198 tokens
+[37695] 10.30.589.524 I slot print_timing: id  0 | task 20691 |    graphs reused =      21625
+[37695] 10.30.589.524 I slot print_timing: id  0 | task 20691 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 10.30.589.556 I slot      release: id  0 | task 20691 | stop processing: n_tokens = 1211, truncated = 0
+11.13.453.973 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 10.30.606.279 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.199 (> 0.100 thold), f_keep = 0.032
+[37695] 10.30.606.331 I slot launch_slot_: id  0 | task 21759 | processing task, is_child = 0
+[37695] 10.33.710.599 I slot print_timing: id  0 | task 21759 | n_gen =    137, tg =  45.16 t/s, tg_3s =  45.49 t/s
+[37695] 10.36.720.120 I slot print_timing: id  0 | task 21759 | n_gen =    273, tg =  45.17 t/s, tg_3s =  45.19 t/s
+[37695] 10.39.732.373 I slot print_timing: id  0 | task 21759 | n_gen =    411, tg =  45.39 t/s, tg_3s =  45.81 t/s
+[37695] 10.42.739.113 I slot print_timing: id  0 | task 21759 | n_gen =    549, tg =  45.51 t/s, tg_3s =  45.90 t/s
+[37695] 10.45.748.422 I slot print_timing: id  0 | task 21759 | n_gen =    684, tg =  45.38 t/s, tg_3s =  44.86 t/s
+[37695] 10.48.766.464 I slot print_timing: id  0 | task 21759 | n_gen =    821, tg =  45.39 t/s, tg_3s =  45.39 t/s
+[37695] 10.51.774.193 I slot print_timing: id  0 | task 21759 | n_gen =    957, tg =  45.36 t/s, tg_3s =  45.22 t/s
+[37695] 10.54.778.732 I slot print_timing: id  0 | task 21759 | n_gen =   1095, tg =  45.43 t/s, tg_3s =  45.93 t/s
+[37695] 10.57.795.902 I slot print_timing: id  0 | task 21759 | n_gen =   1233, tg =  45.47 t/s, tg_3s =  45.74 t/s
+[37695] 11.00.805.315 I slot print_timing: id  0 | task 21759 | n_gen =   1371, tg =  45.51 t/s, tg_3s =  45.86 t/s
+[37695] 11.03.817.735 I slot print_timing: id  0 | task 21759 | n_gen =   1509, tg =  45.53 t/s, tg_3s =  45.81 t/s
+[37695] 11.06.839.018 I slot print_timing: id  0 | task 21759 | n_gen =   1644, tg =  45.46 t/s, tg_3s =  44.68 t/s
+[37695] 11.09.851.906 I slot print_timing: id  0 | task 21759 | n_gen =   1777, tg =  45.36 t/s, tg_3s =  44.14 t/s
+[37695] 11.12.865.461 I slot print_timing: id  0 | task 21759 | n_gen =   1914, tg =  45.37 t/s, tg_3s =  45.46 t/s
+[37695] 11.15.884.132 I slot print_timing: id  0 | task 21759 | n_gen =   2052, tg =  45.39 t/s, tg_3s =  45.72 t/s
+[37695] 11.18.900.675 I slot print_timing: id  0 | task 21759 | n_gen =   2190, tg =  45.41 t/s, tg_3s =  45.75 t/s
+[37695] 11.21.913.177 I slot print_timing: id  0 | task 21759 | n_gen =   2327, tg =  45.42 t/s, tg_3s =  45.48 t/s
+[37695] 11.24.916.322 I slot print_timing: id  0 | task 21759 | n_gen =   2464, tg =  45.43 t/s, tg_3s =  45.62 t/s
+[37695] 11.27.918.712 I slot print_timing: id  0 | task 21759 | n_gen =   2601, tg =  45.44 t/s, tg_3s =  45.63 t/s
+[37695] 11.30.924.074 I slot print_timing: id  0 | task 21759 | n_gen =   2738, tg =  45.45 t/s, tg_3s =  45.59 t/s
+[37695] 11.33.933.717 I slot print_timing: id  0 | task 21759 | n_gen =   2875, tg =  45.45 t/s, tg_3s =  45.52 t/s
+[37695] 11.36.945.608 I slot print_timing: id  0 | task 21759 | n_gen =   3012, tg =  45.45 t/s, tg_3s =  45.49 t/s
+[37695] 11.39.954.576 I slot print_timing: id  0 | task 21759 | n_gen =   3149, tg =  45.45 t/s, tg_3s =  45.53 t/s
+[37695] 11.42.964.025 I slot print_timing: id  0 | task 21759 | n_gen =   3286, tg =  45.46 t/s, tg_3s =  45.52 t/s
+[37695] 11.45.975.706 I slot print_timing: id  0 | task 21759 | n_gen =   3423, tg =  45.46 t/s, tg_3s =  45.49 t/s
+[37695] 11.48.989.391 I slot print_timing: id  0 | task 21759 | n_gen =   3560, tg =  45.46 t/s, tg_3s =  45.46 t/s
+[37695] 11.52.003.958 I slot print_timing: id  0 | task 21759 | n_gen =   3697, tg =  45.46 t/s, tg_3s =  45.45 t/s
+[37695] 11.55.015.667 I slot print_timing: id  0 | task 21759 | n_gen =   3834, tg =  45.46 t/s, tg_3s =  45.49 t/s
+[37695] 11.58.033.604 I slot print_timing: id  0 | task 21759 | n_gen =   3971, tg =  45.46 t/s, tg_3s =  45.40 t/s
+[37695] 12.01.048.732 I slot print_timing: id  0 | task 21759 | n_gen =   4108, tg =  45.46 t/s, tg_3s =  45.44 t/s
+[37695] 12.04.050.032 I slot print_timing: id  0 | task 21759 | n_gen =   4244, tg =  45.45 t/s, tg_3s =  45.31 t/s
+[37695] 12.07.055.349 I slot print_timing: id  0 | task 21759 | n_gen =   4380, tg =  45.45 t/s, tg_3s =  45.25 t/s
+[37695] 12.10.061.927 I slot print_timing: id  0 | task 21759 | n_gen =   4516, tg =  45.44 t/s, tg_3s =  45.23 t/s
+[37695] 12.13.067.784 I slot print_timing: id  0 | task 21759 | n_gen =   4652, tg =  45.43 t/s, tg_3s =  45.24 t/s
+[37695] 12.16.074.371 I slot print_timing: id  0 | task 21759 | n_gen =   4788, tg =  45.43 t/s, tg_3s =  45.23 t/s
+[37695] 12.19.079.178 I slot print_timing: id  0 | task 21759 | n_gen =   4924, tg =  45.42 t/s, tg_3s =  45.26 t/s
+[37695] 12.22.104.064 I slot print_timing: id  0 | task 21759 | n_gen =   5060, tg =  45.41 t/s, tg_3s =  44.96 t/s
+[37695] 12.25.108.872 I slot print_timing: id  0 | task 21759 | n_gen =   5193, tg =  45.38 t/s, tg_3s =  44.26 t/s
+[37695] 12.28.116.098 I slot print_timing: id  0 | task 21759 | n_gen =   5327, tg =  45.36 t/s, tg_3s =  44.56 t/s
+[37695] 12.31.116.994 I slot print_timing: id  0 | task 21759 | n_gen =   5461, tg =  45.34 t/s, tg_3s =  44.65 t/s
+[37695] 12.34.121.421 I slot print_timing: id  0 | task 21759 | n_gen =   5596, tg =  45.33 t/s, tg_3s =  44.93 t/s
+[37695] 12.37.133.573 I slot print_timing: id  0 | task 21759 | n_gen =   5730, tg =  45.31 t/s, tg_3s =  44.49 t/s
+[37695] 12.40.144.847 I slot print_timing: id  0 | task 21759 | n_gen =   5863, tg =  45.29 t/s, tg_3s =  44.17 t/s
+[37695] 12.43.161.562 I slot print_timing: id  0 | task 21759 | n_gen =   5997, tg =  45.27 t/s, tg_3s =  44.42 t/s
+[37695] 12.46.164.368 I slot print_timing: id  0 | task 21759 | n_gen =   6132, tg =  45.26 t/s, tg_3s =  44.96 t/s
+[37695] 12.49.170.551 I slot print_timing: id  0 | task 21759 | n_gen =   6267, tg =  45.25 t/s, tg_3s =  44.91 t/s
+[37695] 12.52.176.447 I slot print_timing: id  0 | task 21759 | n_gen =   6402, tg =  45.24 t/s, tg_3s =  44.91 t/s
+[37695] 12.55.182.087 I slot print_timing: id  0 | task 21759 | n_gen =   6537, tg =  45.24 t/s, tg_3s =  44.92 t/s
+[37695] 12.58.188.973 I slot print_timing: id  0 | task 21759 | n_gen =   6672, tg =  45.23 t/s, tg_3s =  44.90 t/s
+[37695] 13.01.199.851 I slot print_timing: id  0 | task 21759 | n_gen =   6807, tg =  45.22 t/s, tg_3s =  44.84 t/s
+[37695] 13.04.210.189 I slot print_timing: id  0 | task 21759 | n_gen =   6942, tg =  45.21 t/s, tg_3s =  44.85 t/s
+[37695] 13.07.230.714 I slot print_timing: id  0 | task 21759 | n_gen =   7077, tg =  45.20 t/s, tg_3s =  44.69 t/s
+[37695] 13.10.248.321 I slot print_timing: id  0 | task 21759 | n_gen =   7212, tg =  45.20 t/s, tg_3s =  44.74 t/s
+[37695] 13.13.265.491 I slot print_timing: id  0 | task 21759 | n_gen =   7347, tg =  45.19 t/s, tg_3s =  44.74 t/s
+[37695] 13.16.278.024 I slot print_timing: id  0 | task 21759 | n_gen =   7482, tg =  45.18 t/s, tg_3s =  44.81 t/s
+[37695] 13.19.296.706 I slot print_timing: id  0 | task 21759 | n_gen =   7617, tg =  45.17 t/s, tg_3s =  44.72 t/s
+[37695] 13.22.313.306 I slot print_timing: id  0 | task 21759 | n_gen =   7752, tg =  45.17 t/s, tg_3s =  44.75 t/s
+[37695] 13.25.316.183 I slot print_timing: id  0 | task 21759 | n_gen =   7886, tg =  45.16 t/s, tg_3s =  44.62 t/s
+[37695] 13.28.334.562 I slot print_timing: id  0 | task 21759 | n_gen =   8020, tg =  45.14 t/s, tg_3s =  44.39 t/s
+[37695] 13.31.339.149 I slot print_timing: id  0 | task 21759 | n_gen =   8154, tg =  45.13 t/s, tg_3s =  44.60 t/s
+[37695] 13.34.352.300 I slot print_timing: id  0 | task 21759 | n_gen =   8288, tg =  45.12 t/s, tg_3s =  44.47 t/s
+[37695] 13.37.368.365 I slot print_timing: id  0 | task 21759 | n_gen =   8421, tg =  45.11 t/s, tg_3s =  44.10 t/s
+[37695] 13.40.374.300 I slot print_timing: id  0 | task 21759 | n_gen =   8554, tg =  45.09 t/s, tg_3s =  44.25 t/s
+[37695] 13.41.179.825 I slot print_timing: id  0 | task 21759 | prompt eval time =      92.59 ms /   182 tokens (    0.51 ms per token,  1965.59 tokens per second)
+[37695] 13.41.179.827 I slot print_timing: id  0 | task 21759 |        eval time =  190480.89 ms /  8590 tokens (   22.18 ms per token,    45.09 tokens per second)
+[37695] 13.41.179.828 I slot print_timing: id  0 | task 21759 |       total time =  190573.48 ms /  8772 tokens
+[37695] 13.41.179.828 I slot print_timing: id  0 | task 21759 |    graphs reused =      30179
+[37695] 13.41.179.829 I slot print_timing: id  0 | task 21759 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 13.41.179.846 I slot      release: id  0 | task 21759 | stop processing: n_tokens = 8785, truncated = 0
+14.24.051.786 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 13.41.203.925 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.302 (> 0.100 thold), f_keep = 0.004
+[37695] 13.41.203.975 I slot launch_slot_: id  0 | task 30351 | processing task, is_child = 0
+[37695] 13.44.307.220 I slot print_timing: id  0 | task 30351 | n_gen =    139, tg =  45.80 t/s, tg_3s =  46.13 t/s
+[37695] 13.47.309.203 I slot print_timing: id  0 | task 30351 | n_gen =    277, tg =  45.88 t/s, tg_3s =  45.97 t/s
+[37695] 13.50.312.654 I slot print_timing: id  0 | task 30351 | n_gen =    415, tg =  45.91 t/s, tg_3s =  45.95 t/s
+[37695] 13.52.381.218 I slot print_timing: id  0 | task 30351 | prompt eval time =      90.12 ms /   115 tokens (    0.78 ms per token,  1276.01 tokens per second)
+[37695] 13.52.381.221 I slot print_timing: id  0 | task 30351 |        eval time =   11087.10 ms /   510 tokens (   21.78 ms per token,    45.91 tokens per second)
+[37695] 13.52.381.221 I slot print_timing: id  0 | task 30351 |       total time =   11177.23 ms /   625 tokens
+[37695] 13.52.381.222 I slot print_timing: id  0 | task 30351 |    graphs reused =      30685
+[37695] 13.52.381.222 I slot print_timing: id  0 | task 30351 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 13.52.381.238 I slot      release: id  0 | task 30351 | stop processing: n_tokens = 638, truncated = 0
+14.35.237.273 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 13.52.389.443 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.285 (> 0.100 thold), f_keep = 0.067
+[37695] 13.52.389.493 I slot launch_slot_: id  0 | task 30863 | processing task, is_child = 0
+[37695] 13.55.481.491 I slot print_timing: id  0 | task 30863 | n_gen =    139, tg =  45.93 t/s, tg_3s =  46.26 t/s
+[37695] 13.58.481.912 I slot print_timing: id  0 | task 30863 | n_gen =    277, tg =  45.96 t/s, tg_3s =  45.99 t/s
+[37695] 14.01.499.112 I slot print_timing: id  0 | task 30863 | n_gen =    416, tg =  46.00 t/s, tg_3s =  46.07 t/s
+[37695] 14.04.517.639 I slot print_timing: id  0 | task 30863 | n_gen =    555, tg =  46.01 t/s, tg_3s =  46.05 t/s
+[37695] 14.07.524.648 I slot print_timing: id  0 | task 30863 | n_gen =    693, tg =  45.99 t/s, tg_3s =  45.89 t/s
+[37695] 14.10.535.655 I slot print_timing: id  0 | task 30863 | n_gen =    831, tg =  45.96 t/s, tg_3s =  45.83 t/s
+[37695] 14.13.547.107 I slot print_timing: id  0 | task 30863 | n_gen =    969, tg =  45.94 t/s, tg_3s =  45.83 t/s
+[37695] 14.16.555.082 I slot print_timing: id  0 | task 30863 | n_gen =   1107, tg =  45.93 t/s, tg_3s =  45.88 t/s
+[37695] 14.19.565.129 I slot print_timing: id  0 | task 30863 | n_gen =   1245, tg =  45.92 t/s, tg_3s =  45.85 t/s
+[37695] 14.22.577.630 I slot print_timing: id  0 | task 30863 | n_gen =   1383, tg =  45.91 t/s, tg_3s =  45.81 t/s
+[37695] 14.25.592.660 I slot print_timing: id  0 | task 30863 | n_gen =   1521, tg =  45.90 t/s, tg_3s =  45.77 t/s
+[37695] 14.28.612.838 I slot print_timing: id  0 | task 30863 | n_gen =   1659, tg =  45.88 t/s, tg_3s =  45.69 t/s
+[37695] 14.31.631.917 I slot print_timing: id  0 | task 30863 | n_gen =   1797, tg =  45.87 t/s, tg_3s =  45.71 t/s
+[37695] 14.34.650.649 I slot print_timing: id  0 | task 30863 | n_gen =   1935, tg =  45.86 t/s, tg_3s =  45.71 t/s
+[37695] 14.37.654.129 I slot print_timing: id  0 | task 30863 | n_gen =   2072, tg =  45.84 t/s, tg_3s =  45.61 t/s
+[37695] 14.40.659.139 I slot print_timing: id  0 | task 30863 | n_gen =   2209, tg =  45.83 t/s, tg_3s =  45.59 t/s
+[37695] 14.43.663.161 I slot print_timing: id  0 | task 30863 | n_gen =   2346, tg =  45.81 t/s, tg_3s =  45.61 t/s
+[37695] 14.46.669.230 I slot print_timing: id  0 | task 30863 | n_gen =   2479, tg =  45.73 t/s, tg_3s =  44.24 t/s
+[37695] 14.49.688.649 I slot print_timing: id  0 | task 30863 | n_gen =   2617, tg =  45.72 t/s, tg_3s =  45.70 t/s
+[37695] 14.52.699.354 I slot print_timing: id  0 | task 30863 | n_gen =   2754, tg =  45.71 t/s, tg_3s =  45.50 t/s
+[37695] 14.55.718.836 I slot print_timing: id  0 | task 30863 | n_gen =   2891, tg =  45.70 t/s, tg_3s =  45.37 t/s
+[37695] 14.56.443.541 I slot print_timing: id  0 | task 30863 | prompt eval time =      87.32 ms /   137 tokens (    0.64 ms per token,  1568.87 tokens per second)
+[37695] 14.56.443.544 I slot print_timing: id  0 | task 30863 |        eval time =   63966.71 ms /  2924 tokens (   21.88 ms per token,    45.70 tokens per second)
+[37695] 14.56.443.544 I slot print_timing: id  0 | task 30863 |       total time =   64054.04 ms /  3061 tokens
+[37695] 14.56.443.545 I slot print_timing: id  0 | task 30863 |    graphs reused =      33595
+[37695] 14.56.443.545 I slot print_timing: id  0 | task 30863 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 14.56.443.560 I slot      release: id  0 | task 30863 | stop processing: n_tokens = 3074, truncated = 0
+15.39.301.674 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 14.56.453.710 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.333 (> 0.100 thold), f_keep = 0.013
+[37695] 14.56.453.758 I slot launch_slot_: id  0 | task 33789 | processing task, is_child = 0
+[37695] 14.59.561.885 I slot print_timing: id  0 | task 33789 | n_gen =    140, tg =  46.05 t/s, tg_3s =  46.38 t/s
+[37695] 15.02.575.199 I slot print_timing: id  0 | task 33789 | n_gen =    279, tg =  46.09 t/s, tg_3s =  46.13 t/s
+[37695] 15.05.593.619 I slot print_timing: id  0 | task 33789 | n_gen =    418, tg =  46.08 t/s, tg_3s =  46.05 t/s
+[37695] 15.08.613.631 I slot print_timing: id  0 | task 33789 | n_gen =    557, tg =  46.06 t/s, tg_3s =  46.03 t/s
+[37695] 15.11.617.557 I slot print_timing: id  0 | task 33789 | n_gen =    695, tg =  46.04 t/s, tg_3s =  45.94 t/s
+[37695] 15.12.183.600 I slot print_timing: id  0 | task 33789 | prompt eval time =      89.54 ms /   103 tokens (    0.87 ms per token,  1150.36 tokens per second)
+[37695] 15.12.183.602 I slot print_timing: id  0 | task 33789 |        eval time =   15640.29 ms /   721 tokens (   21.72 ms per token,    46.03 tokens per second)
+[37695] 15.12.183.602 I slot print_timing: id  0 | task 33789 |       total time =   15729.83 ms /   824 tokens
+[37695] 15.12.183.603 I slot print_timing: id  0 | task 33789 |    graphs reused =      34311
+[37695] 15.12.183.604 I slot print_timing: id  0 | task 33789 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[37695] 15.12.183.616 I slot      release: id  0 | task 33789 | stop processing: n_tokens = 837, truncated = 0
+15.55.039.224 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 37695
+[37695] 15.12.191.344 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.375 (> 0.100 thold), f_keep = 0.047
+[37695] 15.12.191.394 I slot launch_slot_: id  0 | task 34512 | processing task, is_child = 0
+[37695] 15.15.295.584 I slot print_timing: id  0 | task 34512 | n_gen =    140, tg =  46.08 t/s, tg_3s =  46.41 t/s
+[37695] 15.18.313.589 I slot print_timing: id  0 | task 34512 | n_gen =    279, tg =  46.07 t/s, tg_3s =  46.06 t/s

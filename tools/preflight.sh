@@ -27,7 +27,7 @@
 #   PREFLIGHT_BALLOON_FREE_MB free memory above which the balloon is
 #                            skipped (default: the machine file's row)
 #   PREFLIGHT_PROBE_PORT     loopback port for the network probe
-#                            (default 8081, the run port)
+#                            (default 8888, the run port)
 #   PREFLIGHT_CLAUDE_CREDENTIALS  credentials file path (default
 #                            $CLAUDE_CONFIG_DIR/.credentials.json, else
 #                            ~/.claude/.credentials.json)
@@ -44,7 +44,7 @@ MACHINE_FILE="${PREFLIGHT_MACHINE_FILE:-$CONFIG_DIR/machine.md}"
 STATE_FILE="$CONFIG_DIR/services-state"
 START_WIRED_FILE="${PREFLIGHT_START_WIRED_FILE:-$CONFIG_DIR/last-start-wired-mb}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROBE_PORT="${PREFLIGHT_PROBE_PORT:-8081}"
+PROBE_PORT="${PREFLIGHT_PROBE_PORT:-8888}"
 
 # App rows of the machine file this script knows how to check. An app
 # row it does not know becomes an "ask" line.

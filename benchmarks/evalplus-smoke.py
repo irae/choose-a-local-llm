@@ -68,7 +68,7 @@ ENVIRONMENT
 
     SMOKE_MAX_TOKENS   max_tokens override, default 16384 (fast mode).
                        Use the same value on both sides.
-    SMOKE_BASE         server base URL, default http://127.0.0.1:8081
+    SMOKE_BASE         server base URL, default http://127.0.0.1:8888
     SMOKE_OUT          directory for the samples and evaluator files.
                        Default: a new temporary directory, printed.
     SMOKE_TIMEOUT_S    client timeout in seconds, default 7200. The
@@ -120,7 +120,7 @@ def parse_args():
         ),
         epilog=(
             "environment: SMOKE_MAX_TOKENS (default 16384), SMOKE_BASE "
-            "(default http://127.0.0.1:8081), SMOKE_OUT, "
+            "(default http://127.0.0.1:8888), SMOKE_OUT, "
             "SMOKE_TIMEOUT_S (default 7200)"
         ),
     )
@@ -228,7 +228,7 @@ def main():
     args = parse_args()
     extra_body = json.loads(args.extra_body) if args.extra_body else None
     budget = resolve_budget()
-    base = os.environ.get("SMOKE_BASE", "http://127.0.0.1:8081")
+    base = os.environ.get("SMOKE_BASE", "http://127.0.0.1:8888")
     timeout = float(os.environ.get("SMOKE_TIMEOUT_S", "7200"))
     out_dir = os.environ.get("SMOKE_OUT") or tempfile.mkdtemp(prefix="evalplus-smoke-")
     os.makedirs(out_dir, exist_ok=True)

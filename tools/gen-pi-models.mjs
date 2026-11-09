@@ -13,7 +13,7 @@
 // sets `contextWindow`, removes `maxTokens` always (the row's value is the
 // benchmark cap; daily work needs pi's default; docs/methodology/common-rules.md,
 // rule 7), and points the `llama` provider at the router service
-// (`tools/llama-router.sh`, port 8080, the official build or the PrismML
+// (`tools/llama-router.sh`, port 8888, the official build or the PrismML
 // build, one at a time). A model the running build does not hold gets the
 // server's own "model not found" answer. A new entry copies its shape
 // (thinking map, compat, cost) from an existing entry of the same model
@@ -53,7 +53,7 @@ const opt = (name, fallback) => (args.includes(name) ? args[args.indexOf(name) +
 const setup = opt('--setup', hostname().split('.')[0].toLowerCase())
 
 const ROUTERS = {
-  llama: { name: 'llama-server', api: 'openai-completions', baseUrl: 'http://127.0.0.1:8080/v1', apiKey: 'no-key' },
+  llama: { name: 'llama-server', api: 'openai-completions', baseUrl: 'http://127.0.0.1:8888/v1', apiKey: 'no-key' },
 }
 const providerOf = (row) => row.pi.provider
 const keepRecentFor = (window) => (window < 65536 ? 8192 : window < 131072 ? 16384 : null)

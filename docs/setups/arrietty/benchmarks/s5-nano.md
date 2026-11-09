@@ -65,3 +65,55 @@ The evaluator counted 118 base passes and 104 plus passes. The fixed
 budget-message count command confirmed zero forced and empty answers.
 This thinking-off score is separate from the thinking-on row and does
 not qualify that row for an agent task. No full agent task was run.
+
+## BF16 weights with f16 KV
+
+The publisher file `S5-nano-BF16.gguf` is pinned to revision
+`5fd041274829d60aeeba1e2edc4aabb621a432e4`. It has 8,665,620,032
+bytes and SHA-256 `565c6441c8c5297500f0bfc5d0cf14053b6e80e90976a5bd6586b56715cd8f1f`.
+Official llama.cpp b12110 served high Think, one slot, f16 K/V,
+full GPU offload requested, fit off, no MTP and no vision.
+
+The depth trial passed at allocations 131072, 163840, 196608 and
+204800. Allocations 212992, 229376 and 262144 failed. The deepest
+clean cell was 203776 and the derived harness window was 200704.
+This is the tested bound, not an absolute card maximum.
+
+| used depth | decode tok/s at allocation 204800 |
+|---:|---:|
+| 4096 | 45.68 |
+| 24576 | 42.46 |
+| 32768 | 41.35 |
+| 65536 | 37.31 |
+| 131072 | 31.23 |
+| 203776 | 26.41 |
+
+Peak total GPU use was 15,870 MiB. Swap rose 214 MiB during loading,
+but did not grow during timed cells. This was not a swap-free setup.
+The readings used separate Linux llama-benchy calls with two repetitions
+and a five-second pause, not slow-context-creep.
+
+### Thinking quality at 64K
+
+BF16 weights with f16 KV scored 138 base passes and 127 plus passes
+out of 164, or 0.841 / 0.774. No answer was empty; 31 answers were
+forced at the 8,192-token thinking budget. Output budget was 16,384,
+temperature was 0, and the serving allocation was 65,536. Both weights
+and KV differ from the Q8_0/q8_0 baseline, so the score difference does
+not isolate either change. The full agent task remains unmeasured.
+
+Active time was 221.2–222.1 minutes across three parts. Two T3
+interruptions preserved completed samples. The table uses the upper
+bound, 222.1 minutes; interruption gaps do not count. No 64K decode
+curve was measured, so the quality table leaves speed blank for this
+configuration. The separate depth curve used a 204,800-token allocation.
+
+
+| base pass@1 | plus pass@1 | completion | empty | forced | active wall |
+|---:|---:|---:|---:|---:|---:|
+| 0.841 | 0.774 | 164/164 | 0/164 | 31/164 | 221.2–222.1 min |
+
+The evaluation completed on 2026-11-09 at 15:15:28 UTC. All 164 task
+IDs were unique. The later port-migration request found no missing
+problem, so no answer was regenerated. Historical evidence retains its
+original ports. Current serving and pi configuration use port 8888.

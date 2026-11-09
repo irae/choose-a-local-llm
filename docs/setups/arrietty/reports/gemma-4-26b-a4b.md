@@ -43,7 +43,7 @@ llama-server -m "$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-
   --alias gemma-4-26b-a4b-nvfp4 --no-mmproj --parallel 1 \
   -ngl 999 --fit off --n-cpu-moe 7 -fa on -c 98304 \
   --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 <!-- gen:model-configs:end -->
 

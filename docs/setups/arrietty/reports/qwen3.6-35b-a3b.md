@@ -45,7 +45,7 @@ llama-server -m "$(hf download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-
   --spec-type draft-mtp --spec-draft-n-max 2 \
   -ngl 999 --fit off --n-cpu-moe 21 -fa on -c 98304 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 <!-- gen:model-configs:end -->
 

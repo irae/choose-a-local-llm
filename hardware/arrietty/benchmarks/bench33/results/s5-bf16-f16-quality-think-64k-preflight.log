@@ -1,0 +1,11 @@
+ok   gpu-free       no llama-server and no mlx_lm
+ok   gpu-free       LM Studio app is not running
+ok   gpu-free       Docker is not running
+ask  apps           no machine file at /home/irae/.config/choose-a-local-llm/machine.md
+fix  login-items    state=not-done recorded=0 drifted=0 — run tools/mac-services.sh turn-off
+ok   little-snitch  port 8081 is closed and the refusal came back: no silent deny
+ask  wired-limit    the machine file gives no iogpu.wired_limit_mb value
+ask  memory         sysctl gave no page size or no swap usage
+ok   reboot         no reboot condition holds
+ok   gh-auth        gh auth status passes
+ok   pi-version     1.5.0

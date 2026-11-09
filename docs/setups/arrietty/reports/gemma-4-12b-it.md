@@ -53,7 +53,7 @@ llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_
   --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 262144 \
   --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 
 <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="on" page="/binaries/gemma12-freedomaisvr-nvfp4" />
@@ -65,7 +65,7 @@ llama-server -m "$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12
   --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 262144 \
   --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 
 <ModelSpec base="Gemma-4-12B" quant="NVFP4" server="llama-server" publisher="FreedomAISVR" repo="FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF" kv="f16" effort="off" page="/binaries/gemma12-freedomaisvr-nvfp4" />
@@ -77,7 +77,7 @@ llama-server -m "$(hf download FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF gemma-4-12
   --alias gemma-4-12b-nvfp4 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 262144 \
   --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 
 <ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" />
@@ -89,7 +89,7 @@ llama-server -m "$(hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_
   --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 262144 \
   --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 <!-- gen:model-configs:end -->
 

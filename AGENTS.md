@@ -177,7 +177,7 @@ Benchmark work:
   router mode: `start` (start, reuse, or restart when
   `hardware/<id>/models.ini` changed), `status`, `stop`, `install` (a
   systemd user unit, logs in `journalctl --user -u llama-router`).
-  Listens on `0.0.0.0:8080`; a request names a row's pi id and the
+  Listens on `0.0.0.0:8888`; a request names a row's pi id and the
   router loads that preset, one model at a time. `start prism` runs the
   PrismML build with `models-prism-llama.ini` on the same port, and only
   one of the two runs at a time: `start` refuses while the other is up.

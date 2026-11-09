@@ -1,0 +1,30 @@
+2026-11-09 11:09:37 UTC
+preflight=results/s5-bf16-f16-quality-think-64k-preflight.log
+runtime=/home/irae/.local/share/mise/installs/llama-cpp/b12110/llama-server
+Available devices:
+  CUDA0: NVIDIA GeForce RTX 5060 Ti (15938 MiB, 15017 MiB free)
+
+model file size and hash
+8665620032 bytes
+565c6441c8c5297500f0bfc5d0cf14053b6e80e90976a5bd6586b56715cd8f1f  /home/irae/.cache/huggingface/hub/models--maritaca-ai--S5-nano-GGUF/snapshots/5fd041274829d60aeeba1e2edc4aabb621a432e4/S5-nano-BF16.gguf
+
+GPU sample
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+787 MiB, 15152 MiB, 36, 11.30 W
+
+host memory
+               total        used        free      shared  buff/cache   available
+Mem:           31894        5612        7735         103       20208       26282
+Swap:          31893         796       31097
+
+swap
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	815284		100
+
+disk
+Filesystem        Size  Used Avail Use% Mounted on
+/dev/mapper/root  231G  220G  8.1G  97% /home
+
+pi/evalplus
+1.5.0
+evalplus_python=/home/irae/.local/share/pipx/venvs/evalplus/bin/python

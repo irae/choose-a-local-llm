@@ -384,5 +384,22 @@
     "setups": [
       "arrietty"
     ]
+  },
+  {
+    "id": "s5-nano-maritaca-bf16",
+    "model": "s5-nano",
+    "title": "S5-nano BF16 (Maritaca AI)",
+    "spec": {
+      "base": "S5-nano",
+      "quant": "BF16",
+      "publisher": "maritaca-ai",
+      "server": "llama-server"
+    },
+    "repo": "maritaca-ai/S5-nano-GGUF",
+    "file": "S5-nano-BF16.gguf",
+    "revision": "5fd041274829d60aeeba1e2edc4aabb621a432e4",
+    "setups": [
+      "arrietty"
+    ]
   }
 ]

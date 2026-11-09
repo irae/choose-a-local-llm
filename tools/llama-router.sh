@@ -13,7 +13,7 @@
 # Two builds exist: the official llama.cpp (default) with
 # hardware/<id>/models.ini, and the PrismML build (`prism`) with
 # hardware/<id>/models-prism-llama.ini, the only one that loads the
-# ternary Bonsai files. Both listen on 0.0.0.0:8080 with CORS open, for
+# ternary Bonsai files. Both listen on 0.0.0.0:8888 with CORS open, for
 # pi on this machine, on the LAN and over the tailnet, so pi has one
 # provider and one port. **Only one runs at a time** (owner, 2026-09-22):
 # `start` refuses while the other is up, and says so; stop it first.
@@ -26,7 +26,7 @@
 # free; only `loaded` holds it.
 #
 # Environment:
-#   ROUTER_PORT       8080
+#   ROUTER_PORT       8888
 #   ROUTER_HOST       0.0.0.0
 #   ROUTER_PRESET     the preset file
 #   ROUTER_BIN        the llama-server binary
@@ -40,7 +40,7 @@ REPO="$(cd "$(dirname "$0")/.." && pwd)"
 ID="$(hostname -s | tr '[:upper:]' '[:lower:]')"
 ACTION="${1:-}"
 ROUTER="${2:-${ROUTER:-official}}"
-PORT="${ROUTER_PORT:-8080}"
+PORT="${ROUTER_PORT:-8888}"
 MISE_BIN="$(command -v mise > /dev/null 2>&1 && mise which llama-server 2>/dev/null || true)"
 if [ -n "$MISE_BIN" ] && [ -x "$MISE_BIN" ]; then
     OFFICIAL_BIN_DIR="$(dirname "$MISE_BIN")"

@@ -36,7 +36,7 @@ timings, prompt-cache reuse, the KV type decision) live in
    the same `models.json`; `--dry-run` and `--check` show the drift
    first, and it never touches a field it does not own; it writes only
    the rows of the machine it runs on, points the `llama` provider at
-   the router service on port 8080, whichever build is up, and writes
+   the router service on port 8888, whichever build is up, and writes
    each row's `keepRecentTokens` override into `settings.json` by the
    window curve of [mendel.md](./mendel.md), "Window and budget").
    **No pi config sets `maxTokens` or `reserveTokens`; pi's defaults

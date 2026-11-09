@@ -3,6 +3,7 @@
 # (default: hardware/kamaji/benchmarks/bench5/results; set it to resume an older bench's
 # results dir). Reuses benchmarks/run_codegen_wrapper.py unchanged
 # (EVALPLUS_MAX_NEW_TOKENS, EVALPLUS_EXTRA_BODY). Run from the repo root.
+# EVALPLUS_BASE_URL defaults to http://127.0.0.1:8888/v1.
 #
 # Usage: [RESULTS_BASE=hardware/kamaji/benchmarks/benchN/results] \
 #   benchmarks/run-humaneval.sh <run-name> <model-id-as-served> [extra-body-json]
@@ -58,7 +59,7 @@ fi
   --model "$MODEL" \
   --dataset humaneval \
   --backend openai \
-  --base_url http://127.0.0.1:8081/v1 \
+  --base_url "${EVALPLUS_BASE_URL:-http://127.0.0.1:8888/v1}" \
   --greedy \
   --root "$DIR" 2>&1 | tee "$DIR/codegen.log"
 SAMPLES=$(find "$DIR/humaneval" -maxdepth 1 -name "*.jsonl" ! -name "*.raw.jsonl" | sort | head -1)

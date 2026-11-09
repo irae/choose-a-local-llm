@@ -58,7 +58,7 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
   --alias bonsai2-27b-ptq1-f16 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 139264 \
   --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 
 <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-pq2" />
@@ -70,7 +70,7 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
   --alias bonsai2-27b-pq2-f16 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 122880 \
   --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 
 <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" adapter="refusal-ablation LoRA 1.0" kv="f16" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" />
@@ -83,7 +83,7 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
   --alias bonsai2-27b-ptq1-f16-orca --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 139264 \
   --cache-type-k f16 --cache-type-v f16 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 
 <ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-ptq1" />
@@ -95,7 +95,7 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
   --alias bonsai2-27b-ptq1-q8 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 245760 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 
 <ModelSpec base="Ternary-Bonsai-2-27B" quant="PQ2_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="q8_0" effort="xhigh" page="/binaries/bonsai2-prism-pq2" />
@@ -107,7 +107,7 @@ llama-server -m "$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai
   --alias bonsai2-27b-pq2-q8 --no-mmproj --parallel 1 \
   -ngl 999 --fit off -fa on -c 212992 \
   --cache-type-k q8_0 --cache-type-v q8_0 \
-  --jinja --port 8081
+  --jinja --port 8888
 ```
 <!-- gen:model-configs:end -->
 

@@ -10,10 +10,11 @@ in this thread. Disable the scheduled task at close.
 
 ## Essentials
 
-Current owner scope, 2026-11-09: run only
-`s5-bf16-f16-quality-think-64k`, defined at the end of this runbook.
-All Arete tests remain paused. Full Arete simulator rows are NOT
-STARTED and deferred. Do not resume the earlier order after this task.
+Current owner scope, 2026-11-09: `s5-bf16-f16-quality-think-64k`
+completed all 164 problems before the port migration. No problem is
+missing. Do not resume or rerun it. Current serving defaults use port
+8888. All Arete tests remain paused. Full Arete simulator rows are NOT
+STARTED and deferred. Do not resume the earlier order.
 
 The owner requested this run on 2026-11-08. Test only these new
 models. Give early feedback on both before the long quality and
@@ -186,15 +187,13 @@ Start one router with the existing helper's `serve` action:
 
 ```bash
 ROUTER_BIN="$BIN" ROUTER_PRESET="$PWD/$KIT/results/router.ini" \
-  ROUTER_PORT=8080 ROUTER_HOST=127.0.0.1 \
+  ROUTER_PORT=8888 ROUTER_HOST=127.0.0.1 \
   bash tools/llama-router.sh serve > "$KIT/results/server-ACTIVE.log" 2>&1
 ```
 
 Run it as a background process with its PID recorded. Use a distinct
-log name per configuration. Forward the EvalPlus port with
-`socat TCP-LISTEN:8081,bind=127.0.0.1,reuseaddr,fork TCP:127.0.0.1:8080`
-as a second background process. It holds no model. All clients then
-reach the same router; changing clients does not reload a model.
+log name per configuration. All clients use port 8888 directly.
+No forwarder is needed. Changing clients does not reload a model.
 Stop only these recorded PIDs at a configuration change or close.
 Restart the router when its preset changes. Wait for GPU memory to
 return to the measured starting level before the next load.
@@ -216,7 +215,7 @@ For each depth D, run a separate call so a failed deep cell does not
 lose the earlier cells:
 
 ```bash
-llama-benchy --base-url http://127.0.0.1:8081/v1 --model ALIAS \
+llama-benchy --base-url http://127.0.0.1:8888/v1 --model ALIAS \
   --tokenizer PINNED_TOKENIZER_DIRECTORY \
   --book-url http://127.0.0.1:8089/corpus-mendel-js.txt \
   --pp 512 --tg 256 --depth D --runs 2 \
@@ -243,7 +242,7 @@ For each cache type, start at `-c 34816`. Read depths 4096, 8192,
 four-problem EvalPlus smoke immediately while that cache stays loaded:
 
 ```bash
-SMOKE_BASE=http://127.0.0.1:8081 \
+SMOKE_BASE=http://127.0.0.1:8888 \
   SMOKE_OUT="$PWD/$KIT/results/BLOCK-KV-smoke" \
   "$EVALPLUS_PYTHON" benchmarks/evalplus-smoke.py BLOCK-KV ALIAS 'EXTRA_BODY'
 ```
@@ -298,7 +297,7 @@ Read `docs/methodology/checklist.md` at the start of a resumed session.
 Start one watcher immediately after warmup. Set RUNWATCH_SERVER_LOG
 to the active router log, RUNWATCH_OUTPUT to the growing samples or
 session file, RUNWATCH_MODEL to the active alias,
-RUNWATCH_BASE_URL to `http://127.0.0.1:8080`, RUNWATCH_SILENCE to 2700,
+RUNWATCH_BASE_URL to `http://127.0.0.1:8888`, RUNWATCH_SILENCE to 2700,
 and RUNWATCH_MEM_LOG to a distinct file in this run's results.
 Set RUNWATCH_SIGNATURES to
 `CUDA error|out of memory|cudaMalloc|Segmentation fault|Aborted|Traceback`.
@@ -499,7 +498,7 @@ finished Q8_0 smoke: server thinking budget 8192, output budget 16384,
 temperature 0, no calibration. Run the watcher as described above.
 
 ```bash
-SMOKE_BASE=http://127.0.0.1:8081 \
+SMOKE_BASE=http://127.0.0.1:8888 \
   SMOKE_OUT="$PWD/$KIT/results/s5-bf16-f16-eval-smoke" \
   "$EVALPLUS_PYTHON" benchmarks/evalplus-smoke.py \
   s5-bf16-f16-eval-smoke s5-nano-bf16-f16 \
@@ -573,8 +572,8 @@ name `s5-bf16-f16-quality-think-64k`, alias `s5-nano-bf16-f16` and
 extra body `{"chat_template_kwargs":{"enable_thinking":true}}`.
 Run all 164 problems at temperature 0. Do not splice the four-problem
 smoke, calibrate or change the budgets. Start the full run watcher
-with memory sampling and silent-crash detection. Use the run-owned
-8081 forwarder if the router listens on 8080.
+with memory sampling and silent-crash detection. Connect directly to
+the run-owned router on port 8888. No forwarder is needed.
 
 At completion, evaluate all 164 samples, count empty and forced answers
 with the exact fixed-message count command, and record base/plus and

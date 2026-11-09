@@ -22,7 +22,7 @@ import urllib.request
 
 import openai
 
-BASE_URL = "http://127.0.0.1:8081"
+BASE_URL = "http://127.0.0.1:8888"
 
 PROBLEM_IDS = [
     "HumanEval/0", "HumanEval/10", "HumanEval/26", "HumanEval/32",

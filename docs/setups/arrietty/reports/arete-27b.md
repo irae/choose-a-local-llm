@@ -36,7 +36,7 @@ Benchmark run 33 uses official llama.cpp stable v0.9.0. The xhigh quality gate p
 EvalPlus fast mode scored 0.976 base and 0.951 plus, with 0 empty and 7 forced answers of 164 in 204.1 active minutes. Thinking budget 8192, output budget 16384, no calibration. The base quality gate passed. Agent tasks are pending. Official llama.cpp stable v0.9.0, b12110. q8_0 KV, xhigh, no drafter or vision. Benchmark run 33 served -c 65536 and measured a deepest clean cell of 64512 tokens at 20.07 tok/s. The run stopped at its planned 64K cap, not an observed OOM or speed floor. The harness window is 61440, rounded down to 4096 from the clean depth. Compaction keep is 8192; maxTokens and reserveTokens use pi defaults. Peak total GPU use was 15771 MiB. Timed cells showed no swap growth; setup had a recorded premeasurement swap increase.
 
 ```bash
-llama-server -m "$(hf download bartowski/NousResearch_Arete-27B-GGUF NousResearch_Arete-27B-Q3_K_M.gguf --revision 9762c8502a79bd2b8634735d75f426b9febe092c)"   --alias arete-27b-q3km --no-mmproj --parallel 1   -ngl 999 --fit off -fa on -c 65536   --cache-type-k q8_0 --cache-type-v q8_0   --jinja --port 8081
+llama-server -m "$(hf download bartowski/NousResearch_Arete-27B-GGUF NousResearch_Arete-27B-Q3_K_M.gguf --revision 9762c8502a79bd2b8634735d75f426b9febe092c)"   --alias arete-27b-q3km --no-mmproj --parallel 1   -ngl 999 --fit off -fa on -c 65536   --cache-type-k q8_0 --cache-type-v q8_0   --jinja --port 8888
 ```
 <!-- gen:model-configs:end -->
 

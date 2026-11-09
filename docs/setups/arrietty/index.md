@@ -12,7 +12,7 @@
 - Runtime for new measurements: official llama.cpp stable v0.9.0,
   build b12110, installed through mise from upstream CUDA 12.8 binaries.
   Earlier measurements retain the runtime stated in their records.
-- Port 8081. Harness: pi, provider `llama`. Aliases equal the pi model
+- Port 8888. Harness: pi, provider `llama`. Aliases equal the pi model
   ids.
 - Model files: the default Hugging Face hub cache
   (`~/.cache/huggingface/hub`), fetched with

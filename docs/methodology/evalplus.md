@@ -111,7 +111,7 @@ not have to serve the same config, and each row says which it used.
 
 ## Steps
 
-1. Start the config's server on port 8081 with the fast-mode flags,
+1. Start the config's server on port 8888 with the fast-mode flags,
    warm up, start the run watcher (`benchmarks/run-watch.sh`,
    [checklist](./checklist.md) step 6: the memory record and the crash
    signal, exit 42 on a dead server). Verify with one real request

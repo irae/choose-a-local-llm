@@ -55,7 +55,7 @@
 #                          that is <slug>-events.jsonl; the session
 #                          .jsonl appears only at the end. Empty: no
 #                          silence probe.
-#   RUNWATCH_BASE_URL      server base URL, default http://127.0.0.1:8081
+#   RUNWATCH_BASE_URL      server base URL, default http://127.0.0.1:8888
 #   RUNWATCH_MODEL         model id for the probe request, default empty
 #   RUNWATCH_SILENCE       seconds without output growth before the one
 #                          probe, default 600
@@ -92,7 +92,7 @@ NEWLINE=$'\n'
 
 SERVER_LOG="${RUNWATCH_SERVER_LOG:-}"
 OUTPUT_FILE="${RUNWATCH_OUTPUT:-}"
-BASE_URL="${RUNWATCH_BASE_URL:-http://127.0.0.1:8081}"
+BASE_URL="${RUNWATCH_BASE_URL:-http://127.0.0.1:8888}"
 MODEL="${RUNWATCH_MODEL:-}"
 SILENCE="${RUNWATCH_SILENCE:-600}"
 PROBE_TIMEOUT="${RUNWATCH_PROBE_TIMEOUT:-300}"
