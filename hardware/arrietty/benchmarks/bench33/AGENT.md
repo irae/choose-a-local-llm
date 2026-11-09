@@ -10,6 +10,11 @@ in this thread. Disable the scheduled task at close.
 
 ## Essentials
 
+Current owner scope, 2026-11-09: run only
+`s5-bf16-f16-quality-think-64k`, defined at the end of this runbook.
+All Arete tests remain paused. Full Arete simulator rows are NOT
+STARTED and deferred. Do not resume the earlier order after this task.
+
 The owner requested this run on 2026-11-08. Test only these new
 models. Give early feedback on both before the long quality and
 simulator(mendel) tests. Keep one model loaded for adjacent short
@@ -541,3 +546,43 @@ and harness windows beside the comparison.
 Report whether the combined config changes the observed smoke result.
 Do not assign a change to one precision setting alone or treat a
 single smoke pass as a full coding-quality result.
+
+## `s5-bf16-f16-quality-think-64k`
+
+The owner requested a full thinking-on EvalPlus evaluation at a
+65536-token allocation. This is the only active measurement. Do not
+run another smoke, depth sweep, thinking-off evaluation or simulator.
+Do not restart Quickshell or change desktop applications.
+
+Use the pinned BF16 file and official b12110 runtime from the BF16
+trial. Keep f16 K/V, one slot, full GPU offload, fit off, flash
+attention on, no vision and MTP off. Serve `s5-nano-bf16-f16` with
+`ctx-size = 65536`. Copy the saved BF16 router preset into the
+run-owned active preset and change only its context allocation.
+Keep high Think with explicit `enable_thinking: true`, thinking budget
+8192 and the fixed budget message. The output budget is 16384.
+
+Run preflight first. Keep the owner's desktop running. Record start
+memory, resolved child arguments, the actual model file and a real
+warmup completion. Record the 65536 allocation as the owner's selected
+EvalPlus allocation, not as a new measured depth ceiling. No pi
+context window is needed for this HTTP evaluation.
+
+Read the EvalPlus method and use the quality command above with block
+name `s5-bf16-f16-quality-think-64k`, alias `s5-nano-bf16-f16` and
+extra body `{"chat_template_kwargs":{"enable_thinking":true}}`.
+Run all 164 problems at temperature 0. Do not splice the four-problem
+smoke, calibrate or change the budgets. Start the full run watcher
+with memory sampling and silent-crash detection. Use the run-owned
+8081 forwarder if the router listens on 8080.
+
+At completion, evaluate all 164 samples, count empty and forced answers
+with the exact fixed-message count command, and record base/plus and
+active wall minutes. Compare with the existing Q8_0/q8_0 thinking-on
+score, without assigning a difference to weights or KV alone. The
+earlier failed tool smoke remains failed regardless of this score.
+
+Stop this task's server, forwarder and watcher after completion to
+release desktop VRAM. Disable its heartbeat. Verify, commit and push
+run33, then report the completed block to the coordinator. Keep the
+run branch and worktree. Wait for the owner; start no other task.

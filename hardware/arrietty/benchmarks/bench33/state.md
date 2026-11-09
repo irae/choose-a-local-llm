@@ -514,4 +514,8 @@ On 2026-11-09, the owner stopped Arete simulator(mendel) work and deferred the g
 
 The owner directed cleanup of the aborted guided run. We removed its generated pi config and run files from `~/.local/share/mendel-benchmark/`, plus its task worktree and two setup worktrees with their local branches. No session, events, stdout, meta, watcher output or generated config remains for this row. We kept the completed Arete depth, tool-smoke and xhigh EvalPlus evidence, and all S5 evidence.
 
-The run router and Arete child stopped. No llama-server, Mendel Daemon or run watcher remains. Port 8080 is closed. VRAM use is 858 MiB, with 15,081 MiB free. The run33 heartbeat is disabled.
+The run router and Arete child stopped. No llama-server, Mendel Daemon or run watcher remains. Port 8080 is closed. The first post-stop sample showed 858 MiB used and 15,081 MiB free. The run33 heartbeat is disabled.
+
+## Cleanup follow-up
+
+On 2026-11-09, we found the run-owned `socat` forwarder on port 8081 (PID 447875). We stopped it. Its signal record is in `results/s5-depth-c262144-socat.log`. Both ports are closed. The final VRAM sample showed 782 MiB used and 15,157 MiB free. No test restarted.
