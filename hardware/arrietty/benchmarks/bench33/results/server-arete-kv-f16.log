@@ -1,0 +1,208 @@
+0.00.000.685 I srv  llama_server: initializing ...
+0.00.055.496 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.055.499 I srv  server_run_r: starting server in router mode. models will be automatically loaded on-demand
+0.00.198.270 E gguf_init_from_reader: tensor 'output.weight' has invalid ggml type 143. should be in [0, 44)
+0.00.198.273 E gguf_init_from_reader: failed to read tensor info
+0.00.349.596 I srv    operator(): Available models (6):
+0.00.349.598 I srv    operator():   [     cache] FreedomAISVR/Gemma-4-12B-it-NVFP4-GGUF:NVFP4
+0.00.349.598 I srv    operator():   [     cache] ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:MTP
+0.00.349.598 I srv    operator():   [     cache] OS-Software/Ternary-Bonsai-2-27B-Uncensored-Heretic-GGUF:PTQ1_0
+0.00.349.599 I srv    operator():   [    preset] arete-27b-q3km
+0.00.349.599 I srv    operator():   [     cache] catlilface/Gemma-4-26B-A4B-NVFP4-GGUF:NVFP4Q8
+0.00.349.599 I srv    operator():   [     cache] unsloth/gemma-4-12b-it-GGUF:Q4_K_XL
+0.00.349.673 W srv  server_setup: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+0.00.349.677 W srv  server_setup: security: router mode enabled - do not expose to untrusted environments
+0.00.351.124 I srv  server_on_li: listening on http://127.0.0.1:8080
+0.11.956.361 I srv          join: request for name=arete-27b-q3km queued at position 1
+0.11.956.364 I srv  ensure_model: waiting until model name=arete-27b-q3km is fully loaded...
+0.11.956.368 I srv  ensure_model: slot available, loading queued model name=arete-27b-q3km
+0.11.956.403 I srv          load: spawning server instance with name=arete-27b-q3km on port 48157
+0.11.956.429 I srv          load: spawning server instance with args:
+0.11.956.429 I srv          load:   /home/irae/.local/share/mise/installs/llama-cpp/b12110/llama-server
+0.11.956.429 I srv          load:   --chat-template-kwargs
+0.11.956.430 I srv          load:   {"enable_thinking":true,"reasoning_effort":"xhigh"}
+0.11.956.430 I srv          load:   --cors-origins
+0.11.956.430 I srv          load:   *
+0.11.956.430 I srv          load:   --host
+0.11.956.430 I srv          load:   127.0.0.1
+0.11.956.430 I srv          load:   --jinja
+0.11.956.430 I srv          load:   --log-colors
+0.11.956.430 I srv          load:   off
+0.11.956.431 I srv          load:   --no-mmproj-auto
+0.11.956.431 I srv          load:   --port
+0.11.956.431 I srv          load:   48157
+0.11.956.431 I srv          load:   --reasoning-budget
+0.11.956.431 I srv          load:   8192
+0.11.956.431 I srv          load:   --reasoning-budget-message
+0.11.956.431 I srv          load:   Thinking budget reached. Give the final answer now.
+0.11.956.431 I srv          load:   --sleep-idle-seconds
+0.11.956.432 I srv          load:   7200
+0.11.956.432 I srv          load:   --alias
+0.11.956.432 I srv          load:   arete-27b-q3km
+0.11.956.432 I srv          load:   --ctx-size
+0.11.956.432 I srv          load:   34816
+0.11.956.432 I srv          load:   --cache-ram
+0.11.956.432 I srv          load:   0
+0.11.956.432 I srv          load:   --cache-type-k
+0.11.956.432 I srv          load:   f16
+0.11.956.432 I srv          load:   --cache-type-v
+0.11.956.432 I srv          load:   f16
+0.11.956.432 I srv          load:   --flash-attn
+0.11.956.433 I srv          load:   on
+0.11.956.433 I srv          load:   --fit
+0.11.956.433 I srv          load:   off
+0.11.956.433 I srv          load:   --model
+0.11.956.433 I srv          load:   /home/irae/.cache/huggingface/hub/models--bartowski--NousResearch_Arete-27B-GGUF/snapshots/9762c8502a79bd2b8634735d75f426b9febe092c/NousResearch_Arete-27B-Q3_K_M.gguf
+0.11.956.433 I srv          load:   --n-gpu-layers
+0.11.956.433 I srv          load:   999
+0.11.956.433 I srv          load:   --parallel
+0.11.956.433 I srv          load:   1
+[48157] 0.00.000.509 W Setting 'enable_thinking' via --chat-template-kwargs is deprecated. Use --reasoning on / --reasoning off instead.
+[48157] 0.00.066.252 I srv  llama_server: initializing ...
+[48157] 0.00.066.264 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+[48157] 0.00.066.565 W srv  server_setup: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+[48157] 0.00.068.041 I srv    load_model: loading model '/home/irae/.cache/huggingface/hub/models--bartowski--NousResearch_Arete-27B-GGUF/snapshots/9762c8502a79bd2b8634735d75f426b9febe092c/NousResearch_Arete-27B-Q3_K_M.gguf'
+[48157] 0.01.867.544 I cmn          init: llama threadpool init, n_threads = 6
+[48157] 0.02.047.588 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 34816, kv_unified = 'false'
+[48157] 0.02.047.636 W srv          init: --cache-idle-slots requires --cache-ram, disabling
+[48157] 0.02.051.597 W srv          init: chat template supports preserving reasoning, it is enabled by default (may use more tokens, disable via --no-reasoning-preserve)
+[48157] 0.02.051.633 I srv  server_run_i: model loaded
+[48157] 0.02.051.636 I srv  server_on_li: listening on http://127.0.0.1:48157
+[48157] 0.02.051.787 I srv    operator(): child server monitoring thread started, waiting for EOF on stdin...
+0.14.012.793 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 48157
+[48157] 0.02.054.395 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 0, t_last = -1
+[48157] 0.02.054.456 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+[48157] 0.03.521.184 I slot print_timing: id  0 | task 0 | prompt eval time =     369.81 ms /    58 tokens (    6.38 ms per token,   156.84 tokens per second)
+[48157] 0.03.521.186 I slot print_timing: id  0 | task 0 |        eval time =    1096.90 ms /    32 tokens (   35.38 ms per token,    28.26 tokens per second)
+[48157] 0.03.521.187 I slot print_timing: id  0 | task 0 |       total time =    1466.71 ms /    90 tokens
+[48157] 0.03.521.190 I slot print_timing: id  0 | task 0 |    graphs reused =         31
+[48157] 0.03.521.190 I slot print_timing: id  0 | task 0 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[48157] 0.03.521.226 I slot      release: id  0 | task 0 | stop processing: n_tokens = 89, truncated = 0
+0.27.346.124 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 48157
+[48157] 0.15.388.049 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.292 (> 0.100 thold), f_keep = 0.449
+[48157] 0.15.388.103 I slot launch_slot_: id  0 | task 35 | processing task, is_child = 0
+[48157] 0.19.131.279 I slot print_timing: id  0 | task 35 | n_gen =    100, tg =  28.50 t/s, tg_3s =  28.79 t/s
+[48157] 0.22.152.907 I slot print_timing: id  0 | task 35 | n_gen =    186, tg =  28.48 t/s, tg_3s =  28.46 t/s
+[48157] 0.25.170.599 I slot print_timing: id  0 | task 35 | n_gen =    272, tg =  28.49 t/s, tg_3s =  28.50 t/s
+[48157] 0.28.189.628 I slot print_timing: id  0 | task 35 | n_gen =    358, tg =  28.49 t/s, tg_3s =  28.49 t/s
+[48157] 0.31.212.653 I slot print_timing: id  0 | task 35 | n_gen =    444, tg =  28.48 t/s, tg_3s =  28.45 t/s
+[48157] 0.32.337.801 I slot print_timing: id  0 | task 35 | prompt eval time =     269.46 ms /   137 tokens (    1.97 ms per token,   508.43 tokens per second)
+[48157] 0.32.337.803 I slot print_timing: id  0 | task 35 |        eval time =   16680.23 ms /   476 tokens (   35.12 ms per token,    28.48 tokens per second)
+[48157] 0.32.337.804 I slot print_timing: id  0 | task 35 |       total time =   16949.69 ms /   613 tokens
+[48157] 0.32.337.804 I slot print_timing: id  0 | task 35 |    graphs reused =        503
+[48157] 0.32.337.804 I slot print_timing: id  0 | task 35 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[48157] 0.32.337.817 I slot      release: id  0 | task 35 | stop processing: n_tokens = 612, truncated = 0
+0.44.305.464 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 48157
+[48157] 0.32.347.257 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.605 (> 0.100 thold), f_keep = 0.127
+[48157] 0.32.347.306 I slot launch_slot_: id  0 | task 514 | processing task, is_child = 0
+[48157] 0.36.020.604 I slot print_timing: id  0 | task 514 | n_gen =    100, tg =  28.49 t/s, tg_3s =  28.78 t/s
+[48157] 0.39.040.711 I slot print_timing: id  0 | task 514 | n_gen =    186, tg =  28.48 t/s, tg_3s =  28.48 t/s
+[48157] 0.42.059.355 I slot print_timing: id  0 | task 514 | n_gen =    272, tg =  28.49 t/s, tg_3s =  28.49 t/s
+[48157] 0.45.079.547 I slot print_timing: id  0 | task 514 | n_gen =    358, tg =  28.48 t/s, tg_3s =  28.48 t/s
+[48157] 0.46.592.754 I slot print_timing: id  0 | task 514 | prompt eval time =     198.47 ms /    77 tokens (    2.58 ms per token,   387.97 tokens per second)
+[48157] 0.46.592.756 I slot print_timing: id  0 | task 514 |        eval time =   14046.97 ms /   401 tokens (   35.12 ms per token,    28.48 tokens per second)
+[48157] 0.46.592.757 I slot print_timing: id  0 | task 514 |       total time =   14245.44 ms /   478 tokens
+[48157] 0.46.592.757 I slot print_timing: id  0 | task 514 |    graphs reused =        900
+[48157] 0.46.592.758 I slot print_timing: id  0 | task 514 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[48157] 0.46.592.771 I slot      release: id  0 | task 514 | stop processing: n_tokens = 529, truncated = 0
+0.58.556.055 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 48157
+[48157] 0.46.597.903 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.488 (> 0.100 thold), f_keep = 0.147
+[48157] 0.46.597.974 I slot launch_slot_: id  0 | task 917 | processing task, is_child = 0
+[48157] 0.50.304.197 I slot print_timing: id  0 | task 917 | n_gen =    100, tg =  28.46 t/s, tg_3s =  28.74 t/s
+[48157] 0.53.324.383 I slot print_timing: id  0 | task 917 | n_gen =    186, tg =  28.46 t/s, tg_3s =  28.48 t/s
+[48157] 0.56.346.913 I slot print_timing: id  0 | task 917 | n_gen =    272, tg =  28.46 t/s, tg_3s =  28.45 t/s
+[48157] 0.59.371.447 I slot print_timing: id  0 | task 917 | n_gen =    358, tg =  28.45 t/s, tg_3s =  28.43 t/s
+[48157] 1.02.397.244 I slot print_timing: id  0 | task 917 | n_gen =    444, tg =  28.45 t/s, tg_3s =  28.42 t/s
+[48157] 1.04.156.646 I slot print_timing: id  0 | task 917 | prompt eval time =     227.06 ms /   108 tokens (    2.10 ms per token,   475.64 tokens per second)
+[48157] 1.04.156.648 I slot print_timing: id  0 | task 917 |        eval time =   17331.60 ms /   494 tokens (   35.16 ms per token,    28.45 tokens per second)
+[48157] 1.04.156.649 I slot print_timing: id  0 | task 917 |       total time =   17558.66 ms /   602 tokens
+[48157] 1.04.156.649 I slot print_timing: id  0 | task 917 |    graphs reused =       1390
+[48157] 1.04.156.650 I slot print_timing: id  0 | task 917 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[48157] 1.04.156.663 I slot      release: id  0 | task 917 | stop processing: n_tokens = 653, truncated = 0
+1.16.119.393 I srv  proxy_reques: proxying request to model arete-27b-q3km on port 48157
+[48157] 1.04.161.799 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.159 (> 0.100 thold), f_keep = 0.119
+[48157] 1.04.161.844 I slot launch_slot_: id  0 | task 1413 | processing task, is_child = 0
+[48157] 1.08.237.175 I slot print_timing: id  0 | task 1413 | n_gen =    100, tg =  28.41 t/s, tg_3s =  28.70 t/s
+[48157] 1.11.260.453 I slot print_timing: id  0 | task 1413 | n_gen =    186, tg =  28.43 t/s, tg_3s =  28.45 t/s
+[48157] 1.14.285.143 I slot print_timing: id  0 | task 1413 | n_gen =    272, tg =  28.43 t/s, tg_3s =  28.43 t/s
+[48157] 1.17.315.047 I slot print_timing: id  0 | task 1413 | n_gen =    358, tg =  28.42 t/s, tg_3s =  28.38 t/s
+[48157] 1.20.342.114 I slot print_timing: id  0 | task 1413 | n_gen =    444, tg =  28.42 t/s, tg_3s =  28.41 t/s
+[48157] 1.23.369.729 I slot print_timing: id  0 | task 1413 | n_gen =    530, tg =  28.41 t/s, tg_3s =  28.41 t/s
+[48157] 1.26.402.852 I slot print_timing: id  0 | task 1413 | n_gen =    616, tg =  28.41 t/s, tg_3s =  28.35 t/s
+[48157] 1.29.435.062 I slot print_timing: id  0 | task 1413 | n_gen =    702, tg =  28.40 t/s, tg_3s =  28.36 t/s
+[48157] 1.32.468.525 I slot print_timing: id  0 | task 1413 | n_gen =    788, tg =  28.40 t/s, tg_3s =  28.35 t/s
+[48157] 1.35.472.434 I slot print_timing: id  0 | task 1413 | n_gen =    873, tg =  28.39 t/s, tg_3s =  28.30 t/s
+[48157] 1.38.507.485 I slot print_timing: id  0 | task 1413 | n_gen =    959, tg =  28.38 t/s, tg_3s =  28.34 t/s
+[48157] 1.41.508.477 I slot print_timing: id  0 | task 1413 | n_gen =   1044, tg =  28.38 t/s, tg_3s =  28.32 t/s
+[48157] 1.44.513.116 I slot print_timing: id  0 | task 1413 | n_gen =   1129, tg =  28.37 t/s, tg_3s =  28.29 t/s
+[48157] 1.47.515.348 I slot print_timing: id  0 | task 1413 | n_gen =   1214, tg =  28.37 t/s, tg_3s =  28.31 t/s
+[48157] 1.50.516.415 I slot print_timing: id  0 | task 1413 | n_gen =   1299, tg =  28.36 t/s, tg_3s =  28.32 t/s
+[48157] 1.53.522.707 I slot print_timing: id  0 | task 1413 | n_gen =   1384, tg =  28.36 t/s, tg_3s =  28.27 t/s
+[48157] 1.56.527.395 I slot print_timing: id  0 | task 1413 | n_gen =   1469, tg =  28.35 t/s, tg_3s =  28.29 t/s
+[48157] 1.59.532.363 I slot print_timing: id  0 | task 1413 | n_gen =   1554, tg =  28.35 t/s, tg_3s =  28.29 t/s
+[48157] 2.02.544.414 I slot print_timing: id  0 | task 1413 | n_gen =   1639, tg =  28.34 t/s, tg_3s =  28.22 t/s
+[48157] 2.05.553.982 I slot print_timing: id  0 | task 1413 | n_gen =   1724, tg =  28.34 t/s, tg_3s =  28.24 t/s
+[48157] 2.08.564.161 I slot print_timing: id  0 | task 1413 | n_gen =   1809, tg =  28.33 t/s, tg_3s =  28.24 t/s
+[48157] 2.11.579.484 I slot print_timing: id  0 | task 1413 | n_gen =   1894, tg =  28.33 t/s, tg_3s =  28.19 t/s
+[48157] 2.14.591.491 I slot print_timing: id  0 | task 1413 | n_gen =   1979, tg =  28.32 t/s, tg_3s =  28.22 t/s
+[48157] 2.17.605.120 I slot print_timing: id  0 | task 1413 | n_gen =   2064, tg =  28.32 t/s, tg_3s =  28.21 t/s
+[48157] 2.20.623.040 I slot print_timing: id  0 | task 1413 | n_gen =   2149, tg =  28.31 t/s, tg_3s =  28.17 t/s
+[48157] 2.23.637.115 I slot print_timing: id  0 | task 1413 | n_gen =   2234, tg =  28.31 t/s, tg_3s =  28.20 t/s
+[48157] 2.26.653.574 I slot print_timing: id  0 | task 1413 | n_gen =   2319, tg =  28.30 t/s, tg_3s =  28.18 t/s
+[48157] 2.29.673.266 I slot print_timing: id  0 | task 1413 | n_gen =   2404, tg =  28.30 t/s, tg_3s =  28.15 t/s
+[48157] 2.32.691.447 I slot print_timing: id  0 | task 1413 | n_gen =   2489, tg =  28.29 t/s, tg_3s =  28.16 t/s
+[48157] 2.35.710.253 I slot print_timing: id  0 | task 1413 | n_gen =   2574, tg =  28.29 t/s, tg_3s =  28.16 t/s
+[48157] 2.38.733.637 I slot print_timing: id  0 | task 1413 | n_gen =   2659, tg =  28.28 t/s, tg_3s =  28.11 t/s
+[48157] 2.41.756.115 I slot print_timing: id  0 | task 1413 | n_gen =   2744, tg =  28.28 t/s, tg_3s =  28.12 t/s
+[48157] 2.44.778.550 I slot print_timing: id  0 | task 1413 | n_gen =   2829, tg =  28.27 t/s, tg_3s =  28.12 t/s
+[48157] 2.47.805.122 I slot print_timing: id  0 | task 1413 | n_gen =   2914, tg =  28.27 t/s, tg_3s =  28.08 t/s
+[48157] 2.50.830.284 I slot print_timing: id  0 | task 1413 | n_gen =   2999, tg =  28.26 t/s, tg_3s =  28.10 t/s
+[48157] 2.53.859.632 I slot print_timing: id  0 | task 1413 | n_gen =   3084, tg =  28.26 t/s, tg_3s =  28.06 t/s
+[48157] 2.56.890.229 I slot print_timing: id  0 | task 1413 | n_gen =   3169, tg =  28.25 t/s, tg_3s =  28.05 t/s
+[48157] 2.59.917.087 I slot print_timing: id  0 | task 1413 | n_gen =   3254, tg =  28.25 t/s, tg_3s =  28.08 t/s
+[48157] 3.02.945.952 I slot print_timing: id  0 | task 1413 | n_gen =   3339, tg =  28.24 t/s, tg_3s =  28.06 t/s
+[48157] 3.05.980.651 I slot print_timing: id  0 | task 1413 | n_gen =   3424, tg =  28.24 t/s, tg_3s =  28.01 t/s
+[48157] 3.09.012.259 I slot print_timing: id  0 | task 1413 | n_gen =   3509, tg =  28.23 t/s, tg_3s =  28.04 t/s
+[48157] 3.12.044.133 I slot print_timing: id  0 | task 1413 | n_gen =   3594, tg =  28.23 t/s, tg_3s =  28.04 t/s
+[48157] 3.15.045.519 I slot print_timing: id  0 | task 1413 | n_gen =   3678, tg =  28.22 t/s, tg_3s =  27.99 t/s
+[48157] 3.18.081.174 I slot print_timing: id  0 | task 1413 | n_gen =   3763, tg =  28.22 t/s, tg_3s =  28.00 t/s
+[48157] 3.21.115.664 I slot print_timing: id  0 | task 1413 | n_gen =   3848, tg =  28.21 t/s, tg_3s =  28.01 t/s
+[48157] 3.24.120.611 I slot print_timing: id  0 | task 1413 | n_gen =   3932, tg =  28.21 t/s, tg_3s =  27.95 t/s
+[48157] 3.27.125.237 I slot print_timing: id  0 | task 1413 | n_gen =   4016, tg =  28.20 t/s, tg_3s =  27.96 t/s
+[48157] 3.30.128.336 I slot print_timing: id  0 | task 1413 | n_gen =   4100, tg =  28.20 t/s, tg_3s =  27.97 t/s
+[48157] 3.33.136.297 I slot print_timing: id  0 | task 1413 | n_gen =   4184, tg =  28.19 t/s, tg_3s =  27.93 t/s
+[48157] 3.36.145.040 I slot print_timing: id  0 | task 1413 | n_gen =   4268, tg =  28.19 t/s, tg_3s =  27.92 t/s
+[48157] 3.39.154.890 I slot print_timing: id  0 | task 1413 | n_gen =   4352, tg =  28.18 t/s, tg_3s =  27.91 t/s
+[48157] 3.42.164.258 I slot print_timing: id  0 | task 1413 | n_gen =   4436, tg =  28.17 t/s, tg_3s =  27.91 t/s
+[48157] 3.45.174.260 I slot print_timing: id  0 | task 1413 | n_gen =   4520, tg =  28.17 t/s, tg_3s =  27.91 t/s
+[48157] 3.48.185.205 I slot print_timing: id  0 | task 1413 | n_gen =   4604, tg =  28.16 t/s, tg_3s =  27.90 t/s
+[48157] 3.51.199.646 I slot print_timing: id  0 | task 1413 | n_gen =   4688, tg =  28.16 t/s, tg_3s =  27.87 t/s
+[48157] 3.54.212.009 I slot print_timing: id  0 | task 1413 | n_gen =   4772, tg =  28.15 t/s, tg_3s =  27.89 t/s
+[48157] 3.57.224.347 I slot print_timing: id  0 | task 1413 | n_gen =   4856, tg =  28.15 t/s, tg_3s =  27.89 t/s
+[48157] 4.00.241.352 I slot print_timing: id  0 | task 1413 | n_gen =   4940, tg =  28.14 t/s, tg_3s =  27.84 t/s
+[48157] 4.03.256.859 I slot print_timing: id  0 | task 1413 | n_gen =   5024, tg =  28.14 t/s, tg_3s =  27.86 t/s
+[48157] 4.06.273.098 I slot print_timing: id  0 | task 1413 | n_gen =   5108, tg =  28.13 t/s, tg_3s =  27.85 t/s
+[48157] 4.09.296.092 I slot print_timing: id  0 | task 1413 | n_gen =   5192, tg =  28.13 t/s, tg_3s =  27.79 t/s
+[48157] 4.12.318.339 I slot print_timing: id  0 | task 1413 | n_gen =   5276, tg =  28.12 t/s, tg_3s =  27.79 t/s
+[48157] 4.15.338.335 I slot print_timing: id  0 | task 1413 | n_gen =   5360, tg =  28.12 t/s, tg_3s =  27.81 t/s
+[48157] 4.18.363.079 I slot print_timing: id  0 | task 1413 | n_gen =   5444, tg =  28.11 t/s, tg_3s =  27.77 t/s
+[48157] 4.21.385.376 I slot print_timing: id  0 | task 1413 | n_gen =   5528, tg =  28.11 t/s, tg_3s =  27.79 t/s
+[48157] 4.24.409.084 I slot print_timing: id  0 | task 1413 | n_gen =   5612, tg =  28.10 t/s, tg_3s =  27.78 t/s
+[48157] 4.27.435.778 I slot print_timing: id  0 | task 1413 | n_gen =   5696, tg =  28.10 t/s, tg_3s =  27.75 t/s
+[48157] 4.30.460.339 I slot print_timing: id  0 | task 1413 | n_gen =   5780, tg =  28.09 t/s, tg_3s =  27.77 t/s
+[48157] 4.33.486.382 I slot print_timing: id  0 | task 1413 | n_gen =   5864, tg =  28.09 t/s, tg_3s =  27.76 t/s
+[48157] 4.36.517.123 I slot print_timing: id  0 | task 1413 | n_gen =   5948, tg =  28.08 t/s, tg_3s =  27.72 t/s
+[48157] 4.39.547.360 I slot print_timing: id  0 | task 1413 | n_gen =   6032, tg =  28.08 t/s, tg_3s =  27.72 t/s
+[48157] 4.42.576.639 I slot print_timing: id  0 | task 1413 | n_gen =   6116, tg =  28.07 t/s, tg_3s =  27.73 t/s
+[48157] 4.45.610.177 I slot print_timing: id  0 | task 1413 | n_gen =   6200, tg =  28.07 t/s, tg_3s =  27.69 t/s
+[48157] 4.48.065.340 I slot print_timing: id  0 | task 1413 | prompt eval time =     590.84 ms /   439 tokens (    1.35 ms per token,   743.00 tokens per second)
+[48157] 4.48.065.342 I slot print_timing: id  0 | task 1413 |        eval time =  223312.64 ms /  6268 tokens (   35.63 ms per token,    28.06 tokens per second)
+[48157] 4.48.065.342 I slot print_timing: id  0 | task 1413 |       total time =  223903.49 ms /  6707 tokens
+[48157] 4.48.065.343 I slot print_timing: id  0 | task 1413 |    graphs reused =       7631
+[48157] 4.48.065.343 I slot print_timing: id  0 | task 1413 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[48157] 4.48.065.379 I slot      release: id  0 | task 1413 | stop processing: n_tokens = 6758, truncated = 0
+7.26.340.103 I srv    operator(): operator(): cleaning up before exit...
+7.26.340.133 I srv    unload_all: stopping model instance name=arete-27b-q3km
+[48157] 7.14.380.298 I srv    operator(): exit command received, exiting...
+[48157] 7.14.380.330 I srv    operator(): operator(): cleaning up before exit...
+7.28.558.874 I srv           run: instance name=arete-27b-q3km exited with status 0

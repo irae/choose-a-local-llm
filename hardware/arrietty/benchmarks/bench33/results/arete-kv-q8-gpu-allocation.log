@@ -1,0 +1,6 @@
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+14591 MiB, 1348 MiB, 51, 155.25 W
+pid, used_gpu_memory [MiB]
+1877, 13 MiB
+403029, 120 MiB
+432912, 13646 MiB

@@ -125,15 +125,53 @@ Both types loaded at `-c 34816`, and their 32K decode speeds differ by
 less than 10%. The candidate is q8_0 under the method. The coordinator
 must record the final KV choice.
 
-The direct machine-start sample showed 0 MiB swap used. Before the
-first f16 cell, swap used was 13,288 KiB. It stayed at 13,288 KiB before
-and after every S5 speed cell. The growth occurred after the machine
-start sample and before the first measured cell. The coordinator must
-decide whether this affects the KV readings.
+Swap used was 0 MiB at machine start. It rose to 13,288 KiB before the
+first timed S5 cell. It stayed at 13,288 KiB before and after every
+timed cell. The coordinator accepted the throughput readings. This
+does not show swap-free setup or establish a maximum memory ceiling.
+
+The coordinator selected q8_0 for S5 depth. The site entry is
+`s5-nano-q8`. Its provisional site window is 32,768 tokens. Use the
+measured s5-depth window for the tool smoke and full task.
+
+## arete-kv-feedback
+
+Arete loaded both cache types at `-c 34816`. The server used the pinned
+Q3_K_M file and returned reasoning on each warmup. The resolved child
+arguments set `--n-gpu-layers 999` and `--fit off`. They contain no
+CPU-MoE or tensor-placement override. Both configurations completed a
+real completion. The server logs have no explicit layer-count line.
+Record operational full-offload evidence. Do not claim an N/N count.
+
+The f16 decode readings were 27.90 tok/s at 4K, 27.43 at 8K, 26.50 at
+16K, 25.62 at 24K and 24.81 at 32K. The matching prefill readings
+were 889.89, 884.47, 858.28, 830.65 and 803.46 tok/s. Every cell
+completed. The 4K and 32K GPU samples were 15,511–15,521 MiB and
+15,521 MiB. The smoke passed 4 of 4 problems, with 0 empty answers
+and 7,639 completion tokens. Its wall time was 294.8 s.
+
+The q8_0 decode readings were 27.59 tok/s at 4K, 26.89 at 8K, 25.62
+at 16K, 24.49 at 24K and 23.39 at 32K. The matching prefill readings
+were 886.16, 880.07, 852.59, 823.11 and 795.03 tok/s. Every cell
+completed. The 4K and 32K GPU samples were 14,591–14,601 MiB and
+14,601 MiB. The smoke passed 4 of 4 problems, with 0 empty answers
+and 8,519 completion tokens. Its wall time was 328.9 s. Both smoke
+lines read LEVEL. At 32K, q8_0 saved about 920 MiB and its speed was
+within 10% of f16. The coordinator decides the Arete cache for depth.
+
+The first run router used PID 432837 with child 432912 and socat PID
+432838. The f16 smoke reload used router PID 437251 with child 437298
+and socat PID 437252. Both run routers stopped after their cells.
+
+Swap used was 60,720 KiB before the first Arete speed cell. It stayed
+near 60,532–60,720 KiB through the measured cells and did not grow
+during a cell. This is a premeasurement increase, not a swap-free
+setup or a maximum memory ceiling. Benchy used separate Linux calls
+for each depth; these are not slow-context-creep results.
 
 ## Derived values
 
 | model | KV | serving context | clean depth | harness window | source |
 |---|---|---|---|---|---|
-| Arete | pending | pending | pending | pending | |
-| S5-nano | pending | pending | pending | pending | |
+| Arete | pending coordinator decision | 34816 | 32768 | pending | `arete-kv-feedback` |
+| S5-nano | q8_0 | 34816 | 32768 | pending newer depth result | `s5-kv-feedback` |

@@ -1,0 +1,90 @@
+2026-11-09T01:25:08Z
+arete-kv-q8 depth=4096 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+14591 MiB, 1348 MiB, 37, 21.73 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6798        3050         184       23909       25095
+Swap:          31893          59       31834
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	60532		100
+2026-11-09T01:26:09Z
+arete-kv-q8 depth=4096 after
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+14601 MiB, 1338 MiB, 42, 24.00 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6961        2879         184       23917       24933
+Swap:          31893          59       31834
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	60532		100
+2026-11-09T01:26:09Z
+arete-kv-q8 depth=8192 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+14601 MiB, 1338 MiB, 42, 24.00 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6963        2877         184       23917       24931
+Swap:          31893          59       31834
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	60532		100
+2026-11-09T01:27:26Z
+arete-kv-q8 depth=8192 after
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+14601 MiB, 1338 MiB, 42, 23.50 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6939        2896         184       23922       24955
+Swap:          31893          59       31834
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	60532		100
+2026-11-09T01:27:26Z
+arete-kv-q8 depth=16384 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+14601 MiB, 1338 MiB, 42, 23.50 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6926        2910         184       23922       24968
+Swap:          31893          59       31834
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	60532		100
+2026-11-09T01:29:13Z
+arete-kv-q8 depth=16384 after
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+14601 MiB, 1338 MiB, 42, 23.43 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6949        2885         184       23924       24945
+Swap:          31893          59       31834
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	60532		100
+2026-11-09T01:29:13Z
+arete-kv-q8 depth=24576 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+14601 MiB, 1338 MiB, 42, 23.43 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6945        2889         184       23924       24949
+Swap:          31893          59       31834
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	60532		100
+2026-11-09T01:31:33Z
+arete-kv-q8 depth=24576 after
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+14601 MiB, 1338 MiB, 42, 23.82 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6906        2926         184       23926       24988
+Swap:          31893          59       31834
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	60532		100
+2026-11-09T01:31:33Z
+arete-kv-q8 depth=32768 before
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+14601 MiB, 1338 MiB, 42, 23.82 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6906        2926         184       23926       24988
+Swap:          31893          59       31834
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	60532		100
+2026-11-09T01:34:29Z
+arete-kv-q8 depth=32768 after
+memory.used [MiB], memory.free [MiB], temperature.gpu, power.draw [W]
+14601 MiB, 1338 MiB, 42, 24.11 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6979        2846         184       23932       24914
+Swap:          31893          59       31834
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	60532		100
