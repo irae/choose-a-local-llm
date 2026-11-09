@@ -77,7 +77,8 @@ Benchmark work:
 
 - `hardware/arrietty/benchmarks/bench33/AGENT.md`. Arete and S5-nano
   on the Linux desktop. Early KV and coding smokes precede the full
-  quality and simulator(mendel) tests.
+  quality and simulator(mendel) tests. The added S5 BF16/f16 trial
+  measures depth and runs both smokes.
 - `benchmarks/PLANNING.md`. Before you plan a run or write a
   `bench<N>/AGENT.md`. The coordinator/runner role split and the
   HANDOFF writing rules live here. Coordinators read it; runners never

@@ -11,7 +11,7 @@ File: [bartowski/NousResearch_Arete-27B-GGUF](https://huggingface.co/bartowski/N
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/arete-bartowski-q3km" top /> | **pending** | <TokCell shallow="pending" deep="pending" cap="pending" /> | pending | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
+| <ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/arete-bartowski-q3km" top /> | **64k** | <TokCell shallow="27.60" deep="20.07" cap="mem" top-shallow top-deep /> | **15.4 GiB** | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
@@ -26,7 +26,7 @@ parallel = 1
 n-gpu-layers = 999
 fit = off
 flash-attn = on
-ctx-size = 34816
+ctx-size = 65536
 cache-type-k = q8_0
 cache-type-v = q8_0
 jinja = true
@@ -49,7 +49,9 @@ No Mendel run yet.
 
 ## Speed and context
 
-Full depth testing is pending. See the [measurement record](../setups/arrietty/benchmarks/arete-27b.md).
+<ModelSpec base="Arete-27B" quant="Q3_K_M" publisher="bartowski" server="llama-server" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" />
+
+At `-c 65536`, decode was 27.60 tok/s at 4,096 used tokens and 20.07 at 64,512. The harness window is 61,440. The run reached its planned cap; it did not establish an absolute memory ceiling. Peak total GPU use was 15,771 MiB, with no swap growth during the timed cells. See the [full curve and conditions](../setups/arrietty/benchmarks/arete-27b.md#depth-measurement).
 
 ## Server presets
 
@@ -67,7 +69,7 @@ parallel = 1
 n-gpu-layers = 999
 fit = off
 flash-attn = on
-ctx-size = 34816
+ctx-size = 65536
 cache-type-k = q8_0
 cache-type-v = q8_0
 jinja = true
@@ -79,3 +81,5 @@ reasoning-budget-message = Thinking budget reached. Give the final answer now.
 ## Log
 
 - 2026-11-08: pinned the community file for benchmark run 33.
+
+- 2026-11-08: measured the 64K allocation and set the harness window to 61,440.

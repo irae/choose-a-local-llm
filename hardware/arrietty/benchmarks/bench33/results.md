@@ -189,6 +189,11 @@ chat-template body
 |---:|---:|---:|---:|---:|
 | 0.811 | 0.726 | 164/164 | 0/164 | 26/164 |
 
+Coordinator correction, 2026-11-09: the report's zero forced count
+was incorrect. `thinking-budget.py count` with the fixed budget
+message found 26 forced answers in the finish log. The evaluator
+has 133 base passes and 119 plus passes. The scores are unchanged.
+
 The base score meets the 0.800 quality threshold. The S5 tool smoke
 failed its commit and clean-tree gates, so the full S5
 simulator(mendel) blocks remain skipped. Raw and sanitized samples,

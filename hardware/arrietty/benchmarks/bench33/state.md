@@ -213,6 +213,16 @@ The run router is PID 440756, its child is PID 440825 and socat is PID
 | Arete | q8_0 | 65536 | 64512 | 61440 | `arete-depth` |
 | S5-nano | q8_0 | 262144 | 261120 | 258048 | `s5-depth` |
 
+## S5 coordinator decision
+
+Use q8_0 KV. The timed cells are accepted with the pre-cell swap
+increase recorded as a deviation. The full decision is in
+[results/s5-kv-decision.md](results/s5-kv-decision.md).
+The depth block must set the final serving context and harness window.
+The new pending site row and pi id are `s5-nano-q8`. The initial
+32768-token harness entry comes from the short test, not a full depth
+ceiling. The run's newer depth result must replace it.
+
 ## Arete coordinator decision
 
 Use q8_0 for Arete depth and later baseline blocks. The timed cells
@@ -308,6 +318,11 @@ Skip S5 full simulator(mendel) blocks. Continue with S5 thinking quality.
 Deviation: the model directed Git to the outer run branch; I removed
 the local commit before pushing this block.
 
+The coordinator retained the failed unscored gate. See
+[the session review](results/s5-tool-smoke-review.md). S5's full
+thinking quality test continues. Its full simulator(mendel) rows stay
+skipped, and the site records the agent task as not run.
+
 ## s5-quality-think
 
 Started 2026-11-09 03:09:26 UTC. The run uses the loaded S5-nano q8_0
@@ -324,6 +339,11 @@ the tool smoke failed its commit and clean-tree gates. Raw samples,
 finish records, evaluator output and watcher memory are in
 `results/s5-quality-think/` and
 `results/s5-quality-think-watch-memory.log`.
+
+Coordinator correction, 2026-11-09: the block report said zero forced
+answers. The fixed-message count command found 26 in `finish.jsonl`.
+The evaluator confirms 133 base passes and 119 plus passes out of 164.
+The scores and base gate do not change. No samples are regenerated.
 
 Correction for the prior quality record: the first count used the wrong
 message and reported 0 forced. The fixed command is
