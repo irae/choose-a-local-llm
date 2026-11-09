@@ -513,6 +513,36 @@
         "id": "s5-nano-q8",
         "contextWindow": 32768
       }
+    },
+    {
+      "id": "arete-27b-q3km-xhigh",
+      "config": "Arete-27B, GGUF, Q3_K_M, q8_0 KV, no drafter, effort xhigh",
+      "spec": {
+        "base": "Arete-27B",
+        "quant": "Q3_K_M",
+        "publisher": "bartowski",
+        "repo": "bartowski/NousResearch_Arete-27B-GGUF",
+        "server": "llama-server",
+        "drafter": "",
+        "kv": "q8_0",
+        "effort": "xhigh"
+      },
+      "maxCtx": "pending",
+      "gatedBy": "pending",
+      "tokShallow": "pending",
+      "tokDeep": "pending",
+      "memory": "pending",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "hidden": false,
+      "added": "2026-11-08",
+      "command": "llama-server -m \"$(hf download bartowski/NousResearch_Arete-27B-GGUF NousResearch_Arete-27B-Q3_K_M.gguf --revision 9762c8502a79bd2b8634735d75f426b9febe092c)\"   --alias arete-27b-q3km --no-mmproj --parallel 1   -ngl 999 --fit off -fa on -c 34816   --cache-type-k q8_0 --cache-type-v q8_0   --jinja --port 8081",
+      "note": "Quality gate pending. Official llama.cpp stable v0.9.0, b12110. q8_0 KV selected in benchmark run 33. The short test served -c 34816. The depth test must set the final serving context and harness window. Use effort xhigh, without a drafter or vision. The fixed smoke is unscored and is not a full quality result.",
+      "pi": {
+        "provider": "llama",
+        "id": "arete-27b-q3km",
+        "contextWindow": 32768
+      }
     }
   ],
   "models": {
@@ -657,6 +687,23 @@
     },
     "s5-nano": {
       "rowMatch": "S5-nano,",
+      "kpis": [
+        "quality",
+        "agent"
+      ],
+      "stats": {
+        "quality": {
+          "value": "pending",
+          "label": "Full EvalPlus quality gate"
+        },
+        "agent": {
+          "value": "pending",
+          "label": "Agent task"
+        }
+      }
+    },
+    "arete-27b": {
+      "rowMatch": "Arete-27B,",
       "kpis": [
         "quality",
         "agent"

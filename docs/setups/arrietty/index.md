@@ -29,6 +29,7 @@
 
 | model | files | reports |
 |---|---|---|
+| Arete-27B | `bartowski/NousResearch_Arete-27B-GGUF`, Q3_K_M | [report](./reports/arete-27b.md), [benchmarks](./benchmarks/arete-27b.md) |
 | S5-nano | `maritaca-ai/S5-nano-GGUF`, Q8_0 | [report](./reports/s5-nano.md), [benchmarks](./benchmarks/s5-nano.md) |
 | Qwen3.8-27B | `unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S`; `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF`, IQ3_S-mtp file | [report](./reports/qwen3.8-27b.md), [benchmarks](./benchmarks/qwen3.8-27b.md) |
 | Qwen3.6-35B-A3B (MoE) | `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL` | [report](./reports/qwen3.6-35b-a3b.md), [benchmarks](./benchmarks/qwen3.6-35b-a3b.md) |

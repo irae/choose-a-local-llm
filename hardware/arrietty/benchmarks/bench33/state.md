@@ -198,3 +198,10 @@ Accept the timed cells with the premeasurement swap increase as a
 deviation. No measured cell showed swap growth. This does not show
 swap-free setup or establish a maximum memory ceiling. The depth
 block must measure its own ceiling and set the later harness window.
+
+The pending site row and pi id are `arete-27b-q3km`. The initial
+32768-token entry comes from the short test. The isolated generator
+entry sends `enable_thinking` and `reasoning_effort` through the chat
+template. This run uses xhigh. It sets keepRecentTokens to 8192 at
+the provisional window and sets no maxTokens or reserveTokens.
+Use the newer depth result for the tool smoke and full task.
