@@ -56,6 +56,9 @@ No run artifact goes under `/tmp`.
 - `s5-blind`
 - `s5-quality-instruct`
 - `arete-quality-xhigh`
+- `s5-bf16-f16-depth`
+- `s5-bf16-f16-eval-smoke`
+- `s5-bf16-f16-tool-smoke`
 - `arete-guided`
 - `arete-blind`
 - `arete-quality-off`
@@ -402,3 +405,139 @@ session files until the coordinator merges and closes the run.
 Write the final handing-over section, verify, commit and push `run33`.
 The coordinator restores the official router, scores and imports the
 rows, writes the report and INDEX entry, and completes stop-and-sync.
+
+## S5 BF16/f16 trial, requested 2026-11-09
+
+The owner requested only BF16 weights with f16 K and V caches. Do not
+test Q8_0/f16 or BF16/q8_0, and do not rerun the completed Q8_0/q8_0
+baseline. Its existing results are the comparison. This request adds
+depth measurement and the fixed EvalPlus and simulator(mendel) smokes,
+not another full quality or agent run.
+
+Finish the active measurement. Take these new speed and smoke blocks
+at the next block boundary, before the next full agent row. If the
+order list's insertion point has already passed, put these blocks at
+the top of the remaining queue. Keep this BF16 model loaded between
+its blocks. Resume the remaining Arete blocks afterward.
+
+Fixed identity:
+
+| field | value |
+|---|---|
+| repository | `maritaca-ai/S5-nano-GGUF` |
+| revision | `5fd041274829d60aeeba1e2edc4aabb621a432e4` |
+| file | `S5-nano-BF16.gguf` |
+| bytes | 8665620032 |
+| SHA-256 | `565c6441c8c5297500f0bfc5d0cf14053b6e80e90976a5bd6586b56715cd8f1f` |
+| alias | `s5-nano-bf16-f16` |
+| runtime | official stable llama.cpp v0.9.0, b12110 |
+| cache | f16 K and V, fixed by the owner's request |
+| thinking | high Think, explicitly `enable_thinking: true` |
+| drafter and vision | off |
+| tokenizer | the pinned S5 tokenizer from machine setup |
+
+Fetch the named publisher file through the default HF cache if absent:
+
+```bash
+hf download maritaca-ai/S5-nano-GGUF S5-nano-BF16.gguf \
+  --revision 5fd041274829d60aeeba1e2edc4aabb621a432e4
+```
+
+Verify the exact size and SHA-256 before serving. No source safetensors,
+projector or other model file is needed. The coordinator checked about
+15 GiB free before this trial was queued. If space is insufficient,
+report to the coordinator and continue independent work. Never delete
+another model yourself.
+
+Use the run-owned router preset and serving command from this runbook.
+Change only the pinned model path, alias, cache type and measured
+context. Keep one slot, `n-gpu-layers = 999`, `fit = off`, flash
+attention on, Jinja, thinking budget 8192 and the fixed budget message.
+Save a separate server log and resolved child arguments for this arm.
+The accepted operational full-offload evidence applies: resolved
+arguments, no placement override, a real completion and GPU allocation.
+An absent layer-count line is recorded; do not invent an N/N count.
+
+### `s5-bf16-f16-depth`
+
+Read the memory-ceiling and context-creep method pages. Use the same
+Linux benchy method and memory samples as the completed S5 depth test.
+The context values below are planning probes, not measured claims.
+
+Start at `-c 131072`. If it fails, halve until a real completion fits.
+If it passes, probe 163840, then 196608, then 262144 while each fits.
+Bisect the last passing and failing allocations in multiples of 8192.
+Every passing allocation needs a real benchy cell at `-c` minus 1024.
+Use full GPU offload only. Step context down after OOM; do not change
+the cache type, quantization, runtime or offload policy.
+
+At the largest passing allocation, read depths 4096, 24576, 32768,
+65536 and 131072 where below the allocation, plus its last depth
+`-c` minus 1024. Use two repetitions and a five-second pause. Stop
+extending after swap grows or decode falls below 8 tok/s. Record
+`s5_bf16_f16_c`, `s5_bf16_f16_clean` and
+`s5_bf16_f16_window`; the window is the clean depth rounded down to
+4096. A useful result at about 128K is acceptable. Do not force a
+256K allocation to match the Q8_0 baseline.
+
+Use result names `s5-bf16-f16-depth-*`. Record each allocation probe,
+error, speed, peak GPU memory, host memory and swap delta. Commit,
+push `run33` and report the block. Retain the loaded model for both
+smokes. If no allocation at least 32768 serves, record that condition,
+skip the smokes and resume independent queued work.
+
+### `s5-bf16-f16-eval-smoke`
+
+Read the EvalPlus smoke method. Serve the measured BF16/f16 context
+from its depth block. Use the same four problems and budgets as the
+finished Q8_0 smoke: server thinking budget 8192, output budget 16384,
+temperature 0, no calibration. Run the watcher as described above.
+
+```bash
+SMOKE_BASE=http://127.0.0.1:8081 \
+  SMOKE_OUT="$PWD/$KIT/results/s5-bf16-f16-eval-smoke" \
+  "$EVALPLUS_PYTHON" benchmarks/evalplus-smoke.py \
+  s5-bf16-f16-eval-smoke s5-nano-bf16-f16 \
+  '{"chat_template_kwargs":{"enable_thinking":true}}'
+```
+
+Record the full SMOKE line, passed task IDs, empty answers, tokens
+and wall. Compare with the existing Q8_0/q8_0 line: 3/4 passed and
+0 empty. This subset is unscored. Do not publish a pass@1 or run all
+164 problems for this trial. Commit, push and report the block.
+
+### `s5-bf16-f16-tool-smoke`
+
+Run this smoke even if the four-problem subset does not improve.
+Read the simulator(mendel) smoke method and verify GitHub auth.
+Keep the same BF16/f16 server and measured context loaded. Use a
+fresh fixture and the unchanged `xtend` task, high Think, the standard
+25-minute cap and the watcher. No special prompt about directories,
+Git, commits or the previous failure is added.
+
+```bash
+SMOKE_MENDEL_OUT="$PWD/$KIT/results/s5-bf16-f16-tool-smoke" \
+  SMOKE_MENDEL_SITE_ID=s5-nano-q8 \
+  SMOKE_MENDEL_CONTEXT_WINDOW=<s5_bf16_f16_window> \
+  bash benchmarks/mendel-smoke.sh s5-nano-bf16-f16 high
+```
+
+The existing site id supplies only S5's pi thinking and compatibility
+template. The generator's `--as` path gives the pinned config the new
+BF16 alias, which the run-owned router serves from the exact BF16 file.
+Verify that alias, resolved file path and measured window in evidence.
+No Q8_0 weights are served by this trial. The generator sets compaction
+keep from this arm's window. Set neither maxTokens nor reserveTokens.
+
+Record the full SMOKE-MENDEL line, fixture commit count, clean state,
+session, config and loop result. Preserve the previous failure as the
+comparison. Remove copied auth and model-store files from committed
+evidence, as in the earlier smoke. A pass or fail closes this trial;
+it does not start a full simulator(mendel) row. Commit, push and report.
+
+Both weights and cache precision differ from the completed baseline.
+The measured window can also differ. Record both serving contexts
+and harness windows beside the comparison.
+Report whether the combined config changes the observed smoke result.
+Do not assign a change to one precision setting alone or treat a
+single smoke pass as a full coding-quality result.
