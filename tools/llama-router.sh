@@ -20,13 +20,6 @@
 # A run that needs a model asks the running server by pi id; it starts
 # no server of its own.
 #
-# The official build is the newest one under
-# ~/.local/share/choose-a-local-llm/llama.cpp/, the same build every run
-# uses, and `llama-server` on PATH only when that directory is absent.
-# The PATH binary of a distribution package can carry no GPU backend, so
-# `start` first asks the chosen binary for its devices and refuses when
-# it names none.
-#
 # After ROUTER_IDLE seconds the model goes to `sleeping`: the child
 # server stays, the GPU memory goes back (8632 MiB to 944 MiB, measured
 # 2026-09-23). The next request wakes it. `sleeping` means the card is
@@ -48,11 +41,16 @@ ID="$(hostname -s | tr '[:upper:]' '[:lower:]')"
 ACTION="${1:-}"
 ROUTER="${2:-${ROUTER:-official}}"
 PORT="${ROUTER_PORT:-8080}"
-OFFICIAL_BIN_DIR="$(ls -d "$HOME"/.local/share/choose-a-local-llm/llama.cpp/*/bin 2>/dev/null | sort | tail -1 || true)"
-if [ -n "$OFFICIAL_BIN_DIR" ]; then
-    OFFICIAL_LIB_DIR="$(dirname "$OFFICIAL_BIN_DIR")/lib"
+MISE_BIN="$(command -v mise > /dev/null 2>&1 && mise which llama-server 2>/dev/null || true)"
+if [ -n "$MISE_BIN" ] && [ -x "$MISE_BIN" ]; then
+    OFFICIAL_BIN_DIR="$(dirname "$MISE_BIN")"
+    OFFICIAL_LIB_DIR="$OFFICIAL_BIN_DIR"
 else
+    OFFICIAL_BIN_DIR="$(ls -d "$HOME"/.local/share/choose-a-local-llm/llama.cpp/*/bin 2>/dev/null | sort | tail -1 || true)"
     OFFICIAL_LIB_DIR=""
+fi
+if [ -n "$OFFICIAL_BIN_DIR" ] && [ -z "$OFFICIAL_LIB_DIR" ]; then
+    OFFICIAL_LIB_DIR="$(dirname "$OFFICIAL_BIN_DIR")/lib"
 fi
 if [ "$ROUTER" = prism ]; then
     PRESET="${ROUTER_PRESET:-$REPO/hardware/$ID/models-prism-llama.ini}"
