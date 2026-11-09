@@ -595,3 +595,73 @@ and preflight defaults to port 8888. All 164 problems had already
 completed, so there was no generation to resume. Historical evidence
 keeps its original endpoints. The official idle router was restored
 on 8888 and passed its health check. No model or new test was loaded.
+
+## S5 text-only MTP performance continuation
+
+The active runner checkout is `/home/irae/.t3/worktrees/choose-a-local-llm/t3-13bc8e56` on branch `t3/s5-mtp-performance`. The branch started at `be36dd59a76a39e9075a5d51ece21331c3bfa3b6`. This runner does not use the old `run33` worktree. The copied runbook matches the coordinator source hash `16a1df849d4b44c35317290fccfd3283ceeb8595681e70197470d49f69fa7e68`.
+
+The current scope is the Q8_0/f16 MTP performance task, then the BF16/f16 MTP performance task. No quality, simulator(mendel), smoke, vision load, Arete, or older task runs in this continuation.
+
+At 2026-11-09 14:02 local time, arrietty was `arrietty` with an RTX 5060 Ti. The idle official router was running with no model loaded. It stopped cleanly before this task. After it stopped, the GPU used 1,139 MiB and had 14,800 MiB free; temperature was 30 C and power was 3.90 W. Host memory had 13,579 MiB available. Swap used was 1,954 MiB. These are measured values; no GUI app or host setting changed.
+
+Preflight is in `results/s5-mtp-preflight.log`. Linux-only interpretation: the missing macOS machine file, wired-limit check, login-item action and macOS memory probe do not apply on arrietty. The direct Linux memory, swap and GPU readings above are the start sample. GPU-free, port refusal, reboot, GitHub auth and pi version checks passed.
+
+The pinned Q8_0 file is `/home/irae/.cache/huggingface/hub/models--maritaca-ai--S5-nano-GGUF/snapshots/5fd041274829d60aeeba1e2edc4aabb621a432e4/S5-nano-Q8_0.gguf`, 4,610,580,032 bytes, SHA-256 `f82c0edcb4fa74dc2db7246ef0532f23288943f9f88ec4066b77b1cba307354f`. The pinned BF16 file is in the same snapshot, 8,665,620,032 bytes, SHA-256 `565c6441c8c5297500f0bfc5d0cf14053b6e80e90976a5bd6586b56715cd8f1f`. Both are at repo revision `5fd041274829d60aeeba1e2edc4aabb621a432e4`. The S5 tokenizer snapshot is `/home/irae/.cache/huggingface/hub/models--maritaca-ai--S5-nano/snapshots/ae981dc208f3bba2939c4cf242fab3e9a83e4938`. The corpus service is run-owned, transient and serves the pinned file whose SHA-256 is `f4cbe063ef231d753e736b60107b6601705a1acb448b05d9f8b8afbdfcec583c`; its PID is 911503 on port 8089.
+
+The official runtime is `/home/irae/.local/share/mise/installs/llama-cpp/b12110/llama-server`, v0.9.0, build b12110, commit `cd959bae99ff4bed22bef2604f45241c09bbb8c8`; it exposes CUDA0. `llama-benchy` is 0.4.0, `hf` is 1.31.0 and pi is 1.5.0. The speed cells use Linux llama-benchy, two repetitions and five-second post-run pauses. They are not slow-context-creep measurements.
+
+### Q8_0/f16 MTP setup and verification
+
+The n-max 3 preset loaded the pinned Q8_0 file at context 131072. A real high-Think completion returned 22 predicted tokens, 27 drafted tokens and 12 accepted tokens: 44.44% acceptance over 27 drafted tokens. The server log confirms it created an MTP draft context. The preset requested one slot, f16 K/V, flash attention, `n-gpu-layers=999`, `fit=off`, no projector and no MTP drafter download. This build does not print an N/N layer count. Treat this as operational full-offload evidence only.
+
+The router's `/metrics` endpoint requires `?model=<alias>`; a request without the model returned HTTP 400. With the alias, the official metrics endpoint reports per-model speculative draft and acceptance counters. Every tuning and curve cell records before/after metrics, the matching server-log slice, the benchy output, GPU memory, available host memory and swap.
+
+The Q8 MTP3 model used 10886 MiB VRAM after load and 10886 MiB during its warmup. Free VRAM was 5053 MiB. Host available memory was 13815 MiB. Swap rose from 1954 MiB before load to 2956 MiB after load and warmup. It remained at 2954 MiB after the model stopped. This happened before timed cells and is recorded as a premeasurement deviation. The machine had 13462 MiB available before the load. No timed result exists yet.
+
+The no-drafter control loaded at the same context. Its real warmup returned reasoning content and no draft counters. VRAM used was 9916 MiB after load, with 6023 MiB free. Host available memory was 13835 MiB and swap used was 2953 MiB. Its preset keeps the Q8_0 weights, f16 K/V, high Think, one slot, full-offload request and no projector. The 4096-token tuning cell is running as a transient user service.
+
+The no-drafter 4096-token tuning cell completed at allocation 131072. Benchy measured 6194.53 prefill tok/s and 77.73 decode tok/s across two repetitions. The two server timing rows generated 512 target tokens total. Drafted and accepted counts were both zero. VRAM was 9916–9920 MiB; available host memory was 13831–13782 MiB; swap stayed at 2952 MiB. The result, client output, server timing slice, metrics and memory samples are in `results/s5-q8-f16-tune-n0-4096*`.
+
+The no-drafter tuning readings passed at allocation 131072. Benchy measured 5179.03 prefill / 66.03 decode tok/s at depth 32768, and 3038.19 prefill / 43.47 decode tok/s at depth 130048. Each result used two measured repetitions of 256 target tokens. Drafted and accepted counts were zero. Swap stayed at 2952 MiB through 32768 and fell from 2952 to 2950 MiB at 130048. VRAM stayed at 9920 MiB. Available host memory was 13799–13722 MiB at 32768 and 13731–13599 MiB at 130048. Logs, metrics and outputs are in the matching `results/s5-q8-f16-tune-n0-*` files.
+
+### Q8 MTP1 swap stop
+
+The MTP1 4096-token benchy call completed at allocation 131072 and returned 101.24 decode tok/s with two 256-token measured repetitions. Their server records show 206 accepted of 302 drafted tokens (68.21%). The sample is excluded from comparisons because `free -m` showed swap used rise from 2949 to 2952 MiB during the cell. The 32768-token cell was stopped before it completed. Its partial server log is retained; it has no result row.
+
+The first transient cell wrapper used unsupported `swapon --show --output=USED`. The command failed and the wrapper's numeric comparison failed open. The error is in the transient unit journal. Both the benchmark service and MTP1 router are stopped. GPU use returned to 1141 MiB. The current `/proc/swaps` sample is 3023188 KiB. Later cell wrappers will record exact `/proc/swaps` values before and after each cell and stop if either value is missing or swap grows.
+
+The MTP1 retry used exact swap readings from `/proc/swaps`. Its 4096-token cell measured 5569.78 prefill / 103.92 decode tok/s. The two measured repetitions used 512 generated target tokens; their server records provide the per-request draft counts. Swap fell from 3022472 to 3022408 KiB. This cell is clean.
+
+The retry 32768-token cell measured 4670.66 prefill / 86.15 decode tok/s, but swap rose from 3022408 to 3022524 KiB and host available memory fell from 13488 to 10525 MiB during the cell. The cell is retained as a raw, invalid reading. The exact swap guard exited 42 and stopped before the 130048 arm. The MTP1 router is now stopped. After unload, GPU use returned to 1141 MiB, available host memory was 12497 MiB and swap was 2992572 KiB. The exact swap-stability samples are in `results/s5-q8-swap-stability.log`.
+
+The clean MTP1 retry at depth 4096 measured 5569.78 prefill / 103.92 decode tok/s. Its two measured requests accepted 214 of 295 drafted tokens (72.54%). At depth 32768, it measured 4681.12 prefill / 89.04 decode tok/s; the two measured requests accepted 212 of 296 drafted tokens (71.62%). Both cells used allocation 131072 and two 256-token measured repetitions. Swap fell by 64 KiB and 144 KiB, respectively. The first 32768 attempt remains invalid and is not used.
+
+The clean MTP1 retry at depth 130048 measured 2709.12 prefill / 59.87 decode tok/s. The two measured requests accepted 214 of 295 drafted tokens (72.54%). Swap fell from 2991724 to 2944976 KiB. VRAM used was 10784 MiB. Available host memory was 13310–13358 MiB. MTP1 is faster than the no-drafter control at all three tuning depths, so the upward comparison continues with n-max 2.
+
+The MTP2 warmup confirmed active drafting: 11 of 16 draft tokens were accepted. The real-text 4096-token tuning cell measured 5559.65 prefill / 101.79 decode tok/s. Its two measured requests accepted 245 of 528 drafted tokens (46.40%). Allocation was 131072. VRAM used was 10828–10834 MiB. Available host memory was 13603–13420 MiB. Swap fell from 2944860 to 2944752 KiB.
+
+The MTP2 32768-token tuning cell measured 4665.73 prefill / 89.92 decode tok/s. Its two measured requests accepted 251 of 513 drafted tokens (48.93%). Allocation was 131072. VRAM used was 10828–10834 MiB, host available memory was 13603–13379 MiB, and swap fell from 2944752 to 2944696 KiB.
+
+The MTP2 130048-token tuning cell measured 2698.55 prefill / 61.07 decode tok/s. Its two measured requests accepted 262 of 504 drafted tokens (51.98%). Allocation was 131072. VRAM use stayed at 10834 MiB, host available memory was 13377–13298 MiB, and swap fell from 2944696 to 2944384 KiB. MTP2 is faster than MTP1 at the middle and deep readings, and slower at the shallow reading. The comparison proceeds to n-max 3.
+
+The MTP3 4096-token tuning cell measured 5554.38 prefill / 96.83 decode tok/s. Its two measured requests accepted 260 of 743 drafted tokens (34.99%). Allocation was 131072. VRAM used was 10878–10884 MiB, host available memory was 13431–13270 MiB, and swap fell from 2944072 to 2943944 KiB. MTP3 is slower than MTP1 and MTP2 at the shallow depth.
+
+The MTP3 32768-token tuning cell measured 4668.54 prefill / 91.73 decode tok/s. Its two measured requests accepted 284 of 671 drafted tokens (42.32%). Allocation was 131072. VRAM use stayed at 10884 MiB, host available memory was 13412–13379 MiB, and swap fell from 2943944 to 2943888 KiB. MTP3 is faster than MTP2 at the middle depth and slower at the shallow depth.
+
+Q8 MTP tuning finished at the three required depths. The n-max 1 arm leads at 4096 tokens (103.92 decode tok/s), n-max 3 leads at 32768 (91.73 tok/s), and n-max 2 leads at 130048 (61.07 tok/s). Since the middle and deep readings cross, the n-max 3 comparison completed; n-max 1 is the shallow winner and n-max 2 the deep winner. The no-drafter control was slower at all tuning depths.
+
+The no-drafter Q8 control passed c=262144 with a real d=261120 cell at 29.73 decode tok/s. VRAM use was 14144 MiB and free was 1795 MiB. Host available memory was 14360 MiB before and 13435 MiB after. Swap fell from 2868388 to 2867664 KiB. It is a clean allocation ceiling.
+
+Q8 MTP2 passed c=262144 with a real d=261120 cell at 43.91 decode tok/s. The measured requests 287 and 544 accepted 266 of 484 drafted tokens (54.96%); request 33 is the earlier corpus check and request 8 is the short warmup. VRAM use was 15698 MiB and free was 241 MiB. Host available memory was 14367 MiB before and 12960 MiB after. Swap fell from 2867604 to 2865304 KiB. It is a clean allocation ceiling. The cell output file's server slice was empty due an offset-selection mistake; the complete router log retains all request timings and acceptance records.
+
+Q8 MTP1 passed c=262144 with a real d=261120 cell at 37.98 decode tok/s. Its measured requests 1989 and 2153 accepted 205 of 305 drafted tokens (67.21%). VRAM use was 15648 MiB and free was 291 MiB. Host available memory was 14476 MiB before and 12908 MiB after. Swap fell from 2863432 to 2862160 KiB. The complete server log retains the draft counters. VRAM, host memory and exact swap readings are in `results/s5-q8-f16-mtp1-c262144-d261120-memory.log`. It is clean. Full curves are now running as transient user services, with each cell independently checking swap growth and preserving its output.
+
+The Q8 MTP1 full curve stopped at depth 147456 because exact swap grew by 820 KiB (2856684 to 2857504 KiB). That timed cell measured 54.86 decode tok/s and is retained as invalid. The previous clean cell was depth 131072, at 57.43 decode tok/s; its swap fell from 2856936 to 2856684 KiB. The allocation ceiling remains c=262144 from its separate passing real cell. The script's per-cell server slice offset fallback selected the wrong source log; full per-arm server logs retain the requests, and the slice source will be corrected for remaining curves.
+
+The Q8 MTP2 curve passed through the 261120-token cell. Its clean depth was 261120 and its derived 4096-token harness window is 258048. The separate no-draft curve also passed depth 261120 at 29.73 tok/s; its derived window is 258048. Exact per-cell memory and swap records are in `results/`.
+
+The MTP3 deep tuning sample contains two requests: 140/343 and 140/344. Together they accepted 280 of 687 drafted tokens (40.8%, n=2). This replaces the first one-request summary.
+
+Q8 results are in `results.md`. The full MTP1 and MTP2 per-cell server-output slices were rebuilt from the retained router logs by matching prompt depth. The MTP2 ceiling router log was overwritten when the curve service restarted that preset. Its benchy output and before/after metrics remain: the counters show 769 drafted and 418 accepted tokens over the short warmup and three full requests. The two measured requests accepted 266/484 (55.0%). No-draft passed at c=262144 with 1795 MiB free; the 641 MiB projector file could fit by file size alone. MTP1 and MTP2 left 291 MiB and 241 MiB free and could not fit that file. Image workspace and runtime overhead remain unknown; no vision files were loaded.
+
+The Q8 continuation is complete. The transient curve services and their router readers have exited. The run-owned corpus service remains available for the BF16 continuation. No heartbeat was started.

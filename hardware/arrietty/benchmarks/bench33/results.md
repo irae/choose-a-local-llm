@@ -351,3 +351,123 @@ No generation restarted while the owner prepares the port update.
 NOT STARTED. The owner deferred the guided and blind rows to a future run. Neither row has a partial result or score. The owner directed cleanup of the aborted guided run. We removed its outputs, generated pi config, watcher, task worktree and local branches. We kept completed Arete depth, tool-smoke and xhigh EvalPlus evidence, and all S5 evidence. The run router and Arete child stopped. Port 8080 is closed. The first post-stop sample showed 858 MiB used and 15,081 MiB free.
 
 Cleanup follow-up, 2026-11-09: We stopped the stale run-owned `socat` forwarder on port 8081 (PID 447875). Both ports are closed. The final VRAM sample showed 782 MiB used and 15,157 MiB free. No test restarted.
+
+## S5 Q8_0/f16 MTP performance
+
+The continuation used the pinned Q8_0 GGUF, official llama.cpp b12110,
+high Think, f16 K/V, one slot, `n-gpu-layers=999`, `fit=off`, flash
+attention and no projector. It loaded no vision file. The measured curves
+use the same real-text corpus and two timed repetitions. The table gives
+the two measured MTP requests; per-cell files in `results/` hold prefill,
+allocation, GPU and host memory, exact swap readings, metrics and the
+server log slice. The complete per-arm logs are also in `results/`.
+
+| n-max | 4K decode | acceptance | 32K decode | acceptance | 130048 decode | acceptance |
+|---:|---:|---:|---:|---:|---:|---:|
+| no draft | 77.73 tok/s | — | 66.03 tok/s | — | 43.47 tok/s | — |
+| 1 | 103.92 tok/s | 214/295, 72.5%, n=2 | 89.04 tok/s | 212/296, 71.6%, n=2 | 59.87 tok/s | 214/295, 72.5%, n=2 |
+| 2 | 101.79 tok/s | 245/528, 46.4%, n=2 | 89.92 tok/s | 251/513, 48.9%, n=2 | 61.07 tok/s | 262/504, 52.0%, n=2 |
+| 3 | 96.83 tok/s | 260/743, 35.0%, n=2 | 91.73 tok/s | 284/671, 42.3%, n=2 | 60.64 tok/s | 280/687, 40.8%, n=2 |
+
+N-max 1 is the shallow winner. N-max 2 is the deep winner. N-max 3
+crossed the n-max 2 result at 32K, so the n-max 3 comparison completed.
+The control was slower at all three tuning depths.
+
+All three selected configurations passed an allocation of `c=262144`
+with a real `d=261120` cell. Q8_0 no-draft measured 29.73 decode tok/s
+with 14144 MiB VRAM used and 1795 MiB free. N-max 1 measured 37.98
+tok/s with 15648 MiB used and 291 MiB free; its two measured requests
+accepted 191 of 317 drafted tokens (60.3%, n=2). N-max 2 measured 43.91
+tok/s with 15698 MiB used and 241 MiB free; its measured requests
+accepted 266 of 484 drafted tokens (55.0%, n=2). Swap fell in all three
+allocation cells. The per-cell memory logs record available host memory
+and exact swap readings.
+
+The full curves used allocation `c=262144` and depths 4096, 8192,
+16384, 24576, 32768, then 16384-token increments, and the final
+261120-token cell. N-max 1 stopped after swap grew 820 KiB at 147456;
+its last clean depth was 131072 at 57.43 tok/s. N-max 2 and no draft
+completed the full curve. Both passed the final 261120-token cell.
+The deepest clean depth was 261120 at 43.91 tok/s for n-max 2 and
+29.73 tok/s for no draft. Their derived 4096-token harness windows are
+258048. N-max 1's derived window is 131072.
+
+| arm | depth | prefill tok/s | decode tok/s | accepted/drafted | requests | cell |
+|---|---:|---:|---:|---:|---:|---|
+| MTP1 | 4096 | 5564.88 | 95.43 | 193/316, 61.1% | 2 | clean |
+| MTP1 | 8192 | 5545.74 | 91.90 | 188/321, 58.6% | 2 | clean |
+| MTP1 | 16384 | 5252.76 | 91.25 | 199/311, 64.0% | 2 | clean |
+| MTP1 | 24576 | 4947.63 | 91.44 | 220/288, 76.4% | 2 | clean |
+| MTP1 | 32768 | 4665.52 | 89.22 | 215/294, 73.1% | 2 | clean |
+| MTP1 | 49152 | 4167.15 | 80.84 | 210/298, 70.5% | 2 | clean |
+| MTP1 | 65536 | 3756.79 | 70.15 | 188/321, 58.6% | 2 | clean |
+| MTP1 | 81920 | 3408.97 | 74.39 | 226/283, 79.9% | 2 | clean |
+| MTP1 | 98304 | 3135.42 | 69.45 | 224/285, 78.6% | 2 | clean |
+| MTP1 | 114688 | 2893.34 | 60.78 | 204/305, 66.9% | 2 | clean |
+| MTP1 | 131072 | 2687.59 | 57.43 | 205/304, 67.4% | 2 | clean |
+| MTP1 | 147456 | 2508.95 | 54.86 | 207/303, 68.3% | 2 | swap +820 KiB; invalid |
+| MTP1 | 261120 | 1710.80 | 37.98 | 191/317, 60.3% | 2 | separate ceiling cell, clean |
+| MTP2 | 4096 | 5531.86 | 100.15 | 245/528, 46.4% | 2 | clean |
+| MTP2 | 8192 | 5522.16 | 99.06 | 246/525, 46.9% | 2 | clean |
+| MTP2 | 16384 | 5255.01 | 103.04 | 271/476, 56.9% | 2 | clean |
+| MTP2 | 24576 | 4948.84 | 103.83 | 283/450, 62.9% | 2 | clean |
+| MTP2 | 32768 | 4660.08 | 90.41 | 256/505, 50.7% | 2 | clean |
+| MTP2 | 49152 | 4152.87 | 95.15 | 287/444, 64.6% | 2 | clean |
+| MTP2 | 65536 | 3753.46 | 80.23 | 261/494, 52.8% | 2 | clean |
+| MTP2 | 81920 | 3414.01 | 78.64 | 276/462, 59.7% | 2 | clean |
+| MTP2 | 98304 | 3129.29 | 72.80 | 266/485, 54.8% | 2 | clean |
+| MTP2 | 114688 | 2888.12 | 59.69 | 236/545, 43.3% | 2 | clean |
+| MTP2 | 131072 | 2681.79 | 59.75 | 251/516, 48.6% | 2 | clean |
+| MTP2 | 147456 | 2501.68 | 60.88 | 269/478, 56.3% | 2 | clean |
+| MTP2 | 163840 | 2344.27 | 53.13 | 248/523, 47.4% | 2 | clean |
+| MTP2 | 180224 | 2204.63 | 53.55 | 256/505, 50.7% | 2 | clean |
+| MTP2 | 196608 | 2083.69 | 50.76 | 261/495, 52.7% | 2 | clean |
+| MTP2 | 212992 | 1972.60 | 47.16 | 254/512, 49.6% | 2 | clean |
+| MTP2 | 229376 | 1873.14 | 45.63 | 256/504, 50.8% | 2 | clean |
+| MTP2 | 245760 | 1782.59 | 47.98 | 277/462, 60.0% | 2 | clean |
+| MTP2 | 261120 | 1703.33 | 43.91 | 266/484, 55.0% | 2 | separate ceiling cell, clean |
+
+The no-draft curve used allocation `c=262144`. The separate ceiling
+cell at 261120 tokens was reused as the final curve cell. The per-cell
+files include allocation, GPU memory, host available memory, swap
+before and after, and the raw benchy output.
+
+| depth | prefill tok/s | decode tok/s | status |
+|---:|---:|---:|---|
+| 4096 | 6168.36 | 77.99 | clean |
+| 8192 | 6132.34 | 75.92 | clean |
+| 16384 | 5813.65 | 72.21 | clean |
+| 24576 | 5471.93 | 68.99 | clean |
+| 32768 | 5157.57 | 66.15 | clean |
+| 49152 | 4619.70 | 60.79 | clean |
+| 65536 | 4173.83 | 56.32 | clean |
+| 81920 | 3809.31 | 52.34 | clean |
+| 98304 | 3500.93 | 48.99 | clean |
+| 114688 | 3235.19 | 46.02 | clean |
+| 131072 | 3009.34 | 43.40 | clean |
+| 147456 | 2813.03 | 41.05 | clean |
+| 163840 | 2643.50 | 38.94 | clean |
+| 180224 | 2488.89 | 37.09 | clean |
+| 196608 | 2351.99 | 35.31 | clean |
+| 212992 | 2230.01 | 33.74 | clean |
+| 229376 | 2123.13 | 32.32 | clean |
+| 245760 | 2019.47 | 30.97 | clean |
+| 261120 | 1933.83 | 29.73 | separate ceiling cell, clean |
+
+The projector remains theoretical and was not downloaded or loaded.
+Its publisher metadata gives 672423104 bytes (about 641 MiB). At
+`c=262144`, the no-draft result left 1795 MiB free, so the file size
+could fit by itself. N-max 1 and 2 left 291 MiB and 241 MiB free, so
+that file size would not fit beside either measured MTP allocation.
+MTP1 and MTP2 used 1504 MiB and 1554 MiB more VRAM than no draft at
+this allocation. These estimates exclude CUDA and runtime buffers and
+image-processing workspace. Vision and image prefill were not tested.
+
+One run-log file was overwritten when the transient router restarted
+for the MTP2 curve. The ceiling cell's benchy output, memory snapshots
+and before/after metrics remain. The metrics changed by 769 drafted
+and 418 accepted tokens across the warmup and three full-text requests;
+the two measured requests accepted 266 of 484 drafted tokens. A helper
+also used the wrong fallback offset for per-cell MTP server slices.
+The complete per-arm router logs retain the curve requests. The
+per-cell slices were rebuilt from those logs by depth.

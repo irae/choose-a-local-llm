@@ -1,0 +1,89 @@
+0.41.194.082 I srv  proxy_reques: proxying request to model s5-nano-q8-f16-mtp1 on port 38835
+[38835] 0.30.831.755 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 37, t_last = 100521607552
+[38835] 0.30.831.799 I slot launch_slot_: id  0 | task 13 | processing task, is_child = 0
+[38835] 0.30.884.154 I slot print_timing: id  0 | task 13 | prompt eval time =      52.34 ms /    30 tokens (    1.74 ms per token,   573.16 tokens per second)
+[38835] 0.30.884.156 I slot print_timing: id  0 | task 13 |        eval time =       0.00 ms /     1 tokens (    0.00 ms per token,     0.00 tokens per second)
+[38835] 0.30.884.157 I slot print_timing: id  0 | task 13 |       total time =      52.34 ms /    31 tokens
+[38835] 0.30.884.157 I slot print_timing: id  0 | task 13 |    graphs reused =          8
+[38835] 0.30.884.157 I slot print_timing: id  0 | task 13 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[38835] 0.30.884.173 I slot      release: id  0 | task 13 | stop processing: n_tokens = 30, truncated = 0
+0.41.249.421 I srv  proxy_reques: proxying request to model s5-nano-q8-f16-mtp1 on port 38835
+[38835] 0.30.887.340 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 30, t_last = 100550995756
+[38835] 0.30.887.379 I slot launch_slot_: id  0 | task 16 | processing task, is_child = 0
+[38835] 0.30.953.799 I slot print_timing: id  0 | task 16 | prompt eval time =      66.41 ms /    36 tokens (    1.84 ms per token,   542.10 tokens per second)
+[38835] 0.30.953.801 I slot print_timing: id  0 | task 16 |        eval time =       0.00 ms /     1 tokens (    0.00 ms per token,     0.00 tokens per second)
+[38835] 0.30.953.802 I slot print_timing: id  0 | task 16 |       total time =      66.41 ms /    37 tokens
+[38835] 0.30.953.802 I slot print_timing: id  0 | task 16 |    graphs reused =          8
+[38835] 0.30.953.803 I slot print_timing: id  0 | task 16 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[38835] 0.30.953.820 I slot      release: id  0 | task 16 | stop processing: n_tokens = 36, truncated = 0
+0.41.318.913 I srv  proxy_reques: proxying request to model s5-nano-q8-f16-mtp1 on port 38835
+[38835] 0.30.956.694 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 36, t_last = 100551065403
+[38835] 0.30.956.740 I slot launch_slot_: id  0 | task 20 | processing task, is_child = 0
+[38835] 0.31.338.467 I slot print_timing: id  0 | task 20 | prompt eval time =      38.85 ms /    23 tokens (    1.69 ms per token,   592.08 tokens per second)
+[38835] 0.31.338.470 I slot print_timing: id  0 | task 20 |        eval time =     342.70 ms /    38 tokens (    9.26 ms per token,   107.97 tokens per second)
+[38835] 0.31.338.470 I slot print_timing: id  0 | task 20 |       total time =     381.55 ms /    61 tokens
+[38835] 0.31.338.471 I slot print_timing: id  0 | task 20 |    graphs reused =         28
+[38835] 0.31.338.471 I slot print_timing: id  0 | task 20 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[38835] 0.31.338.473 I slot print_timing: id  0 | task 20 | draft acceptance = 0.80952 (   17 accepted /    21 generated), mean len =  1.81
+[38835] 0.31.338.489 I slot      release: id  0 | task 20 | stop processing: n_tokens = 61, truncated = 0
+0.41.719.090 I srv  proxy_reques: proxying request to model s5-nano-q8-f16-mtp1 on port 38835
+[38835] 0.31.401.852 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 61, t_last = 100551450072
+[38835] 0.31.401.932 I slot launch_slot_: id  0 | task 44 | processing task, is_child = 0
+[38835] 0.34.851.225 I slot print_timing: id  0 | task 44 | prompt processing, n_tokens =  18432, progress = 0.55, t =   3.32 s / 5544.45 tokens per second
+[38835] 0.35.298.100 I slot print_timing: id  0 | task 44 | prompt processing, n_tokens =  20480, progress = 0.62, t =   3.77 s / 5435.75 tokens per second
+[38835] 0.35.758.004 I slot print_timing: id  0 | task 44 | prompt processing, n_tokens =  22528, progress = 0.68, t =   4.22 s / 5334.24 tokens per second
+[38835] 0.36.231.346 I slot print_timing: id  0 | task 44 | prompt processing, n_tokens =  24576, progress = 0.74, t =   4.69 s / 5238.50 tokens per second
+[38835] 0.36.718.433 I slot print_timing: id  0 | task 44 | prompt processing, n_tokens =  26624, progress = 0.80, t =   5.17 s / 5145.03 tokens per second
+[38835] 0.37.218.895 I slot print_timing: id  0 | task 44 | prompt processing, n_tokens =  28672, progress = 0.86, t =   5.67 s / 5057.00 tokens per second
+[38835] 0.37.731.676 I slot print_timing: id  0 | task 44 | prompt processing, n_tokens =  30720, progress = 0.92, t =   6.18 s / 4971.63 tokens per second
+[38835] 0.38.258.543 I slot print_timing: id  0 | task 44 | prompt processing, n_tokens =  32757, progress = 0.98, t =   6.70 s / 4888.74 tokens per second
+[38835] 0.38.282.464 I slot print_timing: id  0 | task 44 | prompt processing, n_tokens =  32761, progress = 0.98, t =   6.87 s / 4770.22 tokens per second
+[38835] 0.38.423.370 I slot print_timing: id  0 | task 44 | prompt processing, n_tokens =  33273, progress = 1.00, t =   6.90 s / 4820.05 tokens per second
+[38835] 0.41.318.491 I slot print_timing: id  0 | task 44 | prompt eval time =    7050.18 ms / 33277 tokens (    0.21 ms per token,  4720.02 tokens per second)
+[38835] 0.41.318.493 I slot print_timing: id  0 | task 44 |        eval time =    2866.20 ms /   256 tokens (   11.24 ms per token,    88.97 tokens per second)
+[38835] 0.41.318.493 I slot print_timing: id  0 | task 44 |       total time =    9916.38 ms / 33533 tokens
+[38835] 0.41.318.494 I slot print_timing: id  0 | task 44 |    graphs reused =        174
+[38835] 0.41.318.494 I slot print_timing: id  0 | task 44 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[38835] 0.41.318.495 I slot print_timing: id  0 | task 44 | draft acceptance = 0.72297 (  107 accepted /   148 generated), mean len =  1.72
+[38835] 0.41.319.257 I slot      release: id  0 | task 44 | stop processing: n_tokens = 33532, truncated = 0
+0.56.691.709 I srv  proxy_reques: proxying request to model s5-nano-q8-f16-mtp1 on port 38835
+[38835] 0.46.370.524 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 33532, t_last = 100561430841
+[38835] 0.46.370.601 I slot launch_slot_: id  0 | task 212 | processing task, is_child = 0
+[38835] 0.49.827.935 I slot print_timing: id  0 | task 212 | prompt processing, n_tokens =  18432, progress = 0.55, t =   3.33 s / 5531.16 tokens per second
+[38835] 0.50.276.635 I slot print_timing: id  0 | task 212 | prompt processing, n_tokens =  20480, progress = 0.62, t =   3.78 s / 5422.39 tokens per second
+[38835] 0.50.738.168 I slot print_timing: id  0 | task 212 | prompt processing, n_tokens =  22528, progress = 0.68, t =   4.23 s / 5321.06 tokens per second
+[38835] 0.51.212.464 I slot print_timing: id  0 | task 212 | prompt processing, n_tokens =  24576, progress = 0.74, t =   4.70 s / 5224.11 tokens per second
+[38835] 0.51.700.575 I slot print_timing: id  0 | task 212 | prompt processing, n_tokens =  26624, progress = 0.80, t =   5.19 s / 5132.16 tokens per second
+[38835] 0.52.201.084 I slot print_timing: id  0 | task 212 | prompt processing, n_tokens =  28672, progress = 0.86, t =   5.68 s / 5044.51 tokens per second
+[38835] 0.52.714.924 I slot print_timing: id  0 | task 212 | prompt processing, n_tokens =  30720, progress = 0.92, t =   6.19 s / 4960.34 tokens per second
+[38835] 0.53.243.506 I slot print_timing: id  0 | task 212 | prompt processing, n_tokens =  32757, progress = 0.98, t =   6.72 s / 4876.75 tokens per second
+[38835] 0.53.267.855 I slot print_timing: id  0 | task 212 | prompt processing, n_tokens =  32763, progress = 0.98, t =   6.88 s / 4759.23 tokens per second
+[38835] 0.53.408.933 I slot print_timing: id  0 | task 212 | prompt processing, n_tokens =  33275, progress = 1.00, t =   6.92 s / 4808.84 tokens per second
+[38835] 0.56.350.123 I slot print_timing: id  0 | task 212 | prompt eval time =    7066.84 ms / 33279 tokens (    0.21 ms per token,  4709.18 tokens per second)
+[38835] 0.56.350.125 I slot print_timing: id  0 | task 212 |        eval time =    2912.67 ms /   256 tokens (   11.42 ms per token,    87.55 tokens per second)
+[38835] 0.56.350.126 I slot print_timing: id  0 | task 212 |       total time =    9979.51 ms / 33535 tokens
+[38835] 0.56.350.127 I slot print_timing: id  0 | task 212 |    graphs reused =        323
+[38835] 0.56.350.127 I slot print_timing: id  0 | task 212 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[38835] 0.56.350.130 I slot print_timing: id  0 | task 212 | draft acceptance = 0.69333 (  104 accepted /   150 generated), mean len =  1.69
+[38835] 0.56.350.900 I slot      release: id  0 | task 212 | stop processing: n_tokens = 33534, truncated = 0
+1.11.723.654 I srv  proxy_reques: proxying request to model s5-nano-q8-f16-mtp1 on port 38835
+[38835] 1.01.401.884 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 33534, t_last = 100576462483
+[38835] 1.01.401.970 I slot launch_slot_: id  0 | task 383 | processing task, is_child = 0
+[38835] 1.04.854.538 I slot print_timing: id  0 | task 383 | prompt processing, n_tokens =  18432, progress = 0.55, t =   3.33 s / 5539.33 tokens per second
+[38835] 1.05.303.078 I slot print_timing: id  0 | task 383 | prompt processing, n_tokens =  20480, progress = 0.62, t =   3.77 s / 5429.49 tokens per second
+[38835] 1.05.764.785 I slot print_timing: id  0 | task 383 | prompt processing, n_tokens =  22528, progress = 0.68, t =   4.23 s / 5326.45 tokens per second
+[38835] 1.06.241.195 I slot print_timing: id  0 | task 383 | prompt processing, n_tokens =  24576, progress = 0.74, t =   4.70 s / 5229.14 tokens per second
+[38835] 1.06.729.441 I slot print_timing: id  0 | task 383 | prompt processing, n_tokens =  26624, progress = 0.80, t =   5.19 s / 5134.69 tokens per second
+[38835] 1.07.230.328 I slot print_timing: id  0 | task 383 | prompt processing, n_tokens =  28672, progress = 0.86, t =   5.68 s / 5046.68 tokens per second
+[38835] 1.07.745.764 I slot print_timing: id  0 | task 383 | prompt processing, n_tokens =  30720, progress = 0.92, t =   6.19 s / 4961.06 tokens per second
+[38835] 1.08.273.306 I slot print_timing: id  0 | task 383 | prompt processing, n_tokens =  32758, progress = 0.98, t =   6.72 s / 4877.80 tokens per second
+[38835] 1.08.297.548 I slot print_timing: id  0 | task 383 | prompt processing, n_tokens =  32763, progress = 0.98, t =   6.88 s / 4760.28 tokens per second
+[38835] 1.08.438.869 I slot print_timing: id  0 | task 383 | prompt processing, n_tokens =  33275, progress = 1.00, t =   6.92 s / 4809.85 tokens per second
+[38835] 1.11.284.700 I slot print_timing: id  0 | task 383 | prompt eval time =    7065.51 ms / 33279 tokens (    0.21 ms per token,  4710.06 tokens per second)
+[38835] 1.11.284.702 I slot print_timing: id  0 | task 383 |        eval time =    2817.20 ms /   256 tokens (   11.05 ms per token,    90.52 tokens per second)
+[38835] 1.11.284.703 I slot print_timing: id  0 | task 383 |       total time =    9882.72 ms / 33535 tokens
+[38835] 1.11.284.703 I slot print_timing: id  0 | task 383 |    graphs reused =        468
+[38835] 1.11.284.703 I slot print_timing: id  0 | task 383 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[38835] 1.11.284.705 I slot print_timing: id  0 | task 383 | draft acceptance = 0.73973 (  108 accepted /   146 generated), mean len =  1.74
+[38835] 1.11.285.445 I slot      release: id  0 | task 383 | stop processing: n_tokens = 33534, truncated = 0
+1.26.748.547 I srv  proxy_reques: proxying request to model s5-nano-q8-f16-mtp1 on port 38835

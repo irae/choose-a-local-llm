@@ -1,0 +1,17 @@
+allocation=131072 depth=32768 alias=s5-nano-q8-f16-mtp1
+before 2026-11-09T14:32:35-03:00
+swap_used_before_kib=3022408
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	3022408		100
+10784 MiB, 5155 MiB, 39, 22.46 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894       18405        1060        3694       17765       13488
+Swap:          31893        2951       28942
+after 2026-11-09T14:33:22-03:00
+10784 MiB, 5155 MiB, 41, 23.42 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894       21369        1514        3694       14346       10525
+Swap:          31893        2951       28942
+swap_used_after_kib=3022524
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	3022524		100

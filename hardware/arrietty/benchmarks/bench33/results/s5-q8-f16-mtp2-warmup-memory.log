@@ -1,0 +1,12 @@
+before 2026-11-09T14:41:19-03:00
+swap_used_kib=2944900
+1141 MiB, 14798 MiB, 35, 4.85 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894       17506        4764        3373       14610       14387
+Swap:          31893        2875       29018
+after 2026-11-09T14:41:20-03:00
+swap_used_kib=2944900
+10828 MiB, 5111 MiB, 43, 46.36 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894       18391        3905        3695       14933       13503
+Swap:          31893        2875       29018

@@ -2,19 +2,25 @@
 
 ## Wakeup
 
-Schedule a wakeup every 1200 seconds from the first action until the
-run ends. Use T3 `schedule_task` with an interval of 1200000 ms,
-bound to this runner thread. Check real output growth at each wakeup.
-Send the short status line from `docs/methodology/status-lines.md`
-in this thread. Disable the scheduled task at close.
+Check real output growth and memory at the method's 20-minute interval.
+Keep routine checks in this runner's own context and files. The owner
+requested quiet coordination for the S5 performance continuation:
+report only after each complete task is verified, committed and pushed.
+No startup report, timer ping or live count goes to the coordinator.
+An unrecoverable gate or credit interruption is the exception.
 
 ## Essentials
 
-Current owner scope, 2026-11-09: `s5-bf16-f16-quality-think-64k`
-completed all 164 problems before the port migration. No problem is
-missing. Do not resume or rerun it. Current serving defaults use port
-8888. All Arete tests remain paused. Full Arete simulator rows are NOT
-STARTED and deferred. Do not resume the earlier order.
+Current owner scope, 2026-11-09: execute only the S5 text-only MTP
+performance continuation at the end of this runbook. It covers Q8_0
+weights with f16 KV, then BF16 weights with f16 KV. No EvalPlus,
+simulator(mendel) or simulator smoke runs are authorized. Vision is a
+memory estimate only; do not download or load the projector. All
+Arete work remains paused. Earlier completed quality and smoke results
+stand. The coordinator merges and commits master only at the end of
+this continuation, as the owner requested, rather than at each report.
+The new isolated runner uses its tool-provided branch and records its
+actual branch and checkout. The old run33 runner remains stopped.
 
 The owner requested this run on 2026-11-08. Test only these new
 models. Give early feedback on both before the long quality and
@@ -585,3 +591,149 @@ Stop this task's server, forwarder and watcher after completion to
 release desktop VRAM. Disable its heartbeat. Verify, commit and push
 run33, then report the completed block to the coordinator. Keep the
 run branch and worktree. Wait for the owner; start no other task.
+
+## S5 text-only MTP performance continuation
+
+The owner's latest scope supersedes the earlier order and quality
+blocks. Complete `s5-q8-f16-mtp-speeds`, then
+`s5-bf16-f16-mtp-speeds`. Keep each weight file loaded through adjacent
+readings where the configuration permits. All measurements run on
+arrietty, not on the owner's macOS client. Do not quit desktop apps or
+change system configuration. Measure the present GPU and host memory;
+do not assume a zero-desktop baseline. Never version an app inventory.
+
+Use official llama.cpp b12110, the pinned S5 tokenizer and corpus above,
+port 8888 and the existing Linux llama-benchy method. Keep one slot,
+full GPU offload requested, fit off, flash attention on, f16 K and V,
+high Think through `enable_thinking=true`, thinking budget 8192 and
+the fixed message. No vision, CPU placement override, drafter download,
+other KV type, other model or quality test is part of this work.
+
+| task | file | revision | bytes | SHA-256 |
+|---|---|---|---:|---|
+| s5-q8-f16-mtp-speeds | S5-nano-Q8_0.gguf | 5fd041274829d60aeeba1e2edc4aabb621a432e4 | 4610580032 | f82c0edcb4fa74dc2db7246ef0532f23288943f9f88ec4066b77b1cba307354f |
+| s5-bf16-f16-mtp-speeds | S5-nano-BF16.gguf | 5fd041274829d60aeeba1e2edc4aabb621a432e4 | 8665620032 | 565c6441c8c5297500f0bfc5d0cf14053b6e80e90976a5bd6586b56715cd8f1f |
+
+Both files belong to `maritaca-ai/S5-nano-GGUF` and are already cached.
+Verify their identity. The publisher documents that all GGUFs contain
+the MTP head and enables it with `--spec-type draft-mtp
+--spec-draft-n-max 3`. The pinned files previously exposed
+`qwen35.nextn_predict_layers=1` and `blk.32.nextn.*`. Confirm the head
+for each file; a requested flag alone does not prove active drafting.
+Use aliases `s5-nano-q8-f16-mtpN` and `s5-nano-bf16-f16-mtpN`, with
+N replaced by the actual n-max. Use `-nodraft` for the controls.
+
+### Setup and MTP verification
+
+Run preflight first and record Linux-only interpretation of macOS
+checks as in the earlier run. Verify no other GPU model is active.
+Stop the idle official router before starting this task's router.
+Use transient user services for long-running server and measurement
+commands so T3 restarts do not kill the run. Keep all logs, presets,
+state and generated files under this kit or persistent local share,
+never under /tmp. Reuse the corpus service if its content and hash
+match; otherwise start only the run-owned corpus and record its PID.
+
+Start each weight file with MTP n-max 3 at c=131072 and make a real
+completion. Add `spec-type = draft-mtp` and `spec-draft-n-max = N` to
+the run-owned preset. Keep `no-mmproj = true`. Record resolved child
+arguments and counters proving nonzero drafted tokens. If this load
+fails, lower the allocation and investigate within the official runtime
+and installed tools. Do not substitute another fork or compile a build.
+If MTP cannot operate, record exact errors and complete the no-drafter
+performance control; do not stall the other weight format.
+
+### Tune draft depth
+
+Read the current `docs/methodology/context-creep.md`, especially its
+dated fast-reader draft-depth rule. Its three well-placed real-text
+readings govern tuning; the older full-creep-per-n-max discussion is
+not a request to spend a machine day on dominated configurations.
+
+Use the same allocation for tuning all compared arms of one file:
+c=131072 if it fits, otherwise the largest common passing allocation.
+Read 4096, 32768 and c minus 1024. If the common allocation is below
+32768 plus output headroom, record the infeasible arm and proceed to
+the other file. Use the exact benchy command above, two repetitions
+and five-second pauses. Do not add sampler overrides.
+
+Read the no-drafter control first, then n-max 1, 2 and 3. Continue
+upward only while the method's improvement rule justifies it. Stop
+the climb when an arm is slower than its predecessor at every depth.
+For mixed shallow/deep behavior, read one further arm and apply the
+same rule. Record the fastest shallow arm and the best deep arm;
+these can differ. Do not assume the publisher's default 3 is optimal.
+An arm with no drafted tokens is not an MTP speed result.
+
+Every speed cell must record prefill, decode, drafted and accepted
+token counts, acceptance ratio and its sample size, actual allocation,
+GPU use, available host memory and before/after swap. Use the server's
+per-request timing fields or matching log records for draft counts.
+If counts are not exposed by default, inspect the official runtime's
+own supported diagnostics; record what was enabled. Do not invent an
+acceptance rate or infer it from speed. Preserve raw server output.
+
+### Allocation ceilings and full curves
+
+Measure the no-drafter control and the distinct shallow/deep winners.
+If the control wins both, retain that result and still record the best
+working MTP arm's ceiling and curve, so MTP's cost remains visible.
+Avoid duplicate curves when the same arm wins both. Other dominated
+n-max arms keep their tuning readings only.
+
+Each chosen arm has its own measured allocation ceiling. Use the
+trained cap 262144. Use its load-time free GPU memory and f16 KV cost,
+32768 bytes per token, to estimate a candidate allocation; probe it
+with a real deep reader cell. The previous BF16/f16 no-drafter bound
+was c=204800, clean=203776, window=200704. It is a reference, not a
+new ceiling under today's machine state or MTP overhead.
+
+If the trained cap fails, bisect pass/fail bounds in 8192-token
+multiples. Halve a failing starting allocation until it fits, never
+move layers to CPU or change cache precision. Every passing allocation
+requires a real benchy cell at c minus 1024, not a one-token warmup.
+Record all OOM and real-request failures. Stop at 8 tok/s or observed
+swap growth during a timed cell; retain the last clean cell. Existing
+swap before loading is a deviation, not an automatic invalidation.
+
+At the selected allocation, read 4096, 8192, 16384, 24576, 32768,
+then 16384-token increments below the allocation, and the final
+c-minus-1024 cell. Reuse any identical cell already measured under
+the exact same configuration. Use two repetitions, five-second pauses
+and the same sampling as tuning. Record draft acceptance per cell.
+This is the Linux benchy curve, not a slow-context-creep result.
+Save clean depth and its floor-to-4096 harness window as derived data,
+although no simulator will use them in this continuation.
+
+### Vision estimate and task close
+
+Do not download or load vision weights. Publisher metadata read on
+2026-11-09 lists `mmproj-S5-nano-F16.gguf` as 672423104 bytes,
+SHA-256 `726bf445dc3a32ffa392ac4918060023b16e43090bef02c257722ecd6f343d71`,
+at repository revision `e9113fce9a709185516d6781163b2178fe97e528`.
+This is an estimate input, not a runtime file dependency.
+
+At 262144 tokens, f16 KV is exactly 8 GiB. Q8_0 weights plus that KV
+and projector file sizes total about 12.9202 GiB. This excludes MTP,
+CUDA/runtime buffers, driver reservation and image-processing workspace.
+Use the actual measured MTP overhead and free GPU memory to estimate
+whether projector residency could fit at each selected allocation.
+Clearly label the result theoretical and do not claim vision or
+image-prefill allocation was tested. List the separate projector and
+image-workspace uncertainty. File size is an approximation of residency.
+
+For each complete task, write state/results, run npm run verify,
+commit only this kit on the isolated runner branch, push that branch,
+and send one short coordinator line: task, selected n-max values,
+clean depths/speeds, branch and commit. No live progress, startup or
+timer messages. The coordinator does not merge master between tasks.
+Continue to the other file immediately after the first task commit.
+Do not read HANDOFF.md or benchmarks/PLANNING.md.
+
+After the final measurements, archive evidence with the shared tool,
+stop run-owned GPU services, readers and corpus, disable the heartbeat,
+restore the official router idle on 8888 and record final memory.
+Keep worktree and branch for the coordinator. Commit and push final
+cleanup with the last task or as a named cleanup commit. Report it
+once, then stop. No EvalPlus, simulator smoke, guided, blind, Arete or
+old backlog task follows this work.

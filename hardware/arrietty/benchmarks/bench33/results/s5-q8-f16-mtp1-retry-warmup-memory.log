@@ -1,0 +1,16 @@
+before 2026-11-09T14:31:33-03:00
+swap_used_kib=3022628
+1141 MiB, 14798 MiB, 34, 3.95 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894       17466        1985        3373       17431       14428
+Swap:          31893        2951       28942
+NAME       TYPE       SIZE USED PRIO
+/dev/zram0 partition 31.1G 2.9G  100
+after 2026-11-09T14:31:35-03:00
+swap_used_kib=3022628
+10778 MiB, 5161 MiB, 43, 40.54 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894       18219        1259        3694       17753       13675
+Swap:          31893        2951       28942
+NAME       TYPE       SIZE USED PRIO
+/dev/zram0 partition 31.1G 2.9G  100

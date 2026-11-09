@@ -1,0 +1,15 @@
+allocation=131072 depth=4096 alias=s5-nano-q8-f16-nodraft
+before 2026-11-09T14:17:10-03:00
+9916 MiB, 6023 MiB, 31, 3.47 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894       18063        1482        3535       17525       13831
+Swap:          31893        2952       28941
+NAME       TYPE       SIZE USED PRIO
+/dev/zram0 partition 31.1G 2.9G  100
+after 2026-11-09T14:17:38-03:00
+9920 MiB, 6019 MiB, 36, 21.76 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894       18112        1348        3534       17610       13782
+Swap:          31893        2952       28941
+NAME       TYPE       SIZE USED PRIO
+/dev/zram0 partition 31.1G 2.9G  100
