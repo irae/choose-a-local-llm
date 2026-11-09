@@ -309,8 +309,42 @@ run33 worktree after the model removed the fixture's `.git` directory.
 Local commit `17aa1b31` was removed before the block push. The fixture,
 session, generated config without copied credentials, loop report,
 watcher memory and server log remain as evidence. The earlier Q8_0
-smoke also failed its commit and clean-tree gate. This trial ends at
-its smokes; no full BF16 EvalPlus or simulator(mendel) score exists.
+smoke also failed its commit and clean-tree gate. The BF16/f16 trial's
+depth and smoke blocks closed without a full EvalPlus or
+simulator(mendel) row. The owner later requested the full thinking-on
+EvalPlus row below. No BF16/f16 simulator(mendel) row was run.
+
+### BF16/f16 full EvalPlus, thinking on
+
+At the owner-selected allocation `c=65536`, the S5 BF16 weights with
+f16 K/V scored **0.841 base / 0.774 plus** on all 164 EvalPlus
+problems. The run forced 31 answers and produced 0 empty answers. It
+used high Think, explicit `enable_thinking=true`, an 8192 reasoning
+budget, the fixed budget message, 16384 output tokens and temperature
+0. The selected allocation is not a measured depth ceiling.
+
+The resolved arguments set `n-gpu-layers=999` and `fit=off`, with no
+CPU-MoE or tensor placement override. The router log has no explicit
+layer-count line. Record this as operational full-offload evidence;
+do not infer an N/N count or infer placement from VRAM alone.
+
+The Q8_0/q8_0 high-thinking baseline scored 0.811 base / 0.726 plus,
+with 26 forced and 0 empty answers. This run changed both weights and
+KV type, so the score difference does not isolate either change.
+Active wall time was 221.2–222.1 minutes across the interrupted parts;
+the first part's exact stop time is bounded by its last log update and
+the first no-process check. The active-part timestamps are in
+`state.md`.
+
+The pinned file hash, resolved arguments, warmups, codegen logs, finish
+records, samples, evaluator output, watcher memory and router logs are
+in `results/`.
+
+The owner requested a port migration to 8888. The full evaluation had
+already completed at 15:15:28 UTC. At the 15:23:16 UTC check, no run
+process or listener remained. All 164 unique task IDs are preserved.
+No generation restarted while the owner prepares the port update.
+
 
 ## Arete simulator(mendel)
 

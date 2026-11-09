@@ -505,8 +505,9 @@ clean-tree gate; this smoke gives no passing gate to compare.
 The session, fixture, generated pi models and settings, loop report,
 stdout, watcher memory and router evidence are in
 `results/s5-bf16-f16-tool-smoke/` and matching result files. The
-BF16/f16 trial ends at its two smoke results. It has no full EvalPlus or
-simulator(mendel) score.
+BF16/f16 depth and smoke blocks ended without a full EvalPlus or
+simulator(mendel) row. The owner later requested the full EvalPlus run
+below. No BF16/f16 simulator(mendel) row was run.
 
 ## Arete simulator rows deferred
 
@@ -519,3 +520,72 @@ The run router and Arete child stopped. No llama-server, Mendel Daemon or run wa
 ## Cleanup follow-up
 
 On 2026-11-09, we found the run-owned `socat` forwarder on port 8081 (PID 447875). We stopped it. Its signal record is in `results/s5-depth-c262144-socat.log`. Both ports are closed. The final VRAM sample showed 782 MiB used and 15,157 MiB free. No test restarted.
+
+## S5 BF16/f16 full EvalPlus
+
+The owner requested a full thinking-on EvalPlus run at `c=65536`.
+This is the selected allocation, not a new depth ceiling. The run used
+official llama.cpp v0.9.0 b12110, commit `cd959bae9`.
+
+The resolved preset used alias `s5-nano-bf16-f16` and the pinned
+`S5-nano-BF16.gguf` file. The file is 8,665,620,032 bytes. Its
+SHA-256 is `565c6441c8c5297500f0bfc5d0cf14053b6e80e90976a5bd6586b56715cd8f1f`.
+The preset set f16 K/V, one slot, high Think and
+`enable_thinking=true`. It set 8192 reasoning tokens with the fixed
+message and 16384 output tokens. It set `n-gpu-layers=999` and
+`fit=off`. It had no CPU-MoE or tensor placement override.
+
+The server log has no explicit layer-count line. The resolved arguments
+and real completion support operational full-offload evidence only.
+They do not support an N/N claim or prove placement from VRAM alone.
+The initial model allocation was 10,456 MiB. Total, used and free VRAM
+were 16,311, 11,529 and 4,410 MiB.
+
+The first active part started at 11:14:18 UTC. T3 transport recovery
+stopped the runner, watcher and router after 14 answers. The exact
+count command found 14 answers, 2 forced and 0 empty. The last server
+log update was at 11:27:08 UTC. No run process or listener remained by
+the 11:28:01 UTC check. I kept the completed samples and codegen log.
+
+The second part started at 11:31:54 UTC. It resumed from those samples
+and added 4 answers. T3 stopped the services while HumanEval/18 was
+still generating. The last server log update was at 11:35:15 UTC.
+
+The third part started at 11:50:27 UTC. I ran the router, forwarder,
+watcher and evaluator as transient user services. A real warmup
+completed with `Ready`, `finish_reason=stop`, reasoning content and
+56 total tokens. EvalPlus resumed from the existing 18 task IDs.
+It finished and evaluated all 164 problems at 15:15:28 UTC.
+
+Base pass@1 was 0.841. Plus pass@1 was 0.774. The exact count command
+found 31 forced answers and 0 empty answers. Forced IDs are in
+`results/s5-bf16-f16-quality-think-64k-thinking-budget-count.txt`.
+
+The first part lasted 12m50s to 13m43s. Its end falls between the last
+log update and the no-process check. The second part lasted 3m21s. The
+third part lasted 205m01s. Active wall time was 221.2–222.1 minutes,
+including evaluation. The run did not count the gaps between parts.
+
+The q8_0/q8_0 high-thinking baseline scored 0.811 base and 0.726 plus.
+It had 26 forced and 0 empty answers. This run changed both weights
+and KV type. The scores do not isolate either change.
+
+I stopped the router, forwarder, router logger and watcher. Both ports
+are closed. All run services are inactive. VRAM returned to 1,139 MiB
+used and 14,800 MiB free. The run33 heartbeat is disabled. No further
+task started.
+
+## Port-migration pause
+
+The owner requested a migration to port 8888. The full EvalPlus process
+had already completed at 15:15:28 UTC. At the 15:23:16 UTC check, the
+runner, watcher, router and forwarder were inactive. No run listener
+remained on ports 8080 or 8081, so this request stopped no active
+process. The completed sample file has 164 unique IDs, from
+HumanEval/0 through HumanEval/163, with no missing or duplicate IDs.
+I saved the ID list in `results/s5-bf16-f16-quality-think-64k-completed-task-ids.txt`.
+
+I preserved all samples, finish records and raw evidence. I did not
+restart generation or change shared scripts or client defaults. This
+block records the port-migration pause on `run33`. I will wait for the
+owner's resume instruction.
