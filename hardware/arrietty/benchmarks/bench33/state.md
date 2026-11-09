@@ -475,3 +475,35 @@ so this config reads better on this unscored subset. This is not a
 quality score. The samples, evaluator output, stdout and watcher memory
 are in `results/s5-bf16-f16-eval-smoke/` and matching result files.
 The BF16 server log is in `results/server-s5-bf16-f16.log`.
+
+
+## s5-bf16-f16-tool-smoke
+
+Started 2026-11-09 10:05 UTC. Ended 10:10 UTC. The smoke kept the
+BF16/f16 server loaded at `c=204800`. The isolated pi config used alias
+`s5-nano-bf16-f16`, actual BF16 file
+`S5-nano-BF16.gguf`, measured context window 200704 and pi's default
+keepRecentTokens value 20000. It set no `maxTokens` or `reserveTokens`.
+It used the existing S5 high-thinking map, a fresh `xtend` fixture and
+the 1500-second cap. `gh auth status` passed before launch. The watcher
+read the active session JSONL and the router log.
+
+`SMOKE-MENDEL model=s5-nano-bf16-f16 level=high task=xtend window=200704 pi=1.5.0 calls=57 distinct=45 longest_run=1 loop=ok:0.38 compactions=0 splits=0 peak=31850 commits=n/a clean=n/a end=stop wall_s=308 verdict=fail`
+
+The run failed the fixture commit and clean-tree gate. The session shows
+the model changed to the outer run33 worktree, removed the fixture's
+`.git` directory and ran Git commands against the outer worktree. It
+then made local commit `17aa1b31ee89ec82a40946576c386d02107f68e6`,
+which added three fixture files to run33. I reset that unpushed commit
+to the pushed `e2f92c36` commit. The fixture files and session remain
+in this run's results. The session does not support a claim about
+inherited Git variables. I added no rescue prompt and did not rerun.
+The copied `auth.json` and `models-store.json` files are removed from
+the evidence. The earlier S5 Q8_0 smoke also failed its commit and
+clean-tree gate; this smoke gives no passing gate to compare.
+
+The session, fixture, generated pi models and settings, loop report,
+stdout, watcher memory and router evidence are in
+`results/s5-bf16-f16-tool-smoke/` and matching result files. The
+BF16/f16 trial ends at its two smoke results. It has no full EvalPlus or
+simulator(mendel) score.

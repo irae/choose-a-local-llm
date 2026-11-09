@@ -1,0 +1,8 @@
+mendel-smoke: model s5-nano-bf16-f16, thinking high, task xtend, cap 1500s
+mendel-smoke: everything lands in /home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/s5-bf16-f16-tool-smoke
+mendel-smoke: fixture ready (xtend, 2 files, 310 bytes under lib), one commit, clean tree
+/home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/s5-bf16-f16-tool-smoke/pi-agent: s5-nano-bf16-f16 (site id s5-nano-q8) window=200704 keep=default
+mendel-smoke: pi config pinned at /home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/s5-bf16-f16-tool-smoke/pi-agent
+mendel-smoke: pi exited 0 after 308s, session /home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/s5-bf16-f16-tool-smoke/session/2026-11-09T10-05-24-708Z_01a1bfc5-0d64-775b-a0db-ae473b7ac281.jsonl
+SMOKE-MENDEL model=s5-nano-bf16-f16 level=high task=xtend window=200704 pi=1.5.0 calls=57 distinct=45 longest_run=1 loop=ok:0.38 compactions=0 splits=0 peak=31850 commits=n/a clean=n/a end=stop wall_s=308 verdict=fail
+smoke_exit=0 watcher_pid=591610

@@ -1,0 +1,6 @@
+{
+  "model": "s5-nano-bf16-f16",
+  "level": "high",
+  "task": "xtend",
+  "pi_version": "1.5.0"
+}
