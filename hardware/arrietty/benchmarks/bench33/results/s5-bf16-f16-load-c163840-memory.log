@@ -1,0 +1,7 @@
+Mon Nov  9 09:22:54 UTC 2026
+14456 MiB, 1483 MiB, 42, 66.33 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6426        1244         239       26096       25467
+Swap:          31893         783       31110
+NAME       TYPE             SIZE      USED PRIO
+/dev/zram0 partition 33443278848 821248000  100

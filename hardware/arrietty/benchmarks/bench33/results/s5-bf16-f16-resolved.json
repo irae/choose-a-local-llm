@@ -1,0 +1,74 @@
+{
+  "id": "s5-nano-bf16-f16",
+  "aliases": [],
+  "tags": [],
+  "object": "model",
+  "owned_by": "llamacpp",
+  "created": 1794215927,
+  "status": {
+    "value": "loaded",
+    "args": [
+      "/home/irae/.local/share/mise/installs/llama-cpp/b12110/llama-server",
+      "--chat-template-kwargs",
+      "{\"enable_thinking\":true}",
+      "--cors-origins",
+      "*",
+      "--host",
+      "127.0.0.1",
+      "--jinja",
+      "--log-colors",
+      "off",
+      "--no-mmproj-auto",
+      "--port",
+      "37355",
+      "--reasoning-budget",
+      "8192",
+      "--reasoning-budget-message",
+      "Thinking budget reached. Give the final answer now.",
+      "--sleep-idle-seconds",
+      "7200",
+      "--alias",
+      "s5-nano-bf16-f16",
+      "--ctx-size",
+      "131072",
+      "--cache-ram",
+      "0",
+      "--cache-type-k",
+      "f16",
+      "--cache-type-v",
+      "f16",
+      "--flash-attn",
+      "on",
+      "--fit",
+      "off",
+      "--model",
+      "/home/irae/.cache/huggingface/hub/models--maritaca-ai--S5-nano-GGUF/snapshots/5fd041274829d60aeeba1e2edc4aabb621a432e4/S5-nano-BF16.gguf",
+      "--n-gpu-layers",
+      "999",
+      "--parallel",
+      "1"
+    ],
+    "preset": "[s5-nano-bf16-f16]\nchat-template-kwargs = {\"enable_thinking\":true}\ncors-origins = *\njinja = true\nlog-colors = off\nmmproj-auto = false\nreasoning-budget = 8192\nreasoning-budget-message = Thinking budget reached. Give the final answer now.\nsleep-idle-seconds = 7200\nctx-size = 131072\ncache-ram = 0\ncache-type-k = f16\ncache-type-v = f16\nflash-attn = on\nfit = off\nmodel = /home/irae/.cache/huggingface/hub/models--maritaca-ai--S5-nano-GGUF/snapshots/5fd041274829d60aeeba1e2edc4aabb621a432e4/S5-nano-BF16.gguf\nn-gpu-layers = 999\nparallel = 1\n\n"
+  },
+  "architecture": {
+    "input_modalities": [
+      "text"
+    ],
+    "output_modalities": [
+      "text"
+    ]
+  },
+  "source": "preset",
+  "can_remove": false,
+  "context_length": 262144,
+  "meta": {
+    "vocab_type": 2,
+    "n_vocab": 248320,
+    "n_ctx": 131072,
+    "n_ctx_train": 262144,
+    "n_embd": 2560,
+    "n_params": 4326350848,
+    "size": 8654651392,
+    "ftype": "BF16"
+  }
+}
