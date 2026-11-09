@@ -82,6 +82,55 @@ reports CUDA0 and the required flags. Both pinned GGUFs and tokenizer
 metadata are present and verified. The corpus server is ready. No
 model test has run yet.
 
+## s5-kv-feedback
+
+The f16 cache loaded at `-c 34816`. The actual child arguments are in
+`results/s5-kv-f16-resolved.json`. They set `--n-gpu-layers 999` and
+`--fit off`. They contain no CPU-MoE or tensor-placement override.
+The GPU allocation sample is in `results/s5-kv-f16-gpu-allocation.log`.
+The warmup response is in `results/s5-kv-f16-warmup.json`; it names
+`s5-nano-q8` and includes `reasoning_content`. The log has no explicit
+layer-count line. The coordinator accepted the resolved arguments,
+successful completion and GPU allocation as operational full-offload
+evidence. Do not report an N/N layer count.
+
+The runtime warned that `enable_thinking` in `chat-template-kwargs` is
+deprecated. The runbook's explicit JSON remains in use, and the real
+completion includes reasoning. The model log marks `blk.32.nextn.*`
+tensors unused. MTP stays disabled.
+
+At router startup, the parent log reported
+`tensor 'output.weight' has invalid ggml type 143` while it checked
+existing cache entries. The router still listed the S5 preset. The S5
+child loaded and passed its warmup. The cache entry that caused this
+message was not identified.
+
+The f16 decode readings were 77.95 tok/s at 4K, 76.17 at 8K, 72.25
+at 16K, 68.98 at 24K and 66.02 at 32K. All cells completed. The smoke
+passed 3 of 4 problems, with 0 empty answers and 14,786 completion
+tokens. Its wall time was 210.5 s.
+
+The q8_0 child arguments are in `results/s5-kv-q8-resolved.json`.
+They set `--n-gpu-layers 999` and `--fit off`, with no CPU-MoE or
+tensor-placement override. The GPU allocation sample is in
+`results/s5-kv-q8-gpu-allocation.log`; it reports 5,288 MiB. The warmup
+response is in `results/s5-kv-q8-warmup.json`. Neither server log prints
+an explicit layer-count line.
+
+The q8_0 decode readings were 77.45 tok/s at 4K, 75.68 at 8K, 72.28
+at 16K, 69.05 at 24K and 66.02 at 32K. All cells completed. The smoke
+passed 3 of 4 problems, with 0 empty answers and 11,807 completion
+tokens. Its wall time was 172.7 s. The two smoke lines read LEVEL.
+Both types loaded at `-c 34816`, and their 32K decode speeds differ by
+less than 10%. The candidate is q8_0 under the method. The coordinator
+must record the final KV choice.
+
+The direct machine-start sample showed 0 MiB swap used. Before the
+first f16 cell, swap used was 13,288 KiB. It stayed at 13,288 KiB before
+and after every S5 speed cell. The growth occurred after the machine
+start sample and before the first measured cell. The coordinator must
+decide whether this affects the KV readings.
+
 ## Derived values
 
 | model | KV | serving context | clean depth | harness window | source |

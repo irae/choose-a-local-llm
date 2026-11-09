@@ -20,6 +20,31 @@ pi 1.5.0 pass. The corpus server returned HTTP 200.
 The S5-nano GGUF contains one `nextn` head. MTP remains disabled.
 No direct cache-quality evidence was found for either fine-tune.
 
+## S5-nano KV feedback
+
+Both cache types loaded at `-c 34816` with full GPU offload arguments.
+The resolved child arguments contain no CPU-MoE or tensor-placement
+override. The server logs do not print a layer count. The coordinator
+accepted the resolved arguments, successful completion and GPU
+allocation as operational full-offload evidence. The q8_0 smoke and
+speed run used the same pinned Q8_0 model file as the f16 run.
+
+| KV cache | 4K prefill | 4K decode | 8K decode | 16K decode | 24K decode | 32K decode | GPU memory used at 4K / 32K | smoke |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| f16 | 6197.63 tok/s | 77.95 tok/s | 76.17 tok/s | 72.25 tok/s | 68.98 tok/s | 66.02 tok/s | 6641–6647 / 6617 MiB | 3/4, 0 empty |
+| q8_0 | 6141.07 tok/s | 77.45 tok/s | 75.68 tok/s | 72.28 tok/s | 69.05 tok/s | 66.02 tok/s | 6227–6233 / 6233 MiB | 3/4, 0 empty |
+
+The smoke results read LEVEL at the same 16,384-token budget. The
+candidate is q8_0 because the speed curves are within 10% and both
+types loaded at `-c 34816`. The coordinator records the final choice.
+Raw results, memory logs, server logs, resolved arguments, warmup
+responses and smoke files are in `results/`.
+
+The direct machine-start sample showed 0 MiB swap used. The first f16
+cell began at 13,288 KiB, and every measured cell had the same value
+before and after. The growth happened before the first speed cell. The
+coordinator must decide whether this affects the readings.
+
 Record KV comparisons and smoke verdicts first. Smokes are unscored
 and stay in this run. Add the measured depth curves, full EvalPlus
 results and simulator(mendel) artifacts as their blocks close.

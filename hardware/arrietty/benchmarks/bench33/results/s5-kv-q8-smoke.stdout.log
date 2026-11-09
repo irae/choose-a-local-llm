@@ -1,0 +1,14 @@
+event	budget	source=fast-mode	max_tokens=16384
+event	start	label=s5-kv-q8-smoke	model=s5-nano-q8	base=http://127.0.0.1:8081	out=/home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/s5-kv-q8-smoke
+event	generated	HumanEval/53	empty=false	completion_tokens=1166	finish_reason=stop	wall_s=14.9
+event	generated	HumanEval/45	empty=false	completion_tokens=1362	finish_reason=stop	wall_s=17.2
+event	generated	HumanEval/34	empty=false	completion_tokens=2271	finish_reason=stop	wall_s=28.7
+event	generated	HumanEval/129	empty=false	completion_tokens=7008	finish_reason=stop	wall_s=90.0
+event	evaluating	/home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/s5-kv-q8-smoke/s5-kv-q8-smoke.smoke.jsonl
+task_id	base	plus	empty	completion_tokens	reasoning_tokens	finish_reason	wall_s
+HumanEval/53	pass	pass	false	1166	-1	stop	14.9
+HumanEval/45	pass	pass	false	1362	-1	stop	17.2
+HumanEval/34	pass	pass	false	2271	-1	stop	28.7
+HumanEval/129	fail	fail	false	7008	-1	stop	90.0
+SMOKE	label=s5-kv-q8-smoke	problems=4	passed=3	empty=0	completion_tokens=11807	max_tokens=16384	wall_s=172.7	out=/home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/s5-kv-q8-smoke
+event	read	compare this SMOKE line with the other side's line at the same max_tokens: level (same passed, same empty), better (passed higher, empty not higher), worse (passed lower, or passed equal and empty higher), otherwise no verdict

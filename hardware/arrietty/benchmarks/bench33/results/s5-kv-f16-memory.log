@@ -1,0 +1,80 @@
+2026-11-09T00:43:41Z
+s5-kv-f16 depth=4096 before
+6641 MiB, 9298 MiB, 32, 3.41 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6348        1679         164       25738       25546
+Swap:          31893          12       31881
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	13288		100
+2026-11-09T00:44:14Z
+s5-kv-f16 depth=4096 after
+6647 MiB, 9292 MiB, 37, 21.92 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6449        1545         164       25770       25445
+Swap:          31893          12       31881
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	13288		100
+2026-11-09T00:44:32Z
+s5-kv-f16 depth=8192 before
+6647 MiB, 9292 MiB, 36, 3.87 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6457        1536         164       25771       25436
+Swap:          31893          12       31881
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	13288		100
+2026-11-09T00:45:28Z
+s5-kv-f16 depth=8192 after
+6647 MiB, 9292 MiB, 40, 4.01 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6443        1550         164       25772       25451
+Swap:          31893          12       31881
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	13288		100
+2026-11-09T00:45:37Z
+s5-kv-f16 depth=16384 before
+6647 MiB, 9292 MiB, 39, 4.23 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6429        1564         164       25772       25465
+Swap:          31893          12       31881
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	13288		100
+2026-11-09T00:46:17Z
+s5-kv-f16 depth=16384 after
+6617 MiB, 9322 MiB, 41, 23.29 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6445        1547         164       25772       25448
+Swap:          31893          12       31881
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	13288		100
+2026-11-09T00:46:26Z
+s5-kv-f16 depth=24576 before
+6617 MiB, 9322 MiB, 39, 13.42 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6455        1536         164       25773       25439
+Swap:          31893          12       31881
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	13288		100
+2026-11-09T00:47:22Z
+s5-kv-f16 depth=24576 after
+6617 MiB, 9322 MiB, 38, 4.24 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6447        1544         164       25773       25447
+Swap:          31893          12       31881
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	13288		100
+2026-11-09T00:47:36Z
+s5-kv-f16 depth=32768 before
+6617 MiB, 9322 MiB, 38, 4.12 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6475        1515         164       25774       25418
+Swap:          31893          12       31881
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	13288		100
+2026-11-09T00:48:30Z
+s5-kv-f16 depth=32768 after
+6617 MiB, 9322 MiB, 40, 23.22 W
+               total        used        free      shared  buff/cache   available
+Mem:           31894        6460        1530         164       25775       25434
+Swap:          31893          12       31881
+Filename				Type		Size		Used		Priority
+/dev/zram0                              partition	32659452	13288		100
