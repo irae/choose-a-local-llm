@@ -175,3 +175,23 @@ simulator(mendel) blocks. S5 thinking quality remains eligible.
 
 The diagnostic, fixture, session, loop, config, stdout and watcher
 memory files are in `results/s5-tool-smoke/`.
+
+## S5-nano thinking quality
+
+The q8_0 K/V configuration loaded at `-c 262144` with high Think,
+reasoning budget 8192 and output budget 16384. The run used the exact
+chat-template body
+`{"chat_template_kwargs":{"enable_thinking":true}}`. It ran all
+164 HumanEval+ problems without calibration. The active wall was
+116.3 minutes.
+
+| base pass@1 | plus pass@1 | completion | empty | forced |
+|---:|---:|---:|---:|---:|
+| 0.811 | 0.726 | 164/164 | 0/164 | 0/164 |
+
+The base score meets the 0.800 quality threshold. The S5 tool smoke
+failed its commit and clean-tree gates, so the full S5
+simulator(mendel) blocks remain skipped. Raw and sanitized samples,
+finish records, evaluation output and code generation log are in
+`results/s5-quality-think/`. Watcher memory is in
+`results/s5-quality-think-watch-memory.log`.

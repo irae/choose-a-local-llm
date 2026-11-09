@@ -307,3 +307,20 @@ The smoke failed its commit and clean-tree gates. The loop check passed.
 Skip S5 full simulator(mendel) blocks. Continue with S5 thinking quality.
 Deviation: the model directed Git to the outer run branch; I removed
 the local commit before pushing this block.
+
+## s5-quality-think
+
+Started 2026-11-09 03:09:26 UTC. The run uses the loaded S5-nano q8_0
+server at `-c 262144`, high Think, reasoning budget 8192 and output
+budget 16384. It uses no calibration. It uses the exact chat-template
+body `{"chat_template_kwargs":{"enable_thinking":true}}`.
+
+Ended 2026-11-09 05:05:41 UTC. EvalPlus completed all 164 problems.
+Base pass@1 was 0.811. Plus pass@1 was 0.726. The completed samples
+had 0 empty answers and 0 forced answers. The active wall was 116.3
+minutes. The watcher saw no server failure. The model met the base
+score threshold. S5 full simulator(mendel) remains skipped because
+the tool smoke failed its commit and clean-tree gates. Raw samples,
+finish records, evaluator output and watcher memory are in
+`results/s5-quality-think/` and
+`results/s5-quality-think-watch-memory.log`.
