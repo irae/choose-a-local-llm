@@ -314,4 +314,6 @@ its smokes; no full BF16 EvalPlus or simulator(mendel) score exists.
 
 ## Arete simulator(mendel)
 
-NOT STARTED. The owner deferred the guided and blind rows to a future run. Neither row has a partial result or score. The owner directed cleanup of the aborted guided run. We removed its outputs, generated pi config, watcher, task worktree and local branches. We kept completed Arete depth, tool-smoke and xhigh EvalPlus evidence, and all S5 evidence. The run router and Arete child stopped. Port 8080 is closed. VRAM use is 858 MiB.
+NOT STARTED. The owner deferred the guided and blind rows to a future run. Neither row has a partial result or score. The owner directed cleanup of the aborted guided run. We removed its outputs, generated pi config, watcher, task worktree and local branches. We kept completed Arete depth, tool-smoke and xhigh EvalPlus evidence, and all S5 evidence. The run router and Arete child stopped. Port 8080 is closed. The first post-stop sample showed 858 MiB used and 15,081 MiB free.
+
+Cleanup follow-up, 2026-11-09: We stopped the stale run-owned `socat` forwarder on port 8081 (PID 447875). Both ports are closed. The final VRAM sample showed 782 MiB used and 15,157 MiB free. No test restarted.
