@@ -378,3 +378,30 @@ thinking-on agent row. S5 simulator(mendel) remains skipped because
 the tool smoke failed its commit and clean-tree gates. Samples,
 finish records, evaluation output, resolved args, warmup, server log
 and watcher memory are in `results/s5-quality-instruct*`.
+
+## arete-quality-xhigh
+
+Started 2026-11-09 05:42 UTC. Use Arete Q3_K_M with q8_0 K/V, xhigh,
+serving context 65536, reasoning budget 8192 and output budget 16384.
+The request sets
+`{"chat_template_kwargs":{"enable_thinking":true,"reasoning_effort":"xhigh"}}`.
+Use no calibration. I updated the active preset and reloaded the model
+through the router. The run-owned router PID did not change. The
+resolved child args set `--n-gpu-layers 999` and `--fit off`, with no
+CPU-MoE or tensor-placement override. The model loaded and completed a
+real warmup with `reasoning_content`. GPU memory was 15761 MiB used and
+178 MiB free after load. The measured 65536 context is this run's
+planned cap, not the card's absolute allocation maximum. The watcher
+is active. Warmup, resolved args, server log and watcher memory are in
+`results/`.
+
+
+Ended 2026-11-09 09:07:05 UTC. EvalPlus completed all 164 problems.
+Base pass@1 was 0.976. Plus pass@1 was 0.951. The completed samples
+had 0 empty and 7 forced answers. The active wall was 204.1 minutes.
+The fixed count command was
+`python3 benchmarks/thinking-budget.py count hardware/arrietty/benchmarks/bench33/results/arete-quality-xhigh --message 'Thinking budget reached. Give the final answer now.'`.
+The model met the base score threshold. Raw and sanitized samples,
+finish records, evaluator output and code generation log are in
+`results/arete-quality-xhigh/`. Watcher memory is in
+`results/arete-quality-xhigh-watch-memory.log`.

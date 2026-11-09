@@ -4,14 +4,14 @@ File: [bartowski/NousResearch_Arete-27B-GGUF](https://huggingface.co/bartowski/N
 
 - This community quantization targets llama.cpp.
 - The initial cache choice is q8_0.
-- Full quality and agent results are pending.
+- The xhigh quality gate passed. Agent results and thinking-off quality are pending.
 
 ## Configurations
 
 <!-- gen:binary-rows:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/arete-bartowski-q3km" top /> | **64k** | <TokCell shallow="27.60" deep="20.07" cap="mem" top-shallow top-deep /> | **15.4 GiB** | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
+| <ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/arete-bartowski-q3km" top /> | **64k** | <TokCell shallow="27.60" deep="20.07" cap="mem" top-shallow top-deep /> | **15.4 GiB** | <ScoreCell value="0.976/0.951" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 3h24 · Mendel —">3h24†</span> |
 <!-- gen:binary-rows:end -->
 
 <!-- gen:binary-best-preset:start -->
@@ -37,8 +37,12 @@ reasoning-budget-message = Thinking budget reached. Give the final answer now.
 
 ## Quality
 
+Effort xhigh scored 0.976 base and 0.951 plus on all 164 problems. No answer was empty. The server forced 7 answers at the 8,192-token thinking budget. Active wall was 204.1 minutes, with an output budget of 16,384 and no calibration.
+
 <!-- gen:binary-evalplus:start -->
-No EvalPlus run yet.
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/arete-bartowski-q3km" />](../setups/arrietty/benchmarks/arete-27b.md) | 8192 | 16384 | <ScoreCell value="0.976/0.951" sub="100% completion" top /> | none | 7/164 | <TokCell shallow="27.60" deep="20.07" /> | 3h24 |
 <!-- gen:binary-evalplus:end -->
 
 ## Agent task
@@ -83,3 +87,5 @@ reasoning-budget-message = Thinking budget reached. Give the final answer now.
 - 2026-11-08: pinned the community file for benchmark run 33.
 
 - 2026-11-08: measured the 64K allocation and set the harness window to 61,440.
+
+- 2026-11-09: xhigh quality passed the base gate, with seven forced answers verified from the finish log.

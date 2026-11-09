@@ -218,3 +218,22 @@ simulator(mendel) remains skipped because the tool smoke failed its
 commit and clean-tree gates. Samples, finish records, evaluation,
 resolved args, warmup, server log and watcher memory are in
 `results/s5-quality-instruct*`.
+
+
+## Arete xhigh quality
+
+The q8_0 K/V configuration loaded at `-c 65536` with xhigh, reasoning
+budget 8192 and output budget 16384. The chat template set
+`enable_thinking` true and `reasoning_effort` to xhigh. The run used
+all 164 HumanEval+ problems without calibration. The active wall was
+204.1 minutes.
+
+| base pass@1 | plus pass@1 | completion | empty | forced |
+|---:|---:|---:|---:|---:|
+| 0.976 | 0.951 | 164/164 | 0/164 | 7/164 |
+
+The base score meets the 0.800 quality threshold. This result passes
+the EvalPlus gate for Arete's thinking-on simulator(mendel) rows. Raw
+and sanitized samples, finish records, evaluation output and code
+generation log are in `results/arete-quality-xhigh/`. Watcher memory
+is in `results/arete-quality-xhigh-watch-memory.log`.

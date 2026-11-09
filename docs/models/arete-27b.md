@@ -1,13 +1,13 @@
 # Arete-27B
 
-[Publisher model card](https://huggingface.co/NousResearch/Arete-27B). Full quality and agent results are pending.
+[Publisher model card](https://huggingface.co/NousResearch/Arete-27B). The xhigh quality gate passed. Agent results and thinking-off quality are pending.
 
 ## Configurations
 
 <!-- gen:model-all:start -->
 | Model / Config | Ctx | tok/s | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|
-| <ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/arete-bartowski-q3km" hide="server" top /> | **64k** | <TokCell shallow="27.60" deep="20.07" cap="mem" top-shallow top-deep /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
+| <ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/arete-bartowski-q3km" hide="server" top /> | **64k** | <TokCell shallow="27.60" deep="20.07" cap="mem" top-shallow top-deep /> | <ScoreCell value="0.976/0.951" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 3h24 · Mendel —">3h24†</span> |
 <!-- gen:model-all:end -->
 
 ## Files
@@ -29,7 +29,9 @@ The served arm of each config is in bold. A pill under a reading is the depth it
 ## Quality
 
 <!-- gen:model-evalplus:start -->
-No EvalPlus run yet.
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/arete-bartowski-q3km" />](../setups/arrietty/benchmarks/arete-27b.md) | 8192 | 16384 | <ScoreCell value="0.976/0.951" sub="100% completion" top /> | none | 7/164 | <TokCell shallow="27.60" deep="20.07" /> | 3h24 |
 <!-- gen:model-evalplus:end -->
 
 ## Agent task
