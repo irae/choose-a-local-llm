@@ -1,0 +1,20 @@
+Fixture Git state
+branch=master
+head=70342a2afc57c9a9e56f7c145e0e57508451b8aa
+commits=1
+status:
+ M lib/config/index.js
+ M lib/core/tree-hash-walker.js
+ M package.json
+diff:
+ lib/config/index.js          | 4 +---
+ lib/core/tree-hash-walker.js | 4 +---
+ package.json                 | 4 +---
+ 3 files changed, 3 insertions(+), 9 deletions(-)
+Outer run branch commit created during smoke
+4d74f4d4cb3e456bed580258a50084e0d9267ddb
+Replace xtend with Object.assign in tree-hash-walker and config modules
+paths:
+hardware/arrietty/benchmarks/bench33/results/s5-tool-smoke/fixture/lib/config/index.js
+hardware/arrietty/benchmarks/bench33/results/s5-tool-smoke/fixture/lib/core/tree-hash-walker.js
+hardware/arrietty/benchmarks/bench33/results/s5-tool-smoke/fixture/package.json

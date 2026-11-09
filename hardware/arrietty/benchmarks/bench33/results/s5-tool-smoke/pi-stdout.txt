@@ -1,0 +1,33 @@
+All changes are done and committed as `4d74f4d` on branch `run33`. Here's a summary:
+
+**`lib/core/tree-hash-walker.js`**
+```js
+// Before:
+var xtend = require('xtend');
+TreeHashWalker.prototype.done = function () {
+    return xtend(this._result, {error: this.error});
+};
+
+// After:
+TreeHashWalker.prototype.done = function () {
+    return Object.assign({}, this._result, {error: this.error});
+};
+```
+
+**`lib/config/index.js`**
+```js
+// Before:
+var xtend = require('xtend');
+function loadConfig(fileConfig, config) {
+    return xtend(fileConfig, config);
+}
+
+// After:
+function loadConfig(fileConfig, config) {
+    return Object.assign({}, fileConfig, config);
+}
+```
+
+Both calls now use `Object.assign({}, src, ...)` — the new empty object `{}` as the first argument preserves the original no-mutation semantics, then the target properties are spread in.
+
+**`package.json`** — the `xtend` dependency removed, `dependencies` is now empty `{}`.

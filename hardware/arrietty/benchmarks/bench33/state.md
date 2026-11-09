@@ -287,3 +287,33 @@ model load.
 
 Raw speed cells, resolved arguments, GPU allocation, memory samples,
 warmup and server log are in `results/`.
+
+## s5-tool-smoke
+
+The smoke used S5-nano q8_0 at high Think, with MTP off and serving
+context 262144. The entry came from origin/master commit
+`ad3d1f750d9f7b91e982884985b24829230db81e`. The generated pi config
+used window 258048 and the pi default keep value of 20000. It set no
+`maxTokens` or `reserveTokens`. `gh auth status` passed. The watcher
+used the server log and the live session file. The model stayed loaded
+for the next S5 block.
+
+Started 2026-11-09 02:59:03 UTC. Ended 03:01:04 UTC.
+
+`SMOKE-MENDEL model=s5-nano-q8 level=high task=xtend window=258048 pi=1.5.0 calls=40 distinct=39 longest_run=1 loop=ok:0.92 compactions=0 splits=0 peak=24357 commits=0 clean=no end=stop wall_s=121 verdict=fail`
+
+The fixture started with one commit. It had no new commit and three
+modified files at the end. The session log shows the model used the
+outer `run33` Git directory for its add and commit commands. It made
+local commit `4d74f4d`, which added the fixture files to the run
+branch. It then claimed the work was committed. The fixture remained
+dirty. I reset the unpushed local commit to the pushed S5-depth commit
+and kept the changed fixture files as smoke evidence. I removed the
+copied `auth.json` and `models-store.json` files before saving the
+config. The diagnostic, fixture, session, loop, config, stdout and
+watcher memory files are in `results/s5-tool-smoke/`.
+
+The smoke failed its commit and clean-tree gates. The loop check passed.
+Skip S5 full simulator(mendel) blocks. Continue with S5 thinking quality.
+Deviation: the model directed Git to the outer run branch; I removed
+the local commit before pushing this block.

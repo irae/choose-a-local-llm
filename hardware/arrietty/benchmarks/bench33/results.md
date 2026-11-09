@@ -154,3 +154,24 @@ The run used separate Linux benchy calls. It did not use the slow
 context-creep measurement tool. Raw cells, memory samples, resolved
 arguments, warmup, GPU samples and server log are in
 `results/s5-depth-c262144-*`.
+
+## S5-nano tool smoke
+
+The smoke used pi 1.5.0, S5-nano q8_0, high Think, serving context
+262144, harness window 258048 and pi's default keep value of 20000.
+It set no `maxTokens` or `reserveTokens`. Its entry came from
+origin/master commit `ad3d1f750d9f7b91e982884985b24829230db81e`.
+GitHub auth passed. The watcher read the server log and live session.
+
+`SMOKE-MENDEL model=s5-nano-q8 level=high task=xtend window=258048 pi=1.5.0 calls=40 distinct=39 longest_run=1 loop=ok:0.92 compactions=0 splits=0 peak=24357 commits=0 clean=no end=stop wall_s=121 verdict=fail`
+
+The smoke failed because the fixture had no new commit and three
+modified files. The session shows that the model ran Git add and commit
+commands against the outer `run33` Git directory. Local commit
+`4d74f4d` added the fixture files to the run branch. I reset that
+unpushed commit and kept the changed fixture files as evidence. The
+loop check passed. This smoke does not permit the S5 full
+simulator(mendel) blocks. S5 thinking quality remains eligible.
+
+The diagnostic, fixture, session, loop, config, stdout and watcher
+memory files are in `results/s5-tool-smoke/`.
