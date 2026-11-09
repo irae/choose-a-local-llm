@@ -293,3 +293,21 @@ four-problem subset only. This smoke is unscored and does not establish
 full coding quality. Samples, evaluator output, stdout, watcher memory
 and server evidence are in `results/s5-bf16-f16-eval-smoke/` and
 `results/server-s5-bf16-f16.log`.
+
+
+### BF16/f16 simulator(mendel) smoke
+
+The BF16/f16 config failed the `xtend` smoke's commit and clean-tree
+gate. The exact line is:
+
+`SMOKE-MENDEL model=s5-nano-bf16-f16 level=high task=xtend window=200704 pi=1.5.0 calls=57 distinct=45 longest_run=1 loop=ok:0.38 compactions=0 splits=0 peak=31850 commits=n/a clean=n/a end=stop wall_s=308 verdict=fail`
+
+The isolated pi config used alias `s5-nano-bf16-f16`, the BF16 file,
+window 200704, default keep 20000 and no `maxTokens` or
+`reserveTokens`. The session records Git operations against the outer
+run33 worktree after the model removed the fixture's `.git` directory.
+Local commit `17aa1b31` was removed before the block push. The fixture,
+session, generated config without copied credentials, loop report,
+watcher memory and server log remain as evidence. The earlier Q8_0
+smoke also failed its commit and clean-tree gate. This trial ends at
+its smokes; no full BF16 EvalPlus or simulator(mendel) score exists.

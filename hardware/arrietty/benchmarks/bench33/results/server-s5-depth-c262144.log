@@ -15909,3 +15909,448 @@
 [44881] 24.38.522.475 I slot print_timing: id  0 | task 11441 |    graphs reused =      14976
 [44881] 24.38.522.476 I slot print_timing: id  0 | task 11441 |   graph reallocs =          0    /     0        (same size) / (changed size)
 [44881] 24.38.522.511 I slot      release: id  0 | task 11441 | stop processing: n_tokens = 4883, truncated = 0
+464.24.991.342 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 29.40.329.847 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 4883, t_last = 73162674342
+[44881] 29.40.330.047 I slot launch_slot_: id  0 | task 15874 | processing task, is_child = 0
+[44881] 29.45.745.112 I slot print_timing: id  0 | task 15874 | n_gen =    134, tg =  44.29 t/s, tg_3s =  44.62 t/s
+[44881] 29.48.208.246 I slot print_timing: id  0 | task 15874 | prompt eval time =    2412.12 ms / 10575 tokens (    0.23 ms per token,  4384.10 tokens per second)
+[44881] 29.48.208.249 I slot print_timing: id  0 | task 15874 |        eval time =    5466.06 ms /   243 tokens (   22.59 ms per token,    44.27 tokens per second)
+[44881] 29.48.208.249 I slot print_timing: id  0 | task 15874 |       total time =    7878.18 ms / 10818 tokens
+[44881] 29.48.208.250 I slot print_timing: id  0 | task 15874 |    graphs reused =      15216
+[44881] 29.48.208.250 I slot print_timing: id  0 | task 15874 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 29.48.208.537 I slot      release: id  0 | task 15874 | stop processing: n_tokens = 10817, truncated = 0
+464.32.914.906 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 29.48.262.006 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.884 (> 0.100 thold), f_keep = 1.000
+[44881] 29.48.262.293 I slot launch_slot_: id  0 | task 16125 | processing task, is_child = 0
+[44881] 29.51.670.207 I slot print_timing: id  0 | task 16125 | n_gen =    133, tg =  43.85 t/s, tg_3s =  44.18 t/s
+[44881] 29.51.942.928 I slot print_timing: id  0 | task 16125 | prompt eval time =     397.55 ms /  1426 tokens (    0.28 ms per token,  3586.98 tokens per second)
+[44881] 29.51.942.929 I slot print_timing: id  0 | task 16125 |        eval time =    3283.07 ms /   145 tokens (   22.80 ms per token,    43.86 tokens per second)
+[44881] 29.51.942.930 I slot print_timing: id  0 | task 16125 |       total time =    3680.62 ms /  1571 tokens
+[44881] 29.51.942.930 I slot print_timing: id  0 | task 16125 |    graphs reused =      15358
+[44881] 29.51.942.931 I slot print_timing: id  0 | task 16125 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 29.51.943.292 I slot      release: id  0 | task 16125 | stop processing: n_tokens = 12387, truncated = 0
+464.36.638.436 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 29.51.981.217 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.986 (> 0.100 thold), f_keep = 1.000
+[44881] 29.51.981.408 I slot launch_slot_: id  0 | task 16273 | processing task, is_child = 0
+[44881] 29.55.087.051 I slot print_timing: id  0 | task 16273 | n_gen =    133, tg =  43.86 t/s, tg_3s =  44.19 t/s
+[44881] 29.58.102.178 I slot print_timing: id  0 | task 16273 | n_gen =    265, tg =  43.82 t/s, tg_3s =  43.78 t/s
+[44881] 30.01.114.434 I slot print_timing: id  0 | task 16273 | n_gen =    397, tg =  43.82 t/s, tg_3s =  43.82 t/s
+[44881] 30.02.023.947 I slot print_timing: id  0 | task 16273 | prompt eval time =      96.09 ms /   179 tokens (    0.54 ms per token,  1862.88 tokens per second)
+[44881] 30.02.023.949 I slot print_timing: id  0 | task 16273 |        eval time =    9946.44 ms /   437 tokens (   22.81 ms per token,    43.83 tokens per second)
+[44881] 30.02.023.950 I slot print_timing: id  0 | task 16273 |       total time =   10042.53 ms /   616 tokens
+[44881] 30.02.023.950 I slot print_timing: id  0 | task 16273 |    graphs reused =      15792
+[44881] 30.02.023.950 I slot print_timing: id  0 | task 16273 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 30.02.024.284 I slot      release: id  0 | task 16273 | stop processing: n_tokens = 13002, truncated = 0
+464.46.707.247 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 30.02.050.592 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.968 (> 0.100 thold), f_keep = 1.000
+[44881] 30.02.050.813 I slot launch_slot_: id  0 | task 16712 | processing task, is_child = 0
+[44881] 30.05.207.302 I slot print_timing: id  0 | task 16712 | n_gen =    132, tg =  43.62 t/s, tg_3s =  43.95 t/s
+[44881] 30.08.210.678 I slot print_timing: id  0 | task 16712 | n_gen =    263, tg =  43.62 t/s, tg_3s =  43.62 t/s
+[44881] 30.11.231.386 I slot print_timing: id  0 | task 16712 | n_gen =    395, tg =  43.65 t/s, tg_3s =  43.70 t/s
+[44881] 30.14.233.872 I slot print_timing: id  0 | task 16712 | n_gen =    526, tg =  43.64 t/s, tg_3s =  43.63 t/s
+[44881] 30.17.256.275 I slot print_timing: id  0 | task 16712 | n_gen =    658, tg =  43.65 t/s, tg_3s =  43.67 t/s
+[44881] 30.17.508.124 I slot print_timing: id  0 | task 16712 | prompt eval time =     153.28 ms /   428 tokens (    0.36 ms per token,  2792.29 tokens per second)
+[44881] 30.17.508.126 I slot print_timing: id  0 | task 16712 |        eval time =   15304.02 ms /   669 tokens (   22.91 ms per token,    43.65 tokens per second)
+[44881] 30.17.508.126 I slot print_timing: id  0 | task 16712 |       total time =   15457.30 ms /  1097 tokens
+[44881] 30.17.508.127 I slot print_timing: id  0 | task 16712 |    graphs reused =      16456
+[44881] 30.17.508.127 I slot print_timing: id  0 | task 16712 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 30.17.508.503 I slot      release: id  0 | task 16712 | stop processing: n_tokens = 14098, truncated = 0
+465.02.193.172 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 30.17.539.707 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.973 (> 0.100 thold), f_keep = 1.000
+[44881] 30.17.539.895 I slot launch_slot_: id  0 | task 17383 | processing task, is_child = 0
+[44881] 30.20.700.314 I slot print_timing: id  0 | task 17383 | n_gen =    132, tg =  43.41 t/s, tg_3s =  43.74 t/s
+[44881] 30.23.709.366 I slot print_timing: id  0 | task 17383 | n_gen =    263, tg =  43.47 t/s, tg_3s =  43.54 t/s
+[44881] 30.26.723.270 I slot print_timing: id  0 | task 17383 | n_gen =    394, tg =  43.47 t/s, tg_3s =  43.47 t/s
+[44881] 30.29.742.150 I slot print_timing: id  0 | task 17383 | n_gen =    525, tg =  43.45 t/s, tg_3s =  43.39 t/s
+[44881] 30.32.756.035 I slot print_timing: id  0 | task 17383 | n_gen =    656, tg =  43.45 t/s, tg_3s =  43.47 t/s
+[44881] 30.35.774.389 I slot print_timing: id  0 | task 17383 | n_gen =    787, tg =  43.45 t/s, tg_3s =  43.40 t/s
+[44881] 30.37.659.967 I slot print_timing: id  0 | task 17383 | prompt eval time =     142.69 ms /   387 tokens (    0.37 ms per token,  2712.10 tokens per second)
+[44881] 30.37.659.971 I slot print_timing: id  0 | task 17383 |        eval time =   19977.35 ms /   868 tokens (   23.04 ms per token,    43.40 tokens per second)
+[44881] 30.37.659.971 I slot print_timing: id  0 | task 17383 |       total time =   20120.04 ms /  1255 tokens
+[44881] 30.37.659.973 I slot print_timing: id  0 | task 17383 |    graphs reused =      17319
+[44881] 30.37.659.973 I slot print_timing: id  0 | task 17383 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 30.37.660.542 I slot      release: id  0 | task 17383 | stop processing: n_tokens = 15352, truncated = 0
+465.22.348.428 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 30.37.702.048 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.986 (> 0.100 thold), f_keep = 1.000
+[44881] 30.37.702.254 I slot launch_slot_: id  0 | task 18253 | processing task, is_child = 0
+[44881] 30.40.604.630 I slot print_timing: id  0 | task 18253 | prompt eval time =     119.71 ms /   219 tokens (    0.55 ms per token,  1829.38 tokens per second)
+[44881] 30.40.604.633 I slot print_timing: id  0 | task 18253 |        eval time =    2782.64 ms /   118 tokens (   23.78 ms per token,    42.05 tokens per second)
+[44881] 30.40.604.633 I slot print_timing: id  0 | task 18253 |       total time =    2902.36 ms /   337 tokens
+[44881] 30.40.604.634 I slot print_timing: id  0 | task 18253 |    graphs reused =      17434
+[44881] 30.40.604.635 I slot print_timing: id  0 | task 18253 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 30.40.605.043 I slot      release: id  0 | task 18253 | stop processing: n_tokens = 15688, truncated = 0
+465.25.288.968 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 30.40.639.360 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.996 (> 0.100 thold), f_keep = 1.000
+[44881] 30.40.639.556 I slot launch_slot_: id  0 | task 18373 | processing task, is_child = 0
+[44881] 30.43.730.414 I slot print_timing: id  0 | task 18373 | n_gen =    120, tg =  39.60 t/s, tg_3s =  39.94 t/s
+[44881] 30.44.503.541 I slot print_timing: id  0 | task 18373 | prompt eval time =      86.09 ms /    67 tokens (    1.28 ms per token,   778.26 tokens per second)
+[44881] 30.44.503.544 I slot print_timing: id  0 | task 18373 |        eval time =    3777.87 ms /   151 tokens (   25.19 ms per token,    39.70 tokens per second)
+[44881] 30.44.503.544 I slot print_timing: id  0 | task 18373 |       total time =    3863.96 ms /   218 tokens
+[44881] 30.44.503.545 I slot print_timing: id  0 | task 18373 |    graphs reused =      17582
+[44881] 30.44.503.545 I slot print_timing: id  0 | task 18373 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 30.44.503.939 I slot      release: id  0 | task 18373 | stop processing: n_tokens = 15905, truncated = 0
+465.29.185.753 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 30.44.537.063 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.995 (> 0.100 thold), f_keep = 1.000
+[44881] 30.44.537.260 I slot launch_slot_: id  0 | task 18526 | processing task, is_child = 0
+[44881] 30.47.646.748 I slot print_timing: id  0 | task 18526 | n_gen =    131, tg =  43.07 t/s, tg_3s =  43.40 t/s
+[44881] 30.50.658.484 I slot print_timing: id  0 | task 18526 | n_gen =    261, tg =  43.12 t/s, tg_3s =  43.16 t/s
+[44881] 30.53.148.295 I slot print_timing: id  0 | task 18526 | prompt eval time =      91.37 ms /    74 tokens (    1.23 ms per token,   809.86 tokens per second)
+[44881] 30.53.148.297 I slot print_timing: id  0 | task 18526 |        eval time =    8519.65 ms /   368 tokens (   23.21 ms per token,    43.08 tokens per second)
+[44881] 30.53.148.297 I slot print_timing: id  0 | task 18526 |       total time =    8611.02 ms /   442 tokens
+[44881] 30.53.148.298 I slot print_timing: id  0 | task 18526 |    graphs reused =      17947
+[44881] 30.53.148.298 I slot print_timing: id  0 | task 18526 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 30.53.148.715 I slot      release: id  0 | task 18526 | stop processing: n_tokens = 16346, truncated = 0
+465.37.833.790 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 30.53.187.155 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.992 (> 0.100 thold), f_keep = 1.000
+[44881] 30.53.187.333 I slot launch_slot_: id  0 | task 18896 | processing task, is_child = 0
+[44881] 30.56.288.017 I slot print_timing: id  0 | task 18896 | n_gen =    131, tg =  43.16 t/s, tg_3s =  43.50 t/s
+[44881] 30.57.120.061 I slot print_timing: id  0 | task 18896 | prompt eval time =      88.89 ms /   139 tokens (    0.64 ms per token,  1563.71 tokens per second)
+[44881] 30.57.120.063 I slot print_timing: id  0 | task 18896 |        eval time =    3843.82 ms /   167 tokens (   23.16 ms per token,    43.19 tokens per second)
+[44881] 30.57.120.063 I slot print_timing: id  0 | task 18896 |       total time =    3932.72 ms /   306 tokens
+[44881] 30.57.120.064 I slot print_timing: id  0 | task 18896 |    graphs reused =      18111
+[44881] 30.57.120.064 I slot print_timing: id  0 | task 18896 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 30.57.120.481 I slot      release: id  0 | task 18896 | stop processing: n_tokens = 16651, truncated = 0
+465.41.804.991 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 30.57.158.879 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.998 (> 0.100 thold), f_keep = 1.000
+[44881] 30.57.159.090 I slot launch_slot_: id  0 | task 19065 | processing task, is_child = 0
+[44881] 31.00.229.393 I slot print_timing: id  0 | task 19065 | n_gen =    131, tg =  43.25 t/s, tg_3s =  43.58 t/s
+[44881] 31.01.382.956 I slot print_timing: id  0 | task 19065 | prompt eval time =      64.56 ms /    26 tokens (    2.48 ms per token,   402.75 tokens per second)
+[44881] 31.01.382.958 I slot print_timing: id  0 | task 19065 |        eval time =    4159.30 ms /   181 tokens (   23.11 ms per token,    43.28 tokens per second)
+[44881] 31.01.382.959 I slot print_timing: id  0 | task 19065 |       total time =    4223.85 ms /   207 tokens
+[44881] 31.01.382.959 I slot print_timing: id  0 | task 19065 |    graphs reused =      18290
+[44881] 31.01.382.959 I slot print_timing: id  0 | task 19065 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 31.01.383.373 I slot      release: id  0 | task 19065 | stop processing: n_tokens = 16857, truncated = 0
+465.51.784.629 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 31.07.142.153 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.985 (> 0.100 thold), f_keep = 0.999
+[44881] 31.07.142.355 I slot launch_slot_: id  0 | task 19248 | processing task, is_child = 0
+[44881] 31.10.006.321 I slot print_timing: id  0 | task 19248 | prompt eval time =     170.66 ms /   425 tokens (    0.40 ms per token,  2490.26 tokens per second)
+[44881] 31.10.006.323 I slot print_timing: id  0 | task 19248 |        eval time =    2693.29 ms /   117 tokens (   23.22 ms per token,    43.07 tokens per second)
+[44881] 31.10.006.323 I slot print_timing: id  0 | task 19248 |       total time =    2863.95 ms /   542 tokens
+[44881] 31.10.006.324 I slot print_timing: id  0 | task 19248 |    graphs reused =      18404
+[44881] 31.10.006.324 I slot print_timing: id  0 | task 19248 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 31.10.006.760 I slot      release: id  0 | task 19248 | stop processing: n_tokens = 17214, truncated = 0
+465.54.695.052 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 31.10.051.598 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.979 (> 0.100 thold), f_keep = 1.000
+[44881] 31.10.051.791 I slot launch_slot_: id  0 | task 19367 | processing task, is_child = 0
+[44881] 31.13.229.213 I slot print_timing: id  0 | task 19367 | n_gen =    131, tg =  43.07 t/s, tg_3s =  43.40 t/s
+[44881] 31.16.241.488 I slot print_timing: id  0 | task 19367 | n_gen =    261, tg =  43.11 t/s, tg_3s =  43.16 t/s
+[44881] 31.17.442.944 I slot print_timing: id  0 | task 19367 | prompt eval time =     159.02 ms /   368 tokens (    0.43 ms per token,  2314.17 tokens per second)
+[44881] 31.17.442.947 I slot print_timing: id  0 | task 19367 |        eval time =    7232.12 ms /   313 tokens (   23.18 ms per token,    43.14 tokens per second)
+[44881] 31.17.442.947 I slot print_timing: id  0 | task 19367 |       total time =    7391.14 ms /   681 tokens
+[44881] 31.17.442.948 I slot print_timing: id  0 | task 19367 |    graphs reused =      18714
+[44881] 31.17.442.948 I slot print_timing: id  0 | task 19367 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 31.17.443.392 I slot      release: id  0 | task 19367 | stop processing: n_tokens = 17894, truncated = 0
+466.02.130.610 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 31.17.488.105 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.999 (> 0.100 thold), f_keep = 1.000
+[44881] 31.17.488.318 I slot launch_slot_: id  0 | task 19682 | processing task, is_child = 0
+[44881] 31.19.546.580 I slot print_timing: id  0 | task 19682 | prompt eval time =     264.60 ms /    19 tokens (   13.93 ms per token,    71.81 tokens per second)
+[44881] 31.19.546.582 I slot print_timing: id  0 | task 19682 |        eval time =    1793.64 ms /    78 tokens (   23.29 ms per token,    42.93 tokens per second)
+[44881] 31.19.546.582 I slot print_timing: id  0 | task 19682 |       total time =    2058.25 ms /    97 tokens
+[44881] 31.19.546.583 I slot print_timing: id  0 | task 19682 |    graphs reused =      18789
+[44881] 31.19.546.584 I slot print_timing: id  0 | task 19682 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 31.19.547.082 I slot      release: id  0 | task 19682 | stop processing: n_tokens = 17990, truncated = 0
+466.04.235.313 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 31.19.594.195 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.980 (> 0.100 thold), f_keep = 1.000
+[44881] 31.19.594.377 I slot launch_slot_: id  0 | task 19762 | processing task, is_child = 0
+[44881] 31.22.762.557 I slot print_timing: id  0 | task 19762 | n_gen =    130, tg =  42.90 t/s, tg_3s =  43.24 t/s
+[44881] 31.24.582.821 I slot print_timing: id  0 | task 19762 | prompt eval time =     161.51 ms /   368 tokens (    0.44 ms per token,  2278.51 tokens per second)
+[44881] 31.24.582.823 I slot print_timing: id  0 | task 19762 |        eval time =    4826.92 ms /   207 tokens (   23.43 ms per token,    42.68 tokens per second)
+[44881] 31.24.582.823 I slot print_timing: id  0 | task 19762 |       total time =    4988.43 ms /   575 tokens
+[44881] 31.24.582.823 I slot print_timing: id  0 | task 19762 |    graphs reused =      18993
+[44881] 31.24.582.824 I slot print_timing: id  0 | task 19762 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 31.24.583.301 I slot      release: id  0 | task 19762 | stop processing: n_tokens = 18564, truncated = 0
+466.09.269.705 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 31.24.629.285 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.960 (> 0.100 thold), f_keep = 1.000
+[44881] 31.24.629.495 I slot launch_slot_: id  0 | task 19971 | processing task, is_child = 0
+[44881] 31.27.892.889 I slot print_timing: id  0 | task 19971 | n_gen =    129, tg =  42.66 t/s, tg_3s =  42.99 t/s
+[44881] 31.30.915.100 I slot print_timing: id  0 | task 19971 | n_gen =    258, tg =  42.67 t/s, tg_3s =  42.68 t/s
+[44881] 31.33.934.383 I slot print_timing: id  0 | task 19971 | n_gen =    387, tg =  42.69 t/s, tg_3s =  42.73 t/s
+[44881] 31.34.565.974 I slot print_timing: id  0 | task 19971 | prompt eval time =     262.97 ms /   777 tokens (    0.34 ms per token,  2954.66 tokens per second)
+[44881] 31.34.565.976 I slot print_timing: id  0 | task 19971 |        eval time =    9673.49 ms /   414 tokens (   23.42 ms per token,    42.69 tokens per second)
+[44881] 31.34.565.977 I slot print_timing: id  0 | task 19971 |       total time =    9936.47 ms /  1191 tokens
+[44881] 31.34.565.977 I slot print_timing: id  0 | task 19971 |    graphs reused =      19403
+[44881] 31.34.565.978 I slot print_timing: id  0 | task 19971 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 31.34.566.450 I slot      release: id  0 | task 19971 | stop processing: n_tokens = 19754, truncated = 0
+466.19.260.250 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 31.34.621.712 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.982 (> 0.100 thold), f_keep = 1.000
+[44881] 31.34.621.897 I slot launch_slot_: id  0 | task 20388 | processing task, is_child = 0
+[44881] 31.37.794.962 I slot print_timing: id  0 | task 20388 | n_gen =    129, tg =  42.57 t/s, tg_3s =  42.90 t/s
+[44881] 31.40.813.794 I slot print_timing: id  0 | task 20388 | n_gen =    258, tg =  42.65 t/s, tg_3s =  42.73 t/s
+[44881] 31.43.834.222 I slot print_timing: id  0 | task 20388 | n_gen =    387, tg =  42.67 t/s, tg_3s =  42.71 t/s
+[44881] 31.46.846.819 I slot print_timing: id  0 | task 20388 | n_gen =    515, tg =  42.62 t/s, tg_3s =  42.49 t/s
+[44881] 31.49.847.652 I slot print_timing: id  0 | task 20388 | n_gen =    643, tg =  42.63 t/s, tg_3s =  42.65 t/s
+[44881] 31.50.861.772 I slot print_timing: id  0 | task 20388 | prompt eval time =     165.91 ms /   368 tokens (    0.45 ms per token,  2218.10 tokens per second)
+[44881] 31.50.861.774 I slot print_timing: id  0 | task 20388 |        eval time =   16073.95 ms /   683 tokens (   23.57 ms per token,    42.43 tokens per second)
+[44881] 31.50.861.774 I slot print_timing: id  0 | task 20388 |       total time =   16239.86 ms /  1051 tokens
+[44881] 31.50.861.775 I slot print_timing: id  0 | task 20388 |    graphs reused =      20081
+[44881] 31.50.861.775 I slot print_timing: id  0 | task 20388 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 31.50.862.293 I slot      release: id  0 | task 20388 | stop processing: n_tokens = 20804, truncated = 0
+466.35.548.971 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 31.50.912.552 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.995 (> 0.100 thold), f_keep = 1.000
+[44881] 31.50.912.750 I slot launch_slot_: id  0 | task 21073 | processing task, is_child = 0
+[44881] 31.54.028.147 I slot print_timing: id  0 | task 21073 | n_gen =    125, tg =  41.11 t/s, tg_3s =  41.44 t/s
+[44881] 31.54.711.611 I slot print_timing: id  0 | task 21073 | prompt eval time =      98.83 ms /   106 tokens (    0.93 ms per token,  1072.59 tokens per second)
+[44881] 31.54.711.614 I slot print_timing: id  0 | task 21073 |        eval time =    3700.01 ms /   152 tokens (   24.50 ms per token,    40.81 tokens per second)
+[44881] 31.54.711.614 I slot print_timing: id  0 | task 21073 |       total time =    3798.84 ms /   258 tokens
+[44881] 31.54.711.615 I slot print_timing: id  0 | task 21073 |    graphs reused =      20230
+[44881] 31.54.711.615 I slot print_timing: id  0 | task 21073 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 31.54.712.139 I slot      release: id  0 | task 21073 | stop processing: n_tokens = 21061, truncated = 0
+466.39.397.439 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 31.54.761.560 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 31.54.761.770 I slot launch_slot_: id  0 | task 21227 | processing task, is_child = 0
+[44881] 31.57.857.776 I slot print_timing: id  0 | task 21227 | n_gen =    125, tg =  41.17 t/s, tg_3s =  41.50 t/s
+[44881] 32.00.881.240 I slot print_timing: id  0 | task 21227 | n_gen =    252, tg =  41.59 t/s, tg_3s =  42.00 t/s
+[44881] 32.03.895.133 I slot print_timing: id  0 | task 21227 | n_gen =    379, tg =  41.77 t/s, tg_3s =  42.14 t/s
+[44881] 32.06.031.566 I slot print_timing: id  0 | task 21227 | prompt eval time =      83.97 ms /    56 tokens (    1.50 ms per token,   666.87 tokens per second)
+[44881] 32.06.031.568 I slot print_timing: id  0 | task 21227 |        eval time =   11185.81 ms /   469 tokens (   23.90 ms per token,    41.84 tokens per second)
+[44881] 32.06.031.569 I slot print_timing: id  0 | task 21227 |       total time =   11269.78 ms /   525 tokens
+[44881] 32.06.031.569 I slot print_timing: id  0 | task 21227 |    graphs reused =      20695
+[44881] 32.06.031.570 I slot print_timing: id  0 | task 21227 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 32.06.032.065 I slot      release: id  0 | task 21227 | stop processing: n_tokens = 21585, truncated = 0
+466.50.722.224 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 32.06.088.803 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.983 (> 0.100 thold), f_keep = 1.000
+[44881] 32.06.088.994 I slot launch_slot_: id  0 | task 21698 | processing task, is_child = 0
+[44881] 32.09.261.008 I slot print_timing: id  0 | task 21698 | n_gen =    127, tg =  41.99 t/s, tg_3s =  42.32 t/s
+[44881] 32.12.275.632 I slot print_timing: id  0 | task 21698 | n_gen =    254, tg =  42.06 t/s, tg_3s =  42.13 t/s
+[44881] 32.15.293.460 I slot print_timing: id  0 | task 21698 | n_gen =    381, tg =  42.07 t/s, tg_3s =  42.08 t/s
+[44881] 32.18.313.276 I slot print_timing: id  0 | task 21698 | n_gen =    508, tg =  42.06 t/s, tg_3s =  42.06 t/s
+[44881] 32.19.574.034 I slot print_timing: id  0 | task 21698 | prompt eval time =     171.09 ms /   368 tokens (    0.46 ms per token,  2150.85 tokens per second)
+[44881] 32.19.574.036 I slot print_timing: id  0 | task 21698 |        eval time =   13313.93 ms /   561 tokens (   23.77 ms per token,    42.06 tokens per second)
+[44881] 32.19.574.037 I slot print_timing: id  0 | task 21698 |       total time =   13485.02 ms /   929 tokens
+[44881] 32.19.574.037 I slot print_timing: id  0 | task 21698 |    graphs reused =      21252
+[44881] 32.19.574.038 I slot print_timing: id  0 | task 21698 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 32.19.574.564 I slot      release: id  0 | task 21698 | stop processing: n_tokens = 22513, truncated = 0
+467.04.257.030 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 32.19.623.605 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 32.19.623.781 I slot launch_slot_: id  0 | task 22261 | processing task, is_child = 0
+[44881] 32.22.739.445 I slot print_timing: id  0 | task 22261 | n_gen =    128, tg =  42.04 t/s, tg_3s =  42.37 t/s
+[44881] 32.25.758.214 I slot print_timing: id  0 | task 22261 | n_gen =    253, tg =  41.72 t/s, tg_3s =  41.41 t/s
+[44881] 32.28.769.049 I slot print_timing: id  0 | task 22261 | n_gen =    379, tg =  41.77 t/s, tg_3s =  41.85 t/s
+[44881] 32.29.433.623 I slot print_timing: id  0 | task 22261 | prompt eval time =      94.78 ms /    75 tokens (    1.26 ms per token,   791.35 tokens per second)
+[44881] 32.29.433.626 I slot print_timing: id  0 | task 22261 |        eval time =    9715.05 ms /   407 tokens (   23.93 ms per token,    41.79 tokens per second)
+[44881] 32.29.433.626 I slot print_timing: id  0 | task 22261 |       total time =    9809.83 ms /   482 tokens
+[44881] 32.29.433.627 I slot print_timing: id  0 | task 22261 |    graphs reused =      21656
+[44881] 32.29.433.627 I slot print_timing: id  0 | task 22261 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 32.29.434.157 I slot      release: id  0 | task 22261 | stop processing: n_tokens = 22994, truncated = 0
+467.14.116.398 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 32.29.484.667 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 32.29.484.869 I slot launch_slot_: id  0 | task 22670 | processing task, is_child = 0
+[44881] 32.32.399.406 I slot print_timing: id  0 | task 22670 | prompt eval time =      94.75 ms /    75 tokens (    1.26 ms per token,   791.51 tokens per second)
+[44881] 32.32.399.408 I slot print_timing: id  0 | task 22670 |        eval time =    2819.76 ms /   119 tokens (   23.90 ms per token,    41.85 tokens per second)
+[44881] 32.32.399.409 I slot print_timing: id  0 | task 22670 |       total time =    2914.51 ms /   194 tokens
+[44881] 32.32.399.410 I slot print_timing: id  0 | task 22670 |    graphs reused =      21773
+[44881] 32.32.399.410 I slot print_timing: id  0 | task 22670 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 32.32.400.061 I slot      release: id  0 | task 22670 | stop processing: n_tokens = 23187, truncated = 0
+467.17.082.282 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 32.32.450.117 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 32.32.450.327 I slot launch_slot_: id  0 | task 22791 | processing task, is_child = 0
+[44881] 32.35.555.964 I slot print_timing: id  0 | task 22791 | n_gen =    127, tg =  41.87 t/s, tg_3s =  42.20 t/s
+[44881] 32.38.564.314 I slot print_timing: id  0 | task 22791 | n_gen =    253, tg =  41.88 t/s, tg_3s =  41.88 t/s
+[44881] 32.41.585.010 I slot print_timing: id  0 | task 22791 | n_gen =    379, tg =  41.82 t/s, tg_3s =  41.71 t/s
+[44881] 32.42.232.325 I slot print_timing: id  0 | task 22791 | prompt eval time =      96.14 ms /    75 tokens (    1.28 ms per token,   780.09 tokens per second)
+[44881] 32.42.232.327 I slot print_timing: id  0 | task 22791 |        eval time =    9685.83 ms /   406 tokens (   23.92 ms per token,    41.81 tokens per second)
+[44881] 32.42.232.327 I slot print_timing: id  0 | task 22791 |       total time =    9781.98 ms /   481 tokens
+[44881] 32.42.232.328 I slot print_timing: id  0 | task 22791 |    graphs reused =      22175
+[44881] 32.42.232.328 I slot print_timing: id  0 | task 22791 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 32.42.232.923 I slot      release: id  0 | task 22791 | stop processing: n_tokens = 23667, truncated = 0
+467.26.915.285 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 32.42.284.502 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 32.42.284.725 I slot launch_slot_: id  0 | task 23199 | processing task, is_child = 0
+[44881] 32.45.395.452 I slot print_timing: id  0 | task 23199 | n_gen =    127, tg =  41.79 t/s, tg_3s =  42.12 t/s
+[44881] 32.46.615.189 I slot print_timing: id  0 | task 23199 | prompt eval time =      95.29 ms /    75 tokens (    1.27 ms per token,   787.07 tokens per second)
+[44881] 32.46.615.191 I slot print_timing: id  0 | task 23199 |        eval time =    4235.16 ms /   178 tokens (   23.93 ms per token,    41.79 tokens per second)
+[44881] 32.46.615.192 I slot print_timing: id  0 | task 23199 |       total time =    4330.45 ms /   253 tokens
+[44881] 32.46.615.192 I slot print_timing: id  0 | task 23199 |    graphs reused =      22350
+[44881] 32.46.615.193 I slot print_timing: id  0 | task 23199 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 32.46.615.755 I slot      release: id  0 | task 23199 | stop processing: n_tokens = 23919, truncated = 0
+467.31.298.210 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 32.46.670.392 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.994 (> 0.100 thold), f_keep = 1.000
+[44881] 32.46.670.593 I slot launch_slot_: id  0 | task 23379 | processing task, is_child = 0
+[44881] 32.49.766.084 I slot print_timing: id  0 | task 23379 | n_gen =    122, tg =  40.32 t/s, tg_3s =  40.65 t/s
+[44881] 32.50.770.866 I slot print_timing: id  0 | task 23379 | prompt eval time =      94.23 ms /   139 tokens (    0.68 ms per token,  1475.18 tokens per second)
+[44881] 32.50.770.868 I slot print_timing: id  0 | task 23379 |        eval time =    4006.03 ms /   163 tokens (   24.73 ms per token,    40.44 tokens per second)
+[44881] 32.50.770.868 I slot print_timing: id  0 | task 23379 |       total time =    4100.26 ms /   302 tokens
+[44881] 32.50.770.869 I slot print_timing: id  0 | task 23379 |    graphs reused =      22510
+[44881] 32.50.770.870 I slot print_timing: id  0 | task 23379 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 32.50.771.461 I slot      release: id  0 | task 23379 | stop processing: n_tokens = 24220, truncated = 0
+467.35.454.412 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 32.50.830.738 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 32.50.830.936 I slot launch_slot_: id  0 | task 23544 | processing task, is_child = 0
+[44881] 32.53.942.887 I slot print_timing: id  0 | task 23544 | n_gen =    121, tg =  39.78 t/s, tg_3s =  40.11 t/s
+[44881] 32.56.959.579 I slot print_timing: id  0 | task 23544 | n_gen =    248, tg =  40.94 t/s, tg_3s =  42.10 t/s
+[44881] 32.57.954.178 I slot print_timing: id  0 | task 23544 | prompt eval time =      95.16 ms /    75 tokens (    1.27 ms per token,   788.12 tokens per second)
+[44881] 32.57.954.180 I slot print_timing: id  0 | task 23544 |        eval time =    7028.07 ms /   290 tokens (   24.32 ms per token,    41.12 tokens per second)
+[44881] 32.57.954.180 I slot print_timing: id  0 | task 23544 |       total time =    7123.23 ms /   365 tokens
+[44881] 32.57.954.180 I slot print_timing: id  0 | task 23544 |    graphs reused =      22796
+[44881] 32.57.954.181 I slot print_timing: id  0 | task 23544 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 32.57.954.750 I slot      release: id  0 | task 23544 | stop processing: n_tokens = 24584, truncated = 0
+467.42.637.258 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 32.58.007.935 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 32.58.008.137 I slot launch_slot_: id  0 | task 23836 | processing task, is_child = 0
+[44881] 33.00.424.347 I slot print_timing: id  0 | task 23836 | prompt eval time =      93.70 ms /    75 tokens (    1.25 ms per token,   800.45 tokens per second)
+[44881] 33.00.424.348 I slot print_timing: id  0 | task 23836 |        eval time =    2322.50 ms /    99 tokens (   23.70 ms per token,    42.20 tokens per second)
+[44881] 33.00.424.349 I slot print_timing: id  0 | task 23836 |       total time =    2416.20 ms /   174 tokens
+[44881] 33.00.424.349 I slot print_timing: id  0 | task 23836 |    graphs reused =      22893
+[44881] 33.00.424.350 I slot print_timing: id  0 | task 23836 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 33.00.424.931 I slot      release: id  0 | task 23836 | stop processing: n_tokens = 24757, truncated = 0
+467.45.107.386 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 33.00.479.802 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 33.00.480.014 I slot launch_slot_: id  0 | task 23937 | processing task, is_child = 0
+[44881] 33.03.585.562 I slot print_timing: id  0 | task 23937 | n_gen =    128, tg =  42.18 t/s, tg_3s =  42.51 t/s
+[44881] 33.06.173.247 I slot print_timing: id  0 | task 23937 | prompt eval time =      94.74 ms /    75 tokens (    1.26 ms per token,   791.62 tokens per second)
+[44881] 33.06.173.249 I slot print_timing: id  0 | task 23937 |        eval time =    5598.48 ms /   237 tokens (   23.72 ms per token,    42.15 tokens per second)
+[44881] 33.06.173.250 I slot print_timing: id  0 | task 23937 |       total time =    5693.22 ms /   312 tokens
+[44881] 33.06.173.251 I slot print_timing: id  0 | task 23937 |    graphs reused =      23128
+[44881] 33.06.173.251 I slot print_timing: id  0 | task 23937 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 33.06.173.797 I slot      release: id  0 | task 23937 | stop processing: n_tokens = 25068, truncated = 0
+467.50.855.980 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 33.06.227.657 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 33.06.227.867 I slot launch_slot_: id  0 | task 24176 | processing task, is_child = 0
+[44881] 33.09.339.816 I slot print_timing: id  0 | task 24176 | n_gen =    128, tg =  42.09 t/s, tg_3s =  42.42 t/s
+[44881] 33.12.356.356 I slot print_timing: id  0 | task 24176 | n_gen =    255, tg =  42.09 t/s, tg_3s =  42.10 t/s
+[44881] 33.13.711.559 I slot print_timing: id  0 | task 24176 | prompt eval time =      94.46 ms /    75 tokens (    1.26 ms per token,   794.01 tokens per second)
+[44881] 33.13.711.562 I slot print_timing: id  0 | task 24176 |        eval time =    7389.22 ms /   312 tokens (   23.76 ms per token,    42.09 tokens per second)
+[44881] 33.13.711.563 I slot print_timing: id  0 | task 24176 |       total time =    7483.68 ms /   387 tokens
+[44881] 33.13.711.564 I slot print_timing: id  0 | task 24176 |    graphs reused =      23437
+[44881] 33.13.711.564 I slot print_timing: id  0 | task 24176 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 33.13.712.148 I slot      release: id  0 | task 24176 | stop processing: n_tokens = 25454, truncated = 0
+467.58.394.551 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 33.13.768.831 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.998 (> 0.100 thold), f_keep = 1.000
+[44881] 33.13.769.024 I slot launch_slot_: id  0 | task 24490 | processing task, is_child = 0
+[44881] 33.15.586.687 I slot print_timing: id  0 | task 24490 | prompt eval time =      81.32 ms /    57 tokens (    1.43 ms per token,   700.95 tokens per second)
+[44881] 33.15.586.688 I slot print_timing: id  0 | task 24490 |        eval time =    1736.33 ms /    74 tokens (   23.79 ms per token,    42.04 tokens per second)
+[44881] 33.15.586.689 I slot print_timing: id  0 | task 24490 |       total time =    1817.65 ms /   131 tokens
+[44881] 33.15.586.689 I slot print_timing: id  0 | task 24490 |    graphs reused =      23509
+[44881] 33.15.586.690 I slot print_timing: id  0 | task 24490 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 33.15.587.261 I slot      release: id  0 | task 24490 | stop processing: n_tokens = 25584, truncated = 0
+468.00.270.004 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 33.15.643.903 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 33.15.644.101 I slot launch_slot_: id  0 | task 24566 | processing task, is_child = 0
+[44881] 33.18.762.324 I slot print_timing: id  0 | task 24566 | n_gen =    128, tg =  42.00 t/s, tg_3s =  42.33 t/s
+[44881] 33.20.788.719 I slot print_timing: id  0 | task 24566 | prompt eval time =      94.36 ms /    75 tokens (    1.26 ms per token,   794.81 tokens per second)
+[44881] 33.20.788.721 I slot print_timing: id  0 | task 24566 |        eval time =    5050.24 ms /   213 tokens (   23.82 ms per token,    41.98 tokens per second)
+[44881] 33.20.788.721 I slot print_timing: id  0 | task 24566 |       total time =    5144.61 ms /   288 tokens
+[44881] 33.20.788.722 I slot print_timing: id  0 | task 24566 |    graphs reused =      23719
+[44881] 33.20.788.722 I slot print_timing: id  0 | task 24566 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 33.20.789.315 I slot      release: id  0 | task 24566 | stop processing: n_tokens = 25871, truncated = 0
+468.05.471.664 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 33.20.845.462 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 33.20.845.662 I slot launch_slot_: id  0 | task 24781 | processing task, is_child = 0
+[44881] 33.23.134.971 I slot print_timing: id  0 | task 24781 | prompt eval time =      93.88 ms /    75 tokens (    1.25 ms per token,   798.92 tokens per second)
+[44881] 33.23.134.972 I slot print_timing: id  0 | task 24781 |        eval time =    2195.42 ms /    93 tokens (   23.86 ms per token,    41.91 tokens per second)
+[44881] 33.23.134.973 I slot print_timing: id  0 | task 24781 |       total time =    2289.30 ms /   168 tokens
+[44881] 33.23.134.974 I slot print_timing: id  0 | task 24781 |    graphs reused =      23810
+[44881] 33.23.134.974 I slot print_timing: id  0 | task 24781 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 33.23.135.564 I slot      release: id  0 | task 24781 | stop processing: n_tokens = 26038, truncated = 0
+468.07.818.113 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 33.23.192.966 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.997 (> 0.100 thold), f_keep = 1.000
+[44881] 33.23.193.226 I slot launch_slot_: id  0 | task 24876 | processing task, is_child = 0
+[44881] 33.26.300.255 I slot print_timing: id  0 | task 24876 | n_gen =    127, tg =  41.83 t/s, tg_3s =  42.16 t/s
+[44881] 33.29.305.655 I slot print_timing: id  0 | task 24876 | n_gen =    253, tg =  41.88 t/s, tg_3s =  41.92 t/s
+[44881] 33.32.316.207 I slot print_timing: id  0 | task 24876 | n_gen =    379, tg =  41.87 t/s, tg_3s =  41.85 t/s
+[44881] 33.33.534.410 I slot print_timing: id  0 | task 24876 | prompt eval time =      94.84 ms /    75 tokens (    1.26 ms per token,   790.78 tokens per second)
+[44881] 33.33.534.412 I slot print_timing: id  0 | task 24876 |        eval time =   10246.33 ms /   430 tokens (   23.88 ms per token,    41.87 tokens per second)
+[44881] 33.33.534.412 I slot print_timing: id  0 | task 24876 |       total time =   10341.17 ms /   505 tokens
+[44881] 33.33.534.413 I slot print_timing: id  0 | task 24876 |    graphs reused =      24237
+[44881] 33.33.534.413 I slot print_timing: id  0 | task 24876 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 33.33.535.008 I slot      release: id  0 | task 24876 | stop processing: n_tokens = 26542, truncated = 0
+468.18.217.750 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 33.33.595.161 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.992 (> 0.100 thold), f_keep = 1.000
+[44881] 33.33.595.385 I slot launch_slot_: id  0 | task 25308 | processing task, is_child = 0
+[44881] 33.36.721.623 I slot print_timing: id  0 | task 25308 | n_gen =    127, tg =  41.78 t/s, tg_3s =  42.11 t/s
+[44881] 33.39.736.261 I slot print_timing: id  0 | task 25308 | n_gen =    253, tg =  41.79 t/s, tg_3s =  41.80 t/s
+[44881] 33.42.753.580 I slot print_timing: id  0 | task 25308 | n_gen =    379, tg =  41.78 t/s, tg_3s =  41.76 t/s
+[44881] 33.45.777.352 I slot print_timing: id  0 | task 25308 | n_gen =    505, tg =  41.75 t/s, tg_3s =  41.67 t/s
+[44881] 33.46.951.658 I slot print_timing: id  0 | task 25308 | prompt eval time =     110.17 ms /   213 tokens (    0.52 ms per token,  1933.29 tokens per second)
+[44881] 33.46.951.660 I slot print_timing: id  0 | task 25308 |        eval time =   13246.08 ms /   554 tokens (   23.95 ms per token,    41.75 tokens per second)
+[44881] 33.46.951.661 I slot print_timing: id  0 | task 25308 |       total time =   13356.26 ms /   767 tokens
+[44881] 33.46.951.661 I slot print_timing: id  0 | task 25308 |    graphs reused =      24787
+[44881] 33.46.951.662 I slot print_timing: id  0 | task 25308 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 33.46.952.305 I slot      release: id  0 | task 25308 | stop processing: n_tokens = 27308, truncated = 0
+468.31.636.267 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 33.47.018.611 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.993 (> 0.100 thold), f_keep = 1.000
+[44881] 33.47.018.829 I slot launch_slot_: id  0 | task 25864 | processing task, is_child = 0
+[44881] 33.50.138.564 I slot print_timing: id  0 | task 25864 | n_gen =    127, tg =  41.74 t/s, tg_3s =  42.07 t/s
+[44881] 33.53.160.716 I slot print_timing: id  0 | task 25864 | n_gen =    253, tg =  41.72 t/s, tg_3s =  41.69 t/s
+[44881] 33.53.448.390 I slot print_timing: id  0 | task 25864 | prompt eval time =     101.09 ms /   189 tokens (    0.53 ms per token,  1869.70 tokens per second)
+[44881] 33.53.448.392 I slot print_timing: id  0 | task 25864 |        eval time =    6328.47 ms /   265 tokens (   23.97 ms per token,    41.72 tokens per second)
+[44881] 33.53.448.392 I slot print_timing: id  0 | task 25864 |       total time =    6429.55 ms /   454 tokens
+[44881] 33.53.448.393 I slot print_timing: id  0 | task 25864 |    graphs reused =      25049
+[44881] 33.53.448.393 I slot print_timing: id  0 | task 25864 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 33.53.449.009 I slot      release: id  0 | task 25864 | stop processing: n_tokens = 27761, truncated = 0
+468.38.132.260 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 33.53.515.819 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.996 (> 0.100 thold), f_keep = 1.000
+[44881] 33.53.516.042 I slot launch_slot_: id  0 | task 26131 | processing task, is_child = 0
+[44881] 33.56.616.944 I slot print_timing: id  0 | task 26131 | n_gen =    126, tg =  41.61 t/s, tg_3s =  41.94 t/s
+[44881] 33.59.619.215 I slot print_timing: id  0 | task 26131 | n_gen =    251, tg =  41.62 t/s, tg_3s =  41.64 t/s
+[44881] 34.01.256.851 I slot print_timing: id  0 | task 26131 | prompt eval time =      96.87 ms /   124 tokens (    0.78 ms per token,  1280.01 tokens per second)
+[44881] 34.01.256.853 I slot print_timing: id  0 | task 26131 |        eval time =    7643.92 ms /   319 tokens (   24.04 ms per token,    41.60 tokens per second)
+[44881] 34.01.256.853 I slot print_timing: id  0 | task 26131 |       total time =    7740.80 ms /   443 tokens
+[44881] 34.01.256.854 I slot print_timing: id  0 | task 26131 |    graphs reused =      25364
+[44881] 34.01.256.854 I slot print_timing: id  0 | task 26131 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 34.01.257.475 I slot      release: id  0 | task 26131 | stop processing: n_tokens = 28203, truncated = 0
+468.45.943.462 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 34.01.327.326 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.998 (> 0.100 thold), f_keep = 1.000
+[44881] 34.01.327.535 I slot launch_slot_: id  0 | task 26452 | processing task, is_child = 0
+[44881] 34.04.413.471 I slot print_timing: id  0 | task 26452 | n_gen =    126, tg =  41.60 t/s, tg_3s =  41.94 t/s
+[44881] 34.07.397.789 I slot print_timing: id  0 | task 26452 | prompt eval time =      81.29 ms /    48 tokens (    1.69 ms per token,   590.48 tokens per second)
+[44881] 34.07.397.791 I slot print_timing: id  0 | task 26452 |        eval time =    5988.95 ms /   250 tokens (   24.05 ms per token,    41.58 tokens per second)
+[44881] 34.07.397.792 I slot print_timing: id  0 | task 26452 |       total time =    6070.24 ms /   298 tokens
+[44881] 34.07.397.792 I slot print_timing: id  0 | task 26452 |    graphs reused =      25611
+[44881] 34.07.397.792 I slot print_timing: id  0 | task 26452 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 34.07.398.446 I slot      release: id  0 | task 26452 | stop processing: n_tokens = 28500, truncated = 0
+468.52.087.558 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 34.07.473.421 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.987 (> 0.100 thold), f_keep = 1.000
+[44881] 34.07.473.631 I slot launch_slot_: id  0 | task 26704 | processing task, is_child = 0
+[44881] 34.10.667.887 I slot print_timing: id  0 | task 26704 | n_gen =    126, tg =  41.50 t/s, tg_3s =  41.84 t/s
+[44881] 34.13.673.888 I slot print_timing: id  0 | task 26704 | n_gen =    251, tg =  41.54 t/s, tg_3s =  41.58 t/s
+[44881] 34.14.756.298 I slot print_timing: id  0 | task 26704 | prompt eval time =     182.46 ms /   368 tokens (    0.50 ms per token,  2016.88 tokens per second)
+[44881] 34.14.756.300 I slot print_timing: id  0 | task 26704 |        eval time =    7100.19 ms /   296 tokens (   24.07 ms per token,    41.55 tokens per second)
+[44881] 34.14.756.300 I slot print_timing: id  0 | task 26704 |       total time =    7282.65 ms /   664 tokens
+[44881] 34.14.756.301 I slot print_timing: id  0 | task 26704 |    graphs reused =      25904
+[44881] 34.14.756.301 I slot print_timing: id  0 | task 26704 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 34.14.756.944 I slot      release: id  0 | task 26704 | stop processing: n_tokens = 29163, truncated = 0
+468.59.442.370 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 34.14.830.003 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.984 (> 0.100 thold), f_keep = 1.000
+[44881] 34.14.830.200 I slot launch_slot_: id  0 | task 27002 | processing task, is_child = 0
+[44881] 34.18.070.617 I slot print_timing: id  0 | task 27002 | n_gen =    126, tg =  41.38 t/s, tg_3s =  41.71 t/s
+[44881] 34.21.088.516 I slot print_timing: id  0 | task 27002 | n_gen =    251, tg =  41.40 t/s, tg_3s =  41.42 t/s
+[44881] 34.22.392.329 I slot print_timing: id  0 | task 27002 | prompt eval time =     219.64 ms /   487 tokens (    0.45 ms per token,  2217.30 tokens per second)
+[44881] 34.22.392.330 I slot print_timing: id  0 | task 27002 |        eval time =    7342.48 ms /   305 tokens (   24.15 ms per token,    41.40 tokens per second)
+[44881] 34.22.392.331 I slot print_timing: id  0 | task 27002 |       total time =    7562.12 ms /   792 tokens
+[44881] 34.22.392.331 I slot print_timing: id  0 | task 27002 |    graphs reused =      26205
+[44881] 34.22.392.332 I slot print_timing: id  0 | task 27002 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 34.22.392.963 I slot      release: id  0 | task 27002 | stop processing: n_tokens = 29954, truncated = 0
+469.07.093.197 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 34.22.482.628 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.982 (> 0.100 thold), f_keep = 1.000
+[44881] 34.22.482.823 I slot launch_slot_: id  0 | task 27309 | processing task, is_child = 0
+[44881] 34.25.707.543 I slot print_timing: id  0 | task 27309 | n_gen =    126, tg =  41.47 t/s, tg_3s =  41.80 t/s
+[44881] 34.28.290.217 I slot print_timing: id  0 | task 27309 | prompt eval time =     210.35 ms /   538 tokens (    0.39 ms per token,  2557.64 tokens per second)
+[44881] 34.28.290.219 I slot print_timing: id  0 | task 27309 |        eval time =    5597.03 ms /   233 tokens (   24.13 ms per token,    41.45 tokens per second)
+[44881] 34.28.290.220 I slot print_timing: id  0 | task 27309 |       total time =    5807.38 ms /   771 tokens
+[44881] 34.28.290.220 I slot print_timing: id  0 | task 27309 |    graphs reused =      26435
+[44881] 34.28.290.221 I slot print_timing: id  0 | task 27309 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 34.28.290.875 I slot      release: id  0 | task 27309 | stop processing: n_tokens = 30724, truncated = 0
+469.12.983.088 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 34.28.373.146 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.994 (> 0.100 thold), f_keep = 1.000
+[44881] 34.28.373.360 I slot launch_slot_: id  0 | task 27545 | processing task, is_child = 0
+[44881] 34.31.520.747 I slot print_timing: id  0 | task 27545 | n_gen =    106, tg =  34.62 t/s, tg_3s =  34.95 t/s
+[44881] 34.33.607.932 I slot print_timing: id  0 | task 27545 | prompt eval time =     114.80 ms /   173 tokens (    0.66 ms per token,  1506.96 tokens per second)
+[44881] 34.33.607.934 I slot print_timing: id  0 | task 27545 |        eval time =    5119.76 ms /   171 tokens (   30.12 ms per token,    33.20 tokens per second)
+[44881] 34.33.607.935 I slot print_timing: id  0 | task 27545 |       total time =    5234.56 ms /   344 tokens
+[44881] 34.33.607.935 I slot print_timing: id  0 | task 27545 |    graphs reused =      26603
+[44881] 34.33.607.935 I slot print_timing: id  0 | task 27545 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 34.33.608.645 I slot      release: id  0 | task 27545 | stop processing: n_tokens = 31067, truncated = 0
+469.18.296.790 I srv  proxy_reques: proxying request to model s5-nano-bf16-f16 on port 44881
+[44881] 34.33.687.786 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.988 (> 0.100 thold), f_keep = 1.000
+[44881] 34.33.687.989 I slot launch_slot_: id  0 | task 27718 | processing task, is_child = 0
+[44881] 34.37.241.717 I slot print_timing: id  0 | task 27718 | n_gen =    100, tg =  29.41 t/s, tg_3s =  29.70 t/s
+[44881] 34.40.262.635 I slot print_timing: id  0 | task 27718 | n_gen =    198, tg =  30.84 t/s, tg_3s =  32.44 t/s
+[44881] 34.43.267.998 I slot print_timing: id  0 | task 27718 | n_gen =    285, tg =  30.24 t/s, tg_3s =  28.95 t/s
+[44881] 34.46.271.550 I slot print_timing: id  0 | task 27718 | n_gen =    373, tg =  30.01 t/s, tg_3s =  29.30 t/s
+[44881] 34.47.828.939 I slot print_timing: id  0 | task 27718 | prompt eval time =     187.28 ms /   365 tokens (    0.51 ms per token,  1949.01 tokens per second)
+[44881] 34.47.828.943 I slot print_timing: id  0 | task 27718 |        eval time =   13953.66 ms /   418 tokens (   33.46 ms per token,    29.88 tokens per second)
+[44881] 34.47.828.943 I slot print_timing: id  0 | task 27718 |       total time =   14140.94 ms /   783 tokens
+[44881] 34.47.828.944 I slot print_timing: id  0 | task 27718 |    graphs reused =      27017
+[44881] 34.47.828.944 I slot print_timing: id  0 | task 27718 |   graph reallocs =          0    /     0        (same size) / (changed size)
+[44881] 34.47.829.640 I slot      release: id  0 | task 27718 | stop processing: n_tokens = 31849, truncated = 0

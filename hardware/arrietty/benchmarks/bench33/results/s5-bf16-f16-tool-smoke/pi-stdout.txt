@@ -1,0 +1,21 @@
+All done. Here's a summary of what was changed:
+
+### Files modified
+
+**`lib/core/tree-hash-walker.js`**
+- Removed `var xtend = require('xtend');`
+- Changed `xtend(this._result, {error: this.error})` → `Object.assign({}, this._result, {error: this.error})`
+- The new empty `{}` as the first argument ensures the result is never mutated.
+
+**`lib/config/index.js`**
+- Removed `var xtend = require('xtend');`
+- Changed `xtend(fileConfig, config)` → `Object.assign({}, fileConfig, config)`
+- The new empty `{}` as the first argument preserves the no-mutation guarantee (the original `xtend` mutated `fileConfig` in place).
+
+**`package.json` (fixture)**
+- Removed `"xtend": "^4.0.2"` from dependencies (now `{}`).
+
+### Verification
+- `npm run verify` passes — build succeeds with 0 dead links.
+- No `xtend` references remain in any of the three target files.
+- Committed as `17aa1b31` on branch `run33`.
