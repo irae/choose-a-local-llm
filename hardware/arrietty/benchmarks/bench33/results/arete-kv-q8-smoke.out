@@ -1,0 +1,14 @@
+event	budget	source=fast-mode	max_tokens=16384
+event	start	label=arete-kv-q8-smoke	model=arete-27b-q3km	base=http://127.0.0.1:8081	out=/home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/arete-kv-q8-smoke
+event	generated	HumanEval/53	empty=false	completion_tokens=1020	finish_reason=stop	wall_s=36.5
+event	generated	HumanEval/45	empty=false	completion_tokens=401	finish_reason=stop	wall_s=14.3
+event	generated	HumanEval/34	empty=false	completion_tokens=494	finish_reason=stop	wall_s=17.6
+event	generated	HumanEval/129	empty=false	completion_tokens=6604	finish_reason=stop	wall_s=238.5
+event	evaluating	/home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/arete-kv-q8-smoke/arete-kv-q8-smoke.smoke.jsonl
+task_id	base	plus	empty	completion_tokens	reasoning_tokens	finish_reason	wall_s
+HumanEval/53	pass	pass	false	1020	-1	stop	36.5
+HumanEval/45	pass	pass	false	401	-1	stop	14.3
+HumanEval/34	pass	pass	false	494	-1	stop	17.6
+HumanEval/129	pass	pass	false	6604	-1	stop	238.5
+SMOKE	label=arete-kv-q8-smoke	problems=4	passed=4	empty=0	completion_tokens=8519	max_tokens=16384	wall_s=328.9	out=/home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/arete-kv-q8-smoke
+event	read	compare this SMOKE line with the other side's line at the same max_tokens: level (same passed, same empty), better (passed higher, empty not higher), worse (passed lower, or passed equal and empty higher), otherwise no verdict

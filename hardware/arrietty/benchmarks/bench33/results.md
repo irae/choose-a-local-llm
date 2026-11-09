@@ -40,13 +40,41 @@ types loaded at `-c 34816`. The coordinator selected q8_0.
 Raw results, memory logs, server logs, resolved arguments, warmup
 responses and smoke files are in `results/`.
 
-The direct machine-start sample showed 0 MiB swap used. The first f16
-cell began at 13,288 KiB, and every measured cell had the same value
-before and after. The growth happened before the first speed cell. The
-coordinator accepted the timed readings with this deviation. The
-cells show zero observed swap growth. See the
-[KV decision](results/s5-kv-decision.md).
+Swap used was 0 MiB at machine start. It rose to 13,288 KiB before the
+first timed cell. It stayed at 13,288 KiB before and after every timed
+S5 cell. The coordinator accepted the throughput readings. This does
+not show swap-free setup or establish a maximum memory ceiling.
+See the [KV decision](results/s5-kv-decision.md).
 
-Record KV comparisons and smoke verdicts first. Smokes are unscored
-and stay in this run. Add the measured depth curves, full EvalPlus
-results and simulator(mendel) artifacts as their blocks close.
+The coordinator selected S5 q8_0 for s5-depth. Use the measured
+s5-depth window for the tool smoke and full task. Do not use the
+provisional site window.
+
+## Arete KV feedback
+
+Both cache types loaded at `-c 34816`. The resolved child arguments
+set `--n-gpu-layers 999` and `--fit off`. They contain no CPU-MoE or
+tensor-placement override. The warmups completed and returned
+`reasoning_content`. The server logs do not print an explicit layer
+count. Record this as operational full-offload evidence. Do not claim
+an N/N count.
+
+| KV cache | 4K prefill | 4K decode | 8K decode | 16K decode | 24K decode | 32K decode | GPU memory at 4K / 32K | smoke |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| f16 | 889.89 tok/s | 27.90 tok/s | 27.43 tok/s | 26.50 tok/s | 25.62 tok/s | 24.81 tok/s | 15511–15521 / 15521 MiB | 4/4, 0 empty |
+| q8_0 | 886.16 tok/s | 27.59 tok/s | 26.89 tok/s | 25.62 tok/s | 24.49 tok/s | 23.39 tok/s | 14591–14601 / 14601 MiB | 4/4, 0 empty |
+
+Both smokes read LEVEL at the same 16,384-token budget. Q8_0 saved
+about 920 MiB at 32K. The speed curves stayed within 10%. The
+coordinator selected q8_0 for Arete depth. Raw cells, memory logs,
+server logs, resolved arguments, warmups, GPU samples and smoke files
+are in `results/`.
+
+Swap used was 60,720 KiB before the first Arete speed cell. It fell to
+60,532 KiB by the final cell. It did not grow during any measured cell.
+This records a premeasurement increase, not swap-free setup or a
+maximum memory ceiling.
+
+Smokes are unscored and stay in this run. Add the measured depth
+curves, full EvalPlus results and simulator(mendel) artifacts as their
+blocks close.
