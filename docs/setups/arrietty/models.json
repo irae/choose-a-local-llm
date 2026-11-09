@@ -502,17 +502,18 @@
       "tokShallow": "77.37",
       "tokDeep": "30.59",
       "memory": "10.9 GiB",
-      "evalplus": "pending",
+      "evalplus": "0.811/0.726/100%",
       "mendel": "not run",
       "hidden": false,
       "added": "2026-11-08",
       "command": "llama-server -m \"$(hf download maritaca-ai/S5-nano-GGUF S5-nano-Q8_0.gguf --revision 5fd041274829d60aeeba1e2edc4aabb621a432e4)\" \\\n  --alias s5-nano-q8 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
-      "note": "Full quality gate pending. Agent task not run. Official llama.cpp stable v0.9.0, b12110. q8_0 KV, high Think, no drafter or vision. Benchmark run 33 served -c 262144 and measured a deepest clean cell of 261120 tokens at 30.59 tok/s. The run reached its planned model context cap, not an observed OOM or speed floor. The harness window is 258048, rounded down to 4096 from the clean depth. Compaction keep uses pi default 20000; maxTokens and reserveTokens also use pi defaults. Peak total GPU use was 11117 MiB. Timed cells showed no swap growth; setup had recorded premeasurement swap use.",
+      "note": "EvalPlus fast mode scored 0.811 base and 0.726 plus, with 0 empty and 26 forced answers of 164 in 116.3 active minutes. Thinking budget 8192, output budget 16384, no calibration. The base quality gate passed. Agent task not run. Official llama.cpp stable v0.9.0, b12110. q8_0 KV, high Think, no drafter or vision. Benchmark run 33 served -c 262144 and measured a deepest clean cell of 261120 tokens at 30.59 tok/s. The run reached its planned model context cap, not an observed OOM or speed floor. The harness window is 258048, rounded down to 4096 from the clean depth. Compaction keep uses pi default 20000; maxTokens and reserveTokens also use pi defaults. Peak total GPU use was 11117 MiB. Timed cells showed no swap growth; setup had recorded premeasurement swap use.",
       "pi": {
         "provider": "llama",
         "id": "s5-nano-q8",
         "contextWindow": 258048
-      }
+      },
+      "evalplusWall": 116.3
     },
     {
       "id": "arete-27b-q3km-xhigh",
@@ -695,8 +696,9 @@
       ],
       "stats": {
         "quality": {
-          "value": "pending",
-          "label": "Full EvalPlus quality gate"
+          "value": "0.811 / 0.726",
+          "label": "EvalPlus base / plus, thinking on",
+          "sub": "0 empty, 26 forced of 164"
         },
         "agent": {
           "value": "not run",
@@ -1090,6 +1092,20 @@
       "emptyCause": "none",
       "forced": "12/164",
       "wall": 144.0
+    },
+    {
+      "slug": "s5-nano",
+      "model": "S5-nano (GGUF Q8_0, maritaca-ai, q8_0 KV)",
+      "mode": "thinking on",
+      "row": "s5-nano-q8-think",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.811",
+      "plus": "0.726",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "26/164",
+      "wall": 116.3
     }
   ],
   "mendelWalls": {

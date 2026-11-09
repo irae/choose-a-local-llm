@@ -6,25 +6,25 @@ Backends: llama-server · [Publisher GGUF](https://huggingface.co/maritaca-ai/S5
 <div class="kpis">
   <div class="kpi"><b>261,120</b><span>Deepest clean used context</span><small>258,048-token harness window</small></div>
   <div class="kpi"><b>77.37 / 30.59</b><span>Decode tok/s, shallow / deep</span></div>
-  <div class="kpi"><b>pending</b><span>Full EvalPlus quality gate</span></div>
+  <div class="kpi"><b>0.811 / 0.726</b><span>EvalPlus base / plus, thinking on</span><small>0 empty, 26 forced of 164</small></div>
   <div class="kpi"><b>not run</b><span>Agent task</span></div>
 </div>
 <!-- gen:model-kpis:end -->
 
-Benchmark run 33 uses official llama.cpp stable v0.9.0. Full quality results are pending. The agent task was not run.
+Benchmark run 33 uses official llama.cpp stable v0.9.0. The thinking quality gate passed. Instruct quality is pending. The agent task was not run.
 
 ## Highlights
 
 - The Q8_0 build serves the full 262,144-token allocation on this card.
 - Decode reaches 30.59 tok/s at 261,120 used tokens with q8_0 KV.
-- Think is the publisher's default mode. Instruct is also available.
+- Think mode delivered code for all 164 quality problems.
 
 ## All configs
 
 <!-- gen:model-table:start -->
 | Model / Config | Ctx | tok/s | Memory<br>(at max ctx) | HumanEval+ | Coding | Wall |
 |---|--:|--:|--:|--:|--:|--:|
-| <ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" page="/binaries/s5-nano-maritaca-q8" top /> | **261k** | <TokCell shallow="77.37" deep="30.59" cap="mem" top-shallow top-deep /> | **10.9 GiB** | <ScoreCell value="pending" /> | <ScoreCell value="not run" /> | — |
+| <ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" page="/binaries/s5-nano-maritaca-q8" top /> | **261k** | <TokCell shallow="77.37" deep="30.59" cap="mem" top-shallow top-deep /> | **10.9 GiB** | <ScoreCell value="0.811/0.726" sub="100% completion" top /> | <ScoreCell value="not run" /> | <span title="EvalPlus 1h56 · Mendel —">1h56†</span> |
 <!-- gen:model-table:end -->
 
 ## Configs
@@ -32,7 +32,7 @@ Benchmark run 33 uses official llama.cpp stable v0.9.0. Full quality results are
 <!-- gen:model-configs:start -->
 <ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" page="/binaries/s5-nano-maritaca-q8" />
 
-Full quality gate pending. Agent task not run. Official llama.cpp stable v0.9.0, b12110. q8_0 KV, high Think, no drafter or vision. Benchmark run 33 served -c 262144 and measured a deepest clean cell of 261120 tokens at 30.59 tok/s. The run reached its planned model context cap, not an observed OOM or speed floor. The harness window is 258048, rounded down to 4096 from the clean depth. Compaction keep uses pi default 20000; maxTokens and reserveTokens also use pi defaults. Peak total GPU use was 11117 MiB. Timed cells showed no swap growth; setup had recorded premeasurement swap use.
+EvalPlus fast mode scored 0.811 base and 0.726 plus, with 0 empty and 26 forced answers of 164 in 116.3 active minutes. Thinking budget 8192, output budget 16384, no calibration. The base quality gate passed. Agent task not run. Official llama.cpp stable v0.9.0, b12110. q8_0 KV, high Think, no drafter or vision. Benchmark run 33 served -c 262144 and measured a deepest clean cell of 261120 tokens at 30.59 tok/s. The run reached its planned model context cap, not an observed OOM or speed floor. The harness window is 258048, rounded down to 4096 from the clean depth. Compaction keep uses pi default 20000; maxTokens and reserveTokens also use pi defaults. Peak total GPU use was 11117 MiB. Timed cells showed no swap growth; setup had recorded premeasurement swap use.
 
 ```bash
 llama-server -m "$(hf download maritaca-ai/S5-nano-GGUF S5-nano-Q8_0.gguf --revision 5fd041274829d60aeeba1e2edc4aabb621a432e4)" \
@@ -45,12 +45,16 @@ llama-server -m "$(hf download maritaca-ai/S5-nano-GGUF S5-nano-Q8_0.gguf --revi
 
 ## Model details and findings
 
-The baseline uses q8_0 KV in high Think mode, with MTP and vision disabled. It serves `-c 262144`. The deepest clean cell is 261,120 tokens; the harness window is 258,048. The run reached its planned cap, without an OOM or speed-floor failure. Peak total GPU use was 11,117 MiB. Swap did not grow during the timed cells. Full quality results are pending. The agent task was not run.
+The baseline uses q8_0 KV in high Think mode, with MTP and vision disabled. It serves `-c 262144`. The deepest clean cell is 261,120 tokens; the harness window is 258,048. The run reached its planned cap, without an OOM or speed-floor failure. Peak total GPU use was 11,117 MiB. Swap did not grow during the timed cells. The thinking quality gate passed. Instruct quality is pending. The agent task was not run.
 
 ## Quality
 
+Fast mode scored 133 base passes and 119 plus passes out of 164, or 0.811 / 0.726. No answer was empty. The server forced 26 answers at the 8,192-token thinking budget. The active wall was 116.3 minutes, with an output budget of 16,384 and no calibration.
+
 <!-- gen:model-evalplus:start -->
-No EvalPlus run yet.
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| [<ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" page="/binaries/s5-nano-maritaca-q8" />](../benchmarks/s5-nano.md) | 8192 | 16384 | <ScoreCell value="0.811/0.726" sub="100% completion" top /> | none | 26/164 | <TokCell shallow="77.37" deep="30.59" /> | 1h56 |
 <!-- gen:model-evalplus:end -->
 
 ## Agent task
