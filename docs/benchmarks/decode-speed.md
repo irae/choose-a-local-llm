@@ -25,6 +25,7 @@ tokens count, not allocated ones. Method:
 | [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" />](../setups/kamaji/benchmarks/bonsai-27b.md) | <TokCell shallow="14.7" deep="7.8" cap="speed" /> | 33k |
 | [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" hardware="m1-max-32gb" page="/binaries/qwen38-bartowski-q4km" />](../setups/kamaji/benchmarks/qwen3.8-27b.md) | <TokCell shallow="12.4" deep="9.7" cap="mem" /> | 72k |
 | [<ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/s5-nano-maritaca-q8" />](../setups/arrietty/benchmarks/s5-nano.md) | <TokCell shallow="pending" deep="pending" cap="pending" /> | pending |
+| [<ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/arete-bartowski-q3km" />](../setups/arrietty/benchmarks/arete-27b.md) | <TokCell shallow="pending" deep="pending" cap="pending" /> | pending |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:decode-summary:end -->

@@ -212,3 +212,16 @@ The run router is PID 440756, its child is PID 440825 and socat is PID
 |---|---|---|---|---|---|
 | Arete | q8_0 | 65536 | 64512 | 61440 | `arete-depth` |
 | S5-nano | q8_0 | pending depth allocation | 32768 | pending newer depth result | `s5-kv-feedback` |
+
+## Arete coordinator decision
+
+Use q8_0 for Arete depth and later baseline blocks. The timed cells
+are accepted with the premeasurement swap increase recorded as a
+deviation. They showed no swap growth. This does not prove swap-free
+setup or a maximum allocation ceiling.
+
+The pending site row and pi id are `arete-27b-q3km`. The isolated
+entry sends `enable_thinking` and `reasoning_effort` through the chat
+template. This run uses xhigh and MTP stays off. The entry has no
+`maxTokens` or `reserveTokens`. Its provisional window is 32,768; the
+measured 61,440-token window applies to the tool smoke and full task.

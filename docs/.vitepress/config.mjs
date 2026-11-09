@@ -97,6 +97,7 @@ export default defineConfig({
             text: 'Models',
             collapsed: true,
             items: [
+              { text: 'Arete-27B', link: '/setups/arrietty/reports/arete-27b' },
               { text: 'S5-nano', link: '/setups/arrietty/reports/s5-nano' },
               { text: 'Qwen3.8-27B', link: '/setups/arrietty/reports/qwen3.8-27b' },
               { text: 'Ternary Bonsai-2-27B', link: '/setups/arrietty/reports/bonsai-2-27b' },

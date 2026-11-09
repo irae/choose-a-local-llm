@@ -45,6 +45,7 @@ hours.
 |---|--:|--:|--:|--:|--:|
 | <ModelSpec base="Gemma-4-12B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" page="/binaries/gemma12-unsloth-ud-q4kxl" top /> | **261k** | <TokCell shallow="47.39" deep="32.18" cap="mem" top-shallow top-deep /> | <ScoreCell value="0.951/0.909" sub="100% completion" top /> | <ScoreCell value="not run" /> | <span title="EvalPlus 0h26 · Mendel —">0h26†</span> |
 | <ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" page="/binaries/s5-nano-maritaca-q8" top /> | **pending** | <TokCell shallow="pending" deep="pending" cap="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
+| <ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" page="/binaries/arete-bartowski-q3km" top /> | **pending** | <TokCell shallow="pending" deep="pending" cap="pending" /> | <ScoreCell value="pending" /> | <ScoreCell value="pending" /> | — |
 <!-- gen:models-evaluated-partial:end -->
 
 ## Code quality — EvalPlus HumanEval+
