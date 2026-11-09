@@ -507,3 +507,11 @@ stdout, watcher memory and router evidence are in
 `results/s5-bf16-f16-tool-smoke/` and matching result files. The
 BF16/f16 trial ends at its two smoke results. It has no full EvalPlus or
 simulator(mendel) score.
+
+## Arete simulator rows deferred
+
+On 2026-11-09, the owner stopped Arete simulator(mendel) work and deferred the guided and blind rows to a future run. Mark both rows NOT STARTED. Do not report a partial result or score.
+
+The owner directed cleanup of the aborted guided run. We removed its generated pi config and run files from `~/.local/share/mendel-benchmark/`, plus its task worktree and two setup worktrees with their local branches. No session, events, stdout, meta, watcher output or generated config remains for this row. We kept the completed Arete depth, tool-smoke and xhigh EvalPlus evidence, and all S5 evidence.
+
+The run router and Arete child stopped. No llama-server, Mendel Daemon or run watcher remains. Port 8080 is closed. VRAM use is 858 MiB, with 15,081 MiB free. The run33 heartbeat is disabled.
