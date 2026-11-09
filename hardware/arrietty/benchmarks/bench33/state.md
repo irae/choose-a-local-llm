@@ -175,13 +175,40 @@ and socat PID 437252. Both run routers stopped after their cells.
 
 Swap used was 60,720 KiB before the first Arete speed cell. It stayed
 near 60,532–60,720 KiB through the measured cells and did not grow
-during a cell. This is a premeasurement increase, not a swap-free
-setup or a maximum memory ceiling. Benchy used separate Linux calls
-for each depth; these are not slow-context-creep results.
+during a cell. The coordinator accepted the timed cells with this
+premeasurement increase recorded as a deviation. This does not show
+swap-free setup or establish a maximum allocation ceiling. Benchy used
+separate Linux calls for each depth; these are not slow-context-creep
+results.
+
+## arete-depth
+
+Arete used q8_0, xhigh and no MTP. The model loaded at `-c 65536`, its
+depth cap. The child arguments set `--n-gpu-layers 999` and `--fit off`
+with no CPU-MoE or tensor-placement override. The warmup returned
+`reasoning_content`. The log has no explicit layer-count line.
+Resolved arguments and GPU samples are in
+`results/arete-depth-c65536-resolved.json` and
+`results/arete-depth-c65536-gpu-allocation.log`.
+
+The required 64,512-token benchy cell passed at 20.07 tok/s. Other
+depths also passed: 4K at 27.60 tok/s, 24K at 24.49 tok/s and 32K at
+23.40 tok/s. Their prefill readings were 886.13, 823.36, 795.26 and
+701.17 tok/s at 4K, 24K, 32K and 64,512. The deepest clean cell was
+64,512. Its speed was above 8 tok/s. The largest serving context was
+65,536, at the model's run cap. The harness window is 61,440 after
+rounding down to 4,096.
+
+The GPU used 15,761 MiB after the model loaded. It reached 15,771 MiB
+during cells, with 168 MiB free. Swap used stayed near 60,240 KiB and
+did not grow during the cells. The model ran at xhigh. MTP stayed off.
+Depths above 65,536 were outside the model cap.
+The run router is PID 440756, its child is PID 440825 and socat is PID
+440757. Keep this model loaded for arete-tool-smoke.
 
 ## Derived values
 
 | model | KV | serving context | clean depth | harness window | source |
 |---|---|---|---|---|---|
-| Arete | q8_0 | pending depth allocation | 32768 | pending | `arete-kv-feedback` |
+| Arete | q8_0 | 65536 | 64512 | 61440 | `arete-depth` |
 | S5-nano | q8_0 | pending depth allocation | 32768 | pending newer depth result | `s5-kv-feedback` |

@@ -78,3 +78,28 @@ maximum memory ceiling.
 Smokes are unscored and stay in this run. Add the measured depth
 curves, full EvalPlus results and simulator(mendel) artifacts as their
 blocks close.
+
+## Arete depth
+
+The q8_0 configuration loaded at `-c 65536`, the model's depth cap.
+Its resolved child arguments kept `--n-gpu-layers 999` and `--fit off`.
+They had no CPU-MoE or tensor-placement override. A real benchy cell
+at depth 64512 passed at 20.07 tok/s. No larger context is in this
+run's cap.
+
+| depth | prefill | decode | GPU memory |
+|---:|---:|---:|---:|
+| 4096 | 886.13 tok/s | 27.60 tok/s | 15771 MiB |
+| 24576 | 823.36 tok/s | 24.49 tok/s | 15771 MiB |
+| 32768 | 795.26 tok/s | 23.40 tok/s | 15771 MiB |
+| 64512 | 701.17 tok/s | 20.07 tok/s | 15771 MiB |
+
+The deepest clean cell was 64512. Its decode speed was above 8 tok/s.
+The measured serving context was 65536. The harness window is 61440,
+rounded down to 4096. Swap used was 60244 KiB before the 64512 cell
+and 60240 KiB after the final cell. It did not grow during any
+measured cell. The premeasurement increase remains a deviation. This
+does not prove swap-free setup or set a larger memory ceiling.
+
+The run used separate Linux benchy calls. It did not use the slow
+context-creep measurement tool.
