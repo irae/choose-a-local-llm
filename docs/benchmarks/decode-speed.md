@@ -17,6 +17,7 @@ tokens count, not allocated ones. Method:
 | [<ModelSpec base="Qwen3.6-35B-A3B" quant="UD-Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/Qwen3.6-35B-A3B-MTP-GGUF" drafter="mtp/3" kv="q8_0" effort="on" hardware="m1-max-32gb" page="/binaries/qwen36-unsloth-ud-q4kxl" />](../setups/kamaji/benchmarks/qwen3.6-35b-a3b.md) | <TokCell shallow="43.7" deep="13.0" cap="speed" /> | 82k |
 | [<ModelSpec base="Ternary-Bonsai-2-27B" quant="PTQ1_0" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-gguf" kv="f16" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/bonsai2-prism-ptq1" />](../setups/arrietty/benchmarks/bonsai-2-27b.md) | <TokCell shallow="42.1" deep="22.4" cap="mem" /> | 135k |
 | [<ModelSpec base="Qwen3.8-27B" quant="IQ3_S-mtp" server="llama-server" publisher="ISTA-DASLab" repo="ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/qwen38-ista-iq3s-mtp" />](../setups/arrietty/benchmarks/qwen3.8-27b.md) | <TokCell shallow="29.43" deep="21.13" cap="mem" /> | 65k |
+| [<ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/arete-bartowski-q3km" />](../setups/arrietty/benchmarks/arete-27b.md) | <TokCell shallow="27.60" deep="20.07" cap="mem" /> | 64k |
 | [<ModelSpec base="Gemma-4-12B" quant="Q4_K_XL" server="llama-server" publisher="unsloth" repo="unsloth/gemma-4-12b-it-GGUF" kv="f16" effort="off" hardware="m1-max-32gb" page="/binaries/gemma12-unsloth-ud-q4kxl" />](../setups/kamaji/benchmarks/gemma-4-12b-it.md) | <TokCell shallow="25.0" deep="9.2" cap="mem" /> | **245k** |
 | [<ModelSpec base="Ternary-Bonsai-27B" quant="2-bit" server="mlx_lm.server" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-mlx-2bit" kv="f16" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-mlx-2bit" />](../setups/kamaji/benchmarks/bonsai-27b.md) | <TokCell shallow="24.5" deep="17.3" cap="mem" stale /> | 40k |
 | [<ModelSpec base="Ternary-Bonsai-2-27B" quant="MLX 2-bit" server="mlx" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-2-27B-mlx-2bit" adapter="bonsai2-mlx-server.py" kv="f16" effort="on" hardware="m1-max-32gb" />](../setups/kamaji/benchmarks/bonsai-2-27b.md) | <TokCell shallow="21.47" deep="10.45" cap="mem" /> | 28k |
@@ -25,7 +26,6 @@ tokens count, not allocated ones. Method:
 | [<ModelSpec base="Ternary-Bonsai-27B" quant="Q2_g64" server="prism-llama" publisher="prism-ml" repo="prism-ml/Ternary-Bonsai-27B-gguf" kv="q4_0+bias" effort="on" hardware="m1-max-32gb" page="/binaries/bonsai-prism-q2g64" />](../setups/kamaji/benchmarks/bonsai-27b.md) | <TokCell shallow="14.7" deep="7.8" cap="speed" /> | 33k |
 | [<ModelSpec base="Qwen3.8-27B" quant="Q4_K_M" server="llama-server" publisher="bartowski" repo="bartowski/Qwen3.8-27B-GGUF" kv="f16" effort="xhigh" hardware="m1-max-32gb" page="/binaries/qwen38-bartowski-q4km" />](../setups/kamaji/benchmarks/qwen3.8-27b.md) | <TokCell shallow="12.4" deep="9.7" cap="mem" /> | 72k |
 | [<ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/s5-nano-maritaca-q8" />](../setups/arrietty/benchmarks/s5-nano.md) | <TokCell shallow="pending" deep="pending" cap="pending" /> | pending |
-| [<ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/binaries/arete-bartowski-q3km" />](../setups/arrietty/benchmarks/arete-27b.md) | <TokCell shallow="pending" deep="pending" cap="pending" /> | pending |
 
 † from an earlier serving config or method; re-run pending.
 <!-- gen:decode-summary:end -->
@@ -122,3 +122,16 @@ needed a smaller one.
 - The ISTA n-max 2 server crashed three times at about 440 MiB of free
   VRAM; the agent rows serve with no drafter.
 - Raw evidence: `hardware/arrietty/benchmarks/bench17/` in the repo.
+
+## RTX 5060 Ti 16 GB, Arete depth measurement
+
+<ModelSpec base="Arete-27B" quant="Q3_K_M" publisher="bartowski" server="llama-server" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" />
+
+| used tokens | decode tok/s |
+|---:|---:|
+| 4096 | 27.60 |
+| 24576 | 24.49 |
+| 32768 | 23.40 |
+| 64512 | 20.07 |
+
+Official llama.cpp stable v0.9.0, b12110. One slot, no drafter, `-c 65536`. Linux llama-benchy 0.4.0, two repetitions per cell and a five-second pause. The run reached its planned cap with no swap growth during the timed cells. [Full conditions and context window](../setups/arrietty/benchmarks/arete-27b.md#depth-measurement).
