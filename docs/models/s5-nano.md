@@ -1,6 +1,6 @@
 # S5-nano
 
-[Publisher model card](https://huggingface.co/maritaca-ai/S5-nano). The thinking quality gate passed. Instruct quality is pending. The agent task was not run.
+[Publisher model card](https://huggingface.co/maritaca-ai/S5-nano). The thinking quality gate passed. Instruct quality is also measured. The agent task was not run.
 
 ## Configurations
 
@@ -32,6 +32,7 @@ The served arm of each config is in bold. A pill under a reading is the depth it
 | config | think | budget | Scores | empties | forced | tok/s | wall |
 |---|--:|--:|--:|--:|--:|--:|--:|
 | [<ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="on" hardware="rtx-5060ti-16gb" page="/binaries/s5-nano-maritaca-q8" />](../setups/arrietty/benchmarks/s5-nano.md) | 8192 | 16384 | <ScoreCell value="0.811/0.726" sub="100% completion" top /> | none | 26/164 | <TokCell shallow="77.37" deep="30.59" /> | 1h56 |
+| [<ModelSpec base="S5-nano" quant="Q8_0" server="llama-server" publisher="maritaca-ai" repo="maritaca-ai/S5-nano-GGUF" kv="q8_0" effort="off" hardware="rtx-5060ti-16gb" page="/binaries/s5-nano-maritaca-q8" />](../setups/arrietty/benchmarks/s5-nano.md) | none | 16384 | <ScoreCell value="0.720/0.634" sub="100% completion" top /> | none | 0/164 | <TokCell shallow="77.37" deep="30.59" /> | 0h26 |
 <!-- gen:model-evalplus:end -->
 
 ## Agent task
