@@ -211,7 +211,7 @@ The run router is PID 440756, its child is PID 440825 and socat is PID
 | model | KV | serving context | clean depth | harness window | source |
 |---|---|---|---|---|---|
 | Arete | q8_0 | 65536 | 64512 | 61440 | `arete-depth` |
-| S5-nano | q8_0 | pending depth allocation | 32768 | pending newer depth result | `s5-kv-feedback` |
+| S5-nano | q8_0 | 262144 | 261120 | 258048 | `s5-depth` |
 
 ## Arete coordinator decision
 
@@ -242,3 +242,38 @@ the EvalPlus gate. The model stayed loaded. The watcher stopped after
 the smoke. The smoke copied the owner's auth and model-store files into
 its run-local config. I removed both files from the run evidence after
 the smoke. The generated models and settings files remain.
+
+## s5-depth
+
+S5-nano used q8_0, high Think mode and no MTP. The server loaded at
+`-c 262144`, the identity table's depth cap. The resolved child
+arguments set `--n-gpu-layers 999` and `--fit off`, with no CPU-MoE or
+tensor-placement override. They used q8_0 K and V caches and an 8192
+reasoning budget. The warmup passed. GPU allocation was 11,111 MiB
+after load and 11,117 MiB during cells, with 4,822 MiB free.
+
+| depth | prefill | decode |
+|---:|---:|---:|
+| 4096 | 6124.64 tok/s | 77.37 tok/s |
+| 24576 | 5363.69 tok/s | 69.00 tok/s |
+| 32768 | 5042.75 tok/s | 66.01 tok/s |
+| 65536 | 4062.74 tok/s | 56.76 tok/s |
+| 131072 | 2919.71 tok/s | 44.29 tok/s |
+| 196608 | 2276.98 tok/s | 36.16 tok/s |
+| 245760 | 1952.74 tok/s | 31.76 tok/s |
+| 261120 | 1870.13 tok/s | 30.59 tok/s |
+
+Every cell passed. The deepest clean depth was 261120, which exceeds
+the 8 tok/s floor. The measured serving context was 262144. The
+harness window is 258048 after rounding down to 4096. This was the
+planned depth cap, not the card's absolute allocation maximum.
+
+Swap used was 63380 KiB before the model load. It did not grow during
+any timed cell. It fell from 61272 KiB before the 245760 cell to 61252
+KiB after it. This does not show swap-free setup or measure a maximum
+swap ceiling. Benchy used separate Linux calls; this is not a
+slow-context-creep measurement. Deviation: swap was in use before the
+model load.
+
+Raw speed cells, resolved arguments, GPU allocation, memory samples,
+warmup and server log are in `results/`.

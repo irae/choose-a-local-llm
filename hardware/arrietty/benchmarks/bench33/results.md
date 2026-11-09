@@ -118,3 +118,39 @@ source entry came from origin/master commit
 This smoke is unscored. It permits the full simulator(mendel) blocks
 after the EvalPlus gate. Raw session, config, fixture and logs are in
 `results/arete-tool-smoke/`.
+
+## S5-nano depth
+
+The q8_0 configuration loaded at `-c 262144`, the identity table's
+depth cap. The resolved child arguments set `--n-gpu-layers 999` and
+`--fit off`, with no CPU-MoE or tensor-placement override. The server
+used q8_0 K and V caches, high Think mode and an 8192 reasoning
+budget. GPU allocation was 11111 MiB after load and 11117 MiB during
+the cells, with 4822 MiB free.
+
+| depth | prefill | decode | GPU memory |
+|---:|---:|---:|---:|
+| 4096 | 6124.64 tok/s | 77.37 tok/s | 11117 MiB |
+| 24576 | 5363.69 tok/s | 69.00 tok/s | 11117 MiB |
+| 32768 | 5042.75 tok/s | 66.01 tok/s | 11117 MiB |
+| 65536 | 4062.74 tok/s | 56.76 tok/s | 11117 MiB |
+| 131072 | 2919.71 tok/s | 44.29 tok/s | 11117 MiB |
+| 196608 | 2276.98 tok/s | 36.16 tok/s | 11117 MiB |
+| 245760 | 1952.74 tok/s | 31.76 tok/s | 11117 MiB |
+| 261120 | 1870.13 tok/s | 30.59 tok/s | 11117 MiB |
+
+Every cell passed. The deepest clean depth was 261120. Its decode
+speed was above 8 tok/s. The measured serving context was 262144. The
+harness window is 258048, rounded down to 4096. This is the planned
+depth cap, not the card's absolute allocation maximum.
+
+Swap used was 63380 KiB before the model load. It did not grow during
+the timed cells. It fell from 61272 KiB before the 245760 cell to
+61252 KiB after it. This records the premeasurement swap use. It does
+not prove swap-free setup or measure a maximum swap ceiling. Deviation:
+swap was in use before the model load.
+
+The run used separate Linux benchy calls. It did not use the slow
+context-creep measurement tool. Raw cells, memory samples, resolved
+arguments, warmup, GPU samples and server log are in
+`results/s5-depth-c262144-*`.
