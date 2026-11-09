@@ -1,0 +1,26 @@
+Done. Final state of the files:
+
+**`lib/core/tree-hash-walker.js`**
+```js
+TreeHashWalker.prototype.done = function () {
+    return Object.assign({}, this._result, {error: this.error});
+};
+
+module.exports = TreeHashWalker;
+```
+
+**`lib/config/index.js`**
+```js
+function loadConfig(fileConfig, config) {
+    return Object.assign({}, fileConfig, config);
+}
+
+module.exports = loadConfig;
+```
+
+**`package.json`** — `dependencies` is now `{}` (xtend removed).
+
+What changed and why:
+- `xtend` copies all source objects **into the first argument**, mutating it. Replacing it with `Object.assign(firstArg, ...)` would change the inputs (`this._result`, `fileConfig`). Passing a fresh `{}` as the first argument restores the old no-mutation behavior: a new object is returned, sources untouched.
+- Verified with `node --check` (syntax ok), a runtime test (inputs not mutated, copies returned correctly), and a grep (no `xtend` references left anywhere in the fixture).
+- Committed as `6c53fd3` in the fixture's own repo (`master`), working tree clean. Not pushed, per the repo's push rule.

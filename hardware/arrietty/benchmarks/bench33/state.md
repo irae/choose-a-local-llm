@@ -225,20 +225,30 @@ ceiling. The run's newer depth result must replace it.
 
 ## Arete coordinator decision
 
-Use q8_0 KV for Arete depth and later baseline blocks. Both types
-served the short test at `-c 34816`. At 32K q8_0 used about 920 MiB
-less GPU memory. Its decode speed was within 10 percent of f16.
-Both fixed smokes passed 4 of 4 problems with no empty answer.
-This smoke is not a full quality score.
+Use q8_0 for Arete depth and later baseline blocks. The timed cells
+are accepted with the premeasurement swap increase recorded as a
+deviation. They showed no swap growth. This does not prove swap-free
+setup or a maximum allocation ceiling.
 
-Accept the timed cells with the premeasurement swap increase as a
-deviation. No measured cell showed swap growth. This does not show
-swap-free setup or establish a maximum memory ceiling. The depth
-block must measure its own ceiling and set the later harness window.
-
-The pending site row and pi id are `arete-27b-q3km`. The initial
-32768-token entry comes from the short test. The isolated generator
+The pending site row and pi id are `arete-27b-q3km`. The isolated
 entry sends `enable_thinking` and `reasoning_effort` through the chat
-template. This run uses xhigh. It sets keepRecentTokens to 8192 at
-the provisional window and sets no maxTokens or reserveTokens.
-Use the newer depth result for the tool smoke and full task.
+template. This run uses xhigh and MTP stays off. The entry has no
+`maxTokens` or `reserveTokens`. Its provisional window is 32,768; the
+measured 61,440-token window applies to the tool smoke and full task.
+
+## arete-tool-smoke
+
+The smoke passed. It used pi 1.5.0, xhigh, site id `arete-27b-q3km`,
+window 61,440 and keep budget 8,192. The run used the entry from
+origin/master commit
+`6bd14cd19d590b47d72ed2640c4075f479a95371`. The generated config
+sent `enable_thinking` and `reasoning_effort` through the chat template.
+It set no `maxTokens` or `reserveTokens`.
+
+`SMOKE-MENDEL model=arete-27b-q3km level=xhigh task=xtend window=61440 pi=1.5.0 calls=14 distinct=14 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=14621 commits=1 clean=yes end=stop wall_s=122 verdict=pass`
+
+The smoke is unscored. It permits full simulator(mendel) work after
+the EvalPlus gate. The model stayed loaded. The watcher stopped after
+the smoke. The smoke copied the owner's auth and model-store files into
+its run-local config. I removed both files from the run evidence after
+the smoke. The generated models and settings files remain.

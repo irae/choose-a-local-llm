@@ -1,0 +1,7 @@
+mendel-smoke: model arete-27b-q3km, thinking xhigh, task xtend, cap 1500s
+mendel-smoke: everything lands in /home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/arete-tool-smoke
+mendel-smoke: fixture ready (xtend, 2 files, 310 bytes under lib), one commit, clean tree
+/home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/arete-tool-smoke/pi-agent: arete-27b-q3km (site id arete-27b-q3km) window=61440 keep=8192
+mendel-smoke: pi config pinned at /home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/arete-tool-smoke/pi-agent
+mendel-smoke: pi exited 0 after 122s, session /home/irae/.t3/worktrees/choose-a-local-llm/run33/hardware/arrietty/benchmarks/bench33/results/arete-tool-smoke/session/2026-11-09T02-13-16-998Z_01a1be14-ce46-7095-9016-14b15f5257ff.jsonl
+SMOKE-MENDEL model=arete-27b-q3km level=xhigh task=xtend window=61440 pi=1.5.0 calls=14 distinct=14 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=14621 commits=1 clean=yes end=stop wall_s=122 verdict=pass

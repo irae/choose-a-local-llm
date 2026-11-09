@@ -1,0 +1,6 @@
+{
+  "model": "arete-27b-q3km",
+  "level": "xhigh",
+  "task": "xtend",
+  "pi_version": "1.5.0"
+}

@@ -1,0 +1,49 @@
+{
+  "providers": {
+    "llama": {
+      "name": "llama-server",
+      "api": "openai-completions",
+      "baseUrl": "http://127.0.0.1:8080/v1",
+      "apiKey": "no-key",
+      "models": [
+        {
+          "id": "arete-27b-q3km",
+          "contextWindow": 61440,
+          "name": "arete-27b-q3km (llama)",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "compat": {
+            "supportsDeveloperRole": false,
+            "supportsReasoningEffort": false,
+            "thinkingFormat": "chat-template",
+            "chatTemplateKwargs": {
+              "enable_thinking": {
+                "$var": "thinking.enabled"
+              },
+              "reasoning_effort": {
+                "$var": "thinking.effort"
+              }
+            }
+          },
+          "thinkingLevelMap": {
+            "off": "off",
+            "minimal": "off",
+            "low": "low",
+            "medium": "medium",
+            "high": "medium",
+            "xhigh": "xhigh",
+            "max": "xhigh"
+          }
+        }
+      ]
+    }
+  }
+}

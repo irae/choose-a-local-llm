@@ -1,0 +1,3 @@
+text_delta       lines=20     worst distinct-shape ratio=1.00 at line 0      ok
+thinking_delta   lines=15     worst distinct-shape ratio=1.00 at line 0      ok
+toolcall_delta   lines=43     worst distinct-shape ratio=1.00 at line 0      ok

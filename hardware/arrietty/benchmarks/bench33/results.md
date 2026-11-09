@@ -45,7 +45,6 @@ Swap used was 0 MiB at machine start. It rose to 13,288 KiB before the
 first timed cell. It stayed at 13,288 KiB before and after every timed
 S5 cell. The coordinator accepted the throughput readings. This does
 not show swap-free setup or establish a maximum memory ceiling.
-See the [KV decision](results/s5-kv-decision.md).
 
 The coordinator selected S5 q8_0 for s5-depth. Use the measured
 s5-depth window for the tool smoke and full task. Do not use the
@@ -104,3 +103,18 @@ does not prove swap-free setup or set a larger memory ceiling.
 
 The run used separate Linux benchy calls. It did not use the slow
 context-creep measurement tool.
+
+## Arete tool smoke
+
+The smoke passed at xhigh with pi 1.5.0. It used site id
+`arete-27b-q3km`, measured window 61,440 and keep budget 8,192. The
+generated config sent `enable_thinking` and `reasoning_effort` through
+the chat template. It set no `maxTokens` or `reserveTokens`. The
+source entry came from origin/master commit
+`6bd14cd19d590b47d72ed2640c4075f479a95371`.
+
+`SMOKE-MENDEL model=arete-27b-q3km level=xhigh task=xtend window=61440 pi=1.5.0 calls=14 distinct=14 longest_run=1 loop=ok:1.00 compactions=0 splits=0 peak=14621 commits=1 clean=yes end=stop wall_s=122 verdict=pass`
+
+This smoke is unscored. It permits the full simulator(mendel) blocks
+after the EvalPlus gate. Raw session, config, fixture and logs are in
+`results/arete-tool-smoke/`.
