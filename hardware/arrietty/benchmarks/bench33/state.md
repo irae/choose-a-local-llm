@@ -1,6 +1,6 @@
 # Run 33 state
 
-Planned 2026-11-08. Block records follow below.
+Planned 2026-11-08. No model test has started.
 
 Read `AGENT.md` for the order and fixed identities. Record each derived
 cache choice, allocation ceiling, clean depth and harness window here,
@@ -122,8 +122,8 @@ at 16K, 69.05 at 24K and 66.02 at 32K. All cells completed. The smoke
 passed 3 of 4 problems, with 0 empty answers and 11,807 completion
 tokens. Its wall time was 172.7 s. The two smoke lines read LEVEL.
 Both types loaded at `-c 34816`, and their 32K decode speeds differ by
-less than 10%. The candidate is q8_0 under the method. The coordinator
-must record the final KV choice.
+less than 10%. The coordinator selected q8_0 for S5 depth. See
+[`results/s5-kv-decision.md`](results/s5-kv-decision.md).
 
 Swap used was 0 MiB at machine start. It rose to 13,288 KiB before the
 first timed S5 cell. It stayed at 13,288 KiB before and after every
@@ -133,6 +133,16 @@ does not show swap-free setup or establish a maximum memory ceiling.
 The coordinator selected q8_0 for S5 depth. The site entry is
 `s5-nano-q8`. Its provisional site window is 32,768 tokens. Use the
 measured s5-depth window for the tool smoke and full task.
+
+## S5 coordinator decision
+
+The timed cells are accepted with the pre-cell swap increase recorded
+as a deviation. The full decision is in
+[`results/s5-kv-decision.md`](results/s5-kv-decision.md). The depth
+block must set the final serving context and harness window. The new
+pending site row and pi id are `s5-nano-q8`. The initial 32,768-token
+harness window comes from the short test, not a full depth ceiling.
+The newer depth result must replace it.
 
 ## arete-kv-feedback
 
@@ -157,7 +167,7 @@ completed. The 4K and 32K GPU samples were 14,591–14,601 MiB and
 14,601 MiB. The smoke passed 4 of 4 problems, with 0 empty answers
 and 8,519 completion tokens. Its wall time was 328.9 s. Both smoke
 lines read LEVEL. At 32K, q8_0 saved about 920 MiB and its speed was
-within 10% of f16. The coordinator decides the Arete cache for depth.
+within 10% of f16. The coordinator selected q8_0 for Arete depth.
 
 The first run router used PID 432837 with child 432912 and socat PID
 432838. The f16 smoke reload used router PID 437251 with child 437298
@@ -165,15 +175,42 @@ and socat PID 437252. Both run routers stopped after their cells.
 
 Swap used was 60,720 KiB before the first Arete speed cell. It stayed
 near 60,532–60,720 KiB through the measured cells and did not grow
-during a cell. This is a premeasurement increase, not a swap-free
-setup or a maximum memory ceiling. Benchy used separate Linux calls
-for each depth; these are not slow-context-creep results.
+during a cell. The coordinator accepted the timed cells with this
+premeasurement increase recorded as a deviation. This does not show
+swap-free setup or establish a maximum allocation ceiling. Benchy used
+separate Linux calls for each depth; these are not slow-context-creep
+results.
+
+## arete-depth
+
+Arete used q8_0, xhigh and no MTP. The model loaded at `-c 65536`, its
+depth cap. The child arguments set `--n-gpu-layers 999` and `--fit off`
+with no CPU-MoE or tensor-placement override. The warmup returned
+`reasoning_content`. The log has no explicit layer-count line.
+Resolved arguments and GPU samples are in
+`results/arete-depth-c65536-resolved.json` and
+`results/arete-depth-c65536-gpu-allocation.log`.
+
+The required 64,512-token benchy cell passed at 20.07 tok/s. Other
+depths also passed: 4K at 27.60 tok/s, 24K at 24.49 tok/s and 32K at
+23.40 tok/s. Their prefill readings were 886.13, 823.36, 795.26 and
+701.17 tok/s at 4K, 24K, 32K and 64,512. The deepest clean cell was
+64,512. Its speed was above 8 tok/s. The largest serving context was
+65,536, at the model's run cap. The harness window is 61,440 after
+rounding down to 4,096.
+
+The GPU used 15,761 MiB after the model loaded. It reached 15,771 MiB
+during cells, with 168 MiB free. Swap used stayed near 60,240 KiB and
+did not grow during the cells. The model ran at xhigh. MTP stayed off.
+Depths above 65,536 were outside the model cap.
+The run router is PID 440756, its child is PID 440825 and socat is PID
+440757. Keep this model loaded for arete-tool-smoke.
 
 ## Derived values
 
 | model | KV | serving context | clean depth | harness window | source |
 |---|---|---|---|---|---|
-| Arete | q8_0 | 34816, short test only | 32768 | pending newer depth result | `arete-kv-feedback` |
+| Arete | q8_0 | 65536 | 64512 | 61440 | `arete-depth` |
 | S5-nano | q8_0 | 34816, short test only | 32768 | pending newer depth result | `s5-kv-feedback` |
 
 ## S5 coordinator decision
