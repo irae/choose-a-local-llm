@@ -16,8 +16,8 @@ Temporary research, critique, architecture diagrams, feedback logs, and handoff 
 | Step 1 | Gather and judge what is wrong (site, data, workflows, agent sessions) | Complete | [01-audit.md](./01-audit.md) |
 | Step 2 | Visual information architecture: current (as-is) vs. proposed (v2) | Complete | [02-information-architecture.md](./02-information-architecture.md) |
 | Review 1 | Owner feedback, locked decisions (D0–D6), Pass 1 / Pass 2 split | Complete | [03-decisions.md](./03-decisions.md) |
-| Step 3 (Pass 1) | Fact-check with raw data and write concrete rewrite plan (`site/` priority) | Next | `04-rewrite-plan.md` (pending) |
-| Step 4 (Pass 1) | Rewrite public site content (concise, verified; iterative review cycles) | Pending | — |
+| Step 3 (Pass 1) | Fact-check with raw data and write concrete rewrite plan (`site/` priority) | Complete | [04-rewrite-plan.md](./04-rewrite-plan.md) |
+| Step 4 (Pass 1) | Rewrite public site content (concise, verified; iterative review cycles) | Next | — |
 | Step 5 (Pass 1) | Redesign visual layout and components around the new structure | Pending | — |
 | Pass 2 | Full-rigor `docs/agents/` overhaul (writer vs. strict reviewer guides) & revisit cloneability | Scheduled after Pass 1 publish | — |
 
