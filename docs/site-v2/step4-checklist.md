@@ -28,7 +28,7 @@ Bookkeeping log updated by Round 1 (and reviewed in Rounds 2–3). Follow `04-re
   - `site/index.md` (≤350w prose, machine picks, best-per-model table, headline laws, daily-driver note, GitHub cloner CTA).
   - `site/setups/m1-max-32gb/index.md` (≤450w prose) + `archive.md` (≤600w prose).
   - `site/setups/rtx-5060ti-16gb/index.md` (≤450w prose, includes `qwen3.8-27b-ista` daily-driver note) + `archive.md` (≤600w prose).
-- [ ] **4B.2 Canonical Model Pages**
+- [x] **4B.2 Canonical Model Pages**
   - `site/models/index.md` (≤120w prose).
   - All 8 `site/models/<slug>.md` pages (≤400w prose each): `qwen3.8-27b`, `qwen3.6-35b-a3b`, `gemma-4-26b-a4b`, `gemma-4-12b-it`, `bonsai-2-27b`, `bonsai-27b`, `arete-27b`, `s5-nano`.
 - [ ] **4B.3 Benchmarks & Public Scientific Method**
