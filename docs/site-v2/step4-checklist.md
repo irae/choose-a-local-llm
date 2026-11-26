@@ -24,7 +24,7 @@ Bookkeeping log updated by Round 1 (and reviewed in Rounds 2–3). Follow `04-re
 
 ## Step 4B — Public Site Content Rewrite (`site/`)
 
-- [ ] **4B.1 Core Findings**
+- [x] **4B.1 Core Findings**
   - `site/index.md` (≤350w prose, machine picks, best-per-model table, headline laws, daily-driver note, GitHub cloner CTA).
   - `site/setups/m1-max-32gb/index.md` (≤450w prose) + `archive.md` (≤600w prose).
   - `site/setups/rtx-5060ti-16gb/index.md` (≤450w prose, includes `qwen3.8-27b-ista` daily-driver note) + `archive.md` (≤600w prose).
