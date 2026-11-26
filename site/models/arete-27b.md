@@ -11,24 +11,37 @@ Dense 27B reasoning model (`NousResearch_Arete-27B`, `bartowski Q3_K_M`) measure
 ## Configurations
 
 <!-- gen:model-configs:start -->
+| Model / Config | Ctx | tok/s | HumanEval+ | Coding | Wall |
+|---|--:|--:|--:|--:|--:|
+| <ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/files/arete-bartowski-q3km" hide="server" top /> | **64k** | <TokCell shallow="27.60" deep="20.07" cap="mem" top-shallow top-deep /> | <ScoreCell value="0.976/0.951" sub="100% completion" top /> | <ScoreCell value="pending" /> | <span title="EvalPlus 3h24 · Mendel —">3h24†</span> |
 <!-- gen:model-configs:end -->
 
 ## Decode Speed vs Context Depth
 
 <!-- gen:model-curves:start -->
+| arm | 4K | 24K | 32K | 64K |
+|---|--:|--:|--:|--:|
+| rtx-5060ti-16gb, Q3_K_M, q8_0 KV, no drafter, -c 64K | <CurveCell value="27.6" served /> | <CurveCell value="24.49" served /> | <CurveCell value="23.4" served /> | <CurveCell value="20.07" served /> |
+
+The served arm of each config is in bold. A pill under a reading shows its exact depth when arms in that column differed.
 <!-- gen:model-curves:end -->
 
 ## HumanEval+
 
 <!-- gen:model-evalplus:start -->
+| config | think | budget | Scores | empties | forced | tok/s | wall |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| <ModelSpec base="Arete-27B" quant="Q3_K_M" server="llama-server" publisher="bartowski" repo="bartowski/NousResearch_Arete-27B-GGUF" kv="q8_0" effort="xhigh" hardware="rtx-5060ti-16gb" page="/files/arete-bartowski-q3km" /> | 8192 | 16384 | <ScoreCell value="0.976/0.951" sub="100% completion" top /> | none | 7/164 | <TokCell shallow="27.60" deep="20.07" /> | 3h24 |
 <!-- gen:model-evalplus:end -->
 
 ## Mendel Agent Runs
 
 <!-- gen:model-mendel:start -->
+No agent run yet.
 <!-- gen:model-mendel:end -->
 
 ## Model Files
 
 <!-- gen:model-files:start -->
+- [Arete-27B Q3_K_M (bartowski)](/files/arete-bartowski-q3km) — RTX 5060 Ti 16 GB
 <!-- gen:model-files:end -->

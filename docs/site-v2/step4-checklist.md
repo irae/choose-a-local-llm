@@ -31,11 +31,11 @@ Bookkeeping log updated by Round 1 (and reviewed in Rounds 2–3). Follow `04-re
 - [x] **4B.2 Canonical Model Pages**
   - `site/models/index.md` (≤120w prose).
   - All 8 `site/models/<slug>.md` pages (≤400w prose each): `qwen3.8-27b`, `qwen3.6-35b-a3b`, `gemma-4-26b-a4b`, `gemma-4-12b-it`, `bonsai-2-27b`, `bonsai-27b`, `arete-27b`, `s5-nano`.
-- [ ] **4B.3 Benchmarks & Public Scientific Method**
+- [x] **4B.3 Benchmarks & Public Scientific Method**
   - `site/benchmarks/index.md` (≤250w prose + generated compute ledger).
   - `site/benchmarks/decode-speed.md`, `evalplus.md`, `mendel.md` (≤350w prose each).
   - `site/method/index.md`, `speed-and-memory.md`, `quality.md`, `agent-coding.md` (≤1,000w each, zero model names, zero hostnames, zero agent SOPs).
-- [ ] **4B.4 Full Verification Gate**
+- [x] **4B.4 Full Verification Gate**
   - `npm run docs:tables` clean.
   - `npm run verify` passes (>0 links checked, 0 dead).
   - `npm run docs:check` passes (0 table diffs, 0 hostname leaks, 0 dead links, 0 unmatched binaries).
