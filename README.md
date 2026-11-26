@@ -1,89 +1,28 @@
-# Finding the best local coding model for your machine
+# Choosing a Local Coding LLM
 
-A repeatable process to answer, for one specific computer: **which local
-model, runtime, and configuration should I code with?**
+Measured decode speed at depth, real-memory context limits, HumanEval+ coding quality, and end-to-end coding agent scores across consumer hardware.
 
-**Results: <https://irae.github.io/choose-a-local-llm/>**, the site
-built from `docs/`. Start at `docs/index.md` for the project intro, the
-goals, and a summary of each measured setup.
+**Live site:** <https://irae.github.io/choose-a-local-llm/>
 
-## How to use this repo to run your benchmarks
+## Repository Layout
 
-The process stands on its own; only the measurements are ours. That
-split is a rule: **method pages never name a model.** Everything under
-`docs/methodology/` describes how to measure. The models, runtimes,
-commands and numbers of one machine live under `docs/setups/<setup>/`.
-A method page may say "one dense 12B model on the reference setup" and
-link the setup's report. A model name in a method page is a bug.
+- `site/` — Published VitePress website (findings, per-machine picks, canonical model pages, auto-generated `/files/*` catalog, benchmarks, and public scientific method).
+- `data/` — Single source of truth (`data/binaries.json`, `data/setups/*/models.json`) feeding all generated tables, file pages, and build-time compute stats.
+- `docs/repo/` — Operator documentation for running benchmarks on your own hardware ([start here](./docs/repo/README.md)).
+- `docs/agents/` — Internal agent guides and standing rules ([index](./docs/agents/README.md)).
+- `hardware/` & `benchmarks/` — Raw benchmark run logs, router presets, and measurement scripts.
 
-1. Describe your machine once, outside the repo:
-   `~/.config/choose-a-local-llm/machine.md` holds the apps to handle
-   before a run, the memory limits, ports and paths
-   ([how to write it](./tools/README-mac-services.md)). The method
-   pages read their values from it and never hardcode them.
-2. Create `docs/setups/<your-setup-id>/` in the shape of the existing
-   one. Your models, commands and numbers go there and nowhere else.
-3. Read `docs/methodology.md`. Its flow is a list of candidate models
-   going through cheap tests first, with gates that drop models, so
-   the expensive tests run on the survivors only. Each test has its
-   own page.
-4. Plan a run per [benchmarks/PLANNING.md](./benchmarks/PLANNING.md):
-   a coordinator agent writes the runbook
-   `hardware/kamaji/benchmarks/bench<N>/AGENT.md`, a runner
-   agent executes it unattended. `AGENTS.md` holds the rules for both.
-5. Record results the way `EDITOR.md` and the methodology's
-   record-everywhere rule demand, and add each run's findings to
-   `hardware/kamaji/benchmarks/INDEX.md`. Contribute the setup
-   folder back.
-
-## What this project does not measure
-
-These questions do not help one person choose a coding model for one
-machine. Other projects answer them.
-
-- **Power and energy use.** It does not tell you which model codes
-  faster or answers better on your hardware. It is a goal for
-  datacenters and larger home builds.
-- **Throughput under concurrent load.** One person runs one agent at a
-  time. Sub-agents hold their own context, but they rarely decode
-  together, so we measure one stream and round-robin use, never all
-  slots at once. Aggregate throughput is a goal for a multi-user
-  server.
-- **A quality score per runtime.** Two runtimes that serve the same
-  standard quant differ too little to change your choice. We score a
-  model once per thinking mode and spend the time on another model.
-- **Our own quantization of weights.** Making a quant and proving it is
-  a separate craft. We measure published community builds that carry
-  their own evidence. New quant methods are a goal for the people who
-  publish them.
-- **A large model catalogue.** We do not add a model to grow the table,
-  and we do not test an old model that already scores below the models
-  here. The answer is a candidate for real coding use and a few
-  configurations worth keeping, not a leaderboard.
-
-## Read/develop docs website locally
+## Develop the Website Locally
 
 ```bash
 npm install
-npm run docs:dev
+npm run docs:tables
+npm run dev
 ```
 
-Then open http://localhost:5173.
+Verify before committing:
 
-Working on this repo? Start at [AGENTS.md](./AGENTS.md), then
-[CONVENTIONS.md](./CONVENTIONS.md) for how markdown and tooling are written.
-
-## Map
-
-- `docs/index.md`: project intro, goals, per-setup summaries.
-- `docs/methodology.md`: the flow. Measurement rules, runtime policy,
-  model-selection reasoning, the quality gate, bench-run rules. Read it
-  before you run anything.
-- `docs/setups/<setup>/`: one directory per measured machine. Setup
-  overview, comparison, per-model reports, raw benchmark data.
-- `hardware/<hardware-id>/`: everything that belongs to one machine.
-  `<hardware-id>` is the same id as the setup under `docs/setups/`.
-  `benchmarks/bench<N>/` holds the unattended-run kits: runbook
-  (`AGENT.md`), state, results, scripts. `research/run<N>/` holds the
-  research runs. `benchmarks/INDEX.md` is the findings index. Not part
-  of the site.
+```bash
+npm run verify
+npm run docs:check
+```

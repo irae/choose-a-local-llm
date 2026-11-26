@@ -16,7 +16,7 @@ Bookkeeping log updated by Round 1 (and reviewed in Rounds 2–3). Follow `04-re
   - Refactor `tools/gen-tables.mjs` for `data/` + `site/`: streamlined markers, whole-file auto-generated `site/files/{index,<id>}.md` (25 binaries), `site/.vitepress/data/site-stats.json` aggregator (using `ownWall ?? wall` + per-setup Mendel wall), generated `curves[]` tables for `decode-speed.md`, `/files/<id>` links on `<ModelSpec>`, `/models/<slug>` links in Mendel tables, zero hostnames emitted into `site/`.
   - Add `tools/check-hostnames.mjs` + `.githooks/pre-commit`.
   - Update `tools/check-links.mjs` (default `site/.vitepress/dist`, exit 1 if 0 pages), `tools/sync-static.mjs` (`site/public/`), `tools/gen-pi-models.mjs` (dynamic `data/setups/*/models.json`), `package.json` scripts, and `.github/workflows/site.yml`.
-- [ ] **4A.4 Docs separation (`docs/agents/`, `docs/repo/`, root cleanup)**
+- [x] **4A.4 Docs separation (`docs/agents/`, `docs/repo/`, root cleanup)**
   - Move agent SOPs to `docs/agents/` (`standing-rules.md`, `planning.md`, `checklist.md`, `common-rules.md`, `server-lore.md`, `status-lines.md`) + create Pass 1 `docs/agents/README.md`, `docs/agents/site-writer.md`, `docs/agents/site-reviewer.md`.
   - Create best-effort `docs/repo/` (`README.md`, `hardware-setup.md`, `running-benchmarks.md`).
   - Slim root `AGENTS.md` (pointer to `docs/agents/`) and update `README.md` (live site + `docs/repo/README.md`).
