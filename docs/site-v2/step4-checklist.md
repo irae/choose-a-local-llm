@@ -4,7 +4,7 @@ Bookkeeping log updated by Round 1 (and reviewed in Rounds 2–3). Follow `04-re
 
 ## Step 4A — Data & Pipeline Scaffolding
 
-- [ ] **4A.1 Data migration & cleanup (`data/`)**
+- [x] **4A.1 Data migration & cleanup (`data/`)**
   - Move `docs/binaries.json` → `data/binaries.json` (+ add `bonsai2-prism-mlx-2bit` for `bonsai2-mlx-mac`, plus concise `statusNote` on zero-row entries).
   - Move `docs/setups/kamaji/models.json` → `data/setups/m1-max-32gb/models.json` (`hardwareId: "kamaji"`, `ownWall` on 3 spliced runs, `benchRuns` count, ≤30w `note` per row, drop stale `models.*.stats`/`kpis`).
   - Move `docs/setups/arrietty/models.json` → `data/setups/rtx-5060ti-16gb/models.json` (`hardwareId: "arrietty"`, `ownWall` on 6 spliced runs, `benchRuns` count, add `s5-nano-bf16-think` row + 6-point curve + link `evalplusRuns[29].row`, ≤30w `note` per row, drop stale `models.*.stats`/`kpis`).
