@@ -15,7 +15,8 @@ Temporary research, critique, architecture diagrams, feedback logs, and handoff 
 | --- | --- | --- | --- |
 | Step 1 | Gather and judge what is wrong (site, data, workflows, agent sessions) | Complete | [01-audit.md](./01-audit.md) |
 | Step 2 | Visual information architecture: current (as-is) vs. proposed (v2) | Complete | [02-information-architecture.md](./02-information-architecture.md) |
-| Step 3 | Owner review, architecture lock, fact-check with raw data, rewrite plan | Next | `03-rewrite-plan.md` (pending) |
+| Review 1 | Owner feedback & locked architecture decisions | Complete | [03-decisions.md](./03-decisions.md) |
+| Step 3 | Fact-check with raw data and write concrete rewrite plan | Next | `04-rewrite-plan.md` (pending) |
 | Step 4 | Rewrite content (concise, verified; iterative review cycles) | Pending | — |
 | Step 5 | Redesign visual layout and components around the new structure | Pending | — |
 
