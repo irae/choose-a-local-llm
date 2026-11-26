@@ -21,4 +21,4 @@ Temporary research, critique, architecture diagrams, feedback logs, and handoff 
 
 ## Handoff
 
-- Current session handoff: [HANDOFF.md](./HANDOFF.md)
+- Current session handoff: [handoff-step-1-2.md](./handoff-step-1-2.md)
