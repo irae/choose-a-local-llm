@@ -43,7 +43,7 @@
 // `name` is then `<run id> (<provider>)`. Without `--as`, the entry's id
 // is `--id`.
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, globSync } from 'node:fs'
 import { homedir, hostname } from 'node:os'
 
 const args = process.argv.slice(2)
@@ -51,6 +51,16 @@ const CHECK = args.includes('--check')
 const DRY = args.includes('--dry-run')
 const opt = (name, fallback) => (args.includes(name) ? args[args.indexOf(name) + 1] : fallback)
 const setup = opt('--setup', hostname().split('.')[0].toLowerCase())
+
+const setupFiles = globSync('data/setups/*/models.json').sort()
+function resolveDataFile(query) {
+  for (const file of setupFiles) {
+    const data = JSON.parse(readFileSync(file, 'utf8'))
+    const id = data.hardwareId || data.setup
+    if (id === query || data.hardwareSlug === query) return file
+  }
+  return null
+}
 
 const ROUTERS = {
   llama: { name: 'llama-server', api: 'openai-completions', baseUrl: 'http://127.0.0.1:8888/v1', apiKey: 'no-key' },
@@ -81,7 +91,11 @@ if (runDir) {
     console.error('--run-dir needs --id <pi id>')
     process.exit(2)
   }
-  const dataFile = `docs/setups/${setup}/models.json`
+  const dataFile = resolveDataFile(setup)
+  if (!dataFile) {
+    console.error(`no data/setups/*/models.json matching "${setup}" (hardwareId or hardwareSlug)`)
+    process.exit(2)
+  }
   const wanted = loadWanted(dataFile)
   const found = [...wanted.values()].find((row) => row.pi.id === id)
   if (!found) {
@@ -128,7 +142,11 @@ if (runDir) {
 
 const target = opt('--target', `${homedir()}/.pi/agent/models.json`)
 const settingsTarget = opt('--settings', `${homedir()}/.pi/agent/settings.json`)
-const dataFile = `docs/setups/${setup}/models.json`
+const dataFile = resolveDataFile(setup)
+if (!dataFile) {
+  console.error(`no data/setups/*/models.json matching "${setup}" (hardwareId or hardwareSlug)`)
+  process.exit(2)
+}
 const wanted = loadWanted(dataFile)
 
 if (!existsSync(target)) {
@@ -191,7 +209,7 @@ for (const [key, row] of wanted) {
 // row). In any other provider only entries this tool or a site row
 // produced go; a hand-made entry (a cloud model) stays.
 const siteIds = new Set()
-for (const file of ['arrietty', 'kamaji'].map((s) => `docs/setups/${s}/models.json`)) {
+for (const file of setupFiles) {
   if (!existsSync(file)) continue
   for (const row of JSON.parse(readFileSync(file, 'utf8')).rows) if (row.pi) siteIds.add(row.pi.id)
 }

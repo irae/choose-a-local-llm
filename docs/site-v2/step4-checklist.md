@@ -8,11 +8,11 @@ Bookkeeping log updated by Round 1 (and reviewed in Rounds 2–3). Follow `04-re
   - Move `docs/binaries.json` → `data/binaries.json` (+ add `bonsai2-prism-mlx-2bit` for `bonsai2-mlx-mac`, plus concise `statusNote` on zero-row entries).
   - Move `docs/setups/kamaji/models.json` → `data/setups/m1-max-32gb/models.json` (`hardwareId: "kamaji"`, `ownWall` on 3 spliced runs, `benchRuns` count, ≤30w `note` per row, drop stale `models.*.stats`/`kpis`).
   - Move `docs/setups/arrietty/models.json` → `data/setups/rtx-5060ti-16gb/models.json` (`hardwareId: "arrietty"`, `ownWall` on 6 spliced runs, `benchRuns` count, add `s5-nano-bf16-think` row + 6-point curve + link `evalplusRuns[29].row`, ≤30w `note` per row, drop stale `models.*.stats`/`kpis`).
-- [ ] **4A.2 VitePress & theme scaffolding (`site/.vitepress/`)**
+- [x] **4A.2 VitePress & theme scaffolding (`site/.vitepress/`)**
   - Move `docs/.vitepress/` → `site/.vitepress/` and update `.gitignore` (`site/public/`, `site/.vitepress/dist/`, `site/.vitepress/cache/`).
   - Upgrade `site/.vitepress/config.mjs` to auto-discover setups & models from `data/setups/*/models.json` (zero hardcoded machines/models).
   - Add `ProofSidebar.vue` + thin `Layout.vue` wrapper reading `site/.vitepress/data/site-stats.json` into `sidebar-nav-before`.
-- [ ] **4A.3 Generator, guards & build tooling (`tools/`, `package.json`, CI)**
+- [x] **4A.3 Generator, guards & build tooling (`tools/`, `package.json`, CI)**
   - Refactor `tools/gen-tables.mjs` for `data/` + `site/`: streamlined markers, whole-file auto-generated `site/files/{index,<id>}.md` (25 binaries), `site/.vitepress/data/site-stats.json` aggregator (using `ownWall ?? wall` + per-setup Mendel wall), generated `curves[]` tables for `decode-speed.md`, `/files/<id>` links on `<ModelSpec>`, `/models/<slug>` links in Mendel tables, zero hostnames emitted into `site/`.
   - Add `tools/check-hostnames.mjs` + `.githooks/pre-commit`.
   - Update `tools/check-links.mjs` (default `site/.vitepress/dist`, exit 1 if 0 pages), `tools/sync-static.mjs` (`site/public/`), `tools/gen-pi-models.mjs` (dynamic `data/setups/*/models.json`), `package.json` scripts, and `.github/workflows/site.yml`.
