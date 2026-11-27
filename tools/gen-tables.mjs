@@ -1006,13 +1006,14 @@ function renderCurvesTable(arms, { includeMachine = true, includeModel = false }
     '',
     'The served arm of each config is in bold. A pill under a reading shows its exact depth when arms in that column differed.',
   ]
+  const chart = includeModel ? `<DecodeChart machine="${arms[0].machine}" />` : `<DecodeChart model="${arms[0].model}" />`
   if (anyCreep) {
     legend.push(
       '',
       '† measured with the earlier context-creep tool rather than `llama-benchy` on real code text. The two methods are not directly comparable.',
     )
   }
-  return [`| arm | ${buckets.map(label).join(' | ')} |`, `|---|${buckets.map(() => '--:').join('|')}|`, ...rows, ...legend].join('\n')
+  return [chart, '', `| arm | ${buckets.map(label).join(' | ')} |`, `|---|${buckets.map(() => '--:').join('|')}|`, ...rows, ...legend].join('\n')
 }
 
 function renderModelCurve(slug, datas) {
@@ -1314,6 +1315,35 @@ mendelSiteRows = setupsAll.flatMap((d) => d.rows)
 // 1. Always generate site-stats.json
 const stats = buildSiteStats(setupsAll)
 syncFile('site/.vitepress/data/site-stats.json', `${JSON.stringify(stats, null, 2)}\n`)
+
+// 1b. decode-curves.json feeds the DecodeChart component
+const modelTitleOf = (slug) => [...MODEL_SLUG_BY_BASE.entries()].find(([, s]) => s === slug)?.[0] || slug
+const decodeCurves = {
+  models: [...new Set(setupsAll.flatMap((d) => (d.curves || []).map((c) => c.model)))]
+    .map((slug) => ({ slug, title: modelTitleOf(slug) }))
+    .sort((a, b) => a.title.localeCompare(b.title)),
+  machines: setupsAll.map((d) => ({ slug: d.hardwareSlug, name: d.hardwareName })),
+  curves: setupsAll.flatMap((d) =>
+    (d.curves || []).map((c) => ({
+      model: c.model,
+      machine: d.hardwareSlug,
+      arm: c.arm.replace(/`/g, ''),
+      c: c.c || null,
+      served: Boolean(c.served),
+      creep: c.method === 'creep',
+      points: [
+        ...Object.entries(c.points || {})
+          .reduce((bins, [depth, value]) => {
+            const b = curveBucket(Number(depth))
+            if (!bins.has(b) || Number(depth) > bins.get(b)[0]) bins.set(b, [Number(depth), Number(value)])
+            return bins
+          }, new Map())
+          .values(),
+      ].sort((x, y) => x[0] - y[0]),
+    })),
+  ),
+}
+syncFile('site/.vitepress/data/decode-curves.json', `${JSON.stringify(decodeCurves)}\n`)
 
 // 2. Always auto-generate site/files/index.md and site/files/<id>.md (100% data-driven)
 function generateFilePages(datas) {

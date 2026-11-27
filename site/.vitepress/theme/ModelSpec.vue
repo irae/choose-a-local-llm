@@ -64,8 +64,8 @@ const hasPills = show('drafter') || show('offload') || show('adapter') || show('
       <template v-else>{{ title }}</template>
     </span>
     <span v-if="hasServing || hasPills" class="ms-sub">
-      <span v-if="show('hardware')" class="ms-serving ms-hardware">{{ hardware }}</span><span v-if="show('hardware') && (show('publisher') || show('server'))" class="ms-serving">,</span>
-      <a v-if="show('publisher')" class="ms-publisher" :href="card" target="_blank" rel="noreferrer">{{ publisher }}</a><span v-if="show('publisher') && show('server')" class="ms-serving">,</span>
+      <span v-if="show('hardware')" class="ms-serving ms-hardware">{{ hardware }}</span><span v-if="show('hardware') && (show('publisher') || show('server'))" class="ms-serving ms-sep">,</span>
+      <a v-if="show('publisher')" class="ms-publisher" :href="card" target="_blank" rel="noreferrer">{{ publisher }}</a><span v-if="show('publisher') && show('server')" class="ms-serving ms-sep">,</span>
       <span v-if="show('server')" class="ms-serving">{{ server }}</span>
       <span v-if="hasServing && hasPills" class="ms-serving">–</span>
       <span v-if="show('drafter')" class="ms-pill ms-drafter">{{ drafter }}</span>
