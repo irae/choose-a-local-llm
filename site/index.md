@@ -5,7 +5,7 @@ Measured decode speed at depth, real-memory context limits, HumanEval+ coding qu
 ## Winners by Machine
 
 - **[Apple M1 Max 32 GB](/setups/m1-max-32gb/):** [Qwen3.8-27B](/models/qwen3.8-27b) Q4_K_M (`f16` KV, no drafter, `xhigh`) leads at **93/100 blind** (8/8 libraries, 0 critical defects, `72k` ctx, `12.4 → 9.7 tok/s`), matching frontier cloud models. For deeper context, 3-bit [Qwen3.8-27B](/models/qwen3.8-27b) reaches `147k` (`80.5/100` blind); [Qwen3.6-35B-A3B](/models/qwen3.6-35b-a3b) holds `43.7 → 13.0 tok/s` at `82k` (`83/100` guided).
-- **[RTX 5060 Ti 16 GB](/setups/rtx-5060ti-16gb/):** [Qwen3.8-27B](/models/qwen3.8-27b) IQ3_S-mtp (`q8_0` KV, no drafter, `xhigh`) leads at **91/100 blind** / **85/100 guided** (`65k` ctx, `29.4 → 21.1 tok/s`) and is the author's sole daily-driver local config (~6–12 h/month for personal finance automation). For 120k–240k windows, [Ternary-Bonsai-2-27B](/models/bonsai-2-27b) hits **82/100 blind** (`135k`, `PTQ1_0` `f16`) and `240k` on `q8_0` KV (`73.5/100`, 0 compactions).
+- **[RTX 5060 Ti 16 GB](/setups/rtx-5060ti-16gb/):** [Qwen3.8-27B](/models/qwen3.8-27b) IQ3_S-mtp (`q8_0` KV, no drafter, `xhigh`) leads at **91/100 blind** / **85/100 guided** (`65k` ctx, `29.4 → 21.1 tok/s`) and is the author's sole daily-driver local config (~6–12 h/month for personal finance automation). For 120k–240k windows, [Ternary-Bonsai-2-27B](/models/bonsai-2-27b) (PrismML fork) hits **82/100 blind** (`135k`, `PTQ1_0` `f16`) and `240k` on `q8_0` KV (`73.5/100`, 0 compactions).
 
 ## Best Configuration per Model
 
@@ -27,7 +27,7 @@ Measured decode speed at depth, real-memory context limits, HumanEval+ coding qu
 ## Four Empirical Laws
 
 1. **An 8192 thinking budget fixes single-turn benchmarks without hurting agents.** Under fast mode (`8192` think / `16384` output), thinking-on beats thinking-off on every pair with zero empties. Across 12 re-runs of forced failures, zero passed with more thinking; normal Mendel turns peak near ~1,400 thinking tokens.
-2. **HumanEval+ is a gate, not an agent predictor.** [Gemma-4-12B](/models/gemma-4-12b-it) UD-Q4_K_XL leads HumanEval+ (**0.988 / 0.963**) yet scores **0/100** on Mendel (zero commits).
+2. **HumanEval+ is a gate, not an agent predictor.** [Gemma-4-12B](/models/gemma-4-12b-it) UD-Q4_K_XL (thinking on) leads HumanEval+ (**0.988 / 0.963**) yet scores **0/100** on Mendel (zero commits).
 3. **Hardware flips optimal configs — never copy flags across machines.** On Metal, `f16` KV beats `q8_0`, MTP hurts dense 27Bs, and `PTQ1_0` beats `PQ2_0` by 4× context. On CUDA, `q8_0` KV doubles 27B context cleanly, MTP accelerates decode where VRAM fits, and `PQ2_0` decodes faster.
 4. **Shallow speed hides deep collapse.** Dense layer offload (`-ngl 45/64`) collapses to `5.1 → 2.3 tok/s`; MoE expert offload (`--n-cpu-moe`) holds `45+ tok/s` at `97k`.
 

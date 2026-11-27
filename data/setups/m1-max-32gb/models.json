@@ -595,7 +595,7 @@
       },
       "hidden": false,
       "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
-      "note": "Reaches 245k of the 262k trained window at 13.9 GB wired; 0.976/0.939 EvalPlus thinking-off, but failed Mendel (0 commits).",
+      "note": "Reaches 245k at 13.9 GB wired; 0.976/0.939 EvalPlus thinking-off. Blind Mendel 0/100 (0 commits); guided 37.5/100 (3/8, text loop).",
       "pi": {
         "provider": "llama",
         "id": "gemma-4-12b-q4kxl",

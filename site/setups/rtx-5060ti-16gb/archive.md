@@ -18,4 +18,4 @@ Retired on 2026-09-20. Both GGUF files of `OBLITERATUS/Qwen3.8-27B-OBLITERATED` 
 
 ## Dropped Community Repacks
 
-- **`michaelw9999/Qwen3.6-35B-A3B-NVFP4-MTP-GGUF`** ([file page](/files/qwen36-michaelw9999-nvfp4)): Failed to load in `llama-server` with `wrong number of tensors; expected 1101, got 1079` regardless of `-c` or `--n-cpu-moe`. Dropped in favor of mainstream `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`.
+- **`michaelw9999/Qwen3.6-35B-A3B-NVFP4-GGUF`** ([file page](/files/qwen36-michaelw9999-nvfp4)): Failed to load in `llama-server` with `wrong number of tensors; expected 1101, got 1079` regardless of `-c` or `--n-cpu-moe`. Dropped in favor of mainstream `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL`.

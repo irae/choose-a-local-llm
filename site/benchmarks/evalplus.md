@@ -6,7 +6,7 @@ Single-turn coding quality gate across all 164 EvalPlus HumanEval+ problems (`ba
 
 - **Thinking-on beats thinking-off on every tested pair:** Once an `8192` thinking budget closes runaway reasoning loops, every thinking-on row beats its thinking-off counterpart with **zero empty answers** (e.g., Gemma-4-12B NVFP4 rose from `0.659` unbudgeted to `0.976` vs `0.927` off; Gemma-4-12B UD-Q4_K_XL rose from `0.793` to `0.988` vs `0.951` off; S5-nano Q8_0 scored `0.811` on vs `0.720` off).
 - **Forcing answers costs zero pass@1:** Across 12 natural re-runs (up to 30K tokens) of problems that failed after hitting the thinking budget, **zero** ever passed with more thinking — every forced failure either looped to the 30K cap or converged to a wrong answer anyway.
-- **High HumanEval+ does not guarantee agent reliability:** [Gemma-4-12B](/models/gemma-4-12b-it) UD-Q4_K_XL posts the top `plus` score on the site (**0.988 / 0.963**) yet scored **0/100** on Mendel (zero commits). Use HumanEval+ as a `0.800` base gate, not a final ranking.
+- **High HumanEval+ does not guarantee agent reliability:** [Gemma-4-12B](/models/gemma-4-12b-it) UD-Q4_K_XL (thinking on) posts the top `plus` score on the site (**0.988 / 0.963**) yet scored **0/100** on Mendel (zero commits). Use HumanEval+ as a `0.800` base gate, not a final ranking.
 
 ## Fast-Mode Leaderboard
 

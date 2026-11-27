@@ -30,7 +30,7 @@ Passing configurations execute the full **Mendel** coding-agent benchmark inside
 
 ## Scoring Rubric & Defect Tracking
 
-Every finished or partial run is graded on a **100-point rubric** using the highest-capability evaluation tier:
+Every finished or partial run is graded on a **100-point rubric** against git diffs, test logs, and session telemetry:
 
 - **Partial completion cap:** Displayed score is capped at `min(raw_score, 100 × libraries_done / 8)`, preventing a run that solves two libraries cleanly from outranking a complete eight-library solution.
 - **Zero-commit rule:** Any run ending with zero commits is marked **`model-failed` (0/100)**.

@@ -1,6 +1,6 @@
 # Ternary-Bonsai-2-27B
 
-Second-generation 27B ternary model (5.5–6.7 GiB weights) that unlocks 120k–240k coding-agent windows on 16 GB VRAM and 160k on M1 Max 32 GB — a dramatic jump over first-generation [Ternary-Bonsai-27B](/models/bonsai-27b).
+Second-generation 27B ternary model (5.5–6.7 GiB weights) that unlocks 120k–240k coding-agent windows on 16 GB VRAM and 160k on M1 Max 32 GB, scoring up to **82/100 blind** where first-generation [Ternary-Bonsai-27B](/models/bonsai-27b) topped out at `37.5/100`.
 
 ## Verdict
 

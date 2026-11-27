@@ -2,7 +2,7 @@
 
 This project answers one practical question per machine: **which local model, runtime, and configuration produces the best real coding work on this specific computer?**
 
-Every method page in this section is hardware- and model-agnostic. Specific machine picks, commands, and numbers live under [Setups](/setups/m1-max-32gb/) and [Models](/models/).
+Every method page in this section is hardware- and model-agnostic. Specific machine picks, commands, and numbers live on the [home page](/) and under [Models](/models/).
 
 ## Gated Testing Funnel
 
@@ -11,7 +11,7 @@ Running full coding-agent benchmarks on every quant and runtime wastes hundreds 
 1. **Speed & Memory Ceiling ([Speed & Memory](/method/speed-and-memory)):** Pick the KV cache type, find the largest loadable context `-c`, and sweep real-text decode speed from `4K` to the usable ceiling. A configuration that drops below **8 tok/s** or cannot hold a practical coding window fails the speed/memory gate.
 2. **Tool-Calling Smoke ([Agent Coding](/method/agent-coding)):** Run a short, deterministic multi-file dependency swap under the agent harness. Configurations that emit malformed tool calls, lack tool-calling chat templates, corrupt git state, or loop immediately are dropped before burning hours on full runs.
 3. **Single-Turn Coding Quality ([Coding Quality](/method/quality)):** Run all 164 HumanEval+ problems in fast mode (`8192` reasoning budget, `16384` output cap, temperature `0`). Configurations below **0.800 base pass@1** fail the quality gate.
-4. **End-to-End Agent Benchmark ([Agent Coding](/method/agent-coding)):** Run the full multi-file repository task (blind and/or guided) with live repetition-loop detection, compaction tracking, and a 100-point rubric scored on the highest-capability evaluation tier.
+4. **End-to-End Agent Benchmark ([Agent Coding](/method/agent-coding)):** Run the full multi-file repository task (blind and/or guided) with live repetition-loop detection, compaction tracking, and a 100-point rubric graded against git diffs, test logs, and session telemetry.
 
 ## Core Measurement Rules
 

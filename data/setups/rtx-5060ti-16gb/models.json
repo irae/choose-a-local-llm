@@ -248,7 +248,7 @@
       },
       "hidden": false,
       "command": "llama-server -m \"$(hf download catlilface/Gemma-4-26B-A4B-NVFP4-GGUF Gemma4-26b-NVFP4Q8.gguf)\" \\\n  --alias gemma-4-26b-a4b-nvfp4 --no-mmproj --parallel 1 \\\n  -ngl 999 --fit off --n-cpu-moe 7 -fa on -c 98304 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8888",
-      "note": "Partial CPU-MoE offload (--n-cpu-moe 7, f16 KV) holds 45.6 tok/s at 97k. Fast-mode EvalPlus 0.988/0.951; guided Mendel 37.5/100 (3/8, text loop).",
+      "note": "Partial CPU-MoE offload (--n-cpu-moe 7, f16 KV) holds 45.6 tok/s at 97k. Fast-mode EvalPlus 0.988/0.951; guided Mendel 37.5/100 (3/8, repetition loop).",
       "pi": {
         "provider": "llama",
         "id": "gemma-4-26b-a4b-nvfp4",

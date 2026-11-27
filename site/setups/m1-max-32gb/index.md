@@ -20,7 +20,7 @@ Unified-memory Apple Silicon workstation serving local coding models over Metal 
 
 - **Prefer `f16` KV over `q8_0`:** Metal dequantization of `q8_0` KV costs 2–4 µs/token vs 0.2–0.3 µs for `f16` (dropping Gemma-4-26B from `45.9` to `6.3 tok/s` at 32K). Use `q8_0` only when memory forces it (such as Qwen3.6 at `82k`).
 - **MTP helps MoEs, hurts dense 27B models:** On real code text, MTP loses at every depth on dense Qwen3.8 builds, so serve them without a drafter. MTP wins on Qwen3.6 (`mtp/3`) and Gemma-4-26B (`mtp/2`).
-- **Ternary packing flips on Metal:** [Ternary-Bonsai-2-27B](/models/bonsai-2-27b) `PTQ1_0` (`160k`, `17.9 → 9.1 tok/s`, **0.988 / 0.939** EvalPlus) beats `PQ2_0` (`41k` floor) at every depth — opposite of CUDA.
+- **Ternary packing flips on Metal:** [Ternary-Bonsai-2-27B](/models/bonsai-2-27b) (PrismML fork) `PTQ1_0` (`160k`, `17.9 → 9.1 tok/s`, **0.988 / 0.939** EvalPlus) beats `PQ2_0` (`41k` floor) at every depth — opposite of CUDA.
 - **MLX trade-off:** `mlx_lm.server` lacks slots, ignores `--reasoning-budget`, and OOMs abruptly in the generation thread (always pass `--prompt-cache-size 2` and keep a 5% harness margin).
 
 ## Complete Configurations

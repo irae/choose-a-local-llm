@@ -7,7 +7,7 @@ Full interactive run ledgers with per-defect breakdowns: [Blind report](/mendel/
 ## Key Takeaways
 
 - **Top local 27B models match cloud frontiers on blind tasks:** [Qwen3.8-27B](/models/qwen3.8-27b) Q4_K_M on M1 Max (**93/100**) and ISTA IQ3_S-mtp on RTX 5060 Ti (**91/100**) score alongside frontier cloud models (`kimi-k3` 93.5, `grok-4.6` 92.5, `gpt-5.6-sol` 92, `claude-opus-5` 90.5).
-- **Context depth changes behavior, not just completion:** [Ternary-Bonsai-2-27B](/models/bonsai-2-27b) `PTQ1_0` `q8_0` KV peaked at `225,161` tokens with zero compactions (`73.5/100`), while `PTQ1_0` `f16` KV (`135k`, 1 compaction) scored higher at **82/100** — suggesting `f16` KV precision mattered more than avoiding one compaction.
+- **Context depth changes behavior, not just completion:** [Ternary-Bonsai-2-27B](/models/bonsai-2-27b) (PrismML fork) `PTQ1_0` `q8_0` KV peaked at `225,161` tokens with zero compactions (`73.5/100`), while `PTQ1_0` `f16` KV (`135k`, 1 compaction) scored higher at **82/100** — suggesting `f16` KV precision mattered more than avoiding one compaction.
 - **Thinking budgets are safe for agents:** Across six diagnostic runs with `--reasoning-budget 8192`, the budget fired only once (capping a runaway loop on Gemma-4-12B); normal agent turns peaked near ~1,400 thinking tokens.
 
 ## Local Models — Blind (Current Prompt)

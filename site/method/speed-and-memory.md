@@ -24,7 +24,7 @@ Quantizing the KV cache (`q8_0` or `q4_0` instead of `f16`) roughly halves cache
 
 - **Measure both `f16` and `q8_0` on each hardware class** before committing to a long run.
 - On GPUs where quantized KV dequantization is slow in attention kernels, `f16` KV wins decisively unless memory forces `q8_0` to fit a usable window.
-- On GPUs with fast quantized-KV kernels, `q8_0` unlocks substantially larger windows at modest speed cost — though `f16` can still outperform `q8_0` on complex reasoning quality and should be tested directly when both fit a practical window.
+- On GPUs with fast quantized-KV kernels, `q8_0` unlocks larger windows at modest speed cost — though `f16` can still outperform `q8_0` on complex reasoning quality and should be tested directly when both fit a practical window.
 
 ## Partial Offload: Dense Layers vs MoE Experts
 

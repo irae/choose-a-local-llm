@@ -11,13 +11,13 @@ Single-turn coding benchmarks measure whether a model and quantization retain st
 
 ## Fast Mode (`8192` Thinking Budget / `16384` Output Cap)
 
-Reasoning models evaluated with a fixed `max_tokens` cap and no server-side thinking budget fail catastrophically on single-turn benchmarks: when a model loops in its thinking block until `max_tokens` expires, the final answer is completely empty and scores zero.
+Reasoning models evaluated with a fixed `max_tokens` cap and no server-side thinking budget fail badly on single-turn benchmarks: when a model loops in its thinking block until `max_tokens` expires, the final answer is empty and scores zero.
 
 To eliminate empty-answer distortion without hiding real reasoning failures, all comparable scores use **fast mode**:
 
 - **Server reasoning budget:** `8,192` tokens (`--reasoning-budget 8192`). When a completion reaches `8,192` reasoning tokens without closing its thought block, the server injects a fixed stop message and forces the model to emit its final code answer.
-- **Total output cap:** `16,384` tokens (`max_tokens = 16384`), leaving ample room for the forced answer after thinking closes.
-- **No calibration pass needed:** Every model and quant runs under the exact same `8192 / 16384` envelope, making scores directly comparable across machines and cutting run time cleanly.
+- **Total output cap:** `16,384` tokens (`max_tokens = 16384`), leaving room for the forced answer after thinking closes.
+- **No calibration pass needed:** Every model and quant runs under the same `8192 / 16384` envelope, making scores directly comparable across machines and cutting run time.
 - **Empirical validation:** Re-running forced-answer failures without a thinking budget (up to `30,000` tokens) showed that forced failures do not recover with more thinking — they either loop to the `30,000` cap or converge to the same wrong solution.
 
 ## Tracking Empties vs Forced Answers
