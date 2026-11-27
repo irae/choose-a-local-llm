@@ -257,20 +257,31 @@
 .vp-doc h1 + table {
   display: table;
   width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
   overflow: visible;
   box-shadow: none;
+  mask-image: none;
 }
 
 .vp-doc h1 + table th,
 .vp-doc h1 + table td {
   white-space: normal;
+  overflow-wrap: anywhere;
   background: transparent;
 }
 
 .vp-doc h1 + table th {
-  width: 11.5rem;
+  width: 34%;
   font-weight: 500;
   color: var(--vp-c-text-2);
+}
+
+.vp-doc h1 + table.is-overflowing,
+.vp-doc h1 + table.is-overflowing:not(.is-scrolled-end),
+.vp-doc h1 + table.is-overflowing.is-scrolled-end:not(.is-scrolled-start),
+.vp-doc h1 + table.is-overflowing:not(.is-scrolled-end):not(.is-scrolled-start) {
+  mask-image: none;
 }
 
 .vp-doc div[class*='language-'] {
@@ -392,6 +403,7 @@
 .decode-chart {
   margin: 1.1rem 0 1.6rem;
   max-width: 100%;
+  min-width: 0;
 }
 
 .decode-chart figcaption {
@@ -417,6 +429,7 @@
 .decode-chart-plot {
   overflow-x: auto;
   max-width: 100%;
+  min-width: 0;
 }
 
 .decode-chart svg {
@@ -426,13 +439,21 @@
 }
 
 @media (max-width: 720px) {
-  .decode-chart svg {
+  .decode-chart-plot > svg {
     min-width: 520px;
   }
+}
 
-  .decode-chart-plot {
-    mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
-  }
+.decode-chart-plot.is-overflowing:not(.is-scrolled-end) {
+  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+}
+
+.decode-chart-plot.is-overflowing.is-scrolled-end:not(.is-scrolled-start) {
+  mask-image: linear-gradient(to left, #000 calc(100% - 20px), transparent);
+}
+
+.decode-chart-plot.is-overflowing:not(.is-scrolled-end):not(.is-scrolled-start) {
+  mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 28px), transparent);
 }
 
 .decode-grid {
@@ -479,18 +500,17 @@
   color: var(--vp-c-text-1);
 }
 
-.decode-legend i {
-  width: 0.7rem;
-  height: 0.55rem;
-  margin-top: 0.15rem;
+.decode-legend .decode-marker {
+  width: 0.95rem;
+  height: 0.7rem;
+  margin-top: 0.12rem;
   flex: none;
-  background: var(--swatch);
-  border-radius: 1px;
+  overflow: visible;
 }
 
-.decode-legend i.hollow {
-  background: transparent;
-  box-shadow: inset 0 0 0 1.5px var(--swatch);
+.decode-legend li span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .vp-doc .ms,
