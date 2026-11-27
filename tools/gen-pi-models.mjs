@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 // Writes the local pi entries from the site data, the one surface
-// `gen-tables.mjs` did not cover (`docs/methodology/common-rules.md`, rule 7).
+// `gen-tables.mjs` did not cover (`docs/agents/common-rules.md`, rule 7).
 //
 //   node tools/gen-pi-models.mjs [--check] [--dry-run] [--target <file>] [--settings <file>] [--setup <id>]
 //   node tools/gen-pi-models.mjs --run-dir <dir> --id <pi id> [--window <N>] [--keep <N>] [--as <run id>] [--setup <id>]
 //
 // User mode (no --run-dir): only this machine's rows
-// (`docs/setups/<hostname>/models.json`, or `--setup`) become entries; the
+// (`data/setups/<hardware-slug>/models.json`, or `--setup`) become entries; the
 // other machines' rows are removed when the tool wrote them. A row gets an
 // entry when it carries a `pi` block: `{provider, id, contextWindow}`. Two
 // rows of one id collapse to one entry, the largest window wins. The tool
 // sets `contextWindow`, removes `maxTokens` always (the row's value is the
-// benchmark cap; daily work needs pi's default; docs/methodology/common-rules.md,
+// benchmark cap; daily work needs pi's default; docs/agents/common-rules.md,
 // rule 7), and points the `llama` provider at the router service
 // (`tools/llama-router.sh`, port 8888, the official build or the PrismML
 // build, one at a time). A model the running build does not hold gets the

@@ -23,9 +23,16 @@ if (!banned.length) {
 
 const pattern = new RegExp(`\\b(${banned.map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'gi')
 
-const files = globSync('site/**/*', {
-  exclude: ['site/.vitepress/dist/**', 'site/.vitepress/cache/**', 'site/public/**'],
-}).filter((f) => existsSync(f) && statSync(f).isFile())
+const files = [
+  ...globSync('site/**/*', {
+    exclude: ['site/.vitepress/dist/**', 'site/.vitepress/cache/**', 'site/public/**'],
+  }),
+  ...globSync('site/.vitepress/**/*', {
+    exclude: ['site/.vitepress/dist/**', 'site/.vitepress/cache/**'],
+  }),
+]
+  .filter((f, i, a) => a.indexOf(f) === i && existsSync(f) && statSync(f).isFile())
+  .sort()
 
 let leaks = 0
 

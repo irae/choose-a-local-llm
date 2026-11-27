@@ -18,7 +18,7 @@ run reads their results; a run never does them.
 2. **The wired limit.** Find the largest `iogpu.wired_limit_mb` this
    machine serves at, and the smaller value for when you work beside a
    run. The procedure is
-   [the wired limit page](../docs/methodology/wired-limit.md). It needs
+   [the hardware setup guide](../docs/repo/hardware-setup.md). It needs
    `sudo` and it can need a reboot, so the owner must be present.
    Redo it after a macOS update, after a new model size class enters
    the cache, or after the services list changes.
