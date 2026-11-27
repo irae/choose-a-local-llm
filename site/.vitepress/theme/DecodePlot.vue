@@ -27,13 +27,26 @@ const yTicks = Array.from({ length: maxSpeed / speedStep + 1 }, (_, i) => i * sp
 const points = computed(() => curve.value.points.map(([depth, speed]) => `${x(depth)},${y(speed)}`).join(' '))
 
 let observer
+
+function measure() {
+  const measured = plot.value?.clientWidth
+  if (measured > 0) width.value = measured
+}
+
 onMounted(() => {
-  observer = new ResizeObserver(([entry]) => {
-    if (entry.contentRect.width > 0) width.value = Math.round(entry.contentRect.width)
-  })
+  measure()
+  if (typeof ResizeObserver === 'undefined') {
+    window.addEventListener('resize', measure)
+    return
+  }
+  observer = new ResizeObserver(measure)
   observer.observe(plot.value)
 })
-onBeforeUnmount(() => observer?.disconnect())
+
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  window.removeEventListener('resize', measure)
+})
 </script>
 
 <template>
@@ -56,7 +69,7 @@ onBeforeUnmount(() => observer?.disconnect())
       class="decode-svg"
       :viewBox="`0 0 ${width} ${height}`"
       role="img"
-      :aria-label="`Decode speed versus context depth for ${curve.name}. Exact readings are in the table after the plot.`"
+      :aria-label="`Decode speed versus context depth for ${curve.name}. The table after the plot groups readings by depth.`"
     >
       <text :x="left" y="13">tok/s</text>
       <g v-for="speed in yTicks" :key="speed">

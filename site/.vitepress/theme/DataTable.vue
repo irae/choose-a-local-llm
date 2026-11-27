@@ -5,18 +5,29 @@ const scroller = ref(null)
 const overflows = ref(false)
 let observer
 
-onMounted(() => {
+function measure() {
   const el = scroller.value
-  const measure = () => {
-    overflows.value = el.scrollWidth > el.clientWidth
+  if (el) overflows.value = el.scrollWidth > el.clientWidth
+}
+
+onMounted(() => {
+  measure()
+  if (typeof ResizeObserver === 'undefined') {
+    window.addEventListener('resize', measure)
+    document.fonts?.ready.then(measure)
+    return
   }
+  const el = scroller.value
   observer = new ResizeObserver(measure)
   observer.observe(el)
-  observer.observe(el.querySelector('table'))
-  measure()
+  const table = el.querySelector('table')
+  if (table) observer.observe(table)
 })
 
-onBeforeUnmount(() => observer?.disconnect())
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  window.removeEventListener('resize', measure)
+})
 </script>
 
 <template>

@@ -25,7 +25,7 @@ const pattern = new RegExp(`\\b(${banned.map((s) => s.replace(/[.*+?^${}()|[\]\\
 
 const files = [
   ...globSync('site/**/*', {
-    exclude: ['site/.vitepress/dist/**', 'site/.vitepress/cache/**', 'site/public/**'],
+    exclude: ['site/.vitepress/dist/**', 'site/.vitepress/cache/**'],
   }),
   ...globSync('site/.vitepress/**/*', {
     exclude: ['site/.vitepress/dist/**', 'site/.vitepress/cache/**'],

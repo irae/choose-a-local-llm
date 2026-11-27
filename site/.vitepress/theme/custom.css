@@ -111,10 +111,21 @@
   font-family: var(--display-face);
   font-size: 1.125rem;
   font-weight: 600;
+  line-height: 1.15;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+  .VPNavBar .container > .title {
+    flex-shrink: 1;
+    min-width: 0;
+  }
 }
 
 @media (min-width: 960px) {
   .VPNavBar.has-sidebar .container > .title {
+    padding-inline-end: 16px;
     background-color: var(--vp-sidebar-bg-color);
     transition: none;
   }

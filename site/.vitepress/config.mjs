@@ -30,15 +30,24 @@ const setupSidebarItems = setups.map((s) => {
   }
 })
 
+const favicon = {
+  rel: 'icon',
+  type: 'image/svg+xml',
+  href: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%23233542%22/%3E%3Cpath d=%22M6 8v17h20M9 12l6 2 5 5 6 2%22 fill=%22none%22 stroke=%22%23a7e0d5%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E',
+}
+
 export default defineConfig({
   title: 'Choosing a local coding LLM',
-  head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%23233542%22/%3E%3Cpath d=%22M6 8v17h20M9 12l6 2 5 5 6 2%22 fill=%22none%22 stroke=%22%23a7e0d5%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E' }],
-  ],
+  head: [['link', favicon]],
   description:
     'Measured decode speed, context limits, coding quality, and agent performance for local coding LLMs across real hardware.',
   base: '/choose-a-local-llm/',
   vite: {
+    plugins: [{
+      name: 'dev-favicon',
+      apply: 'serve',
+      transformIndexHtml: () => [{ tag: 'link', attrs: favicon, injectTo: 'head' }],
+    }],
     server: {
       allowedHosts: true,
     },
