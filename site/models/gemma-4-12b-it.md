@@ -30,6 +30,8 @@ Retired (M1 Max 32 GB): Gemma-4-12B, LM Studio entry google/gemma-4-12b — thin
 ## Decode Speed vs Context Depth
 
 <!-- gen:model-curves:start -->
+<DecodePlot :series='[{"name":"rtx-5060ti-16gb, NVFP4, f16 KV, no drafter, -c 256K","served":true,"points":[[4096,49.55],[98304,41.57],[261120,33.11]]},{"name":"rtx-5060ti-16gb, UD-Q4_K_XL, f16 KV, no drafter, -c 256K","served":true,"points":[[4096,47.39],[98304,40.26],[261120,32.18]]}]' />
+
 | arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K | 128K | 160K | 192K | 208K | 240K | 256K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | rtx-5060ti-16gb, NVFP4, f16 KV, no drafter, -c 256K | <CurveCell value="49.55" served /> |  |  |  |  |  |  |  |  | <CurveCell value="41.57" served /> |  |  |  |  |  | <CurveCell value="33.11" served /> |

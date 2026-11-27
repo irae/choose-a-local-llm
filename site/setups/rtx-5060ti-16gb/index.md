@@ -11,10 +11,14 @@ Desktop Linux CUDA workstation (Blackwell, compute capability 12.0) running `lla
 
 ## Top Picks
 
+<div class="setup-picks">
+
 - **Best overall coding agent & daily driver:** [Qwen3.8-27B](/models/qwen3.8-27b) IQ3_S-mtp (`ISTA-DASLab`, `q8_0` KV, no drafter, `xhigh`) — **91/100 blind** and **85/100 guided** (both 8/8, `65k` ctx / `61,440` harness window, `29.4 → 21.1 tok/s`), **0.976 / 0.933** fast-mode EvalPlus (`11/164` forced). With an adjusted compaction trigger, this is the author's sole daily-driver local config (~6–12 h/month for personal finance workflows: email, bills, statements, and automation scripts).
 - **Best long-context 27B:** [Ternary-Bonsai-2-27B](/models/bonsai-2-27b) (`prism-ml` fork `prism-b10685-7dffb15`, `xhigh`) — **82/100 blind** on `PTQ1_0` `f16` KV (`135k`, `42.1 → 22.4 tok/s`, **0.976 / 0.945**); **77/100** on `PQ2_0` `f16` (`119k`, `46.3 → 25.1 tok/s`); **73.5/100** on `PTQ1_0` `q8_0` (`240k`, peaked `225,161` tokens, 0 compactions); **75/100** with refusal-ablation LoRA 1.0 (0 critical defects). *Requires PrismML fork.*
 - **Fastest MoE (CPU-MoE offload):** [Qwen3.6-35B-A3B](/models/qwen3.6-35b-a3b) UD-Q4_K_XL (`--n-cpu-moe 21`, `mtp/2`, `q8_0` KV, `97k`, `61.2 → 45.4 tok/s`, **0.976 / 0.933** EvalPlus, **48.5/100 guided** 6/8).
 - **Latest additions (`llama.cpp` v0.9.0 / b12110):** [Arete-27B](/models/arete-27b) Q3_K_M (`64k`, `27.6 → 20.1 tok/s`, **0.976 / 0.951** EvalPlus, `7/164` forced, passed smoke; Mendel pending). [S5-nano](/models/s5-nano) (`Q8_0` `261k` `0.811/0.726`; `BF16` `204k` `0.841/0.774`) failed tool smoke on both quants.
+
+</div>
 
 ## RTX 5060 Ti CUDA Quirks
 

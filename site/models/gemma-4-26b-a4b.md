@@ -23,6 +23,8 @@ Sparse Mixture-of-Experts (26B total / 4B active) offering the widest complete a
 ## Decode Speed vs Context Depth
 
 <!-- gen:model-curves:start -->
+<DecodePlot :series='[{"name":"rtx-5060ti-16gb, NVFP4Q8, f16 KV, --n-cpu-moe 7, -c 96K","served":true,"points":[[4096,58.77],[65536,49.56],[97280,45.59]]}]' />
+
 | arm | 4K | 8K | 16K | 24K | 32K | 48K | 64K | 80K | 96K | 128K | 160K | 192K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | m1-max-32gb, UD-Q4_K_XL, MTP, f16 KV, -c 208K, wired 24000 † | <CurveCell value="61.25" /> | <CurveCell value="64.95" /> | <CurveCell value="56.65" /> | <CurveCell value="52.72" depth="24.0K" /> | <CurveCell value="46.46" depth="32.0K" /> | <CurveCell value="41.04" depth="48.0K" /> | <CurveCell value="36.22" depth="64.0K" /> | <CurveCell value="33.25" /> | <CurveCell value="28.73" depth="96.0K" /> | <CurveCell value="25.17" /> | <CurveCell value="21.25" /> | <CurveCell value="17.3" /> |

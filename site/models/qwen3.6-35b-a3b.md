@@ -26,6 +26,8 @@ Sparse Mixture-of-Experts (35B total / 3B active) with an embedded MTP speculati
 ## Decode Speed vs Context Depth
 
 <!-- gen:model-curves:start -->
+<DecodePlot :series='[{"name":"rtx-5060ti-16gb, UD-Q4_K_XL, MTP n-max 2, q8_0 KV, --n-cpu-moe 21, -c 96K","served":true,"points":[[4096,61.16],[65536,50.04],[97280,45.42]]},{"name":"rtx-5060ti-16gb, UD-Q4_K_XL, MTP n-max 1, q8_0 KV, --n-cpu-moe 19, -c 96K","served":false,"points":[[4096,60.6],[65536,44.12],[97280,37.92]]},{"name":"rtx-5060ti-16gb, UD-Q4_K_XL, MTP n-max 3, q8_0 KV, --n-cpu-moe 21, -c 96K","served":false,"points":[[4096,57.85],[65536,47.25],[97280,46.76]]},{"name":"rtx-5060ti-16gb, UD-Q4_K_XL, q8_0 KV, no drafter, --n-cpu-moe 17, -c 96K","served":false,"points":[[4096,55.81],[65536,42.52],[97280,37.8]]},{"name":"m1-max-32gb, UD-Q4_K_XL, MTP n-max 3, q8_0 KV, -c 96K","served":true,"points":[[4096,43.68],[49152,19.23],[81920,13.01]]}]' />
+
 | arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | m1-max-32gb, UD-Q4_K_XL, MTP n-max 3, f16 KV, -c 40K, wired 25000 † | <CurveCell value="69.12" /> | <CurveCell value="71.34" /> | <CurveCell value="65.66" /> | <CurveCell value="61.03" /> | <CurveCell value="56.52" depth="32.0K" /> | <CurveCell value="52.6" depth="40.0K" /> |  |  |  |  |

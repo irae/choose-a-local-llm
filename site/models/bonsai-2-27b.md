@@ -46,6 +46,8 @@ Every config of both models ranked together. Sibling model: [Ternary-Bonsai-27B]
 ## Decode Speed vs Context Depth
 
 <!-- gen:model-curves:start -->
+<DecodePlot :series='[{"name":"rtx-5060ti-16gb, PQ2_0, f16 KV, no drafter, -c 120K","served":false,"points":[[4096,46.3],[24576,40.5],[65536,32.2],[121856,25.1]]},{"name":"rtx-5060ti-16gb, PQ2_0, q8_0 KV, no drafter, -c 208K","served":true,"points":[[4096,46],[24576,38.2],[65536,28.2],[211968,14.5]]},{"name":"rtx-5060ti-16gb, PTQ1_0, f16 KV, no drafter, -c 136K","served":true,"points":[[4096,42.1],[24576,37.3],[65536,30.1],[138240,22.4]]},{"name":"rtx-5060ti-16gb, PTQ1_0, q8_0 KV, no drafter, -c 240K","served":true,"points":[[4096,41.7],[24576,34.9],[65536,26.5],[244736,12.8]]},{"name":"rtx-5060ti-16gb, PTQ1_0, f16 KV, refusal-ablation LoRA at scale 1.0, -c 136K","served":true,"points":[[4096,40.8],[24576,36.2],[65536,29.2],[138240,22]]}]' />
+
 | arm | 4K | 24K | 32K | 64K | 128K | 160K | 208K | 240K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|
 | rtx-5060ti-16gb, PQ2_0, f16 KV, no drafter, -c 120K | <CurveCell value="46.3" /> | <CurveCell value="40.5" /> |  | <CurveCell value="32.2" /> | <CurveCell value="25.1" depth="119.0K" /> |  |  |  |

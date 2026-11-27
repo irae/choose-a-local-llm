@@ -19,6 +19,8 @@ Dense 27B reasoning model (`NousResearch_Arete-27B`, `bartowski Q3_K_M`) measure
 ## Decode Speed vs Context Depth
 
 <!-- gen:model-curves:start -->
+<DecodePlot :series='[{"name":"rtx-5060ti-16gb, Q3_K_M, q8_0 KV, no drafter, -c 64K","served":true,"points":[[4096,27.6],[24576,24.49],[32768,23.4],[64512,20.07]]}]' />
+
 | arm | 4K | 24K | 32K | 64K |
 |---|--:|--:|--:|--:|
 | rtx-5060ti-16gb, Q3_K_M, q8_0 KV, no drafter, -c 64K | <CurveCell value="27.6" served /> | <CurveCell value="24.49" served /> | <CurveCell value="23.4" served /> | <CurveCell value="20.07" served /> |

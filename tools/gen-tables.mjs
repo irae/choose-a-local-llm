@@ -980,6 +980,7 @@ function renderCurvesTable(arms, { includeMachine = true, includeModel = false }
     const first = buckets.find((b) => a.bins.has(b))
     return first == null ? -Infinity : Number(a.bins.get(first).value)
   }
+  const chartSeries = []
   const rows = [...binned]
     .sort((a, b) => shallowOf(b) - shallowOf(a))
     .map((a) => {
@@ -995,6 +996,16 @@ function renderCurvesTable(arms, { includeMachine = true, includeModel = false }
       if (a.c) parts.push(`-c ${label(a.c)}`)
       if (creep && a.wired) parts.push(`wired ${a.wired}`)
       const name = `${parts.join(', ')}${creep ? ' †' : ''}`
+      if (a.method === 'benchy' && a.bins.size) {
+        chartSeries.push({
+          name: name.replace(/^\[([^\]]+)\]\(\/models\/[^)]+\)/, '$1').replaceAll('`', ''),
+          served: a.served,
+          points: buckets.flatMap((bucket) => {
+            const hit = a.bins.get(bucket)
+            return hit ? [[hit.depth, Number(hit.value)]] : []
+          }),
+        })
+      }
       const cells = buckets.map((b) => {
         const hit = a.bins.get(b)
         if (!hit) return ''
@@ -1012,7 +1023,10 @@ function renderCurvesTable(arms, { includeMachine = true, includeModel = false }
       '† measured with the earlier context-creep tool rather than `llama-benchy` on real code text. The two methods are not directly comparable.',
     )
   }
-  return [`| arm | ${buckets.map(label).join(' | ')} |`, `|---|${buckets.map(() => '--:').join('|')}|`, ...rows, ...legend].join('\n')
+  const chart = chartSeries.length
+    ? [`<DecodePlot :series='${JSON.stringify(chartSeries).replaceAll('&', '&amp;').replaceAll("'", '&#39;').replaceAll('<', '&lt;')}' />`, '']
+    : []
+  return [...chart, `| arm | ${buckets.map(label).join(' | ')} |`, `|---|${buckets.map(() => '--:').join('|')}|`, ...rows, ...legend].join('\n')
 }
 
 function renderModelCurve(slug, datas) {

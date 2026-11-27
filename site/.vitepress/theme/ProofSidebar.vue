@@ -9,7 +9,13 @@ const href = withBase('/benchmarks/')
 
 <template>
   <a class="proof-sidebar" :href="href">
-    <strong class="proof-sidebar-headline">{{ stats.displayHours }} benchmarked</strong>
+    <span class="proof-sidebar-headline">
+      <strong>{{ stats.displayHours }}</strong>
+      <span>benchmarked</span>
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M4 9h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </span>
     <span class="proof-sidebar-meta">
       {{ scoredRuns }} scored runs · {{ stats.counts.models }} models · {{ stats.counts.machines }} machines
     </span>

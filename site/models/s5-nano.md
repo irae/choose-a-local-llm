@@ -20,6 +20,8 @@ Compact 4B-class reasoning model (`maritaca-ai/S5-nano-GGUF`) measured on RTX 50
 ## Decode Speed vs Context Depth
 
 <!-- gen:model-curves:start -->
+<DecodePlot :series='[{"name":"rtx-5060ti-16gb, Q8_0, q8_0 KV, no drafter, -c 256K","served":true,"points":[[4096,77.37],[24576,69],[32768,66.01],[65536,56.76],[131072,44.29],[196608,36.16],[245760,31.76],[261120,30.59]]},{"name":"rtx-5060ti-16gb, BF16, f16 KV, no drafter, -c 200K","served":false,"points":[[4096,45.68],[24576,42.46],[32768,41.35],[65536,37.31],[131072,31.23],[203776,26.41]]}]' />
+
 | arm | 4K | 24K | 32K | 64K | 128K | 192K | 240K | 256K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|
 | rtx-5060ti-16gb, Q8_0, q8_0 KV, no drafter, -c 256K | <CurveCell value="77.37" served /> | <CurveCell value="69.0" served /> | <CurveCell value="66.01" served /> | <CurveCell value="56.76" served /> | <CurveCell value="44.29" served /> | <CurveCell value="36.16" depth="192.0K" served /> | <CurveCell value="31.76" served /> | <CurveCell value="30.59" served /> |
