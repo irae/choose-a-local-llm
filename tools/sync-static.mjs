@@ -1,12 +1,9 @@
-// Copy plain-HTML artifacts into docs/public/ so VitePress serves them
-// verbatim. Sources stay in benchmarks/ (the artifact tree); docs/public/
-// is disposable and gitignored. Runs from predev/prebuild.
 import { mkdirSync, copyFileSync, globSync } from 'node:fs'
 import { basename } from 'node:path'
 
 const JOBS = [
-  { from: 'benchmarks/mendel/*.html', to: 'docs/public/mendel' },
-  { from: 'benchmarks/history/*.html', to: 'docs/public/history' },
+  { from: 'benchmarks/mendel/*.html', to: 'site/public/mendel' },
+  { from: 'benchmarks/history/*.html', to: 'site/public/history' },
 ]
 
 for (const { from, to } of JOBS) {

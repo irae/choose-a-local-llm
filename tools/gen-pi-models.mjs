@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 // Writes the local pi entries from the site data, the one surface
-// `gen-tables.mjs` did not cover (`docs/methodology/common-rules.md`, rule 7).
+// `gen-tables.mjs` did not cover (`docs/agents/common-rules.md`, rule 7).
 //
 //   node tools/gen-pi-models.mjs [--check] [--dry-run] [--target <file>] [--settings <file>] [--setup <id>]
 //   node tools/gen-pi-models.mjs --run-dir <dir> --id <pi id> [--window <N>] [--keep <N>] [--as <run id>] [--setup <id>]
 //
 // User mode (no --run-dir): only this machine's rows
-// (`docs/setups/<hostname>/models.json`, or `--setup`) become entries; the
+// (`data/setups/<hardware-slug>/models.json`, or `--setup`) become entries; the
 // other machines' rows are removed when the tool wrote them. A row gets an
 // entry when it carries a `pi` block: `{provider, id, contextWindow}`. Two
 // rows of one id collapse to one entry, the largest window wins. The tool
 // sets `contextWindow`, removes `maxTokens` always (the row's value is the
-// benchmark cap; daily work needs pi's default; docs/methodology/common-rules.md,
+// benchmark cap; daily work needs pi's default; docs/agents/common-rules.md,
 // rule 7), and points the `llama` provider at the router service
 // (`tools/llama-router.sh`, port 8888, the official build or the PrismML
 // build, one at a time). A model the running build does not hold gets the
@@ -43,7 +43,7 @@
 // `name` is then `<run id> (<provider>)`. Without `--as`, the entry's id
 // is `--id`.
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, globSync } from 'node:fs'
 import { homedir, hostname } from 'node:os'
 
 const args = process.argv.slice(2)
@@ -51,6 +51,16 @@ const CHECK = args.includes('--check')
 const DRY = args.includes('--dry-run')
 const opt = (name, fallback) => (args.includes(name) ? args[args.indexOf(name) + 1] : fallback)
 const setup = opt('--setup', hostname().split('.')[0].toLowerCase())
+
+const setupFiles = globSync('data/setups/*/models.json').sort()
+function resolveDataFile(query) {
+  for (const file of setupFiles) {
+    const data = JSON.parse(readFileSync(file, 'utf8'))
+    const id = data.hardwareId || data.setup
+    if (id === query || data.hardwareSlug === query) return file
+  }
+  return null
+}
 
 const ROUTERS = {
   llama: { name: 'llama-server', api: 'openai-completions', baseUrl: 'http://127.0.0.1:8888/v1', apiKey: 'no-key' },
@@ -81,7 +91,11 @@ if (runDir) {
     console.error('--run-dir needs --id <pi id>')
     process.exit(2)
   }
-  const dataFile = `docs/setups/${setup}/models.json`
+  const dataFile = resolveDataFile(setup)
+  if (!dataFile) {
+    console.error(`no data/setups/*/models.json matching "${setup}" (hardwareId or hardwareSlug)`)
+    process.exit(2)
+  }
   const wanted = loadWanted(dataFile)
   const found = [...wanted.values()].find((row) => row.pi.id === id)
   if (!found) {
@@ -128,7 +142,11 @@ if (runDir) {
 
 const target = opt('--target', `${homedir()}/.pi/agent/models.json`)
 const settingsTarget = opt('--settings', `${homedir()}/.pi/agent/settings.json`)
-const dataFile = `docs/setups/${setup}/models.json`
+const dataFile = resolveDataFile(setup)
+if (!dataFile) {
+  console.error(`no data/setups/*/models.json matching "${setup}" (hardwareId or hardwareSlug)`)
+  process.exit(2)
+}
 const wanted = loadWanted(dataFile)
 
 if (!existsSync(target)) {
@@ -191,7 +209,7 @@ for (const [key, row] of wanted) {
 // row). In any other provider only entries this tool or a site row
 // produced go; a hand-made entry (a cloud model) stays.
 const siteIds = new Set()
-for (const file of ['arrietty', 'kamaji'].map((s) => `docs/setups/${s}/models.json`)) {
+for (const file of setupFiles) {
   if (!existsSync(file)) continue
   for (const row of JSON.parse(readFileSync(file, 'utf8')).rows) if (row.pi) siteIds.add(row.pi.id)
 }

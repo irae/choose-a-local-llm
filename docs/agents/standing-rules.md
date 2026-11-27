@@ -1,0 +1,499 @@
+# Standing Rules & Benchmark Repo Index
+
+Owner-confirmed standing rules and internal benchmark tooling index. For top-level repo layout and commands, see [AGENTS.md](../../AGENTS.md); for editing or reviewing `site/`, see [site-writer.md](./site-writer.md) and [site-reviewer.md](./site-reviewer.md).
+
+If another agent is already serving on 5173, pass a port: `npm run dev -- --port 5174`.
+
+## Full index
+
+What to read, and when.
+
+Site, method, and process docs:
+
+- [CONVENTIONS.md](../../CONVENTIONS.md). Read it before you write any
+  script or backlog item. It defines script headers, measurement tool
+  shape, and markdown conventions.
+- [site-writer.md](./site-writer.md) and [site-reviewer.md](./site-reviewer.md).
+  Governing rules for editing and cross-checking `site/` and `data/`.
+  (Legacy v1 references [EDITOR.md](../../EDITOR.md) and
+  [CONTENT-MAP.md](../../CONTENT-MAP.md) remain at repo root pending Pass 2 cleanup.)
+- [site/method/index.md](../../site/method/index.md). Public, hardware-
+  and model-agnostic scientific methodology:
+  - [site/method/speed-and-memory.md](../../site/method/speed-and-memory.md) — depth sweeps, memory ceilings, KV cache selection, partial offload, and MTP drafters.
+  - [site/method/quality.md](../../site/method/quality.md) — fast-mode EvalPlus (`think=8192`, `max_tokens=16384`), empties vs. forced answers, and sharing rules.
+  - [site/method/agent-coding.md](../../site/method/agent-coding.md) — tool-calling smoke gate, Mendel task modes, harness window/compaction curve, loop detection, and rubric.
+- [docs/repo/hardware-setup.md](../repo/hardware-setup.md) and
+  [docs/repo/running-benchmarks.md](../repo/running-benchmarks.md). Human
+  operator machine prep (including macOS `iogpu.wired_limit_mb` ladder)
+  and benchmark execution guide.
+- Internal runner SOPs (this directory):
+  - [checklist.md](./checklist.md). Before you start any benchmark,
+    sweep, or scoring run (preflight, memory watcher, idle/silent-crash monitor).
+  - [common-rules.md](./common-rules.md). Before you write or run any
+    measurement script: prompt-cache rule, KV policy, record-everywhere rule.
+  - [server-lore.md](./server-lore.md). Before you touch any server,
+    and first when a run stalls or a number looks impossible.
+  - [status-lines.md](./status-lines.md). Before you report a run's
+    progress (short/medium/large templates and context-budget rules).
+
+Benchmark work:
+
+- `hardware/arrietty/benchmarks/bench33/AGENT.md`. Arete and S5-nano
+  on the Linux desktop. Early KV and coding smokes precede the full
+  quality and simulator(mendel) tests. The added S5 BF16/f16 trial
+  measures depth and runs both smokes.
+- [planning.md](./planning.md). Before you plan a run or write a
+  `bench<N>/AGENT.md`. The coordinator/runner role split and the
+  HANDOFF writing rules live here. Coordinators read it; runners never
+  do.
+- `hardware/<hardware-id>/`. Everything internal that belongs to one
+  machine (`kamaji` for the Mac, `arrietty` for the Linux desktop).
+  Run numbers are shared across machines.
+  **The internal id is the machine's short hostname** (`hostname -s`,
+  lowercase; owner rule, 2026-09-14). The owner or user may choose
+  another internal id once, when the machine's folders are first created;
+  after that it never changes. Public `site/` pages and `data/setups/`
+  map each `hardwareId` to a public `hardwareSlug` (`m1-max-32gb`,
+  `rtx-5060ti-16gb`) in `data/setups/<hardware-slug>/models.json`; zero
+  machine hostnames are allowed in `site/` (enforced by
+  `tools/check-hostnames.mjs`). Every internal artifact (run rows,
+  branch and log names, calibration and evidence paths) uses
+  `<hardware-id>`.
+- `hardware/<hardware-id>/benchmarks/INDEX.md`. Start here to learn
+  what each run found. It links every run's state and results.
+- `hardware/<hardware-id>/benchmarks/bench<N>/AGENT.md`. The runbook
+  for run N. Read the newest one before any benchmark work.
+- `hardware/<hardware-id>/benchmarks/bench<N>/state.md`. The run's log.
+  Read it before you resume or touch anything that run left behind.
+- `hardware/<hardware-id>/benchmarks/bench4/lmstudio-forensics.md`.
+  Before any LM Studio work; it overrides older lore.
+- `hardware/<hardware-id>/research/<mnemonic>.md`. One research item
+  per file, a backlog of questions for that machine, with
+  `research/<mnemonic>/` beside it for attached files when needed.
+- `hardware/<hardware-id>/benchmarks/unscheduled/` and
+  `hardware/<hardware-id>/research/unscheduled/`. Work that needs the
+  machine and is not in a run: one file per item, named by its
+  mnemonic, no index and no order (owner rule, 2026-09-07). An item
+  moves out of a run list into here rather than into `backlog/`, which
+  is for work that needs no benchmark hardware.
+- `hardware/<hardware-id>/research/run<N>/`. A research run: its
+  `index.md` is the task list that links the items the run takes, in
+  order, with a checkbox per item; the executor writes results beside
+  each item. `AGENT.md` and the rest of the kit appear only when the
+  run starts. Research results stay in the repo and never reach the
+  site. Closed: `hardware/arrietty/research/run1/` (Laya, a typed
+  decision encoder; item `laya-decision-engine.md`).
+- `benchmarks/` (root). The shared tools every run uses:
+  `run-humaneval.sh`, `run_codegen_wrapper.py` (patched EvalPlus
+  client), `calibrate.py` (the ten-problem natural run, no longer part
+  of a scored row), `run-watch.sh` (the one watcher of a
+  scoring run: writes the memory log, tails the server log for the
+  death signatures, probes one real completion after the output file
+  goes silent, exits 42 with the reason on stdout when the server is
+  dead. Start it as a background task so the crash interrupts the
+  coordinator; `--help` lists its `RUNWATCH_*` variables. It restarts
+  nothing. A depth sweep needs no watcher, because its runner samples
+  memory and liveness itself), `calibration-*.json`, `evalplus-smoke.py` (the fast fixed
+  four-problem EvalPlus subset for a research trial. Not a score,
+  never published. Same budget on both sides, read as level, better or
+  worse; `site/method/quality.md`. It replaced the older LM
+  Studio concurrency smoke, now retired), `mendel-smoke.sh` (the
+  handed task that gates a full Mendel run: one dependency swap across
+  two files in a fixture it builds itself, one pi run under a
+  25-minute cap, one SMOKE-MENDEL line, pass or fail. Unscored, never
+  published; `--help` lists its `SMOKE_MENDEL_*` variables. The same
+  script runs the compaction experiment with a lowered `contextWindow`
+  and the longer `xtend-wide` task, and counts compactions and peak
+  context; `site/method/agent-coding.md`), `loop-check.py` (repetition-loop detector for
+  a pi session log: distinct-shape ratio in a sliding window,
+  threshold 0.10; catches identical lines, counters, and short
+  cycles), `thinking-budget.py` (the forced answers of an EvalPlus
+  run under the fast-mode thinking budget: `count` the forced and
+  empty answers from the files, `splice` an earlier run of the same
+  config into a fast run, `prepare` and `report` the optional proof
+  run of the forced failures; `site/method/quality.md`).
+- `tests/`. The tests for the shared tools in `benchmarks/`. One
+  command, `tests/run.sh`, and `tests/fixtures/README.md` says where
+  every fixture came from.
+- `tools/sweeps/`. Depth-sweep helpers that are not the creep tool
+  itself: `bench11-cbinsearch*.sh`, `lmstudio_concurrency_probe.py`,
+  `prism-probe.sh`, `bonsai2-mlx-server.py`. The last one is a server,
+  not a probe: no stock MLX server runs the ternary 2-bit pack, so it
+  wraps the publisher's own loader to give the creep tool something to
+  measure. **A row measured through it is served by it**, not by a
+  stock server; the row's `spec.adapter` and its note must say so.
+  The depth-sweep tool proper (`creep.py` and one
+  backend module per server) now lives outside this repo, in
+  `local-llm-eval-tools`; see `docs/repo/running-benchmarks.md` and
+  `site/method/speed-and-memory.md`.
+- `tools/preflight.sh`. Run it FIRST in every run session. It reads
+  the machine against `~/.config/choose-a-local-llm/machine.md` and
+  prints one line per check (`ok`, `fix`, `ask`): GPU free, login
+  items, firewall, wired limit, the starting memory numbers, and
+  whether a reboot condition holds. It changes nothing and needs no
+  sudo. All `ok` means the run starts with no question and no
+  `turn-off`. `--help` lists the checks and the environment overrides
+  (`docs/agents/checklist.md`, "Before the run").
+- `tools/mac-services.sh` and `tools/README-mac-services.md`. Turn
+  background login items off before a run and back on after. The
+  script ships with no list; the README says how to build one. Read
+  the README before you disable anything on the owner's Mac.
+- `tools/llama-router.sh`. The machine's long-running llama-server in
+  router mode: `start` (start, reuse, or restart when
+  `hardware/<id>/models.ini` changed), `status`, `stop`, `install` (a
+  systemd user unit, logs in `journalctl --user -u llama-router`).
+  Listens on `0.0.0.0:8888`; a request names a row's pi id and the
+  router loads that preset, one model at a time. `start prism` runs the
+  PrismML build with `models-prism-llama.ini` on the same port, and only
+  one of the two runs at a time: `start` refuses while the other is up.
+  Runs use it instead of starting a server
+  (`docs/agents/checklist.md`, step 5).
+- `tools/archive-evidence.sh`. Copy a run's session logs to a place
+  where they survive. Run it before a run's worktree is removed.
+  Evidence goes to `~/.local/share/choose-a-local-llm/evidence/`, not
+  a cache directory, because losing it destroys the only proof behind
+  a published number.
+- `tools/mem-probe.py`. Measure what the machine will wire for an MLX
+  allocation. Investigation only; not part of run preparation. Read
+  `Pages wired down`, never the allocation total.
+- `benchmarks/history/`. Finished reports the backlog decided on, kept
+  whole. `tools/sync-static.mjs` serves them at `/history/<file>`, so a
+  backlog item or a rule can link one as its evidence.
+- `HANDOFF.md`. The owner's working context for the next main-thread
+  agent. Read it first when you start a session. Not committed.
+
+## Standing rules
+
+- **A rule exists only after the owner confirms it as a rule** (owner
+  rule, 2026-09-11). A critique, a discussion, a brainstorm or a
+  reading of the data is a decision for the current run or the
+  current conversation, never a rule. Before an agent writes "owner
+  rule", the owner has said so in those words. A confirmed rule is
+  committed here or in the page it belongs to; `HANDOFF.md` and a
+  runbook never hold one.
+- **A runner reports to the coordinator only when the runbook has it
+  push to origin** (owner rule, 2026-09-11): a block close, a gate,
+  a stop-and-ask. No live progress messages, no status counts
+  between pushes. Every runbook and every dispatch prompt says so.
+- **The agent benchmark is called simulator(mendel) in every rule and
+  runbook** (owner, 2026-09-11). The Mendel runner is being replaced;
+  the published pages keep the word Mendel until the new runner lands.
+- **Method pages never name a model.** `site/method/` is reusable
+  by anyone. Models, runtimes, commands and numbers live under
+  `site/models/` and `site/setups/<hardware-slug>/`. Keep `site/method/`
+  free of model names, vendor forks, and Hub repos.
+- **Push only on owner request.** Never push on your own initiative,
+  and never offer to publish. The owner asks when they want it.
+  When the owner asks for a push or for stop-and-sync, push `master`.
+  Refusing a requested push loses data; do it. There are two standing
+  exceptions, both below: the run branch during a run, and the
+  coordinator's merge of a reported run into `master`. Both push
+  without asking.
+- **Only the agent whose worktree has master checked out may merge into
+  master.** Git enforces this: a branch lives in one worktree at a time,
+  so any other worktree gets the merge refused. If you are not on
+  master, commit on your branch and stop.
+- **A run branch is temporary; the coordinator merges it at every
+  block.** This covers **every** run branch, a bench run (`run<N>`)
+  and a research run (`research<N>`) alike. Planning a run (writing
+  `bench<N>/AGENT.md` or the research run's kit) happens on `master`.
+  When the run starts on the benchmark machine, create a branch for it
+  (for example `run11` or `research3`) in its own worktree and commit
+  the run's progress there. The runner pushes the run branch to origin
+  after every block commit and reports the block to the coordinator;
+  the coordinator merges that branch into `master` at each report and
+  pushes `master`, so the site updates while the run goes on. The
+  runner never merges `master` itself unless the coordinator says so.
+  The branch exists only so a run and site work can proceed at the
+  same time, each in its own worktree. All other communication between
+  agents goes through `master`.
+- **Name the branch every time, in both directions.** The coordinator
+  is on `master`; a runner is on its run branch. "Pull", "merge" and
+  "take the update" mean different things to each, so neither says them
+  bare. A coordinator writes `git fetch origin && git merge
+  origin/master`, from your run worktree. A runner writes which branch
+  it pushed and its commit. A bare "merge master" has each agent guess
+  which branch moves, and the guesses differ.
+- **A merge is never a question for the owner.** The coordinator
+  merges on report, without asking, for a bench run and a research run
+  alike. The owner reads results on `master`, so a finished run that
+  sits unmerged on a branch is a run they cannot read.
+- **A reported run leaves no branch behind.** When the run's last block
+  is reported, merge it one last time, then delete the branch locally
+  and on origin, and remove its worktree. Follow the stop-and-sync
+  steps below; they are the same steps. The end state after any run is
+  the same: every result on `master`, `master` pushed, and `git
+  ls-remote --heads origin` listing `master` alone. A branch on origin
+  that belongs to no running run is a defect; delete it.
+- **Stop and sync**, at a run's close and whenever the owner asks to
+  stop a run and merge. Read `run<N>` below as the run's own branch
+  name, `research<N>` included. The goal state: all work is on
+  `master`, `master` is on `origin/master`, no run branch remains
+  anywhere, no run worktree remains. Follow these steps in order:
+  1. Commit all open work on the run branch, including `state.md` with
+     a handing-over section. `git status` must be clean.
+  2. Go to the master worktree. Run `git pull --ff-only origin master`.
+  3. Run `git merge run<N>`.
+  4. Run `git push origin master`. This push is required. The owner
+     asked for it, so the push rule above permits it.
+  5. Remove the run worktree: `git worktree remove
+     ../choose-a-local-llm-run<N>`, then `git worktree prune`.
+  6. Delete the branch: `git branch -d run<N>`. Use `-d`, not `-D`.
+     Then `git push origin --delete run<N>`.
+     If git refuses, the merge did not land; go back to step 3.
+  7. Verify and report: `git branch` lists no run branch, `git
+     rev-parse master origin/master` prints the same hash twice,
+     `git status` is clean. Quote these outputs.
+- **The main worktree belongs to the coordinator.** A runner never works
+  in the main worktree of this repo or of `../mendel`. The runner
+  creates a fresh sibling worktree for its run branch (for example
+  `git worktree add ../choose-a-local-llm-run<N> -b run<N>`) and works
+  only there.
+- **How you enter the worktree depends on the work.**
+  - *Research and planning* is interactive; the owner watches. Create
+    the sibling worktree with `git worktree add`, then enter it with
+    the `EnterWorktree` tool and its `path` argument. The owner's HUD
+    reads the session working directory, so the tool call is what makes
+    the branch visible to them. Leave with `ExitWorktree`,
+    `action: "keep"`, never `remove`: the branch must survive to be
+    merged. Do not call `EnterWorktree` with `name`: it builds under
+    `.claude/worktrees/` off `origin/master` and breaks the sibling
+    convention.
+  - *Benchmark runs* are long and unattended. Use `git worktree add`
+    plus `cd` in bash. No tool call, nothing to watch. Mendel runs use
+    two mendel worktrees: the benchmark branch checkout
+    (`../mendel-benchmark`) and the per-model worktrees that
+    `run-worker.sh` creates. When the run closes, the runner removes
+    its worktrees (`git worktree remove`, then `git worktree prune`)
+    and keeps only the branches. Never reuse an old worktree;
+    gitignored artifacts stay behind in it. The merge of a run branch
+    into `master` happens from the master worktree only (see the merge
+    rule above).
+- **Out of credits is a pause, never a teardown.** When a run hits a
+  billing, quota, or credit-exhaustion error: keep the server, the
+  worktree, and the session alive. Record the time and the last event,
+  tell the owner at once (this is the one situation where you
+  interrupt with an escalation), and wait. Resume the same run when
+  credits return. Only the owner can declare a credit-interrupted run
+  lost. A teardown throws away the tokens already spent.
+- **Model tiers, never model names.** Permanent docs say which tier
+  of model a job needs, not which vendor or model: **cheap** for
+  scouting and mechanical steps, **average** for most agent work,
+  **standard** for planning and review, **best** for judgment. Which
+  model fills a tier is the owner's choice and lives outside the repo.
+  Runbooks of a run in progress may name a model; permanent docs never
+  do.
+- **Scoring runs on the best tier.** Scoring a benchmark run is LLM
+  judgment (rubric calls, defect severity, cost-basis decisions). Do
+  it in a subagent on the best available model, never on a smaller
+  one. Mechanical steps (recompute, mirror, regenerate tables) may use
+  any tier.
+- **Bug fixes during a run use the best tier.** When a run tool
+  breaks while the run is going and the owner is away, the runner
+  dispatches a subagent on the best available model to fix it and
+  continues; the run does not wait.
+- **Run the exact files the runbook names.** A different file is
+  stop-and-ask. A missing file is fetched, by the download rule below
+  (`docs/agents/common-rules.md`, rule 8).
+- **Measured parameters come from the newest data, never from the
+  runbook's snapshot** (owner rule, 2026-09-06). The serving `-c`, the
+  harness window, the output budget and every gate input are
+  measurements; a runbook gives their planning-time value and its
+  source, and a newer measurement made under the same fixed
+  parameters, in this run or in a committed result, replaces it. The
+  runner records the value it used and its source in `state.md` and
+  the row's config note. Which parameters are fixed and which are
+  derived: `docs/agents/planning.md`, "Fixed and derived parameters".
+- **Qwen3.8-27B is never run at effort medium. Ever** (owner rule,
+  2026-09-09). Not planned, not re-run, not for parity with an old
+  medium row. **Not running medium matters more than parity.** A block
+  that names medium for this model is a planning defect: stop and ask,
+  and do not serve it. **A model's first run uses the model's own
+  published default**, which for Qwen3.8 is **xhigh**. A control row's
+  level is not a default. The full rule and why it keeps failing:
+  `docs/agents/planning.md`, "The thinking level is chosen, never
+  inherited".
+- **A gate or a stop-and-ask goes to the coordinator first** (owner
+  rule, 2026-09-07). The runner messages the coordinator session with
+  the block, the condition and the candidate answer, and keeps the
+  GPU busy with the next block that does not depend on it. The
+  coordinator answers inside the runbook's and the method's rules,
+  and takes to the owner only what needs the owner: sudo, a reboot,
+  money, a rule change, or a download on the Mac. The coordinator never
+  opens a conversation with the runner on its own.
+- **A download never blocks a run** (owner rule, 2026-09-14). The
+  runner fetches a file its block names and goes on, and the report
+  names every file the run fetched, with its revision. Approval before
+  a download is a rule of the Mac, not of the project: on the Mac every
+  download except a drafter file goes to the owner (owner rule,
+  2026-09-08). A drafter the run fetched is always named in the report,
+  because a drafter that arrives silently makes every speed number of
+  that block unreadable: the reader cannot tell a build that ships a
+  head from a build that borrowed one.
+- **A missing harness entry is never a reason to skip a block.** A pi
+  entry for a model under test is a derived artifact: the runner
+  creates or updates it in the run's pinned config from the block's
+  parameter table (provider, model id, `contextWindow` from the
+  measured window, the keep budget from the window curve, no
+  `maxTokens` and no `reserveTokens`, the thinking map mapped down by
+  `docs/agents/planning.md`, "A pi thinking map maps down"), records the entry in `state.md`, and runs. The
+  coordinator writes the final entry into the owner's file at
+  close-out. On a machine with the repo, `npm run pi:models` writes
+  every entry from `data/setups/*/models.json`; a row carries its entry
+  in a `pi` block (`provider`, `id`, `contextWindow`, `maxTokens`),
+  the largest window wins when two rows share a model, and no other
+  field of an existing entry is touched. No pi config, the owner's or
+  a run's, sets `maxTokens` or `reserveTokens`
+  (`docs/agents/common-rules.md`, rule 7). A run's config comes
+  from `npm run pi:models -- --run-dir <dir> --id <pi id>`, never from
+  a copy of the owner's file.
+- **No `backlog/` item without an explicit owner request** (owner
+  rule, 2026-09-07, mandatory). The backlog is the owner's queue, not
+  a place to park findings. Where a finding goes instead:
+  - **Planner or coordinator.** Small enough to do now: do it, in the
+    same session. Larger: one entry in `HANDOFF.md`, with what it is
+    and what it would take. Never a new `backlog/` file.
+  - **Runner or sub-agent.** The run's `state.md`, as it happens. The
+    coordinator and the owner read it at the close.
+  - Either way, tell the owner in one line, as a question they can
+    ignore: "this is in the handoff (or `state.md`); do you want a
+    backlog item?" The question never blocks the work.
+  An item the owner asks for follows `CONVENTIONS.md` and gets its
+  line in `backlog/index.md`.
+- **Run `tests/run.sh` after you touch any script under
+  `benchmarks/`.** It is one command and it needs no server.
+- **Never edit a shell script while it runs.** The shell reads the file
+  as it executes, so an edit changes the running program. Wait for the
+  run to end, or write a new file.
+- **A harness stops a run; it never rescues it.** When a model falls
+  into a repetition loop, record the stop and report it. Do not add a
+  prompt-layer instruction or a sampler trick to keep the run going;
+  that hides the defect instead of measuring it.
+- **Never run a bare `git stash`.** The stash list lives in the shared
+  `.git` directory, not per worktree, so parallel agents clobber or
+  cross-apply each other's stashes. Save work in progress as a WIP
+  commit on your own branch instead. If a stash is unavoidable, name it
+  (`git stash push -m "<agent/run>: <what>"`) and apply or pop it by
+  that name only (`git stash pop 'stash^{/<name>}'`), never by index.
+- **Never `git add -A` in `../mendel-benchmark`.** The kit is a
+  worktree of `../mendel` on the `benchmark` branch, which carries the
+  whole Mendel project; a blanket add stages files that belong to
+  other branches. Add named files only.
+- **A change to the data reaches every page it feeds.** Follow
+  `docs/agents/site-writer.md` and `docs/agents/site-reviewer.md`, run
+  `npm run docs:tables`, and verify with `npm run docs:check` (which
+  runs `tools/gen-tables.mjs --check`, `tools/check-hostnames.mjs`, and
+  `tools/check-links.mjs`).
+- **No superseded number on a current page.** Not in a table, not in
+  prose. Retired or superseded entries move to
+  `site/setups/<hardware-slug>/archive.md`. Raw run history stays under
+  `hardware/<hardware-id>/`. See `docs/agents/site-writer.md`.
+- **Write prose in ASD-STE100 Simplified Technical English.** Short
+  sentences, active voice, one idea per sentence.
+- **Terminology follows the community.** Repetition loop, degeneration,
+  tool-call loop. Never "collapse" for repetition
+  (`hardware/kamaji/research/run2/results/terminology.md`).
+- **Do not write code comments** unless the owner asks for them.
+- **Three places for machine state, and they are not interchangeable.**
+  `~/.config/choose-a-local-llm/` holds configuration the owner edits.
+  `~/.local/share/choose-a-local-llm/` holds evidence that must
+  survive: a cache is by definition safe to delete, and a session log
+  behind a published measurement is not. `~/.cache/choose-a-local-llm/`
+  is for things that can be rebuilt. When in doubt, it is not a cache.
+  **Nothing a run makes or needs goes under `/tmp`** (owner rule,
+  2026-09-13): not a log, not a generated file a serving command
+  points at, not a scratch directory. A bias file kept there was lost
+  once and blocked a run twice.
+- **An agent solves the problem; it does not hand it back** (owner
+  rule, 2026-09-21). A gate stops a wrong measurement, not an
+  investigation. Before a stop-and-ask, research the failure and try
+  the routes that exist: the publisher's own runtime, the package's
+  own extension points, other versions, how other projects serve the
+  same file. Use the web. Record every route with its versions and its
+  exact error. Ask the owner only when every route is tried and
+  recorded, or when the next step needs money, sudo, a reboot or a
+  rule change. A route outside the runbook is a result, not a
+  violation: record it as its own serving config, and never patch a
+  file inside a pack or an installed package to make it load without
+  saying so.
+- **Stay quiet while the owner is away** (owner rule, 2026-09-21).
+  One to three lines per event, and no more: what happened, the
+  numbers, what is blocked. No summary, no conclusion, no analysis and
+  no table unless the owner asks for one. This binds the coordinator
+  and every runner, in messages and in reports to the owner. The record
+  goes in `state.md`, `results.md` and `report.md`, where the owner
+  reads it when the owner wants it.
+- **Never version the owner's machine.** This repo is public work about
+  a method. A list of the owner's login items, a BTM dump, a process
+  list, or any other inventory of their apps is personal data and does
+  not belong in git, not in a run folder and not as "raw output". Write
+  the method into the repo and keep the machine's own state in
+  `~/.config/choose-a-local-llm/`. A tool reads its list from there and
+  ships with none. If you have already committed such a file, say so
+  and rewrite the branch before it is pushed.
+- **A script that changes the owner's Mac is read before it is run.**
+  This is their main laptop and it cannot give them surprises. Optimize
+  the script for a human who reads it top to bottom, not for length.
+  Few commands, not few lines.
+  - Put the data first: named lists of what the script acts on, one
+    item per line, grouped by why the item is in the list.
+  - One small function per action, named for the action.
+  - No `&&` chains and no one-liners. One command per line.
+  - Print what happened per item, including what was skipped. Silence
+    hides a wrong label.
+  - Every change is reversible, and the reverse reads a state file the
+    script itself wrote. Never reverse from a hardcoded list; that
+    would undo the owner's own settings.
+  - Guard both directions, and say what to do instead when refusing.
+  - Header comment: what it does, both directions, and any step the
+    owner must take (for example a reboot). This is the exception to
+    the no-comments rule above, plus the group labels on the lists.
+  `tools/mac-services.sh` is the reference shape.
+- **Commit before you ask for review.**
+- **Verify before you claim.** Run `npm run verify` and quote the result.
+- Run kits live in `hardware/<hardware-id>/benchmarks/bench<N>/`;
+  research kits in `hardware/<hardware-id>/research/run<N>/`; shared run
+  tools in `benchmarks/`. Site prose calls them **benchmark runs**,
+  numbered, never "night runs". When a run closes, add its findings to
+  `hardware/<hardware-id>/benchmarks/INDEX.md`.
+- **A run branch commits inside its own run folder only.** That is
+  `hardware/<hardware-id>/benchmarks/bench<N>/` or
+  `hardware/<hardware-id>/research/run<N>/`, plus the Mendel kit's own
+  repository for Mendel rows. A run branch never edits `models.json`,
+  the site pages, the method pages, or any other shared file. Scoring,
+  publishing and every shared-file change happen on `master` after the
+  merge. This does not freeze a run's harness parameters: the run's
+  derived values go into the pinned pi config the run tools build
+  per run, and the coordinator writes the final values into the
+  owner's `models.json` at close-out.
+- **When master moves a run folder, rename it on the run branch first.**
+  On the run branch, `git mv` the run folder to the same new path,
+  commit, then merge `master`. Both sides renamed the same path, so the
+  merge is clean.
+- **Every run kit has the same shape**: `AGENT.md` (the runbook),
+  `state.md` (the log, deviations noted as they happen), `results.md`
+  (the summary table), `results/` (raw output). Do not invent other
+  names. Do not put anything in a `bench<N>/` that a later run will
+  need; that goes in `benchmarks/` (root).
+- **Improve shared tools in place; never copy them into a run folder.**
+  A script that two runs need lives in `benchmarks/` (root). A copy in
+  a `bench<N>/` forks it (this happened three times with
+  `run-humaneval.sh` before the reorganization). Old copies inside
+  `bench1/`-`bench2/` are archive, not tools. Do not run them.
+- **Public scientific method and internal runner SOPs stay separate.**
+  `site/method/` holds hardware- and model-agnostic scientific method
+  pages (`site/.vitepress/config.mjs`). Operational runner SOPs, quirks,
+  and lore belong in `docs/agents/` (`checklist.md`, `common-rules.md`,
+  `server-lore.md`, `status-lines.md`), never in `site/method/` and
+  never pasted into runbooks.
+- **Two different `benchmarks/` exist. Do not mix them.**
+  `benchmarks/` at the repo root holds shared run tools and mirrored
+  Mendel JSONs (unpublished). `site/benchmarks/` holds the published
+  cross-machine benchmark pages.
+- **When you add or move a file agents need, update the index above in
+  the same commit.** A line nobody can find does not exist.
+- `HANDOFF.md` is the owner's working context: gitignored, coordinator
+  agents only, never the benchmark runner. Writing rules in
+  `docs/agents/planning.md`; every repo user starts with an empty one.
+
+Nothing outside `site/` reaches the published site.

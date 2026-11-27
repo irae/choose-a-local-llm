@@ -1,9 +1,9 @@
 HANDOFF.md
 node_modules/
-docs/.vitepress/cache/
-docs/.vitepress/dist/
+site/.vitepress/cache/
+site/.vitepress/dist/
 /.vitepress/
-docs/public/
+site/public/
 
 # Personal machine state. Never versioned. See AGENTS.md standing rules.
 *btm-dump*

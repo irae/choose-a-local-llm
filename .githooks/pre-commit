@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if git diff --cached --name-only | grep -q '^site/'; then
+  node tools/check-hostnames.mjs
+fi

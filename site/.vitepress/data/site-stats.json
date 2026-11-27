@@ -1,0 +1,46 @@
+{
+  "generatedFrom": "data + benchmarks/mendel",
+  "localActiveHours": 325,
+  "displayHours": "325h+",
+  "breakdown": {
+    "evalplusNetHours": 219.6,
+    "evalplusGrossHours": 235.8,
+    "evalplusRuns": 56,
+    "mendelLocalHours": 105.4,
+    "mendelLocalRuns": 54,
+    "mendelCloudHours": 17.5,
+    "mendelCloudRuns": 25
+  },
+  "telemetry": {
+    "totalTokens": 438153354,
+    "outputTokens": 2928479,
+    "toolCalls": 9444,
+    "commits": 427
+  },
+  "counts": {
+    "machines": 2,
+    "models": 8,
+    "binaries": 25,
+    "activeConfigs": 43,
+    "curves": 44,
+    "executedBenchRuns": 30
+  },
+  "byMachine": {
+    "m1-max-32gb": {
+      "name": "M1 Max 32 GB",
+      "evalplusNetHours": 139.2,
+      "evalplusRuns": 26,
+      "mendelHours": 87.1,
+      "mendelRuns": 41,
+      "totalHours": 226.3
+    },
+    "rtx-5060ti-16gb": {
+      "name": "RTX 5060 Ti 16 GB",
+      "evalplusNetHours": 80.4,
+      "evalplusRuns": 30,
+      "mendelHours": 18.3,
+      "mendelRuns": 13,
+      "totalHours": 98.7
+    }
+  }
+}

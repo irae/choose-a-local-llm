@@ -1,0 +1,408 @@
+# Planning a benchmark run
+
+This page is for the coordinator agent, the one that does repo design,
+research, debugging, and planning. It explains how to turn open work
+into a run kit that a smaller runner agent can execute with much less
+context. The runner never reads this page. It reads only its runbook
+and the methodology pages the runbook points to.
+
+## Three kinds of work, three places
+
+- `hardware/<hardware-id>/benchmarks/bench<N>/`: a bench run. Hardware
+  only, no judgment. A small runner executes exact commands.
+- `hardware/<hardware-id>/research/<mnemonic>.md`: a research item,
+  one file each, like a backlog item for questions that need the
+  benchmark machine, judgment and web access. Attached files go in
+  `research/<mnemonic>/`. A research run is
+  `hardware/<hardware-id>/research/run<N>/`: its `index.md` lists the
+  items the run takes, with a checkbox each, and that list is the
+  order; items carry mnemonics and are never numbered, the same rule
+  the blocks of a bench run follow. When the owner
+  plans one run, the coordinator writes the whole kit at once, runbook
+  included, and the run is ready to start (owner, 2026-09-20). Only
+  when several runs are planned together do the runbooks wait: each
+  run then has its items and its list, and its kit is written when
+  that run comes up. `<hardware-id>` is the machine's internal hostname
+  id under `hardware/` (public `site/` and `data/setups/` map it to a
+  hardware slug such as `m1-max-32gb` or `rtx-5060ti-16gb`).
+- `hardware/<hardware-id>/benchmarks/unscheduled/` and
+  `hardware/<hardware-id>/research/unscheduled/`: work that needs the
+  machine and is not in a run. One file per item, named by its
+  mnemonic, no index and no order. A run list drops an item here when
+  it stops being scheduled, and takes it back when it is.
+- `backlog/<mnemonic-name>.md`: one file per item, issue-tracker
+  style. Things to do that need no benchmark hardware (tooling, method
+  pages, runner code, site restructures), not yet decided or scheduled,
+  and reviewed by the owner before any agent picks one up. An item is
+  not a prompt; the agent that takes it writes its own plan. An
+  approved item is worked in its own sibling worktree and branch,
+  reviewed by the coordinator (or the owner, when the owner asked for
+  it), and merged to `master` only when both agree. When it lands, its
+  backlog file is deleted in the same commit and its line moves to the
+  Changelog in `backlog/index.md`, which lists every item in priority
+  order with the owner's checkbox mark. **Only the coordinator files
+  an item, and only when the owner asks for one in those words**
+  (owner rule, 2026-09-07, mandatory). Without that request: work
+  small enough to do now gets done now, larger work gets one entry in
+  `HANDOFF.md`, a runner's finding goes in the run's `state.md`, and
+  the owner hears one line saying where it is and asking whether they
+  want an item. A sub-agent files nothing, ever.
+
+## The two roles
+
+- **Coordinator** (strong model, full context). Plans, investigates,
+  fixes the harness, writes the runbook, spawns the runner, judges the
+  results. Work that needs judgment (the runbook, the run close-out,
+  the site check against a run's results, the handoff) is never
+  delegated to a sub-agent. A sub-agent gets only mechanical work, and
+  only when the owner says so (owner rule, 2026-09-06). Its working
+  state lives in `HANDOFF.md` (local, gitignored; see "The handoff
+  file" below).
+  Every sub-agent prompt names `CONVENTIONS.md`, the index of the
+  writing rules, and tells the sub-agent to read it before it writes
+  anything. A sub-agent that spawns a sub-agent of its own passes the
+  same instruction down. A sub-agent that has not been given the index
+  will not find it.
+- **Runner** (smaller model, minimal context). Executes
+  `hardware/<hardware-id>/benchmarks/bench<N>/AGENT.md` block by block.
+  It gets everything it needs from that file and the pages it links.
+  If the runner has to guess, the runbook failed.
+
+## Fixed and derived parameters
+
+A runbook is written days before its run. Every number in it is a
+snapshot of what was known at planning time, and the run itself
+produces newer numbers as it goes. The rule (owner, 2026-09-06):
+**parameters and gates are decided on the newest data, never on the
+planning snapshot.** A runbook that freezes a measured value turns
+the agent into a script and wastes the run: run 11 measured an 82K
+clean depth in its first block and then, by the runbook's own words,
+ran the Mendel pair on a 49152 window.
+
+## A runner measures, a coordinator decides
+
+**No block asks a runner for a pick, a verdict, or a recommendation.**
+A block produces a table and the conditions it was measured under. The
+choice between configurations is a separate task, taken by the
+coordinator, against the goals of the project. A runbook that writes
+"pick the best" has moved a decision to the one agent that cannot see
+why it is being made.
+
+**A coordinator never adopts a runner's conclusion as a finding.** Take
+its numbers; re-derive the meaning. A runner sees one block, not the
+run, not the model's history, and not what the project is for. It will
+report a real measurement with a wrong reading attached, and the
+reading is the part that reaches the site.
+
+This is written from a failure on 2026-09-09. A shallow sweep at 4K
+reported "the drafter never pays" and the coordinator repeated it,
+edited a method page to match, and cut cells from a later block, all
+within minutes. The same build's own server log already showed draft
+acceptance reaching 1.000 at depth, where the agent task actually runs.
+The measurement was right and every conclusion drawn from it was wrong.
+
+## The thinking level is chosen, never inherited
+
+**Qwen3.8-27B is never run at effort medium. Ever.** (Owner rule,
+2026-09-09.) No block plans it, no re-run reaches for it, and no
+argument about comparing like with like brings it back. **Not running
+medium matters more than parity.** A row that cannot be compared to an
+old medium row is the intended outcome, not a cost.
+
+**A model's first run uses the model's own published default.** For
+Qwen3.8 that default is **xhigh**. A control row's level is not a
+default and never becomes one.
+
+**No Mendel run at thinking off** (owner rule, 2026-09-14). Thinking
+off does badly in the agent harness: the simulator, Mendel and pi. No
+block plans a Mendel smoke, guided run or blind run at thinking off,
+unless the owner asks for it in words. Thinking off stays a real level
+for other tasks, such as PDF reading, summaries and OCR. When a
+model's published default is off, its Mendel blocks use its
+thinking-on level, and the block writes that reason.
+
+**A pi thinking map maps down** (owner rule, 2026-09-14). This project
+writes the harness maps, so a level the model does not accept never
+reaches its chat template. Every pi level maps to the nearest level at
+or below it that the model accepts. For Qwen3.8 (low, medium, xhigh),
+`high` maps to `medium` and `max` to `xhigh`. For a binary-thinking
+model, `minimal` maps to `off`, and `xhigh` and `max` map to `high`. A
+level with nothing at or below it stays `null`. A block still names
+its level; the map covers the levels a person picks by hand.
+
+This rule exists because the opposite rule was written down and then
+followed for days. "One effort or thinking level per candidate: the
+level its control row already uses" reads as sound planning and is how
+every new Qwen3.8 build ended up on medium again, run after run, while
+the owner was asking for something else in the same conversations. A
+level inherited from a control row is a level nobody chose. **Write the
+level in the block, with the reason it was picked, and never copy it
+from the row you are measuring against.**
+
+Two kinds of parameter, and the runbook says which is which:
+
+- **Fixed** parameters are identity. The model files, revision and
+  quant; the backend; the thinking level; the prompt version; the base
+  commit; the KV type when a pick exists; the wired limit the owner
+  set. They are what the row is about. A different value is a
+  different row, so a mismatch is stop and ask, never a substitute.
+- **Derived** parameters are measurements. The serving `-c`; the
+  harness window (`contextWindow`); `keepRecentTokens`, from the
+  window curve (`site/method/agent-coding.md`, "Harness Window,
+  Compaction & Loop Detection"; no
+  run sets `maxTokens` or `reserveTokens`); the drafter depth;
+  any gate input such as clean depth or decode speed. The runbook
+  names each one, gives the planning-time value with its date and
+  source, and says where the run gets a newer one: a block of this
+  run first, then the newest committed result under
+  `hardware/<hardware-id>/`, then the published page. The newest
+  measurement under the run's fixed parameters wins, and the config
+  note carries the value and its source ("`-c 98304`, block 1").
+
+The consequences:
+
+- A derived value changes downstream values in the same run. A block
+  that finds a new `-c` or clean depth also sets the harness window
+  of every later block on that model, by the rule in
+  `site/method/agent-coding.md` ("Harness Window, Compaction & Loop Detection"). The runbook
+  writes that dependency as a step, not as a number.
+- A freeze is allowed only when the owner asks for one, and then it
+  is written as a dated owner decision with its reason ("every other
+  model keeps its 24000 numbers; owner, 2026-09-06"). Anything else
+  written as "stays as it is" or "the runner never changes it" is a
+  planning bug.
+- The owner's harness file, `~/.pi/agent/models.json`, is not the
+  place for a run's derived values. The run's pinned config is (the
+  worker and the smoke build one per run). The coordinator writes the
+  final values into the owner's file at close-out, with the site.
+- A gate compares a threshold from the method (46K for the Mendel
+  task, 0.800 for EvalPlus) with the newest measurement. Thresholds
+  are rules and may be fixed; the measured side never is.
+
+When you write a block, list its parameters first and mark each one
+fixed or derived. If a derived one has no source in the run and no
+committed measurement, the block that measures it comes first.
+
+## How to write `bench<N>/AGENT.md`
+
+1. Create the next `hardware/<hardware-id>/benchmarks/bench<N>/` folder
+   with the standard kit shape (`AGENT.md`, `state.md`, `results.md`,
+   `results/`; see `docs/agents/standing-rules.md`). `<hardware-id>` is the
+   machine's internal hostname. For a machine new to the project, ask the owner
+   once whether to keep the hostname or choose another internal id, then create
+   `hardware/<id>/` with it, and `data/setups/<hardware-slug>/` plus
+   `site/setups/<hardware-slug>/` with its public hardware slug (zero hostnames
+   in `site/`). Every internal row, model
+   value and file name the runbook asks for carries that internal id, and every
+   scoring prompt spells out the model value format with the id in it:
+   `<alias> (<publisher> <quant>, <level>, <id>)`, beside
+   `"hardware": "<id>"`.
+2. **The first section of every runbook, above the order list, is
+   the wakeup** (owner rule, 2026-09-15): `ScheduleWakeup` every 1200
+   seconds from the first action to the end of the run, also while a
+   background task runs, with the short status line at every wakeup,
+   for the owner's inspection as much as against stalls
+   (`docs/agents/checklist.md`, step 7). This is the one rule a
+   runbook repeats from the checklist: most runners that trusted a
+   background task stalled their runs.
+   Then open with one short essentials section: the run's `state.md`
+   history, the worktree command, and the rules that apply to every
+   block. Do not front-load a reading list. Each block names the
+   documents it needs at its own start, and the runner reads them
+   there. Reason: a fresh, small context gets more attention from an
+   agent than a page read an hour earlier; the runbook is already in
+   the right order, so the right file gets read at the right time.
+   Point, do not paste; the runbook stays short.
+   **The fixed reading is `docs/agents/checklist.md` and
+   `docs/agents/status-lines.md`, once per session.** Those two
+   are the same for every run, the checklist itself names them, and a
+   runbook never repeats what they hold. A rule the runner needs on
+   every run belongs in one of those two files, not in the essentials
+   of one runbook, or the next run loses it.
+   `docs/agents/checklist.md` is still the first block's reading, and the
+   runbook's first instruction is its step 1: create the run worktree
+   and move into it before any other action. Runners skip this when
+   the runbook only implies it, so spell out the exact `git worktree
+   add` command with the run's number. A benchmark runbook says bash
+   and `cd`. A research or planning kit says `EnterWorktree` with
+   `path` instead, because that work is interactive and the owner's
+   HUD reads the session directory. See `docs/agents/standing-rules.md`.
+3. Require the run to record its own evidence, and say where.
+   - **Verify `peak_context` with the counter before you commit a row.**
+     The context of every turn is already in the session log: each
+     assistant message carries its own usage block. The maximum over
+     those messages is the peak, across all compaction cycles.
+     `benchmark/count-tool-calls.mjs` in the Mendel repo prints it. Make
+     the run print it and compare it with the row.
+   - **Session logs must leave the scratch directory.** Mendel run 7
+     produced 17 local rows and only 8 surviving session logs. The rest
+     lived under a gitignored `scratchpad/` and went away with their
+     worktrees, so those rows cannot be audited, defended or reproduced.
+     End every run by archiving its evidence:
+     `tools/archive-evidence.sh <runs-dir> <run-slug>`, which copies to
+     `~/.local/share/choose-a-local-llm/evidence/`.
+   - **A split turn is not a compaction.** pi writes a `compaction`
+     record for both. The split turn carries a summary that begins
+     `No prior history`. Counting it inflates the number; it did, twice,
+     in run 7.
+4. Never write a `sudo` command into a runbook. The runner verifies
+   the machine read-only (`sysctl -n iogpu.wired_limit_mb`, `pgrep`,
+   `vm_stat`) and, only when a value is wrong, reports it and shows the
+   owner the command to run. The owner's Mac is not the runner's to
+   change.
+5. Name the exact model files, revision and quant each block serves.
+   A download never blocks a run (owner rule, 2026-09-14): the runner
+   fetches a named file that is missing and goes on. Approval before a
+   download is a rule of the Mac only; a Mac runbook says which
+   downloads the owner approved, and a missing file there is stop and
+   ask.
+   That exactness covers identity only ("Fixed and derived parameters"
+   above). The serving parameters beside the files are derived, and
+   the block says where the run takes them from.
+6. State the execution rules the runner must not relearn: local run
+   branch in a fresh sibling worktree (the main worktree stays with the
+   coordinator); no bare `git stash`, named stashes only, applied by
+   name (see `docs/agents/standing-rules.md`); scoring in a subagent on the
+   best available model, never a smaller one, because scoring is LLM
+   judgment; bug fixes of run tools during the run on the best model
+   too; the stop-and-sync procedure from
+   `docs/agents/standing-rules.md` when the owner asks to stop (merge to
+   `master`, push `master`, delete the branch, remove the worktree;
+   that one push is required); one model on the GPU at a time; port;
+   heartbeat cadence and the status-line templates
+   (`docs/agents/status-lines.md`: one line in chat, the medium
+   form in `state.md`, the site comparison in `results.md`); the scoped
+   memory watcher on every run; commit as results land; never push a
+   run branch; never publish.
+7. **Never number the blocks** (owner rule, 2026-09-07). A numbered
+   block turns every reorder into a diff that renumbers the whole
+   file, and the real change disappears inside it. Instead:
+   - Every block owns a **mnemonic**: the model, the runtime and the
+     config or the task, in the style the result files already use
+     (`gemma12-gguf-2slot`, `qwen36-gguf-guided-high`,
+     `retry-sweep`). The mnemonic is the block's name everywhere: its
+     heading, every cross-reference, and the values it writes into
+     `state.md`.
+   - The runbook opens with an **unordered list of those mnemonics,
+     one line each, and that list is the order.** The owner reorders
+     the run by moving one line, and the diff shows one line.
+   - The block sections themselves sit in whatever order the file
+     finds convenient. A section never says which block comes next; a
+     reader who needs the order reads the list at the top.
+   - A block that needs a value from another block names that block by
+     its mnemonic, never by a position.
+   - **Every speed block runs before the next agent row** (owner rule,
+     2026-09-14). A sweep, ladder or creep added while the run is
+     already past its stage goes to the top of the remaining list, and
+     the runner takes it at the next block boundary. A running agent
+     row is never stopped for it. Run 17 kept a replaced model's sweep
+     in its old place, and the runner passed it for a day of agent
+     rows.
+
+   Each block gives: the serving
+   command with its derived parameters marked and sourced, the run
+   command (with every env var), where results land, what "done"
+   means, and what to update when it is done (tables, `results.md`,
+   `state.md`, commit). A serving command is exact in its files and
+   flags and open in its measured values: write `-c <newest clean
+   ceiling; planning value 98304, the qwen36 ladder of the run
+   before>`, never a bare number that a later block of the same run
+   can outdate.
+8. Make every condition executable. "If promising" is a coordinator
+   judgment. Resolve it while planning, or spell out the test the
+   runner applies and what to do on each outcome. A gate's outcome
+   includes the values it sets for later blocks; write them as
+   assignments the runner records in `state.md`, so a later block
+   reads its parameters from `state.md`, not from this file.
+9. Bake in the failure paths so the GPU never sits idle: what to check
+   when output stops growing (server log first; see
+   `docs/agents/server-lore.md`), how to resume each block, and
+   the rule that the next block on the list starts the moment one
+   ends. No approval gates.
+   **A recoverable failure is retried at once, inside its block**
+   (owner rule, 2026-09-13): a dead benchy cell, a server that died
+   under a request, a row killed by the machine, anything the runner
+   can repeat with no human action. The retry runs before the next
+   block starts, and a block that a later block depends on never
+   closes with a hole in it. Run 16 put a dead deep cell into the
+   end-of-run sweep, and the agent row that depended on it ran on a
+   stale cell for a day; that is the failure this rule ends. The last
+   line of every runbook's list is still the retry sweep, but it
+   holds only what needed a human first: a permission the runner's
+   session refused, a login, an owner decision, a stop the owner
+   ordered. The runbook says which kind each failure path is. Nothing
+   of an interrupted run is cleaned up mid-run
+   (`site/method/agent-coding.md` and `docs/agents/standing-rules.md`).
+10. Close the loop: when the run ends, the runner updates `state.md`
+   with a clean handing-over section, and the coordinator adds the
+   run's findings to `hardware/<hardware-id>/benchmarks/INDEX.md`,
+   and writes the run's final derived values into the owner's harness
+   file and the site in the same pass. The site part follows
+   `docs/agents/site-writer.md` and `docs/agents/site-reviewer.md`,
+   regenerating tables with `npm run docs:tables` and checking parity
+   with `npm run docs:check`.
+11. Read the finished runbook once more as the runner would, in the
+   order the list at the top gives,
+   and ask of every number: is this identity, or a measurement
+   that this run can outdate? Every measurement gets a source and a
+   "newest wins" path, or the block that measures it moves earlier.
+
+The operational docs carry the "how to not make mistakes":
+`docs/agents/checklist.md` is the run loop, `docs/agents/common-rules.md` the
+measurement rules, `site/method/*.md` the public test protocols, and
+`docs/agents/server-lore.md` the debugging lore. A runbook never restates them; it
+links them at the exact step where they apply.
+
+## Spawning the runner
+
+Give the runner a short prompt: the reading list (its `AGENT.md` first),
+the standing prohibitions (push only on owner request, and then only
+`master`; no publish), the heartbeat format
+(`docs/agents/status-lines.md`), the `ScheduleWakeup` every 1200
+seconds from the first action, background task or not, and the instruction to
+keep working until every block is done or truly blocked. Pass the STE
+prose rule on. Do not paste findings or history into the prompt; that
+is what the files are for.
+
+## When the owner asks what is pending
+
+List software, bench and project items: things that produce an
+artifact (a page, a tool, a run, a decision recorded in a file). Do not
+list transient workflow state: what is pushed, what is staged, which
+agent is running, which window to use. That belongs in the handoff's
+current-state section, not in an answer.
+
+**A stale Coding cell from a small window change is the lowest
+priority on the machine** (owner rule, 2026-09-12). When a harness
+window moves a little after a row was scored (the MLX 5 percent rule
+moved two rows), the cell gets the dagger and nothing else: never
+suggest the rerun, never put it in a runbook, never list it as
+pending. The score would land almost where it is, one compaction
+more or less. It runs only when the machine has nothing else to do,
+for the sake of clearing the dagger.
+
+## The handoff file
+
+`HANDOFF.md` at the repo root is the coordinator's working state: what
+is mid-flight, what was decided and not yet written anywhere else, what
+the next coordinator session must know. It is gitignored on purpose. It
+is one person's current state, not repo content. Each repo user starts
+with an empty one.
+
+Rules for writing it:
+
+- It is not for the benchmark runner. Runners read their
+  `bench<N>/AGENT.md`. Pointing a runner at the handoff leaks
+  coordinator context and stale state into a run.
+- State the desired next state, never what "is running". The next
+  session starts at an unknown time, and claims about live state go
+  stale.
+- Keep only what the next coordinator session needs and no other file
+  holds. When something belongs to a run, move it to the run kit; when
+  it is a durable rule, move it to `site/method/` or `docs/agents/standing-rules.md`.
+- Keep it small (owner rule, 2026-09-03). The handoff exists to pick
+  up where things are and to say where the detail lives. Committed
+  content gets a pointer, never a summary. Only uncommitted state,
+  open decisions, and in-flight work earn sentences. The handoff
+  itself opens with a "Handoff guidelines" section that carries these
+  rules and is never removed on a rewrite.

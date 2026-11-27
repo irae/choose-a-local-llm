@@ -1,12 +1,22 @@
 import { readFileSync, existsSync, statSync, globSync } from 'node:fs'
 import { join, dirname, resolve } from 'node:path'
 
-const dist = resolve(process.argv[2] ?? 'docs/.vitepress/dist')
+const dist = resolve(process.argv[2] ?? 'site/.vitepress/dist')
 
-const config = readFileSync('docs/.vitepress/config.mjs', 'utf8')
+const config = readFileSync('site/.vitepress/config.mjs', 'utf8')
 const base = config.match(/^\s*base:\s*['"]([^'"]+)['"]/m)?.[1] ?? '/'
 
+if (!existsSync(dist)) {
+  console.error(`link check failed: build output not found at ${dist}. Run \`npm run build\` first.`)
+  process.exit(1)
+}
+
 const pages = globSync('**/*.html', { cwd: dist })
+if (!pages.length) {
+  console.error(`link check failed: 0 HTML pages found under ${dist}. Run \`npm run build\` first.`)
+  process.exit(1)
+}
+
 let dead = 0
 let checked = 0
 
@@ -46,5 +56,5 @@ for (const page of pages) {
   }
 }
 
-console.log(`\nbase ${base} — ${checked} links checked, ${dead} dead`)
+console.log(`\nbase ${base} — ${pages.length} pages, ${checked} links checked, ${dead} dead`)
 process.exit(dead ? 1 : 0)

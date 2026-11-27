@@ -1,0 +1,1756 @@
+{
+  "hardwareId": "kamaji",
+  "hardwareSlug": "m1-max-32gb",
+  "hardwareName": "M1 Max 32 GB",
+  "hardware": "Apple M1 Max, 32 GB unified memory, macOS",
+  "wiredLimit": 25000,
+  "benchRuns": 21,
+  "rows": [
+    {
+      "config": "Qwen3.8-27B, MLX 4-bit, unquantized KV, effort medium",
+      "maxCtx": "25k",
+      "gatedBy": "mem",
+      "tokShallow": "17.3",
+      "tokDeep": "14.8",
+      "memory": "22.0 GB",
+      "evalplus": "0.982/0.939/100%",
+      "mendel": "not run",
+      "id": "qwen38-mlx-medium",
+      "evalplusWall": 212.3,
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "4-bit",
+        "server": "mlx_lm.server",
+        "publisher": "mlx-community",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "medium"
+      },
+      "hidden": false,
+      "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --reasoning-effort medium --port 8081",
+      "note": "MLX server ignores thinking budget; 26k ceiling is too narrow for the 46k agent task, and medium is retired for Qwen3.8.",
+      "pi": {
+        "provider": "mlx",
+        "id": "mlx-community/Qwen3.8-27B-4bit",
+        "contextWindow": 24576,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Qwen3.8-27B, MLX 4-bit, unquantized KV, effort low",
+      "maxCtx": "25k",
+      "gatedBy": "mem",
+      "tokShallow": "17.3",
+      "tokDeep": "14.8",
+      "memory": "22.0 GB",
+      "evalplus": "0.976/0.927/100%",
+      "mendel": "pending",
+      "id": "qwen38-mlx-low",
+      "evalplusWall": 128.5,
+      "stale": [
+        "mendel"
+      ],
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "4-bit",
+        "server": "mlx_lm.server",
+        "publisher": "mlx-community",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "low"
+      },
+      "hidden": false,
+      "command": "mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit \\\n  --chat-template-args '{\"reasoning_effort\":\"low\"}' --prompt-cache-size 2 --port 8081",
+      "note": "Shares depth curve with effort-medium MLX row. MLX server does not enforce the 8192 thinking budget."
+    },
+    {
+      "config": "Qwen3.8-27B, GGUF Q4_K_M (bartowski), no drafter, f16 KV, effort medium",
+      "maxCtx": "72k",
+      "gatedBy": "mem",
+      "tokShallow": "12.4",
+      "tokDeep": "9.7",
+      "memory": "25.0 GB",
+      "evalplus": "0.982/0.939/100%",
+      "mendel": "pending",
+      "mendelDrafter": "mtp/3",
+      "id": "qwen38-gguf-medium",
+      "evalplusWall": 212.3,
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "Q4_K_M",
+        "server": "llama-server",
+        "publisher": "bartowski",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "medium"
+      },
+      "hidden": false,
+      "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b-q4km --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 73728 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "MTP drafter loses at every depth on real text; served without drafter. Effort medium is retired for Qwen3.8; EvalPlus carried from MLX.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b-q4km",
+        "contextWindow": 65536,
+        "maxTokens": 8192
+      },
+      "stale": [
+        "evalplus"
+      ]
+    },
+    {
+      "config": "Qwen3.8-27B, GGUF Q4_K_M (bartowski), no drafter, f16 KV, effort xhigh",
+      "maxCtx": "72k",
+      "gatedBy": "mem",
+      "tokShallow": "12.4",
+      "tokDeep": "9.7",
+      "memory": "25.0 GB",
+      "evalplus": "0.982/0.951/100%",
+      "mendel": "pending",
+      "mendelDrafter": "mtp/3",
+      "id": "qwen38-gguf-xhigh",
+      "evalplusWall": 304.4,
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "Q4_K_M",
+        "server": "llama-server",
+        "publisher": "bartowski",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "xhigh"
+      },
+      "hidden": false,
+      "command": "llama-server -hf bartowski/Qwen3.8-27B-GGUF:Q4_K_M \\\n  --alias qwen3.8-27b --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 73728 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Best overall local coding agent (93/100 blind, 0 critical, 3 compactions); fast-mode EvalPlus 0.982/0.951 (9/164 forced). Served without drafter."
+    },
+    {
+      "config": "Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), MTP, f16 KV, effort medium",
+      "maxCtx": "128k",
+      "gatedBy": "mem",
+      "tokShallow": "15.1",
+      "tokDeep": "9.7",
+      "memory": "24.2 GB",
+      "evalplus": "0.976/0.945/99%",
+      "mendel": "pending",
+      "id": "qwen38-gguf-ista-iq3s",
+      "evalplusWall": 191.6,
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "IQ3_S-mtp",
+        "server": "llama-server",
+        "publisher": "ISTA-DASLab",
+        "drafter": "mtp/3",
+        "kv": "f16",
+        "effort": "medium"
+      },
+      "stale": [
+        "tokShallow",
+        "tokDeep",
+        "evalplus"
+      ],
+      "hidden": false,
+      "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista-f16-mtp3 --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 131072 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Historical MTP n-max 3 measurement at effort medium (76.5/100 blind). No-drafter xhigh row below is faster and 33k deeper.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b-ista-f16-mtp3",
+        "contextWindow": 114688,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort xhigh",
+      "maxCtx": "147k",
+      "gatedBy": "speed",
+      "tokShallow": "14.1",
+      "tokDeep": "8.1",
+      "memory": "24.4 GB",
+      "evalplus": "0.976/0.945/100%",
+      "mendel": "pending",
+      "id": "qwen38-gguf-ista-nodrafter-xhigh",
+      "evalplusWall": 332,
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "IQ3_S-mtp",
+        "server": "llama-server",
+        "publisher": "ISTA-DASLab",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "xhigh"
+      },
+      "hidden": false,
+      "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista-f16 --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 163840 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Long-context 3-bit option: 147k speed-capped window without drafter (80.5/100 blind; 87/100 under 8192 thinking budget). Fast-mode EvalPlus 0.976/0.945 (13/164 forced).",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b-ista-f16",
+        "contextWindow": 147456,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Qwen3.8-27B, GGUF IQ3_S-mtp (ISTA GSQ-RCO), no drafter, f16 KV, effort low",
+      "maxCtx": "147k",
+      "gatedBy": "speed",
+      "tokShallow": "14.1",
+      "tokDeep": "8.1",
+      "memory": "24.4 GB",
+      "evalplus": "0.976/0.933/99%",
+      "mendel": "pending",
+      "id": "qwen38-gguf-ista-nodrafter-low",
+      "evalplusWall": 147,
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "IQ3_S-mtp",
+        "server": "llama-server",
+        "publisher": "ISTA-DASLab",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "low"
+      },
+      "hidden": false,
+      "command": "llama-server -hf ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S-mtp \\\n  --alias qwen3.8-27b-ista --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 163840 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Shares curve with xhigh row. Blind Mendel scored 66/100 partial (7/8, hit 25m turn cap) while using more time and context than xhigh.",
+      "stale": [
+        "evalplus"
+      ]
+    },
+    {
+      "config": "Qwen3.8-27B, GGUF UD-IQ3_S (unsloth), no drafter, f16 KV, effort xhigh",
+      "maxCtx": "147k",
+      "gatedBy": "speed",
+      "tokShallow": "13.60",
+      "tokDeep": "7.97",
+      "memory": "25.5 GB",
+      "evalplus": "0.976/0.945/100%",
+      "mendel": "pending",
+      "id": "qwen38-gguf-unsloth-iq3s-xhigh",
+      "added": "2026-09-14",
+      "evalplusWall": 389,
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "UD-IQ3_S",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "xhigh"
+      },
+      "hidden": false,
+      "command": "llama-server -hf unsloth/Qwen3.8-27B-GGUF:UD-IQ3_S \\\n  --alias qwen3.8-27b-iq3s-f16 --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 188416 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "147k speed-capped window; fast-mode EvalPlus 0.976/0.945 (17/164 forced). Blind 90.5/100 merged master mid-run (not base-comparable); guided 62.5 partial at 300m cap.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b-iq3s-f16",
+        "contextWindow": 147456,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Qwen3.8-27B, GGUF AD-IQ3_S (AtomicChat), no drafter, f16 KV, effort medium",
+      "maxCtx": "104k",
+      "gatedBy": "mem",
+      "tokShallow": "14.3",
+      "tokDeep": "9.6",
+      "memory": "24.1 GB",
+      "evalplus": "0.988/0.927/100%",
+      "mendel": "pending",
+      "mendelDrafter": "mtp/3",
+      "id": "qwen38-gguf-atomicchat-iq3s",
+      "evalplusWall": 190.5,
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "AD-IQ3_S",
+        "server": "llama-server",
+        "publisher": "AtomicChat",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "medium"
+      },
+      "hidden": false,
+      "command": "llama-server -hf AtomicChat/Qwen3.8-27B-GGUF:AD-IQ3_S \\\n  --alias qwen3.8-27b-ad-iq3s --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 106496 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Sweep ended cleanly at 98k without hitting a limit; MTP drafter loses at every depth. Blind medium ended partial (37.5/100) on a directory-search loop.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.8-27b-ad-iq3s",
+        "contextWindow": 98304,
+        "maxTokens": 8192
+      },
+      "stale": [
+        "evalplus"
+      ]
+    },
+    {
+      "config": "Qwen3.6-35B-A3B, MLX, unquantized KV, thinking on",
+      "maxCtx": "37k",
+      "gatedBy": "mem",
+      "tokShallow": "54.5",
+      "tokDeep": "39.1",
+      "memory": "24.6 GB",
+      "evalplus": "0.957/0.939/99%",
+      "mendel": "pending",
+      "id": "qwen36-mlx-think",
+      "evalplusWall": 301.5,
+      "spec": {
+        "base": "Qwen3.6-35B-A3B",
+        "quant": "4-bit",
+        "server": "mlx_lm.server",
+        "publisher": "mlx-community",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "on"
+      },
+      "hidden": false,
+      "command": "mlx_lm.server --model mlx-community/Qwen3.6-35B-A3B-4bit \\\n  --prompt-cache-size 2 --port 8081",
+      "note": "OOMs in Metal generation thread past 41k while health endpoint stays up; MLX server does not enforce the 8192 thinking budget.",
+      "pi": {
+        "provider": "mlx",
+        "id": "mlx-community/Qwen3.6-35B-A3B-4bit",
+        "contextWindow": 36864,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking on",
+      "maxCtx": "82k",
+      "gatedBy": "speed",
+      "tokShallow": "43.7",
+      "tokDeep": "13.0",
+      "memory": "25.6 GB",
+      "evalplus": "0.976/0.939/100%",
+      "mendel": "pending",
+      "id": "qwen36-gguf-think",
+      "evalplusWall": 147.4,
+      "spec": {
+        "base": "Qwen3.6-35B-A3B",
+        "quant": "UD-Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "drafter": "mtp/3",
+        "kv": "q8_0",
+        "effort": "on"
+      },
+      "hidden": false,
+      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b-q4kxl-q8-mtp3 --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "Best fast MoE on M1 Max: 82k window with q8_0 KV and MTP n-max 3 (83/100 guided, 63/100 blind). Note: b10964 crashes on MTP+reasoning-budget.",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.6-35b-a3b-q4kxl-q8-mtp3",
+        "contextWindow": 81920,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Qwen3.6-35B-A3B, GGUF, MTP, q8_0 KV, thinking off",
+      "maxCtx": "82k",
+      "gatedBy": "speed",
+      "tokShallow": "43.7",
+      "tokDeep": "13.0",
+      "memory": "25.6 GB",
+      "evalplus": "0.951/0.915/100%",
+      "mendel": "pending",
+      "id": "qwen36-gguf-off",
+      "evalplusWall": 14.7,
+      "spec": {
+        "base": "Qwen3.6-35B-A3B",
+        "quant": "UD-Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "drafter": "mtp/3",
+        "kv": "q8_0",
+        "effort": "off"
+      },
+      "hidden": false,
+      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 98304 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "Shares server and curve with thinking-on row; thinking toggled per request. Scored 50.5/100 blind and 62.5/100 guided (81920 window)."
+    },
+    {
+      "config": "Qwen3.6-35B-A3B, GGUF, no drafter, f16 KV, thinking on",
+      "maxCtx": "66k",
+      "gatedBy": "mem",
+      "tokShallow": "50.5",
+      "tokDeep": "33.6",
+      "memory": "25.0 GB",
+      "evalplus": "0.976/0.939/100%",
+      "mendel": "pending",
+      "id": "qwen36-gguf-f16-nodrafter",
+      "evalplusWall": 147.4,
+      "stale": [
+        "tokShallow",
+        "tokDeep"
+      ],
+      "spec": {
+        "base": "Qwen3.6-35B-A3B",
+        "quant": "UD-Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "on"
+      },
+      "hidden": false,
+      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b-q4kxl-f16 --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 65536 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "No-drafter f16 KV holds 66k (60% deeper than MTP f16) at 50.5→33.6 tok/s. Blind Mendel 50/100 (8/8, 2 compactions).",
+      "pi": {
+        "provider": "llama",
+        "id": "qwen3.6-35b-a3b-q4kxl-f16",
+        "contextWindow": 65536,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Qwen3.6-35B-A3B, GGUF, MTP, f16 KV, thinking on",
+      "maxCtx": "41k",
+      "gatedBy": "mem",
+      "tokShallow": "69.1",
+      "tokDeep": "52.6",
+      "memory": "25.1 GB",
+      "evalplus": "0.976/0.939/100%",
+      "mendel": "pending",
+      "id": "qwen36-gguf-f16",
+      "evalplusWall": 147.4,
+      "spec": {
+        "base": "Qwen3.6-35B-A3B",
+        "quant": "UD-Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "drafter": "mtp/3",
+        "kv": "f16",
+        "effort": "on"
+      },
+      "stale": [
+        "tokShallow",
+        "tokDeep"
+      ],
+      "hidden": false,
+      "command": "llama-server -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL \\\n  --alias qwen3.6-35b-a3b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 3 --parallel 1 \\\n  -ngl 999 -fa on -c 40960 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "MTP n-max 3 with f16 KV hits 52.6 tok/s at 41k (2.8x faster than q8_0 at 33k) for half the context window."
+    },
+    {
+      "config": "Gemma-4-26B-A4B, MLX, unquantized KV",
+      "maxCtx": "66k",
+      "gatedBy": "mem",
+      "tokShallow": "49.3",
+      "tokDeep": "23.4",
+      "memory": "20.0 GB",
+      "evalplus": "0.793/0.768/81%",
+      "mendel": "failed-smoke",
+      "id": "gemma26-mlx",
+      "evalplusWall": 546,
+      "spec": {
+        "base": "Gemma-4-26B-A4B",
+        "quant": "4-bit",
+        "server": "mlx_lm.server",
+        "publisher": "mlx-community",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "on"
+      },
+      "hidden": false,
+      "abandoned": {
+        "marker": "💀",
+        "page": "/setups/m1-max-32gb/archive#gemma-4-26b-a4b-mlx",
+        "reason": "This MLX build is retired here: it failed the agent smoke on a truncated tool call, while the GGUF build of the same model completes the task."
+      },
+      "note": "Retired: failed agent smoke on truncated tool call; 31/164 empty on EvalPlus. MLX server ignores thinking budget.",
+      "command": "mlx_lm.server --model mlx-community/gemma-4-26b-a4b-it-4bit \\\n  --prompt-cache-size 2 --port 8081",
+      "pi": {
+        "provider": "mlx",
+        "id": "mlx-community/gemma-4-26b-a4b-it-4bit",
+        "contextWindow": 65536,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Gemma-4-26B-A4B, GGUF, MTP, f16 KV",
+      "maxCtx": "197k",
+      "gatedBy": "mem",
+      "tokShallow": "60.1",
+      "tokDeep": "19.1",
+      "memory": "25.6 GB",
+      "evalplus": "0.988/0.957/100%",
+      "mendel": "pending",
+      "id": "gemma26-gguf",
+      "evalplusWall": 117.1,
+      "spec": {
+        "base": "Gemma-4-26B-A4B",
+        "quant": "UD-Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "drafter": "mtp/2",
+        "kv": "f16",
+        "effort": "on"
+      },
+      "hidden": false,
+      "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-q4kxl-mtp2 --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 1 \\\n  -ngl 999 -fa on -c 212992 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Longest usable M1 Max window (197k) with MTP n-max 2; fast-mode EvalPlus 0.988/0.957 (19/164 forced). Mendel 47.5/100 blind, 57/100 guided.",
+      "pi": {
+        "provider": "llama",
+        "id": "gemma-4-26b-a4b-q4kxl-mtp2",
+        "contextWindow": 212992,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Gemma-4-26B-A4B, GGUF, MTP, f16 KV, 2 slots",
+      "maxCtx": "2x82k",
+      "gatedBy": "mem",
+      "tokShallow": "66.6",
+      "tokDeep": "33.6",
+      "memory": "25.3 GB",
+      "evalplus": "0.988/0.957/100%",
+      "mendel": "pending",
+      "id": "gemma26-gguf-2x",
+      "evalplusWall": 117.1,
+      "spec": {
+        "base": "Gemma-4-26B-A4B",
+        "quant": "UD-Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "drafter": "mtp/2",
+        "kv": "f16",
+        "effort": "on"
+      },
+      "stale": [
+        "tokShallow",
+        "tokDeep"
+      ],
+      "hidden": false,
+      "command": "llama-server -hf unsloth/gemma-4-26b-a4b-it-GGUF:UD-Q4_K_XL \\\n  --alias gemma-4-26b-a4b-2x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 2 --parallel 2 \\\n  -ngl 999 -fa on -c 202752 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Two parallel slots at -c 202752 (101k/slot, 82k swept clean at 33.6 tok/s). Shares EvalPlus with single-slot f16 row."
+    },
+    {
+      "id": "gemma12-lmstudio-think",
+      "spec": {
+        "base": "Gemma-4-12B",
+        "quant": "4-bit",
+        "server": "lms",
+        "publisher": "lmstudio-community",
+        "repo": "lmstudio-community/gemma-4-12B-it-MLX-4bit",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "on"
+      },
+      "config": "Gemma-4-12B, LM Studio entry google/gemma-4-12b",
+      "retired": {
+        "date": "2026-09-04",
+        "reason": "thinking-on repetition loop; entry gone from the model store",
+        "details": "/setups/m1-max-32gb/archive#lm-studio"
+      }
+    },
+    {
+      "config": "Gemma-4-12B, LMS, unquantized KV, thinking off",
+      "maxCtx": "131k",
+      "gatedBy": "mem",
+      "tokShallow": "34.19",
+      "tokDeep": "23.23",
+      "memory": "17.2 GB",
+      "evalplus": "0.909/0.872/100%",
+      "mendel": "model-failed",
+      "id": "gemma12-lmstudio-off",
+      "evalplusWall": 93,
+      "spec": {
+        "base": "Gemma-4-12B",
+        "quant": "4-bit",
+        "server": "lms",
+        "publisher": "lmstudio-community",
+        "repo": "lmstudio-community/gemma-4-12B-it-MLX-4bit",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "off"
+      },
+      "hidden": false,
+      "command": "~/.cache/lm-studio/bin/lms server start --port 8081\n~/.cache/lm-studio/bin/lms load gemma-4-12b-it-mlx --parallel 4 --gpu max -y",
+      "note": "Retired with LM Studio: API cannot enable thinking, loops in multi-turn tool use, zero commits across three agent runs.",
+      "pi": {
+        "provider": "lmstudio",
+        "id": "gemma-4-12b-it-mlx",
+        "contextWindow": 131072,
+        "maxTokens": 8192
+      },
+      "abandoned": {
+        "marker": "💀",
+        "page": "/setups/m1-max-32gb/archive#lm-studio",
+        "reason": "LM Studio is retired here: three agent runs, zero commits, a window that cannot be pinned."
+      }
+    },
+    {
+      "config": "Gemma-4-12B, GGUF, f16 KV, no drafter, thinking off",
+      "maxCtx": "245k",
+      "gatedBy": "mem",
+      "tokShallow": "25.0",
+      "tokDeep": "9.2",
+      "memory": "13.9 GB",
+      "evalplus": "0.976/0.939/100%",
+      "mendel": "model-failed",
+      "id": "gemma12-gguf-f16",
+      "evalplusWall": 43.1,
+      "spec": {
+        "base": "Gemma-4-12B",
+        "quant": "Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "off"
+      },
+      "hidden": false,
+      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-q4kxl --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Reaches 245k at 13.9 GB wired; 0.976/0.939 EvalPlus thinking-off. Blind Mendel 0/100 (0 commits); guided 37.5/100 (3/8, text loop).",
+      "pi": {
+        "provider": "llama",
+        "id": "gemma-4-12b-q4kxl",
+        "contextWindow": 262144,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Gemma-4-12B, GGUF, MTP, q8_0 KV, thinking off",
+      "maxCtx": "16k",
+      "gatedBy": "speed",
+      "tokShallow": "13.8",
+      "tokDeep": "6.5",
+      "memory": "10.5 GB",
+      "evalplus": "0.976/0.939/100%",
+      "mendel": "pending",
+      "id": "gemma12-gguf-off",
+      "evalplusWall": 43.1,
+      "spec": {
+        "base": "Gemma-4-12B",
+        "quant": "Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "drafter": "mtp/4",
+        "kv": "q8_0",
+        "effort": "off"
+      },
+      "stale": [
+        "tokShallow",
+        "tokDeep"
+      ],
+      "hidden": false,
+      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k q8_0 --cache-type-v q8_0 \\\n  --jinja --port 8081",
+      "note": "q8_0 KV on Metal triggers slow dequantization, dropping below the 8 tok/s floor by 16k. Use f16 KV instead."
+    },
+    {
+      "config": "Gemma-4-12B, GGUF, MTP, f16 KV, 4 slots, thinking off",
+      "maxCtx": "4x49k",
+      "gatedBy": "mem",
+      "tokShallow": "42.9",
+      "tokDeep": "27.7",
+      "memory": "25.1 GB",
+      "evalplus": "0.976/0.939/100%",
+      "mendel": "pending",
+      "id": "gemma12-gguf-4x",
+      "evalplusWall": 43.1,
+      "spec": {
+        "base": "Gemma-4-12B",
+        "quant": "Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "drafter": "mtp/4",
+        "kv": "f16",
+        "effort": "off"
+      },
+      "stale": [
+        "tokShallow",
+        "tokDeep"
+      ],
+      "hidden": false,
+      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-4x --no-mmproj \\\n  --spec-type draft-mtp --spec-draft-n-max 4 --parallel 4 \\\n  -ngl 999 -fa on -c 655360 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Four parallel slots at -c 655360; swap grew at 66k (last clean step 49k at 27.7 tok/s under heavy memory pressure)."
+    },
+    {
+      "config": "Gemma-4-12B, GGUF, f16 KV, no drafter, 2 slots, thinking off",
+      "maxCtx": "2x82k",
+      "gatedBy": "mem",
+      "tokShallow": "25.0",
+      "tokDeep": "15.7",
+      "memory": "13.8 GB",
+      "evalplus": "0.976/0.939/100%",
+      "mendel": "pending",
+      "id": "gemma12-gguf-2x",
+      "evalplusWall": 43.1,
+      "stale": [
+        "tokShallow",
+        "tokDeep"
+      ],
+      "spec": {
+        "base": "Gemma-4-12B",
+        "quant": "Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "off"
+      },
+      "hidden": false,
+      "command": "llama-server -hf unsloth/gemma-4-12b-it-GGUF:Q4_K_XL \\\n  --alias gemma-4-12b-q4kxl-2slot --no-mmproj --parallel 2 \\\n  -ngl 999 -fa on -c 196608 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Two parallel slots at -c 196608; clean per-slot depth holds 82k at 15.7 tok/s regardless of larger -c allocations.",
+      "pi": {
+        "provider": "llama",
+        "id": "gemma-4-12b-q4kxl-2slot",
+        "contextWindow": 81920,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking on",
+      "maxCtx": "40k",
+      "gatedBy": "mem",
+      "tokShallow": "24.5",
+      "tokDeep": "17.3",
+      "memory": "22.5 GB",
+      "evalplus": "0.933/0.902/99%",
+      "mendel": "pending",
+      "id": "bonsai-mlx",
+      "evalplusWall": 1164.1,
+      "stale": [
+        "tokShallow",
+        "tokDeep",
+        "mendel"
+      ],
+      "spec": {
+        "base": "Ternary-Bonsai-27B",
+        "quant": "2-bit",
+        "server": "mlx_lm.server",
+        "publisher": "prism-ml",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "on"
+      },
+      "hidden": false,
+      "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
+      "note": "Requires --prompt-cache-size 2 to avoid cache leak. Generation thread Metal-OOMs near 47k (window 40k); MLX server ignores thinking budget.",
+      "pi": {
+        "provider": "mlx",
+        "id": "prism-ml/Ternary-Bonsai-27B-mlx-2bit",
+        "contextWindow": 40960,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Ternary-Bonsai-27B, MLX, unquantized KV, bounded cache, thinking off",
+      "maxCtx": "40k",
+      "gatedBy": "mem",
+      "tokShallow": "24.5",
+      "tokDeep": "17.3",
+      "memory": "22.5 GB",
+      "evalplus": "0.927/0.902/100%",
+      "mendel": "pending",
+      "id": "bonsai-mlx-off",
+      "evalplusWall": 46.1,
+      "stale": [
+        "tokShallow",
+        "tokDeep"
+      ],
+      "spec": {
+        "base": "Ternary-Bonsai-27B",
+        "quant": "2-bit",
+        "server": "mlx_lm.server",
+        "publisher": "prism-ml",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "off"
+      },
+      "hidden": false,
+      "command": "mlx_lm.server --model prism-ml/Ternary-Bonsai-27B-mlx-2bit \\\n  --prompt-cache-size 2 --port 8081",
+      "note": "Shares server and curve with thinking-on MLX row; disables thinking via enable_thinking=false."
+    },
+    {
+      "config": "Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, thinking on",
+      "maxCtx": "33k",
+      "gatedBy": "speed",
+      "tokShallow": "14.7",
+      "tokDeep": "7.8",
+      "memory": "9.6 GB",
+      "evalplus": "0.951/0.915/100%",
+      "mendel": "pending",
+      "id": "bonsai-fork-single",
+      "evalplusWall": 551.4,
+      "spec": {
+        "base": "Ternary-Bonsai-27B",
+        "quant": "Q2_g64",
+        "server": "prism-llama",
+        "publisher": "prism-ml",
+        "repo": "prism-ml/Ternary-Bonsai-27B-gguf",
+        "drafter": "",
+        "kv": "q4_0+bias",
+        "effort": "on"
+      },
+      "hidden": false,
+      "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-27b-q2g64-q4bias \\\n  -ngl 999 -fa on -c 65536 --parallel 1 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
+      "note": "PrismML fork with generated q4_0 KV bias file; speed-floors at 33k. Fast-mode EvalPlus 0.951/0.915 (4/164 forced).",
+      "pi": {
+        "provider": "llama",
+        "id": "bonsai-27b-q2g64-q4bias",
+        "contextWindow": 65536,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Ternary-Bonsai-27B, GGUF⁵, q4_0 KV + bias, 2 slots, thinking on",
+      "maxCtx": "2x48k",
+      "gatedBy": "speed",
+      "tokShallow": "14.9",
+      "tokDeep": "7.8",
+      "memory": "10.9 GB",
+      "evalplus": "0.951/0.915/100%",
+      "mendel": "pending",
+      "id": "bonsai-fork-2x",
+      "evalplusWall": 551.4,
+      "stale": [
+        "tokShallow",
+        "tokDeep"
+      ],
+      "spec": {
+        "base": "Ternary-Bonsai-27B",
+        "quant": "Q2_g64",
+        "server": "prism-llama",
+        "publisher": "prism-ml",
+        "repo": "prism-ml/Ternary-Bonsai-27B-gguf",
+        "drafter": "",
+        "kv": "q4_0+bias",
+        "effort": "on"
+      },
+      "hidden": false,
+      "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-prism-2x \\\n  -ngl 999 -fa on -c 98304 --parallel 2 \\\n  --cache-type-k q4_0 --cache-type-v q4_0 \\\n  --kv-mean-center ~/.local/share/choose-a-local-llm/Ternary-Bonsai-27B-kv-bias.gguf \\\n  --jinja --port 8081",
+      "note": "Two parallel slots on PrismML fork with q4_0+bias KV; speed-floors at 48k per slot."
+    },
+    {
+      "config": "Ternary-Bonsai-27B, GGUF⁵, f16 KV, no drafter, thinking on",
+      "maxCtx": "131k",
+      "gatedBy": "mem",
+      "tokShallow": "15.0",
+      "tokDeep": "9.7",
+      "memory": "18.6 GB",
+      "evalplus": "pending",
+      "mendel": "pending",
+      "id": "bonsai-fork-f16",
+      "stale": [
+        "tokShallow",
+        "tokDeep"
+      ],
+      "spec": {
+        "base": "Ternary-Bonsai-27B",
+        "quant": "Q2_g64",
+        "server": "prism-llama",
+        "publisher": "prism-ml",
+        "repo": "prism-ml/Ternary-Bonsai-27B-gguf",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "on"
+      },
+      "hidden": false,
+      "command": "LLAMA_ATTN_ROT_DISABLE=1 ~/prism-llama/llama-server \\\n  -m ~/.cache/huggingface/hub/models--prism-ml--Ternary-Bonsai-27B-gguf/snapshots/<rev>/Ternary-Bonsai-27B-Q2_g64.gguf \\\n  --alias bonsai-27b-q2g64-f16 \\\n  -ngl 999 -fa on -c 131072 --parallel 1 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "PrismML fork at f16 KV removes the 33k speed floor (131k at 9.7 tok/s); guided Mendel failed partial at 12.5/100 (74 tool errors).",
+      "pi": {
+        "provider": "llama",
+        "id": "bonsai-27b-q2g64-f16",
+        "contextWindow": 131072,
+        "maxTokens": 8192
+      }
+    },
+    {
+      "config": "Ternary-Bonsai-2-27B, GGUF, PTQ1_0 (prism-ml), f16 KV, no drafter, effort xhigh",
+      "maxCtx": "160k",
+      "gatedBy": "mem",
+      "tokShallow": "17.9",
+      "tokDeep": "9.1",
+      "memory": "25.5 GB",
+      "evalplus": "0.988/0.939/100%",
+      "mendel": "pending",
+      "id": "bonsai2-ptq1-mac-xhigh",
+      "spec": {
+        "base": "Ternary-Bonsai-2-27B",
+        "quant": "PTQ1_0",
+        "server": "prism-llama",
+        "publisher": "prism-ml",
+        "repo": "prism-ml/Ternary-Bonsai-2-27B-gguf",
+        "drafter": "",
+        "kv": "f16",
+        "effort": "xhigh"
+      },
+      "hidden": false,
+      "added": "2026-09-19",
+      "command": "llama-server -m \"$(hf download prism-ml/Ternary-Bonsai-2-27B-gguf Ternary-Bonsai-2-27B-PTQ1_0.gguf)\" \\\n  --alias bonsai2-27b-ptq1-mac --no-mmproj --parallel 1 \\\n  -ngl 999 -fa on -c 262144 \\\n  --cache-type-k f16 --cache-type-v f16 \\\n  --jinja --port 8081",
+      "note": "Requires PrismML fork (prism-b10685). PTQ1_0 beats PQ2_0 on Metal (160k clean vs 41k); fast-mode EvalPlus 0.988/0.939 (10/164 forced). Mendel pending.",
+      "evalplusWall": 289
+    },
+    {
+      "config": "Ternary-Bonsai-2-27B, MLX, 2-bit pack (prism-ml), f16, no drafter, thinking on",
+      "maxCtx": "28k",
+      "gatedBy": "mem",
+      "tokShallow": "21.47",
+      "tokDeep": "10.45",
+      "memory": "15.7 GB",
+      "evalplus": "not run",
+      "mendel": "not run",
+      "id": "bonsai2-mlx-mac",
+      "spec": {
+        "base": "Ternary-Bonsai-2-27B",
+        "quant": "MLX 2-bit",
+        "server": "mlx",
+        "publisher": "prism-ml",
+        "repo": "prism-ml/Ternary-Bonsai-2-27B-mlx-2bit",
+        "drafter": "",
+        "kv": "f16",
+        "adapter": "bonsai2-mlx-server.py",
+        "effort": "on"
+      },
+      "hidden": false,
+      "added": "2026-09-21",
+      "command": "BONSAI2_PACK=<pack dir> \\\n  BONSAI2_MANIFEST=<pack dir>/bonsai2-runtime.sha256 \\\n  <venv>/bin/python tools/sweeps/bonsai2-mlx-server.py",
+      "note": "No stock server runs this pack; served via custom wrapper tools/sweeps/bonsai2-mlx-server.py (no prompt cache). Fastest at 4k (21.5 tok/s) but swap-caps at 28k."
+    }
+  ],
+  "models": {
+    "bonsai-27b": {
+      "rowMatch": "Ternary-Bonsai-27B",
+      "compareWith": "bonsai-2-27b"
+    },
+    "gemma-4-12b-it": {
+      "rowMatch": "Gemma-4-12B",
+      "mendelUntrusted": [
+        {
+          "serving": "lm-studio",
+          "marker": "💀",
+          "page": "/setups/m1-max-32gb/archive#lm-studio",
+          "reason": "LM Studio is retired here: every agent run ended with zero commits."
+        }
+      ]
+    },
+    "gemma-4-26b-a4b": {
+      "rowMatch": "Gemma-4-26B-A4B"
+    },
+    "qwen3.6-35b-a3b": {
+      "rowMatch": "Qwen3.6-35B-A3B",
+      "mendelUntrusted": [
+        {
+          "serving": "llama-server",
+          "branch": "high-guided-v3",
+          "marker": "⏳",
+          "page": "/setups/m1-max-32gb/",
+          "reason": "this row ran on a 122880-token harness window; at wired 25000 the q8_0 arm serves `-c 98304`, so the window is out of reach. The score stands as a record; a re-run at the served window is pending, at low priority.",
+          "linkText": "What the machine serves at wired 25000"
+        }
+      ]
+    },
+    "qwen3.8-27b": {
+      "rowMatch": "Qwen3.8-27B",
+      "mendelUntrusted": [
+        {
+          "serving": "mlx_lm.server",
+          "reason": "a 26624-token window with a 16384-token output budget, our config arithmetic, not the model"
+        }
+      ]
+    },
+    "bonsai-2-27b": {
+      "rowMatch": "Ternary-Bonsai-2-",
+      "compareWith": "bonsai-27b"
+    }
+  },
+  "evalplusRuns": [
+    {
+      "wall": 815.6,
+      "emptyCause": "8 budget",
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF UD-IQ3_S, unsloth, f16 KV)",
+      "mode": "effort xhigh",
+      "row": "qwen38-gguf-unsloth-iq3s-xhigh",
+      "budget": 20000,
+      "base": "0.945",
+      "plus": "0.927",
+      "empty": "8/164"
+    },
+    {
+      "wall": 212.3,
+      "emptyCause": "none",
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (MLX 4-bit, unquantized KV)",
+      "mode": "effort medium",
+      "row": "qwen38-mlx-medium",
+      "budget": 8192,
+      "base": "0.982",
+      "plus": "0.939",
+      "empty": "0/164"
+    },
+    {
+      "wall": 191.6,
+      "emptyCause": "1 budget",
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV)",
+      "mode": "effort medium",
+      "row": "qwen38-gguf-ista-iq3s",
+      "budget": 8192,
+      "base": "0.976",
+      "plus": "0.945",
+      "empty": "1/164"
+    },
+    {
+      "wall": 190.5,
+      "emptyCause": "none",
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF AD-IQ3_S, AtomicChat, f16 KV)",
+      "mode": "effort medium",
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "AD-IQ3_S",
+        "server": "llama-server",
+        "publisher": "AtomicChat",
+        "repo": "AtomicChat/Qwen3.8-27B-GGUF",
+        "drafter": "mtp/3",
+        "kv": "f16",
+        "effort": "medium"
+      },
+      "budget": 8886,
+      "base": "0.988",
+      "plus": "0.927",
+      "empty": "0/164"
+    },
+    {
+      "wall": 147,
+      "emptyCause": "1 budget",
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
+      "mode": "effort low",
+      "row": "qwen38-gguf-ista-nodrafter-low",
+      "budget": 8192,
+      "base": "0.976",
+      "plus": "0.933",
+      "empty": "1/164"
+    },
+    {
+      "wall": 583.2,
+      "emptyCause": "5 budget",
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
+      "mode": "effort xhigh",
+      "row": "qwen38-gguf-ista-nodrafter-xhigh",
+      "budget": 30000,
+      "base": "0.945",
+      "plus": "0.921",
+      "empty": "5/164"
+    },
+    {
+      "wall": 301.5,
+      "emptyCause": "2 budget",
+      "slug": "qwen3.6-35b-a3b",
+      "model": "Qwen3.6-35B-A3B",
+      "mode": "thinking on",
+      "row": "qwen36-gguf-think",
+      "budget": 26624,
+      "base": "0.957",
+      "plus": "0.939",
+      "empty": "2/164"
+    },
+    {
+      "wall": 14.7,
+      "emptyCause": "none",
+      "slug": "qwen3.6-35b-a3b",
+      "model": "Qwen3.6-35B-A3B (GGUF UD-Q4_K_XL, q8_0 KV)",
+      "mode": "thinking off",
+      "row": "qwen36-gguf-off",
+      "budget": 8192,
+      "base": "0.951",
+      "plus": "0.915",
+      "empty": "0/164"
+    },
+    {
+      "wall": 594.8,
+      "emptyCause": "4 budget",
+      "slug": "bonsai-27b",
+      "model": "Ternary-Bonsai-27B (fork q4+bias)",
+      "mode": "thinking on",
+      "row": "bonsai-fork-single",
+      "budget": 10240,
+      "base": "0.927",
+      "plus": "0.890",
+      "empty": "4/164"
+    },
+    {
+      "wall": 1164.1,
+      "emptyCause": "2 budget",
+      "slug": "bonsai-27b",
+      "model": "Ternary-Bonsai-27B (MLX 2-bit)",
+      "mode": "thinking on",
+      "row": "bonsai-mlx",
+      "budget": 10240,
+      "base": "0.933",
+      "plus": "0.902",
+      "empty": "2/164"
+    },
+    {
+      "wall": 43.1,
+      "emptyCause": "none",
+      "slug": "gemma-4-12b-it",
+      "model": "Gemma-4-12B (GGUF Q4_K_XL)",
+      "mode": "thinking off",
+      "row": "gemma12-gguf-f16",
+      "budget": 8192,
+      "base": "0.976",
+      "plus": "0.939",
+      "empty": "0/164"
+    },
+    {
+      "wall": 93,
+      "emptyCause": "none",
+      "slug": "gemma-4-12b-it",
+      "model": "Gemma-4-12B (LM Studio MLX 4-bit)",
+      "mode": "thinking off",
+      "row": "gemma12-lmstudio-off",
+      "budget": 30000,
+      "base": "0.909",
+      "plus": "0.872",
+      "empty": "0/164"
+    },
+    {
+      "wall": 19.5,
+      "emptyCause": "none",
+      "slug": "gemma-4-26b-a4b",
+      "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)",
+      "mode": "thinking off",
+      "spec": {
+        "base": "Gemma-4-26B-A4B",
+        "quant": "UD-Q4_K_XL",
+        "server": "llama-server",
+        "publisher": "unsloth",
+        "repo": "unsloth/gemma-4-26b-a4b-it-GGUF",
+        "drafter": "mtp/2",
+        "kv": "f16",
+        "effort": "off"
+      },
+      "budget": 8192,
+      "base": "0.976",
+      "plus": "0.945",
+      "empty": "0/164"
+    },
+    {
+      "wall": 347,
+      "emptyCause": "16 budget",
+      "slug": "gemma-4-26b-a4b",
+      "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)",
+      "mode": "thinking on",
+      "row": "gemma26-gguf",
+      "budget": 30000,
+      "base": "0.896",
+      "plus": "0.872",
+      "empty": "16/164"
+    },
+    {
+      "wall": 546,
+      "emptyCause": "31 budget",
+      "slug": "gemma-4-26b-a4b",
+      "model": "Gemma-4-26B-A4B (MLX 4-bit)",
+      "mode": "thinking on",
+      "row": "gemma26-mlx",
+      "budget": 30000,
+      "base": "0.793",
+      "plus": "0.768",
+      "empty": "31/164"
+    },
+    {
+      "wall": 510.3,
+      "emptyCause": "6 budget",
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF Q4_K_M, bartowski, f16 KV)",
+      "mode": "effort xhigh",
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "Q4_K_M",
+        "server": "llama-server",
+        "publisher": "bartowski",
+        "repo": "bartowski/Qwen3.8-27B-GGUF",
+        "drafter": "mtp/3",
+        "kv": "f16",
+        "effort": "xhigh"
+      },
+      "budget": 30000,
+      "base": "0.957",
+      "plus": "0.939",
+      "empty": "6/164"
+    },
+    {
+      "wall": 337,
+      "emptyCause": "none",
+      "slug": "bonsai-2-27b",
+      "model": "Ternary-Bonsai-2-27B (GGUF PTQ1_0, prism-ml, f16 KV, prism fork)",
+      "mode": "effort xhigh",
+      "row": "bonsai2-ptq1-mac-xhigh",
+      "budget": 18104,
+      "base": "0.988",
+      "plus": "0.939",
+      "empty": "0/164",
+      "think": 16056,
+      "forced": "7/164"
+    },
+    {
+      "slug": "gemma-4-26b-a4b",
+      "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, unsloth, f16 KV)",
+      "mode": "thinking on",
+      "row": "gemma26-gguf",
+      "think": 19491,
+      "budget": 21539,
+      "base": "0.988",
+      "plus": "0.957",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "16/164",
+      "wall": 165.8
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF Q4_K_M, bartowski, f16 KV)",
+      "mode": "effort xhigh",
+      "spec": {
+        "base": "Qwen3.8-27B",
+        "quant": "Q4_K_M",
+        "server": "llama-server",
+        "publisher": "bartowski",
+        "repo": "bartowski/Qwen3.8-27B-GGUF",
+        "drafter": "mtp/3",
+        "kv": "f16",
+        "effort": "xhigh"
+      },
+      "think": 30000,
+      "budget": 32048,
+      "base": "0.982",
+      "plus": "0.951",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "3/164",
+      "wall": 448.6
+    },
+    {
+      "slug": "bonsai-27b",
+      "model": "Ternary-Bonsai-27B (fork q4+bias)",
+      "mode": "thinking on",
+      "row": "bonsai-fork-single",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.951",
+      "plus": "0.915",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "4/164",
+      "wall": 551.4
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF Q4_K_M, bartowski, f16 KV)",
+      "mode": "effort xhigh",
+      "row": "qwen38-gguf-xhigh",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.982",
+      "plus": "0.951",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "9/164",
+      "wall": 304.4,
+      "ownWall": 95.7
+    },
+    {
+      "slug": "gemma-4-26b-a4b",
+      "model": "Gemma-4-26B-A4B (GGUF UD-Q4_K_XL, f16 KV)",
+      "mode": "thinking on",
+      "row": "gemma26-gguf",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.988",
+      "plus": "0.957",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "19/164",
+      "wall": 117.1,
+      "ownWall": 38.4
+    },
+    {
+      "slug": "bonsai-2-27b",
+      "model": "Ternary-Bonsai-2-27B (GGUF PTQ1_0, prism-ml, f16 KV, prism fork)",
+      "mode": "effort xhigh",
+      "row": "bonsai2-ptq1-mac-xhigh",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.988",
+      "plus": "0.939",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "10/164",
+      "wall": 289,
+      "ownWall": 72.1
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF UD-IQ3_S, unsloth, f16 KV)",
+      "mode": "effort xhigh",
+      "row": "qwen38-gguf-unsloth-iq3s-xhigh",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.976",
+      "plus": "0.945",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "17/164",
+      "wall": 389
+    },
+    {
+      "slug": "qwen3.8-27b",
+      "model": "Qwen3.8-27B (GGUF IQ3_S-mtp, ISTA GSQ-RCO, f16 KV, no drafter)",
+      "mode": "effort xhigh",
+      "row": "qwen38-gguf-ista-nodrafter-xhigh",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.976",
+      "plus": "0.945",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "13/164",
+      "wall": 332
+    },
+    {
+      "slug": "qwen3.6-35b-a3b",
+      "model": "Qwen3.6-35B-A3B",
+      "mode": "thinking on",
+      "row": "qwen36-gguf-think",
+      "think": 8192,
+      "budget": 16384,
+      "base": "0.976",
+      "plus": "0.939",
+      "empty": "0/164",
+      "emptyCause": "none",
+      "forced": "17/164",
+      "wall": 147.4
+    }
+  ],
+  "mendelWalls": {
+    "qwen3.6-35b-a3b-issue-13": 97.1,
+    "gemma-4-26b-a4b-issue-13": 104,
+    "prism-ml-Ternary-Bonsai-27B-mlx-2bit-issue-13": 101.8,
+    "mlx-community-Qwen3.8-27B-4bit-issue-13": 253.5,
+    "mlx-community-Qwen3.8-27B-4bit-low-issue-13": 85.2,
+    "prism-ml-Ternary-Bonsai-27B-mlx-2bit-low-issue-13": 300,
+    "qwen3.6-35b-a3b-high-issue-13": 79.2,
+    "google-gemma-4-12b-high-issue-13": 49.5,
+    "bonsai-prism-high-issue-13": 43.1,
+    "gemma-4-26b-a4b-high-issue-13": 80.8,
+    "qwen3.8-27b-medium-issue-13": 129.3,
+    "gemma-4-26b-a4b-off-issue-13": 28,
+    "gemma-4-12b-off-issue-13": 80.3,
+    "qwen3.8-27b-reserve8192-medium-issue-13": 97.8,
+    "qwen3.8-27b-ista2-medium-issue-13": 135.2,
+    "qwen3.8-27b-atomicchat-medium-issue-13": 59.8,
+    "qwen3.8-27b-ista-xhigh-issue-13": 109.4,
+    "qwen3.8-27b-ista-low-issue-13": 163.3,
+    "qwen3.6-35b-a3b-off-issue-13": 40,
+    "qwen3.8-27b-xhigh-issue-13": 213.3,
+    "qwen3.6-35b-a3b-f16-on-issue-13": 33,
+    "mlx-community-Qwen3.6-35B-A3B-4bit-on-issue-13": 18.5,
+    "qwen3.8-27b-iq3s-m1-xhigh-issue-13": 185.4,
+    "qwen3.6-35b-a3b-guided-issue-13": 75.6,
+    "prism-ml-Ternary-Bonsai-27B-mlx-2bit-guided-issue-13": 230.3,
+    "mlx-community-Qwen3.8-27B-4bit-low-guided-issue-13": 153.8,
+    "prism-ml-Ternary-Bonsai-27B-mlx-2bit-low-guided-v3-issue-13": 300,
+    "qwen3.6-35b-a3b-high-guided-v3-issue-13": 91.9,
+    "google-gemma-4-12b-high-guided-v3-issue-13": 46,
+    "google-gemma-4-12b-low-guided-v3-issue-13": 99,
+    "gemma-4-12b-off-guided-v3-issue-13": 97.6,
+    "prism-ml-Ternary-Bonsai-27B-mlx-2bit-off-guided-v3-issue-13": 186.9,
+    "gemma-4-26b-a4b-off-guided-v3-issue-13": 20.4,
+    "qwen3.6-35b-a3b-off-guided-v3-issue-13": 95.6,
+    "gemma-4-26b-a4b-high-guided-v3-issue-13": 115.1,
+    "bonsai-prism-high-guided-v3-issue-13": 300,
+    "qwen3.6-35b-a3b-off-guided-v3-issue-13-w81920": 89.4,
+    "bonsai-prism-f16-high-guided-v3-issue-13": 194.7,
+    "qwen3.8-27b-iq3s-m1-xhigh-guided-v3-issue-13": 300
+  },
+  "curves": [
+    {
+      "model": "gemma-4-26b-a4b",
+      "arm": "4-bit, f16 KV, no drafter",
+      "c": 65536,
+      "cAt": 71680,
+      "served": false,
+      "points": {
+        "4096": 51.1,
+        "16384": 43.5,
+        "25088": 39.6,
+        "33792": 35.6,
+        "50176": 28.8,
+        "61440": 24.96,
+        "63488": 13.44,
+        "65536": 23.91,
+        "67584": 13.07,
+        "69632": 23.08,
+        "71680": 12.83
+      },
+      "run": "bench4",
+      "method": "creep",
+      "wired": 24000
+    },
+    {
+      "model": "qwen3.6-35b-a3b",
+      "arm": "4-bit, f16 KV, no drafter",
+      "c": 36864,
+      "cAt": 37888,
+      "served": true,
+      "points": {
+        "4096": 53.3,
+        "16384": 49.6,
+        "33792": 42.2,
+        "37888": 42
+      },
+      "run": "bench4",
+      "method": "creep",
+      "wired": 24000
+    },
+    {
+      "model": "qwen3.6-35b-a3b",
+      "arm": "UD-Q4_K_XL, f16 KV, no drafter",
+      "c": 65536,
+      "cAt": 65578,
+      "served": false,
+      "points": {
+        "4114": 50.49,
+        "8222": 48.41,
+        "16386": 46.17,
+        "24602": 43.71,
+        "32818": 41.5,
+        "40982": 39.32,
+        "49198": 37.2,
+        "57362": 35.03,
+        "65578": 33.64
+      },
+      "run": "bench15",
+      "method": "creep",
+      "wired": 25000
+    },
+    {
+      "model": "qwen3.6-35b-a3b",
+      "arm": "UD-Q4_K_XL, MTP n-max 3, q8_0 KV",
+      "c": 98304,
+      "cAt": 98338,
+      "served": false,
+      "points": {
+        "8222": 44.1,
+        "16386": 31.15,
+        "24602": 24.16,
+        "32818": 19.64,
+        "40982": 16.55,
+        "57362": 12.58,
+        "65578": 11.23,
+        "98338": 7.86
+      },
+      "run": "bench14",
+      "method": "creep",
+      "wired": 25000
+    },
+    {
+      "model": "qwen3.6-35b-a3b",
+      "arm": "UD-Q4_K_XL, MTP n-max 3, q8_0 KV",
+      "c": 98304,
+      "cAt": 81920,
+      "served": true,
+      "points": {
+        "4096": 43.68,
+        "49152": 19.23,
+        "81920": 13.01
+      },
+      "run": "bench14",
+      "method": "benchy"
+    },
+    {
+      "model": "gemma-4-12b-it",
+      "arm": "Q4_K_XL, f16 KV, no drafter, 2 slots",
+      "c": 98304,
+      "cAt": 81958,
+      "served": true,
+      "points": {
+        "4114": 24.98,
+        "8222": 24.14,
+        "16386": 22.83,
+        "24602": 21.53,
+        "32818": 20.57,
+        "40982": 19.51,
+        "49198": 18.63,
+        "65578": 16.93,
+        "81958": 15.72
+      },
+      "run": "bench12",
+      "method": "creep",
+      "wired": 25000
+    },
+    {
+      "model": "bonsai-27b",
+      "arm": "Q2_g64, f16 KV, no drafter (prism fork)",
+      "c": 131072,
+      "cAt": 131072,
+      "served": false,
+      "points": {
+        "4096": 14.95,
+        "8192": 16.25,
+        "16384": 15.62,
+        "25600": 15.07,
+        "33792": 14.45,
+        "41984": 13.92,
+        "50176": 13.4,
+        "67584": 12.5,
+        "83968": 11.45,
+        "100352": 10.76,
+        "117760": 10.24,
+        "131072": 9.67
+      },
+      "run": "bench12",
+      "method": "creep",
+      "wired": 25000
+    },
+    {
+      "model": "qwen3.8-27b",
+      "arm": "4-bit, f16 KV, no drafter",
+      "c": 24576,
+      "cAt": 28672,
+      "served": true,
+      "points": {
+        "8192": 17.1,
+        "16384": 16.4,
+        "22528": 10.23,
+        "24576": 14.79,
+        "26624": 15.19,
+        "28672": 15.29
+      },
+      "run": "bench4",
+      "method": "creep",
+      "wired": 24000
+    },
+    {
+      "model": "qwen3.8-27b",
+      "arm": "Q4_K_M (bartowski), MTP n-max 3, f16 KV",
+      "c": 73728,
+      "cAt": 57362,
+      "served": false,
+      "points": {
+        "8222": 18.21,
+        "16386": 16.08,
+        "24602": 17.22,
+        "32818": 16.4,
+        "40982": 15.61,
+        "49198": 14.97,
+        "57362": 14.3
+      },
+      "run": "bench14",
+      "method": "creep",
+      "wired": 25000
+    },
+    {
+      "model": "qwen3.8-27b",
+      "arm": "Q4_K_M (bartowski), MTP n-max 3, f16 KV",
+      "c": 73728,
+      "cAt": 65536,
+      "served": false,
+      "points": {
+        "4096": 11.77,
+        "65536": 8.57
+      },
+      "run": "bench14",
+      "method": "benchy"
+    },
+    {
+      "model": "gemma-4-26b-a4b",
+      "arm": "UD-Q4_K_XL, MTP, f16 KV",
+      "c": 212992,
+      "cAt": 196618,
+      "served": false,
+      "points": {
+        "4114": 61.25,
+        "8222": 64.95,
+        "16386": 56.65,
+        "24602": 52.72,
+        "32818": 46.46,
+        "49198": 41.04,
+        "65578": 36.22,
+        "81958": 33.25,
+        "98338": 28.73,
+        "114718": 26.38,
+        "131098": 25.17,
+        "147478": 22.07,
+        "163858": 21.25,
+        "180238": 20.73,
+        "196618": 17.3
+      },
+      "run": "bench9",
+      "method": "creep",
+      "wired": 24000
+    },
+    {
+      "model": "qwen3.6-35b-a3b",
+      "arm": "UD-Q4_K_XL, MTP n-max 3, f16 KV",
+      "c": 40960,
+      "cAt": 40982,
+      "served": false,
+      "points": {
+        "4114": 69.12,
+        "8222": 71.34,
+        "16386": 65.66,
+        "24602": 61.03,
+        "32818": 56.52,
+        "40982": 52.6
+      },
+      "run": "bench12",
+      "method": "creep",
+      "wired": 25000
+    },
+    {
+      "model": "gemma-4-12b-it",
+      "arm": "Q4_K_XL, f16 KV, no drafter, 1 slot",
+      "served": false,
+      "points": {
+        "4115": 24.64,
+        "8235": 24.05,
+        "16411": 22.66,
+        "24587": 21.59,
+        "32819": 20.58,
+        "49159": 18.75,
+        "65551": 17.42,
+        "81943": 15.87,
+        "98335": 14.91,
+        "114726": 13.94,
+        "131118": 13.04,
+        "163858": 11.3,
+        "180238": 10.72,
+        "196618": 10.24,
+        "212998": 9.69,
+        "229378": 9.24,
+        "245810": 8.86
+      },
+      "run": "bench10",
+      "method": "creep",
+      "wired": 24000
+    },
+    {
+      "model": "bonsai-27b",
+      "arm": "Q4_0 KV + bias, no drafter (prism fork)",
+      "served": false,
+      "points": {
+        "4096": 14.79,
+        "8192": 13.22,
+        "16384": 10.77,
+        "24576": 9.08,
+        "32768": 7.85
+      },
+      "run": "bench4",
+      "method": "creep",
+      "wired": 24000
+    },
+    {
+      "model": "bonsai-27b",
+      "arm": "2-bit, f16 KV, no drafter (MLX)",
+      "served": false,
+      "points": {
+        "4096": 24.5,
+        "8192": 24.2,
+        "16384": 22.9,
+        "24576": 22,
+        "32768": 20.5,
+        "40960": 18.6,
+        "43008": 18.66,
+        "45056": 12.1,
+        "47104": 11.89,
+        "49152": 11.33,
+        "51200": 18.36,
+        "53248": 18.09,
+        "55296": 17.64,
+        "57344": 17.69,
+        "59392": 17.27
+      },
+      "run": "bench3",
+      "method": "creep",
+      "wired": 24000
+    },
+    {
+      "model": "gemma-4-12b-it",
+      "arm": "LM Studio MLX 4-bit, retired",
+      "served": false,
+      "points": {
+        "4115": 34.19,
+        "16411": 32.05,
+        "32819": 30.59,
+        "65551": 27.08,
+        "98335": 24.52,
+        "131118": 23.23
+      },
+      "run": "bench4",
+      "method": "creep",
+      "wired": 24000
+    },
+    {
+      "model": "qwen3.8-27b",
+      "arm": "IQ3_S-mtp (ISTA GSQ-RCO), f16 KV, no drafter",
+      "c": 163840,
+      "cAt": 163858,
+      "served": false,
+      "points": {
+        "4114": 14.14,
+        "8222": 13.82,
+        "16386": 13.25,
+        "24602": 12.83,
+        "32818": 12.39,
+        "40982": 11.95,
+        "49198": 11.51,
+        "65578": 10.9,
+        "81958": 10.24,
+        "98338": 9.69,
+        "114718": 9.19,
+        "131098": 8.72,
+        "147478": 8.3,
+        "163858": 7.94
+      },
+      "run": "bench13",
+      "method": "creep",
+      "wired": 24000
+    },
+    {
+      "model": "bonsai-2-27b",
+      "arm": "PTQ1_0, f16 KV, no drafter",
+      "c": 262144,
+      "cAt": 163858,
+      "served": true,
+      "points": {
+        "4114": 17.86,
+        "24602": 16.05,
+        "65578": 13.05,
+        "163858": 9.07
+      },
+      "run": "bench26",
+      "method": "creep",
+      "wired": 25000
+    },
+    {
+      "model": "bonsai-2-27b",
+      "arm": "PQ2_0, f16 KV, no drafter",
+      "c": 262144,
+      "cAt": 65578,
+      "served": false,
+      "points": {
+        "4114": 17.05,
+        "24602": 12.26,
+        "65578": 7.91
+      },
+      "run": "bench26",
+      "method": "creep",
+      "wired": 25000
+    },
+    {
+      "model": "bonsai-2-27b",
+      "arm": "MLX 2-bit, f16, no drafter, bonsai2-mlx-server.py",
+      "c": 28672,
+      "cAt": 32818,
+      "served": true,
+      "points": {
+        "4114": 21.47,
+        "24602": 12.13,
+        "32818": 10.45
+      },
+      "run": "bench26",
+      "method": "creep"
+    }
+  ]
+}
