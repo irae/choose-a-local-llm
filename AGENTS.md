@@ -2,28 +2,34 @@
 
 This repository answers one question per machine: **which local model, runtime, and configuration should I code with?**
 
-- Published website source: `site/` (VitePress `srcDir = 'site'`). **Zero machine hostnames** allowed in `site/` (enforced by `tools/check-hostnames.mjs`).
-- Structured dataset: `data/binaries.json` and `data/setups/<hardware-slug>/models.json`.
-- Internal raw benchmark runs & router presets: `hardware/<hardware-id>/` and `benchmarks/`.
-- Agent docs & standing rules: `docs/agents/` (not published).
-- Human operator / cloner docs: `docs/repo/` (not published).
+## Layout
+
+- `site/` — Published VitePress website (`srcDir = 'site'`). Use hardware display names or hardware slugs (`m1-max-32gb`, `rtx-5060ti-16gb`); keep machine hostnames internal to `hardware/` (enforced by `tools/check-hostnames.mjs`).
+- `data/` — Structured dataset (`data/binaries.json`, `data/setups/<hardware-slug>/models.json`) feeding generated tables, `site/.vitepress/data/site-stats.json`, and `site/files/*`.
+- `hardware/<hardware-id>/` and `benchmarks/` — Internal raw runs, router presets (`models.ini`), and shared runner scripts (unpublished).
+- `docs/agents/` and `docs/repo/` — Internal agent guides and human operator docs (unpublished).
+
+## Standing Guardrails
+
+- **Push only on explicit owner request.** `npm run deploy` builds, verifies, and commits locally; it never pushes.
+- **Avoid bare `git stash`.** Stashes are shared across worktrees; save WIP as a branch commit or a named stash (`git stash push -m "<context>"`).
+- **Verify before committing:** run `npm run docs:tables && npm run verify && npm run docs:check` after `site/` or `data/` edits, and `tests/run.sh` after editing `benchmarks/`.
 
 ## Commands
 
 ```bash
-npm install                      # once
 npm run docs:tables              # regenerate site tables, site-stats.json, and site/files/*
-npm run dev                      # preview site at http://localhost:5173
-npm run verify                   # build site + link check
+npm run verify                   # build site/ and check internal links
 npm run docs:check               # check table drift, hostname leaks, and dead links
-npm run deploy -- "what changed" # build, verify, commit (never pushes)
+npm run dev                      # preview at http://localhost:5173
+npm run deploy -- "what changed" # build, verify, commit locally (never pushes)
 ```
 
-## Read Next
+## Read When
 
-- [docs/agents/README.md](./docs/agents/README.md) — Index of all agent guides.
-- [docs/agents/site-writer.md](./docs/agents/site-writer.md) — Rules and word caps for editing `site/`.
-- [docs/agents/site-reviewer.md](./docs/agents/site-reviewer.md) — Strict cross-page review checklist.
-- [docs/agents/standing-rules.md](./docs/agents/standing-rules.md) — Full standing rules and benchmark repo index.
-- [docs/agents/planning.md](./docs/agents/planning.md) — Coordinator/runner split and runbook planning.
-- [CONVENTIONS.md](./CONVENTIONS.md) — Script headers and repository conventions.
+- **Editing `site/` or `data/`:** [docs/agents/site-writer.md](./docs/agents/site-writer.md) — single-home rules, current-era framing, and prose word caps.
+- **Reviewing `site/` or `data/` edits:** [docs/agents/site-reviewer.md](./docs/agents/site-reviewer.md) — cross-page parity audit and blocking-defect gates.
+- **Planning a run, writing `bench<N>/AGENT.md`, or updating `HANDOFF.md`:** [docs/agents/planning.md](./docs/agents/planning.md) — coordinator/runner split, parameter derivation, and runbook format.
+- **Working with run branches/worktrees, or touching `benchmarks/`, `hardware/`, or `tools/`:** [docs/agents/standing-rules.md](./docs/agents/standing-rules.md) — owner standing rules and repo tool index.
+- **Executing a benchmark run or diagnosing a server:** [docs/agents/README.md](./docs/agents/README.md) — index of runner SOPs (`checklist`, `common-rules`, `server-lore`, `status-lines`).
+- **Adding or editing scripts under `tools/` or `benchmarks/`, or filing a `backlog/` item:** [CONVENTIONS.md](./CONVENTIONS.md) — script headers, tooling shape, and markdown rules.

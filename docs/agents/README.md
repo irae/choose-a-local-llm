@@ -1,19 +1,21 @@
-# Agent Docs (Pass 1)
+# Agent Docs
 
-Internal documentation for agents working on this repository. Nothing under `docs/` is published to the website (`site/`).
+Internal guides for agents working in this repository. Nothing under `docs/` reaches the published website (`site/`).
 
-> **Note:** Pass 1 provides a clean folder separation and the minimal writer/reviewer guides needed to maintain `site/`. A full-rigor overhaul of `docs/agents/` is scheduled for Pass 2.
+Public scientific methodology lives in [site/method/](../../site/method/index.md); human setup and benchmark instructions live in [docs/repo/](../repo/README.md).
 
-## Website Maintenance
+## Website (`site/` & `data/`)
 
-- [site-writer.md](./site-writer.md) — Concise rules for editing `site/` prose, data, and generated tables.
-- [site-reviewer.md](./site-reviewer.md) — Strict cross-page reviewer checklist (`models/` ↔ `setups/` ↔ `index.md` ↔ `data/`).
+- **Before editing `site/` prose or `data/` JSON:** [site-writer.md](./site-writer.md) — single-home boundaries, current-era rules, generated surfaces, and word caps.
+- **After any batch of `site/` or `data/` edits:** [site-reviewer.md](./site-reviewer.md) — cross-page parity, caveat preservation, ledger checks, and verification gates.
 
 ## Benchmark Operations & Standing Rules
 
-- [standing-rules.md](./standing-rules.md) — Owner-confirmed standing rules and repo index (lifted from root `AGENTS.md`).
-- [planning.md](./planning.md) — Coordinator/runner split, parameter derivation, and runbook planning rules.
-- [checklist.md](./checklist.md) — Pre-run and live benchmark checklist (preflight, memory watcher, crash detection).
-- [common-rules.md](./common-rules.md) — Prompt-cache, KV policy, and record-everywhere measurement rules.
-- [server-lore.md](./server-lore.md) — Server quirks, failure signatures, and recovery notes.
-- [status-lines.md](./status-lines.md) — Progress update formats and context-budget rules.
+> **Scope note:** The operational SOPs below are Pass 1 lifts with updated v2 paths; full Pass 2 consolidation is planned after the website publishes.
+
+- **Before touching run branches, worktrees, `benchmarks/`, `hardware/`, or `tools/`:** [standing-rules.md](./standing-rules.md) — owner-confirmed standing rules and repo tool index.
+- **Before planning a bench/research run, writing `bench<N>/AGENT.md`, or editing `HANDOFF.md`:** [planning.md](./planning.md) — coordinator/runner split, fixed vs. derived parameters, and runbook structure.
+- **Before starting or resuming any benchmark, sweep, or scoring run:** [checklist.md](./checklist.md) — preflight, server startup, memory watcher, 20-minute wakeup, and idle-GPU rule.
+- **Before writing or running a measurement script or recording results:** [common-rules.md](./common-rules.md) — warmup, KV cache policy, drafter policy, and record-everywhere rules.
+- **Before starting a server or when a run stalls/crashes:** [server-lore.md](./server-lore.md) — verified quirks and failure signatures for `llama-server`, `mlx_lm.server`, and LM Studio.
+- **Before posting run progress, updating `state.md`, or drafting `results.md`:** [status-lines.md](./status-lines.md) — short/medium/large update templates and context-budget rules.
