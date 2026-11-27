@@ -1,77 +1,40 @@
-# Agent guide
+# Standing Rules & Benchmark Repo Index
 
-This repo answers one question for one computer: which local model, runtime,
-and configuration should I code with? It holds the measurements, the process
-that produced them, and a website that publishes both.
+Owner-confirmed standing rules and internal benchmark tooling index. For top-level repo layout and commands, see [AGENTS.md](../../AGENTS.md); for editing or reviewing `site/`, see [site-writer.md](./site-writer.md) and [site-reviewer.md](./site-reviewer.md).
 
-You need to care about two things only: the content, and the commands
-below. The base path, the sitemap, the deploy workflow, and the Pages
-settings are already wired.
-
-## Commands
-
-```bash
-npm install                      # once
-npm run dev                      # write and preview, http://localhost:5173
-npm run verify                   # build + link check. Run before every commit.
-npm run deploy -- "what changed" # build, verify, commit. Stops before pushing.
-```
-
-`npm run deploy` never pushes. It prints the push command for the owner to
-run. Publishing is always the owner's step.
-
-If another agent is already serving on 5173, add a port:
-`npm run dev -- --port 5174`.
+If another agent is already serving on 5173, pass a port: `npm run dev -- --port 5174`.
 
 ## Full index
 
 What to read, and when.
 
-Site and process docs:
+Site, method, and process docs:
 
-- [CONVENTIONS.md](./CONVENTIONS.md). Read it before you write any
-  markdown or any script. It says which rules govern which kind of
-  file, the shape of a measurement tool, and what every tool's header
-  must say.
-- [EDITOR.md](./EDITOR.md). Read it before you change any page,
-  wording, or layout. Page shape, vocabulary, where each file lives,
-  how to record a measurement across every surface.
-- [CONTENT-MAP.md](./CONTENT-MAP.md). Read it before you add a model,
-  a binary, a row, a score, a simulator run or a decode curve, and
-  after any change to `tools/gen-tables.mjs`. Which source feeds which
-  generated block on which page, the join keys, and the checklists.
-- [docs/methodology.md](./docs/methodology.md). The rules for
-  measurements, split by task. Read its table and open the page for
-  what you are about to do. The pages, and when they save you:
-  - `docs/methodology/checklist.md`. Before you start any benchmark,
-    sweep, or scoring run. Agents forget the memory watcher and the
-    idle/silent-crash monitor; this checklist prevents it.
-  - `docs/methodology/common-rules.md`. Before you write or run any
-    measurement script: prompt-cache rule, KV policy, record-everywhere
-    rule (the one that catches people).
-  - `docs/methodology/context-creep.md`. Before a depth sweep, and
-    before you interpret any LM Studio ceiling (compression-onset
-    criterion).
-  - `docs/methodology/memory-ceiling.md`. Before you probe allocation
-    maxima or change the wired limit.
-  - `docs/methodology/wired-limit.md`. macOS only, and a setup task,
-    not a run task. Before you search for a new
-    `iogpu.wired_limit_mb`: the ladder, the stop condition, and how to
-    pick the value. Needs the owner present.
-  - `docs/methodology/evalplus.md`. Before EvalPlus or any scoring
-    benchmark. The fast-mode budget rule lives here (thinking budget
-    8192, `max_tokens` 16384, no calibration).
-  - `docs/methodology/mendel.md`. Before a Mendel run. The real
-    instructions live in the Mendel repo; this page says where, and
-    gives the house rules (one at a time, daemon cleanup).
-  - `docs/methodology/server-lore.md`. Before you touch any server,
+- [CONVENTIONS.md](../../CONVENTIONS.md). Read it before you write any
+  script or backlog item. It defines script headers, measurement tool
+  shape, and markdown conventions.
+- [site-writer.md](./site-writer.md) and [site-reviewer.md](./site-reviewer.md).
+  Governing rules for editing and cross-checking `site/` and `data/`.
+  (Legacy v1 references [EDITOR.md](../../EDITOR.md) and
+  [CONTENT-MAP.md](../../CONTENT-MAP.md) remain at repo root pending Pass 2 cleanup.)
+- [site/method/index.md](../../site/method/index.md). Public, hardware-
+  and model-agnostic scientific methodology:
+  - [site/method/speed-and-memory.md](../../site/method/speed-and-memory.md) — depth sweeps, memory ceilings, KV cache selection, partial offload, and MTP drafters.
+  - [site/method/quality.md](../../site/method/quality.md) — fast-mode EvalPlus (`think=8192`, `max_tokens=16384`), empties vs. forced answers, and sharing rules.
+  - [site/method/agent-coding.md](../../site/method/agent-coding.md) — tool-calling smoke gate, Mendel task modes, harness window/compaction curve, loop detection, and rubric.
+- [docs/repo/hardware-setup.md](../repo/hardware-setup.md) and
+  [docs/repo/running-benchmarks.md](../repo/running-benchmarks.md). Human
+  operator machine prep (including macOS `iogpu.wired_limit_mb` ladder)
+  and benchmark execution guide.
+- Internal runner SOPs (this directory):
+  - [checklist.md](./checklist.md). Before you start any benchmark,
+    sweep, or scoring run (preflight, memory watcher, idle/silent-crash monitor).
+  - [common-rules.md](./common-rules.md). Before you write or run any
+    measurement script: prompt-cache rule, KV policy, record-everywhere rule.
+  - [server-lore.md](./server-lore.md). Before you touch any server,
     and first when a run stalls or a number looks impossible.
-  - `docs/methodology/status-lines.md`. Before you report a run's
-    progress. One template per update type, in three sizes: one line
-    in chat, the medium form in `state.md`, the site comparison in
-    `results.md`. It also carries the run's context-budget rules.
-- [docs/website-plan.md](./docs/website-plan.md). Before you change
-  the site structure or the deploy. Not needed for content work.
+  - [status-lines.md](./status-lines.md). Before you report a run's
+    progress (short/medium/large templates and context-budget rules).
 
 Benchmark work:
 
@@ -79,21 +42,23 @@ Benchmark work:
   on the Linux desktop. Early KV and coding smokes precede the full
   quality and simulator(mendel) tests. The added S5 BF16/f16 trial
   measures depth and runs both smokes.
-- `benchmarks/PLANNING.md`. Before you plan a run or write a
+- [planning.md](./planning.md). Before you plan a run or write a
   `bench<N>/AGENT.md`. The coordinator/runner role split and the
   HANDOFF writing rules live here. Coordinators read it; runners never
   do.
-- `hardware/<hardware-id>/`. Everything that belongs to one machine.
-  `<hardware-id>` is the same id the site uses for the setup under
-  `docs/setups/`; today `kamaji` (the Mac) and `arrietty`
-  (the Linux desktop). Run numbers are shared across machines.
-  **The id is the machine's short hostname** (`hostname -s`,
+- `hardware/<hardware-id>/`. Everything internal that belongs to one
+  machine (`kamaji` for the Mac, `arrietty` for the Linux desktop).
+  Run numbers are shared across machines.
+  **The internal id is the machine's short hostname** (`hostname -s`,
   lowercase; owner rule, 2026-09-14). The owner or user may choose
-  another id once, when the machine's folders are first created; after
-  that it never changes. The hardware (chip, memory, OS) is data in the
-  setup's `models.json` and pages, never part of an id. Every id that
-  names a machine uses this one: run rows, model values, branch and log
-  names, calibration and evidence paths.
+  another internal id once, when the machine's folders are first created;
+  after that it never changes. Public `site/` pages and `data/setups/`
+  map each `hardwareId` to a public `hardwareSlug` (`m1-max-32gb`,
+  `rtx-5060ti-16gb`) in `data/setups/<hardware-slug>/models.json`; zero
+  machine hostnames are allowed in `site/` (enforced by
+  `tools/check-hostnames.mjs`). Every internal artifact (run rows,
+  branch and log names, calibration and evidence paths) uses
+  `<hardware-id>`.
 - `hardware/<hardware-id>/benchmarks/INDEX.md`. Start here to learn
   what each run found. It links every run's state and results.
 - `hardware/<hardware-id>/benchmarks/bench<N>/AGENT.md`. The runbook
@@ -131,7 +96,7 @@ Benchmark work:
   memory and liveness itself), `calibration-*.json`, `evalplus-smoke.py` (the fast fixed
   four-problem EvalPlus subset for a research trial. Not a score,
   never published. Same budget on both sides, read as level, better or
-  worse; `docs/methodology/evalplus.md`. It replaced the older LM
+  worse; `site/method/quality.md`. It replaced the older LM
   Studio concurrency smoke, now retired), `mendel-smoke.sh` (the
   handed task that gates a full Mendel run: one dependency swap across
   two files in a fixture it builds itself, one pi run under a
@@ -139,14 +104,14 @@ Benchmark work:
   published; `--help` lists its `SMOKE_MENDEL_*` variables. The same
   script runs the compaction experiment with a lowered `contextWindow`
   and the longer `xtend-wide` task, and counts compactions and peak
-  context; `docs/methodology/mendel.md`), `loop-check.py` (repetition-loop detector for
+  context; `site/method/agent-coding.md`), `loop-check.py` (repetition-loop detector for
   a pi session log: distinct-shape ratio in a sliding window,
   threshold 0.10; catches identical lines, counters, and short
   cycles), `thinking-budget.py` (the forced answers of an EvalPlus
   run under the fast-mode thinking budget: `count` the forced and
   empty answers from the files, `splice` an earlier run of the same
   config into a fast run, `prepare` and `report` the optional proof
-  run of the forced failures; `docs/methodology/evalplus.md`).
+  run of the forced failures; `site/method/quality.md`).
 - `tests/`. The tests for the shared tools in `benchmarks/`. One
   command, `tests/run.sh`, and `tests/fixtures/README.md` says where
   every fixture came from.
@@ -159,8 +124,8 @@ Benchmark work:
   stock server; the row's `spec.adapter` and its note must say so.
   The depth-sweep tool proper (`creep.py` and one
   backend module per server) now lives outside this repo, in
-  `local-llm-eval-tools`; see `docs/methodology/context-creep.md`,
-  "Install", for the clone and the run command.
+  `local-llm-eval-tools`; see `docs/repo/running-benchmarks.md` and
+  `site/method/speed-and-memory.md`.
 - `tools/preflight.sh`. Run it FIRST in every run session. It reads
   the machine against `~/.config/choose-a-local-llm/machine.md` and
   prints one line per check (`ok`, `fix`, `ask`): GPU free, login
@@ -168,7 +133,7 @@ Benchmark work:
   whether a reboot condition holds. It changes nothing and needs no
   sudo. All `ok` means the run starts with no question and no
   `turn-off`. `--help` lists the checks and the environment overrides
-  (`docs/methodology/checklist.md`, "Before the run").
+  (`docs/agents/checklist.md`, "Before the run").
 - `tools/mac-services.sh` and `tools/README-mac-services.md`. Turn
   background login items off before a run and back on after. The
   script ships with no list; the README says how to build one. Read
@@ -182,7 +147,7 @@ Benchmark work:
   PrismML build with `models-prism-llama.ini` on the same port, and only
   one of the two runs at a time: `start` refuses while the other is up.
   Runs use it instead of starting a server
-  (`docs/methodology/checklist.md`, step 5).
+  (`docs/agents/checklist.md`, step 5).
 - `tools/archive-evidence.sh`. Copy a run's session logs to a place
   where they survive. Run it before a run's worktree is removed.
   Evidence goes to `~/.local/share/choose-a-local-llm/evidence/`, not
@@ -213,11 +178,10 @@ Benchmark work:
 - **The agent benchmark is called simulator(mendel) in every rule and
   runbook** (owner, 2026-09-11). The Mendel runner is being replaced;
   the published pages keep the word Mendel until the new runner lands.
-- **Method pages never name a model.** `docs/methodology/` is reusable
-  by anyone. Models, runtimes, commands and numbers of one machine
-  live under `docs/setups/<setup>/`. Say "one dense 12B model on the
-  reference setup" and link the setup's report (README, "How to use
-  this repo").
+- **Method pages never name a model.** `site/method/` is reusable
+  by anyone. Models, runtimes, commands and numbers live under
+  `site/models/` and `site/setups/<hardware-slug>/`. Keep `site/method/`
+  free of model names, vendor forks, and Hub repos.
 - **Push only on owner request.** Never push on your own initiative,
   and never offer to publish. The owner asks when they want it.
   When the owner asks for a push or for stop-and-sync, push `master`.
@@ -330,7 +294,7 @@ Benchmark work:
   continues; the run does not wait.
 - **Run the exact files the runbook names.** A different file is
   stop-and-ask. A missing file is fetched, by the download rule below
-  (`docs/methodology/common-rules.md`, rule 8).
+  (`docs/agents/common-rules.md`, rule 8).
 - **Measured parameters come from the newest data, never from the
   runbook's snapshot** (owner rule, 2026-09-06). The serving `-c`, the
   harness window, the output budget and every gate input are
@@ -339,7 +303,7 @@ Benchmark work:
   parameters, in this run or in a committed result, replaces it. The
   runner records the value it used and its source in `state.md` and
   the row's config note. Which parameters are fixed and which are
-  derived: `benchmarks/PLANNING.md`, "Fixed and derived parameters".
+  derived: `docs/agents/planning.md`, "Fixed and derived parameters".
 - **Qwen3.8-27B is never run at effort medium. Ever** (owner rule,
   2026-09-09). Not planned, not re-run, not for parity with an old
   medium row. **Not running medium matters more than parity.** A block
@@ -347,7 +311,7 @@ Benchmark work:
   and do not serve it. **A model's first run uses the model's own
   published default**, which for Qwen3.8 is **xhigh**. A control row's
   level is not a default. The full rule and why it keeps failing:
-  `benchmarks/PLANNING.md`, "The thinking level is chosen, never
+  `docs/agents/planning.md`, "The thinking level is chosen, never
   inherited".
 - **A gate or a stop-and-ask goes to the coordinator first** (owner
   rule, 2026-09-07). The runner messages the coordinator session with
@@ -372,15 +336,15 @@ Benchmark work:
   parameter table (provider, model id, `contextWindow` from the
   measured window, the keep budget from the window curve, no
   `maxTokens` and no `reserveTokens`, the thinking map mapped down by
-  `benchmarks/PLANNING.md`, "A pi thinking map maps down"), records the entry in `state.md`, and runs. The
+  `docs/agents/planning.md`, "A pi thinking map maps down"), records the entry in `state.md`, and runs. The
   coordinator writes the final entry into the owner's file at
   close-out. On a machine with the repo, `npm run pi:models` writes
-  every entry from the site's `models.json`; a row carries its entry
+  every entry from `data/setups/*/models.json`; a row carries its entry
   in a `pi` block (`provider`, `id`, `contextWindow`, `maxTokens`),
   the largest window wins when two rows share a model, and no other
   field of an existing entry is touched. No pi config, the owner's or
   a run's, sets `maxTokens` or `reserveTokens`
-  (`docs/methodology/common-rules.md`, rule 7). A run's config comes
+  (`docs/agents/common-rules.md`, rule 7). A run's config comes
   from `npm run pi:models -- --run-dir <dir> --id <pi id>`, never from
   a copy of the owner's file.
 - **No `backlog/` item without an explicit owner request** (owner
@@ -415,13 +379,15 @@ Benchmark work:
   worktree of `../mendel` on the `benchmark` branch, which carries the
   whole Mendel project; a blanket add stages files that belong to
   other branches. Add named files only.
-- **A change to the data reaches every page it feeds.** `CONTENT-MAP.md`
-  says which pages, per kind of change, and `npm run docs:check` runs
-  `tools/check-content-map.mjs` to keep the map true to the generator.
+- **A change to the data reaches every page it feeds.** Follow
+  `docs/agents/site-writer.md` and `docs/agents/site-reviewer.md`, run
+  `npm run docs:tables`, and verify with `npm run docs:check` (which
+  runs `tools/gen-tables.mjs --check`, `tools/check-hostnames.mjs`, and
+  `tools/check-links.mjs`).
 - **No superseded number on a current page.** Not in a table, not in
-  prose. Old figures move to the setup's `historical.md`, which opens
-  with a red warning that tells readers not to use them. Only the
-  `benchmarks/*.md` pages keep the full archive. See EDITOR.md.
+  prose. Retired or superseded entries move to
+  `site/setups/<hardware-slug>/archive.md`. Raw run history stays under
+  `hardware/<hardware-id>/`. See `docs/agents/site-writer.md`.
 - **Write prose in ASD-STE100 Simplified Technical English.** Short
   sentences, active voice, one idea per sentence.
 - **Terminology follows the community.** Repetition loop, degeneration,
@@ -514,22 +480,20 @@ Benchmark work:
   a `bench<N>/` forks it (this happened three times with
   `run-humaneval.sh` before the reorganization). Old copies inside
   `bench1/`-`bench2/` are archive, not tools. Do not run them.
-- **The methodology stays split by task.** `docs/methodology.md` is the
-  overview only. A new rule, quirk, or lore item goes into the matching
-  `docs/methodology/` page, not into the overview and not into a run
-  file. The checklist stays a checklist: steps only, the "why" links
-  out. A new test kind gets its own page, added in the same pass to the
-  overview's table, the sidebar (`docs/.vitepress/config.mjs`), and the
-  index above.
+- **Public scientific method and internal runner SOPs stay separate.**
+  `site/method/` holds hardware- and model-agnostic scientific method
+  pages (`site/.vitepress/config.mjs`). Operational runner SOPs, quirks,
+  and lore belong in `docs/agents/` (`checklist.md`, `common-rules.md`,
+  `server-lore.md`, `status-lines.md`), never in `site/method/` and
+  never pasted into runbooks.
 - **Two different `benchmarks/` exist. Do not mix them.**
-  `benchmarks/` at the repo root holds run kits and tools (never
-  published). `docs/setups/<setup>/benchmarks/` holds the site's
-  raw-data pages (published). "The benchmarks page" always means the
-  site one.
+  `benchmarks/` at the repo root holds shared run tools and mirrored
+  Mendel JSONs (unpublished). `site/benchmarks/` holds the published
+  cross-machine benchmark pages.
 - **When you add or move a file agents need, update the index above in
   the same commit.** A line nobody can find does not exist.
 - `HANDOFF.md` is the owner's working context: gitignored, coordinator
   agents only, never the benchmark runner. Writing rules in
-  `benchmarks/PLANNING.md`; every repo user starts with an empty one.
+  `docs/agents/planning.md`; every repo user starts with an empty one.
 
-Nothing outside `docs/` reaches the published site.
+Nothing outside `site/` reaches the published site.

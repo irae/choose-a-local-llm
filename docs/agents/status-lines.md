@@ -247,7 +247,7 @@ gate qwen-3.8-27b iq3s/f16 dropped: creep clean depth 31k, under the 39k floor. 
 ```
 
 A dropped config never reaches the site. If it was published before,
-its row moves to `historical.md`.
+its row moves to `site/setups/<hardware-slug>/archive.md`.
 
 ## The medium form, in `state.md`
 
@@ -535,9 +535,9 @@ Gates:
   fault (a dead `gh` token, a login loop). Invalid rows are neither old
   nor new; the retry runs and its row lands when it closes.
 
-The runner drafts all of this. It never edits `models.json`; that is
-the coordinator's publish step (`EDITOR.md` at the repo root, the
-generated-block rules).
+The runner drafts all of this. It never edits `data/setups/*/models.json`;
+that is the coordinator's publish step ([site-writer.md](./site-writer.md)
+and `npm run docs:tables`).
 
 The owner asks for this form by name: "draw me the new line, similar to
 the one on the website, updated for Qwen3.8 new numbers on llama,

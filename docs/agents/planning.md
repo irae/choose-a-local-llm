@@ -22,8 +22,9 @@ and the methodology pages the runbook points to.
   included, and the run is ready to start (owner, 2026-09-20). Only
   when several runs are planned together do the runbooks wait: each
   run then has its items and its list, and its kit is written when
-  that run comes up. `<hardware-id>` is the machine's
-  setup id under `docs/setups/`.
+  that run comes up. `<hardware-id>` is the machine's internal hostname
+  id under `hardware/` (public `site/` and `data/setups/` map it to a
+  hardware slug such as `m1-max-32gb` or `rtx-5060ti-16gb`).
 - `hardware/<hardware-id>/benchmarks/unscheduled/` and
   `hardware/<hardware-id>/research/unscheduled/`: work that needs the
   machine and is not in a run. One file per item, named by its
@@ -147,7 +148,8 @@ Two kinds of parameter, and the runbook says which is which:
   different row, so a mismatch is stop and ask, never a substitute.
 - **Derived** parameters are measurements. The serving `-c`; the
   harness window (`contextWindow`); `keepRecentTokens`, from the
-  window curve (`docs/methodology/mendel.md`, "Window and budget"; no
+  window curve (`site/method/agent-coding.md`, "Harness Window,
+  Compaction & Loop Detection"; no
   run sets `maxTokens` or `reserveTokens`); the drafter depth;
   any gate input such as clean depth or decode speed. The runbook
   names each one, gives the planning-time value with its date and
@@ -162,7 +164,7 @@ The consequences:
 - A derived value changes downstream values in the same run. A block
   that finds a new `-c` or clean depth also sets the harness window
   of every later block on that model, by the rule in
-  `docs/methodology/mendel.md` ("Window and budget"). The runbook
+  `site/method/agent-coding.md` ("Harness Window, Compaction & Loop Detection"). The runbook
   writes that dependency as a step, not as a number.
 - A freeze is allowed only when the owner asks for one, and then it
   is written as a dated owner decision with its reason ("every other
@@ -185,11 +187,13 @@ committed measurement, the block that measures it comes first.
 
 1. Create the next `hardware/<hardware-id>/benchmarks/bench<N>/` folder
    with the standard kit shape (`AGENT.md`, `state.md`, `results.md`,
-   `results/`; see `AGENTS.md`, standing rules). `<hardware-id>` is the
-   machine's hostname. For a machine new to the project, ask the owner
-   once whether to keep the hostname or choose another id, then create
-   `hardware/<id>/` and `docs/setups/<id>/` with it. Every row, model
-   value and file name the runbook asks for carries that id, and every
+   `results/`; see `docs/agents/standing-rules.md`). `<hardware-id>` is the
+   machine's internal hostname. For a machine new to the project, ask the owner
+   once whether to keep the hostname or choose another internal id, then create
+   `hardware/<id>/` with it, and `data/setups/<hardware-slug>/` plus
+   `site/setups/<hardware-slug>/` with its public hardware slug (zero hostnames
+   in `site/`). Every internal row, model
+   value and file name the runbook asks for carries that internal id, and every
    scoring prompt spells out the model value format with the id in it:
    `<alias> (<publisher> <quant>, <level>, <id>)`, beside
    `"hardware": "<id>"`.
@@ -198,7 +202,7 @@ committed measurement, the block that measures it comes first.
    seconds from the first action to the end of the run, also while a
    background task runs, with the short status line at every wakeup,
    for the owner's inspection as much as against stalls
-   (`docs/methodology/checklist.md`, step 7). This is the one rule a
+   (`docs/agents/checklist.md`, step 7). This is the one rule a
    runbook repeats from the checklist: most runners that trusted a
    background task stalled their runs.
    Then open with one short essentials section: the run's `state.md`
@@ -209,20 +213,20 @@ committed measurement, the block that measures it comes first.
    agent than a page read an hour earlier; the runbook is already in
    the right order, so the right file gets read at the right time.
    Point, do not paste; the runbook stays short.
-   **The fixed reading is `docs/methodology/checklist.md` and
-   `docs/methodology/status-lines.md`, once per session.** Those two
+   **The fixed reading is `docs/agents/checklist.md` and
+   `docs/agents/status-lines.md`, once per session.** Those two
    are the same for every run, the checklist itself names them, and a
    runbook never repeats what they hold. A rule the runner needs on
    every run belongs in one of those two files, not in the essentials
    of one runbook, or the next run loses it.
-   `docs/methodology/checklist.md` is still the first block's reading, and the
+   `docs/agents/checklist.md` is still the first block's reading, and the
    runbook's first instruction is its step 1: create the run worktree
    and move into it before any other action. Runners skip this when
    the runbook only implies it, so spell out the exact `git worktree
    add` command with the run's number. A benchmark runbook says bash
    and `cd`. A research or planning kit says `EnterWorktree` with
    `path` instead, because that work is interactive and the owner's
-   HUD reads the session directory. See `AGENTS.md`, standing rules.
+   HUD reads the session directory. See `docs/agents/standing-rules.md`.
 3. Require the run to record its own evidence, and say where.
    - **Verify `peak_context` with the counter before you commit a row.**
      The context of every turn is already in the session log: each
@@ -258,15 +262,15 @@ committed measurement, the block that measures it comes first.
 6. State the execution rules the runner must not relearn: local run
    branch in a fresh sibling worktree (the main worktree stays with the
    coordinator); no bare `git stash`, named stashes only, applied by
-   name (see `AGENTS.md` standing rules); scoring in a subagent on the
+   name (see `docs/agents/standing-rules.md`); scoring in a subagent on the
    best available model, never a smaller one, because scoring is LLM
    judgment; bug fixes of run tools during the run on the best model
    too; the stop-and-sync procedure from
-   `AGENTS.md` standing rules when the owner asks to stop (merge to
+   `docs/agents/standing-rules.md` when the owner asks to stop (merge to
    `master`, push `master`, delete the branch, remove the worktree;
    that one push is required); one model on the GPU at a time; port;
    heartbeat cadence and the status-line templates
-   (`docs/methodology/status-lines.md`: one line in chat, the medium
+   (`docs/agents/status-lines.md`: one line in chat, the medium
    form in `state.md`, the site comparison in `results.md`); the scoped
    memory watcher on every run; commit as results land; never push a
    run branch; never publish.
@@ -312,7 +316,7 @@ committed measurement, the block that measures it comes first.
    reads its parameters from `state.md`, not from this file.
 9. Bake in the failure paths so the GPU never sits idle: what to check
    when output stops growing (server log first; see
-   `docs/methodology/server-lore.md`), how to resume each block, and
+   `docs/agents/server-lore.md`), how to resume each block, and
    the rule that the next block on the list starts the moment one
    ends. No approval gates.
    **A recoverable failure is retried at once, inside its block**
@@ -328,24 +332,25 @@ committed measurement, the block that measures it comes first.
    session refused, a login, an owner decision, a stop the owner
    ordered. The runbook says which kind each failure path is. Nothing
    of an interrupted run is cleaned up mid-run
-   (`docs/methodology/mendel.md`).
+   (`site/method/agent-coding.md` and `docs/agents/standing-rules.md`).
 10. Close the loop: when the run ends, the runner updates `state.md`
    with a clean handing-over section, and the coordinator adds the
    run's findings to `hardware/<hardware-id>/benchmarks/INDEX.md`,
    and writes the run's final derived values into the owner's harness
-   file and the site in the same pass. The site part follows the
-   checklists of `CONTENT-MAP.md`, one per kind of change, so the
-   result reaches every page that shows it.
+   file and the site in the same pass. The site part follows
+   `docs/agents/site-writer.md` and `docs/agents/site-reviewer.md`,
+   regenerating tables with `npm run docs:tables` and checking parity
+   with `npm run docs:check`.
 11. Read the finished runbook once more as the runner would, in the
    order the list at the top gives,
    and ask of every number: is this identity, or a measurement
    that this run can outdate? Every measurement gets a source and a
    "newest wins" path, or the block that measures it moves earlier.
 
-The methodology carries the "how to not make mistakes":
-`docs/methodology/checklist.md` is the run loop, `common-rules.md` the
-measurement rules, the per-test pages the specific steps, and
-`server-lore.md` the debugging lore. A runbook never restates them; it
+The operational docs carry the "how to not make mistakes":
+`docs/agents/checklist.md` is the run loop, `docs/agents/common-rules.md` the
+measurement rules, `site/method/*.md` the public test protocols, and
+`docs/agents/server-lore.md` the debugging lore. A runbook never restates them; it
 links them at the exact step where they apply.
 
 ## Spawning the runner
@@ -353,7 +358,7 @@ links them at the exact step where they apply.
 Give the runner a short prompt: the reading list (its `AGENT.md` first),
 the standing prohibitions (push only on owner request, and then only
 `master`; no publish), the heartbeat format
-(`docs/methodology/status-lines.md`), the `ScheduleWakeup` every 1200
+(`docs/agents/status-lines.md`), the `ScheduleWakeup` every 1200
 seconds from the first action, background task or not, and the instruction to
 keep working until every block is done or truly blocked. Pass the STE
 prose rule on. Do not paste findings or history into the prompt; that
@@ -394,7 +399,7 @@ Rules for writing it:
   stale.
 - Keep only what the next coordinator session needs and no other file
   holds. When something belongs to a run, move it to the run kit; when
-  it is a durable rule, move it to the methodology or `AGENTS.md`.
+  it is a durable rule, move it to `site/method/` or `docs/agents/standing-rules.md`.
 - Keep it small (owner rule, 2026-09-03). The handoff exists to pick
   up where things are and to say where the detail lives. Committed
   content gets a pointer, never a summary. Only uncommitted state,

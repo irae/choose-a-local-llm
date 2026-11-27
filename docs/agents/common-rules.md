@@ -1,10 +1,10 @@
 # Common rules — every measurement, every script
 
 These rules bind every test on every page. Test-specific steps live in
-the per-test pages; the run loop lives in
+the public method pages (`site/method/*.md`); the run loop lives in
 [the checklist](./checklist.md). The speed test's own rules (prompts,
 timings, prompt-cache reuse, the KV type decision) live in
-[context creep](./context-creep.md).
+[Speed & Memory](../../site/method/speed-and-memory.md).
 
 1. **One model on the GPU at a time.** Fresh server start per
    configuration. Long runs go in background tasks.
@@ -15,9 +15,9 @@ timings, prompt-cache reuse, the KV type decision) live in
 4. **KV cache type is a per-model decision, never a default.** f16 and
    q8_0 are the candidates. q4_0 is banned for quality, with one
    exception: a vendor ships a per-model calibration for it (a KV bias
-   file), and such a config must pass the [EvalPlus gate](./evalplus.md)
+   file), and such a config must pass the [EvalPlus gate](../../site/method/quality.md)
    before serving. The decision is its own test,
-   [KV cache pick](./kv-cache-pick.md), and it runs before any other
+   [KV cache selection](../../site/method/speed-and-memory.md#kv-cache-selection-policy), and it runs before any other
    measurement of the model. Rows measured at the other type before a
    pick existed are hidden until re-measured.
 5. **API-or-nothing.** A config qualifies only if it serves an HTTP API
@@ -27,18 +27,18 @@ timings, prompt-cache reuse, the KV type decision) live in
    thinks, sub-agents run thinking-off. Report tables show thinking-on;
    thinking-off goes in note text.
 7. **Record each result on every surface in the same pass** — a result
-   is not recorded until all agree: the model's
-   `docs/setups/<setup>/benchmarks/*.md` (full data), its
-   `docs/setups/<setup>/reports/*.md` page **including the summary
-   line** (it goes stale easily), the setup's `comparison.md`, the
-   generated tables (`models.json` + `node tools/gen-tables.mjs`), and
-   the harness config (`npm run pi:models` writes the pi entries from
+   is not recorded until all agree: the structured dataset
+   (`data/setups/<hardware-slug>/models.json` and `data/binaries.json`),
+   the generated tables and file pages (`npm run docs:tables`), the
+   affected prose on `site/models/<slug>.md` and
+   `site/setups/<hardware-slug>/index.md` ([site-writer.md](./site-writer.md)),
+   and the harness config (`npm run pi:models` writes the pi entries from
    the same `models.json`; `--dry-run` and `--check` show the drift
    first, and it never touches a field it does not own; it writes only
    the rows of the machine it runs on, points the `llama` provider at
    the router service on port 8888, whichever build is up, and writes
    each row's `keepRecentTokens` override into `settings.json` by the
-   window curve of [mendel.md](./mendel.md), "Window and budget").
+   window curve of [Agent Coding](../../site/method/agent-coding.md#harness-window-compaction-loop-detection)).
    **No pi config sets `maxTokens` or `reserveTokens`; pi's defaults
    are the values, always** (owner, 2026-09-25). Daily coding needs
    long single outputs, such as a whole single-file HTML page or a
@@ -55,10 +55,11 @@ timings, prompt-cache reuse, the KV type decision) live in
    with a drafter, then a variant word (`-2slot`, `-orca`). The same
    file with the same KV and drafter has the same id on both machines;
    a machine suffix (`-arrietty`, `-kamaji`) comes only when one pi
-   file serves both machines, which none does today. The report and comparison pages show only numbers
-   measured under the CURRENT wired limit; superseded measurements move
-   to the setup's `historical.md` (benchmarks pages keep the full
-   archive).
+   file serves both machines, which none does today. Current pages under
+   `site/` show only numbers measured under the current wired limit and
+   method era; retired or superseded entries move to
+   `site/setups/<hardware-slug>/archive.md` (raw run artifacts stay
+   under `hardware/<hardware-id>/`).
 8. **Run the exact files the runbook names**, at the revision and quant
    it names. A different file is stop-and-ask, never a substitute. A
    missing file does not block the run: the runner fetches it and the
@@ -85,7 +86,7 @@ timings, prompt-cache reuse, the KV type decision) live in
    only when it matches the token the target model would have picked,
    so it preserves the model's output distribution. **At temperature 0
    that means identical text**, which is why a drafter setting never
-   earns its own [EvalPlus](./evalplus.md) arm: that test runs at
+   earns its own [EvalPlus](../../site/method/quality.md) arm: that test runs at
    temperature 0. **Above temperature 0 it means the same distribution,
    not the same run.** Two agent runs that differ only in drafter
    setting are two samples, so neither confirms nor refutes a quality
@@ -95,7 +96,7 @@ timings, prompt-cache reuse, the KV type decision) live in
    that becomes KV cache**, measured at about 2 GB on one dense 27B
    model, which at f16 is roughly 32K more tokens of window. That is
    the trade to price: shallow speed against depth.
-   Decide it from a [creep](./context-creep.md) and a sweep, per build.
+   Decide it from a [depth sweep](../../site/method/speed-and-memory.md) and a sweep, per build.
    The head ships inside the build, so its acceptance rate belongs to
    that build and never carries over from another build of the same
    model. **The sweep runs in both directions and includes no drafter

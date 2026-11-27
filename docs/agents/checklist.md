@@ -22,7 +22,7 @@ about is already covered: a blocked step is skipped and logged, a
 denied command is logged and the block continues, a stop-and-ask line
 in the runbook is a plain message to the coordinator session, not a
 question tool. The coordinator answers gates; the owner gets only
-what needs the owner (`AGENTS.md`, standing rules). While the answer
+what needs the owner ([standing-rules.md](./standing-rules.md)). While the answer
 is pending, the next block that does not depend on it runs.
 
 ## Before the run
@@ -40,8 +40,8 @@ the block names at the point it is needed.
    later command of the run happens there. Push the run branch after
    every block commit and report the block to the coordinator, who
    merges it; never merge `master` yourself. Never run a bare
-   `git stash`. The reasons and the stop-and-sync steps are
-   `AGENTS.md`, standing rules.
+   `git stash`. The reasons and the stop-and-sync steps are in
+   [standing-rules.md](./standing-rules.md).
 2. **Run `tools/preflight.sh` first.** It reads the machine and prints
    one line per check: `ok`, `warn`, `fix`, or `ask`. It changes nothing, it
    needs no sudo, and it takes its values from the machine file,
@@ -54,7 +54,9 @@ the block names at the point it is needed.
    owner. A ready machine is a silent machine.
 3. **Act only on the lines that say `fix` or `ask`**, in the order
    below. A `warn` line is never acted on: it goes to `state.md` and
-   to the coordinator, and the run goes on. Every "why" is in [memory ceiling](./memory-ceiling.md). A
+   to the coordinator, and the run goes on. Every "why" is in
+   [Speed & Memory](../../site/method/speed-and-memory.md#memory-ceilings-unified-memory-vs-discrete-vram)
+   and [Hardware Setup](../repo/hardware-setup.md). A
    step whose line already said `ok` is done; do not repeat it.
    1. `fix gpu-free`: quit what the line names. `lms unload` is not
       enough for LM Studio; quit the app
@@ -133,28 +135,28 @@ the block names at the point it is needed.
    same port and never beside the official one: stop one, start the
    other. A row whose flags are not in
    `hardware/<id>/models.ini` is a new row, not a reason to start a
-   server by hand: add it to `docs/setups/<id>/models.json` and run
+   server by hand: add it to `data/setups/<hardware-slug>/models.json` and run
    `npm run docs:tables`. The id must match a section exactly: the
    router also lists every cached file with default flags, and a wrong
    id loads one of those in silence. Without a router service, start
    the server for ONE config. Either way, verify it serves, with a request the
    size of the work this block will send, not a one-token warmup: a
    config can pass a small probe and OOM on the first real request
-   ([context creep](./context-creep.md), step 1).
+   ([Speed & Memory](../../site/method/speed-and-memory.md#depth-sweeps-on-real-text)).
    LM Studio: load explicitly with `lms load`, verify with `lms ps`,
    then check the SERVER is up with `lms server status` and start it
    with `lms server start` if it is not. `lms load` does not start it
    and `lms ps` does not reveal it. Never trust JIT
    ([server lore](./server-lore.md)).
 5b. **Before any creep, pull the sweep tool and record its hash**
-   ([context creep](./context-creep.md), "Install"). This belongs to
+   ([Running Benchmarks](../repo/running-benchmarks.md#benchmark-tools)). This belongs to
    the creep, not to the runbook: **a runbook never carries a
    `tool-check` block.** Pull once before the session's first creep,
    record `git -C ~/code/local-llm-eval-tools rev-parse --short HEAD`
    in `state.md`, and write that hash beside every sweep result of the
    session. Set `STEP_PAUSE_S` by the pause rule
-   ([context creep](./context-creep.md), "Speed measurement rules" and
-   the requirements): the OS default, halved on macOS after a quiet
+   ([Speed & Memory](../../site/method/speed-and-memory.md#depth-sweeps-on-real-text)):
+   the OS default, halved on macOS after a quiet
    creep. Write the value beside the result. Do not pull again between creeps of one session; a tool
    that changes mid-session makes its own rows non-comparable.
 6. **Start the run watcher before the block, read exit 42, stop it
@@ -182,7 +184,7 @@ the block names at the point it is needed.
    **Depth sweeps start no watcher.** The runner samples memory into
    every step row, greps the server log for the death signature,
    probes a real completion when a step goes silent, and exits 42 on
-   a dead server ([context creep](./context-creep.md)). Send the
+   a dead server ([Speed & Memory](../../site/method/speed-and-memory.md#depth-sweeps-on-real-text)). Send the
    sweep's output to a file; that file is the whole record.
 
 ## During the run
@@ -221,7 +223,7 @@ the block names at the point it is needed.
    end. Smallest fix, fairness first, suspect the harness before the
    model. Every finding, bug and idea of the run goes there too, never
    into `backlog/`: the backlog is the owner's queue and needs their
-   explicit request (`AGENTS.md`). Tell the owner in one line that the
+   explicit request ([standing-rules.md](./standing-rules.md)). Tell the owner in one line that the
    note is in `state.md` and let them decide; the question never stops
    the run.
 
@@ -229,9 +231,11 @@ the block names at the point it is needed.
 
 11. Record the result on EVERY surface in the same pass
     ([common rules](./common-rules.md), the record-everywhere rule):
-    benchmarks page, report page (including its summary line),
-    `comparison.md`, `models.json` + `node tools/gen-tables.mjs`,
-    harness config. Update `hardware/kamaji/benchmarks/bench<N>/results.md` and
+    `data/setups/<hardware-slug>/models.json` + `npm run docs:tables`,
+    the affected pages under `site/models/` and
+    `site/setups/<hardware-slug>/` ([site-writer.md](./site-writer.md)),
+    and harness config (`npm run pi:models`). Update
+    `hardware/<hardware-id>/benchmarks/bench<N>/results.md` and
     `state.md`.
 12. Commit before moving to the next block.
 13. After stopping any large server (the machine file names the
@@ -253,7 +257,7 @@ the block names at the point it is needed.
     `lms ps`, kill strays, no background task holding the GPU. Do not
     remove a worktree, a branch, a session file or a pinned config of
     a run that did not end on its own; they stay until the coordinator
-    closes the row ([Mendel](./mendel.md), "No cleanup mid-run").
+    closes the row ([Agent Coding](../../site/method/agent-coding.md) and [standing-rules.md](./standing-rules.md)).
 15. A failure the runner can repeat with no human action (a dead
     benchy cell, a server that died under a request, a row the
     machine killed) is retried at once, inside its block, before the
