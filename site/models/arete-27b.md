@@ -18,6 +18,8 @@ Dense 27B reasoning model (`NousResearch_Arete-27B`, `bartowski Q3_K_M`) measure
 
 ## Decode Speed vs Context Depth
 
+<DecodeChart model="arete-27b" />
+
 <!-- gen:model-curves:start -->
 | arm | 4K | 24K | 32K | 64K |
 |---|--:|--:|--:|--:|

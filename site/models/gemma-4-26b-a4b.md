@@ -22,6 +22,8 @@ Sparse Mixture-of-Experts (26B total / 4B active) offering the widest complete a
 
 ## Decode Speed vs Context Depth
 
+<DecodeChart model="gemma-4-26b-a4b" />
+
 <!-- gen:model-curves:start -->
 | arm | 4K | 8K | 16K | 24K | 32K | 48K | 64K | 80K | 96K | 128K | 160K | 192K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|

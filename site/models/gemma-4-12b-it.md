@@ -29,6 +29,8 @@ Retired (M1 Max 32 GB): Gemma-4-12B, LM Studio entry google/gemma-4-12b — thin
 
 ## Decode Speed vs Context Depth
 
+<DecodeChart model="gemma-4-12b-it" />
+
 <!-- gen:model-curves:start -->
 | arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K | 128K | 160K | 192K | 208K | 240K | 256K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|

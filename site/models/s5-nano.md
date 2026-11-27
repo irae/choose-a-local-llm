@@ -19,6 +19,8 @@ Compact 4B-class reasoning model (`maritaca-ai/S5-nano-GGUF`) measured on RTX 50
 
 ## Decode Speed vs Context Depth
 
+<DecodeChart model="s5-nano" />
+
 <!-- gen:model-curves:start -->
 | arm | 4K | 24K | 32K | 64K | 128K | 192K | 240K | 256K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|

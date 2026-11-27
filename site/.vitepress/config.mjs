@@ -35,6 +35,19 @@ export default defineConfig({
   description:
     'Measured decode speed, context limits, coding quality, and agent performance for local coding LLMs across real hardware.',
   base: '/choose-a-local-llm/',
+  head: [
+    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
+    [
+      'link',
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600&family=Public+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap',
+      },
+    ],
+    ['meta', { name: 'theme-color', content: '#f3f6f4', media: '(prefers-color-scheme: light)' }],
+    ['meta', { name: 'theme-color', content: '#101614', media: '(prefers-color-scheme: dark)' }],
+  ],
   vite: {
     server: {
       allowedHosts: true,

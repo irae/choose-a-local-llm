@@ -25,6 +25,8 @@ Sparse Mixture-of-Experts (35B total / 3B active) with an embedded MTP speculati
 
 ## Decode Speed vs Context Depth
 
+<DecodeChart model="qwen3.6-35b-a3b" />
+
 <!-- gen:model-curves:start -->
 | arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|

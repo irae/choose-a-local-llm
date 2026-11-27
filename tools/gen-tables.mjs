@@ -1315,6 +1315,19 @@ mendelSiteRows = setupsAll.flatMap((d) => d.rows)
 const stats = buildSiteStats(setupsAll)
 syncFile('site/.vitepress/data/site-stats.json', `${JSON.stringify(stats, null, 2)}\n`)
 
+const chartCurves = setupsAll.map((data) => ({
+  hardwareSlug: data.hardwareSlug,
+  hardwareName: data.hardwareName || data.hardwareSlug,
+  curves: (data.curves || []).map((curve) => ({
+    model: curve.model,
+    arm: curve.arm,
+    served: Boolean(curve.served),
+    method: curve.method,
+    points: curve.points,
+  })),
+}))
+syncFile('site/.vitepress/data/curves.json', `${JSON.stringify(chartCurves, null, 2)}\n`)
+
 // 2. Always auto-generate site/files/index.md and site/files/<id>.md (100% data-driven)
 function generateFilePages(datas) {
   const expectedFiles = new Set(['index.md', ...BINARIES.map((b) => `${b.id}.md`)])

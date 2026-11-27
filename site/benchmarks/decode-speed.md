@@ -8,6 +8,8 @@ Shallow 4K benchmarks hide how fast a local model actually runs once an agent lo
 - **MoE expert offload works; dense layer offload collapses:** Keeping 7–21 MoE expert layers in host RAM (`--n-cpu-moe`) sustains `45+ tok/s` at `97k` on 16 GB VRAM, while offloading 19 dense layers (`-ngl 45/64`) collapsed to `5.1 → 2.3 tok/s`.
 - **MLX runs flat until an abrupt OOM:** `llama-server` degrades smoothly inside `-c`; `mlx_lm.server` stays fast until the generation thread dies on Metal OOM.
 
+<DecodeChart served-only />
+
 ## Best Curve per Model & Backend
 
 <!-- gen:decode-summary:start -->

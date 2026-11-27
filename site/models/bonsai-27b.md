@@ -45,6 +45,8 @@ Every config of both models ranked together. Sibling model: [Ternary-Bonsai-2-27
 
 ## Decode Speed vs Context Depth
 
+<DecodeChart model="bonsai-27b" />
+
 <!-- gen:model-curves:start -->
 | arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K | 128K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|

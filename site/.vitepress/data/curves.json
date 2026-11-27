@@ -1,0 +1,611 @@
+[
+  {
+    "hardwareSlug": "m1-max-32gb",
+    "hardwareName": "M1 Max 32 GB",
+    "curves": [
+      {
+        "model": "gemma-4-26b-a4b",
+        "arm": "4-bit, f16 KV, no drafter",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "4096": 51.1,
+          "16384": 43.5,
+          "25088": 39.6,
+          "33792": 35.6,
+          "50176": 28.8,
+          "61440": 24.96,
+          "63488": 13.44,
+          "65536": 23.91,
+          "67584": 13.07,
+          "69632": 23.08,
+          "71680": 12.83
+        }
+      },
+      {
+        "model": "qwen3.6-35b-a3b",
+        "arm": "4-bit, f16 KV, no drafter",
+        "served": true,
+        "method": "creep",
+        "points": {
+          "4096": 53.3,
+          "16384": 49.6,
+          "33792": 42.2,
+          "37888": 42
+        }
+      },
+      {
+        "model": "qwen3.6-35b-a3b",
+        "arm": "UD-Q4_K_XL, f16 KV, no drafter",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "4114": 50.49,
+          "8222": 48.41,
+          "16386": 46.17,
+          "24602": 43.71,
+          "32818": 41.5,
+          "40982": 39.32,
+          "49198": 37.2,
+          "57362": 35.03,
+          "65578": 33.64
+        }
+      },
+      {
+        "model": "qwen3.6-35b-a3b",
+        "arm": "UD-Q4_K_XL, MTP n-max 3, q8_0 KV",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "8222": 44.1,
+          "16386": 31.15,
+          "24602": 24.16,
+          "32818": 19.64,
+          "40982": 16.55,
+          "57362": 12.58,
+          "65578": 11.23,
+          "98338": 7.86
+        }
+      },
+      {
+        "model": "qwen3.6-35b-a3b",
+        "arm": "UD-Q4_K_XL, MTP n-max 3, q8_0 KV",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 43.68,
+          "49152": 19.23,
+          "81920": 13.01
+        }
+      },
+      {
+        "model": "gemma-4-12b-it",
+        "arm": "Q4_K_XL, f16 KV, no drafter, 2 slots",
+        "served": true,
+        "method": "creep",
+        "points": {
+          "4114": 24.98,
+          "8222": 24.14,
+          "16386": 22.83,
+          "24602": 21.53,
+          "32818": 20.57,
+          "40982": 19.51,
+          "49198": 18.63,
+          "65578": 16.93,
+          "81958": 15.72
+        }
+      },
+      {
+        "model": "bonsai-27b",
+        "arm": "Q2_g64, f16 KV, no drafter (prism fork)",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "4096": 14.95,
+          "8192": 16.25,
+          "16384": 15.62,
+          "25600": 15.07,
+          "33792": 14.45,
+          "41984": 13.92,
+          "50176": 13.4,
+          "67584": 12.5,
+          "83968": 11.45,
+          "100352": 10.76,
+          "117760": 10.24,
+          "131072": 9.67
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "4-bit, f16 KV, no drafter",
+        "served": true,
+        "method": "creep",
+        "points": {
+          "8192": 17.1,
+          "16384": 16.4,
+          "22528": 10.23,
+          "24576": 14.79,
+          "26624": 15.19,
+          "28672": 15.29
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "Q4_K_M (bartowski), MTP n-max 3, f16 KV",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "8222": 18.21,
+          "16386": 16.08,
+          "24602": 17.22,
+          "32818": 16.4,
+          "40982": 15.61,
+          "49198": 14.97,
+          "57362": 14.3
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "Q4_K_M (bartowski), MTP n-max 3, f16 KV",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 11.77,
+          "65536": 8.57
+        }
+      },
+      {
+        "model": "gemma-4-26b-a4b",
+        "arm": "UD-Q4_K_XL, MTP, f16 KV",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "4114": 61.25,
+          "8222": 64.95,
+          "16386": 56.65,
+          "24602": 52.72,
+          "32818": 46.46,
+          "49198": 41.04,
+          "65578": 36.22,
+          "81958": 33.25,
+          "98338": 28.73,
+          "114718": 26.38,
+          "131098": 25.17,
+          "147478": 22.07,
+          "163858": 21.25,
+          "180238": 20.73,
+          "196618": 17.3
+        }
+      },
+      {
+        "model": "qwen3.6-35b-a3b",
+        "arm": "UD-Q4_K_XL, MTP n-max 3, f16 KV",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "4114": 69.12,
+          "8222": 71.34,
+          "16386": 65.66,
+          "24602": 61.03,
+          "32818": 56.52,
+          "40982": 52.6
+        }
+      },
+      {
+        "model": "gemma-4-12b-it",
+        "arm": "Q4_K_XL, f16 KV, no drafter, 1 slot",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "4115": 24.64,
+          "8235": 24.05,
+          "16411": 22.66,
+          "24587": 21.59,
+          "32819": 20.58,
+          "49159": 18.75,
+          "65551": 17.42,
+          "81943": 15.87,
+          "98335": 14.91,
+          "114726": 13.94,
+          "131118": 13.04,
+          "163858": 11.3,
+          "180238": 10.72,
+          "196618": 10.24,
+          "212998": 9.69,
+          "229378": 9.24,
+          "245810": 8.86
+        }
+      },
+      {
+        "model": "bonsai-27b",
+        "arm": "Q4_0 KV + bias, no drafter (prism fork)",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "4096": 14.79,
+          "8192": 13.22,
+          "16384": 10.77,
+          "24576": 9.08,
+          "32768": 7.85
+        }
+      },
+      {
+        "model": "bonsai-27b",
+        "arm": "2-bit, f16 KV, no drafter (MLX)",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "4096": 24.5,
+          "8192": 24.2,
+          "16384": 22.9,
+          "24576": 22,
+          "32768": 20.5,
+          "40960": 18.6,
+          "43008": 18.66,
+          "45056": 12.1,
+          "47104": 11.89,
+          "49152": 11.33,
+          "51200": 18.36,
+          "53248": 18.09,
+          "55296": 17.64,
+          "57344": 17.69,
+          "59392": 17.27
+        }
+      },
+      {
+        "model": "gemma-4-12b-it",
+        "arm": "LM Studio MLX 4-bit, retired",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "4115": 34.19,
+          "16411": 32.05,
+          "32819": 30.59,
+          "65551": 27.08,
+          "98335": 24.52,
+          "131118": 23.23
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "IQ3_S-mtp (ISTA GSQ-RCO), f16 KV, no drafter",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "4114": 14.14,
+          "8222": 13.82,
+          "16386": 13.25,
+          "24602": 12.83,
+          "32818": 12.39,
+          "40982": 11.95,
+          "49198": 11.51,
+          "65578": 10.9,
+          "81958": 10.24,
+          "98338": 9.69,
+          "114718": 9.19,
+          "131098": 8.72,
+          "147478": 8.3,
+          "163858": 7.94
+        }
+      },
+      {
+        "model": "bonsai-2-27b",
+        "arm": "PTQ1_0, f16 KV, no drafter",
+        "served": true,
+        "method": "creep",
+        "points": {
+          "4114": 17.86,
+          "24602": 16.05,
+          "65578": 13.05,
+          "163858": 9.07
+        }
+      },
+      {
+        "model": "bonsai-2-27b",
+        "arm": "PQ2_0, f16 KV, no drafter",
+        "served": false,
+        "method": "creep",
+        "points": {
+          "4114": 17.05,
+          "24602": 12.26,
+          "65578": 7.91
+        }
+      },
+      {
+        "model": "bonsai-2-27b",
+        "arm": "MLX 2-bit, f16, no drafter, bonsai2-mlx-server.py",
+        "served": true,
+        "method": "creep",
+        "points": {
+          "4114": 21.47,
+          "24602": 12.13,
+          "32818": 10.45
+        }
+      }
+    ]
+  },
+  {
+    "hardwareSlug": "rtx-5060ti-16gb",
+    "hardwareName": "RTX 5060 Ti 16 GB",
+    "curves": [
+      {
+        "model": "bonsai-2-27b",
+        "arm": "PQ2_0, q8_0 KV, no drafter",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 46,
+          "24576": 38.2,
+          "65536": 28.2,
+          "211968": 14.5
+        }
+      },
+      {
+        "model": "bonsai-2-27b",
+        "arm": "PQ2_0, f16 KV, no drafter",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 46.3,
+          "24576": 40.5,
+          "65536": 32.2,
+          "121856": 25.1
+        }
+      },
+      {
+        "model": "bonsai-2-27b",
+        "arm": "PTQ1_0, q8_0 KV, no drafter",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 41.7,
+          "24576": 34.9,
+          "65536": 26.5,
+          "244736": 12.8
+        }
+      },
+      {
+        "model": "bonsai-2-27b",
+        "arm": "PTQ1_0, f16 KV, no drafter",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 42.1,
+          "24576": 37.3,
+          "65536": 30.1,
+          "138240": 22.4
+        }
+      },
+      {
+        "model": "bonsai-2-27b",
+        "arm": "PTQ1_0, f16 KV, refusal-ablation LoRA at scale 1.0",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 40.8,
+          "24576": 36.2,
+          "65536": 29.2,
+          "138240": 22
+        }
+      },
+      {
+        "model": "gemma-4-12b-it",
+        "arm": "NVFP4, f16 KV, no drafter",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 49.55,
+          "98304": 41.57,
+          "261120": 33.11
+        }
+      },
+      {
+        "model": "gemma-4-12b-it",
+        "arm": "UD-Q4_K_XL, f16 KV, no drafter",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 47.39,
+          "98304": 40.26,
+          "261120": 32.18
+        }
+      },
+      {
+        "model": "gemma-4-26b-a4b",
+        "arm": "NVFP4Q8, f16 KV, `--n-cpu-moe 7`",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 58.77,
+          "65536": 49.56,
+          "97280": 45.59
+        }
+      },
+      {
+        "model": "qwen3.6-35b-a3b",
+        "arm": "UD-Q4_K_XL, q8_0 KV, no drafter, `--n-cpu-moe 17`",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 55.81,
+          "65536": 42.52,
+          "97280": 37.8
+        }
+      },
+      {
+        "model": "qwen3.6-35b-a3b",
+        "arm": "UD-Q4_K_XL, MTP n-max 1, q8_0 KV, `--n-cpu-moe 19`",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 60.6,
+          "65536": 44.12,
+          "97280": 37.92
+        }
+      },
+      {
+        "model": "qwen3.6-35b-a3b",
+        "arm": "UD-Q4_K_XL, MTP n-max 2, q8_0 KV, `--n-cpu-moe 21`",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 61.16,
+          "65536": 50.04,
+          "97280": 45.42
+        }
+      },
+      {
+        "model": "qwen3.6-35b-a3b",
+        "arm": "UD-Q4_K_XL, MTP n-max 3, q8_0 KV, `--n-cpu-moe 21`",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 57.85,
+          "65536": 47.25,
+          "97280": 46.76
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, no drafter",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 29.43,
+          "24576": 25.89,
+          "64512": 21.13
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 1",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 33.4,
+          "24576": 29.68,
+          "56320": 24.64
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 2",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 45.88,
+          "24576": 31.89,
+          "56320": 26.19
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "IQ3_S-mtp (ISTA GSQ-RCO), q8_0 KV, MTP n-max 3",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 37.33,
+          "24576": 30.8,
+          "48128": 31.58
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "UD-IQ3_S, q8_0 KV, no drafter",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 29.36,
+          "24576": 25.84,
+          "64512": 20.92
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "UD-IQ3_S, f16 KV, no drafter",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 29.96,
+          "24576": 27.21,
+          "52224": 24.34
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "UD-IQ3_S, q8_0 KV, MTP n-max 1",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 37.16,
+          "24576": 34.34,
+          "64512": 26.28
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "UD-IQ3_S, q8_0 KV, MTP n-max 2",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 47.05,
+          "24576": 37.84,
+          "64512": 30.82
+        }
+      },
+      {
+        "model": "qwen3.8-27b",
+        "arm": "UD-IQ3_S, q8_0 KV, MTP n-max 3",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 41.42,
+          "24576": 37.61,
+          "56320": 28.57
+        }
+      },
+      {
+        "model": "arete-27b",
+        "arm": "Q3_K_M, q8_0 KV, no drafter",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 27.6,
+          "24576": 24.49,
+          "32768": 23.4,
+          "64512": 20.07
+        }
+      },
+      {
+        "model": "s5-nano",
+        "arm": "Q8_0, q8_0 KV, no drafter",
+        "served": true,
+        "method": "benchy",
+        "points": {
+          "4096": 77.37,
+          "24576": 69,
+          "32768": 66.01,
+          "65536": 56.76,
+          "131072": 44.29,
+          "196608": 36.16,
+          "245760": 31.76,
+          "261120": 30.59
+        }
+      },
+      {
+        "model": "s5-nano",
+        "arm": "BF16, f16 KV, no drafter",
+        "served": false,
+        "method": "benchy",
+        "points": {
+          "4096": 45.68,
+          "24576": 42.46,
+          "32768": 41.35,
+          "65536": 37.31,
+          "131072": 31.23,
+          "203776": 26.41
+        }
+      }
+    ]
+  }
+]
