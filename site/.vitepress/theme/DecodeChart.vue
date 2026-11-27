@@ -95,6 +95,7 @@ const readout = computed(() => {
 
 const togglePin = (k) => {
   pinnedGroup.value = pinnedGroup.value === k ? null : k
+  hoverGroup.value = null
 }
 
 const ariaLabel = `Decode speed against context depth for ${series.length} measured ${series.length === 1 ? 'curve' : 'curves'}${

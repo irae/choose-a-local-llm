@@ -1006,14 +1006,16 @@ function renderCurvesTable(arms, { includeMachine = true, includeModel = false }
     '',
     'The served arm of each config is in bold. A pill under a reading shows its exact depth when arms in that column differed.',
   ]
-  const chart = includeModel ? `<DecodeChart machine="${arms[0].machine}" />` : `<DecodeChart model="${arms[0].model}" />`
+  const chart = !buckets.length
+    ? []
+    : [includeModel ? `<DecodeChart machine="${arms[0].machine}" />` : `<DecodeChart model="${arms[0].model}" />`, '']
   if (anyCreep) {
     legend.push(
       '',
       '† measured with the earlier context-creep tool rather than `llama-benchy` on real code text. The two methods are not directly comparable.',
     )
   }
-  return [chart, '', `| arm | ${buckets.map(label).join(' | ')} |`, `|---|${buckets.map(() => '--:').join('|')}|`, ...rows, ...legend].join('\n')
+  return [...chart, `| arm | ${buckets.map(label).join(' | ')} |`, `|---|${buckets.map(() => '--:').join('|')}|`, ...rows, ...legend].join('\n')
 }
 
 function renderModelCurve(slug, datas) {
@@ -1321,7 +1323,7 @@ const modelTitleOf = (slug) => [...MODEL_SLUG_BY_BASE.entries()].find(([, s]) =>
 const decodeCurves = {
   models: [...new Set(setupsAll.flatMap((d) => (d.curves || []).map((c) => c.model)))]
     .map((slug) => ({ slug, title: modelTitleOf(slug) }))
-    .sort((a, b) => a.title.localeCompare(b.title)),
+    .sort((a, b) => a.title.localeCompare(b.title, 'en')),
   machines: setupsAll.map((d) => ({ slug: d.hardwareSlug, name: d.hardwareName })),
   curves: setupsAll.flatMap((d) =>
     (d.curves || []).map((c) => ({
