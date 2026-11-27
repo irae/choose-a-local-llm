@@ -26,6 +26,8 @@ Sparse Mixture-of-Experts (35B total / 3B active) with an embedded MTP speculati
 ## Decode Speed vs Context Depth
 
 <!-- gen:model-curves:start -->
+<DecodeChart model="qwen3.6-35b-a3b" />
+
 | arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | m1-max-32gb, UD-Q4_K_XL, MTP n-max 3, f16 KV, -c 40K, wired 25000 † | <CurveCell value="69.12" /> | <CurveCell value="71.34" /> | <CurveCell value="65.66" /> | <CurveCell value="61.03" /> | <CurveCell value="56.52" depth="32.0K" /> | <CurveCell value="52.6" depth="40.0K" /> |  |  |  |  |

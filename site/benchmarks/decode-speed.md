@@ -41,6 +41,8 @@ Every curve recorded in `data/setups/*/models.json`, generated automatically.
 <!-- gen:decode-curves:start -->
 ### M1 Max 32 GB (`m1-max-32gb`)
 
+<DecodeChart machine="m1-max-32gb" />
+
 | arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K | 128K | 160K | 192K | 208K | 240K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | [Qwen3.6-35B-A3B](/models/qwen3.6-35b-a3b), UD-Q4_K_XL, MTP n-max 3, f16 KV, -c 40K, wired 25000 † | <CurveCell value="69.12" /> | <CurveCell value="71.34" /> | <CurveCell value="65.66" /> | <CurveCell value="61.03" depth="24.0K" /> | <CurveCell value="56.52" depth="32.0K" /> | <CurveCell value="52.6" depth="40.0K" /> |  |  |  |  |  |  |  |  |  |
@@ -69,6 +71,8 @@ The served arm of each config is in bold. A pill under a reading shows its exact
 † measured with the earlier context-creep tool rather than `llama-benchy` on real code text. The two methods are not directly comparable.
 
 ### RTX 5060 Ti 16 GB (`rtx-5060ti-16gb`)
+
+<DecodeChart machine="rtx-5060ti-16gb" />
 
 | arm | 4K | 24K | 32K | 48K | 64K | 96K | 128K | 192K | 208K | 240K | 256K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|

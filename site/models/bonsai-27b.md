@@ -46,6 +46,8 @@ Every config of both models ranked together. Sibling model: [Ternary-Bonsai-2-27
 ## Decode Speed vs Context Depth
 
 <!-- gen:model-curves:start -->
+<DecodeChart model="bonsai-27b" />
+
 | arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K | 128K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | m1-max-32gb, 2-bit, f16 KV, no drafter (MLX), wired 24000 † | <CurveCell value="24.5" /> | <CurveCell value="24.2" /> | <CurveCell value="22.9" /> | <CurveCell value="22.0" depth="24.0K" /> | <CurveCell value="20.5" depth="32.0K" /> | <CurveCell value="12.1" depth="44.0K" /> | <CurveCell value="17.69" depth="56.0K" /> | <CurveCell value="17.27" depth="58.0K" /> |  |  |  |

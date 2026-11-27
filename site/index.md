@@ -1,3 +1,7 @@
+---
+pageClass: page-home
+---
+
 # Choosing a Local Coding LLM
 
 Measured decode speed at depth, real-memory context limits, HumanEval+ coding quality, and end-to-end agent scores on real consumer hardware. **325h+** of non-overlapping local compute (**110** scored runs, **8** models, **2** machines, **9,444** tool calls, **427** commits; **339.5h** with documented diagnostic runs — see [Benchmarks](/benchmarks/)).

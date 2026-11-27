@@ -36,6 +36,8 @@ Retired (RTX 5060 Ti 16 GB): Qwen3.8-27B, GGUF, Q4_K_M (OBLITERATUS, abliterated
 ## Decode Speed vs Context Depth
 
 <!-- gen:model-curves:start -->
+<DecodeChart model="qwen3.8-27b" />
+
 | arm | 4K | 8K | 16K | 24K | 32K | 40K | 48K | 64K | 80K | 96K | 128K | 160K |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | rtx-5060ti-16gb, UD-IQ3_S, q8_0 KV, MTP n-max 2, -c 64K | <CurveCell value="47.05" /> |  |  | <CurveCell value="37.84" depth="24.0K" /> |  |  |  | <CurveCell value="30.82" depth="63.0K" /> |  |  |  |  |

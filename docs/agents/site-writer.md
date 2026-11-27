@@ -22,7 +22,7 @@ Quote **fast-mode** EvalPlus (`think=8192`, `budget=16384`, `0 empty`), real-tex
 ## 4. Public Naming & Generated Surfaces
 
 - **Hardware slugs in `site/`, hostnames in `hardware/`.** Use hardware display names (`M1 Max 32 GB`, `RTX 5060 Ti 16 GB`) or hardware slugs (`m1-max-32gb`, `rtx-5060ti-16gb`) throughout `site/`. `tools/check-hostnames.mjs` fails the check on any machine hostname leak.
-- **Edit sources, regenerate outputs.** Update `data/` or `tools/gen-tables.mjs` and run `npm run docs:tables` to refresh `site/files/*`, `site/.vitepress/data/site-stats.json`, and every `<!-- gen:... -->` block. Leave generated blocks and `site/files/*` untouched by hand.
+- **Edit sources, regenerate outputs.** Update `data/` or `tools/gen-tables.mjs` and run `npm run docs:tables` to refresh `site/files/*`, `site/.vitepress/data/site-stats.json`, `site/.vitepress/data/decode-curves.json` (decode-speed charts), and every `<!-- gen:... -->` block. Leave generated blocks and `site/files/*` untouched by hand.
 
 ## 5. Style & Prose Word Caps
 

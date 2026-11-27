@@ -5,7 +5,7 @@ This repository answers one question per machine: **which local model, runtime, 
 ## Layout
 
 - `site/` — Published VitePress website (`srcDir = 'site'`). Use hardware display names or hardware slugs (`m1-max-32gb`, `rtx-5060ti-16gb`); keep machine hostnames internal to `hardware/` (enforced by `tools/check-hostnames.mjs`).
-- `data/` — Structured dataset (`data/binaries.json`, `data/setups/<hardware-slug>/models.json`) feeding generated tables, `site/.vitepress/data/site-stats.json`, and `site/files/*`.
+- `data/` — Structured dataset (`data/binaries.json`, `data/setups/<hardware-slug>/models.json`) feeding generated tables, `site/.vitepress/data/site-stats.json`, `site/.vitepress/data/decode-curves.json`, and `site/files/*`.
 - `hardware/<hardware-id>/` and `benchmarks/` — Internal raw runs, router presets (`models.ini`), and shared runner scripts (unpublished).
 - `docs/agents/` and `docs/repo/` — Internal agent guides and human operator docs (unpublished).
 
